@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>蓝牙开发零门槛之二：iBeacon - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="本教材演示如何通过 `INGChips SDK` 开发 iBeacon 设备和 iBeacon 扫描器。"/>
+        <link href="https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i%26display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    </head>
+    <body>
+        <script type="text/javascript">
+        window.onload = function () {
+            MathJax.Extension.tex2jax.config.inlineMath = [['$', '$']];
+        }
+        </script>
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/news/">
+  
+  新闻
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+              
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <article class="post post-full">
+    <header class="post-header has-gradient outer">
+      
+      
+      <div class="inner-sm">
+        <div class="post-meta">
+          <time class="published" datetime="2019-03-29 00:00">March 29, 2019</time>
+        </div>
+        <h1 class="post-title">蓝牙开发零门槛之二：iBeacon</h1>
+        
+        
+      </div>
+    </header>
+    <div class="inner-md outer">
+      <div class="post-content">
+        <p>INGChips 为客户提供易用的 SDK，帮助客户便捷、高效地开发蓝牙产品。</p>
+
+<p><img src="/user_guide/img/sdk_overview.png" width="80%" /></p>
+
+<p>本教材演示如何通过 <code class="highlighter-rouge">INGChips SDK</code> 开发 iBeacon 设备和 iBeacon 扫描器。iBeacon 由
+苹果公司开发，2013 年发布。利用 iBeacon 可以进行室内精准导航、定位，精准消息推送等，用途广泛。</p>
+
+<h2 id="ibeacon-设备">iBeacon 设备</h2>
+
+<p>着手开发之前，先从 App Store 下载一个 iBeacon app，比如 <code class="highlighter-rouge">Locate</code>。 <code class="highlighter-rouge">Locate</code> 预置了
+一系列 UUID，其中有一个全 0 的^[按协议规定，
+最终产品中 UUID 不得全部为 0。]。下面我们就开发一个 UUID 全为 0 的 iBeacon 设备。</p>
+
+<h3 id="设置广播数据">设置广播数据</h3>
+
+<p>iBeacon 广播数据包里包含两个项目：</p>
+
+<ol>
+  <li>
+    <p>Flags</p>
+
+    <p>值固定为 <code class="highlighter-rouge">0x06</code>，也即置起了两个比特，LE General Discoverable Mode
+ &amp; BR/EDR Not Supported。</p>
+  </li>
+  <li>
+    <p>Manufacturer Specific Data</p>
+
+    <p>该项里的数据如下表所示。</p>
+  </li>
+</ol>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Size in Bytes</th>
+      <th style="text-align: left">Name</th>
+      <th style="text-align: left">Value</th>
+      <th style="text-align: left">Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">2</td>
+      <td style="text-align: left">Company ID</td>
+      <td style="text-align: left">0x004C</td>
+      <td style="text-align: left">苹果公司 ID</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">2</td>
+      <td style="text-align: left">Beacon Type</td>
+      <td style="text-align: left">0x1502</td>
+      <td style="text-align: left">苹果定义的固定值</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">16</td>
+      <td style="text-align: left">Proximity UUID</td>
+      <td style="text-align: left"> </td>
+      <td style="text-align: left">用户自定义的 UUID</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">2</td>
+      <td style="text-align: left">Major</td>
+      <td style="text-align: left"> </td>
+      <td style="text-align: left">可理解使用在同一 UUID 下的组 ID</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">2</td>
+      <td style="text-align: left">Minor</td>
+      <td style="text-align: left"> </td>
+      <td style="text-align: left">可理解为该设备在组内的 ID</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">1</td>
+      <td style="text-align: left">Measured Power</td>
+      <td style="text-align: left">dBm</td>
+      <td style="text-align: left">iPhone 5s 在距离设备 1m 测得的接收信号强度</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>开发 iBeacon 设备的方法与上一教程完成相同，<em>整个开发过程不需要写一行代码</em>，
+唯一的区别就在于按规范进行设置广播数据。<code class="highlighter-rouge">INGChips SDK</code> 全面支持
+<code class="highlighter-rouge">Keil</code>、<code class="highlighter-rouge">IAR</code>、<code class="highlighter-rouge">SEGGER</code> 集成开发环境及 <code class="highlighter-rouge">GNU Arm Toolchain</code>。让我们来试试 <code class="highlighter-rouge">GNU Arm Toolchain</code>。</p>
+
+<p><img src="../img/weixin_create_ibeacon.png" /></p>
+
+<p>用广播数据编辑器填加 <code class="highlighter-rouge">0x01 - «Flags»</code> 和 <code class="highlighter-rouge">0xFF - «Manufacturer Specific Data»</code> 两项。
+点击 <code class="highlighter-rouge">0x01 - «Flags»</code>，勾选 <code class="highlighter-rouge">LE General Discoverable Mode</code> 和 <code class="highlighter-rouge">BR/EDR Not Supported</code>。</p>
+
+<p><img src="/user_guide/img/beacon_adv2.png" /></p>
+
+<p>点击 <code class="highlighter-rouge">0xFF - «Manufacturer Specific Data»</code>, 然后点击 <code class="highlighter-rouge">Edit as</code> 按钮从弹出的快捷菜单里选择
+<code class="highlighter-rouge">iBeacon ...</code> 打开 iBeacon 数据编辑器。</p>
+
+<p><img src="/user_guide/img/beacon_adv3.png" /></p>
+
+<p>UUID 全填为0，1m 处的信号功率可随意填写一个合理值，如 -50dBm，稍候我们将利用 <code class="highlighter-rouge">Locate</code> app 校准信号功率。</p>
+
+<h3 id="试一试">试一试</h3>
+
+<p>完成项目向导里的其它各步骤一个可用 <code class="highlighter-rouge">GNU Arm Toolchain</code> 编译的项目就创建好了。</p>
+
+<p><img src="../img/ch1-ibeacon-proj.png" /></p>
+
+<p>点击 iBeacon 项目打开控制台，输出 <code class="highlighter-rouge">make</code> 命令编译项目。
+回到 <code class="highlighter-rouge">ingWizard</code>，使用跟上一教程中相同的步骤下载程序。打开 <code class="highlighter-rouge">Locate</code> app 就能看到我们开发的
+iBeacon 设备了。</p>
+
+<p><img src="/user_guide/img/locate_page1_small.jpg" width="50%" /></p>
+
+<p>点选 iBeacon 设备，可以校准信号功率，也可以实时查看距离。</p>
+
+<p><img src="/user_guide/img/locate_page2_small.jpg" width="50%" /></p>
+
+<p>信号功率校准后，回到 <code class="highlighter-rouge">ingWizard</code>，在项目上右键点击，选择 <code class="highlighter-rouge">Edit Data</code> -&gt; <code class="highlighter-rouge">Advertising</code>
+菜单调出广播数据编辑器，修改信号功率。在控制台输入 <code class="highlighter-rouge">make rebuild</code> 命令重新编译项目。
+重新下载程序，可以发现 <code class="highlighter-rouge">Locate</code> app 里显示的距离精确了一些。</p>
+
+<p>说明：按照规范，iBeacon 设备要使用不可连接非定向（non connectable undirected）广播包以 100ms 为周期发送
+信标信号。本教程不碰代码，广播采用默认参数发送。</p>
+
+<h2 id="ibeacon-扫描器">iBeacon 扫描器</h2>
+
+<p>接下来再开发一个 iBeacon 扫描器。温馨提醒：要写代码了。</p>
+
+<p>像往常一样，在 <code class="highlighter-rouge">ingWizard</code> 里创建项目，这次试试 <code class="highlighter-rouge">IAR Embedded Workbench</code>。
+ <code class="highlighter-rouge">Role of Your Device</code> 页里将设备角色设定成 <em>Central</em>，然后一路 <code class="highlighter-rouge">Next</code> 下去，<code class="highlighter-rouge">iscanner</code> 项目
+就创建好了。</p>
+
+<p><img src="/user_guide/img/ch1-proj-iscanner.png" width="50%" /></p>
+
+<p>打开项目，在 <code class="highlighter-rouge">profile.c</code> 里找到函数 <code class="highlighter-rouge">user_packet_handler</code>，可以看到一个
+名为 <code class="highlighter-rouge">GAP_EVENT_ADVERTISING_REPORT</code> 的广播报告事件。每次扫描到广播时就会收到这个事件:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="k">case</span> <span class="n">GAP_EVENT_ADVERTISING_REPORT</span><span class="p">:</span>
+        <span class="n">gap_get_advertisingReport</span><span class="p">(</span><span class="o">&amp;</span><span class="n">report</span><span class="p">,</span> <span class="n">packet</span><span class="p">);</span>
+        <span class="c1">// add your code</span>
+        <span class="p">......</span>
+        <span class="k">break</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>收到广播报告后需要检查是否是合法的 iBeacon 广播。基于上一教程的讨论，iBeacon 的数据结构可以
+很直接地写出来：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">typedef</span> <span class="n">__packed</span> <span class="k">struct</span> <span class="n">ibeacon_adv</span>
+<span class="p">{</span>
+    <span class="kt">uint16_t</span> <span class="n">apple_id</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">id</span><span class="p">;</span>
+    <span class="kt">uint8_t</span>  <span class="n">uuid</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
+    <span class="kt">uint16_t</span> <span class="n">major</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">minor</span><span class="p">;</span>
+    <span class="kt">int8_t</span>   <span class="n">ref_power</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">ibeacon_adv_t</span><span class="p">;</span>
+
+<span class="cp">#define APPLE_COMPANY_ID        0x004C
+#define IBEACON_ID              0x1502
+</span></code></pre></div></div>
+<p>扩展关键字 <code class="highlighter-rouge">__packed</code> 表示结构体内的各个域以 1 字节，<em>ARM</em> 和 <em>IAR</em> 的编译器皆支持。 如果是用 <code class="highlighter-rouge">SEGGER</code> 或者
+<code class="highlighter-rouge">GNU Arm Toolchain</code>，可以使用 <code class="highlighter-rouge">#pragma pack</code> 指令，或者 <code class="highlighter-rouge">__attribute__ ((packed))</code> 属性：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#pragma pack (push, 1)
+</span><span class="k">typedef</span> <span class="k">struct</span> <span class="n">ibeacon_adv</span>
+<span class="p">{</span>
+    <span class="p">...</span>
+<span class="p">}</span> <span class="n">ibeacon_adv_t</span><span class="p">;</span>
+<span class="cp">#pragma pack (pop)
+</span></code></pre></div></div>
+
+<p>先编写打印 UUID 的辅助函数热热身：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="nf">format_uuid</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">buffer</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">uuid</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">sprintf</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="s">"{ %02X%02X%02X%02X-%02X%02X-%02X%02X-"</span>
+                    <span class="s">"%02X%02X-%02X%02X%02X%02X%02X%02X }"</span><span class="p">,</span>
+           <span class="n">uuid</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">uuid</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">uuid</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">uuid</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+           <span class="n">uuid</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">uuid</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">uuid</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="n">uuid</span><span class="p">[</span><span class="mi">7</span><span class="p">],</span> <span class="n">uuid</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="n">uuid</span><span class="p">[</span><span class="mi">9</span><span class="p">],</span>
+           <span class="n">uuid</span><span class="p">[</span><span class="mi">10</span><span class="p">],</span> <span class="n">uuid</span><span class="p">[</span><span class="mi">11</span><span class="p">],</span> <span class="n">uuid</span><span class="p">[</span><span class="mi">12</span><span class="p">],</span> <span class="n">uuid</span><span class="p">[</span><span class="mi">13</span><span class="p">],</span> <span class="n">uuid</span><span class="p">[</span><span class="mi">14</span><span class="p">],</span> <span class="n">uuid</span><span class="p">[</span><span class="mi">15</span><span class="p">]);</span>
+    <span class="k">return</span> <span class="n">buffer</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="距离估计">距离估计</h3>
+
+<p>电磁波在自由空间中传输的损耗公式为：</p>
+
+<script type="math/tex; mode=display">Loss = 32.45 + 20log(d) + 20log(f)</script>
+
+<p>这里到辐射源的距离 $d$ 以 km 为单位，频率 $f$ 以 MHz 为单位，计算出的损耗 $Loss$ 用 dB 表示。</p>
+
+<p>广播报告里包含接收信号强度指示 (RSSI)。假设开发板得到的 RSSI 跟 iPhone 5s 一致，
+利用 RSSI 和 iBeacon 广播里携带的 <code class="highlighter-rouge">ref_power</code>, 根据
+损耗公式可直接估计距离如下：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">double</span> <span class="nf">estimate_distance</span><span class="p">(</span><span class="kt">int8_t</span> <span class="n">ref_power</span><span class="p">,</span> <span class="kt">int8_t</span> <span class="n">rssi</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">pow</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="p">(</span><span class="n">ref_power</span> <span class="o">-</span> <span class="n">rssi</span><span class="p">)</span> <span class="o">/</span> <span class="mi">20</span><span class="p">.</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>iBeacon 扫描器的完整代码如下：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kt">uint8_t</span> <span class="n">length</span><span class="p">;</span>
+    <span class="n">ibeacon_adv_t</span> <span class="o">*</span><span class="n">p_ibeacon</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="n">str_buffer</span><span class="p">[</span><span class="mi">80</span><span class="p">];</span>
+    <span class="p">......</span>
+    <span class="k">case</span> <span class="n">GAP_EVENT_ADVERTISING_REPORT</span><span class="p">:</span>
+        <span class="n">gap_get_advertisingReport</span><span class="p">(</span><span class="o">&amp;</span><span class="n">report</span><span class="p">,</span> <span class="n">packet</span><span class="p">);</span>
+
+        <span class="c1">// 提取 Manufacturer Specific Data</span>
+        <span class="n">p_ibeacon</span> <span class="o">=</span> <span class="p">(</span><span class="n">ibeacon_adv_t</span> <span class="o">*</span><span class="p">)</span><span class="n">ad_data_from_type</span><span class="p">(</span><span class="n">report</span><span class="p">.</span><span class="n">length</span><span class="p">,</span>
+                       <span class="p">(</span><span class="kt">uint8_t</span> <span class="o">*</span><span class="p">)</span><span class="n">report</span><span class="p">.</span><span class="n">data</span><span class="p">,</span> <span class="mh">0xff</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">length</span><span class="p">);</span>
+
+        <span class="c1">// 判断是否为 iBeacon</span>
+        <span class="k">if</span> <span class="p">((</span><span class="n">length</span> <span class="o">!=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">ibeacon_adv_t</span><span class="p">))</span>
+            <span class="o">||</span> <span class="p">(</span><span class="n">p_ibeacon</span><span class="o">-&gt;</span><span class="n">apple_id</span> <span class="o">!=</span> <span class="n">APPLE_COMPANY_ID</span><span class="p">)</span>
+            <span class="o">||</span> <span class="p">(</span><span class="n">p_ibeacon</span><span class="o">-&gt;</span><span class="n">id</span> <span class="o">!=</span> <span class="n">IBEACON_ID</span><span class="p">))</span>
+            <span class="k">break</span><span class="p">;</span>
+
+        <span class="c1">// 计算并打输出</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"%s %04X,%04X, %.1fm</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span>
+                <span class="n">format_uuid</span><span class="p">(</span><span class="n">str_buffer</span><span class="p">,</span> <span class="n">p_ibeacon</span><span class="o">-&gt;</span><span class="n">uuid</span><span class="p">),</span>
+                <span class="n">p_ibeacon</span><span class="o">-&gt;</span><span class="n">major</span><span class="p">,</span> <span class="n">p_ibeacon</span><span class="o">-&gt;</span><span class="n">minor</span><span class="p">,</span>
+                <span class="n">estimate_distance</span><span class="p">(</span><span class="n">p_ibeacon</span><span class="o">-&gt;</span><span class="n">ref_power</span><span class="p">,</span> <span class="n">report</span><span class="p">.</span><span class="n">rssi</span><span class="p">));</span>
+        <span class="k">break</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>按下 <code class="highlighter-rouge">F7</code> 编译，然后下载。利用 <code class="highlighter-rouge">Locate</code> app 或者用另一块开发板发送 iBeacon 信号，iBeacon 扫描器立即就能扫描到：</p>
+
+<p><img src="/user_guide/img/ch1-iscanner.png" /></p>
+
+<div class="note">
+<strong>注意:</strong> 本教程中的距离估计仅供演示，实际中需要考虑 RSSI 波动的问题。另外，苹果公司提供的 `SDK`
+并不直接提供距离，而是以 immediate、near、far 三个类别表示。
+</div>
+
+      </div><!-- .post-content -->
+    </div><!-- .inner-md -->
+  </article><!-- .post -->
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2020. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

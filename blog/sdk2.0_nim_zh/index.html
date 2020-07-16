@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>SDK 2.0：使用 Nim 语言开发蓝牙应用 - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="本文将展示 Nim 相对各大友商基于 C 语言的 SDK 在一些方面具有“*碾压*”般的优势。。"/>
+        <link href="https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i%26display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    </head>
+    <body>
+        <script type="text/javascript">
+        window.onload = function () {
+            MathJax.Extension.tex2jax.config.inlineMath = [['$', '$']];
+        }
+        </script>
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/news/">
+  
+  新闻
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+              
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <article class="post post-full">
+    <header class="post-header has-gradient outer">
+      
+      
+      <div class="inner-sm">
+        <div class="post-meta">
+          <time class="published" datetime="2019-11-11 00:00">November 11, 2019</time>
+        </div>
+        <h1 class="post-title">SDK 2.0：使用 Nim 语言开发蓝牙应用</h1>
+        
+        
+      </div>
+    </header>
+    <div class="inner-md outer">
+      <div class="post-content">
+        <p>INGChips 为客户提供易用的 SDK，帮助客户便捷、高效地开发蓝牙产品。</p>
+
+<p><img src="/user_guide/img/sdk_overview.png" width="80%" /></p>
+
+<p>SDK 2.0 引入了一种新的编程语言：Nim。Nim 是一种静态编译型系统编程语言，
+结合了 Python、Lisp 等语言的一些特性，高效（Efficient）、高能（Expressive）、
+高颜值（Elegant）。</p>
+
+<p>使用 Nim 开发的项目编译时先由 Nim 编译器将 nim 源代码转译成 <code class="highlighter-rouge">C</code> 代码，
+然后通过 Gnu 工具链将这些转换出来的代码连同 SDK 提供
+的 <code class="highlighter-rouge">C</code> 代码一起编译、链接得到可在 ING918xx 上运行的程序。整个流程如图所示。</p>
+
+<p><img src="/user_guide/img/ch1-nim-build.png" alt="" /></p>
+
+<p>本文将展示 Nim 相对各大友商基于 C 语言的 SDK 在一些方面具有“<em>碾压</em>”般的优势。</p>
+
+<h2 id="nim-环境配置">Nim 环境配置</h2>
+
+<p>参照官方说明可以很方便地安装 Nim 以及 Gnu 工具链。对于 Windows 10 系统，需要安装 Windows 版本，
+不要在 WSL 里安装 Linux 版本。</p>
+
+<p>打开 ingWizard 的 Options 窗口，把 Gnu 工具链 和 Nim 两个页面上的信息补充完整。</p>
+
+<p>推荐 <code class="highlighter-rouge">Visual Studio Code</code> 作为代码编辑器，它的 Nim 插件可以实现语法高亮、补全、查错等功能。</p>
+
+<h2 id="创建第一个-nim-项目">创建第一个 Nim 项目</h2>
+
+<p>打开 ingWizard 的项目向导，在 <code class="highlighter-rouge">Develpment Tool</code> 页面选择 <code class="highlighter-rouge">Nim + Gnu Toolchain</code>。
+与 C 项目一样，ingWizard 图形界面也可以为 Nim 项目创建蓝牙广播和 GATT Profile 数据。
+SDK 为 Nim 项目提供了一个名为 <code class="highlighter-rouge">btdatabuilder</code> 的模块，这个模块使用了 Nim 的元编程特性，
+可以通过代码便捷地创建这些数据。为演示该模块的使用，我们选择使用代码创建蓝牙广播和
+GATT Profile 数据：</p>
+
+<p><img src="/user_guide/img/ch1-nim-by-code.png" alt="" /></p>
+
+<p>一直点击“Next”直至新项目创建完成。用 Visual Studio Code 或者其它编辑器打开新项目里的
+<code class="highlighter-rouge">profile.nim</code> 文件。</p>
+
+<h2 id="创建广播数据">创建广播数据</h2>
+
+<ul>
+  <li>
+    <p>示例 1: 将设备命名为 “Hello, Nim”</p>
+
+    <p><img src="../img/adv_hello_pad.png" alt="" /></p>
+  </li>
+  <li>
+    <p>示例 2：创建 iBeacon（微信摇一摇）</p>
+
+    <p><img src="../img/adv_ibeacon_pad.png" alt="" /></p>
+  </li>
+</ul>
+
+<p>注：上述 Major/Minor 为0，仅供演示用。</p>
+
+<p>上面的代码在编译时会被 Nim 内置的虚拟机执行，得出广播数据——一个数组——并存储在 <code class="highlighter-rouge">advData</code> 里。</p>
+
+<h2 id="友商对比">友商对比</h2>
+
+<p>让我们看一下使用友商们的 SDK。</p>
+
+<ul>
+  <li>
+    <p>N 厂</p>
+
+    <p>依靠代码在运行时生成：</p>
+
+    <ol>
+      <li>构造一个数组，写入 iBeacon 数据</li>
+      <li>把广播的数据项填写到 <code class="highlighter-rouge">ble_advdata_t</code></li>
+      <li>调用 <code class="highlighter-rouge">ble_advdata_encode</code> 函数生成完整的广播数据（也即上面例子里的 <code class="highlighter-rouge">advData</code>）</li>
+    </ol>
+
+    <p>这些流程跑下来，得到的广播数据是固定不变的。
+  这样一次次地在芯片上执行相同的处理、得到相同的数据，既耗时间又耗存储空间。</p>
+  </li>
+  <li>
+    <p>T 厂</p>
+
+    <pre><code class="language-C">  const u8 tbl_advData[] = {
+  	 0x05, 0x09, 'k', 'H', 'I', 'D',
+  	 0x02, 0x01, 0x05
+  	 0x03, 0x19, 0x80, 0x01,
+  	 0x05, 0x02, 0x12, 0x18, 0x0F, 0x18,
+  };
+</code></pre>
+
+    <p>T 厂使用了“刀耕火种”技能。</p>
+  </li>
+</ul>
+
+<h2 id="创建-profile-数据">创建 Profile 数据</h2>
+
+<p><img src="../img/nim_profile_pad.png" alt="" /></p>
+
+<p>上面的代码由 Nim 转译为 C 后，完整的 Profile 数据被存储在 <code class="highlighter-rouge">profileData</code> 里，
+并用常量<code class="highlighter-rouge">HANDLE_BATTERY_LEVEL</code> 表示电池电量指示属性的句柄（handle），
+用常量 <code class="highlighter-rouge">HANDLE_BATTERY_LEVEL_OFFSET</code> 表示电量数值在 <code class="highlighter-rouge">profileData</code> 里的字节偏移。</p>
+
+<p>在代码里我们这里变量、常量都是可以“正常”使用。比如创建一个任务周期性地随机修改电量数值：</p>
+
+<p><img src="../img/nim_bat_task_pad.png" alt="" /></p>
+
+<p>在 Nim 项目里至少有三种产生伪随机数的方法。</p>
+
+<ul>
+  <li>
+    <p>使用 <code class="highlighter-rouge">C</code> 标准库提供的伪随机数函数</p>
+
+    <p><img src="../img/nim_rand_c_pad.png" alt="" /></p>
+  </li>
+  <li>
+    <p>使用 <code class="highlighter-rouge">Nim</code> 内置的伪随机数函数</p>
+
+    <p><img src="../img/nim_rand_builtin_pad.png" alt="" /></p>
+  </li>
+  <li>
+    <p>临时写一个</p>
+
+    <p><img src="../img/nim_rand_simple_pad.png" alt="" /></p>
+  </li>
+</ul>
+
+<p>显而易见，三种方法实现起来都很简单。</p>
+
+<h2 id="友商对比-1">友商对比</h2>
+
+<p>同样对比一下友商们的 SDK 里如何创建 Profile。</p>
+
+<ul>
+  <li>
+    <p>N 厂</p>
+
+    <p>同样是运行时生成，需要绕来绕去地调用 <code class="highlighter-rouge">xxx_service_add</code>、<code class="highlighter-rouge">xxx_characteristics_add</code> 等一系列函数。</p>
+  </li>
+  <li>
+    <p>T 厂</p>
+
+    <p>ATT 句柄（handle）和 Profile 数据分开定义，依靠<strong>人力</strong>保证两者的一致性。</p>
+
+    <p><img src="../img/human.png" width="70%" /></p>
+  </li>
+</ul>
+
+<h2 id="编译">编译</h2>
+
+<p>ingWizard 自动为项目创建了 <code class="highlighter-rouge">makefile</code>，只需要在输入 <code class="highlighter-rouge">make</code> 命令即可完成所有编译步骤。</p>
+
+<p><code class="highlighter-rouge">makefile</code> 文件里只包含了项目的核心设置，内容简洁，便于修改。</p>
+
+<h2 id="为什么引入-nim">为什么引入 Nim？</h2>
+
+<ul>
+  <li>
+    <p>元编程</p>
+
+    <p>使用元编程可以在编译时生成广播、Profile 等数据，在运行时 0 开销。对于低功耗嵌入式系统，
+  可以缩短启动时间、降低功耗、减小空间占用。</p>
+  </li>
+  <li>
+    <p>强类型</p>
+
+    <p>相对 C 而言，Nim 是一种强类型的语言，可以辅助开发人员编写更安全的代码。</p>
+  </li>
+  <li>
+    <p>与 C 互通</p>
+
+    <p>SDK 中以 C 形式提供的 API 可以通过工具完整地导入 Nim 项目为其所用。</p>
+  </li>
+</ul>
+
+<p>我们认为 Nim 在嵌入式领域有很大的应用前景。未来 SDK 仍将以 C/C++ 为核心语言，
+Nim 将作为与 C/C++ 平行的开发语言，可以使用 SDK 为 C/C++ 提供的所有模块、接口。</p>
+
+<p>注：目前 Nim 暂不能用来开发 Mesh 应用。</p>
+
+      </div><!-- .post-content -->
+    </div><!-- .inner-md -->
+  </article><!-- .post -->
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2020. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

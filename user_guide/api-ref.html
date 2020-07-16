@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 6 Platform API Reference | INGCHIPS SDK User Guide</title>
+  <meta name="description" content="This is the user guide of INGCHIPS SDK." />
+  <meta name="generator" content="bookdown 0.14 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 6 Platform API Reference | INGCHIPS SDK User Guide" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:image" content="./img/sdk_overview.png" />
+  <meta property="og:description" content="This is the user guide of INGCHIPS SDK." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 6 Platform API Reference | INGCHIPS SDK User Guide" />
+  
+  <meta name="twitter:description" content="This is the user guide of INGCHIPS SDK." />
+  <meta name="twitter:image" content="./img/sdk_overview.png" />
+
+<meta name="author" content="v1.0" />
+
+
+<meta name="date" content="2020-07-16" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="dive-into-sdk.html"/>
+<link rel="next" href="revision-history.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="css\style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">User Guide</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Welcome</a></li>
+<li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> Introduction</a><ul>
+<li class="chapter" data-level="2.1" data-path="intro.html"><a href="intro.html#scope"><i class="fa fa-check"></i><b>2.1</b> Scope</a></li>
+<li class="chapter" data-level="2.2" data-path="intro.html"><a href="intro.html#architecture"><i class="fa fa-check"></i><b>2.2</b> Architecture</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="intro.html"><a href="intro.html#apps-built-with-c"><i class="fa fa-check"></i><b>2.2.1</b> Apps built with <code>C</code></a></li>
+<li class="chapter" data-level="2.2.2" data-path="intro.html"><a href="intro.html#apps-built-with-nim"><i class="fa fa-check"></i><b>2.2.2</b> Apps built with <code>Nim</code></a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="intro.html"><a href="intro.html#abbreviations-terminology"><i class="fa fa-check"></i><b>2.3</b> Abbreviations &amp; Terminology</a></li>
+<li class="chapter" data-level="2.4" data-path="intro.html"><a href="intro.html#references"><i class="fa fa-check"></i><b>2.4</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="tutorial.html"><a href="tutorial.html"><i class="fa fa-check"></i><b>3</b> Tutorials</a><ul>
+<li class="chapter" data-level="3.1" data-path="tutorial.html"><a href="tutorial.html#ch1-hello-world"><i class="fa fa-check"></i><b>3.1</b> Hello World</a><ul>
+<li class="chapter" data-level="3.1.1" data-path="tutorial.html"><a href="tutorial.html#development-tool-page"><i class="fa fa-check"></i><b>3.1.1</b> <code>Development Tool</code> Page</a></li>
+<li class="chapter" data-level="3.1.2" data-path="tutorial.html"><a href="tutorial.html#choose-chip-series-page"><i class="fa fa-check"></i><b>3.1.2</b> <code>Choose Chip Series</code> Page</a></li>
+<li class="chapter" data-level="3.1.3" data-path="tutorial.html"><a href="tutorial.html#choose-project-type-page"><i class="fa fa-check"></i><b>3.1.3</b> <code>Choose Project Type</code> Page</a></li>
+<li class="chapter" data-level="3.1.4" data-path="tutorial.html"><a href="tutorial.html#role-of-your-device-page"><i class="fa fa-check"></i><b>3.1.4</b> <code>Role of Your Device</code> Page</a></li>
+<li class="chapter" data-level="3.1.5" data-path="tutorial.html"><a href="tutorial.html#peripheral-setup-page"><i class="fa fa-check"></i><b>3.1.5</b> <code>Peripheral Setup</code> Page</a></li>
+<li class="chapter" data-level="3.1.6" data-path="tutorial.html"><a href="tutorial.html#security-privacy-page"><i class="fa fa-check"></i><b>3.1.6</b> <code>Security &amp; Privacy</code> Page</a></li>
+<li class="chapter" data-level="3.1.7" data-path="tutorial.html"><a href="tutorial.html#firmare-over-the-air-page"><i class="fa fa-check"></i><b>3.1.7</b> <code>Firmare Over-The-Air</code> Page</a></li>
+<li class="chapter" data-level="3.1.8" data-path="tutorial.html"><a href="tutorial.html#common-functions-page"><i class="fa fa-check"></i><b>3.1.8</b> <code>Common Functions</code> Page</a></li>
+<li class="chapter" data-level="3.1.9" data-path="tutorial.html"><a href="tutorial.html#build-your-project"><i class="fa fa-check"></i><b>3.1.9</b> Build your project</a></li>
+<li class="chapter" data-level="3.1.10" data-path="tutorial.html"><a href="tutorial.html#download"><i class="fa fa-check"></i><b>3.1.10</b> Download</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="tutorial.html"><a href="tutorial.html#ibeacon"><i class="fa fa-check"></i><b>3.2</b> iBeacon</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="tutorial.html"><a href="tutorial.html#setup-advertising-data"><i class="fa fa-check"></i><b>3.2.1</b> Setup Advertising Data</a></li>
+<li class="chapter" data-level="3.2.2" data-path="tutorial.html"><a href="tutorial.html#try-it"><i class="fa fa-check"></i><b>3.2.2</b> Try It</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="tutorial.html"><a href="tutorial.html#thermometer"><i class="fa fa-check"></i><b>3.3</b> Thermometer</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="tutorial.html"><a href="tutorial.html#setup-advertising-data-1"><i class="fa fa-check"></i><b>3.3.1</b> Setup Advertising Data</a></li>
+<li class="chapter" data-level="3.3.2" data-path="tutorial.html"><a href="tutorial.html#setup-gatt-profile"><i class="fa fa-check"></i><b>3.3.2</b> Setup GATT Profile</a></li>
+<li class="chapter" data-level="3.3.3" data-path="tutorial.html"><a href="tutorial.html#write-the-code"><i class="fa fa-check"></i><b>3.3.3</b> Write the Code</a></li>
+<li class="chapter" data-level="3.3.4" data-path="tutorial.html"><a href="tutorial.html#notification"><i class="fa fa-check"></i><b>3.3.4</b> Notification</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="tutorial.html"><a href="tutorial.html#thermometer-with-fota"><i class="fa fa-check"></i><b>3.4</b> Thermometer with FOTA</a><ul>
+<li class="chapter" data-level="3.4.1" data-path="tutorial.html"><a href="tutorial.html#device-with-fota"><i class="fa fa-check"></i><b>3.4.1</b> Device with FOTA</a></li>
+<li class="chapter" data-level="3.4.2" data-path="tutorial.html"><a href="tutorial.html#make-a-new-version"><i class="fa fa-check"></i><b>3.4.2</b> Make a New Version</a></li>
+<li class="chapter" data-level="3.4.3" data-path="tutorial.html"><a href="tutorial.html#fota-server"><i class="fa fa-check"></i><b>3.4.3</b> FOTA Server</a></li>
+<li class="chapter" data-level="3.4.4" data-path="tutorial.html"><a href="tutorial.html#try-it-1"><i class="fa fa-check"></i><b>3.4.4</b> Try It</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="tutorial.html"><a href="tutorial.html#ibeacon-scanner"><i class="fa fa-check"></i><b>3.5</b> iBeacon Scanner</a><ul>
+<li class="chapter" data-level="3.5.1" data-path="tutorial.html"><a href="tutorial.html#distance-estimation"><i class="fa fa-check"></i><b>3.5.1</b> Distance Estimation</a></li>
+<li class="chapter" data-level="3.5.2" data-path="tutorial.html"><a href="tutorial.html#concurrent-advertising-scanning"><i class="fa fa-check"></i><b>3.5.2</b> Concurrent Advertising &amp; Scanning</a></li>
+</ul></li>
+<li class="chapter" data-level="3.6" data-path="tutorial.html"><a href="tutorial.html#notification-indication"><i class="fa fa-check"></i><b>3.6</b> Notification &amp; Indication</a><ul>
+<li class="chapter" data-level="3.6.1" data-path="tutorial.html"><a href="tutorial.html#inter-task-communication"><i class="fa fa-check"></i><b>3.6.1</b> Inter-task Communication</a></li>
+<li class="chapter" data-level="3.6.2" data-path="tutorial.html"><a href="tutorial.html#timer"><i class="fa fa-check"></i><b>3.6.2</b> Timer</a></li>
+</ul></li>
+<li class="chapter" data-level="3.7" data-path="tutorial.html"><a href="tutorial.html#throughput"><i class="fa fa-check"></i><b>3.7</b> Throughput</a><ul>
+<li class="chapter" data-level="3.7.1" data-path="tutorial.html"><a href="tutorial.html#theoretical-peak-throughput"><i class="fa fa-check"></i><b>3.7.1</b> Theoretical Peak Throughput</a></li>
+<li class="chapter" data-level="3.7.2" data-path="tutorial.html"><a href="tutorial.html#test-throughput"><i class="fa fa-check"></i><b>3.7.2</b> Test Throughput</a></li>
+</ul></li>
+<li class="chapter" data-level="3.8" data-path="tutorial.html"><a href="tutorial.html#dual-role-ble-gateway"><i class="fa fa-check"></i><b>3.8</b> Dual Role &amp; BLE Gateway</a><ul>
+<li class="chapter" data-level="3.8.1" data-path="tutorial.html"><a href="tutorial.html#use-ingwizard-to-create-a-peripheral-app"><i class="fa fa-check"></i><b>3.8.1</b> Use <code>ingWizard</code> to create a peripheral app</a></li>
+<li class="chapter" data-level="3.8.2" data-path="tutorial.html"><a href="tutorial.html#define-thermometer-data"><i class="fa fa-check"></i><b>3.8.2</b> Define Thermometer Data</a></li>
+<li class="chapter" data-level="3.8.3" data-path="tutorial.html"><a href="tutorial.html#scan-for-thermometers"><i class="fa fa-check"></i><b>3.8.3</b> Scan for Thermometers</a></li>
+<li class="chapter" data-level="3.8.4" data-path="tutorial.html"><a href="tutorial.html#discover-services"><i class="fa fa-check"></i><b>3.8.4</b> Discover Services</a></li>
+<li class="chapter" data-level="3.8.5" data-path="tutorial.html"><a href="tutorial.html#data-handling"><i class="fa fa-check"></i><b>3.8.5</b> Data Handling</a></li>
+<li class="chapter" data-level="3.8.6" data-path="tutorial.html"><a href="tutorial.html#robustness"><i class="fa fa-check"></i><b>3.8.6</b> Robustness</a></li>
+<li class="chapter" data-level="3.8.7" data-path="tutorial.html"><a href="tutorial.html#prepare-thermometers"><i class="fa fa-check"></i><b>3.8.7</b> Prepare Thermometers</a></li>
+<li class="chapter" data-level="3.8.8" data-path="tutorial.html"><a href="tutorial.html#test"><i class="fa fa-check"></i><b>3.8.8</b> Test</a></li>
+</ul></li>
+<li class="chapter" data-level="3.9" data-path="tutorial.html"><a href="tutorial.html#hello-nim"><i class="fa fa-check"></i><b>3.9</b> Hello, Nim</a><ul>
+<li class="chapter" data-level="3.9.1" data-path="tutorial.html"><a href="tutorial.html#create-a-nim-project"><i class="fa fa-check"></i><b>3.9.1</b> Create a <code>Nim</code> Project</a></li>
+<li class="chapter" data-level="3.9.2" data-path="tutorial.html"><a href="tutorial.html#create-advertising-data"><i class="fa fa-check"></i><b>3.9.2</b> Create Advertising Data</a></li>
+<li class="chapter" data-level="3.9.3" data-path="tutorial.html"><a href="tutorial.html#create-profile-data"><i class="fa fa-check"></i><b>3.9.3</b> Create Profile Data</a></li>
+<li class="chapter" data-level="3.9.4" data-path="tutorial.html"><a href="tutorial.html#benefits-of-adopting-nim"><i class="fa fa-check"></i><b>3.9.4</b> Benefits of Adopting <code>Nim</code></a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="core-tools.html"><a href="core-tools.html"><i class="fa fa-check"></i><b>4</b> Core Tools</a><ul>
+<li class="chapter" data-level="4.1" data-path="core-tools.html"><a href="core-tools.html#ingwizard"><i class="fa fa-check"></i><b>4.1</b> ingWizard</a></li>
+<li class="chapter" data-level="4.2" data-path="core-tools.html"><a href="core-tools.html#ch2-downloader"><i class="fa fa-check"></i><b>4.2</b> Downloader</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="core-tools.html"><a href="core-tools.html#introduction"><i class="fa fa-check"></i><b>4.2.1</b> Introduction</a></li>
+<li class="chapter" data-level="4.2.2" data-path="core-tools.html"><a href="core-tools.html#scripting-mass-production"><i class="fa fa-check"></i><b>4.2.2</b> Scripting &amp; Mass Production</a></li>
+<li class="chapter" data-level="4.2.3" data-path="core-tools.html"><a href="core-tools.html#flash-read-protection"><i class="fa fa-check"></i><b>4.2.3</b> Flash Read Protection</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="core-tools.html"><a href="core-tools.html#ingtracer"><i class="fa fa-check"></i><b>4.3</b> ingTracer</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="dive-into-sdk.html"><a href="dive-into-sdk.html"><i class="fa fa-check"></i><b>5</b> Dive Into SDK</a><ul>
+<li class="chapter" data-level="5.1" data-path="dive-into-sdk.html"><a href="dive-into-sdk.html#memory-management"><i class="fa fa-check"></i><b>5.1</b> Memory Management</a><ul>
+<li class="chapter" data-level="5.1.1" data-path="dive-into-sdk.html"><a href="dive-into-sdk.html#global-variables"><i class="fa fa-check"></i><b>5.1.1</b> Global Variables</a></li>
+<li class="chapter" data-level="5.1.2" data-path="dive-into-sdk.html"><a href="dive-into-sdk.html#using-stack"><i class="fa fa-check"></i><b>5.1.2</b> Using Stack</a></li>
+<li class="chapter" data-level="5.1.3" data-path="dive-into-sdk.html"><a href="dive-into-sdk.html#using-heap"><i class="fa fa-check"></i><b>5.1.3</b> Using Heap</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="dive-into-sdk.html"><a href="dive-into-sdk.html#multitasking"><i class="fa fa-check"></i><b>5.2</b> Multitasking</a></li>
+<li class="chapter" data-level="5.3" data-path="dive-into-sdk.html"><a href="dive-into-sdk.html#interrupt-management"><i class="fa fa-check"></i><b>5.3</b> Interrupt Management</a></li>
+<li class="chapter" data-level="5.4" data-path="dive-into-sdk.html"><a href="dive-into-sdk.html#power-management"><i class="fa fa-check"></i><b>5.4</b> Power Management</a></li>
+<li class="chapter" data-level="5.5" data-path="dive-into-sdk.html"><a href="dive-into-sdk.html#cmsis-api"><i class="fa fa-check"></i><b>5.5</b> CMSIS API</a></li>
+<li class="chapter" data-level="5.6" data-path="dive-into-sdk.html"><a href="dive-into-sdk.html#debugging-tracing"><i class="fa fa-check"></i><b>5.6</b> Debugging &amp; Tracing</a><ul>
+<li class="chapter" data-level="5.6.1" data-path="dive-into-sdk.html"><a href="dive-into-sdk.html#tips-on-segger-rtt"><i class="fa fa-check"></i><b>5.6.1</b> Tips on SEGGER RTT</a></li>
+<li class="chapter" data-level="5.6.2" data-path="dive-into-sdk.html"><a href="dive-into-sdk.html#memory-dump"><i class="fa fa-check"></i><b>5.6.2</b> Memory Dump</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="api-ref.html"><a href="api-ref.html"><i class="fa fa-check"></i><b>6</b> Platform API Reference</a><ul>
+<li class="chapter" data-level="6.1" data-path="api-ref.html"><a href="api-ref.html#platform_config"><i class="fa fa-check"></i><b>6.1</b> <code>platform_config</code></a><ul>
+<li class="chapter" data-level="6.1.1" data-path="api-ref.html"><a href="api-ref.html#prototype"><i class="fa fa-check"></i><b>6.1.1</b> Prototype</a></li>
+<li class="chapter" data-level="6.1.2" data-path="api-ref.html"><a href="api-ref.html#parameters"><i class="fa fa-check"></i><b>6.1.2</b> Parameters</a></li>
+<li class="chapter" data-level="6.1.3" data-path="api-ref.html"><a href="api-ref.html#return-value"><i class="fa fa-check"></i><b>6.1.3</b> Return Value</a></li>
+<li class="chapter" data-level="6.1.4" data-path="api-ref.html"><a href="api-ref.html#remarks"><i class="fa fa-check"></i><b>6.1.4</b> Remarks</a></li>
+<li class="chapter" data-level="6.1.5" data-path="api-ref.html"><a href="api-ref.html#example"><i class="fa fa-check"></i><b>6.1.5</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="api-ref.html"><a href="api-ref.html#platform_get_heap_status"><i class="fa fa-check"></i><b>6.2</b> <code>platform_get_heap_status</code></a><ul>
+<li class="chapter" data-level="6.2.1" data-path="api-ref.html"><a href="api-ref.html#prototype-1"><i class="fa fa-check"></i><b>6.2.1</b> Prototype</a></li>
+<li class="chapter" data-level="6.2.2" data-path="api-ref.html"><a href="api-ref.html#parameters-1"><i class="fa fa-check"></i><b>6.2.2</b> Parameters</a></li>
+<li class="chapter" data-level="6.2.3" data-path="api-ref.html"><a href="api-ref.html#return-value-1"><i class="fa fa-check"></i><b>6.2.3</b> Return Value</a></li>
+<li class="chapter" data-level="6.2.4" data-path="api-ref.html"><a href="api-ref.html#remarks-1"><i class="fa fa-check"></i><b>6.2.4</b> Remarks</a></li>
+<li class="chapter" data-level="6.2.5" data-path="api-ref.html"><a href="api-ref.html#example-1"><i class="fa fa-check"></i><b>6.2.5</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="api-ref.html"><a href="api-ref.html#platform_get_version"><i class="fa fa-check"></i><b>6.3</b> <code>platform_get_version</code></a><ul>
+<li class="chapter" data-level="6.3.1" data-path="api-ref.html"><a href="api-ref.html#prototype-2"><i class="fa fa-check"></i><b>6.3.1</b> Prototype</a></li>
+<li class="chapter" data-level="6.3.2" data-path="api-ref.html"><a href="api-ref.html#parameters-2"><i class="fa fa-check"></i><b>6.3.2</b> Parameters</a></li>
+<li class="chapter" data-level="6.3.3" data-path="api-ref.html"><a href="api-ref.html#return-value-2"><i class="fa fa-check"></i><b>6.3.3</b> Return Value</a></li>
+<li class="chapter" data-level="6.3.4" data-path="api-ref.html"><a href="api-ref.html#remarks-2"><i class="fa fa-check"></i><b>6.3.4</b> Remarks</a></li>
+<li class="chapter" data-level="6.3.5" data-path="api-ref.html"><a href="api-ref.html#example-2"><i class="fa fa-check"></i><b>6.3.5</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="api-ref.html"><a href="api-ref.html#platform_hrng"><i class="fa fa-check"></i><b>6.4</b> <code>platform_hrng</code></a><ul>
+<li class="chapter" data-level="6.4.1" data-path="api-ref.html"><a href="api-ref.html#prototype-3"><i class="fa fa-check"></i><b>6.4.1</b> Prototype</a></li>
+<li class="chapter" data-level="6.4.2" data-path="api-ref.html"><a href="api-ref.html#parameters-3"><i class="fa fa-check"></i><b>6.4.2</b> Parameters</a></li>
+<li class="chapter" data-level="6.4.3" data-path="api-ref.html"><a href="api-ref.html#return-value-3"><i class="fa fa-check"></i><b>6.4.3</b> Return Value</a></li>
+<li class="chapter" data-level="6.4.4" data-path="api-ref.html"><a href="api-ref.html#remarks-3"><i class="fa fa-check"></i><b>6.4.4</b> Remarks</a></li>
+<li class="chapter" data-level="6.4.5" data-path="api-ref.html"><a href="api-ref.html#example-3"><i class="fa fa-check"></i><b>6.4.5</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="api-ref.html"><a href="api-ref.html#platform_printf"><i class="fa fa-check"></i><b>6.5</b> <code>platform_printf</code></a><ul>
+<li class="chapter" data-level="6.5.1" data-path="api-ref.html"><a href="api-ref.html#prototype-4"><i class="fa fa-check"></i><b>6.5.1</b> Prototype</a></li>
+<li class="chapter" data-level="6.5.2" data-path="api-ref.html"><a href="api-ref.html#parameters-4"><i class="fa fa-check"></i><b>6.5.2</b> Parameters</a></li>
+<li class="chapter" data-level="6.5.3" data-path="api-ref.html"><a href="api-ref.html#return-value-4"><i class="fa fa-check"></i><b>6.5.3</b> Return Value</a></li>
+<li class="chapter" data-level="6.5.4" data-path="api-ref.html"><a href="api-ref.html#remarks-4"><i class="fa fa-check"></i><b>6.5.4</b> Remarks</a></li>
+<li class="chapter" data-level="6.5.5" data-path="api-ref.html"><a href="api-ref.html#example-4"><i class="fa fa-check"></i><b>6.5.5</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="6.6" data-path="api-ref.html"><a href="api-ref.html#platform_raise_assertion"><i class="fa fa-check"></i><b>6.6</b> <code>platform_raise_assertion</code></a><ul>
+<li class="chapter" data-level="6.6.1" data-path="api-ref.html"><a href="api-ref.html#prototype-5"><i class="fa fa-check"></i><b>6.6.1</b> Prototype</a></li>
+<li class="chapter" data-level="6.6.2" data-path="api-ref.html"><a href="api-ref.html#parameters-5"><i class="fa fa-check"></i><b>6.6.2</b> Parameters</a></li>
+<li class="chapter" data-level="6.6.3" data-path="api-ref.html"><a href="api-ref.html#return-value-5"><i class="fa fa-check"></i><b>6.6.3</b> Return Value</a></li>
+<li class="chapter" data-level="6.6.4" data-path="api-ref.html"><a href="api-ref.html#remarks-5"><i class="fa fa-check"></i><b>6.6.4</b> Remarks</a></li>
+<li class="chapter" data-level="6.6.5" data-path="api-ref.html"><a href="api-ref.html#example-5"><i class="fa fa-check"></i><b>6.6.5</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="6.7" data-path="api-ref.html"><a href="api-ref.html#platform_reset"><i class="fa fa-check"></i><b>6.7</b> <code>platform_reset</code></a><ul>
+<li class="chapter" data-level="6.7.1" data-path="api-ref.html"><a href="api-ref.html#prototype-6"><i class="fa fa-check"></i><b>6.7.1</b> Prototype</a></li>
+<li class="chapter" data-level="6.7.2" data-path="api-ref.html"><a href="api-ref.html#parameters-6"><i class="fa fa-check"></i><b>6.7.2</b> Parameters</a></li>
+<li class="chapter" data-level="6.7.3" data-path="api-ref.html"><a href="api-ref.html#return-value-6"><i class="fa fa-check"></i><b>6.7.3</b> Return Value</a></li>
+<li class="chapter" data-level="6.7.4" data-path="api-ref.html"><a href="api-ref.html#remarks-6"><i class="fa fa-check"></i><b>6.7.4</b> Remarks</a></li>
+<li class="chapter" data-level="6.7.5" data-path="api-ref.html"><a href="api-ref.html#example-6"><i class="fa fa-check"></i><b>6.7.5</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="6.8" data-path="api-ref.html"><a href="api-ref.html#platform_set_evt_callback"><i class="fa fa-check"></i><b>6.8</b> <code>platform_set_evt_callback</code></a><ul>
+<li class="chapter" data-level="6.8.1" data-path="api-ref.html"><a href="api-ref.html#prototype-7"><i class="fa fa-check"></i><b>6.8.1</b> Prototype</a></li>
+<li class="chapter" data-level="6.8.2" data-path="api-ref.html"><a href="api-ref.html#parameters-7"><i class="fa fa-check"></i><b>6.8.2</b> Parameters</a></li>
+<li class="chapter" data-level="6.8.3" data-path="api-ref.html"><a href="api-ref.html#return-value-7"><i class="fa fa-check"></i><b>6.8.3</b> Return Value</a></li>
+<li class="chapter" data-level="6.8.4" data-path="api-ref.html"><a href="api-ref.html#remarks-7"><i class="fa fa-check"></i><b>6.8.4</b> Remarks</a></li>
+<li class="chapter" data-level="6.8.5" data-path="api-ref.html"><a href="api-ref.html#example-7"><i class="fa fa-check"></i><b>6.8.5</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="6.9" data-path="api-ref.html"><a href="api-ref.html#platform_set_irq_callback"><i class="fa fa-check"></i><b>6.9</b> <code>platform_set_irq_callback</code></a><ul>
+<li class="chapter" data-level="6.9.1" data-path="api-ref.html"><a href="api-ref.html#prototype-8"><i class="fa fa-check"></i><b>6.9.1</b> Prototype</a></li>
+<li class="chapter" data-level="6.9.2" data-path="api-ref.html"><a href="api-ref.html#parameters-8"><i class="fa fa-check"></i><b>6.9.2</b> Parameters</a></li>
+<li class="chapter" data-level="6.9.3" data-path="api-ref.html"><a href="api-ref.html#return-value-8"><i class="fa fa-check"></i><b>6.9.3</b> Return Value</a></li>
+<li class="chapter" data-level="6.9.4" data-path="api-ref.html"><a href="api-ref.html#remarks-8"><i class="fa fa-check"></i><b>6.9.4</b> Remarks</a></li>
+<li class="chapter" data-level="6.9.5" data-path="api-ref.html"><a href="api-ref.html#example-8"><i class="fa fa-check"></i><b>6.9.5</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="6.10" data-path="api-ref.html"><a href="api-ref.html#platform_shutdown"><i class="fa fa-check"></i><b>6.10</b> <code>platform_shutdown</code></a><ul>
+<li class="chapter" data-level="6.10.1" data-path="api-ref.html"><a href="api-ref.html#prototype-9"><i class="fa fa-check"></i><b>6.10.1</b> Prototype</a></li>
+<li class="chapter" data-level="6.10.2" data-path="api-ref.html"><a href="api-ref.html#parameters-9"><i class="fa fa-check"></i><b>6.10.2</b> Parameters</a></li>
+<li class="chapter" data-level="6.10.3" data-path="api-ref.html"><a href="api-ref.html#return-value-9"><i class="fa fa-check"></i><b>6.10.3</b> Return Value</a></li>
+<li class="chapter" data-level="6.10.4" data-path="api-ref.html"><a href="api-ref.html#remarks-9"><i class="fa fa-check"></i><b>6.10.4</b> Remarks</a></li>
+<li class="chapter" data-level="6.10.5" data-path="api-ref.html"><a href="api-ref.html#example-9"><i class="fa fa-check"></i><b>6.10.5</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="6.11" data-path="api-ref.html"><a href="api-ref.html#api-switch-app"><i class="fa fa-check"></i><b>6.11</b> <code>platform_switch_app</code></a><ul>
+<li class="chapter" data-level="6.11.1" data-path="api-ref.html"><a href="api-ref.html#prototype-10"><i class="fa fa-check"></i><b>6.11.1</b> Prototype</a></li>
+<li class="chapter" data-level="6.11.2" data-path="api-ref.html"><a href="api-ref.html#parameters-10"><i class="fa fa-check"></i><b>6.11.2</b> Parameters</a></li>
+<li class="chapter" data-level="6.11.3" data-path="api-ref.html"><a href="api-ref.html#return-value-10"><i class="fa fa-check"></i><b>6.11.3</b> Return Value</a></li>
+<li class="chapter" data-level="6.11.4" data-path="api-ref.html"><a href="api-ref.html#remarks-10"><i class="fa fa-check"></i><b>6.11.4</b> Remarks</a></li>
+<li class="chapter" data-level="6.11.5" data-path="api-ref.html"><a href="api-ref.html#example-10"><i class="fa fa-check"></i><b>6.11.5</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="6.12" data-path="api-ref.html"><a href="api-ref.html#syssetpublicdeviceaddr"><i class="fa fa-check"></i><b>6.12</b> <code>sysSetPublicDeviceAddr</code></a><ul>
+<li class="chapter" data-level="6.12.1" data-path="api-ref.html"><a href="api-ref.html#prototype-11"><i class="fa fa-check"></i><b>6.12.1</b> Prototype</a></li>
+<li class="chapter" data-level="6.12.2" data-path="api-ref.html"><a href="api-ref.html#parameters-11"><i class="fa fa-check"></i><b>6.12.2</b> Parameters</a></li>
+<li class="chapter" data-level="6.12.3" data-path="api-ref.html"><a href="api-ref.html#return-value-11"><i class="fa fa-check"></i><b>6.12.3</b> Return Value</a></li>
+<li class="chapter" data-level="6.12.4" data-path="api-ref.html"><a href="api-ref.html#remarks-11"><i class="fa fa-check"></i><b>6.12.4</b> Remarks</a></li>
+<li class="chapter" data-level="6.12.5" data-path="api-ref.html"><a href="api-ref.html#example-11"><i class="fa fa-check"></i><b>6.12.5</b> Example</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="revision-history.html"><a href="revision-history.html"><i class="fa fa-check"></i><b>7</b> Revision History</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">INGCHIPS SDK User Guide</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="api-ref" class="section level1">
+<h1><span class="header-section-number">Chapter 6</span> Platform API Reference</h1>
+<div id="platform_config" class="section level2">
+<h2><span class="header-section-number">6.1</span> <code>platform_config</code></h2>
+<p>Configure some platform functionalities.</p>
+<div id="prototype" class="section level3">
+<h3><span class="header-section-number">6.1.1</span> Prototype</h3>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="dt">void</span> platform_config(<span class="dt">const</span> platform_cfg_item_t item,
+                     <span class="dt">const</span> <span class="dt">uint32_t</span> flag);</code></pre></div>
+</div>
+<div id="parameters" class="section level3">
+<h3><span class="header-section-number">6.1.2</span> Parameters</h3>
+<ul>
+<li><p><code>const platform_cfg_item_t item</code></p>
+<p>Specify the item to be configured. It can be one of following values:</p>
+<ul>
+<li><p><code>PLATFORM_CFG_LOG_HCI</code>: Host controller interface messages. Default: Disabled.</p></li>
+<li><p><code>PLATFORM_CFG_POWER_SAVING</code>: Power saving. Default: Disabled.</p></li>
+<li><p><code>PLATFORM_CFG_TRACE_MASK</code>: Bit map of selected trace items. Default: <code>0</code>.</p></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="kw">typedef</span> <span class="kw">enum</span>
+{
+    PLATFORM_TRACE_ID_EVENT                 = <span class="dv">0</span>,
+    PLATFORM_TRACE_ID_HCI_CMD               = <span class="dv">1</span>,
+    PLATFORM_TRACE_ID_HCI_EVENT             = <span class="dv">2</span>,
+    PLATFORM_TRACE_ID_HCI_ACL               = <span class="dv">3</span>,
+    PLATFORM_TRACE_ID_LLCP                  = <span class="dv">4</span>
+} platform_trace_item_t;</code></pre></div></li>
+<li><p><code>const uint32_t flag</code></p>
+<p>To disable or enable an item. It can be one of following values:</p>
+<ul>
+<li><code>PLATFORM_CFG_ENABLE</code></li>
+<li><code>PLATFORM_CFG_DISABLE</code></li>
+</ul></li>
+</ul>
+</div>
+<div id="return-value" class="section level3">
+<h3><span class="header-section-number">6.1.3</span> Return Value</h3>
+<p>Void.</p>
+</div>
+<div id="remarks" class="section level3">
+<h3><span class="header-section-number">6.1.4</span> Remarks</h3>
+<p>Void.</p>
+</div>
+<div id="example" class="section level3">
+<h3><span class="header-section-number">6.1.5</span> Example</h3>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="co">// Enable HCI logging</span>
+platform_config(PLATFORM_CFG_LOG_HCI, PLATFORM_CFG_ENABLE);</code></pre></div>
+</div>
+</div>
+<div id="platform_get_heap_status" class="section level2">
+<h2><span class="header-section-number">6.2</span> <code>platform_get_heap_status</code></h2>
+<p>Get current heap status, such as available size, etc.</p>
+<div id="prototype-1" class="section level3">
+<h3><span class="header-section-number">6.2.1</span> Prototype</h3>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="dt">void</span> platform_get_heap_status(platform_heap_status_t *status);</code></pre></div>
+</div>
+<div id="parameters-1" class="section level3">
+<h3><span class="header-section-number">6.2.2</span> Parameters</h3>
+<ul>
+<li><p><code>platform_heap_status_t *status</code></p>
+<p>Heap status.</p></li>
+</ul>
+</div>
+<div id="return-value-1" class="section level3">
+<h3><span class="header-section-number">6.2.3</span> Return Value</h3>
+<p>Void.</p>
+</div>
+<div id="remarks-1" class="section level3">
+<h3><span class="header-section-number">6.2.4</span> Remarks</h3>
+<p>Heap status is defined as:</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="kw">typedef</span> <span class="kw">struct</span>
+{
+    <span class="dt">uint32_t</span> bytes_free;                <span class="co">// total free bytes</span>
+    <span class="dt">uint32_t</span> bytes_minimum_ever_free;   <span class="co">// mininum of bytes_free from startup</span>
+} platform_heap_status_t;</code></pre></div>
+</div>
+<div id="example-1" class="section level3">
+<h3><span class="header-section-number">6.2.5</span> Example</h3>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c">platform_heap_status_t status;
+platform_get_heap_status(&amp;status);</code></pre></div>
+</div>
+</div>
+<div id="platform_get_version" class="section level2">
+<h2><span class="header-section-number">6.3</span> <code>platform_get_version</code></h2>
+<p>Get version number of platform.</p>
+<div id="prototype-2" class="section level3">
+<h3><span class="header-section-number">6.3.1</span> Prototype</h3>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="dt">const</span> platform_ver_t *platform_get_version(<span class="dt">void</span>);</code></pre></div>
+</div>
+<div id="parameters-2" class="section level3">
+<h3><span class="header-section-number">6.3.2</span> Parameters</h3>
+<p>Void.</p>
+</div>
+<div id="return-value-2" class="section level3">
+<h3><span class="header-section-number">6.3.3</span> Return Value</h3>
+<p>Pointer to <code>platform_ver_t</code>.</p>
+</div>
+<div id="remarks-2" class="section level3">
+<h3><span class="header-section-number">6.3.4</span> Remarks</h3>
+<p>Platform version number has three parts, major, minor and patch:</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="kw">typedef</span> <span class="kw">struct</span> platform_ver
+{
+    <span class="dt">unsigned</span> <span class="dt">short</span> major;
+    <span class="dt">char</span>  minor;
+    <span class="dt">char</span>  patch;
+} platform_ver_t;</code></pre></div>
+</div>
+<div id="example-2" class="section level3">
+<h3><span class="header-section-number">6.3.5</span> Example</h3>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="dt">const</span> platform_ver_t *ver = platform_get_version();
+printf(<span class="st">&quot;Platform version: %d.%d.%d</span><span class="sc">\n</span><span class="st">&quot;</span>, ver-&gt;major, ver-&gt;minor, ver-&gt;patch);</code></pre></div>
+</div>
+</div>
+<div id="platform_hrng" class="section level2">
+<h2><span class="header-section-number">6.4</span> <code>platform_hrng</code></h2>
+<p>Generate random bytes by using hardware random-number generator.</p>
+<div id="prototype-3" class="section level3">
+<h3><span class="header-section-number">6.4.1</span> Prototype</h3>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="dt">void</span>  platform_hrng(<span class="dt">uint8_t</span> *bytes, <span class="dt">const</span> <span class="dt">uint32_t</span> len);</code></pre></div>
+</div>
+<div id="parameters-3" class="section level3">
+<h3><span class="header-section-number">6.4.2</span> Parameters</h3>
+<ul>
+<li><p><code>uint8_t *bytes</code></p>
+<p>Random data output.</p></li>
+<li><p><code>const uint32_t len</code></p>
+<p>Number of random bytes to be generated.</p></li>
+</ul>
+</div>
+<div id="return-value-3" class="section level3">
+<h3><span class="header-section-number">6.4.3</span> Return Value</h3>
+<p>Void.</p>
+</div>
+<div id="remarks-3" class="section level3">
+<h3><span class="header-section-number">6.4.4</span> Remarks</h3>
+<p>Time consumption to generate a fix length of data is undetermined.</p>
+</div>
+<div id="example-3" class="section level3">
+<h3><span class="header-section-number">6.4.5</span> Example</h3>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="dt">uint32_t</span> strong_random;
+platform_hrng(&amp;strong_random, <span class="kw">sizeof</span>(strong_random));</code></pre></div>
+</div>
+</div>
+<div id="platform_printf" class="section level2">
+<h2><span class="header-section-number">6.5</span> <code>platform_printf</code></h2>
+<p>The <code>printf</code> function stored in platform binary.</p>
+<div id="prototype-4" class="section level3">
+<h3><span class="header-section-number">6.5.1</span> Prototype</h3>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"> <span class="dt">void</span>  platform_printf(<span class="dt">const</span> <span class="dt">char</span> *format, ...);</code></pre></div>
+</div>
+<div id="parameters-4" class="section level3">
+<h3><span class="header-section-number">6.5.2</span> Parameters</h3>
+<ul>
+<li><code>const char *format</code></li>
+</ul>
+<p>Format string.</p>
+<ul>
+<li><code>...</code></li>
+</ul>
+<p>Variable arguments for format string.</p>
+</div>
+<div id="return-value-4" class="section level3">
+<h3><span class="header-section-number">6.5.3</span> Return Value</h3>
+<p>Void.</p>
+</div>
+<div id="remarks-4" class="section level3">
+<h3><span class="header-section-number">6.5.4</span> Remarks</h3>
+<p>There are pros &amp; cons to use this function.</p>
+<p>Pros:</p>
+<ul>
+<li>This function is located in platform binary, app binary size can be saved.</li>
+</ul>
+<p>Cons:</p>
+<ul>
+<li>Output is directed <code>PLATFORM_CB_EVT_PUTC</code> event, so its callback function must be defined.</li>
+</ul>
+</div>
+<div id="example-4" class="section level3">
+<h3><span class="header-section-number">6.5.5</span> Example</h3>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c">platform_printf(<span class="st">&quot;Hello world&quot;</span>);</code></pre></div>
+</div>
+</div>
+<div id="platform_raise_assertion" class="section level2">
+<h2><span class="header-section-number">6.6</span> <code>platform_raise_assertion</code></h2>
+<p>Raise a software assertion.</p>
+<div id="prototype-5" class="section level3">
+<h3><span class="header-section-number">6.6.1</span> Prototype</h3>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="dt">void</span>  platform_raise_assertion(<span class="dt">const</span> <span class="dt">char</span> *file_name, <span class="dt">int</span> line_no);</code></pre></div>
+</div>
+<div id="parameters-5" class="section level3">
+<h3><span class="header-section-number">6.6.2</span> Parameters</h3>
+<ul>
+<li><p><code>const char *file_name</code></p>
+<p>File name where the assertion occurred.</p></li>
+<li><p><code>int line_no</code></p>
+<p>Line number where the assertion occurred.</p></li>
+</ul>
+</div>
+<div id="return-value-5" class="section level3">
+<h3><span class="header-section-number">6.6.3</span> Return Value</h3>
+<p>Void.</p>
+</div>
+<div id="remarks-5" class="section level3">
+<h3><span class="header-section-number">6.6.4</span> Remarks</h3>
+<p>Void.</p>
+</div>
+<div id="example-5" class="section level3">
+<h3><span class="header-section-number">6.6.5</span> Example</h3>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c">  <span class="cf">if</span> (NULL == ptr)
+    platform_raise_assertion(__FILE__, __LINE__);</code></pre></div>
+</div>
+</div>
+<div id="platform_reset" class="section level2">
+<h2><span class="header-section-number">6.7</span> <code>platform_reset</code></h2>
+<p>Reset platform (SoC).</p>
+<div id="prototype-6" class="section level3">
+<h3><span class="header-section-number">6.7.1</span> Prototype</h3>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="dt">void</span> platform_reset(<span class="dt">void</span>);</code></pre></div>
+</div>
+<div id="parameters-6" class="section level3">
+<h3><span class="header-section-number">6.7.2</span> Parameters</h3>
+<p>Void.</p>
+</div>
+<div id="return-value-6" class="section level3">
+<h3><span class="header-section-number">6.7.3</span> Return Value</h3>
+<p>Void.</p>
+</div>
+<div id="remarks-6" class="section level3">
+<h3><span class="header-section-number">6.7.4</span> Remarks</h3>
+<p>When calling this function, the code after it will not be executed.</p>
+</div>
+<div id="example-6" class="section level3">
+<h3><span class="header-section-number">6.7.5</span> Example</h3>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c">  <span class="cf">if</span> (out-of-memory)
+    platform_reset();</code></pre></div>
+</div>
+</div>
+<div id="platform_set_evt_callback" class="section level2">
+<h2><span class="header-section-number">6.8</span> <code>platform_set_evt_callback</code></h2>
+<p>Registers callback functions to platform events.</p>
+<div id="prototype-7" class="section level3">
+<h3><span class="header-section-number">6.8.1</span> Prototype</h3>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="dt">void</span> platform_set_evt_callback(platform_evt_callback_type_t type, 
+                               f_platform_evt_cb f, 
+                               <span class="dt">void</span> *user_data);</code></pre></div>
+</div>
+<div id="parameters-7" class="section level3">
+<h3><span class="header-section-number">6.8.2</span> Parameters</h3>
+<ul>
+<li><p><code>platform_evt_callback_type_t type</code></p>
+<p>Specify the event type to which the callback function is registered. It can be one of following values:</p>
+<ul>
+<li><p><code>PLATFORM_CB_EVT_PUTC</code>: Ouput ASCII character event</p>
+<p>When platform want to output ASCII characters for logging, this event is fired. Parameter <code>void *data</code> passed into the callback function is casted from <code>char *</code>.</p>
+<p><code>ingWizard</code> can automatically generate code that redirects platform log to UART if <code>Print to UART</code> is checked on <code>Common Function</code> when creating a new project.</p></li>
+<li><p><code>PLATFORM_CB_EVT_PROFILE_INIT</code>: Profile initialization event</p>
+<p>When host initializes, this event is fired to request app to initialize GATT profile.</p>
+<p><code>ingWizard</code> can automatically generate code for this event when creating a new project.</p></li>
+<li><p><code>PLATFORM_CB_EVT_ON_DEEP_SLEEP_WAKEUP</code>: Wakeup from deep sleep event</p>
+<p>When waking up from deep sleep, this event is fired. During deep sleep, peripheral interfaces (such as UART, I2C, etc) are all powered off. So, when waking up, these interfaces might need to be re-initialized.</p>
+<p><code>ingWizard</code> can automatically generate code for event if <code>Deep Sleep</code> is checked on <code>Common Function</code> when creating a new project.</p></li>
+<li><p><code>PLATFORM_CB_EVT_QUERY_DEEP_SLEEP_ALLOWED</code>: Query if deep sleep is allowed event</p>
+<p>When platform prepares to enter deep sleep mode, this event is fired to query app if deep sleep is allow at this moment. Callback function can reject deep sleep by returning <code>0</code>, and allow it by returning a non-<code>0</code> value.</p>
+<p><code>ingWizard</code> can automatically generate code for event if <code>Deep Sleep</code> is checked on <code>Common Function</code> when creating a new project.</p></li>
+<li><p><code>PLATFORM_CB_EVT_HARD_FAULT</code>: Hard fault occurs</p>
+<p>When hard fault occurs, this event is fired. Parameter <code>void *data</code> passed into the callback function is casted from <code>hard_fault_info_t *</code>. If this callback is not defined, CPU enters a dead loop when hard fault occurs.</p></li>
+<li><p><code>PLATFORM_CB_EVT_ASSERTION</code>: Software assertion fails</p>
+<p>When software assertion fails, this event is fired. Parameter <code>void *data</code> passed into the callback function is casted from <code>assertion_info_t *</code>. If this callback is not defined, CPU enters a dead loop when assertion occurs.</p></li>
+<li><p><code>PLATFORM_CB_EVT_LLE_INIT</code>: Link layer engine initialized.</p>
+<p>When link layer engine initialized, this event is fired.</p></li>
+<li><p><code>PLATFORM_CB_EVT_HEAP_OOM</code>: Out of memory.</p>
+<p>When allocation on heap fails (heap out of memory), this event is fired. If this event is fired and no callback is defined, CPU enters a dead loop.</p></li>
+<li><p><code>PLATFORM_CB_EVT_TRACE</code>: Trace output.</p>
+<p>When a trace item is emitted, this event is fired. Apps can define a callback function for this event to save or log trace output. <code>param</code> to the callback is casted from <code>platform_trace_evt_t *</code> (See <a href="dive-into-sdk.html#debugging-tracing">Debugging &amp; Tracing</a>).</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="kw">typedef</span> <span class="kw">struct</span>
+{
+    <span class="dt">const</span> <span class="dt">void</span> *data1;
+    <span class="dt">const</span> <span class="dt">void</span> *data2;
+    <span class="dt">uint16_t</span> len1;
+    <span class="dt">uint16_t</span> len2;
+} platform_evt_trace_t;</code></pre></div>
+<p>A trace item is a combination of <code>data1</code> and <code>data2</code>. Note:</p>
+<ol style="list-style-type: decimal">
+<li><p><code>len1</code> or <code>len2</code> might be 0, but not both;</p></li>
+<li><p>If callback function finds that it can’t output data of size <code>len1</code> + <code>len2</code>, then, both <code>data1</code> &amp; <code>data2</code> should be discarded to avoid trace item corruption.</p></li>
+</ol></li>
+</ul></li>
+<li><p><code>f_platform_evt_cb f</code></p>
+<p>The callback function registered to event <code>type</code>. <code>f_platform_evt_cb</code> is:</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="kw">typedef</span> <span class="dt">uint32_t</span> (*f_platform_evt_cb)(<span class="dt">void</span> *data, <span class="dt">void</span> *user_data);</code></pre></div></li>
+<li><p><code>void *user_data</code></p>
+<p>This is passed to callback function’s <code>user_data</code> unchanged.</p></li>
+</ul>
+</div>
+<div id="return-value-7" class="section level3">
+<h3><span class="header-section-number">6.8.3</span> Return Value</h3>
+<p>Void.</p>
+</div>
+<div id="remarks-7" class="section level3">
+<h3><span class="header-section-number">6.8.4</span> Remarks</h3>
+<p>It is not required to register callback functions to each event.</p>
+<p>If no callback function is registered to <code>PLATFORM_CB_EVT_PUTC</code> event, all platform log is discarded.</p>
+<p>If no callback function is registered to <code>PLATFORM_CB_EVT_PROFILE_INIT</code> event, BLE device’s profile is empty.</p>
+<p>If no callback function is registered to <code>PLATFORM_CB_EVT_ON_DEEP_SLEEP_WAKEUP</code> event, app will not be notified when waking up from deep sleep.</p>
+<p>If no callback function is registered to <code>PLATFORM_CB_EVT_QUERY_DEEP_SLEEP_ALLOWED</code> event, deep sleep is <em>disabled</em>.</p>
+</div>
+<div id="example-7" class="section level3">
+<h3><span class="header-section-number">6.8.5</span> Example</h3>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="dt">uint32_t</span> cb_putc(<span class="dt">char</span> *c, <span class="dt">void</span> *dummy)
+{
+    <span class="co">// </span><span class="al">TODO</span><span class="co">: output char c to UART</span>
+    <span class="cf">return</span> <span class="dv">0</span>;
+}
+
+......
+
+platform_set_evt_callback(PLATFORM_CB_EVT_PUTC, (f_platform_evt_cb)cb_putc, 
+                          NULL);</code></pre></div>
+</div>
+</div>
+<div id="platform_set_irq_callback" class="section level2">
+<h2><span class="header-section-number">6.9</span> <code>platform_set_irq_callback</code></h2>
+<p>Registers callback functions to interrupt requests.</p>
+<p>Developers do not need to define IRQ handlers in apps, but use callback functions instead. There are 11 such IRQs, summarized in Table <a href="api-ref.html#tab:ch4-irq-summary">6.1</a>.</p>
+<table>
+<caption><span id="tab:ch4-irq-summary">Table 6.1: </span> IRQ Summary</caption>
+<thead>
+<tr class="header">
+<th align="center">Peripheral Type</th>
+<th align="center">Number</th>
+<th align="left">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">RTC</td>
+<td align="center">1</td>
+<td align="left">Real Time Clock</td>
+</tr>
+<tr class="even">
+<td align="center">TIMER</td>
+<td align="center">3</td>
+<td align="left">Timer</td>
+</tr>
+<tr class="odd">
+<td align="center">GPIO</td>
+<td align="center">1</td>
+<td align="left">General Purpose Input/Output</td>
+</tr>
+<tr class="even">
+<td align="center">SPI</td>
+<td align="center">2</td>
+<td align="left">Serial Peripheral Interface</td>
+</tr>
+<tr class="odd">
+<td align="center">UART</td>
+<td align="center">2</td>
+<td align="left">Universal Asynchronous Receiver-Transmitter</td>
+</tr>
+<tr class="even">
+<td align="center">I2C</td>
+<td align="center">2</td>
+<td align="left">Inter-Integrated Circuit</td>
+</tr>
+</tbody>
+</table>
+<div id="prototype-8" class="section level3">
+<h3><span class="header-section-number">6.9.1</span> Prototype</h3>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="dt">void</span> platform_set_irq_callback(platform_irq_callback_type_t type,
+                               f_platform_irq_cb f, 
+                               <span class="dt">void</span> *user_data);</code></pre></div>
+</div>
+<div id="parameters-8" class="section level3">
+<h3><span class="header-section-number">6.9.2</span> Parameters</h3>
+<ul>
+<li><p><code>platform_irq_callback_type_t type</code></p>
+<p>Specify the IRQ type to which the callback function is registered. It can be one of following values:</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c">PLATFORM_CB_IRQ_RTC,
+PLATFORM_CB_IRQ_TIMER0,
+PLATFORM_CB_IRQ_TIMER1,
+PLATFORM_CB_IRQ_TIMER2,
+PLATFORM_CB_IRQ_GPIO,
+PLATFORM_CB_IRQ_SPI0,
+PLATFORM_CB_IRQ_SPI1,
+PLATFORM_CB_IRQ_UART0,
+PLATFORM_CB_IRQ_UART1,
+PLATFORM_CB_IRQ_I2C0,
+PLATFORM_CB_IRQ_I2C1</code></pre></div></li>
+<li><p><code>f_platform_irq_cb f</code></p>
+<p>The callback function registered to IRQ <code>type</code>. <code>f_platform_irq_cb</code> is:</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="kw">typedef</span> <span class="dt">uint32_t</span> (*f_platform_irq_cb)(<span class="dt">void</span> *user_data);</code></pre></div></li>
+<li><p><code>void *user_data</code></p>
+<p>This is passed to callback function’s <code>user_data</code> unchanged.</p></li>
+</ul>
+</div>
+<div id="return-value-8" class="section level3">
+<h3><span class="header-section-number">6.9.3</span> Return Value</h3>
+<p>Void.</p>
+</div>
+<div id="remarks-8" class="section level3">
+<h3><span class="header-section-number">6.9.4</span> Remarks</h3>
+<p>When a callback function is registered to an IRQ, the IRQ is enabled automatically.</p>
+</div>
+<div id="example-8" class="section level3">
+<h3><span class="header-section-number">6.9.5</span> Example</h3>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="dt">uint32_t</span> cb_irq_uart0(<span class="dt">void</span> *dummy)
+{
+    <span class="co">// </span><span class="al">TODO</span><span class="co">: add UART0 IRQ handling code</span>
+    <span class="cf">return</span> <span class="dv">0</span>;
+}
+
+......
+
+platform_set_irq_callback(PLATFORM_CB_IRQ_UART0, cb_irq_uart0, 
+                          NULL);</code></pre></div>
+</div>
+</div>
+<div id="platform_shutdown" class="section level2">
+<h2><span class="header-section-number">6.10</span> <code>platform_shutdown</code></h2>
+<p>Bring the whole system into shutdown state, and reboot after a specified duration. Optionally, a portion of memory can be retentioned during shutdown, and apps can continue to use it after reboot.</p>
+<p>Note that this function will NOT return except that shutdown procedure fails to initiate. Possible causes for failures include:</p>
+<ol style="list-style-type: decimal">
+<li>External wake-up signal is issued;</li>
+<li>Input parameters are not proper;</li>
+<li>Internal components are busy.</li>
+</ol>
+<div id="prototype-9" class="section level3">
+<h3><span class="header-section-number">6.10.1</span> Prototype</h3>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="dt">void</span> platform_shutdown(<span class="dt">const</span> <span class="dt">uint32_t</span> duration_cycles, 
+                       <span class="dt">const</span> <span class="dt">void</span> *p_retention_data,
+                       <span class="dt">const</span> <span class="dt">uint32_t</span> data_size);</code></pre></div>
+</div>
+<div id="parameters-9" class="section level3">
+<h3><span class="header-section-number">6.10.2</span> Parameters</h3>
+<ul>
+<li><p><code>const uint32_t duration_cycles</code></p>
+<p>Duration (measured in cycles of 32k clock) before power on again (reboot). The minimum duration is 825 cycles (about 25.18ms).</p></li>
+<li><p><code>const void *p_retention_data</code></p>
+<p>Pointer to the start of data to be retentioned. Only data within SYSTEM memory can be retentioned. This parameter can be set to <code>NULL</code> when <code>data_size</code> is <code>0</code>.</p></li>
+<li><p><code>data_size</code></p>
+<p>Size of the data to be retentioned. Set to <code>0</code> when memory retention is not needed.</p></li>
+</ul>
+</div>
+<div id="return-value-9" class="section level3">
+<h3><span class="header-section-number">6.10.3</span> Return Value</h3>
+<p>Void.</p>
+</div>
+<div id="remarks-9" class="section level3">
+<h3><span class="header-section-number">6.10.4</span> Remarks</h3>
+<p>Void.</p>
+</div>
+<div id="example-9" class="section level3">
+<h3><span class="header-section-number">6.10.5</span> Example</h3>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="co">// Shutdown the system and reboot after 1s.</span>
+platform_shutdown(<span class="dv">32768</span>, NULL, <span class="dv">0</span>);</code></pre></div>
+</div>
+</div>
+<div id="api-switch-app" class="section level2">
+<h2><span class="header-section-number">6.11</span> <code>platform_switch_app</code></h2>
+<p>Switch to a secondary app.</p>
+<div id="prototype-10" class="section level3">
+<h3><span class="header-section-number">6.11.1</span> Prototype</h3>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="dt">void</span> platform_switch_app(<span class="dt">const</span> <span class="dt">uint32_t</span> app_addr);</code></pre></div>
+</div>
+<div id="parameters-10" class="section level3">
+<h3><span class="header-section-number">6.11.2</span> Parameters</h3>
+<ul>
+<li><p><code>const uint32_t app_addr</code></p>
+<p>Entry address of the secondary app.</p></li>
+</ul>
+</div>
+<div id="return-value-10" class="section level3">
+<h3><span class="header-section-number">6.11.3</span> Return Value</h3>
+<p>Void.</p>
+</div>
+<div id="remarks-10" class="section level3">
+<h3><span class="header-section-number">6.11.4</span> Remarks</h3>
+<p>When calling this function, the code after it will not be executed.</p>
+</div>
+<div id="example-10" class="section level3">
+<h3><span class="header-section-number">6.11.5</span> Example</h3>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c">platform_switch_app(<span class="bn">0x80000</span>);</code></pre></div>
+</div>
+</div>
+<div id="syssetpublicdeviceaddr" class="section level2">
+<h2><span class="header-section-number">6.12</span> <code>sysSetPublicDeviceAddr</code></h2>
+<p>Set the public address of device.</p>
+<p>The public address of a BLE device is a 48-bit extended unique identifier (EUI-48) created in accordance with the IEEE 802-2014 standard<a href="#fn20" class="footnoteRef" id="fnref20"><sup>20</sup></a>.</p>
+
+<div class="rmdcaution">
+<em>INGCHIPS</em> 918xx <em>DO NOT</em> have public addresses. This function should <em>ONLY</em> be used for debugging or testing, and <em>NEVER</em> be used in final products.
+</div>
+
+<div id="prototype-11" class="section level3">
+<h3><span class="header-section-number">6.12.1</span> Prototype</h3>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="dt">void</span> sysSetPublicDeviceAddr(<span class="dt">const</span> <span class="dt">unsigned</span> <span class="dt">char</span> *addr);</code></pre></div>
+</div>
+<div id="parameters-11" class="section level3">
+<h3><span class="header-section-number">6.12.2</span> Parameters</h3>
+<ul>
+<li><p><code>const unsigned char *addr</code></p>
+<p>New public address.</p></li>
+</ul>
+</div>
+<div id="return-value-11" class="section level3">
+<h3><span class="header-section-number">6.12.3</span> Return Value</h3>
+<p>Void.</p>
+</div>
+<div id="remarks-11" class="section level3">
+<h3><span class="header-section-number">6.12.4</span> Remarks</h3>
+<p>In order to avoid potential issues, this function should be called before calling any GAP functions. It is recommended to call this function in <code>app_main</code> or <code>PLATFORM_CB_EVT_PROFILE_INIT</code> event callback function.</p>
+</div>
+<div id="example-11" class="section level3">
+<h3><span class="header-section-number">6.12.5</span> Example</h3>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="dt">const</span> <span class="dt">unsigned</span> <span class="dt">char</span> pub_addr[] = {<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>};
+sysSetPublicDeviceAddr(pub_addr);</code></pre></div>
+
+</div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="20">
+<li id="fn20"><p><a href="http://standards.ieee.org/findstds/standard/802-2014.html" class="uri">http://standards.ieee.org/findstds/standard/802-2014.html</a><a href="api-ref.html#fnref20">↩</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="dive-into-sdk.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="revision-history.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": ["user_guide.pdf", "user_guide.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

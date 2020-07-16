@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>蓝牙开发零门槛之一：Hello, 世界 - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="利用 SDK 中的 ingWizard 向导工具快速跟蓝牙开发说“Hello”：打造一个名为“Hello, 世界”的蓝牙设备。"/>
+        <link href="https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i%26display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    </head>
+    <body>
+        <script type="text/javascript">
+        window.onload = function () {
+            MathJax.Extension.tex2jax.config.inlineMath = [['$', '$']];
+        }
+        </script>
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/news/">
+  
+  新闻
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+              
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <article class="post post-full">
+    <header class="post-header has-gradient outer">
+      
+      
+      <div class="inner-sm">
+        <div class="post-meta">
+          <time class="published" datetime="2019-03-01 00:00">March 01, 2019</time>
+        </div>
+        <h1 class="post-title">蓝牙开发零门槛之一：Hello, 世界</h1>
+        
+        
+      </div>
+    </header>
+    <div class="inner-md outer">
+      <div class="post-content">
+        <h1 id="蓝牙开发零门槛之一hello-世界">蓝牙开发零门槛之一：Hello, 世界</h1>
+
+<p>INGChips 为客户提供易用的 SDK，帮助客户便捷、高效地开发蓝牙产品。</p>
+
+<p><img src="/user_guide/img/sdk_overview.png" width="80%" /></p>
+
+<p>SDK 包含以下 5 大部分。</p>
+
+<ul>
+  <li>
+    <p>核心工具</p>
+
+    <p>提供项目向导、Flash 下载等工具。</p>
+  </li>
+  <li>
+    <p>IDE 集成工具</p>
+
+    <p>支持使用 Keil uVersion、IAR Embedded Workbench 等 IDE 作为开发环境。</p>
+  </li>
+  <li>
+    <p>Platform Bundles</p>
+
+    <p>针对不同应用场景（如 Mesh 等）提供不同的平台包，每个平台包都包含完整的协议栈及 FreeRTOS。
+提供使用芯片外部接口所需的源代码。</p>
+  </li>
+  <li>
+    <p>示例</p>
+
+    <p>提供丰富多样的蓝牙设备示例程序，以及相应的 Android、iOS 参考 app。</p>
+  </li>
+  <li>
+    <p>文档</p>
+  </li>
+</ul>
+
+<p>下面演示如何利用 SDK 中的 ingWizard 向导工具快速跟蓝牙开发说“Hello”：
+打造一个名为“Hello, 世界”的蓝牙设备。请注意：整个过程不需要编写任何代码。</p>
+
+<p>启动 ingWizard，通过 “Project” -&gt; “New Project …” 菜单打开项目向导。</p>
+
+<h2 id="choose-project-type">Choose Project Type</h2>
+
+<p><img src="../img/welcome.png" alt="Choose Project Type" /></p>
+
+<p>在这一页里，我们：</p>
+
+<ol>
+  <li>选择 Typical 类型</li>
+  <li>选择要使用的 IDE</li>
+  <li>为项目取一个名字，比如 hello</li>
+  <li>为项目选择保存路径</li>
+</ol>
+
+<p>点击 Next 进入下一页。</p>
+
+<h2 id="role-of-your-device">Role of Your Device</h2>
+
+<p><img src="../img/role.png" alt="Role of Your Device" /></p>
+
+<p>在这一页里选择 Peripheral，点击 Next 进入设置页面。</p>
+
+<h2 id="peripheral-setup">Peripheral Setup</h2>
+
+<p><img src="../img/peripheral.png" alt="Peripheral Setup" /></p>
+
+<p>点击 “Setup Advertising Data” 按钮，打开蓝牙广播数据编辑器。</p>
+
+<p><img src="../img/hello_adv.png" alt="Advertising Data Editor" /></p>
+
+<p>输入关键词“name”可以快速定位到需要的 GAP 广播项 “09 - «Complete Local Name»”，点击 Add
+将其添加到广播数据中。点击刚刚添加的“09 - «Complete Local Name»”广播项，窗口下面出现
+相应的数据编辑器，我们输入“Hello, 世界”，然后按下回车。</p>
+
+<p>广播数据编辑器的右下角是数据预览窗口，可以实时查看完整的广播数据码流，其中附带少量注释，
+方便阅读。</p>
+
+<p>点击 OK 关闭广播数据编辑器并回到项目向导。此后一路点击 Next，最后点击 Create 按钮，
+我们的第一个项目就开发完成了。</p>
+
+<h2 id="编译">编译</h2>
+
+<p>回到 ingWizard 主界面，点击我们刚刚完成的 hello 项目启动 Keil IDE，按下 F7 编译项目。</p>
+
+<p><img src="../img/proj_ready.png" alt="Project Is Ready" /></p>
+
+<h2 id="下载">下载</h2>
+
+<p>回到 ingWizard 主界面，在 hello 项目上右键单击弹出快捷菜单，选择 “Download to Flash” 打开
+Flash 下载器。下载器里所有设置都已就绪，只需要把下载端口设置一下即可。</p>
+
+<p><img src="../img/downloader.png" alt="Downloader" /></p>
+
+<p>程序下载完成后会自动运行，打开蓝牙扫描工具就可以看到我们的“Hello, 世界”设备了。</p>
+
+<p><img src="../img/hello_dev.png" alt="Hello, 世界" /></p>
+
+      </div><!-- .post-content -->
+    </div><!-- .inner-md -->
+  </article><!-- .post -->
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2020. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

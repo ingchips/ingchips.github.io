@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>蓝牙开发零门槛之三：BLE 5.x 测速 - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="ING918 系列芯片在空口环境下实测速率与理论值相差无几。"/>
+        <link href="https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i%26display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    </head>
+    <body>
+        <script type="text/javascript">
+        window.onload = function () {
+            MathJax.Extension.tex2jax.config.inlineMath = [['$', '$']];
+        }
+        </script>
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/news/">
+  
+  新闻
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+              
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <article class="post post-full">
+    <header class="post-header has-gradient outer">
+      
+      
+      <div class="inner-sm">
+        <div class="post-meta">
+          <time class="published" datetime="2019-08-21 00:00">August 21, 2019</time>
+        </div>
+        <h1 class="post-title">蓝牙开发零门槛之三：BLE 5.x 测速</h1>
+        
+        
+      </div>
+    </header>
+    <div class="inner-md outer">
+      <div class="post-content">
+        <p>#</p>
+
+<p>INGChips 为客户提供易用的 SDK，帮助客户便捷、高效地开发蓝牙产品。</p>
+
+<p><img src="/user_guide/img/sdk_overview.png" width="80%" /></p>
+
+<p>BLE 5.0 引入了 2M Sym/s 的无编码物理层。</p>
+
+<h2 id="理论峰值速率">理论峰值速率</h2>
+
+<p>BLE 连接状态下，单个数据包有效载荷最长 251 字节，2M 模式下，数据包空口时长为 1048 us；空包空口时长为 44 us。
+当一个方向上持续发送 251 字节的数据包，而另一方向上只发送空包时，可以到达单向速率的理论最高值。此时，
+发送 251 字节所消耗的总时间为：</p>
+
+<script type="math/tex; mode=display">1048 + 44 + 150 * 2 = 1392 (\mu s)</script>
+
+<p>所以链路层所能提供的理论峰值速率为：</p>
+
+<script type="math/tex; mode=display">251 * 8 / 1392 * 1000000 \approx 1442.528 (kbps)</script>
+
+<p>对于工作于 GATT 之上的应用程序，扣除 I2CAP、ATT 各层的开销，典型情况下单个数据包中
+GATT 最大有效载荷为 251 - 7 = 244 字节。所以 GATT 能为应用程序提供的理论峰值速率为：</p>
+
+<script type="math/tex; mode=display">244 * 8 / 1392 * 1000000 \approx 1402.298 (kbps)</script>
+
+<h2 id="速率实测">速率实测</h2>
+
+<p>SDK 中包含了一组用于测试双向吞吐率的程序。</p>
+
+<p><img src="../img/tpt.png" alt="Examples" /></p>
+
+<h3 id="与手机对测">与手机对测</h3>
+
+<p>先下载 <code class="highlighter-rouge">peripheral_throughput</code> 程序。通过 <code class="highlighter-rouge">ING BLE</code> app 连接到名为 <code class="highlighter-rouge">ING Tpt</code> 的蓝牙设备，
+进入吞吐率测试界面，在这里既可以进行主设备到从设备、从设备到主设备的单向测试，也可以同时进行双向测试。</p>
+
+<p>下图是使用某支持 BLE 5.0 的 Android 手机测得的速率，从模块到手机可获得 1M+ bps 的传输速率。</p>
+
+<p><img src="../img/tpt_app.png" alt="Examples" /></p>
+
+<h3 id="模块对测">模块对测</h3>
+
+<p><code class="highlighter-rouge">central_throughput</code> 程序演示了 BLE 主设备典型的工作流程：</p>
+
+<ol>
+  <li>扫描到支持吞吐率服务（service）的设备后，与其建立连接；</li>
+  <li>发现设备上的吞吐率服务；</li>
+  <li>发现服务包含的特性（characteristics）；</li>
+  <li>发现特性的描述符（descriptor）。</li>
+</ol>
+
+<p>吞吐率服务包含两个特性：</p>
+
+<ul>
+  <li>
+    <p>输出：从设备通过该特性向主设备发送测试数据</p>
+
+    <p>该特性包含 <code class="highlighter-rouge">Client Characteristic Configuration</code> 描述符。</p>
+  </li>
+  <li>
+    <p>输入：主设备通过该特性向从设备发送测试数据</p>
+  </li>
+</ul>
+
+<p>将 <code class="highlighter-rouge">central_throughput</code> 下载到另一模块，连接串口工具。输入“?” （注意：需要在行末附加回车、换行）
+可以查看程序支持的测试控制命令。程序搜索到 <code class="highlighter-rouge">peripheral_throughput</code> 后会自动连接，输入“<code class="highlighter-rouge">start s-&gt;m</code>”
+即可开始测试从主设备到从设备的吞吐率。</p>
+
+<p><img src="../img/cmd.png" alt="Examples" /></p>
+
+<p>下图显示在两个模块之间稳定获得了 1.2M+ bps 的传输速率：</p>
+
+<p><img src="../img/board_tpt.png" alt="Examples" /></p>
+
+<p>注：上述速率为空口实测，比理论值略低，但更接近实际。</p>
+
+<p>INGChips 918xx 通过 BLE 2M 物理层带来的 1.2M+ “实感”速率无疑可以为 BLE 开拓更多的应用场景。</p>
+
+      </div><!-- .post-content -->
+    </div><!-- .inner-md -->
+  </article><!-- .post -->
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2020. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

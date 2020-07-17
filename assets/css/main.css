@@ -1736,8 +1736,8 @@ img {
     .social-links a {
       margin-left: 30px;
       margin-right: 0; } }
-/* PrismJS 1.16.0
-https://prismjs.com/download.html#themes=prism&languages=markup+css+clike+javascript&plugins=toolbar+copy-to-clipboard */
+/* PrismJS 1.20.0
+https://prismjs.com/download.html#themes=prism&languages=markup+clike+javascript+c+csharp+cpp+erlang+pascal+verilog */
 /**
  * prism.js default theme for JavaScript, CSS and HTML
  * Based on dabblet (http://dabblet.com)
@@ -1745,10 +1745,11 @@ https://prismjs.com/download.html#themes=prism&languages=markup+css+clike+javasc
  */
 code[class*="language-"],
 pre[class*="language-"] {
-  color: #283040;
+  color: black;
   background: none;
-  font-family: Monaco, courier, monospace;
-  font-size: 0.875rem;
+  text-shadow: 0 1px white;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 1em;
   text-align: left;
   white-space: pre;
   word-spacing: normal;
@@ -1763,20 +1764,34 @@ pre[class*="language-"] {
   -ms-hyphens: none;
   hyphens: none; }
 
+pre[class*="language-"]::-moz-selection, pre[class*="language-"] ::-moz-selection,
+code[class*="language-"]::-moz-selection, code[class*="language-"] ::-moz-selection {
+  text-shadow: none;
+  background: #b3d4fc; }
+
+pre[class*="language-"]::selection, pre[class*="language-"] ::selection,
+code[class*="language-"]::selection, code[class*="language-"] ::selection {
+  text-shadow: none;
+  background: #b3d4fc; }
+
+@media print {
+  code[class*="language-"],
+  pre[class*="language-"] {
+    text-shadow: none; } }
 /* Code blocks */
 pre[class*="language-"] {
-  margin: 0 0 1.875rem;
-  overflow: auto;
-  padding: 1.5rem; }
+  padding: 1em;
+  margin: .5em 0;
+  overflow: auto; }
 
 :not(pre) > code[class*="language-"],
 pre[class*="language-"] {
-  background: #f7f9fb; }
+  background: #f5f2f0; }
 
 /* Inline code */
 :not(pre) > code[class*="language-"] {
   padding: .1em;
-  border-radius: 3px;
+  border-radius: .3em;
   white-space: normal; }
 
 .token.comment,
@@ -1788,7 +1803,7 @@ pre[class*="language-"] {
 .token.punctuation {
   color: #999; }
 
-.namespace {
+.token.namespace {
   opacity: .7; }
 
 .token.property,
@@ -1814,6 +1829,7 @@ pre[class*="language-"] {
 .language-css .token.string,
 .style .token.string {
   color: #9a6e3a;
+  /* This background color was intended by the author of this theme. */
   background: rgba(255, 255, 255, 0.5); }
 
 .token.atrule,
@@ -1839,50 +1855,3 @@ pre[class*="language-"] {
 
 .token.entity {
   cursor: help; }
-
-div.code-toolbar {
-  position: relative; }
-
-div.code-toolbar > .toolbar {
-  position: absolute;
-  top: 0;
-  right: 0; }
-
-div.code-toolbar > .toolbar .toolbar-item {
-  display: block; }
-
-div.code-toolbar > .toolbar a {
-  border: 0;
-  cursor: pointer; }
-
-div.code-toolbar > .toolbar button {
-  background: none;
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
-  color: inherit;
-  font: inherit;
-  line-height: normal;
-  overflow: visible;
-  padding: 0;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none; }
-
-div.code-toolbar > .toolbar a,
-div.code-toolbar > .toolbar button,
-div.code-toolbar > .toolbar span {
-  background: #dee5ef;
-  color: #424b5f;
-  display: block;
-  font-size: .75em;
-  line-height: 1.5;
-  padding: .25em .5em; }
-
-div.code-toolbar > .toolbar a:hover,
-div.code-toolbar > .toolbar a:focus,
-div.code-toolbar > .toolbar button:hover,
-div.code-toolbar > .toolbar button:focus,
-div.code-toolbar > .toolbar span:hover,
-div.code-toolbar > .toolbar span:focus {
-  text-decoration: none; }

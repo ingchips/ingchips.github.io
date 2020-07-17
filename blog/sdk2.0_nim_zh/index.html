@@ -11,16 +11,8 @@
         <link rel="icon" href="/favicon.ico" type="image/x-icon" />
         <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 
-
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
     </head>
-    <body>
-        <script type="text/javascript">
-        window.onload = function () {
-            MathJax.Extension.tex2jax.config.inlineMath = [['$', '$']];
-        }
-        </script>
+    <body
         <div id="page" class="site">
   <header id="masthead" class="site-header outer">
   <div class="inner">
@@ -133,6 +125,15 @@
 
   <main id="content" class="site-content">
       <article class="post post-full">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <header class="post-header has-gradient outer">
       
       
@@ -202,7 +203,7 @@ GATT Profile 数据：</p>
 
 <p>注：上述 Major/Minor 为0，仅供演示用。</p>
 
-<p>上面的代码在编译时会被 Nim 内置的虚拟机执行，得出广播数据——一个数组——并存储在 <code class="highlighter-rouge">advData</code> 里。</p>
+<p>上面的代码在编译时会被 Nim 内置的虚拟机执行，得出广播数据（一个数组）并存储在 <code class="highlighter-rouge">advData</code> 里。</p>
 
 <h2 id="友商对比">友商对比</h2>
 
@@ -246,7 +247,7 @@ GATT Profile 数据：</p>
 并用常量<code class="highlighter-rouge">HANDLE_BATTERY_LEVEL</code> 表示电池电量指示属性的句柄（handle），
 用常量 <code class="highlighter-rouge">HANDLE_BATTERY_LEVEL_OFFSET</code> 表示电量数值在 <code class="highlighter-rouge">profileData</code> 里的字节偏移。</p>
 
-<p>在代码里我们这里变量、常量都是可以“正常”使用。比如创建一个任务周期性地随机修改电量数值：</p>
+<p>这里编译时生成的变量、常量在代码里可以“正常”使用。比如创建一个任务周期性地随机修改电量数值：</p>
 
 <p><img src="../img/nim_bat_task_pad.png" alt="" /></p>
 
@@ -321,7 +322,9 @@ GATT Profile 数据：</p>
 <p>我们认为 Nim 在嵌入式领域有很大的应用前景。未来 SDK 仍将以 C/C++ 为核心语言，
 Nim 将作为与 C/C++ 平行的开发语言，可以使用 SDK 为 C/C++ 提供的所有模块、接口。</p>
 
-<p>注：目前 Nim 暂不能用来开发 Mesh 应用。</p>
+<div class="note">
+<strong>注:</strong> 目前 Nim 暂不能用来开发 Mesh 应用。
+</div>
 
       </div><!-- .post-content -->
     </div><!-- .inner-md -->

@@ -340,8 +340,7 @@
               <h1 class="post-title line-left">使用 SWD 接口进行产品量产</h1>
             </header><!-- .post-header -->
             <div class="post-content">
-              <p>ING918 系列芯片支持通过 SWD 接口进行批量烧写。工具可以直接使用 IDE 或者专门的 JTAG/SWD 工具。本文
-以 Keil 和 J-Link 为例介绍具体操作步骤。</p>
+              <p>ING918 系列芯片支持使用 IDE 或者专门的 JTAG/SWD 工具通过 SWD 接口进行批量烧写。具体操作步骤如下。</p>
 
 <h2 id="使用-keil-量产">使用 Keil 量产</h2>
 
@@ -350,7 +349,14 @@
 用户可以按照步骤自行创建或者直接 <a href="https://github.com/ingchips/doc_release/releases/download/v1.0/keil_burn_plt_start.zip">下载</a>(<a href="https://hub.fastgit.org/ingchips/doc_release/releases/download/v1.0/keil_burn_plt_start.zip">镜像</a>)我们提供的示例。
 </div>
 
-<h3 id="用来烧写-platform-的空白项目">用来烧写 platform 的空白项目</h3>
+<h3 id="环境需求">环境需求</h3>
+
+<ul>
+  <li>Keil μVision 4 或 5</li>
+  <li>支持 SWD 接口的调试器（如 ULINK/J-Link 等）</li>
+</ul>
+
+<h3 id="准备项目">准备项目</h3>
 
 <ol>
   <li>
@@ -358,12 +364,13 @@
 
     <p>在 Keil 里新建一个项目，CPU 选为 INGCHIPS -&gt; ING91800。项目创建完成后，确认不包含任何源代码（C 或汇编），如果有，
  则将其删除。</p>
-
+  </li>
+  <li>
     <p>修改项目的属性：</p>
 
     <ul>
       <li>
-        <p>将输出的可执行文件改为 platform.hex （注意扩展名为 .hex）</p>
+        <p>将输出的可执行文件改为 platform_entry.hex （注意扩展名为 .hex）</p>
 
         <p><img src="exe_name_v4.png" alt="keil4_exe_name" /></p>
       </li>
@@ -376,42 +383,42 @@
         <p><img src="burn_algo_v5.png" alt="keil5_settings" /></p>
       </li>
       <li>
-        <p>确认选择了 SWD 端口而非 JTAG 端口</p>
-
-        <p>ING918 只有 SWD 端口，无 JTAG 端口。</p>
+        <p>确认选择了 SWD 端口而非 JTAG 端口（ING918 只有 SWD 端口，无 JTAG 端口）</p>
       </li>
     </ul>
   </li>
   <li>
-    <p>准备 platform.hex</p>
+    <p>复制 platform_entry.hex</p>
 
-    <p>使用 hex 转换工具（如 <a href="https://pypi.org/project/IntelHex/">IntelHex</a>）将要写入产品的 platform.bin 转换为
- platform.hex。</p>
+    <p>在 SDK 目录中找到与芯片型号对应的 platform_entry.hex，复制到 Keil 项目目录下。</p>
 
-    <p>假设创建的空白项目全名为 “C:\project\platform\platform.uvproj”，将 platform.hex 复制到  “C:\project\platform”
- 目录下。</p>
+    <div class="note">
+ <strong>说明:</strong> 假设 SDK 的安装路径为 /ING_SDK，则 ING9188xx 系列芯片的 platform_entry.hex 存放于
+ /ING_SDK/sdk/bundles/typical/ING9188xx。
+ </div>
   </li>
   <li>
-    <p>烧写</p>
+    <p>烧写测试</p>
 
     <p>在 Keil 里直接点击 Flash Download 按钮即可完成烧写。如果出现错误，请对照检查项目设置是否有误。</p>
   </li>
 </ol>
-
-<h3 id="用来烧写启动地址的空白项目">用来烧写启动地址的空白项目</h3>
-
-<p>按相同的步骤重新创建一个空白项目。该项目用来烧写程序的启动地址：在 0x00087FFC 处写入 32bit 数值 0x00004000。
-可参考 <a href="keil_burn_plt_start.zip">示例</a> 里的 startaddr 项目。</p>
 
 <h3 id="量产">量产</h3>
 
 <p>量产时通过命令行调用 Keil 实现批量烧写:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C:\Keil\UV4\UV4 -f C:\project\platform\platform.uvproj
-C:\Keil\UV4\UV4 -f C:\project\startaddr\startaddr.uvproj
 </code></pre></div></div>
 
 <h2 id="使用-j-link-量产">使用 J-Link 量产</h2>
+
+<h3 id="环境需求-1">环境需求</h3>
+
+<ul>
+  <li>J-Link 调试器</li>
+  <li><a href="https://www.segger.com/downloads/jlink/">J-Link 软件</a></li>
+</ul>
 
 <h3 id="手动添加芯片型号">手动添加芯片型号</h3>
 
@@ -441,22 +448,49 @@ C:\Keil\UV4\UV4 -f C:\project\startaddr\startaddr.uvproj
 
 <p><img src="jlink_target_sel.png" alt="target_ing9188xx" /></p>
 
-<p>将要写入产品的 platform.bin 拖入 J-Flash 界面，地址设为 0x0004000。点击 Target -&gt; Connect 菜单，
-然后点击 Target -&gt;Manual Programming -&gt; Program，即可将 platform.bin 烧写到产品。同法可以烧写
-启动地址。</p>
+<p>将要写入产品的 platform_entry.hex 拖入 J-Flash 界面。点击 Target -&gt; Connect 菜单，
+然后点击 Target -&gt;Manual Programming -&gt; Program，即可将 platform_entry.hex 烧写到产品。</p>
 
 <div class="note">
-<strong>说明:</strong> J-Flash 需要注册方可使用全部功能。
+<strong>注意:</strong> J-Flash 需要注册方可使用全部功能。
 </div>
 
 <h3 id="合并数据">合并数据</h3>
 
-<p>为了量产方便，通过 File -&gt; Merge data file 菜单将前文挺到的将 platform.bin、startaddr.bin 以及产品固件合并
+<p>为了量产方便，可以通过 File -&gt; Merge data file 菜单将前文挺到的将 platform_entry.hex 和产品固件合并
 为一个 hex 数据文件。</p>
 
 <h3 id="量产-1">量产</h3>
 
 <p>量产时通过命令行调用 J-Flash 实现批量烧写。</p>
+
+<h2 id="使用其它-ide-进行量产">使用其它 IDE 进行量产</h2>
+
+<h3 id="iar-embedded-workbench-for-arm">IAR Embedded Workbench for ARM</h3>
+
+<p>参考 <em><a href="https://www.iar.com/support/tech-notes/general/programming-binary-files-into-flash-within-ewarm/">Programming binary file(s) into flash</a></em>。</p>
+
+<h3 id="rowley-crossworks--segger-embedded-studio">Rowley CrossWorks / SEGGER Embedded Studio</h3>
+
+<p>在项目选项中把 platform_entry.hex 作为额外需要下载的文件即可。</p>
+
+<p><img src="segger_extra_bin.png" alt="extra_bin" /></p>
+
+<h2 id="hex-文件说明">hex 文件说明</h2>
+
+<p>SDK 提供关于 platform 的三个 hex 文件，各自的用途总结如下：</p>
+
+<ul>
+  <li>
+    <p><strong>platform.hex</strong>：用于产品研发、调试过程中 SDK 的升级；</p>
+  </li>
+  <li>
+    <p><strong>platform_entry.hex</strong>：将<strong>新</strong>芯片用于研发、调试时的首次烧写；</p>
+  </li>
+  <li>
+    <p><strong>platform_entry_lock.hex</strong>：用于产品最终量产（启用 IP 保护）。</p>
+  </li>
+</ul>
 
               
               

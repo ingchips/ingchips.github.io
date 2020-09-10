@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>空中固件升级（FOTA）的快速演示 - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="使用 ING918 系列芯片 SDK 里的 ingWizard 可以为应用轻松加入空中固件升级（FOTA）功能，本文是 FOTA 完整功能的快速演示。"/>
+        <link href="https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i%26display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+              
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <article class="post post-full">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <header class="post-header has-gradient outer">
+      
+      
+      <div class="inner-sm">
+        <div class="post-meta">
+          <time class="published" datetime="2020-09-10 00:00">September 10, 2020</time>
+        </div>
+        <h1 class="post-title">空中固件升级（FOTA）的快速演示</h1>
+        
+        
+      </div>
+    </header>
+    <div class="inner-md outer">
+      <div class="post-content">
+        <p>使用 ING918 系列芯片 SDK 里的 ingWizard 可以为应用轻松加入空中固件升级（FOTA）功能，
+用户手册的<a href="/user_guide/tutorial.html#thermometer-with-fota">教程部分</a>也详细介绍了具体的实现方法。本文是 FOTA 完整功能的快速演示。</p>
+
+<div class="important">
+<strong>注意:</strong> 本文仅为 FOTA 功能概念演示，不可用于实际产品。
+</div>
+
+<h2 id="环境准备">环境准备</h2>
+
+<ol>
+  <li>
+    <p>下载/安装 <a href="/docs/sdk/apps/">ING BLE</a> App</p>
+
+    <div class="note">
+ <strong>说明:</strong> 需要 v1.3 以上版本。iOS 尚未更新，可使用 Android 版本，或者自行编译 iOS/Windows 版本。
+ </div>
+  </li>
+  <li>
+    <p><a href="https://github.com/ingchips/doc_release/releases/download/v1.0/thermo_fota_demo.zip">下载</a>
+（<a href="https://hub.fastgit.com/ingchips/doc_release/releases/download/v1.0/thermo_fota_demo.zip">镜像</a>）测试程序升级包</p>
+  </li>
+  <li>
+    <p>烧写测试程序</p>
+
+    <p>解压测试程序升级包，用 Downloader 打开 <code class="highlighter-rouge">full_app</code> 文件夹下的 <code class="highlighter-rouge">flash_download.ini</code>，然后烧录到开发板。</p>
+  </li>
+  <li>
+    <p>网络准备</p>
+
+    <p>进行空中升级时，ING BLE 需要联系升级服务嚣获取信息，所以需要保证 ING BLE 与服务器之间的 TCP/IP 网络畅通。
+ 如果自行编译 Windows 10 版本的 ING BLE 测试程序，可在同一机器上启动 HTTP 服务器。
+ 对于使用手机的情况，可以选用以下任一方法配置网络：</p>
+
+    <ul>
+      <li>
+        <p>手机与服务器接入同一 WLAN （<strong>推荐</strong>）</p>
+      </li>
+      <li>
+        <p>服务器开启 WIFI 热点，手机接入该热点</p>
+      </li>
+      <li>
+        <p>手机开启 WIFI 热点，服务器接入该热点</p>
+      </li>
+      <li>
+        <p>服务器与手机之间通过 Internet 连接（<strong>不推荐</strong>）</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>准备升级服务器</p>
+
+    <p>这里使用 Python 内置的 HTTP 服务器作升级服务嚣。切换到解压出的文件夹，启动服务器，命令如下（各平台即可，以 WSL 为例）：</p>
+
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-a</span>
+ <span class="nb">.</span>  ..  body  full_app  toe
+ <span class="nv">$ </span><span class="nb">sudo </span>python <span class="nt">-m</span> SimpleHTTPServer 80
+ Serving HTTP on 0.0.0.0 port 80 ...
+</code></pre></div>    </div>
+
+    <p>检查服务器是否正常工作（假设服务器 IP 地址为 192.168.100.102。下同）：</p>
+
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>curl http://192.168.100.102/body/latest.json
+ <span class="o">{</span>
+     <span class="s2">"app"</span>: <span class="o">[</span>1,3,0],
+     <span class="s2">"platform"</span>: <span class="o">[</span>1,0,5],
+     <span class="s2">"package"</span>: <span class="s2">"v1.zip"</span>
+ <span class="o">}</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h2 id="演示">演示</h2>
+
+<p>用 ING BLE 连接到名为“ING Thermometer”的蓝牙设备，查看温度计显示为“Body”状态。</p>
+
+<p><img src="../img/fota_body_app.jpg" alt="" /></p>
+
+<ol>
+  <li>
+    <p>部分升级到“Toe”版本</p>
+
+    <p>进入 FOTA 服务，在升级服务 URL 里填入“http://192.168.100.102/toe”，点击“Re-check”按钮，出现版本升级提示信息。
+ 点击“Update”按钮完成升级。由于此时 platform 版本一致，故升级过程中只升级了 App Bin，速度很快。</p>
+
+    <p><img src="../img/fota_toe_update_ready.jpg" alt="" /></p>
+
+    <p>重新连接到“ING Thermometer”，查看温度计显示为“Toe”状态。</p>
+
+    <p><img src="../img/fota_toe_updated.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p>部分升级回退到“Body”版本</p>
+
+    <p>再次进入 FOTA 服务，在升级服务 URL 里填入“http://192.168.100.102/body”，重复上述步骤，可将版本回退到“Body”版本。</p>
+
+    <p><img src="../img/fota_back_to_body.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p>切换到辅助 FOTA 程序</p>
+
+    <p>再次进入 FOTA 服务，点击“Activate Secondary FOTA”按钮重启开发板并进入 FOTA 辅助 App。</p>
+
+    <p><img src="../img/fota_activate_sec_fota.jpg" alt="" /></p>
+
+    <p>重新扫描，可发现名为“ING Secondary FOTA”的设备：</p>
+
+    <p><img src="../img/fota_sec_fota_run.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p>完整升级</p>
+
+    <p>连接到名为“ING Secondary FOTA”的设备，进入 FOTA 服务，在升级服务 URL 里填入上述任何一个 URL，重复上述步骤，
+ 同样可以进行升级。</p>
+
+    <p><img src="../img/fota_sec_full_update.jpg" alt="" /></p>
+
+    <p>出于演示目的，辅助 FOTA 程序故意上报了错误的 platform 版本号，故升级过程会同时升级 platform 和 App Bin，
+ 需要的时间明显多于部分升级。</p>
+  </li>
+</ol>
+
+
+      </div><!-- .post-content -->
+    </div><!-- .inner-md -->
+  </article><!-- .post -->
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2020. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

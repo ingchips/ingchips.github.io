@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>SDK 4.0：引入 BLE 扩展功能 - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="本文介绍 SDK 4.0 里引入的 BLE 扩展功能。"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+              
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <article class="post post-full">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <header class="post-header has-gradient outer">
+      
+      
+      <div class="inner-sm">
+        <div class="post-meta">
+          <time class="published" datetime="2020-10-13 00:00">October 13, 2020</time>
+        </div>
+        <h1 class="post-title">SDK 4.0：引入 BLE 扩展功能</h1>
+        
+        
+      </div>
+    </header>
+    <div class="inner-md outer">
+      <div class="post-content">
+        <p>为满足对无线通信的个性化需求，ING918 系列产品将在全面支持 BLE 标准的基础上逐步引入扩展功能。
+最新发布的 SDK 4.0.0 加入了两项 BLE 扩展功能。</p>
+
+<h2 id="更小的连接间隔">更小的连接间隔</h2>
+
+<p>连接状态下，BLE 链路层在连接事件中传输数据信道 PDU。连接事件的起始位置以固定间隔均匀分布，互不重叠。
+蓝牙核心规范中定义连接间隔为 1.25𝑚𝑠 的整数倍，范围从 7.5𝑚𝑠 到 4.0𝑠。</p>
+
+<p>“更小的连接间隔”扩展将上述范围扩大到从 2.5𝑚𝑠 到 4.0𝑠。使用 2.5𝑚𝑠 的连接间隔可以显著降低 BLE 空口传输带来的
+时延。</p>
+
+<p>使用 <code class="highlighter-rouge">extension</code> 包创建主、从两个程序。主设备调用 <code class="highlighter-rouge">gap_ext_create_connection</code> 建立连接时，
+将 <code class="highlighter-rouge">interval_min</code> 和 <code class="highlighter-rouge">interval_max</code> 两个参数设置为 <code class="highlighter-rouge">2</code>。使用 Trace 工具抓取log，解析 HCI 消息，可发现 2.5𝑚𝑠 的
+连接间隔生效：</p>
+
+<p><img src="../img/sdk4-conn-complete.png" alt="" /></p>
+
+<p>可观察到主设备以 2.5𝑚𝑠 的连接间隔周期性地调度连接事件：</p>
+
+<p><img src="../img/sdk4-conn-est.png" alt="" /></p>
+
+<h2 id="数据包直发直收">数据包直发、直收</h2>
+
+<p>数据包直发、直收扩展为程序提供了以指定参数直接发送或者接收一个数据包的能力。</p>
+
+<p>数据包直发时可指定以下参数：</p>
+
+<ul>
+  <li>信道</li>
+  <li>发射功率</li>
+  <li>PHY (1M/2M/Coded)</li>
+  <li>Access Address</li>
+  <li>CRC 初始值</li>
+  <li>空口发送时间。</li>
+</ul>
+
+<p>数据包直收时可指定以下参数：</p>
+
+<ul>
+  <li>信道</li>
+  <li>PHY (1M/2M/Coded)</li>
+  <li>Access Address</li>
+  <li>CRC 初始值</li>
+  <li>接收窗口（空口的起止时间）。</li>
+</ul>
+
+<p>成功接收到数据包后，数据包的空口起始时间可通过 API 获取。</p>
+
+<p>每个数据包载荷最大长度为 255 字节。每个数据包还可额外传输两个比特，其用途由开发者任意指定。</p>
+
+<p>有关帧结构、API 等详细信息请参阅《INGCHIPS BLE Extensions Reference》。</p>
+
+      </div><!-- .post-content -->
+    </div><!-- .inner-md -->
+  </article><!-- .post -->
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2020. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

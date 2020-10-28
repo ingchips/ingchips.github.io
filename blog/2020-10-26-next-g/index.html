@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>将蓝牙用于物联网数据采集 - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="搭建一个物联网 MQTT 可视化平台，并利用蓝牙进行数据采集。"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+              
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <article class="post post-full">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <header class="post-header has-gradient outer">
+      
+      
+      <div class="inner-sm">
+        <div class="post-meta">
+          <time class="published" datetime="2020-10-26 00:00">October 26, 2020</time>
+        </div>
+        <h1 class="post-title">将蓝牙用于物联网数据采集</h1>
+        
+        
+      </div>
+    </header>
+    <div class="inner-md outer">
+      <div class="post-content">
+        <p>本文介绍如何采集海量蓝牙温度计的数据，通过 LTE 上传到服务器，并对数据进行可视化呈现。</p>
+
+<p><img src="../img/grafana_thermo_board.png" alt="" /></p>
+
+<p>我们把这套系统称为“NEXT-G”，除了其中的“G”为“洋货”外，“NEXT”皆为<strong>国货</strong>精品。</p>
+
+<p><img src="../img/tb_mqtt_arch.png" alt="" /></p>
+
+<h2 id="next-g-系统简介">NEXT-G 系统简介</h2>
+
+<ul>
+  <li>
+    <p>ING918</p>
+
+    <p>低功耗蓝牙 SoC。</p>
+  </li>
+  <li>
+    <p><a href="http://www.openluat.com/Product/4gcat1/Air724UG.html">Air724UG LTE 模组</a></p>
+
+    <p>4G 全网通，支持 FDD/TDD/LTE CAT-1，基于紫光展锐 UIS8910 平台。</p>
+  </li>
+  <li>
+    <p><a href="https://www.emqx.io/products/broker">EMQ X MQTT Broker</a></p>
+
+    <p>EMQ X 是基于高并发的 Erlang/OTP 语言平台开发，支持百万级连接和分布式集群架构，发布订阅模式的开源 MQTT 消息服务器。
+本文使用开源版 EMQ X Broker。</p>
+  </li>
+  <li>
+    <p><a href="https://www.taosdata.com/en/products/">TDengine</a></p>
+
+    <p>TDengine 是涛思数据专为物联网、车联网、工业互联网、IT 运维等设计和优化的时间序列数据库。</p>
+  </li>
+  <li>
+    <p><a href="https://grafana.com">Grafana</a></p>
+
+    <p>Grafana 是一个跨平台、开源的度量分析和可视化工具，可以查询处理各类数据源中的数据，进行可视化的展示。</p>
+  </li>
+</ul>
+
+<h2 id="xt-g-的安装">XT-G 的安装</h2>
+
+<p>XT-G 的安装及入门请参考 EMQ 的博客
+《<a href="https://www.emqx.io/cn/blog/emqx-tdengine-grafana">EMQ X+TDengine 搭建 MQTT 物联网可视化平台</a>》。</p>
+
+<h2 id="xt-g-的配置">XT-G 的配置</h2>
+
+<ol>
+  <li>
+    <p>TDengine 数据库设计</p>
+
+    <p>用一个超级表保存温度和时间戳，每个温度计一张子表。
+ 通过以下命令创建 <code class="highlighter-rouge">test</code> 数据库和 <code class="highlighter-rouge">thermo_data</code> 超级表，<code class="highlighter-rouge">dev_id</code> 为字符串型的 TAG。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">create</span> <span class="k">database</span> <span class="n">test</span><span class="p">;</span>
+ <span class="n">use</span> <span class="n">test</span><span class="p">;</span>
+ <span class="k">create</span> <span class="k">table</span> <span class="n">thermo_data</span> <span class="p">(</span> <span class="n">ts</span> <span class="k">timestamp</span><span class="p">,</span> <span class="n">temperature</span> <span class="n">float</span> <span class="p">)</span> <span class="n">TAGS</span> <span class="p">(</span> <span class="n">dev_id</span> <span class="k">NCHAR</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span> <span class="p">);</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>根据实际情况配置防火墙</p>
+
+    <p>开放以下 MQTT 服务器相关端口：</p>
+
+    <ul>
+      <li>1883 端口，TCP，MQTT 服务器</li>
+    </ul>
+
+    <p>如果需要从外部访问，需要开放以下 TCP 端口：</p>
+
+    <ul>
+      <li>18083 端口，用于 EMQ X Web 管理</li>
+      <li>3000 端口，用于 Grafana Web 管理</li>
+    </ul>
+  </li>
+  <li>
+    <p>配置 MQTT Broker</p>
+
+    <ul>
+      <li>
+        <p>启动下列插件</p>
+
+        <ul>
+          <li>emqx_auth_clientid 或其它鉴权插件</li>
+          <li>emqx_web_hook</li>
+        </ul>
+      </li>
+      <li>
+        <p>添加 MQTT 账户、资源</p>
+      </li>
+      <li>
+        <p>添加规则</p>
+
+        <p>利用规则将温度数据写入数据库，由于表名称里禁止出现某些特殊字符，故以 <code class="highlighter-rouge">dev_id</code> 的 MD5 为子表名
+（注：表名的第一个字符不能为数字）。</p>
+
+        <p>SQL 代码：</p>
+        <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span>
+  <span class="n">payload</span><span class="p">.</span><span class="n">temperature</span> <span class="k">as</span> <span class="n">t</span><span class="p">,</span>
+  <span class="n">payload</span><span class="p">.</span><span class="n">dev_id</span> <span class="k">as</span> <span class="n">dev_id</span><span class="p">,</span>
+  <span class="s1">'a'</span> <span class="o">+</span> <span class="n">md5</span><span class="p">(</span><span class="n">payload</span><span class="p">.</span><span class="n">dev_id</span><span class="p">)</span> <span class="k">as</span> <span class="n">tname</span>
+<span class="k">FROM</span>
+  <span class="nv">"thermo/data/#"</span>
+</code></pre></div>        </div>
+
+        <p>Payload Template：</p>
+
+        <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">test</span><span class="p">.</span><span class="err">${</span><span class="n">tname</span><span class="err">}</span> <span class="k">using</span> <span class="n">test</span><span class="p">.</span><span class="n">thermo_data</span> <span class="n">tags</span> <span class="p">(</span><span class="nv">"${dev_id}"</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(</span> <span class="n">now</span><span class="p">,</span> <span class="err">${</span><span class="n">t</span><span class="err">}</span> <span class="p">);</span>
+</code></pre></div>        </div>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>创建 Grafana 看板</p>
+
+    <p>下面是几个仪表盘 SQL 示例。</p>
+
+    <ul>
+      <li>列出所有温度计的设备 ID</li>
+    </ul>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">select</span> <span class="n">dev_id</span> <span class="k">from</span> <span class="n">test</span><span class="p">.</span><span class="n">thermo_data</span>
+</code></pre></div>    </div>
+    <ul>
+      <li>某温度计的最新数据</li>
+    </ul>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">select</span> <span class="k">last</span> <span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">from</span> <span class="n">test</span><span class="p">.</span><span class="n">thermo_data</span> <span class="k">where</span> <span class="n">dev_id</span> <span class="o">=</span> <span class="nv">"..."</span>
+</code></pre></div>    </div>
+
+    <ul>
+      <li>某温度计的数据曲线</li>
+    </ul>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">select</span> <span class="k">avg</span><span class="p">(</span><span class="n">temperature</span><span class="p">)</span> <span class="k">from</span> <span class="n">test</span><span class="p">.</span><span class="n">thermo_data</span> <span class="k">where</span> <span class="n">dev_id</span> <span class="o">=</span> <span class="nv">"..."</span> <span class="k">and</span> <span class="n">ts</span> <span class="o">&gt;=</span> <span class="err">$</span><span class="k">from</span> <span class="k">and</span> <span class="n">ts</span> <span class="o">&lt;</span> <span class="err">$</span><span class="k">to</span> <span class="n">interval</span><span class="p">(</span><span class="err">$</span><span class="n">interval</span><span class="p">)</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h2 id="蓝牙部分的开发">蓝牙部分的开发</h2>
+
+<h3 id="温度计">温度计</h3>
+
+<p>设计思路：周期性从关机状态中醒来，广播若干次温度数据后，再关机，周而复始；采用 5.0 扩展广播，采集端利用其中的 DID 数据域可
+方便地实现数据去重，防止 LTE 流量浪费。</p>
+
+<p>温度数据以下列格式放到 «Manufacturer Specific Data» 里发送：</p>
+
+<pre><code class="language-C">#pragma pack (push, 1)
+typedef struct thermo_beacon_adv
+{
+    uint16_t company_id;
+    uint16_t id;
+    uint8_t  type;
+    uint32_t temperature;
+} thermo_beacon_adv_t;
+#pragma pack (pop)
+</code></pre>
+
+<p>参考 SDK 中自带的温度计示例可以方便地完成这部分的开发。</p>
+
+<h3 id="采集端">采集端</h3>
+
+<p>采集端通过 UART 接口控制 Air724UG 模组，利用其提供的 MQTT AT 指令连接到 MQTT Broker服务嚣。
+采集端解析扫描到的温度计广播，将温度数据以 JSON 形式发布到 <code class="highlighter-rouge">thermo/data</code> 主题。</p>
+
+<h4 id="mqtt-服务模块">MQTT 服务模块</h4>
+
+<p>把 Air724UG 模组的驱动封装成 MQTT 服务模块。考虑到连接过程需要多个步骤，可以设计成一个 FSM，例如:</p>
+
+<pre><code class="language-C">struct mqtt_fsm;
+
+typedef void (* f_state)(struct mqtt_fsm *fsm);
+
+typedef struct mqtt_fsm
+{
+    const char *server;
+    const char *port;
+    const char *client_id;
+    const char *user;
+    const char *password;
+    int buf_wr;
+    char buffer[MQTT_DRIVER_BUF_SIZE];
+    mqtt_msg_t *first_msg;
+    mqtt_msg_t *last_msg;
+    f_state state;
+} mqtt_fsm_t;
+</code></pre>
+
+<p>其主题发布接口为：</p>
+
+<pre><code class="language-C">int mqtt_publish(const char *topic, const void *data, int data_size);
+</code></pre>
+
+<h4 id="温度扫描与上报">温度扫描与上报</h4>
+
+<p>扫描到 <code class="highlighter-rouge">thermo_beacon_adv_t</code> 数据后，转换成 JSON 形式发布到 <code class="highlighter-rouge">thermo/data</code> 主题，核心代码如下：</p>
+
+<pre><code class="language-C">#define TOPIC       "thermo/data"
+
+...
+
+switch (hci_event_le_meta_get_subevent_code(packet))
+{
+case HCI_SUBEVENT_LE_EXTENDED_ADVERTISING_REPORT:
+    {
+        uint16_t length;
+        const thermo_beacon_adv_t *p_beacon;
+        const char *data;
+        const le_ext_adv_report_t *report = decode_hci_le_meta_event(packet,
+                  le_meta_event_ext_adv_report_t)-&gt;reports;
+
+        p_beacon = (const thermo_beacon_adv_t *)ad_data_from_type(report-&gt;data_len,
+                                                                  (uint8_t *)report-&gt;data, 0xff, &amp;length);
+
+        if ((length != sizeof(thermo_beacon_adv_t))
+            || (p_beacon-&gt;company_id != INGCHIPS_ID)
+            || (p_beacon-&gt;id != THERMO_SENSOR))
+            break;
+
+        data = format_json(report, p_beacon);
+        mqtt_publish(TOPIC, data, strlen(data));
+    }
+    break;
+
+default:
+    break;
+}
+</code></pre>
+
+<p><code class="highlighter-rouge">format_json</code> 函数的实现如下：</p>
+
+<pre><code class="language-C">const char *format_json(const le_ext_adv_report_t *report, const thermo_beacon_adv_t *p_beacon)
+{
+    static char str[100];
+    sprintf(str, "{\"dev_id\": \"%02X:%02X:%02X:%02X:%02X:%02X\","
+                 "\"temperature\": %s}",
+                 report-&gt;address[5], report-&gt;address[4], report-&gt;address[3], report-&gt;address[2], report-&gt;address[1], report-&gt;address[0],
+                 float_ieee_11073_val_to_repr(p_beacon-&gt;temperature));
+    return str;
+}
+</code></pre>
+
+<p><code class="highlighter-rouge">float_ieee_11073_val_to_repr</code> 函数的定义可在 SDK “Smart Meter” 示例中找到。</p>
+
+<h3 id="结论">结论</h3>
+
+<ol>
+  <li>
+    <p>BLE 能够打通物联网的最后 100 米，与 LTE Cat. 1 配合组成很好（高速、低成本）的物联网数据传输方案；</p>
+  </li>
+  <li>
+    <p>ING918 系列芯片开放、开发便捷，可广泛用于各种物联网应用。</p>
+  </li>
+</ol>
+
+      </div><!-- .post-content -->
+    </div><!-- .inner-md -->
+  </article><!-- .post -->
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2020. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

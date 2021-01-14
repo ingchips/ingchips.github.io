@@ -185,7 +185,7 @@ R12: 0x20001CA8
 而 <code class="highlighter-rouge">makefile</code> 里指定了 <code class="highlighter-rouge">-flto</code>，编译时无法获取准确的栈占用信息，所以无法生成“.su”文件。</p>
 
 <div class="note">
-<strong>说明:</strong> ingWizard 参照 Gnu Arm Toolchain 附带的示例使用了 `-flto`，用户可以根据实际情况调整。
+<strong>说明:</strong> ingWizard 生成 GCC 项目时参考 Gnu Arm Toolchain 附带的示例使用了 `-flto`，用户可以根据实际情况调整。
 </div>
 
 <p>去掉 <code class="highlighter-rouge">-flto</code> “.su” 文件就可以生成了。截取 <code class="highlighter-rouge">uart_console.su</code> 里一段如下，使用的栈空间很小：</p>
@@ -215,6 +215,8 @@ src/uart_console.c:148:6:cmd_addr	8	static
 <code class="highlighter-rouge">stmdb</code>、<code class="highlighter-rouge">sub.w</code> 等指令，所以报告的栈空间占用为 <code class="highlighter-rouge">0</code>。为了尽快看到一些结果，直接将反汇编里的 <code class="highlighter-rouge">sub.w</code> 替换为
 <code class="highlighter-rouge">sub</code>，再次生成函数调用图，显示这个 <code class="highlighter-rouge">__SVFSCANF_R</code> <strong>至少</strong> 使用了 648 字节：</p>
 
+<p><img src="../img/cg_stack_sscanf.png" alt="" /></p>
+
 <h3 id="静态分析web-版工具">静态分析：Web 版工具</h3>
 
 <p>鉴于这个 <code class="highlighter-rouge">callgraph-gen</code> 存在上述问题，而且生成的图形 VCG 或者 DOT 图形还需要其它工具才能查看，使用不便，
@@ -237,7 +239,7 @@ API 可以设置一个更大的 ISR 专用栈。同时提供了一个新的 <cod
 开发者可以在程序运行期准确地统计函数使用的栈空间。对于 Task 栈，开放了一个新的 API <code class="highlighter-rouge">uxTaskGetStackHighWaterMark</code>，
 开发者使用这个 API 可以评估各个 Task 运行期时的栈空间使用情况，避免栈溢出。</p>
 
-<p>下面的代码使用 <code class="highlighter-rouge">platform_tools</code> 模块准确地计算了 <code class="highlighter-rouge">sscanf</code> 使用的栈空间：</p>
+<p>使用 <code class="highlighter-rouge">platform_tools</code> 模块计算出 <code class="highlighter-rouge">sscanf</code> 运行期间实际使用的栈空间为 872 字节。</p>
 
 <pre><code class="language-C">int parse_addr(uint8_t *output, const char *param)
 {

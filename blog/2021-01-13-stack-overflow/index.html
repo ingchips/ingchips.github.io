@@ -135,7 +135,7 @@
     </header>
     <div class="inner-md outer">
       <div class="post-content">
-        <p><strong>TLDR; </strong> Gnu Arm Toochain 某些库函数栈占用较多。我们开发了 Web 版<a href="/web_apps/callgraph">函数调用图工具</a>、
+        <p><strong>TL;DR: </strong> Gnu Arm Toochain 某些库函数栈占用较多。我们开发了 Web 版<a href="/web_apps/callgraph">函数调用图工具</a>、
 提供新的 API （SDK 5.3.0），“动静”结合帮助开发者发现并规避栈溢出问题。</p>
 
 <hr />
@@ -150,12 +150,10 @@
 外的所有源代码复制到新建项目目录下；4) 用备份的 <code class="highlighter-rouge">_write</code> 函数替换掉 <code class="highlighter-rouge">main.c</code> 里的 <code class="highlighter-rouge">fputc</code> 函数；
 5) 修改 <code class="highlighter-rouge">makefile</code>，将新的源文件 <code class="highlighter-rouge">src/uart_console.c</code> 追加到变量 <code class="highlighter-rouge">PROJECT_FILES</code>:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>```makefile
-PROJECT_FILES = src/main.c
-PROJECT_FILES += src/profile.c
-PROJECT_FILES += src/uart_console.c
-...
-```
+<div class="language-makefile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">PROJECT_FILES</span> <span class="o">=</span> src/main.c
+<span class="nv">PROJECT_FILES</span> <span class="o">+=</span> src/profile.c
+<span class="nv">PROJECT_FILES</span> <span class="o">+=</span> src/uart_console.c
+<span class="err">...</span>
 </code></pre></div></div>
 
 <p>编译下载成功，移植工作完成。</p>

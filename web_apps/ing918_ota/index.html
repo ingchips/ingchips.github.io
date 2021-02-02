@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="dist/css/uikit.min.css" />
+    <title>ING918 Series FOTA Service</title>
+</head>
+<body>
+<!-- UIkit JS -->
+<script src="dist/js/uikit.min.js"></script>
+<script src="dist/js/uikit-icons.min.js"></script>
+
+<script src="dist/js/jquery-3.5.1.min.js"></script>
+
+<script src="dist/js/zip.min.js"></script>
+<script src="msg.js"></script>
+<script src="main.js"></script>
+<script>
+
+</script>
+
+<div class="uk-container">
+  
+<div id="loader">
+    <div class="uk-margin"> </div>
+
+    <div class="uk-margin">
+        <h2 id="title">ING918 Series FOTA Service</h2>
+    </div>
+
+    <div id="api_notice" class="uk-alert-default" uk-alert>
+        <h3><span uk-icon="warning"></span> Notice</h3>
+        <p>APIs of file & bluetooth are not fully supported in this browser.</p>
+        <p class="uk-text-danger">Web Platform features (see about://flags) are required, currently only available on Chromium based browsers.</p>
+    </div>
+
+    <div id="startup_window" class="uk-margin">
+        <button id="btn_scan" class="uk-button uk-button-primary">Select</button>
+    </div>
+
+    <div id="main_window">
+        <div class="uk-margin"></div>
+
+        <div class="uk-card uk-card-default uk-card-body">
+            <div class="uk-card-header">
+                <div class="uk-grid-small uk-flex-middle" uk-grid>
+                    <div class="uk-width-expand">
+                        <h3 class="uk-card-title uk-margin-remove-bottom">Update Your Device</h3>
+                        <p class="uk-text-meta uk-margin-remove-top">Same version binaries need not to be updated</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="uk-margin"></div>
+            <form class="uk-form-horizontal">
+                <div class="uk-margin">
+                    <label class="uk-form-label" for="form-horizontal-text">Chip Series</label>
+                    <div class="uk-form-controls">
+                        <select class="uk-select" id="series_id">
+                            <option>ING9188xx/ING9187xx</option>
+                            <option>ING9186xx/ING9185xx</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="uk-margin">
+                    <label class="uk-form-label" for="form-horizontal-text">MTU Size</label>
+                    <div class="uk-form-controls">
+                        <input class="uk-input" id="mtu_size" type="text" id="mtu_size" value="200"></input>
+                        <a href="https://github.com/WebBluetoothCG/web-bluetooth/issues/383">More infomration</a> on why this 
+                        tool can't detect MTU automatically.
+                    </div>
+                </div>
+            </form>
+            
+            <div class="uk-child-width-expand@s uk-grid-divider" uk-grid>
+                <div>
+                    <table class="uk-table uk-table-small">
+                        <thead>
+                            <tr>
+                                <th class="uk-table-shrink"></th>
+                                <th class="uk-table-small">Device</th>
+                                <th class="uk-table-small">Latest</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Platform</td>
+                                <td><span class="uk-label uk-label-success" id="dev_ver_platform"></span>
+                                    <span uk-icon="question" id="dev_platform_update_ind"></span>
+                                <td><span class="uk-label uk-label-success" id="cur_ver_platform"></span></td>
+                            </tr>
+                            <tr>
+                                <td>App</td>
+                                <td><span class="uk-label uk-label-success" id="dev_ver_app"></span> 
+                                    <span uk-icon="question" id="dev_app_update_ind"></span>
+                                <td><span class="uk-label uk-label-success" id="cur_ver_app"></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div>
+                    <div class="uk-margin">
+                        <span class="uk-label" id="current_file"></span> 
+                        <h3 id="cur_ver_readme" class="uk-heading-bullet uk-margin-remove-top"></h3>
+                    </div> 
+                </div>
+            </div>
+            
+            <div class="uk-margin">
+                <button id="btn_update" class="uk-button uk-button-primary">Update</button>
+                <button id="btn_sec_fota" class="uk-button uk-button-danger">Secondary FOTA</button>
+            </div>
+
+        </div>
+
+        <div class="uk-card uk-card-default uk-card-body">
+        
+            <ul class="uk-subnav uk-subnav-pill" uk-switcher>
+                <li><a href="#">Local</a></li>
+                <li><a href="#">Online</a></li>
+            </ul>
+            <ul class="uk-switcher uk-margin">
+                <li>
+                    <div class="js-upload uk-placeholder uk-text-center" id="zip_file_drop_zone">
+                        <span uk-icon="icon: cloud-upload"></span>
+                        <span class="uk-text-middle">Drag & drop .zip file here or </span>
+                        <div uk-form-custom>
+                            <input type="file" id="zip_file_select" accept="application/zip">
+                            <span class="uk-link">selecting one</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="uk-margin">
+                        <legend class="uk-legend">Server URL</legend>
+        
+                        <div class="uk-margin">
+                            <input class="uk-input" type="text" id='ota_server_url' placeholder="http://your_ota_server.com/" value="">
+                        </div>
+
+                        Note: Your server may need to send
+                        <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin" class="uk-text-warning">Access-Control-Allow-Origin: *</a> in the response header.
+        
+                        <div class="uk-margin">
+                            <button id="btn_recheck" class="uk-button uk-button-primary">Recheck</button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div id="running_status">
+
+        <div class="uk-card uk-card-default uk-card-body">
+            <div class="uk-card-header">
+                <h3 class="uk-card-title uk-margin-remove-bottom">Please wait ...</h3>
+            </div>
+
+            <div class="uk-margin uk-text-center">
+                <div id="js-spinner"  uk-spinner="ratio: 2"></div>
+            </div>
+
+            <div class="uk-margin">
+                <progress id="js-progressbar" class="uk-progress" value="0" max="100"></progress>
+            </div>
+            
+            <div class="uk-margin">
+                <div id="js-message" class="uk-text-meta  uk-text-center">
+                    burning platform.bin
+                </div>
+            </div>
+            <hr>
+            <div class="uk-margin">
+                <div id="js-message" class="uk-text-meta">
+                    Why the pause during burning? Because OS or BLE driver is bufferring quite a lot of data, 
+                    which got flushed during the the pauses.
+                </div>
+            </div>
+        </div>
+   </div>
+
+</div>
+
+</div>
+
+</body>
+</html>

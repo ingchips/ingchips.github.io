@@ -146,25 +146,40 @@
 
 <ol>
   <li>
-    <p>下载/安装 <a href="/docs/sdk/apps/">ING BLE</a> App</p>
+    <p>下载/安装 <a href="/docs/sdk/apps/">ING BLE</a> App （若只使用 Web 版工具可跳过此步骤）</p>
 
     <div class="note">
  <strong>说明:</strong> 需要 v1.4 以上版本。iOS 尚未更新，可使用 Android 版本，或者自行编译 iOS/Windows 版本。
  </div>
   </li>
   <li>
-    <p><a href="https://github.com/ingchips/doc_release/releases/download/v1.0/thermo_fota_demo.zip">下载</a>
-（<a href="https://hub.fastgit.com/ingchips/doc_release/releases/download/v1.0/thermo_fota_demo.zip">镜像</a>）测试程序升级包</p>
+    <p>下载测试程序升级包</p>
+
+    <ul>
+      <li>
+        <p>ING91881B 开发板：<a href="https://github.com/ingchips/doc_release/releases/download/v1.0/thermo_fota_demothermo_fota_demo_ING91881B.zip">下载</a>
+ （<a href="https://hub.fastgit.com/ingchips/doc_release/releases/download/v1.0/thermo_fota_demo_ING91881B.zip">镜像</a>）</p>
+      </li>
+      <li>
+        <p>ING91880 开发板：<a href="https://github.com/ingchips/doc_release/releases/download/v1.0/thermo_fota_demo.zip">下载</a>
+ （<a href="https://hub.fastgit.com/ingchips/doc_release/releases/download/v1.0/thermo_fota_demo.zip">镜像</a>）</p>
+      </li>
+    </ul>
   </li>
   <li>
     <p>烧写测试程序</p>
 
     <p>解压测试程序升级包，用 Downloader 打开 <code class="highlighter-rouge">full_app</code> 文件夹下的 <code class="highlighter-rouge">flash_download.ini</code>，然后烧录到开发板。</p>
   </li>
+</ol>
+
+<p>如果需要测试在线升级，还需要准备网络环境及 HTTP 服务器，步骤如下。</p>
+
+<ol>
   <li>
     <p>网络准备</p>
 
-    <p>进行空中升级时，ING BLE 需要联系升级服务嚣获取信息，所以需要保证 ING BLE 与服务器之间的 TCP/IP 网络畅通。
+    <p>进行空中升级时，ING BLE 需要联系升级服务器获取信息，所以需要保证 ING BLE 与服务器之间的 TCP/IP 网络畅通。
  如果自行编译 Windows 10 版本的 ING BLE 测试程序，可在同一机器上启动 HTTP 服务器。
  对于使用手机的情况，可以选用以下任一方法配置网络：</p>
 
@@ -186,11 +201,35 @@
   <li>
     <p>准备升级服务器</p>
 
-    <p>这里使用 Python 内置的 HTTP 服务器作升级服务嚣。切换到解压出的文件夹，启动服务器，命令如下（各平台即可，以 WSL 为例）：</p>
+    <p>对于手机 App，可以直接使用 Python 内置的 HTTP 服务器作升级服务嚣。切换到解压出的文件夹，启动服务器，命令如下（各平台即可，以 WSL 为例）：</p>
 
     <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-a</span>
  <span class="nb">.</span>  ..  body  full_app  toe
  <span class="nv">$ </span><span class="nb">sudo </span>python <span class="nt">-m</span> SimpleHTTPServer 80
+ Serving HTTP on 0.0.0.0 port 80 ...
+</code></pre></div>    </div>
+
+    <p>对于 Web 版升级工具的在线模式，可能存在资源跨域访问的问题，可将以下代码保存为 CrossHTTPServer.py：</p>
+
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="c1">#!/usr/bin/env python
+</span> <span class="kn">import</span> <span class="nn">SimpleHTTPServer</span>
+
+ <span class="k">class</span> <span class="nc">MyHTTPRequestHandler</span><span class="p">(</span><span class="n">SimpleHTTPServer</span><span class="o">.</span><span class="n">SimpleHTTPRequestHandler</span><span class="p">):</span>
+     <span class="k">def</span> <span class="nf">end_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">send_my_headers</span><span class="p">()</span>
+         <span class="n">SimpleHTTPServer</span><span class="o">.</span><span class="n">SimpleHTTPRequestHandler</span><span class="o">.</span><span class="n">end_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+     <span class="k">def</span> <span class="nf">send_my_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">send_header</span><span class="p">(</span><span class="s">"Access-Control-Allow-Origin"</span><span class="p">,</span> <span class="s">"*"</span><span class="p">)</span>
+
+ <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+     <span class="n">SimpleHTTPServer</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="n">HandlerClass</span><span class="o">=</span><span class="n">MyHTTPRequestHandler</span><span class="p">)</span>
+</code></pre></div>    </div>
+
+    <p>启动 CrossHTTPServer 服务器的命令如下：</p>
+
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-a</span>
+ <span class="nb">.</span>  ..  CrossHTTPServer.py body  full_app  toe
+ <span class="nv">$ </span><span class="nb">sudo </span>CrossHTTPServer 80
  Serving HTTP on 0.0.0.0 port 80 ...
 </code></pre></div>    </div>
 
@@ -206,7 +245,7 @@
   </li>
 </ol>
 
-<h2 id="演示">演示</h2>
+<h2 id="演示-1使用手机-app">演示 1：使用手机 App</h2>
 
 <p>用 ING BLE 连接到名为“ING Thermometer”的蓝牙设备，查看温度计显示为“Body”状态。</p>
 
@@ -233,9 +272,9 @@
     <p><img src="../img/fota_back_to_body.jpg" alt="" /></p>
   </li>
   <li>
-    <p>切换到辅助 FOTA 程序</p>
+    <p>切换到附属 FOTA 程序</p>
 
-    <p>再次进入 FOTA 服务，点击“Activate Secondary FOTA”按钮重启开发板并进入 FOTA 辅助 App。</p>
+    <p>再次进入 FOTA 服务，点击“Activate Secondary FOTA”按钮重启开发板并进入 FOTA 附属 App。</p>
 
     <p><img src="../img/fota_activate_sec_fota.jpg" alt="" /></p>
 
@@ -256,6 +295,33 @@
   </li>
 </ol>
 
+<h2 id="演示-2使用-web-版工具">演示 2：使用 Web 版工具</h2>
+
+<p><a href="/web_apps/ing918_ota/index_cn.html">Web 版 FOTA 工具</a>  支持本地、在线两种升级模式。在使用这个工具之前，
+请确认浏览器的<a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Bluetooth_API#browser_compatibility">兼容性</a>。
+部分浏览器需要启用 Web Platform 特性（about://flags/#enable-experimental-web-platform-features）方可使用该工具。</p>
+
+<p>通过“选择”按钮选择名为“ING Thermometer”的蓝牙设备，连接成功后可看到查看当前版本。</p>
+
+<p><img src="../img/web_fota_select.png" alt="" /></p>
+
+<ol>
+  <li>
+    <p>本地升级模式</p>
+
+    <p>将升级包里的 toe/v2.zip 文件拖入“本地文件”界面（或者通过点击“选择一个文件”选择  toe/v2.zip），出现版本升级提示信息，
+ 点击“更新”即可。</p>
+
+    <p><img src="../img/web_fota_main.png" alt="" /></p>
+  </li>
+  <li>
+    <p>在线升级模式</p>
+
+    <p>进入“在线”页面，里填入“http://192.168.100.102/body”，重复上述步骤，可将版本回退到“Body”版本。</p>
+  </li>
+</ol>
+
+<p>其它操作与手机 App 类似，不再赘述。</p>
 
       </div><!-- .post-content -->
     </div><!-- .inner-md -->

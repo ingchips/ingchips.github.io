@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="dist/css/uikit.min.css" />
+    <title>ING918 系列芯片 FOTA 服务</title>
+</head>
+<body>
+<!-- UIkit JS -->
+<script src="dist/js/uikit.min.js"></script>
+<script src="dist/js/uikit-icons.min.js"></script>
+
+<script src="dist/js/jquery-3.5.1.min.js"></script>
+
+<script src="dist/js/zip.min.js"></script>
+<script src="msg_cn.js"></script>
+<script src="main.js"></script>
+<script>
+
+</script>
+
+<div class="uk-container">
+  
+<div id="loader">
+    <div class="uk-margin"> </div>
+
+    <div class="uk-margin">
+        <h2 id="title">ING918 系列芯片 FOTA 服务</h2>
+    </div>
+
+    <div id="api_notice" class="uk-alert-default" uk-alert>
+        <h3><span uk-icon="warning"></span> 注意</h3>
+        <p>给浏览器不支持文件及蓝牙 API.</p>
+        <p class="uk-text-danger">必须启用 Web Platform 特性 ( about://flags)。目前基于 Chromium 内核的浏览器支持该特性。</p>
+    </div>
+
+    <div id="startup_window" class="uk-margin">
+        <button id="btn_scan" class="uk-button uk-button-primary">选择</button>
+    </div>
+
+    <div id="main_window">
+        <div class="uk-margin"></div>
+
+        <div class="uk-card uk-card-default uk-card-body">
+            <div class="uk-card-header">
+                <div class="uk-grid-small uk-flex-middle" uk-grid>
+                    <div class="uk-width-expand">
+                        <h3 class="uk-card-title uk-margin-remove-bottom">更新你的设备</h3>
+                        <p class="uk-text-meta uk-margin-remove-top">相同版本的二进制文件不需要更新</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="uk-margin"></div>
+            <form class="uk-form-horizontal">
+                <div class="uk-margin">
+                    <label class="uk-form-label" for="form-horizontal-text">芯片系列</label>
+                    <div class="uk-form-controls">
+                        <select class="uk-select" id="series_id">
+                            <option>ING9188xx/ING9187xx</option>
+                            <option>ING9186xx/ING9185xx</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="uk-margin">
+                    <label class="uk-form-label" for="form-horizontal-text">MTU 大小</label>
+                    <div class="uk-form-controls">
+                        <input class="uk-input" id="mtu_size" type="text" id="mtu_size" value="200"></input>
+                        关于本工具为什么无法自动获取 MTU 大小的<a href="https://github.com/WebBluetoothCG/web-bluetooth/issues/383">更多信息</a>。
+                    </div>
+                </div>
+            </form>
+            
+            <div class="uk-child-width-expand@s uk-grid-divider" uk-grid>
+                <div>
+                    <table class="uk-table uk-table-small">
+                        <thead>
+                            <tr>
+                                <th class="uk-table-shrink"></th>
+                                <th class="uk-table-small">设备</th>
+                                <th class="uk-table-small">最新</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Platform</td>
+                                <td><span class="uk-label uk-label-success" id="dev_ver_platform"></span>
+                                    <span uk-icon="question" id="dev_platform_update_ind"></span>
+                                <td><span class="uk-label uk-label-success" id="cur_ver_platform"></span></td>
+                            </tr>
+                            <tr>
+                                <td>App</td>
+                                <td><span class="uk-label uk-label-success" id="dev_ver_app"></span> 
+                                    <span uk-icon="question" id="dev_app_update_ind"></span>
+                                <td><span class="uk-label uk-label-success" id="cur_ver_app"></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div>
+                    <div class="uk-margin">
+                        <span class="uk-label" id="current_file"></span> 
+                        <h3 id="cur_ver_readme" class="uk-heading-bullet uk-margin-remove-top"></h3>
+                    </div> 
+                </div>
+            </div>
+            
+            <div class="uk-margin">
+                <button id="btn_update" class="uk-button uk-button-primary">更新</button>
+                <button id="btn_sec_fota" class="uk-button uk-button-danger">切换到附属 FOTA 程序</button>
+            </div>
+
+        </div>
+
+        <div class="uk-card uk-card-default uk-card-body">
+        
+            <ul class="uk-subnav uk-subnav-pill" uk-switcher>
+                <li><a href="#">本地文件</a></li>
+                <li><a href="#">在线</a></li>
+            </ul>
+            <ul class="uk-switcher uk-margin">
+                <li>
+                    <div class="js-upload uk-placeholder uk-text-center" id="zip_file_drop_zone">
+                        <span uk-icon="icon: cloud-upload"></span>
+                        <span class="uk-text-middle">将 .zip 文件拖放到这里或者 </span>
+                        <div uk-form-custom>
+                            <input type="file" id="zip_file_select" accept="application/zip">
+                            <span class="uk-link">选择一个文件</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="uk-margin">
+                        <legend class="uk-legend">服务器网址</legend>
+        
+                        <div class="uk-margin">
+                            <input class="uk-input" type="text" id='ota_server_url' placeholder="http://your_ota_server.com/" value="">
+                        </div>
+
+                        说明: 你的服务器可以需要在响应头里发送
+                        <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin" class="uk-text-warning">Access-Control-Allow-Origin: *</a>。
+        
+                        <div class="uk-margin">
+                            <button id="btn_recheck" class="uk-button uk-button-primary">再次检查</button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div id="running_status">
+
+        <div class="uk-card uk-card-default uk-card-body">
+            <div class="uk-card-header">
+                <h3 class="uk-card-title uk-margin-remove-bottom">请等待 ...</h3>
+            </div>
+
+            <div class="uk-margin uk-text-center">
+                <div id="js-spinner"  uk-spinner="ratio: 2"></div>
+            </div>
+
+            <div class="uk-margin">
+                <progress id="js-progressbar" class="uk-progress" value="0" max="100"></progress>
+            </div>
+            
+            <div class="uk-margin">
+                <div id="js-message" class="uk-text-meta  uk-text-center">
+                </div>
+            </div>
+            <hr>
+            <div class="uk-margin">
+                <div id="js-message" class="uk-text-meta">
+                    为什么烧写过程中存在停顿？因为操作系统或者蓝牙驱动程序会缓存数据，停顿时程序是在等待数据被完全传输到设备。
+                </div>
+            </div>
+        </div>
+   </div>
+
+</div>
+
+</div>
+
+</body>
+</html>

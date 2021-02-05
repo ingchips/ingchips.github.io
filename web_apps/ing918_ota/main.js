@@ -181,10 +181,9 @@ function buildUpdatePlan(fullUpdate) {
     for (var i in plan) {
         const padding = 4 - (plan[i].data.length & 0x3);
         if (padding != 4) {
-            while (padding > 0) {
-                plan[i].data.push(0);
-                padding--;
-            }
+            var newData = new Uint8Array(plan[i].data.length + padding);
+            newData.set(plan[i].data, 0);
+            plan[i].data = newData;
         }
         let page_num = Math.floor((plan[i].data.length + flash.page_size - 1) / flash.page_size);
         top -= page_num * flash.page_size;

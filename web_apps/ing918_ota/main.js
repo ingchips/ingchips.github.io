@@ -251,7 +251,9 @@ async function burnFiles(emitProgress, plan) {
                     if ((written == 0) && (ble_mtu > BLE_MIN_MTU_SIZE)) {
                         showProgress(msg.fallback_mtu);
                         ble_mtu = BLE_MIN_MTU_SIZE;
+                        errors = 0;
                         await delay(10);
+                        continue;
                     }
                     return false;
                 }

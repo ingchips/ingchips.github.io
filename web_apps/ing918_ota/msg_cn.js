@@ -17,4 +17,6 @@ const msg = {
     query_ver: '正在查询版本信息 ...',
     sel_dev: '选择一个 BLE 设备',
     sec_fota_confirm: '请确认设备上具备附属 FOTA 程序，然后点击 Yes/确认',
+    exchange_keys: '交换密钥',
+    mtu_too_small: '对于安全 FOTA，当前 MTU 太小了'
 }

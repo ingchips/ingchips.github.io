@@ -17,4 +17,6 @@ const msg = {
     query_ver: 'querying version ...',
     sel_dev: 'SELECT a BLE device',
     sec_fota_confirm: 'Confirm that there is a secondary FOTA app installed, then press Yes',
+    exchange_keys: 'exchange keys',
+    mtu_too_small: 'mtu is too small for secured FOTA'
 }

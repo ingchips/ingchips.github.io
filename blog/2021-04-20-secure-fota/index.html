@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>安全地进行空中固件升级 - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="虽然使用 ING918 系列芯片 SDK 里的 ingWizard 可以为应用轻松加入空中固件升级（FOTA）功能，但是这个升级过程是不安全的。 本文介绍如何如何为升级过程加入“双重”安全性。"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item has-children">
+              
+              
+<a class="" href="/docs/sdk/apps/#web-apps">
+  
+  Web 工具
+  
+</a>
+
+              
+                
+                <ul class="submenu">
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/callgraph">
+  
+  Callgraph (调用图)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index_cn.html">
+  
+  ING918 FOTA (空中升级)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/dr_cte">
+  
+  CTE 预处理器
+  
+</a>
+
+  </li>
+  
+</ul>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+              
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <article class="post post-full">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <header class="post-header has-gradient outer">
+      
+      
+      <div class="inner-sm">
+        <div class="post-meta">
+          <time class="published" datetime="2021-04-20 00:00">April 20, 2021</time>
+        </div>
+        <h1 class="post-title">安全地进行空中固件升级</h1>
+        
+        
+      </div>
+    </header>
+    <div class="inner-md outer">
+      <div class="post-content">
+        <p>空中升级过程的“安全”包含两重含义：</p>
+
+<ol>
+  <li>
+    <p>鉴权（Authentication）：对升级包的真实性进行校验；</p>
+  </li>
+  <li>
+    <p>加密（Encryption）：保护升级包内的数据不被非法读取。</p>
+  </li>
+</ol>
+
+<p>本文使用 SHA-256 ECDSA 算法对升级包签名，实现鉴权；通过 ECDH 算法进行密钥交换，然后使用对称加密保护数据。这两种
+“安全”也可以通过蓝牙的配对实现，但是需要额外的操作步骤（按键、输入密码等），存在副作用（产生不必要的配对数据），使用不够便利。</p>
+
+<h2 id="1-直接使用">1. 直接使用</h2>
+
+<p>打开 SDK 5.6.2 里的 <code class="highlighter-rouge">Thermometer with OTA</code>，设置 <code class="highlighter-rouge">SECURE_FOTA</code> 编译开关，重新编译下载。使用
+<a href="/web_apps/ing918_ota/index_cn.html">Web 版 FOTA 工具</a> 连接到到设备，即可进行安全升级。</p>
+
+<div class="important">
+<strong>注意:</strong> 目前仅 Web 版 FOTA 工具支持安全 FOTA 升级。
+</div>
+
+<p><a href="/web_apps/ing918_ota/index_cn.html">Web 版 FOTA 工具</a> 支持安全或者不安全两种模式，连接到设备之后，会出现醒目的提示：</p>
+
+<p><img src="../img/secure_fota_label.png" alt="Web 版 FOTA 工具" /></p>
+
+<h2 id="2-步骤详解">2. 步骤详解</h2>
+
+<h3 id="0-密钥体系">0. 密钥体系</h3>
+
+<ul>
+  <li>
+    <p>根密钥对</p>
+
+    <p>设备预置根公钥。</p>
+  </li>
+  <li>
+    <p>会话密钥对</p>
+
+    <p>设备、升级工具在初始化时各自随机生成一对会话密钥对。</p>
+  </li>
+  <li>
+    <p>共享密钥</p>
+
+    <p>升级工具的会话根公钥通过根私钥签名后告知设备，设备验签通过后，结合自身的会话私钥计算出共享密钥；
+升级工具直接读取设备的会话公钥，结合自身的会话私钥计算出共享密钥。升级包的数据在传输时使用此共享
+密钥加密。</p>
+  </li>
+</ul>
+
+<h3 id="1-编译-uecc-库">1. 编译 <a href="https://github.com/kmackay/micro-ecc">uECC</a> 库</h3>
+
+<p>编译 uECC 前，请确认接受其协议。使用 Gnu Arm Toolchain 编译 uECC 时，建议使用以下选项：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-D uECC_PLATFORM=uECC_arm_thumb \
+-D uECC_SUPPORTS_secp160r1=0    \
+-D uECC_SUPPORTS_secp224r1=0    \
+-D uECC_SUPPORTS_secp256k1=0    \
+-Os -ffunction-sections -fdata-sections -fshort-wchar
+</code></pre></div></div>
+
+<p>将 uECC 连同 <a href="https://github.com/amosnier/sha-2">SHA-256</a> 编译成一个库 <code class="highlighter-rouge">ing918_uecc.lib</code>。</p>
+
+<h3 id="2-uecc-相关的初始化">2. uECC 相关的初始化</h3>
+
+<pre><code class="language-C">int ecc_rng(uint8_t *dest, unsigned size)
+{
+    // 使用 ING918XX 内置的硬件随机数发生器
+    platform_hrng(dest, size);
+    return 1;
+}
+
+// 使用 NIST P-256 曲线参数
+#define CURVE   uECC_secp256r1()
+
+uECC_set_rng(ecc_rng);
+uECC_make_key(session_keys.pk, session_keys.sk, CURVE);
+</code></pre>
+
+<h3 id="3-为-fota-服务添加公钥特征">3. 为 FOTA 服务添加公钥特征</h3>
+
+<pre><code class="language-C">void ota_init_service()
+{
+    // ...
+
+    att_ota_pk_handle = att_db_util_add_characteristic_uuid128(uuid_ota_pk,
+        ATT_PROPERTY_READ | ATT_PROPERTY_WRITE_WITHOUT_RESPONSE | ATT_PROPERTY_DYNAMIC, NULL, 0);
+}
+</code></pre>
+
+<h3 id="4-密钥交换流程">4. 密钥交换流程</h3>
+
+<pre><code class="language-C">    if (att_handle == ATT_OTA_HANDLE_PK)
+    {
+        if ((buffer_size != sizeof(session_keys.pk) * 2)
+            || (uECC_valid_public_key(buffer, CURVE) == 0) // 会话根公钥是否合法
+            || (uecc_verify_pk(buffer, sizeof(session_keys.pk), buffer + sizeof(session_keys.pk),
+                               root_pk)))                  // 用根公用验证会话根公钥
+        {
+            ota_ctrl[0] = OTA_STATUS_ERROR;
+            return 0;
+        }
+        memcpy(session_keys.peer_pk, buffer, sizeof(session_keys.peer_pk));
+        uECC_shared_secret(buffer, session_keys.sk, session_keys.dh_sk, CURVE);
+        // 将 ECDH 的输出计算一次 SHA-256，作为共享密钥
+        calc_sha_256(session_keys.xor_sk, session_keys.dh_sk, sizeof(session_keys.dh_sk));
+    }
+</code></pre>
+
+<h3 id="5-数据解密验证流程">5. 数据解密验证流程</h3>
+
+<p>升级工具对每一页（8192 字节）的数据分别用会话根私钥进行签名，然后加密、追加 CRC （这里由于存在签名，所以 CRC 并不必要）。
+设备侧在将数据写入 Flash 之前，先检查 CRC，再解密，最后用升级工具的会话公钥验证签名。</p>
+
+<p>出于演示目的，<code class="highlighter-rouge">Thermometer with OTA</code> 里的加密重复使用了共享密钥做异或计算。</p>
+
+<h2 id="3-风险提示">3. 风险提示</h2>
+
+<ol>
+  <li>上述过程未涉及对设备的鉴权，恶意第三方可以通过虚拟设备的方法获取升级包内容；</li>
+  <li>示例中使用了 NIST P-256 曲线，这套曲线参数是 <a href="http://safecurves.cr.yp.to/">不安全</a> 的；</li>
+  <li>加密过程仅做演示。</li>
+</ol>
+
+      </div><!-- .post-content -->
+    </div><!-- .inner-md -->
+  </article><!-- .post -->
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2020. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

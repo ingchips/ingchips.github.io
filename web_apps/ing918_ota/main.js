@@ -2,6 +2,7 @@ let GUID_SERVICE = "3345c2f0-6f36-45c5-8541-92f56728d5f3";
 let GUID_CHAR_OTA_VER = "3345c2f1-6f36-45c5-8541-92f56728d5f3";
 let GUID_CHAR_OTA_CTRL = "3345c2f2-6f36-45c5-8541-92f56728d5f3";
 let GUID_CHAR_OTA_DATA = "3345c2f3-6f36-45c5-8541-92f56728d5f3";
+let GUID_CHAR_OTA_PUBKEY = "3345c2f4-6f36-45c5-8541-92f56728d5f3";
 
 const OTA_CTRL_STATUS_DISABLED = 0;
 const OTA_CTRL_STATUS_OK = 1;
@@ -17,13 +18,23 @@ const OTA_CTRL_METADATA = 0xE0; // param: ota_meta_t
 const OTA_CTRL_REBOOT = 0xFF; // param: no
 
 const BLE_MIN_MTU_SIZE = 20;
+const SIG_LEN = 64;
 
 var handlers = [];
 var the_device = null;
+var is_secure_fota = false;
 
 var manifest = null;
 var ble_obj = null;
 var ble_mtu = 100;
+
+const raw_pub_key = '04141b0b2846c4af974159974f1752e01c9aea21c7c6e304304f8d9cf07f1d1f0a83af76e04dc1cc96b4b83fbb736c663f0bdf5286bf60e891270085c8bf55a896';
+const the_pubic_key  = {"crv":"P-256","ext":true,"key_ops":["verify"],"kty":"EC","x":"FBsLKEbEr5dBWZdPF1LgHJrqIcfG4wQwT42c8H8dHwo","y":"g6924E3BzJa0uD-7c2xmPwvfUoa_YOiRJwCFyL9VqJY"};
+const the_private_key = {"crv":"P-256","d":"XHcXEWfWQKM2DeJp_gu3j16U2PL0gJQKwvJuQ7tpX6c","ext":true,"key_ops":["sign","deriveKey"],"kty":"EC","x":"FBsLKEbEr5dBWZdPF1LgHJrqIcfG4wQwT42c8H8dHwo","y":"g6924E3BzJa0uD-7c2xmPwvfUoa_YOiRJwCFyL9VqJY"};
+let session_key_pair = null;
+let remote_pk = null;
+let shared_key = null;
+let xor_key = null;
 
 function flashInfo() {
     const FLASH_INFOS = [
@@ -60,7 +71,7 @@ function crc16(l, start, len) {
         0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41,
         0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40
     ];
-    
+
     const auchCRCLo = [
         0x00, 0xC0, 0xC1, 0x01, 0xC3, 0x03, 0x02, 0xC2, 0xC6, 0x06, 0x07, 0xC7, 0x05, 0xC5, 0xC4, 0x04,
         0xCC, 0x0C, 0x0D, 0xCD, 0x0F, 0xCF, 0xCE, 0x0E, 0x0A, 0xCA, 0xCB, 0x0B, 0xC9, 0x09, 0x08, 0xC8,
@@ -104,6 +115,13 @@ async function readStatus() {
     return r.getUint8(0);
 }
 
+function getBytes(view) {
+    var r = new Uint8Array(view.byteLength);
+    for (let i = 0; i < view.byteLength; i++)
+        r[i] = view.getUint8(i);
+    return r;
+}
+
 async function switchApp() {
     var buf = new ArrayBuffer(1);
     var v = new DataView(buf);
@@ -131,7 +149,7 @@ async function writeData(data) {
     await ble_obj.char_data.writeValueWithoutResponse(buf);
 }
 
-function buildMetaData(plan) {
+async function buildMetaData(plan) {
     var buffer = new ArrayBuffer(2 + 4 + plan.length * 3 * 4);
     var view = new DataView(buffer);
     var c = 2;
@@ -141,13 +159,33 @@ function buildMetaData(plan) {
         view.setUint32(c, item.addr, true); c+= 4;
         view.setUint32(c, item.data.length, true); c+= 4;
     }
-    var u8data = new Uint8Array(buffer);
-    view.setUint16(0, crc16(u8data, 2, u8data.length - 2), true);
 
-    return {
-        name: 'meta',
-        data: u8data
-    };
+    if (is_secure_fota) {
+        const sig = new Uint8Array(await ecdsa_sign_data(session_key_pair.sk, buffer.slice(2)));
+        for (let i = 2; i < buffer.byteLength; i++)
+            view.setUint8(i, view.getUint8(i) ^ xor_key[(i - 2) & 31]);
+        let buf = new ArrayBuffer(SIG_LEN + buffer.byteLength);
+        var v = new DataView(buf);
+        for (let i = 0; i < SIG_LEN; i++) {
+            v.setUint8(i, sig[i]);
+        }
+        for (let i = 0; i < buffer.byteLength; i++) {
+            v.setUint8(i + SIG_LEN, view.getUint8(i));
+        }
+        let u8data = new Uint8Array(buf);
+        v.setUint16(SIG_LEN, crc16(u8data, SIG_LEN + 2, u8data.length - 2 - SIG_LEN), true);
+        return {
+            name: 'meta',
+            data: u8data
+        };
+    } else {
+        let u8data = new Uint8Array(buffer);
+        view.setUint16(0, crc16(u8data, 2, u8data.length - 2), true);
+        return {
+            name: 'meta',
+            data: u8data
+        };
+    }
 }
 
 function buildUpdatePlan(fullUpdate) {
@@ -195,8 +233,16 @@ function buildUpdatePlan(fullUpdate) {
 
 async function burnPage(emitProgress, acc_size, addr, page) {
     var current = 0;
+    var sig;
+    if (is_secure_fota) {
+        sig = new Uint8Array(await ecdsa_sign_data(session_key_pair.sk, page));
+        for (let i = 0; i < page.length; i++)
+            page[i] ^= xor_key[i & 31];
+    }
+
     var buffer = new ArrayBuffer(1 + 4);
     var cmd = new DataView(buffer);
+
     cmd.setUint8(0, OTA_CTRL_PAGE_BEGIN),
     cmd.setUint32(1, addr, true);
     await writeCtrl(buffer);
@@ -216,10 +262,24 @@ async function burnPage(emitProgress, acc_size, addr, page) {
         emitProgress(acc_size + current);
         current += size;
     }
-    cmd.setUint8(0, OTA_CTRL_PAGE_END);
-    cmd.setUint16(1, page.length, true);
-    cmd.setUint16(3, crc16(page, 0, page.length), true);
-    await writeCtrl(buffer);
+
+    if (is_secure_fota) {
+        buffer = new ArrayBuffer(1 + 4 + SIG_LEN);
+        cmd = new DataView(buffer);
+        cmd.setUint8(0, OTA_CTRL_PAGE_END);
+        cmd.setUint16(1, page.length, true);
+        cmd.setUint16(3, crc16(page, 0, page.length), true);
+        for (let i = 0; i < SIG_LEN; i++)
+            cmd.setUint8(5 + i, sig[i]);
+        await writeCtrl(buffer);
+        await delay(200);
+    } else {
+        cmd.setUint8(0, OTA_CTRL_PAGE_END);
+        cmd.setUint16(1, page.length, true);
+        cmd.setUint16(3, crc16(page, 0, page.length), true);
+        await writeCtrl(buffer);
+    }
+
     switch (await readStatus()) {
         case OTA_CTRL_STATUS_OK:
             return true;
@@ -239,7 +299,7 @@ async function burnFiles(emitProgress, plan) {
 
         while (offset < item.data.length) {
             let block = Math.min(page_size, item.data.length - offset);
-            let page = item.data.slice(offset, offset + block);            
+            let page = item.data.slice(offset, offset + block);
             showProgress(msg.burning + item.name + (errors > 0 ? ' (retry #' + errors + ')' : ''));
             if (await burnPage(emitProgress, acc_size + offset, item.write_addr + offset, page)) {
                 offset += block;
@@ -303,8 +363,6 @@ async function doUpdate() {
         return;
     }
 
-    ble_mtu = parseInt($('#mtu_size').val()) & 0xfc;
-
     const sum =  plan.map((item) => item.data.length).reduce((a, b) => a + b);
     var burned = 0;
     startRunning();
@@ -313,7 +371,7 @@ async function doUpdate() {
 
     try {
         const result = (await enableFOTA()) && (await burnFiles(emitProgress, plan))
-                        && (await burnMetaData(buildMetaData(plan)));
+                        && (await burnMetaData(await buildMetaData(plan)));
         if (result) {
             showProgress(msg.fota_complete, -1);
             await rebootDev();
@@ -346,7 +404,7 @@ function updateVerInd() {
     if (a1 >= a2) {
         manifest.app.update = manifest.platform.update;
     }
-    
+
     $('#dev_platform_update_ind').attr('uk-icon', manifest.platform.update ? 'upload' : 'check');
     $('#dev_app_update_ind').attr('uk-icon', manifest.app.update ?'upload' : 'check');
 
@@ -387,13 +445,13 @@ async function processZip(f) {
     })();
 
     $('#current_file').text(f.name);
-    
+
     let entries = await model.getEntries(f, { filenameEncoding: 'utf-8' });
 
     let extractTextFile = async function (fn) {
         return await entries.find(entry => entry.filename == fn).getData(new zip.TextWriter());
     }
-    
+
     let extractBinFile = async function (fn) {
         return await entries.find(entry => entry.filename == fn).getData(new zip.Uint8ArrayWriter());
     }
@@ -456,6 +514,8 @@ async function connect() {
         return [l.getUint16(start, true), l.getUint8(start + 2), l.getUint8(start + 3)];
     };
 
+    ble_mtu = parseInt($('#mtu_size').val()) & 0xfc;
+
     try {
         startRunning();
 
@@ -478,9 +538,34 @@ async function connect() {
 
         showProgress(msg.discover_fota);
         ble_obj.service = await ble_obj.server.getPrimaryService(GUID_SERVICE);
-        ble_obj.char_ver = await ble_obj.service.getCharacteristic(GUID_CHAR_OTA_VER);
-        ble_obj.char_ctrl = await ble_obj.service.getCharacteristic(GUID_CHAR_OTA_CTRL);
-        ble_obj.char_data = await ble_obj.service.getCharacteristic(GUID_CHAR_OTA_DATA);
+
+        let chars = await ble_obj.service.getCharacteristics();
+
+        ble_obj.char_ver = chars.find((c) => c.uuid === GUID_CHAR_OTA_VER);
+        ble_obj.char_ctrl = chars.find((c) => c.uuid === GUID_CHAR_OTA_CTRL);
+        ble_obj.char_data = chars.find((c) => c.uuid === GUID_CHAR_OTA_DATA);
+        ble_obj.char_pk = chars.find((c) => c.uuid === GUID_CHAR_OTA_PUBKEY);
+        if (ble_obj.char_pk != undefined)
+        {
+            if (ble_mtu < 150) {
+                alert(msg.mtu_too_small);
+                window.reload();
+            }
+
+            is_secure_fota = true;
+            prepare_session_keypair();
+
+            showProgress(msg.exchange_keys);
+
+            remote_pk = await ble_obj.char_pk.readValue();
+            let sig = await ecdsa_sign_data(the_private_key, session_key_pair.raw_pk);
+            let pk = arraybuffer_to_hexstr(session_key_pair.raw_pk) + arraybuffer_to_hexstr(sig);
+            await ble_obj.char_pk.writeValueWithoutResponse(hexstr_to_arraybuffer(pk));
+            await prepare_shared_key();
+        }
+
+        $('#flag_secure_fota').attr('hidden', !is_secure_fota);
+        $('#flag_unsecure_fota').attr('hidden', is_secure_fota);
 
         showProgress(msg.query_ver);
         var ver = await ble_obj.char_ver.readValue();
@@ -489,6 +574,7 @@ async function connect() {
         updateVerInd();
 
         stopRunning();
+
     } catch (e) {
         alert(e.message);
         window.location.reload();
@@ -554,6 +640,9 @@ function appStart() {
         return;
     }
 
+    $('#flag_secure_fota').attr('hidden', true);
+    $('#flag_unsecure_fota').attr('hidden', true);
+
     $('#api_notice').attr('hidden', true);
 
     // Setup the dnd listeners.
@@ -565,7 +654,7 @@ function appStart() {
         }, false);
     dropZone.addEventListener('drop', handleFileDrop, false);
     document.getElementById('zip_file_select').addEventListener('change', handleFileSelect, false);
-    
+
     $("#btn_scan").click(async function () {
         try {
             $('#startup_window').hide();
@@ -579,9 +668,189 @@ function appStart() {
 
     $('#btn_sec_fota').click(switchToSecFOTA);
 
-    startRunning();
-    showProgress(msg.sel_dev, -1);
+    //startRunning();
+    //showProgress(msg.sel_dev, -1);
     return;
 }
 
 window.onload = appStart;
+
+function filter_hex_str(hex0) {
+    var hex = '';
+    for (let c of hex0) {
+        if ('0123456789abcdefABCDEF'.indexOf(c) >= 0)
+            hex = hex + c;
+    }
+    return hex;
+}
+
+function hexstr_to_bytes(hex0) {
+    const hexLength = 2;
+    let binary = [];
+    let hex = filter_hex_str(hex0);
+    for (let i = 0; i < hex.length / hexLength; i++) {
+        binary[i] = parseInt(hex.substr(i * hexLength, hexLength), 16);
+    }
+    return binary;
+}
+
+function hexstr_to_binstr(hex0) {
+    const hexLength = 2;
+    let binary = '';
+    let hex = filter_hex_str(hex0);
+    for (let i = 0; i < hex.length / hexLength; i++) {
+        binary = binary + String.fromCharCode(parseInt(hex.substr(i * hexLength, hexLength), 16));
+    }
+    return binary;
+}
+
+function hexstr_to_arraybuffer(hexstr) {
+    const bytes = hexstr_to_bytes(hexstr);
+    return Uint8Array.from(bytes);
+}
+
+function u8arr_to_binstr(u8arr) {
+    let binary = '';
+    for (let c of u8arr) {
+        binary = binary + String.fromCharCode(c);
+    }
+    return binary;
+}
+
+function dataview_to_hexstr(v) {
+    var r = '';
+    for (let i = 0; i < v.byteLength; i++)
+        r += v.getUint8(i).toString(16).padStart(2,"0");
+    return r;
+}
+
+function arraybuffer_to_hexstr(buf) {
+    var v = new DataView(buf);
+    var r = '';
+    for (let i = 0; i < v.byteLength; i++)
+        r += v.getUint8(i).toString(16).padStart(2,"0");
+    return r;
+}
+
+function u8arr_to_arraybuffer(u8arr) {
+    var a = new ArrayBuffer(u8arr.length);
+    var v = new DataView(a);
+    for (let i = 0; i < u8arr.length; i++)
+        v.setUint8(i, u8arr[i]);
+    return a;
+}
+
+function binstr_to_arraybuffer(str) {
+    var a = new Uint8Array(str.length)
+    for (let i = 0; i < str.length; i++)
+        a[i] = str.charCodeAt(i);
+    return a;
+}
+
+function data_to_arraybuffer(binstr_or_u8arr) {
+    if (typeof(binstr_or_u8arr) === "string")
+        return binstr_to_arraybuffer(binstr_or_u8arr);
+    if (binstr_or_u8arr  instanceof ArrayBuffer )
+        return binstr_or_u8arr;
+    return u8arr_to_arraybuffer(binstr_or_u8arr);
+}
+
+async function sha256(data) {
+    let buf = data_to_arraybuffer(data);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', buf);           // hash the message
+    const hashArray = Array.from(new Uint8Array(hashBuffer));                     // convert buffer to byte array
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
+    return hashHex;
+}
+
+async function ecdsa_sign_data(sk, data) {
+    let buf = data_to_arraybuffer(data);
+    sk.key_ops = ['sign'];
+    const privateKey = await crypto.subtle.importKey(
+        'jwk',
+        sk,
+        {name: 'ECDSA', hash: 'SHA-256', namedCurve: "P-256"},
+        false,
+        ['sign']
+    );
+    let signature = await crypto.subtle.sign(
+        {name: 'ECDSA', hash: 'SHA-256'},
+        privateKey,
+        buf
+      );
+    return signature;
+}
+
+async function ecdsa_verify_sig(pk, data, sig) {
+    let buf = data_to_arraybuffer(data);
+    const publicKey = await crypto.subtle.importKey(
+        'jwk',
+        pk,
+        {name: 'ECDSA', hash: 'SHA-256', namedCurve: "P-256"},
+        false,
+        ['verify']
+    );
+    return await crypto.subtle.verify(
+        {name: 'ECDSA', hash: 'SHA-256'},
+        publicKey,
+        sig,
+        buf
+      );
+}
+
+async function ecdh_derive_shared_key(sk, pkhex) {
+    let publicKey = await crypto.subtle.importKey(
+        'raw',
+        hexstr_to_arraybuffer(pkhex),
+        {name: 'ECDH', hash: 'SHA-256', namedCurve: "P-256"},
+        true,
+        []
+    );
+
+    sk.key_ops = ['deriveKey'];
+    const privateKey = await crypto.subtle.importKey(
+        'jwk',
+        sk,
+        {name: 'ECDH', hash: 'SHA-256', namedCurve: "P-256"},
+        true,
+        ['deriveKey']
+    );
+    return await crypto.subtle.exportKey('raw', await crypto.subtle.deriveKey(
+        {name: 'ECDH', public: publicKey},
+        privateKey,
+        {name: "AES-GCM", length: 256},
+        true,
+        ['encrypt', 'decrypt']
+    ));
+}
+
+async function prepare_shared_key() {
+    let shared = await ecdh_derive_shared_key(session_key_pair.sk, '04' + dataview_to_hexstr(remote_pk));
+    xor_key = hexstr_to_bytes(await sha256(shared));
+}
+
+async function prepare_session_keypair() {
+    let pair = await crypto.subtle.generateKey(
+        {name: 'ECDSA', hash: 'SHA-256', namedCurve: 'P-256'},
+        true,
+        ['sign']
+    );
+    session_key_pair = {
+        pk: await crypto.subtle.exportKey('jwk', pair.publicKey),
+        raw_pk: (await crypto.subtle.exportKey('raw', pair.publicKey)).slice(1),
+        sk: await crypto.subtle.exportKey('jwk', pair.privateKey)
+    };
+}
+
+async function sign_seesion_pk() {
+
+}
+
+async function test()
+{
+    let sig = ecdsa_sign_data(the_private_key, 'abc')
+    let data = 'a450ed2ac2e8d188d6553787cd6de1d97a25e3d0f9ba1097841a65f963fe806b18e6da19a91467a141dcc75f89c59c761d31a1fd4261a5eb82d25a1f333aabc0';
+    sig  = 'fbdc4ad9cd8543b35cf7e5b731027b30445625daae6320737ae825894fa16dc8d84a2deef21d944f0dac82d865c21faa556fb5a597637ec76381d7a8881f6b77';
+
+    console.log(await ecdsa_sign_data(the_private_key, session_key_pair.raw_pk));
+}

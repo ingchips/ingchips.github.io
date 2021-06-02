@@ -194,7 +194,7 @@
 在这个回同函数里响应 <code class="highlighter-rouge">GATT_EVENT_CHARACTERISTIC_VALUE_QUERY_RESULT</code> 事件获取特性的值。
 代码如下：</p>
 
-<pre><code class="language-C">void read_characteristic_value_callback(uint8_t packet_type, uint16_t _, 
+<pre><code class="language-C">void read_characteristic_value_callback(uint8_t packet_type, uint16_t _,
     const uint8_t *packet, uint16_t size)
 {
     switch (packet[0])
@@ -203,7 +203,7 @@
         {
             uint16_t value_size;
             const gatt_event_value_packet_t *value =
-                gatt_event_characteristic_value_query_result_parse(packet, size, 
+                gatt_event_characteristic_value_query_result_parse(packet, size,
                 &amp;value_size);
             if (value_size)
             {
@@ -309,7 +309,7 @@ const ServiceDiscoverer = struct {
         }
     }
 
-    pub fn discover_16(self: *ServiceDiscoverer, conn_handle: hci_con_handle_t, uuid: u16) ?g   
+    pub fn discover_16(self: *ServiceDiscoverer, conn_handle: hci_con_handle_t, uuid: u16) ?g
             gatt_client_service_t {
         if (!session_complete) return null;
 
@@ -342,7 +342,7 @@ export fn zig_discover() void {
 
 <p>这个 <code class="highlighter-rouge">zig_discover</code> 可以在 C 模块里直接调用。</p>
 
-<p><strong>说明: </strong> 目前 Zig 的最新版本为 0.8.0，编译器在嵌入式系统交差编译方面仍存在一些问题，
+<p><strong>说明: </strong> 本文使用的是　Zig　主分支最新版本，编译器在嵌入式系统交差编译方面仍存在一些问题，
 <code class="highlighter-rouge">@frameSize</code> 和 <code class="highlighter-rouge">@asyncCall</code> 的行为异常，上面的 <code class="highlighter-rouge">the_frame</code> 只能定义为全局变量。
 对使用 Zig 进行嵌入式开发感兴趣的读者可以<a href="https://github.com/ingchips/doc_release/releases/download/v1.0/zig_demo_0.1.zip">下载</a>示例代码。</p>
 

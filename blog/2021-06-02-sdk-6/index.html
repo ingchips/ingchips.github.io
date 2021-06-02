@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>SDK 6.0 新功能 - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="针对客户需求，SDK 6.0 增加了平台补丁、简易偏频测量等新功能。协议栈陆续增加了几个配置项，提升 ING918xx 蓝牙协议栈的兼容性，"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item has-children">
+              
+              
+<a class="" href="/docs/sdk/apps/#web-apps">
+  
+  Web 工具
+  
+</a>
+
+              
+                
+                <ul class="submenu">
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/callgraph">
+  
+  Callgraph (调用图)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index_cn.html">
+  
+  ING918 FOTA (空中升级)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/dr_cte">
+  
+  CTE 预处理器
+  
+</a>
+
+  </li>
+  
+</ul>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+              
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <article class="post post-full">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <header class="post-header has-gradient outer">
+      
+      
+      <div class="inner-sm">
+        <div class="post-meta">
+          <time class="published" datetime="2021-06-02 00:00">June 02, 2021</time>
+        </div>
+        <h1 class="post-title">SDK 6.0 新功能</h1>
+        
+        
+      </div>
+    </header>
+    <div class="inner-md outer">
+      <div class="post-content">
+        <p>针对客户需求，SDK 6.0 增加了平台补丁、简易偏频测量等新功能。协议栈陆续增加了几个配置项，可以提升 ING918xx 蓝牙协议栈的兼容性，</p>
+
+<h2 id="平台补丁">平台补丁</h2>
+
+<p>SDK 提供的 <code class="highlighter-rouge">platform.bin</code> 功能固定、不可更改，某些特殊需求——比如在系统复位之后尽快配置看门狗——无法实现。对此，我们开发了平台补丁工具，
+可以将开发者编写的一段程序作为补丁插入到 <code class="highlighter-rouge">platform</code> 已有的中断服务程序之前。</p>
+
+<p>对补丁程序存有以下限制和注意事项：</p>
+
+<ol>
+  <li>
+    <p>进入补丁程序时，未配置栈空间。因此需要保证 1) 程序中不存在压、弹栈操作，或者 2) 程序自行配置栈空间；</p>
+  </li>
+  <li>
+    <p>工具会将补丁程序附加到 <code class="highlighter-rouge">platform.bin</code> 最后一页 eFlash 存储空间的空白处，所以其大小受限；</p>
+  </li>
+  <li>
+    <p>补丁程序的加载位置不固定。</p>
+  </li>
+</ol>
+
+<p><code class="highlighter-rouge">Reset Handler</code> 示例在系统复位之后立即配置看门狗。这个示例使用汇编开发，未使用栈空间，体积也很小。补丁工具会识别
+<code class="highlighter-rouge">Reset_Handler</code> 函数的最后两行代码，自动调整。</p>
+
+<pre><code class="language-asm">Reset_Handler   PROC
+                EXPORT  Reset_Handler
+
+                ; ...
+
+                LDR  R0, =0xFEED4000    ; will be modified by tool
+                BX R0
+
+                ENDP
+</code></pre>
+
+<p>补丁程序准备好之后，在 <code class="highlighter-rouge">Wizard</code> 里选择菜单 Tools → More → Patching Platform 打开补丁工具。选择
+<code class="highlighter-rouge">platform.bin</code>、补丁程序，然后点击 “Make Patch” 生成带有补丁程序的新的 <code class="highlighter-rouge">platform.bin</code>，烧录时使用
+用这个文件替换掉原有的 <code class="highlighter-rouge">platform.bin</code> 即可。</p>
+
+<h2 id="简易频偏测量">简易频偏测量</h2>
+
+<p>支持蓝牙频段的频谱仪普遍价格较高，移动性差。现在只需要使用一块 ING9188xx 开发板就可以测量频偏。
+在 <code class="highlighter-rouge">Wizard</code> 里选择菜单 Tools → More → Frequency Offset Tester 打开频偏测量工具：</p>
+
+<p><img src="../img/freq_offset_main.png" alt="freq offset tool" /></p>
+
+<p>使用步骤：</p>
+
+<ol>
+  <li>
+    <p>点击 “Burn Tester” 把测试用固件烧入 ING9188xx 开发板（此步骤只需要执行一次）；</p>
+  </li>
+  <li>
+    <p>点击 “Burn IUT” 把测试程序写入待测设备；</p>
+  </li>
+  <li>
+    <p>填写 ING9188xx 开发板的串口号；</p>
+  </li>
+  <li>
+    <p>点击 “Run” 开始测试；</p>
+  </li>
+  <li>
+    <p>点击 “Stop” 完成测试。</p>
+  </li>
+</ol>
+
+<p>ING9188xx 开发板本身的频偏可以填到 (5) Tester Calibaration (kHz)，ING9188xx 开发板与 IUT 之间的链路衰减可以填到 Attenuation (dB)。</p>
+
+<p>注意事项：</p>
+
+<ol>
+  <li>
+    <p>建议使用通过空口测试；如果使用电缆连接，务必加入适当的衰减，以防输入信号过大导致 ING9188xx 芯片过载；</p>
+  </li>
+  <li>
+    <p>“Burn IUT” 会将测试程序写入待测设备的 RAM 中，待测设备掉电或者复位后测试程序自动消失、失效；</p>
+  </li>
+  <li>
+    <p>待测信道会随测试程序写入待测设备，不可中途切换，而 ING9188xx 开发板上烧录的测试用固件支持信道切换。</p>
+  </li>
+</ol>
+
+<h2 id="发射功率校准">发射功率校准</h2>
+
+<p>新版的 BQB RF 测试工具在进行连续波发射测试时，可以设置发射功率等级。连接频谱仪校准与功率等级对应的实际功率值，然后
+用 API <code class="highlighter-rouge">platform_set_rf_power_mapping</code> 将校准过的功率对应表传入 <code class="highlighter-rouge">platform</code>，校准完成。</p>
+
+<h2 id="兼容性">兼容性</h2>
+
+<p>低功耗蓝牙进入连接模式后，各层分别协商通信中数据包的大小，对于 ATT 层，由 MTU EXCHANGE 流程实现；对于链路层，由 DATA LENGTH 更新流程实现。</p>
+
+<p>按照规范，进入连接模式后，DATA LENGTH 更新流程可以由主或从设备在任何时刻发起。这导致了一个问题：某些芯片无法处理对方设备“随时”发起的
+DATA LENGTH 更新流程。比如当旧版本（&lt; 5.7.0）的平台软件被 Nordic 芯片以主角色连接后，Nordic 芯片出现协议栈挂起的情况，消息序列图如下。</p>
+
+<p><img src="../img/nordic_data_len_bug.png" alt="nodic data length bug" /></p>
+
+<p>为了更新地兼容不同的芯片，v5.7.0 定义了两个配置项：</p>
+
+<pre><code class="language-C">enum btstack_config_item {
+    STACK_ATT_SERVER_ENABLE_AUTO_DATA_LEN_REQ = 1,
+    STACK_GATT_CLIENT_DISABLE_AUTO_DATA_LEN_REQ = 2,
+    ...
+};
+</code></pre>
+
+<p>这两个配置分别控制 GATT Server、Client 在 MTU EXCHANGE 时是否自动发起 DATA LENGTH 更新流程。默认情况下，Servier 不会自动发起更新流程，
+而 Client 会自动发起。旧版本（&lt; 5.7.0）下里两者都会自动发起更新流程。</p>
+
+<p>新版本默认情况下，可以被 Nordic 芯片以主角色正常连接：</p>
+
+<p><img src="../img/nordic_data_len_ok.png" alt="nodic data length ok" /></p>
+
+<p>顺带提一下，虽然 MTU 的大小与 Data Length 两参数没有联系、相互独立，但是图中 Nordic 芯片把两者定义为同一个值，说明开发者在配置
+<code class="highlighter-rouge">sdk_config</code> 时很可能犯了一个错误。</p>
+
+      </div><!-- .post-content -->
+    </div><!-- .inner-md -->
+  </article><!-- .post -->
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2021. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

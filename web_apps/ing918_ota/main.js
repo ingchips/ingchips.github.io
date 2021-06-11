@@ -854,3 +854,18 @@ async function test()
 
     console.log(await ecdsa_sign_data(the_private_key, session_key_pair.raw_pk));
 }
+
+async function gen_root_keypair() {
+    let pair = await crypto.subtle.generateKey(
+        {name: 'ECDSA', hash: 'SHA-256', namedCurve: 'P-256'},
+        true,
+        ['sign']
+    );
+    console.log('privateKey (jwk):');
+    console.log(await crypto.subtle.exportKey('jwk', pair.privateKey));
+
+    console.log('publicKey (jwk):');
+    console.log(await crypto.subtle.exportKey('jwk', pair.publicKey));
+    console.log('publicKey (raw hex):');
+    console.log(arraybuffer_to_hexstr(await crypto.subtle.exportKey('raw', pair.publicKey)));
+}

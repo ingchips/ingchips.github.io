@@ -24,7 +24,7 @@
 <meta name="author" content="v1.2" />
 
 
-<meta name="date" content="2021-07-05" />
+<meta name="date" content="2021-08-02" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -655,7 +655,7 @@ There are two memory regions (Table <a href="dive-into-sdk.html#tab:ch3-mem-regi
 </tr>
 </tbody>
 </table>
-<p>How to create memory dump:</p>
+<p>Memory can be dumped through debuggers:</p>
 <ul>
 <li><p>Keil μVision</p>
 <p>In debug session, open the Command Window, use <code>save</code> to save each memory region. For example:</p>
@@ -663,6 +663,11 @@ There are two memory regions (Table <a href="dive-into-sdk.html#tab:ch3-mem-regi
 save share.hex 0x400A0000,0x400B0000</code></pre>
 <p>Note: the second address is the address of last byte <strong>plus 1</strong> of the dump range, and should be aligned
 with the chip series that is used in the project.</p></li>
+<li><p>J-Link Commander</p>
+<p>Once connected, use <code>regs</code> to shows all current register values, and <code>savebin</code> to
+save target memory into binary file. For example:</p>
+<pre><code>savebin sysm.bin  0x20000000 0x10000
+savebin share.bin 0x400A0000 0x10000</code></pre></li>
 <li><p>IAR Embedded Workbench</p>
 <p>In debug session, open a Memory window, and select “Memory Save …” from popup menu.</p></li>
 <li><p>Rowley Crossworks for ARM &amp; SEGGER Embedded Studio for ARM</p>
@@ -674,6 +679,8 @@ with the chip series that is used in the project.</p></li>
 <li><p>GDB (GNU Arm Embedded Toolchain and Nim)</p>
 <p>In GDB debug session, use <code>dump</code> command to save each memory region.</p></li>
 </ul>
+<p>Memory can be also dumped by a piece of specific code. For example, in the event handler of
+<code>PLATFORM_CB_EVT_ASSERTION</code>, dump all memory data to UART.</p>
 
 </div>
 </div>

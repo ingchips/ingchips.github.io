@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>用 Visual Studio Code 打造集成开发环境 - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="本文介绍如何以 Visual Studio Code 为中心，打造一套“现代化”的、功能完整的集成开发环境。"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item has-children">
+              
+              
+<a class="" href="/docs/sdk/apps/#web-apps">
+  
+  Web 工具
+  
+</a>
+
+              
+                
+                <ul class="submenu">
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/callgraph">
+  
+  Callgraph (调用图)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index_cn.html">
+  
+  ING918 FOTA (空中升级)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/dr_cte">
+  
+  CTE 预处理器
+  
+</a>
+
+  </li>
+  
+</ul>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+              
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <article class="post post-full">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <header class="post-header has-gradient outer">
+      
+      
+      <div class="inner-sm">
+        <div class="post-meta">
+          <time class="published" datetime="2021-07-29 00:00">July 29, 2021</time>
+        </div>
+        <h1 class="post-title">用 Visual Studio Code 打造集成开发环境</h1>
+        
+        
+      </div>
+    </header>
+    <div class="inner-md outer">
+      <div class="post-content">
+        <p>Visual Studio Code 是由微软开发，开放源代码的“现代化”代码编辑器，内置 Git 版本控制功能，
+同时也具有开发环境功能，支持代码补全、代码片段和代码重构等。
+借助其丰富而强大的插件（扩展），可以打造出一套功能完整的集成开发环境。</p>
+
+<h2 id="安装与配置">安装与配置</h2>
+
+<p>整个集成开发环境由 4 个部分组成，各部分的安装步骤如下。</p>
+
+<h3 id="1-visual-studio-code-本体">1. Visual Studio Code 本体</h3>
+
+<p>直接<a href="https://code.visualstudio.com/">下载</a>安装。</p>
+
+<h3 id="2-gnu-arm-toolchain">2. Gnu Arm Toolchain</h3>
+
+<p>直接<a href="https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads">下载</a>安装。</p>
+
+<p>假设安装目录为 <code class="highlighter-rouge">path/to/gcc-arm-none-eabi-10-2020-q4-major</code>。</p>
+
+<h3 id="3-调试器服务器">3. 调试器服务器</h3>
+
+<p>有两种调试服务器可供选择：OpenOCD、J-Link。这里我们选用 J-Link，
+直接<a href="https://www.segger.com/downloads/jlink/">下载</a>安装。</p>
+
+<p>假设安装目录为 <code class="highlighter-rouge">path/to/j-link</code>。</p>
+
+<h3 id="4-vscode-调试插件">4. VSCode 调试插件</h3>
+
+<p>为 VSCode 安装 “Cortex-Debug” 插件。打开插件配置 json 文档，在文件末尾增加如下 4 项数据：</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+    <span class="c1">// ...</span>
+    <span class="s2">"cortex-debug.armToolchainPath"</span><span class="p">:</span> <span class="s2">"path/to/gcc-arm-none-eabi-10-2020-q4-major/bin"</span><span class="p">,</span>
+    <span class="s2">"cortex-debug.armToolchainPrefix"</span><span class="p">:</span> <span class="s2">"arm-none-eabi"</span><span class="p">,</span>
+    <span class="s2">"cortex-debug.registerUseNaturalFormat"</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="s2">"cortex-debug.JLinkGDBServerPath"</span><span class="p">:</span> <span class="s2">"path/to/j-link/JLinkGDBServerCL.exe"</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>这里除了配置工具路径之外，把寄存器也修改为更常见的十六进制方式显示。</p>
+
+<p>最后，打开 <code class="highlighter-rouge">ingWizard</code>  Options 窗口的 <code class="highlighter-rouge">Common</code> 页面，填入 VSCode 可执行文件的完整路径。</p>
+
+<h2 id="使用">使用</h2>
+
+<p>使用 <code class="highlighter-rouge">ingWizard</code> 新建一个使用 Gnu Arm Toolchain 的项目。注意选中“Setup Visual Studio Code”。</p>
+
+<p><img src="../img/vscode_new_gcc_proj.png" alt="" /></p>
+
+<h3 id="1-开发">1. 开发</h3>
+
+<p>开发过程中代码补全、信息提示等功能正常：</p>
+
+<p><img src="../img/vscode_code_insight.png" alt="" /></p>
+
+<h3 id="2-编译">2. 编译</h3>
+
+<p>在终端窗口输入 <code class="highlighter-rouge">make release</code> 以优化模式编译项目：</p>
+
+<p><img src="../img/vscode_build.png" alt="" /></p>
+
+<p>也可以通过 <code class="highlighter-rouge">build (release)</code> Task 编译项目：</p>
+
+<p><img src="../img/vscode_task_build.png" alt="" /></p>
+
+<h3 id="3-下载">3. 下载</h3>
+
+<p>在 <code class="highlighter-rouge">ingWizard</code> 通过快捷菜单或者在 VSCode 运行 <code class="highlighter-rouge">download</code> Task 打开 Flash 下载器。</p>
+
+<h3 id="4-调试">4. 调试</h3>
+
+<div class="note">
+<strong>注意:</strong> 使用 SDK 6.2.0+ 新建 Gnu Arm Toolchain 项目时，ingWizard 会自动完成各项设置。
+对于使用旧版本 SDK 生成的项目，请参考“为已有项目追加调试功能”。
+</div>
+
+<p>用 <code class="highlighter-rouge">make clean debug</code> 命令以调试模式再次编译，然后重新下载。</p>
+
+<p>在 VSCode 里按下 F5 进入在线调试模式。从下图可以看出，变量查看、寄存器查看、函数调用栈、断点等功能齐备。</p>
+
+<p><img src="../img/vscode_full_dbg.png" alt="" /></p>
+
+<h2 id="为已有项目追加调试功能">为已有项目追加调试功能</h2>
+
+<p>在项目目录的 <code class="highlighter-rouge">.vscode</code> 子文件夹内新建 <code class="highlighter-rouge">launch.json</code> 文件，内容如下：</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+    <span class="s2">"version"</span><span class="p">:</span> <span class="s2">"0.2.0"</span><span class="p">,</span>
+    <span class="s2">"configurations"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"cortex-debug"</span><span class="p">,</span>
+            <span class="s2">"request"</span><span class="p">:</span> <span class="s2">"launch"</span><span class="p">,</span>
+            <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"Debug (JLINK)"</span><span class="p">,</span>
+            <span class="s2">"servertype"</span><span class="p">:</span> <span class="s2">"jlink"</span><span class="p">,</span>
+            <span class="s2">"cwd"</span><span class="p">:</span> <span class="s2">"${workspaceRoot}"</span><span class="p">,</span>
+            <span class="s2">"interface"</span><span class="p">:</span> <span class="s2">"swd"</span><span class="p">,</span>
+            <span class="s2">"runToMain"</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="s2">"executable"</span><span class="p">:</span> <span class="s2">"AXF文件名.axf"</span><span class="p">,</span>
+            <span class="s2">"device"</span><span class="p">:</span> <span class="s2">"Cortex-M3"</span><span class="p">,</span>
+            <span class="s2">"configFiles"</span><span class="p">:</span> <span class="p">[</span> <span class="p">],</span>
+            <span class="s2">"svdFile"</span><span class="p">:</span> <span class="s2">"${env:ING_SDK_ROOT}/flash/KeilFlash/pack/SVD/ING91800.svd"</span><span class="p">,</span>
+            <span class="s2">"swoConfig"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">"enabled"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+                <span class="s2">"cpuFrequency"</span><span class="p">:</span> <span class="mi">48000000</span><span class="p">,</span>
+                <span class="s2">"swoFrequency"</span><span class="p">:</span> <span class="mi">4000000</span><span class="p">,</span>
+                <span class="s2">"source"</span><span class="p">:</span> <span class="s2">"probe"</span><span class="p">,</span>
+                <span class="s2">"decoders"</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">{</span> <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"console"</span><span class="p">,</span> <span class="s2">"label"</span><span class="p">:</span> <span class="s2">"ITM"</span><span class="p">,</span> <span class="s2">"port"</span><span class="p">:</span> <span class="mi">0</span> <span class="p">}</span>
+                <span class="p">]</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+      </div><!-- .post-content -->
+    </div><!-- .inner-md -->
+  </article><!-- .post -->
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2021. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

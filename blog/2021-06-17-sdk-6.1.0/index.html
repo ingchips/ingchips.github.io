@@ -220,49 +220,6 @@
   </li>
 </ol>
 
-<h2 id="示例">示例</h2>
-
-<p>GATT Relay 首先克隆一个指定设备（设备 A）的广播数据，然后连接到该设备，克隆它的 GATT Profile，再发送克隆得到的广播数据等待连接。
-用其它设备（设备 B）连接到 GATT Relay 后，GATT Relay 会把设备 B 里的 GATT Client 发起的所有请求转发到设备 A，
-再将响应转发回设备 B。</p>
-
-<p>这个例子里回调函数使用延迟读取方式，待 GATT Client 从设备 A 获得数据后，调用 <code class="highlighter-rouge">att_server_deferred_read_response</code>
-将结果传递到设备 B。</p>
-
-<pre><code class="language-C">void gatt_read_callback(uint8_t packet_type, uint16_t _, const uint8_t *packet, uint16_t size)
-{
-    switch (packet[0])
-    {
-    case GATT_EVENT_CHARACTERISTIC_VALUE_QUERY_RESULT:
-        {
-            uint16_t value_size;
-            const gatt_event_value_packet_t *value =
-                gatt_event_characteristic_value_query_result_parse(packet, size, &amp;value_size);
-            att_server_deferred_read_response(handle_to_master,
-                                              handle_map_from_slave[value-&gt;handle],
-                                              value-&gt;value, value_size);
-        }
-        break;
-    case GATT_EVENT_QUERY_COMPLETE:
-        break;
-    }
-}
-
-static uint16_t att_read_callback(hci_con_handle_t connection_handle, uint16_t att_handle, uint16_t offset,
-                                  uint8_t * buffer, uint16_t buffer_size)
-{
-    if (buffer == NULL)
-    {
-        uint16_t handle = handle_map_to_slave[att_handle];
-        gatt_client_read_value_of_characteristic_using_value_handle(gatt_read_callback,
-            handle_to_slave,
-            handle);
-        return ATT_DEFERRED_READ;
-    }
-    // ...
-}
-</code></pre>
-
       </div><!-- .post-content -->
     </div><!-- .inner-md -->
   </article><!-- .post -->

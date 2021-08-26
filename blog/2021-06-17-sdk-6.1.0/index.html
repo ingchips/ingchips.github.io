@@ -193,15 +193,11 @@
 
 <p>Client 主动读取分为“静态”与“动态”两种情况：</p>
 
-<ul>
-  <li>
-    <p>静态数值存储于 ATT 数据库内，协议栈直接提取数值传递到 Client</p>
-  </li>
-  <li>
-    <p>对于动态数值，协议栈每次读取数值时会两次调用回调函数（<code class="highlighter-rouge">att_read_callback</code>）：第一次数据指针为空，用来获取数值长度；
-  第二次数据指针不为空，回调函数此时将数据写入数据指针指向的内存。</p>
-  </li>
-</ul>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>* 静态数值存储于 ATT 数据库内，协议栈直接提取数值传递到 Client
+
+* 对于动态数值，协议栈每次读取数值时会两次调用回调函数（`att_read_callback`）：第一次数据指针为空，用来获取数值长度；
+  第二次数据指针不为空，回调函数此时将数据写入数据指针指向的内存。
+</code></pre></div></div>
 
 <p>这里动态数值的回调是一种同步读取。对于需要消耗较多时间才能读取数据的情况，比如初始化传感器并等待数据稳定，
 同步读取的方法并不合适。</p>
@@ -222,25 +218,14 @@
 
 <h2 id="示例">示例</h2>
 
-<pre><code class="language-C">void gatt_read_callback(uint8_t packet_type, uint16_t _, const uint8_t *packet, uint16_t size)
-{
-    switch (packet[0])
-    {
-    case GATT_EVENT_CHARACTERISTIC_VALUE_QUERY_RESULT:
-        {
-            uint16_t value_size;
-            const gatt_event_value_packet_t *value =
-                gatt_event_characteristic_value_query_result_parse(packet, size, &amp;value_size);
-            att_server_deferred_read_response(handle_to_master,
-                                              handle_map_from_slave[value-&gt;handle],
-                                              value-&gt;value, value_size);
-        }
-        break;
-    case GATT_EVENT_QUERY_COMPLETE:
-        break;
-    }
-}
+<p>GATT Relay 首先克隆一个指定设备（设备 A）的广播数据，然后连接到该设备，克隆它的 GATT Profile，再发送克隆得到的广播数据等待连接。
+用其它设备（设备 B）连接到 GATT Relay 后，GATT Relay 会把设备 B 里的 GATT Client 发起的所有请求转发到设备 A，
+再将响应转发回设备 B。</p>
 
+<p>这个例子里回调函数使用延迟读取方式，待 GATT Client 从设备 A 获得数据后，调用 <code class="highlighter-rouge">att_server_deferred_read_response</code>
+将结果传递到设备 B。</p>
+
+<pre><code class="language-C">
 static uint16_t att_read_callback(hci_con_handle_t connection_handle, uint16_t att_handle, uint16_t offset,
                                   uint8_t * buffer, uint16_t buffer_size)
 {

@@ -225,7 +225,17 @@
 <p>这个例子里回调函数使用延迟读取方式，待 GATT Client 从设备 A 获得数据后，调用 <code class="highlighter-rouge">att_server_deferred_read_response</code>
 将结果传递到设备 B。</p>
 
-<pre><code class="language-C">
+<pre><code class="language-C">void gatt_read_callback(uint8_t packet_type, uint16_t _, const uint8_t *packet, uint16_t size)
+{
+                                             handle_map_from_slave[value-&gt;handle],
+                                              value-&gt;value, value_size);
+        }
+        break;
+    case GATT_EVENT_QUERY_COMPLETE:
+        break;
+    }
+}
+
 static uint16_t att_read_callback(hci_con_handle_t connection_handle, uint16_t att_handle, uint16_t offset,
                                   uint8_t * buffer, uint16_t buffer_size)
 {

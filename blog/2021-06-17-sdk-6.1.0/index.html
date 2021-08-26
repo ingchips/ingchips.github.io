@@ -193,11 +193,15 @@
 
 <p>Client 主动读取分为“静态”与“动态”两种情况：</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>* 静态数值存储于 ATT 数据库内，协议栈直接提取数值传递到 Client
-
-* 对于动态数值，协议栈每次读取数值时会两次调用回调函数（`att_read_callback`）：第一次数据指针为空，用来获取数值长度；
-  第二次数据指针不为空，回调函数此时将数据写入数据指针指向的内存。
-</code></pre></div></div>
+<ul>
+  <li>
+    <p>静态数值存储于 ATT 数据库内，协议栈直接提取数值传递到 Client</p>
+  </li>
+  <li>
+    <p>对于动态数值，协议栈每次读取数值时会两次调用回调函数（<code class="highlighter-rouge">att_read_callback</code>）：第一次数据指针为空，用来获取数值长度；
+  第二次数据指针不为空，回调函数此时将数据写入数据指针指向的内存。</p>
+  </li>
+</ul>
 
 <p>这里动态数值的回调是一种同步读取。对于需要消耗较多时间才能读取数据的情况，比如初始化传感器并等待数据稳定，
 同步读取的方法并不合适。</p>

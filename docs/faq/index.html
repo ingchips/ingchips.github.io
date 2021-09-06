@@ -410,9 +410,12 @@
               <h1 class="post-title line-left">FAQ</h1>
             </header><!-- .post-header -->
             <div class="post-content">
-              <hr />
+              <h2 id="1-可以在哪些操作系统下进行-ing918-项目开发">1. 可以在哪些操作系统下进行 ING918 项目开发？</h2>
 
-<h2 id="如何快速评估射频性能">如何快速评估射频性能？</h2>
+<p>SDK 支持 Windows、Linux、mac OS。但有的 IDE 不支持 Linux、mac OS。</p>
+
+<hr />
+<h2 id="2-如何快速评估射频性能">2. 如何快速评估射频性能？</h2>
 
 <ul>
   <li>
@@ -449,12 +452,59 @@
   </li>
 </ul>
 
-<h2 id="可以在哪些操作系统下进行-ing918-项目开发">可以在哪些操作系统下进行 ING918 项目开发？</h2>
-
-<p>SDK 支持 Windows、Linux、mac OS。但有的 IDE 不支持 Linux、mac OS。</p>
-
 <hr />
 
+<h2 id="3-如何抓取-log">3. 如何抓取 log？</h2>
+
+<p>针对不同的问题需要抓取不同类型的 log：</p>
+
+<ul>
+  <li>
+    <p>死机（出现 HARD_FAULT、ASSERTION、HEAP_OOM 等事件）</p>
+
+    <p>此时需要抓取存储转储（Memory Dump）及各寄存器的值。Memory Dump 有两种方法：</p>
+
+    <ul>
+      <li>
+        <p>通过调试器抓取</p>
+
+        <p>具体步骤可参阅<a href="/user_guide/dive-into-sdk.html#memory-dump">用户手册</a>。</p>
+
+        <p>对于启用了省电模式的场景，建议在出现问题之后，再挂接调试器抓取 log。某些 IDE
+  在挂接调试器进入调试模式时，<strong>总是</strong>会复位芯片，所以推荐使用
+  <a href="https://www.segger.com/products/debug-probes/j-link/tools/j-link-commander/">J-Link Commander</a>。</p>
+      </li>
+      <li>
+        <p>使用代码导出</p>
+
+        <p><code class="highlighter-rouge">trace.c</code> 模块里提供了 <code class="highlighter-rouge">trace_full_dump</code> 函数。将这个函数放到 <code class="highlighter-rouge">HARD_FAULT</code>、<code class="highlighter-rouge">ASSERTION</code>、<code class="highlighter-rouge">HEAP_OOM</code>
+  等事件的回调里，就能实现自动转储。UART GATT Console 示例演示了这个函数的用法，通过串口输入 <code class="highlighter-rouge">assert</code>
+  可主动触发 ASSERTION 并自动转储。</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>蓝牙协议层面的问题</p>
+
+    <p>此时需要可以抓取芯片内部的 <a href="user_guide/dive-into-sdk.html#debugging-tracing">Trace</a> 以及（或者）空口 log。</p>
+
+    <ul>
+      <li>
+        <p>芯片 Trace</p>
+
+        <p>工程向导在新建工程会自动添加芯片 Trace 的相关代码。当使用芯片 Trace 功能时，需要禁止系统进入深睡眠模式。</p>
+      </li>
+      <li>
+        <p>空口 log</p>
+
+        <p>使用 <a href="https://www.ellisys.com/products/btr1/">Ellisys Bluetooth Tracker</a>、
+  <a href="https://fte.com/products/Sodera.aspx">Sodera Series of Bluetooth Protocol Analyzers</a> 等蓝牙空口抓包工具。</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<hr />
 
               
               

@@ -257,39 +257,29 @@
     </ul>
   </li>
   <li>
-    <p>准备升级服务器</p>
+    <p>为 ING BLE 准备升级服务器</p>
 
-    <p>对于手机 App，可以直接使用 Python 内置的 HTTP 服务器作升级服务嚣。切换到解压出的文件夹，启动服务器，命令如下（各平台即可，以 WSL 为例）：</p>
+    <p>对于 ING BLE 的在线模式，直接使用 Python 内置的 HTTP 服务器作升级服务嚣。切换到解压出的文件夹，启动服务器，命令如下（各平台即可，以 WSL
+ 里的 Python 为例）：</p>
 
-    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-a</span>
- <span class="nb">.</span>  ..  body  full_app  toe
- <span class="nv">$ </span><span class="nb">sudo </span>python <span class="nt">-m</span> SimpleHTTPServer 80
- Serving HTTP on 0.0.0.0 port 80 ...
-</code></pre></div>    </div>
+    <ul>
+      <li>
+        <p>Python 3</p>
 
-    <p>对于 Web 版升级工具的在线模式，可能存在资源跨域访问的问题，可将以下代码保存为 CrossHTTPServer.py：</p>
+        <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-a</span>
+  <span class="nb">.</span>  ..  body  full_app  toe ...
+  <span class="nv">$ </span><span class="nb">sudo </span>python3 <span class="nt">-m</span> http.server 80
+</code></pre></div>        </div>
+      </li>
+      <li>
+        <p>Python 2</p>
 
-    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="c1">#!/usr/bin/env python
-</span> <span class="kn">import</span> <span class="nn">SimpleHTTPServer</span>
-
- <span class="k">class</span> <span class="nc">MyHTTPRequestHandler</span><span class="p">(</span><span class="n">SimpleHTTPServer</span><span class="o">.</span><span class="n">SimpleHTTPRequestHandler</span><span class="p">):</span>
-     <span class="k">def</span> <span class="nf">end_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-         <span class="bp">self</span><span class="o">.</span><span class="n">send_my_headers</span><span class="p">()</span>
-         <span class="n">SimpleHTTPServer</span><span class="o">.</span><span class="n">SimpleHTTPRequestHandler</span><span class="o">.</span><span class="n">end_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-     <span class="k">def</span> <span class="nf">send_my_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-         <span class="bp">self</span><span class="o">.</span><span class="n">send_header</span><span class="p">(</span><span class="s">"Access-Control-Allow-Origin"</span><span class="p">,</span> <span class="s">"*"</span><span class="p">)</span>
-
- <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
-     <span class="n">SimpleHTTPServer</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="n">HandlerClass</span><span class="o">=</span><span class="n">MyHTTPRequestHandler</span><span class="p">)</span>
-</code></pre></div>    </div>
-
-    <p>启动 CrossHTTPServer 服务器的命令如下：</p>
-
-    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-a</span>
- <span class="nb">.</span>  ..  CrossHTTPServer.py body  full_app  toe
- <span class="nv">$ </span><span class="nb">sudo </span>CrossHTTPServer 80
- Serving HTTP on 0.0.0.0 port 80 ...
-</code></pre></div>    </div>
+        <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-a</span>
+  <span class="nb">.</span>  ..  body  full_app  toe ...
+  <span class="nv">$ </span><span class="nb">sudo </span>python <span class="nt">-m</span> SimpleHTTPServer 80
+</code></pre></div>        </div>
+      </li>
+    </ul>
 
     <p>检查服务器是否正常工作（假设服务器 IP 地址为 192.168.100.102。下同）：</p>
 
@@ -300,6 +290,53 @@
      <span class="s2">"package"</span>: <span class="s2">"v1.zip"</span>
  <span class="o">}</span>
 </code></pre></div>    </div>
+  </li>
+  <li>
+    <p>为 Web 版工具准备升级服务器</p>
+
+    <p>对于 Web 版升级工具的在线模式，浏览器可能要求服务器使用 HTTPS，并允许资源跨域访问。</p>
+
+    <div class="note">
+ <strong>说明:</strong> 不同浏览器、同一浏览器的不同版本都有可能采用不同的安全策略，
+ 此处搭建的服务器可能无法正常工作（不为浏览器所接受）。如果遇到问题，需要使用浏览器的开发者工具进行调试、解决。
+ </div>
+
+    <ol>
+      <li>
+        <p>生成 HTTPS 证书</p>
+
+        <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> openssl req <span class="nt">-x509</span> <span class="nt">-newkey</span> rsa:2048 <span class="nt">-keyout</span> key.pem <span class="nt">-out</span> cert.pem <span class="nt">-days</span> 365
+</code></pre></div>        </div>
+
+        <p>此命令成功后，将在当前目录下生成 key.pem 和 cert.pem 两个文件。<strong>显然</strong>，此自行签发的证书无法为浏览器验证、接受。</p>
+
+        <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-a</span>
+ <span class="nb">.</span>  ..  CrossHTTPServer.py  body  cert.pem  full_app  key.pem  toe
+</code></pre></div>        </div>
+      </li>
+      <li>
+        <p>启动 CrossHTTPServer 服务器</p>
+
+        <p>升级包内为 Python 2/3 分别准备了一个简单的 CrossHTTPServer。启动服务器，需要输入生成证书时的口令。</p>
+
+        <ul>
+          <li>
+            <p>Python 2 版本</p>
+
+            <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="nv">$ </span><span class="nb">sudo </span>python CrossHTTPServer.py
+  Enter PEM pass phrase: ...
+</code></pre></div>            </div>
+          </li>
+          <li>
+            <p>Python 3 版本</p>
+
+            <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="nv">$ </span><span class="nb">sudo </span>python3 CrossHTTPServer.py
+  Enter PEM pass phrase: ...
+</code></pre></div>            </div>
+          </li>
+        </ul>
+      </li>
+    </ol>
   </li>
 </ol>
 
@@ -397,7 +434,7 @@
   <li>
     <p>在线升级模式</p>
 
-    <p>进入“在线”页面，填入“http://192.168.100.102/body”，重复上述步骤，可将版本回退到“Body”版本。</p>
+    <p>进入“在线”页面，填入“https://192.168.100.102/body”，重复上述步骤，可将版本回退到“Body”版本。</p>
   </li>
 </ol>
 

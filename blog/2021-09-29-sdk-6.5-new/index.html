@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>SDK 6.4 & 6.5 新功能 - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="总结 SDK 6.4 & 6.5 增加的一系列新功能。"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item has-children">
+              
+              
+<a class="" href="/docs/sdk/apps/#web-apps">
+  
+  Web 工具
+  
+</a>
+
+              
+                
+                <ul class="submenu">
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/callgraph">
+  
+  Callgraph (调用图)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index_cn.html">
+  
+  ING918 FOTA (空中升级)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/dr_cte">
+  
+  CTE 预处理器
+  
+</a>
+
+  </li>
+  
+</ul>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+              
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <article class="post post-full">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <header class="post-header has-gradient outer">
+      
+      
+      <div class="inner-sm">
+        <div class="post-meta">
+          <time class="published" datetime="2021-09-03 00:00">September 03, 2021</time>
+        </div>
+        <h1 class="post-title">SDK 6.4 & 6.5 新功能</h1>
+        
+        
+      </div>
+    </header>
+    <div class="inner-md outer">
+      <div class="post-content">
+        <p>SDK 6.4 &amp; 6.5 增加了一系列新功能。</p>
+
+<h2 id="1-软件包-bundles">1. 软件包 (Bundles)</h2>
+
+<h3 id="11-controller">1.1 Controller</h3>
+
+<ul>
+  <li>
+    <p>[<strong>更新</strong>] 最小连接间隔 1.25ms <span style="background:yellow">(<strong>6.5.0</strong>)</span></p>
+
+    <p>SDK 4.0 里引入了 <a href="../2020-10-13-sdk4.0_ext">更小的连接间隔</a> 的扩展功能，现在最小连接间隔进一步缩减到 1.25ms。</p>
+
+    <p>使用 <code class="highlighter-rouge">extension</code> 包创建主、从两个程序。主设备调用 <code class="highlighter-rouge">gap_ext_create_connection</code> 建立连接时，
+ 将 <code class="highlighter-rouge">interval_min</code> 和 <code class="highlighter-rouge">interval_max</code> 两个参数设置为 <code class="highlighter-rouge">1</code>，就可以创建 1.25ms 间隔的连接。</p>
+  </li>
+  <li>
+    <p>[<strong>新增</strong>] 以 1ms 为单位的连接间隔 <span style="background:yellow">(<strong>6.5.0</strong>)</span></p>
+
+    <p>在使用 <code class="highlighter-rouge">extension</code> 包的程序里调用 <code class="highlighter-rouge">ll_config(LL_ENABLE_MULTIPLES_OF_1MS_INTERVAL)</code>
+ 可将连接间隔的时间单位从 1.25ms 切换为 1ms。</p>
+
+    <p>主、从两个程序里都调用 <code class="highlighter-rouge">ll_config(LL_ENABLE_MULTIPLES_OF_1MS_INTERVAL)</code>，并在调用
+ <code class="highlighter-rouge">gap_ext_create_connection</code> 建立连接时将 <code class="highlighter-rouge">interval_min</code> 和 <code class="highlighter-rouge">interval_max</code> 两个参数设置为 <code class="highlighter-rouge">1</code>，
+ 就可以创建 <strong>1ms</strong> 间隔的连接。</p>
+
+    <div class="note">
+ <strong>注意：</strong>仅在计算连接间隔时将单位从 1.25ms 变为 1ms。修改后，无法保证各消息、事件参数之间的“一致性”。
+ </div>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] 最多 26 个连接 <span style="background:yellow">(<strong>6.5.0</strong>)</span></p>
+
+    <p><code class="highlighter-rouge">mass_conn</code> 软件包支持的最大连接数从 24 个提升到 26 个。</p>
+
+    <div class="note">
+ <strong>注意：</strong>白名单（可接受名单）的最大长度仍为 24。
+ </div>
+  </li>
+</ul>
+
+<h3 id="host---sm-模块">Host - SM 模块</h3>
+
+<ul>
+  <li>
+    <p>[<strong>新增</strong>] Trace 功能 <span style="background:yellow">(<strong>6.4.0</strong>)</span></p>
+
+    <p>遇到配对相关问题时可以抓取模块内部信息离线分析。</p>
+  </li>
+</ul>
+
+<h3 id="15-freertos-相关">1.5 FreeRTOS 相关</h3>
+
+<ul>
+  <li>
+    <p>[<strong>新增</strong>] SysTick 增强 <span style="background:yellow">(<strong>6.4.0</strong>)</span></p>
+
+    <p>ING918xx 退出睡眠状态重新配置 <code class="highlighter-rouge">SysTick</code> 时可能会引入（均值） 0.5 个 32k 时钟周期的误差。
+ 当这种情况频繁出现时，<code class="highlighter-rouge">SysTick</code> 上的累积误差显著。SysTick 增强功能可以在很大程度上控制这种累积误差。</p>
+
+    <p>通过 <code class="highlighter-rouge">platform_config(PLATFORM_CFG_RTOS_ENH_TICK, PLATFORM_CFG_ENABLE)</code> 启用此功能。
+ 下图演示了当一个硬件定时器以一定频率产生中断时，对 <code class="highlighter-rouge">vTaskDelay(1s)</code> 实际时长的影响。</p>
+
+    <p><img src="../img/sdk_64_enh_systicks.png" alt="" /></p>
+
+    <div class="note">
+ <strong>注意：</strong>此功能需要与 32k 时钟同步，对功耗存在一定的影响。
+ </div>
+  </li>
+</ul>
+
+<h2 id="2-工具">2. 工具</h2>
+
+<h3 id="21-wizard">2.1 Wizard</h3>
+
+<ul>
+  <li>
+    <p>[<strong>新增</strong>] 快捷编译 <span style="background:yellow">(<strong>6.5.0</strong>)</span></p>
+
+    <p>从右键快捷菜单里直接<strong>重新</strong>编译项目：</p>
+
+    <p><img src="../img/sdk_65_rebuild.png" alt="" /></p>
+  </li>
+</ul>
+
+<h3 id="22-downloader">2.2 Downloader</h3>
+
+<ul>
+  <li>
+    <p>[<strong>新增</strong>] 文件合并 <span style="background:yellow">(<strong>6.5.0</strong>)</span></p>
+
+    <p>将项目里的多个二进制文件合并为一个，下载地址为 <code class="highlighter-rouge">Min(各文件的下载地址)</code>。</p>
+
+    <p><img src="../img/sdk_65_merge_bin.png" alt="" /></p>
+  </li>
+</ul>
+
+<h3 id="23-兼容性">2.3 兼容性</h3>
+
+<p>SEGGER Studio 新的链接器 (V3.0+) 与老版本存在兼容性问题，SDK 6.5.0 生成新项目转为使用 GNU 链接器。</p>
+
+<h2 id="3-示例">3. 示例</h2>
+
+<ul>
+  <li>
+    <p>[<strong>新增</strong>] Central FOTA <span style="background:yellow">(<strong>6.4.0</strong>)</span></p>
+
+    <p>这个示例演示了如何作为中心设备对其它设备进行空中升级。使用 <a href="../2021-01-25-zig-async">Zig 语言</a>
+ 将整个 FOTA 过程封装成 <code class="highlighter-rouge">fota_client_do_update</code>，可以集成到其它需要对其它设备进行 OTA 的程序中，
+ 使用方便：</p>
+
+    <pre><code class="language-C"> /**
+ * @brief FOTA client.
+ *
+ * @param latest            latest version (a.k.a this version)
+ * @param conn_handle       connection handle
+ * @param handle_ver        handle of INGCHIPS_UUID_OTA_VER
+ * @param handle_ctrl       handle of INGCHIPS_UUID_OTA_CTRL
+ * @param handle_data       handle of INGCHIPS_UUID_OTA_DATA
+ * @param item_cnt          number of binaries (&lt;= MAX_UPDATE_BLOCKS)
+ * @param items             information for each binary
+ * @param entry             entry address
+ * @param on_done           callback when FOTA completes (err_code != 0 if error occurs)
+ * */
+ void fota_client_do_update(const ota_ver_t *latest, uint16_t conn_handle,
+                               uint16_t handle_ver, uint16_t handle_ctrl, uint16_t handle_data,
+                               int item_cnt, const ota_item_t *items,
+                               uint32_t entry,
+                               void (* on_done)(int err_code));
+</code></pre>
+  </li>
+</ul>
+
+      </div><!-- .post-content -->
+    </div><!-- .inner-md -->
+  </article><!-- .post -->
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2021. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

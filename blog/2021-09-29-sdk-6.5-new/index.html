@@ -177,7 +177,7 @@
       
       <div class="inner-sm">
         <div class="post-meta">
-          <time class="published" datetime="2021-09-03 00:00">September 03, 2021</time>
+          <time class="published" datetime="2021-09-29 00:00">September 29, 2021</time>
         </div>
         <h1 class="post-title">SDK 6.4 & 6.5 新功能</h1>
         
@@ -187,6 +187,13 @@
     <div class="inner-md outer">
       <div class="post-content">
         <p>SDK 6.4 &amp; 6.5 增加了一系列新功能。</p>
+
+<h2 id="highlights">Highlights:</h2>
+
+<ul>
+  <li>最小连接间隔 800μs，比 <a href="https://developer.nordicsemi.com/nRF_Connect_SDK/doc/latest/kconfig/CONFIG_BT_CTLR_LLPM.html">友商</a> 缩短 <span style="background:yellow">20%</span>；</li>
+  <li>一个函数完成 FOTA 升级</li>
+</ul>
 
 <h2 id="1-软件包-bundles">1. 软件包 (Bundles)</h2>
 
@@ -202,17 +209,27 @@
  将 <code class="highlighter-rouge">interval_min</code> 和 <code class="highlighter-rouge">interval_max</code> 两个参数设置为 <code class="highlighter-rouge">1</code>，就可以创建 1.25ms 间隔的连接。</p>
   </li>
   <li>
-    <p>[<strong>新增</strong>] 以 1ms 为单位的连接间隔 <span style="background:yellow">(<strong>6.5.0</strong>)</span></p>
+    <p><del>[<strong>新增</strong>] 以 1ms 为单位的连接间隔 <span style="background:yellow">(<strong>6.5.0</strong>)</span></del></p>
 
-    <p>在使用 <code class="highlighter-rouge">extension</code> 包的程序里调用 <code class="highlighter-rouge">ll_config(LL_ENABLE_MULTIPLES_OF_1MS_INTERVAL)</code>
- 可将连接间隔的时间单位从 1.25ms 切换为 1ms。</p>
+    <p>此功能在 6.5.1 里修改了实现方式。</p>
+  </li>
+  <li>
+    <p>[<strong>新增</strong>] <code class="highlighter-rouge">ll_set_conn_interval_unit</code> <span style="background:yellow">(<strong>6.5.1</strong>)</span></p>
 
-    <p>主、从两个程序里都调用 <code class="highlighter-rouge">ll_config(LL_ENABLE_MULTIPLES_OF_1MS_INTERVAL)</code>，并在调用
+    <p>在使用 <code class="highlighter-rouge">extension</code> 包的程序里调用 <code class="highlighter-rouge">ll_set_conn_interval_unit(X)</code>
+ 可将连接间隔的时间单位从 1.25ms 切换为 X μs。</p>
+
+    <p>主、从两个程序里都调用 <code class="highlighter-rouge">ll_set_conn_interval_unit(X)</code>，并在调用
  <code class="highlighter-rouge">gap_ext_create_connection</code> 建立连接时将 <code class="highlighter-rouge">interval_min</code> 和 <code class="highlighter-rouge">interval_max</code> 两个参数设置为 <code class="highlighter-rouge">1</code>，
- 就可以创建 <strong>1ms</strong> 间隔的连接。</p>
+ 就可以创建 X μs 间隔的连接。X 的最小值受限于空口时长及处理器速度，下面的截图显示了 X = 800 的情况。
+ 可以看出建立连接后的第 1 个连接事件后协议栈需要处理的工作较多，以至于无法按时调度第 2 个连接事件。
+ 后续连接事件调度正常。（Trace 采用的时间戳来自 32k 时钟，误差 ±30 μs）</p>
+
+    <p><img src="../img/custom_interval_800.png" alt="" /></p>
 
     <div class="note">
- <strong>注意：</strong>仅在计算连接间隔时将单位从 1.25ms 变为 1ms。修改后，无法保证各消息、事件参数之间的“一致性”。
+ <strong>注意：</strong>仅在计算连接间隔时将单位从 1.25ms 变为 X μs。修改后，无法保证各消息、事件参数之间的“一致性”。
+ 采用非标连接间隔后，空口抓包工具可能无法正常捕获数据。
  </div>
   </li>
   <li>
@@ -293,8 +310,7 @@
     <p>[<strong>新增</strong>] Central FOTA <span style="background:yellow">(<strong>6.4.0</strong>)</span></p>
 
     <p>这个示例演示了如何作为中心设备对其它设备进行空中升级。使用 <a href="../2021-01-25-zig-async">Zig 语言</a>
- 将整个 FOTA 过程封装成 <code class="highlighter-rouge">fota_client_do_update</code>，可以集成到其它需要对其它设备进行 OTA 的程序中，
- 使用方便：</p>
+ 将整个 FOTA 过程封装成 <code class="highlighter-rouge">fota_client_do_update</code>：</p>
 
     <pre><code class="language-C"> /**
  * @brief FOTA client.
@@ -315,6 +331,14 @@
                                uint32_t entry,
                                void (* on_done)(int err_code));
 </code></pre>
+
+    <p>可以集成到其它需要对其它设备进行 OTA 的程序中，使用方便。</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] Mesh Light <span style="background:yellow">(<strong>6.5.1</strong>)</span></p>
+
+    <p>修正了 Mesh Light 在 <a href="https://apps.apple.com/us/app/nrf-mesh/id1380726771">nRF Mesh iOS</a> 版本下的问题。
+ 现在 Mesh Light 同时兼容 nRF Mesh 的 Android 及 iOS 版本。</p>
   </li>
 </ul>
 

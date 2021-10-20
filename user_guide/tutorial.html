@@ -21,10 +21,10 @@
   <meta name="twitter:description" content="This is the user guide of INGCHIPS SDK." />
   <meta name="twitter:image" content="./img/sdk_overview.png" />
 
-<meta name="author" content="v1.2.3" />
+<meta name="author" content="v1.2.4" />
 
 
-<meta name="date" content="2020-09-09" />
+<meta name="date" content="2020-10-20" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -445,7 +445,11 @@ Figure 3.3: Choose Project Type
 <li>Select <code>Typical</code></li>
 <li>Select <code>Legacy</code> advertising type</li>
 </ol>
-<p><code>{block-on-ext-adv, note-text, type='rmdcaution'} Phones that support BLE 5.x extended advertising are still rare at present (2021-09-09) even if BLE 5.0 is declared as "supported",  so we use legacy advertising for better compatibility. Furthermore, legacy advertising can be changed to BLE 5.x extended advertising by toggling a single bit.</code></p>
+<div class="rmdcaution">
+<p>
+Phones that support BLE 5.x extended advertising are still rare at present (<code>r Sys.Date()</code>) even if BLE 5.0 is declared as “supported”, so we use legacy advertising for better compatibility. Furthermore, legacy advertising can be changed to BLE 5.x extended advertising by toggling a single bit.
+</p>
+</div>
 <p>Then press <code>Next</code> to proceed to the next page, <code>Role of Your Device</code>.</p>
 </div>
 <div id="role-of-your-device-page" class="section level3">
@@ -674,15 +678,11 @@ Figure 3.17: iBeacon Detailed Information in Locate app
 <p>Once signal power is calibrated, we can right click on our project in <code>ingWizard</code>, and select <code>Edit Data</code> -&gt; <code>Advertising</code>
 menu item to edit its advertising data with same editor that we are getting familiar with.
 After advertising data is updated, rebuild the project and check if the distance is more accurate.</p>
-
 <div class="rmdcaution">
-According to the specification, proximity beacons
-must use a non connectable undirected advertising PDU, using a fixed 100ms advertising interval.
-In this tutorial, we are not going to touch the code, so advertising parameters are
-not touched, either. To make these parameters fully meet the specification, please refer to
-the corresponding host GAP APIs.
+<p>
+According to the specification, proximity beacons must use a non connectable undirected advertising PDU, using a fixed 100ms advertising interval. In this tutorial, we are not going to touch the code, so advertising parameters are not touched, either. To make these parameters fully meet the specification, please refer to the corresponding host GAP APIs.
+</p>
 </div>
-
 </div>
 </div>
 <div id="thermometer" class="section level2">
@@ -1013,12 +1013,14 @@ Figure 3.23: “iscanner” Created for IAR Embedded Workbench
 </p>
 </div>
 <p>Open this new project in IDE, and navigate to function <code>user_packet_handler</code>. We can see
-there is an event called <code>GAP_EVENT_ADVERTISING_REPORT</code>:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb10-1"><a href="tutorial.html#cb10-1"></a>    <span class="cf">case</span> GAP_EVENT_ADVERTISING_REPORT:</span>
-<span id="cb10-2"><a href="tutorial.html#cb10-2"></a>        gap_get_advertisingReport(&amp;report, packet);</span>
-<span id="cb10-3"><a href="tutorial.html#cb10-3"></a>        <span class="co">// add your code</span></span>
-<span id="cb10-4"><a href="tutorial.html#cb10-4"></a>        ......</span>
-<span id="cb10-5"><a href="tutorial.html#cb10-5"></a>        <span class="cf">break</span>;</span></code></pre></div>
+there is an event called <code>HCI_SUBEVENT_LE_EXTENDED_ADVERTISING_REPORT</code>:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb10-1"><a href="tutorial.html#cb10-1"></a>    <span class="cf">case</span> HCI_SUBEVENT_LE_EXTENDED_ADVERTISING_REPORT:</span>
+<span id="cb10-2"><a href="tutorial.html#cb10-2"></a>        {</span>
+<span id="cb10-3"><a href="tutorial.html#cb10-3"></a>            <span class="dt">const</span> le_ext_adv_report_t *report = decode_hci_le_meta_event(packet,</span>
+<span id="cb10-4"><a href="tutorial.html#cb10-4"></a>                      le_meta_event_ext_adv_report_t)-&gt;reports;</span>
+<span id="cb10-5"><a href="tutorial.html#cb10-5"></a>            <span class="co">// ...</span></span>
+<span id="cb10-6"><a href="tutorial.html#cb10-6"></a>        }</span>
+<span id="cb10-7"><a href="tutorial.html#cb10-7"></a>        <span class="cf">break</span>;</span></code></pre></div>
 <p>Each time this event is received, we can check if the advertising report contains
 <code>0xFF - «Manufacturer Specific Data»</code>, and if it is an iBeacon packet. With the knowlegde
 of making an iBeacon device, it is straight forward to define an iBeacon packet type
@@ -1071,22 +1073,24 @@ loss equation:</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb15-1"><a href="tutorial.html#cb15-1"></a>    <span class="dt">uint8_t</span> length;</span>
 <span id="cb15-2"><a href="tutorial.html#cb15-2"></a>    ibeacon_adv_t *p_ibeacon;</span>
 <span id="cb15-3"><a href="tutorial.html#cb15-3"></a>    <span class="dt">char</span> str_buffer[<span class="dv">80</span>];</span>
-<span id="cb15-4"><a href="tutorial.html#cb15-4"></a>    ......</span>
-<span id="cb15-5"><a href="tutorial.html#cb15-5"></a>    <span class="cf">case</span> GAP_EVENT_ADVERTISING_REPORT:</span>
-<span id="cb15-6"><a href="tutorial.html#cb15-6"></a>        gap_get_advertisingReport(&amp;report, packet);</span>
-<span id="cb15-7"><a href="tutorial.html#cb15-7"></a>        p_ibeacon = (ibeacon_adv_t *)ad_data_from_type(report.length, </span>
-<span id="cb15-8"><a href="tutorial.html#cb15-8"></a>                       (<span class="dt">uint8_t</span> *)report.data, <span class="bn">0xff</span>, &amp;length);</span>
-<span id="cb15-9"><a href="tutorial.html#cb15-9"></a></span>
-<span id="cb15-10"><a href="tutorial.html#cb15-10"></a>        <span class="cf">if</span> ((length != <span class="kw">sizeof</span>(ibeacon_adv_t))</span>
-<span id="cb15-11"><a href="tutorial.html#cb15-11"></a>            || (p_ibeacon-&gt;apple_id != APPLE_COMPANY_ID)</span>
-<span id="cb15-12"><a href="tutorial.html#cb15-12"></a>            || (p_ibeacon-&gt;id != IBEACON_ID))</span>
-<span id="cb15-13"><a href="tutorial.html#cb15-13"></a>            <span class="cf">break</span>;</span>
-<span id="cb15-14"><a href="tutorial.html#cb15-14"></a>        </span>
-<span id="cb15-15"><a href="tutorial.html#cb15-15"></a>        printf(<span class="st">&quot;%s %04X,%04X, %.1fm</span><span class="sc">\n</span><span class="st">&quot;</span>, </span>
-<span id="cb15-16"><a href="tutorial.html#cb15-16"></a>                format_uuid(str_buffer, p_ibeacon-&gt;uuid), </span>
-<span id="cb15-17"><a href="tutorial.html#cb15-17"></a>                p_ibeacon-&gt;major, p_ibeacon-&gt;minor,</span>
-<span id="cb15-18"><a href="tutorial.html#cb15-18"></a>                estimate_distance(p_ibeacon-&gt;ref_power, report.rssi));</span>
-<span id="cb15-19"><a href="tutorial.html#cb15-19"></a>        <span class="cf">break</span>;</span></code></pre></div>
+<span id="cb15-4"><a href="tutorial.html#cb15-4"></a>    <span class="dt">const</span> le_ext_adv_report_t *report;</span>
+<span id="cb15-5"><a href="tutorial.html#cb15-5"></a>    ......</span>
+<span id="cb15-6"><a href="tutorial.html#cb15-6"></a>    <span class="cf">case</span> HCI_SUBEVENT_LE_EXTENDED_ADVERTISING_REPORT:</span>
+<span id="cb15-7"><a href="tutorial.html#cb15-7"></a>        report = decode_hci_le_meta_event(packet, </span>
+<span id="cb15-8"><a href="tutorial.html#cb15-8"></a>                        le_meta_event_ext_adv_report_t)-&gt;reports;</span>
+<span id="cb15-9"><a href="tutorial.html#cb15-9"></a>        p_ibeacon = (ibeacon_adv_t *)ad_data_from_type(report-&gt;data_len,</span>
+<span id="cb15-10"><a href="tutorial.html#cb15-10"></a>                        (<span class="dt">uint8_t</span> *)report-&gt;data, <span class="bn">0xff</span>, &amp;length);</span>
+<span id="cb15-11"><a href="tutorial.html#cb15-11"></a></span>
+<span id="cb15-12"><a href="tutorial.html#cb15-12"></a>        <span class="cf">if</span> ((length != <span class="kw">sizeof</span>(ibeacon_adv_t))</span>
+<span id="cb15-13"><a href="tutorial.html#cb15-13"></a>            || (p_ibeacon-&gt;apple_id != APPLE_COMPANY_ID)</span>
+<span id="cb15-14"><a href="tutorial.html#cb15-14"></a>            || (p_ibeacon-&gt;id != IBEACON_ID))</span>
+<span id="cb15-15"><a href="tutorial.html#cb15-15"></a>            <span class="cf">break</span>;</span>
+<span id="cb15-16"><a href="tutorial.html#cb15-16"></a>        </span>
+<span id="cb15-17"><a href="tutorial.html#cb15-17"></a>        printf(<span class="st">&quot;%s %04X,%04X, %.1fm</span><span class="sc">\n</span><span class="st">&quot;</span>, </span>
+<span id="cb15-18"><a href="tutorial.html#cb15-18"></a>                format_uuid(str_buffer, p_ibeacon-&gt;uuid), </span>
+<span id="cb15-19"><a href="tutorial.html#cb15-19"></a>                p_ibeacon-&gt;major, p_ibeacon-&gt;minor,</span>
+<span id="cb15-20"><a href="tutorial.html#cb15-20"></a>                estimate_distance(p_ibeacon-&gt;ref_power, report-&gt;rssi));</span>
+<span id="cb15-21"><a href="tutorial.html#cb15-21"></a>        <span class="cf">break</span>;</span></code></pre></div>
 <p>Use the <code>Locate</code> app to transmit iBeacon signal, and check if our device can found it (Figure <a href="tutorial.html#fig:ch1-iscanner">3.24</a>). Finaly, since RSSI value fluctuates,
 one can add a low pass filter on RSSI to make
 the estimation more stable.</p>
@@ -1176,7 +1180,7 @@ timer in initialization, such as in <code>app_main</code> or <code>setup_profile
 <span id="cb19-4"><a href="tutorial.html#cb19-4"></a>    <span class="cf">if</span> (temperture_notify_enable | temperture_indicate_enable)</span>
 <span id="cb19-5"><a href="tutorial.html#cb19-5"></a>        btstack_push_user_msg(USER_MSG_ID_REQUEST_SEND, NULL, <span class="dv">0</span>);</span>
 <span id="cb19-6"><a href="tutorial.html#cb19-6"></a>}</span></code></pre></div>
-<p>This timer is started when we get <code>HCI_SUBEVENT_LE_CONNECTION_COMPLETE</code> in <code>HCI_EVENT_LE_META</code>, and
+<p>This timer is started when we get <code>HCI_SUBEVENT_LE_ENHANCED_CONNECTION_COMPLETE</code> in <code>HCI_EVENT_LE_META</code>, and
 stopped when we get <code>HCI_EVENT_DISCONNECTION_COMPLETE</code>.</p>
 <p>Here <code>temperture_notify_enable</code> and <code>temperture_indicate_enable</code> are two flags initialized as 0s
 and set to <code>1</code> in <code>att_write_callback</code>:</p>

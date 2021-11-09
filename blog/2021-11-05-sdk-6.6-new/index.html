@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>SDK 6.6 更新说明 - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="总结 SDK 6.6 新功能、解决的问题。"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item has-children">
+              
+              
+<a class="" href="/docs/sdk/apps/#web-apps">
+  
+  Web 工具
+  
+</a>
+
+              
+                
+                <ul class="submenu">
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/callgraph">
+  
+  Callgraph (调用图)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index_cn.html">
+  
+  ING918 FOTA (空中升级)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/dr_cte">
+  
+  CTE 预处理器
+  
+</a>
+
+  </li>
+  
+</ul>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+              
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <article class="post post-full">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <header class="post-header has-gradient outer">
+      
+      
+      <div class="inner-sm">
+        <div class="post-meta">
+          <time class="published" datetime="2021-11-05 00:00">November 05, 2021</time>
+        </div>
+        <h1 class="post-title">SDK 6.6 更新说明</h1>
+        
+        
+      </div>
+    </header>
+    <div class="inner-md outer">
+      <div class="post-content">
+        <h2 id="highlights">Highlights:</h2>
+
+<ul>
+  <li>优化超多连接性能；</li>
+  <li>一个函数完成 FOTA 升级</li>
+</ul>
+
+<h2 id="1-软件包-bundles">1. 软件包 (Bundles)</h2>
+
+<h3 id="11-controller">1.1 Controller</h3>
+
+<ul>
+  <li>
+    <p>[<strong>优化</strong>] 超多连接性能 <span style="background:yellow">(<strong>6.6.0</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] ADV/SCAN/INIT/CONN 极端情况下异常停止 <span style="background:yellow">(<strong>6.6.0</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] <code class="highlighter-rouge">LLCP_CONN_PARAM_REQ/RSP</code> 里 <code class="highlighter-rouge">Offset</code> 的范围  <span style="background:yellow">(<strong>6.6.1</strong>)</span></p>
+  </li>
+</ul>
+
+<h3 id="12-freertos-相关">1.2 FreeRTOS 相关</h3>
+
+<ul>
+  <li>[<strong>新增</strong>] <code class="highlighter-rouge">list</code> 模块 <span style="background:yellow">(<strong>6.6.0</strong>)</span></li>
+</ul>
+
+<p><code class="highlighter-rouge">list</code> 模块 API 现已导出。</p>
+
+<h2 id="2-库函数">2. 库函数</h2>
+
+<ul>
+  <li>[<strong>更新</strong>] <code class="highlighter-rouge">gatt_client_util</code> 模块支持多连接 <span style="background:yellow">(<strong>6.6.0</strong>)</span></li>
+</ul>
+
+<h2 id="3-库函数">3. 库函数</h2>
+
+      </div><!-- .post-content -->
+    </div><!-- .inner-md -->
+  </article><!-- .post -->
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2021. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

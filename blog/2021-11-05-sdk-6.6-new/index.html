@@ -189,8 +189,7 @@
         <h2 id="highlights">Highlights:</h2>
 
 <ul>
-  <li>优化超多连接性能；</li>
-  <li>一个函数完成 FOTA 升级</li>
+  <li>优化超多连接性能</li>
 </ul>
 
 <h2 id="1-软件包-bundles">1. 软件包 (Bundles)</h2>
@@ -198,15 +197,26 @@
 <h3 id="11-controller">1.1 Controller</h3>
 
 <ul>
+  <li>[<strong>优化</strong>] <code class="highlighter-rouge">mass_conn</code> 连接性能 <span style="background:yellow">(<strong>6.6.0</strong>)</span></li>
+</ul>
+
+<p>优化了 <code class="highlighter-rouge">mass_conn</code> 软件包的连接性能，提升超多连接的可用性。</p>
+
+<ul>
+  <li>[<strong>修正</strong>] ADV/SCAN/INIT/CONN 极端情况下异常停止 <span style="background:yellow">(<strong>6.6.0</strong>)</span></li>
+</ul>
+
+<p>旧版本中，极端情况下 ADV/SCAN/INIT/CONN 可能会异常终止。现在，当这些任务异常终止时会上报相应的事件，app
+可以根据事件重新尝试启动任务：</p>
+
+<ul>
+  <li>ADV 异常终止时：上报 <code class="highlighter-rouge">HCI_SUBEVENT_LE_ADVERTISING_SET_TERMINATED</code></li>
+  <li>SCAN 异常终止时：上报 <code class="highlighter-rouge">HCI_SUBEVENT_LE_SCAN_TIMEOUT</code></li>
+  <li>INIT 异常终止时：上报 <code class="highlighter-rouge">HCI_SUBEVENT_LE_ENHANCED_CONNECTION_COMPLETE</code></li>
   <li>
-    <p>[<strong>优化</strong>] 超多连接性能 <span style="background:yellow">(<strong>6.6.0</strong>)</span></p>
+    <p>CONN 异常终止时：上报 <code class="highlighter-rouge">HCI_EVENT_DISCONNECTION_COMPLETE</code></p>
   </li>
-  <li>
-    <p>[<strong>修正</strong>] ADV/SCAN/INIT/CONN 极端情况下异常停止 <span style="background:yellow">(<strong>6.6.0</strong>)</span></p>
-  </li>
-  <li>
-    <p>[<strong>修正</strong>] <code class="highlighter-rouge">LLCP_CONN_PARAM_REQ/RSP</code> 里 <code class="highlighter-rouge">Offset</code> 的范围  <span style="background:yellow">(<strong>6.6.1</strong>)</span></p>
-  </li>
+  <li>[<strong>修正</strong>] <code class="highlighter-rouge">LLCP_CONN_PARAM_REQ/RSP</code> 里 <code class="highlighter-rouge">Offset</code> 的范围  <span style="background:yellow">(<strong>6.6.1</strong>)</span></li>
 </ul>
 
 <h3 id="12-freertos-相关">1.2 FreeRTOS 相关</h3>
@@ -217,13 +227,22 @@
 
 <p><code class="highlighter-rouge">list</code> 模块 API 现已导出。</p>
 
+<h3 id="13-其它">1.3 其它</h3>
+
+<ul>
+  <li>[<strong>更新</strong>] 版本信息 <span style="background:yellow">(<strong>6.6.2</strong>)</span></li>
+</ul>
+
+<p>在后续版本中，platform 的版本信息将保存在 platform.bin 文件的固定偏移 (+0xb0)。</p>
+
 <h2 id="2-库函数">2. 库函数</h2>
 
 <ul>
   <li>[<strong>更新</strong>] <code class="highlighter-rouge">gatt_client_util</code> 模块支持多连接 <span style="background:yellow">(<strong>6.6.0</strong>)</span></li>
 </ul>
 
-<h2 id="3-库函数">3. 库函数</h2>
+<p>通过编译选项 (<code class="highlighter-rouge">GATT_UTIL_MAX_DISCOVERER_NUM</code>) 控制支持的连接数。
+当只会存在 1 个连接时，此选项可以设置为 1。可能同时存在多个连接的情况下，此数值应该与软件包支持的连接数保持一致。</p>
 
       </div><!-- .post-content -->
     </div><!-- .inner-md -->

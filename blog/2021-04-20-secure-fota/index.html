@@ -206,7 +206,7 @@
 <a href="/web_apps/ing918_ota/index_cn.html">Web 版 FOTA 工具</a> 连接到到设备，即可进行安全升级。</p>
 
 <div class="important">
-<strong>注意:</strong> 目前仅 Web 版 FOTA 工具支持安全 FOTA 升级。
+<strong>注意:</strong> 目前 Web 版 FOTA 工具及 SDK 自带的 Central FOTA 示例支持安全 FOTA 升级，ING BLE 暂不支持。
 </div>
 
 <p><a href="/web_apps/ing918_ota/index_cn.html">Web 版 FOTA 工具</a> 支持安全或者不安全两种模式，连接到设备之后，会出现醒目的提示：</p>
@@ -301,13 +301,13 @@ uECC_make_key(session_keys.pk, session_keys.sk, CURVE);
 <p>升级工具对每一页（8192 字节）的数据分别用会话根私钥进行签名，然后加密、追加 CRC （这里由于存在签名，所以 CRC 并不必要）。
 设备侧在将数据写入 Flash 之前，先检查 CRC，再解密，最后用升级工具的会话公钥验证签名。</p>
 
-<p>出于演示目的，<code class="highlighter-rouge">Thermometer with OTA</code> 里的加密重复使用了共享密钥做异或计算。</p>
+<p>出于演示目的，<code class="highlighter-rouge">Thermometer with OTA</code> 里的加密重复使用了共享密钥的 SHA-256 做异或计算。</p>
 
 <h2 id="3-风险提示">3. 风险提示</h2>
 
 <ol>
   <li>上述过程未涉及对设备的鉴权，恶意第三方可以通过虚拟设备的方法获取升级包内容；</li>
-  <li>示例中使用了 NIST P-256 曲线，这套曲线参数是 <a href="http://safecurves.cr.yp.to/">不安全</a> 的；</li>
+  <li>示例中使用了 NIST P-256 曲线，这套曲线参数有人认为是 <a href="http://safecurves.cr.yp.to/">不安全</a> 的；</li>
   <li>加密过程仅做演示。</li>
 </ol>
 

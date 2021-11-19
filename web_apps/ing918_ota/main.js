@@ -20,6 +20,16 @@ const OTA_CTRL_REBOOT = 0xFF; // param: no
 const BLE_MIN_MTU_SIZE = 20;
 const SIG_LEN = 64;
 
+const DEF_SK = {
+    "crv":"P-256",
+    "d":"XHcXEWfWQKM2DeJp_gu3j16U2PL0gJQKwvJuQ7tpX6c",
+    "ext":true,
+    "key_ops":["sign","deriveKey"],
+    "kty":"EC",
+    "x":"FBsLKEbEr5dBWZdPF1LgHJrqIcfG4wQwT42c8H8dHwo",
+    "y":"g6924E3BzJa0uD-7c2xmPwvfUoa_YOiRJwCFyL9VqJY"
+};
+
 var handlers = [];
 var the_device = null;
 var is_secure_fota = false;
@@ -28,9 +38,7 @@ var manifest = null;
 var ble_obj = null;
 var ble_mtu = 100;
 
-const raw_pub_key = '04141b0b2846c4af974159974f1752e01c9aea21c7c6e304304f8d9cf07f1d1f0a83af76e04dc1cc96b4b83fbb736c663f0bdf5286bf60e891270085c8bf55a896';
-const the_pubic_key  = {"crv":"P-256","ext":true,"key_ops":["verify"],"kty":"EC","x":"FBsLKEbEr5dBWZdPF1LgHJrqIcfG4wQwT42c8H8dHwo","y":"g6924E3BzJa0uD-7c2xmPwvfUoa_YOiRJwCFyL9VqJY"};
-const the_private_key = {"crv":"P-256","d":"XHcXEWfWQKM2DeJp_gu3j16U2PL0gJQKwvJuQ7tpX6c","ext":true,"key_ops":["sign","deriveKey"],"kty":"EC","x":"FBsLKEbEr5dBWZdPF1LgHJrqIcfG4wQwT42c8H8dHwo","y":"g6924E3BzJa0uD-7c2xmPwvfUoa_YOiRJwCFyL9VqJY"};
+the_private_key = '';
 let session_key_pair = null;
 let remote_pk = null;
 let shared_key = null;
@@ -561,6 +569,8 @@ async function connect() {
             let sig = await ecdsa_sign_data(the_private_key, session_key_pair.raw_pk);
             let pk = arraybuffer_to_hexstr(session_key_pair.raw_pk) + arraybuffer_to_hexstr(sig);
             await ble_obj.char_pk.writeValueWithoutResponse(hexstr_to_arraybuffer(pk));
+            if (await readStatus() == OTA_CTRL_STATUS_ERROR)
+                throw msg.key_error;
             await prepare_shared_key();
         }
 
@@ -576,7 +586,7 @@ async function connect() {
         stopRunning();
 
     } catch (e) {
-        alert(e.message);
+        alert(e.message || e);
         window.location.reload();
     }
 }
@@ -630,7 +640,38 @@ async function switchToSecFOTA() {
     }
 }
 
-function appStart() {
+function DecodeBase64Url(input) {
+    let s = input = input
+            .replace(/-/g, '+')
+            .replace(/_/g, '/');
+
+    // Pad out with standard base64 required padding characters
+    var pad = input.length % 4;
+    if(pad) {
+        if(pad === 1) {
+        throw new Error('InvalidLengthError: Input base64url string is the wrong length to determine padding');
+        }
+        s += new Array(5-pad).join('=');
+    }
+
+    return window.atob(s);
+}
+
+function base64url_to_hexstr(b) {
+    return arraybuffer_to_hexstr(u8arr_to_arraybuffer(binstr_to_arraybuffer(DecodeBase64Url(b))));
+}
+
+async function dumpKey(sk) {
+    $('#private_key_jwk').val(JSON.stringify(sk));
+    $('#private_key_raw').val(base64url_to_hexstr(sk.d));
+
+    delete sk.d;
+    sk.key_ops = ["verify"];
+    $('#public_key_jwk').val(JSON.stringify(sk));
+    $('#public_key_raw').val('04' + base64url_to_hexstr(sk.x) + base64url_to_hexstr(sk.y));
+}
+
+async function appStart() {
     $('#main_window').hide();
     $('#running_status').hide();
 
@@ -657,7 +698,9 @@ function appStart() {
 
     $("#btn_scan").click(async function () {
         try {
+            $('#key_tools').hide();
             $('#startup_window').hide();
+            the_private_key = JSON.parse($('#private_key_jwk').val());
             connect();
         } catch (e) { }
     });
@@ -667,6 +710,19 @@ function appStart() {
     $("#btn_recheck").click(recheckOnline);
 
     $('#btn_sec_fota').click(switchToSecFOTA);
+
+    $('#btn_gen_keys').click(async function () {
+        let pair = await crypto.subtle.generateKey(
+            {name: 'ECDSA', hash: 'SHA-256', namedCurve: 'P-256'},
+            true,
+            ['sign']
+        );
+
+        let sk = await crypto.subtle.exportKey('jwk', pair.privateKey);
+        await dumpKey(sk);
+    });
+
+    await dumpKey(DEF_SK);
 
     //startRunning();
     //showProgress(msg.sel_dev, -1);
@@ -842,10 +898,6 @@ async function prepare_session_keypair() {
     };
 }
 
-async function sign_seesion_pk() {
-
-}
-
 async function test()
 {
     let sig = ecdsa_sign_data(the_private_key, 'abc')
@@ -853,19 +905,4 @@ async function test()
     sig  = 'fbdc4ad9cd8543b35cf7e5b731027b30445625daae6320737ae825894fa16dc8d84a2deef21d944f0dac82d865c21faa556fb5a597637ec76381d7a8881f6b77';
 
     console.log(await ecdsa_sign_data(the_private_key, session_key_pair.raw_pk));
-}
-
-async function gen_root_keypair() {
-    let pair = await crypto.subtle.generateKey(
-        {name: 'ECDSA', hash: 'SHA-256', namedCurve: 'P-256'},
-        true,
-        ['sign']
-    );
-    console.log('privateKey (jwk):');
-    console.log(await crypto.subtle.exportKey('jwk', pair.privateKey));
-
-    console.log('publicKey (jwk):');
-    console.log(await crypto.subtle.exportKey('jwk', pair.publicKey));
-    console.log('publicKey (raw hex):');
-    console.log(arraybuffer_to_hexstr(await crypto.subtle.exportKey('raw', pair.publicKey)));
 }

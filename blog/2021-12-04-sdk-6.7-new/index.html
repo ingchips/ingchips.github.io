@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>SDK 6.7 更新说明 - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="总结 SDK 6.7 新功能、解决的问题。"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item has-children">
+              
+              
+<a class="" href="/docs/sdk/apps/#web-apps">
+  
+  Web 工具
+  
+</a>
+
+              
+                
+                <ul class="submenu">
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/callgraph">
+  
+  Callgraph (调用图)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index_cn.html">
+  
+  ING918 FOTA (空中升级)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/dr_cte">
+  
+  CTE 预处理器
+  
+</a>
+
+  </li>
+  
+</ul>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+              
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <article class="post post-full">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <header class="post-header has-gradient outer">
+      
+      
+      <div class="inner-sm">
+        <div class="post-meta">
+          <time class="published" datetime="2021-12-04 00:00">December 04, 2021</time>
+        </div>
+        <h1 class="post-title">SDK 6.7 更新说明</h1>
+        
+        
+      </div>
+    </header>
+    <div class="inner-md outer">
+      <div class="post-content">
+        <h2 id="highlights">Highlights:</h2>
+
+<ul>
+  <li>Raw Packet 新增 Bare 模式</li>
+  <li>兼容 Silicon Labs 私有无连接 AoA</li>
+  <li>Trace 输出到 Flash</li>
+</ul>
+
+<h2 id="1-软件包">1. 软件包</h2>
+
+<ul>
+  <li>[<strong>新增</strong>] Raw Packet Bare 模式 (extension) <span style="background:yellow">(<strong>6.7.0</strong>)</span></li>
+</ul>
+
+<p>通过 <code class="highlighter-rouge">ll_raw_packet_set_bare_mode</code> 启用 Bare 模式后，开发者可获得更多的自定义特性：指定带外频点、
+自定义 CRC、自定义数据白化等。</p>
+
+<ul>
+  <li>[<strong>新增</strong>] 私有无连接 AoA (兼容 Silicon Labs 增强/私有 AoA) (extension) <span style="background:yellow">(<strong>6.7.0</strong>)</span></li>
+</ul>
+
+<p>目前，ING9188xx 一共支持 4 种 AoA/AoD 方式，可以根据需要选择。各种方式的特点对比如下：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"><strong>方式</strong></th>
+      <th style="text-align: left">说明</th>
+      <th style="text-align: left">特点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong>有连接</strong></td>
+      <td style="text-align: left">在蓝牙连接模式下通过链路层控制协议按需发送 CTE 信号</td>
+      <td style="text-align: left">容量：★★☆☆☆<br />效率：★★★☆☆</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><strong>无连接</strong></td>
+      <td style="text-align: left">通过蓝牙周期广播发送 CTE 信号</td>
+      <td style="text-align: left">容量：★☆☆☆☆<br />效率：★☆☆☆☆</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><strong>INGCHIPS 私有 1</strong><br />(基于 Raw Packet)</td>
+      <td style="text-align: left">将 CTE 附加到 Raw Packet 上发送</td>
+      <td style="text-align: left">容量：★★★★★<br />效率：★★★★★</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><strong>INGCHIPS 私有 2</strong><br />(基于扩展广播)</td>
+      <td style="text-align: left">通过普通蓝牙扩展广播发送 CTE 信号</td>
+      <td style="text-align: left">容量：★★★★★<br />效率：★★★★★</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>[<strong>修正</strong>] 看门狗复位时的行为 <span style="background:yellow">(<strong>6.7.0</strong>)</span></li>
+</ul>
+
+<h2 id="2-库函数">2. 库函数</h2>
+
+<ul>
+  <li>[<strong>新增</strong>] <code class="highlighter-rouge">platform_util.c</code> 模块 <span style="background:yellow">(<strong>6.7.0</strong>)</span></li>
+</ul>
+
+<p>使用本模块提供的函数可以提取 <code class="highlighter-rouge">platform.bin</code> 的版本号等信息。</p>
+
+<ul>
+  <li>[<strong>修正</strong>] <code class="highlighter-rouge">gatt_client_util.c</code> 模块 <span style="background:yellow">(<strong>6.7.0</strong>)</span></li>
+</ul>
+
+<p>修正了出错处理流程．</p>
+
+<ul>
+  <li>[<strong>更新</strong>] <code class="highlighter-rouge">power_ctrl.lib</code> <span style="background:yellow">(<strong>6.7.0</strong>)</span></li>
+</ul>
+
+<p>微调了低功耗流程的相关参数。</p>
+
+<ul>
+  <li>[<strong>新增</strong>] 将 Trace 保存到 Flash <span style="background:yellow">(<strong>6.7.1</strong>)</span></li>
+</ul>
+
+<p>通过实现不同的 Trace 输出回调，可以用不同方式导出数据，比如 SWD、UART 等。本次更新增加了将数据循环写入 Flash
+的功能。具体使用方法见文末“Trace 到 Flash 的使用方法”。</p>
+
+<ul>
+  <li>[<strong>修正</strong>] <code class="highlighter-rouge">iic.c</code>: 写内存溢出  <span style="background:yellow">(<strong>6.7.1</strong>)</span></li>
+</ul>
+
+<p><code class="highlighter-rouge">iic.c</code> 保存从 I2C 读取的数据时，“隐式”要求预留数据缓存区至 4 字节的边界。如果没有预留，会导致内存意外改写。
+本版本去掉了这个“隐式”要求。</p>
+
+<h2 id="3-示例">3. 示例</h2>
+
+<ul>
+  <li>[<strong>更新</strong>] 所有 Keil 5 示例改为使用 v6 编译器 <span style="background:yellow">(<strong>6.7.0</strong>)</span></li>
+</ul>
+
+<p>Arm <a href="https://www2.keil.com/mdk5/compiler/6">Compiler Version 6</a> 使用 LLVM 基础架构，使用 Clang 前端，与 Gnu
+Arm Toolchain 兼容。</p>
+
+<div class="note">
+<strong>说明：</strong>示例中警告等级设为“AC5-like Warnings”。
+</div>
+
+<ul>
+  <li>[<strong>更新</strong>] <code class="highlighter-rouge">Central CTE</code> &amp; <code class="highlighter-rouge">Peripheral CTE</code>: 演示了私有无连接 AoA <span style="background:yellow">(<strong>6.7.0</strong>)</span></li>
+</ul>
+
+<h2 id="4-工具">4. 工具</h2>
+
+<ul>
+  <li>
+    <p>[<strong>新增</strong>] Wizard 小功能 <span style="background:yellow">(<strong>6.7.0</strong>)</span></p>
+
+    <ul>
+      <li>新建 Keil 5 项目时可设置编译器版本；</li>
+      <li>用 Visual Studio Code 打开任意项目；</li>
+      <li>搜索项目时，所有信息（型号、软件包等）皆可搜索。</li>
+    </ul>
+
+    <p><br /></p>
+  </li>
+  <li>
+    <p>[<strong>新增</strong>] 支持 Trace 到 Flash <span style="background:yellow">(<strong>6.7.1</strong>)</span></p>
+
+    <ul>
+      <li>Flash 数据导出：
+        <ul>
+          <li>Python 脚本<code class="highlighter-rouge">flash_dump.py</code></li>
+          <li>Flash Downloader：Tools -&gt; Flash Dump</li>
+        </ul>
+      </li>
+      <li>tracer: 读取 Flash 数据</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="5-trace-到-flash-的使用方法">5. Trace 到 Flash 的使用方法</h2>
+
+<div class="note">
+<strong>说明：</strong>Flash 写数据比较耗费时间，影响 MCU 时序。需要谨慎使用。API 的使用可参考 SDK 示例 UART GATT Console。
+</div>
+
+<h3 id="51-准备工作">5.1 准备工作</h3>
+
+<ol>
+  <li>
+    <p>规划 Flash 空间</p>
+
+    <p>调用 <code class="highlighter-rouge">trace_flash_init</code> 时指定 Flash 空间。</p>
+  </li>
+  <li>
+    <p>确定 Trace 触发条件</p>
+
+    <p>由于 Flash 空间受限，可以在出现特定条件时通过 <code class="highlighter-rouge">trace_flash_enable</code> 时控制是否将数据写入 Flash。
+通过 <code class="highlighter-rouge">trace_flash_erase_all</code> 可以擦除用于存储 Trace 数据的 Flash 空间。</p>
+  </li>
+  <li>
+    <p>根据需要确定要抓取的 Trace 项目</p>
+
+    <p>此步骤需要实际问题多次尝试。</p>
+  </li>
+</ol>
+
+<h3 id="52-测试">5.2 测试</h3>
+
+<h3 id="53-导出-flash-数据">5.3 导出 Flash 数据</h3>
+
+<p>使用<a href="user_guide/dive-into-sdk.html#memory-dump">在线调试器</a>、Python 脚本、或者 Flash Downloader 导出 Flash 数据。</p>
+
+<ul>
+  <li>
+    <p>使用 Python 3 脚本命令行：<code class="highlighter-rouge">python flash_dump.py com_port start_addr page_no file_name</code></p>
+
+    <p>比如：<code class="highlighter-rouge">python flash_dump.py COM3 0x44000 11 c:\temp\temp.bin</code></p>
+
+    <p>使芯片进入下载模式即可完成导出。</p>
+  </li>
+  <li>
+    <p>使用 Flash Downloader：</p>
+
+    <p>在主界面配置串口参数，通过主菜单 Tools -&gt; Flash Dump 打开 Dump 窗口。设置导出范围后点击 Dump，
+ 使芯片进入下载模式进行导出。导出完成后，点击 Save… 保存文件。</p>
+
+    <p><img src="../img/flash_dump.png" alt="" /></p>
+  </li>
+</ul>
+
+
+      </div><!-- .post-content -->
+    </div><!-- .inner-md -->
+  </article><!-- .post -->
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2021. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

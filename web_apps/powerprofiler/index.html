@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Online Power Profiler for Bluetooth LE</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="dependency/css/uikit.min.css" />
+		<script src="dependency/js/uikit.min.js"></script>
+		<script src="dependency/js/uikit-icons.min.js"></script>
+
+		<script src="https://cdn.jsdelivr.net/npm/highcharts@9.3.2/highcharts.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/highcharts@9.3.2/highcharts-more.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/highcharts@9.3.2/modules/variwide.js"></script>
+	</head>
+	<body>
+
+		<div class="uk-panel uk-padding-remove-vertical uk-background-secondary uk-light">
+		<div class="uk-container uk-container-center">
+		</div>
+		</div>
+
+		<div class="uk-container uk-container-center uk-margin-top uk-margin-large-bottom">
+
+			<div class="uk-grid" data-uk-grid-margin>
+				<div class="uk-width-1-1">
+					<div class="uk-text-left uk-text-lead">
+
+						<p class="uk-text-bold">
+							<img src="dependency/logo.png" alt="" width="20%" height="20%">
+						Online Power Profiler for Bluetooth LE</p>
+					</div>
+				</div>
+			</div>
+			<div class="uk-grid" data-uk-grid-margin>
+				<div class="uk-width-1-4">
+
+					<div class="uk-grid">
+						<div class="uk-width-1-1">
+
+							<!--<p class="uk-text-bold">Chip Settings</p>-->
+
+							<form class="uk-form uk-form-stacked">
+
+								<fieldset data-uk-margin>
+								<legend><b>Chip Settings</b></legend>
+
+
+
+								<div class="uk-margin">
+									<label class="uk-form-label" for="form-stacked-select">Chip ID</label>
+									<div class="uk-form-controls ">
+										<select class="uk-select uk-form-small uk-form-width-medium uk-align-right uk-margin-small-bottom uk-box-shadow-hover-medium" id="form-stacked-select_chip_id" >
+											<option value="1">ING9xxxx</option>
+										</select>
+									</div>
+
+								</div>
+
+								<div class="uk-margin">
+									<label class="uk-form-label" for="form-stacked-select">Voltage(V)</label>
+									<div class="uk-form-controls">
+										<select class="uk-select uk-form-small uk-form-width-medium uk-align-right uk-margin-small-bottom uk-box-shadow-hover-medium" id="form-stacked-select_voltage">
+											<option value="1">3.3V</option>
+										</select>
+									</div>
+								</div>
+
+								<div class="uk-margin">
+									<label class="uk-form-label" for="form-stacked-select">Clock source</label>
+									<div class="uk-form-controls">
+										<select class="uk-select uk-form-small uk-form-width-medium uk-align-right uk-margin-small-bottom uk-box-shadow-hover-medium" id="form-stacked-select_clock_source">
+											<option value="1">Internal RC</option>
+										</select>
+									</div>
+								</div>
+
+								<div class="uk-margin">
+									<label class="uk-form-label" for="form-stacked-select" id="internal_rc_cal_interval_label">Internal RC calibration intrval(Hours)</label>
+									<div class="uk-form-controls">
+										<input class="uk-input uk-form-small uk-form-width-medium uk-align-right uk-margin-small-bottom uk-box-shadow-hover-medium " type="text" id="internal_rc_cal_interval" value="4">
+									</div>
+								</div>
+
+								<div class="uk-margin">
+									<label class="uk-form-label" for="form-stacked-select">TX power(dBm)</label>
+									<div class="uk-form-controls">
+										<select class="uk-select uk-form-small uk-form-width-medium uk-align-right uk-margin-small-bottom uk-box-shadow-hover-medium" id="form-stacked-select">
+											<option value="1">0 dBm</option>
+										</select>
+									</div>
+								</div>
+
+								</fieldset>
+
+							</form>
+						</div>
+
+						<div class="uk-width-1-1">
+
+							<!--<p class="uk-text-bold">BLE Settings</p>-->
+
+							<form class="uk-form-stacked" method="POST" onsubmit='return doSubmitForm()'>
+
+								<fieldset data-uk-margin>
+								<legend><b>BLE Settings</b></legend>
+
+								<div class="uk-margin">
+									<label class="uk-form-label" for="form-stacked-select">PHY</label>
+									<div class="uk-form-controls">
+										<select class="uk-select uk-form-small uk-form-width-medium uk-align-right uk-margin-small-bottom uk-box-shadow-hover-medium " id="form-stacked-select_phy">
+											<option value="1">1 Mbps</option>
+										</select>
+									</div>
+								</div>
+								<div class="uk-margin">
+									<label class="uk-form-label" for="form-stacked-select">Role</label>
+									<div class="uk-form-controls">
+										<select class="uk-select uk-form-small uk-form-width-medium uk-align-right uk-margin-small-bottom uk-box-shadow-hover-medium " id="form-stacked-select_state" onchange="label_control_visibility()">
+											<option value="1">Advertising non connectable</option>
+											<option value="2">Advertising connectable</option>
+											<option value="3">Connection central</option>
+											<option value="4">Connection peripheral</option>
+										</select>
+									</div>
+								</div>
+								<div class="uk-margin">
+									<label class="uk-form-label" for="form-stacked-input">Interval(ms)</label>
+									<div class="uk-form-controls">
+										<input class="uk-input uk-form-small uk-form-width-medium uk-align-right uk-margin-small-bottom uk-box-shadow-hover-medium " type="text" id="interval" value="500">
+									</div>
+								</div>
+								<div class="uk-margin">
+									<label class="uk-form-label" for="form-stacked-input" id="TXlength_label">TX payload(Bytes):</label>
+									<div class="uk-form-controls">
+										<input class="uk-input uk-form-small uk-form-width-medium uk-align-right uk-margin-small-bottom uk-box-shadow-hover-medium " type="text" id="TXlength" value="0">
+									</div>
+								</div>
+								<div class="uk-margin">
+									<label class="uk-form-label" for="form-stacked-input" id="RXlength_label" >RX payload(Bytes):</label>
+									<div class="uk-form-controls">
+										<input class="uk-input uk-form-small uk-form-width-medium uk-align-right uk-margin-small-bottom uk-box-shadow-hover-medium " type="text" id="RXlength" value="0">
+									</div>
+								</div>
+								<div class="uk-margin">
+									<label class="uk-form-label" for="form-stacked-input" id="Latency_label" >Conn slave latency:</label>
+									<div class="uk-form-controls">
+										<input class="uk-input uk-form-small uk-form-width-medium uk-align-right uk-margin-small-bottom uk-box-shadow-hover-medium " type="text" id="Latency" value="0">
+									</div>
+								</div>
+								<div class="uk-margin">
+									<label class="uk-form-label" for="form-stacked-input" id="MSCA_label" >Master sleep clock accuracy:</label>
+									<div class="uk-form-controls">
+										<input class="uk-input uk-form-small uk-form-width-medium uk-align-right uk-margin-small-bottom uk-box-shadow-hover-medium " type="text" id="MSCA" value="20">
+									</div>
+								</div>
+								<div class="uk-margin">
+									<label class="uk-form-label" for="form-stacked-input" id="SSCA_label" >Slave sleep clock accuracy:</label>
+									<div class="uk-form-controls">
+										<input class="uk-input uk-form-small uk-form-width-medium uk-align-right uk-margin-small-bottom uk-box-shadow-hover-medium " type="text" id="SSCA" value="20">
+									</div>
+								</div>
+
+								</fieldset>
+
+								<button class="uk-button uk-button-default uk-box-shadow-hover-medium">
+									<b>submit</b>
+								</button>
+
+							</form>
+
+						</div>
+
+					</div>
+				</div>
+				<div class="uk-width-3-4">
+
+					<div class="uk-grid uk-margin-remove-bottom">
+						<div class="uk-width-1-2 uk-margin-remove">
+							<div class="uk-grid">
+								<div class="uk-width-1-1 uk-margin-remove">
+									<b>Test setup</b>
+								</div>
+								<div class="uk-width-2-3 uk-margin-remove">
+									<p>Chip</p>
+								</div>
+								<div class="uk-width-1-3 uk-margin-remove">
+									<output name="out_chip_id" id="out_chip_id"></output>
+								</div>
+								<div class="uk-width-2-3 uk-margin-remove">
+									<p>Voltage</p>
+								</div>
+								<div class="uk-width-1-3 uk-margin-remove">
+									<output name="out_voltage" id="out_voltage"></output>
+								</div>
+								<div class="uk-width-2-3 uk-margin-remove" id="out_clk_source_label">
+									<p>Clock source</p>
+								</div>
+								<div class="uk-width-1-3 uk-margin-remove">
+									<output name="out_clk_source" id="out_clk_source"></output>
+								</div>
+
+								<div class="uk-width-1-1 uk-margin-remove">
+									<b>BLE details</b>
+								</div>
+								<div class="uk-width-2-3 uk-margin-remove">
+									<p>PHY</p>
+								</div>
+								<div class="uk-width-1-3 uk-margin-remove">
+									<output name="out_phy" id="out_phy"></output>
+								</div>
+								<div class="uk-width-2-3 uk-margin-remove">
+									<p>Interval</p>
+								</div>
+								<div class="uk-width-1-3 uk-margin-remove">
+									<output name="out_interval" id="out_interval"></output>
+								</div>
+								<div class="uk-width-2-3 uk-margin-remove">
+									<p>Active length</p>
+								</div>
+								<div class="uk-width-1-3 uk-margin-remove">
+									<output name="out_Length" id="out_Length"></output>
+								</div>
+
+								<div class="uk-width-2-3 uk-margin-remove" id="out_num_packet_label">
+									<p>Number of packets</p>
+								</div>
+								<div class="uk-width-1-3 uk-margin-remove">
+									<output name="out_num_packet" id="out_num_packet"></output>
+								</div>
+								<div class="uk-width-2-3 uk-margin-remove" id="out_msca_label">
+									<p>Master sleep clock accuracy</p>
+								</div>
+								<div class="uk-width-1-3 uk-margin-remove">
+									<output name="out_msca" id="out_msca"></output>
+								</div>
+								<div class="uk-width-2-3 uk-margin-remove" id="out_ssca_label">
+									<p>Slave sleep clock accuracy</p>
+								</div>
+								<div class="uk-width-1-3 uk-margin-remove">
+									<output name="out_ssca" id="out_ssca"></output>
+								</div>
+
+								<div class="uk-width-2-3 uk-margin-remove" id="out_pdu_min_label">
+									<p>LL PDU size</p>
+								</div>
+								<div class="uk-width-1-3 uk-margin-remove">
+									<output name="out_pdu_min" id="out_pdu_min"></output>
+								</div>
+								<div class="uk-width-2-3 uk-margin-remove" id="out_rx_payl_len_label">
+									<p>RX payload length</p>
+								</div>
+								<div class="uk-width-1-3 uk-margin-remove">
+									<output name="out_rx_payl_len" id="out_rx_payl_len"></output>
+								</div>
+								<div class="uk-width-2-3 uk-margin-remove" id="out_tx_payl_len_label">
+									<p>TX payload length</p>
+								</div>
+								<div class="uk-width-1-3 uk-margin-remove">
+									<output name="out_tx_payl_len" id="out_tx_payl_len"></output>
+								</div>
+
+							</div>
+						</div>
+
+						<div class="uk-width-1-2 uk-margin-remove">
+							<div class="uk-grid">
+								<div class="uk-width-1-1 uk-margin-remove">
+									<b>Current consumption</b>
+								</div>
+								<div class="uk-width-2-3 uk-margin-remove">
+									<p>Idle current</p>
+								</div>
+								<div class="uk-width-1-3 uk-margin-remove">
+									<output name="idle_current" id="idle_current"></output>
+								</div>
+
+								<div class="uk-width-2-3 uk-margin-remove" id="clock_cal_current_label">
+									<p>Clock calibration current</p>
+								</div>
+								<div class="uk-width-1-3 uk-margin-remove">
+									<output name="average_current" id="clock_cal_current"></output>
+								</div>
+
+								<div class="uk-width-2-3 uk-margin-remove">
+									<p>Average current per cycle</p>
+								</div>
+								<div class="uk-width-1-3 uk-margin-remove">
+									<output name="average_current" id="average_current"></output>
+								</div>
+
+							</div>
+						</div>
+
+						<div class="uk-width-1-1 uk-margin-small uk-text-bold">
+							<output name="warning" id="warning"></output>
+						</div>
+
+					</div>
+					<div class="uk-margin uk-margin-remove">
+					<hr>
+					</div>
+					<div class="uk-grid uk-margin-remove">
+						<!--
+						<div class="uk-width-1-1 uk-margin-small-bottom">
+							<div class="uk-text-bold">
+								<div id="warning"></div>
+							</div>
+
+							<hr>
+						</div>
+						-->
+						<div class="uk-width-1-1 uk-margin-remove uk-padding-remove">
+							<div class="uk-margin uk-margin-remove-bottom">
+							<div class="uk-grid">
+								<div class="uk-width-1-2 uk-margin-remove-bottom">
+									<div class="uk-margin uk-margin-remove-bottom">
+									<div class="uk-grid">
+										<div class="uk-width-2-3 uk-margin-remove-top">
+
+											<form class="uk-form uk-form-stacked">
+												<div class="uk-margin uk-margin-remove-top uk-margin-remove-bottom">
+													<label class="uk-form-label" for="form-stacked-select"><b>Battery Capacity</b></label>
+													<div class="uk-form-controls ">
+														<select class="uk-select uk-form-small uk-form-width-medium uk-box-shadow-hover-medium" id="form-stacked-select_battery" onchange="battery_run_time_cal_part1()">
+															<option value="1">Manual Input</option>
+															<option value="2">CR2032-5V(button cell)</option>
+															<option value="3">AA-Battery-1830mAh</option>
+															<option value="4">AA-Battery-2020mAh</option>
+															<option value="5">AAA-Battery-900mAh</option>
+														</select>
+													</div>
+												</div>
+											</form>
+
+										</div>
+
+										<div class="uk-width-1-3 uk-margin-remove-top">
+											<form class="uk-form uk-form-stacked">
+												<div class="uk-margin uk-margin-remove-top uk-margin-remove-bottom">
+
+													<label class="uk-form-label ">&nbsp</label>
+													<label><input class="uk-input uk-form-small uk-form-width-xsmall uk-box-shadow-hover-medium " type="text" id="capacity_value" value="0" onchange="battery_run_time_cal_part2()">mAh</label>
+
+												</div>
+											</form>
+										</div>
+
+									</div>
+									</div>
+								</div>
+
+								<div class="uk-width-1-2 uk-margin-remove-bottom uk-margin-small-top">
+									<div class="uk-margin uk-margin-remove-bottom">
+									<div class="uk-grid ">
+
+										<div class="uk-width-1-1 uk-margin-remove">
+											<div class="uk-margin uk-margin-remove uk-text-small uk-text-italic uk-text-muted uk-text-middle">
+											formula: battery life(hrs) = capacity(mAh) / consumption(mA)
+											</div>
+										</div>
+										<div class="uk-width-1-2 uk-margin-remove">
+											<div class="uk-margin uk-margin-remove-bottom">
+											Battery Run Time
+											</div>
+										</div>
+										<div class="uk-width-1-2 uk-margin-remove uk-align-right">
+											<div class="uk-margin uk-margin-remove-bottom uk-align-right">
+											<output name="out_battery_time" id="out_battery_time"></output>
+											</div>
+										</div>
+									</div>
+									</div>
+								</div>
+
+							</div>
+							</div>
+
+						</div>
+						<div class="uk-width-1-1 uk-margin uk-margin-small-bottom uk-padding-remove-left">
+							<hr>
+						</div>
+						<div class="uk-width-1-1">
+							<div class="uk-margin-small-top">
+								<div id="container" style="min-width:600px;height:500px"> </div>
+								<script type="text/javascript" src="dependency/plot.js" ></script>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+			<hr/>
+
+			<p>The tool is based on a model of measured values, and is not showing the actual measurement.
+				The results are therefore estimates of the expected value.
+				It is meant for <em>evaluation purposes only</em>, and will not give the exact numbers in every use case.
+				Testing shows that the estimated average current is typically within 5% of the actual value.
+				The device to device variations will also add to this inaccuracy.</p>
+    		<p>Please refer to the ING918XX data sheet for expected min/max values for the different components.</p>
+		</div>
+
+	</body>
+</html>

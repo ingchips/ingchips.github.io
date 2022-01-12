@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>通过 BLE 抓取 Trace - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="当设备不方便接线时，可以通过 BLE 从空口抓取 Trace 数据。"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item has-children">
+              
+              
+<a class="" href="/docs/sdk/apps/#web-apps">
+  
+  Web 工具
+  
+</a>
+
+              
+                
+                <ul class="submenu">
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/callgraph">
+  
+  Callgraph (调用图)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index_cn.html">
+  
+  ING918 FOTA (空中升级)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/powerprofiler/">
+  
+  Online Power Profiler
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/air_trace/">
+  
+  Trace Logger
+  
+</a>
+
+  </li>
+  
+</ul>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+              
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <article class="post post-full">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <header class="post-header has-gradient outer">
+      
+      
+      <div class="inner-sm">
+        <div class="post-meta">
+          <time class="published" datetime="2022-01-12 00:00">January 12, 2022</time>
+        </div>
+        <h1 class="post-title">通过 BLE 抓取 Trace</h1>
+        
+        
+      </div>
+    </header>
+    <div class="inner-md outer">
+      <div class="post-content">
+        <p>Trace 对于分析协议栈流程问题非常重要。考虑到蓝牙设备的多样性，Trace 数据的导出、记录由开发者在应用里实现。
+作为参考，SDK 里提供了 SWD、UART 两种“有线”方式，Wizard 能够<a href="/user_guide/tutorial.html#common-functions-page">自动生成相关代码</a>。
+在某些情况下，“有线”方式可能难以使用，得益于 ING918xx EFlash
+的应用内编程（In-Application Programming，或称自编程，Self Programming）特性，可以先将 Trace
+<a href="/blog/2021-12-04-sdk-6.7-new/#5-trace-到-flash-的使用方法">保存到 Flash 里</a>，然后导出。</p>
+
+<p>还有一条通道可以用来导出数据：<strong>BLE 空口</strong>。本文介绍如何通过 BLE 从空中抓取 Trace 数据。
+针对本文提供的参考实现，我们提供了<a href="/web_apps/air_trace/index_cn.html">网页版 Log 记录器</a>。</p>
+
+<div class="note">
+<strong>说明：</strong>该功能相关代码将（或已）在版本 8.0.0 中发布，参考 UART GATT Console 示例。
+在版本发布之前，开发者可以按照需要将本文提供的方法加入已有的项目中。
+</div>
+
+<div class="important">
+<strong>注意：</strong>本方法仅用调试。强烈不建议在量产产品中保留此功能，以免泄露敏感信息。
+</div>
+
+<p>目前存在的四种导出/记录 Trace 数据的方法总结如下。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"><strong>方法</strong></th>
+      <th style="text-align: left">端口</th>
+      <th style="text-align: left">侵入性</th>
+      <th style="text-align: left">数据量</th>
+      <th style="text-align: left">传输速率</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong>SWD/RTT</strong></td>
+      <td style="text-align: left">SWD，2 线</td>
+      <td style="text-align: left">最低</td>
+      <td style="text-align: left">无限</td>
+      <td style="text-align: left">高</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><strong>UART</strong></td>
+      <td style="text-align: left">UART，1 线</td>
+      <td style="text-align: left">较低。UART 产生较多中断，占用 MCU 处理时间</td>
+      <td style="text-align: left">无限</td>
+      <td style="text-align: left">较高</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><strong>Flash</strong></td>
+      <td style="text-align: left">无</td>
+      <td style="text-align: left">一般。占用 Flash 空间，写入速率低，占用 MCU 处理时间</td>
+      <td style="text-align: left">受限于 Flash 空间</td>
+      <td style="text-align: left">一般</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><strong>BLE 空口</strong></td>
+      <td style="text-align: left">无</td>
+      <td style="text-align: left">很高。需要修改 GATT Profile，多一条 BLE 连接</td>
+      <td style="text-align: left">无限</td>
+      <td style="text-align: left">一般，与原有 BLE 功能竞争</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="总体思路">总体思路</h3>
+
+<ol>
+  <li>定义 Trace 服务，包含一个 Trace Data 特性（Characteristics）；</li>
+  <li>实现 Trace 事件的回调，将数据写入一个环形缓冲区；</li>
+  <li>当缓冲区内数据积累到一定量时，通过 Trace Data 特性发送数据。</li>
+</ol>
+
+<h3 id="接口定义">接口定义</h3>
+
+<p>我们将该功能跟 GATT Profile 做隔离，定义以下接口。</p>
+
+<pre><code class="language-C">// 初始化。
+// msg_id 用于 `btstack_push_user_msg`
+// req_thres 用于控制 `btstack_push_user_msg` 的调用时机
+void trace_air_init(trace_air_t *ctx, uint32_t msg_id, uint8_t req_thres);
+
+// 当用于 Trace 的 BLE 连接建立时，使能；当连接断开时，禁用
+// conn_handle 为连接句柄
+// value_handle 为 Trace Data 的句柄
+void trace_air_enable(trace_air_t *ctx, int enable, uint16_t conn_handle, uint16_t value_handle);
+
+// 在收到 msg_id 这条用户消息时，调用该函数发送 Trace 数据
+void trace_air_send(trace_air_t *ctx);
+
+// Trace 事件的回调
+uint32_t cb_trace_air(const platform_evt_trace_t *trace, trace_air_t *ctx);
+</code></pre>
+
+<h3 id="具体实现">具体实现</h3>
+
+<ul>
+  <li>
+    <p>定义 Trace Service</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align: center"><strong>项目</strong></th>
+          <th style="text-align: left">UUID</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align: center"><strong>Trace Service</strong></td>
+          <td style="text-align: left"><code class="highlighter-rouge">00000006-494e-4743-4849-505355554944</code></td>
+        </tr>
+        <tr>
+          <td style="text-align: center"><strong>Trace Data 特性</strong></td>
+          <td style="text-align: left"><code class="highlighter-rouge">bf83f3f2-399a-414d-9035-ce64ceb3ff67</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li>
+    <p>上下文信息</p>
+
+    <p>上下文信息的定义如下，主要包含环形缓冲区，句柄信息和状态：</p>
+
+    <pre><code class="language-C">  typedef struct
+  {
+      // 环形缓冲区
+      uint8_t           buffer[TRACE_BUFF_SIZE];
+      uint16_t          write_next;
+      uint16_t          read_next;
+
+      SemaphoreHandle_t mutex;
+      uint32_t          msg_id;
+      uint16_t          value_handle;
+      uint16_t          conn_handle;
+      uint8_t           req_thres;
+      uint8_t           enabled:1;
+      uint8_t           msg_sent:1;   // 防止重复调用 btstack_push_user_msg
+  } trace_air_t;
+</code></pre>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">cb_trace_air</code></p>
+
+    <p><code class="highlighter-rouge">cb_trace_air</code> 与 <code class="highlighter-rouge">trace.c</code> 模块的 <code class="highlighter-rouge">cb_trace_uart</code> 相似，唯一需要注意的是需要丢弃用于 Trace 的 BLE 连接上的 ACL 数据：</p>
+
+    <pre><code class="language-C">  uint32_t cb_trace_air(const platform_evt_trace_t *trace, trace_air_t *ctx)
+  {
+  #pragma pack (push, 1)
+
+      typedef struct
+      {
+          uint32_t A;
+          uint32_t B;
+          uint8_t  id;
+          uint8_t  tag;
+      } header_t;
+
+      if (trace-&gt;len1 == sizeof(header_t))
+      {
+          const header_t *p = (const header_t *)trace-&gt;data1;
+          if ((p-&gt;id == PLATFORM_TRACE_ID_HCI_ACL) &amp;&amp; (p-&gt;tag == (ctx-&gt;conn_handle &lt;&lt; 1)))
+              return 0;
+      }
+
+  #pragma pack (pop)
+
+      uint16_t next;
+      int free_size;
+      uint8_t use_mutex = !IS_IN_INTERRUPT();
+
+      if (use_mutex)
+          xSemaphoreTake(ctx-&gt;mutex, portMAX_DELAY);
+
+      next = ctx-&gt;write_next;
+      free_size = ctx-&gt;read_next - ctx-&gt;write_next;
+      if (free_size &lt;= 0) free_size += TRACE_BUFF_SIZE;
+      if (free_size &gt; 0) free_size--;
+
+      free_size -= trace-&gt;len1;
+      free_size -= trace-&gt;len2;
+      if (free_size &lt; 0)
+      {
+          if (use_mutex)
+              xSemaphoreGive(ctx-&gt;mutex);
+          trace_air_send_req(ctx);
+          return 0;
+      }
+
+      next = trace_add_buffer(ctx-&gt;buffer, (const uint8_t *)trace-&gt;data1, trace-&gt;len1, next) &amp; TRACE_BUFF_SIZE_MASK;
+      next = trace_add_buffer(ctx-&gt;buffer, (const uint8_t *)trace-&gt;data2, trace-&gt;len2, next) &amp; TRACE_BUFF_SIZE_MASK;
+
+      ctx-&gt;write_next = next;
+
+      if (use_mutex) xSemaphoreGive(ctx-&gt;mutex);
+
+      if (free_size &lt; ctx-&gt;req_thres)
+          trace_air_send_req(ctx);
+
+      return 0;
+  }
+</code></pre>
+
+    <p>其中 <code class="highlighter-rouge">trace_air_send_req</code> 的参考实现如下：</p>
+
+    <pre><code class="language-C">  static void trace_air_send_req(trace_air_t *ctx)
+  {
+      if ((0 == ctx-&gt;enabled) || ctx-&gt;msg_sent) return;
+      ctx-&gt;msg_sent = 1;
+      btstack_push_user_msg(ctx-&gt;msg_id, NULL, 0);
+  }
+</code></pre>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">trace_air_send</code></p>
+
+    <p><code class="highlighter-rouge">trace_air_send</code> 与 <code class="highlighter-rouge">ring_buf.c</code> 模块的 <code class="highlighter-rouge">ring_buf_peek_data</code> 类似：</p>
+
+    <pre><code class="language-C">  static int peek_data(trace_air_t *ctx, uint8_t *data, int len, uint8_t has_more)
+  {
+      int r = 0;
+      int mtu = att_server_get_mtu(ctx-&gt;conn_handle) - 3;
+
+      uint8_t *p = data;
+      while (len)
+      {
+          int size = len &gt; mtu ? mtu : len;
+          if (att_server_notify(ctx-&gt;conn_handle, ctx-&gt;value_handle, p, size))
+          {
+              break;
+          }
+          len -= size;
+          p += size;
+          r += size;
+      }
+
+      return r;
+  }
+
+  void trace_air_send(trace_air_t *ctx)
+  {
+      ctx-&gt;msg_sent = 0;
+      if (0 == ctx-&gt;enabled) return;
+
+      uint32_t read_next = ctx-&gt;read_next;
+      const uint32_t write_next = ctx-&gt;write_next;
+      while (read_next != write_next)
+      {
+          int cnt = read_next &gt; write_next ? sizeof(ctx-&gt;buffer) - read_next : write_next - read_next;
+          int has_more = read_next &gt; write_next ? 1 : 0;
+          int c = peek_data(ctx, ctx-&gt;buffer + read_next, cnt, has_more);
+          if (c &lt; 1)
+              break;
+          read_next += c;
+          if (read_next &gt;= sizeof(ctx-&gt;buffer)) read_next = 0;
+      }
+      ctx-&gt;read_next = read_next;
+  }
+</code></pre>
+  </li>
+</ul>
+
+      </div><!-- .post-content -->
+    </div><!-- .inner-md -->
+  </article><!-- .post -->
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2021. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

@@ -21,10 +21,10 @@
   <meta name="twitter:description" content="This is the user guide of INGCHIPS SDK." />
   <meta name="twitter:image" content="./img/sdk_overview.png" />
 
-<meta name="author" content="v1.2.4" />
+<meta name="author" content="v1.2.6" />
 
 
-<meta name="date" content="2020-10-20" />
+<meta name="date" content="2021-01-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -138,8 +138,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> Introduction</a><ul>
 <li class="chapter" data-level="2.1" data-path="intro.html"><a href="intro.html#scope"><i class="fa fa-check"></i><b>2.1</b> Scope</a></li>
 <li class="chapter" data-level="2.2" data-path="intro.html"><a href="intro.html#architecture"><i class="fa fa-check"></i><b>2.2</b> Architecture</a><ul>
-<li class="chapter" data-level="2.2.1" data-path="intro.html"><a href="intro.html#apps-built-with-c"><i class="fa fa-check"></i><b>2.2.1</b> Apps built with <code>C</code></a></li>
-<li class="chapter" data-level="2.2.2" data-path="intro.html"><a href="intro.html#apps-built-with-nim"><i class="fa fa-check"></i><b>2.2.2</b> Apps built with <code>Nim</code></a></li>
+<li class="chapter" data-level="2.2.1" data-path="intro.html"><a href="intro.html#rtos-bundles"><i class="fa fa-check"></i><b>2.2.1</b> RTOS Bundles</a></li>
+<li class="chapter" data-level="2.2.2" data-path="intro.html"><a href="intro.html#noos-bundles"><i class="fa fa-check"></i><b>2.2.2</b> “NoOS” Bundles</a></li>
 </ul></li>
 <li class="chapter" data-level="2.3" data-path="intro.html"><a href="intro.html#abbreviations-terminology"><i class="fa fa-check"></i><b>2.3</b> Abbreviations &amp; Terminology</a></li>
 <li class="chapter" data-level="2.4" data-path="intro.html"><a href="intro.html#references"><i class="fa fa-check"></i><b>2.4</b> References</a></li>
@@ -422,7 +422,7 @@ building and downloading tasks are created and can be invoked in <code>Visual St
 <li><p>Platform Bundles</p>
 <p>Provide different bundles for different application scenarios (such as <code>mesh</code>,
 and <code>typical</code> application without <code>mesh</code>).
-Each bundle contains full stack &amp; <code>FreeRTOS</code> binary, and <code>C</code> header files.
+Each bundle contains full stack &amp; (optional) <code>FreeRTOS</code> binary, and <code>C</code> header files.
 Source codes for accessing peripherals are also provided.</p></li>
 <li><p>Examples</p>
 <p>Provide a rich set of BLE device examples and corresponding Anroid and iOS
@@ -437,7 +437,11 @@ also provided.</p></li>
 </div>
 <div id="architecture" class="section level2">
 <h2><span class="header-section-number">2.2</span> Architecture</h2>
-<p>918xx software architecture is shown in Figure <a href="intro.html#fig:ch0-concept">2.2</a>.
+<p>There are two variants of bundles, one with built-in FreeRTOS (RTOS Bundles),
+and one without built-in RTOS (“NoOS” Bundles).</p>
+<div id="rtos-bundles" class="section level3">
+<h3><span class="header-section-number">2.2.1</span> RTOS Bundles</h3>
+<p>ING918xx/ING9186xx software architecture is shown in Figure <a href="intro.html#fig:ch0-concept">2.2</a>.
 Bootloader is stored in ROM and can’t be modified, while platform and app executable are
 stored in flash.
 Platform executable is provided for each
@@ -455,8 +459,8 @@ execute <a href="api-ref.html#api-switch-app">programmaticly</a>. It is possible
 and to switch between them programmaticly. After reset, platform will load the primary app
 executable as usual. Entry address of the primary app is managed by SDK tools, while entry addresses of
 secondary apps can be configured manually.</p>
-<div id="apps-built-with-c" class="section level3">
-<h3><span class="header-section-number">2.2.1</span> Apps built with <code>C</code></h3>
+<div id="apps-built-with-c" class="section level4">
+<h4><span class="header-section-number">2.2.1.1</span> Apps built with <code>C</code></h4>
 <p>App executable’s main function is named <code>app_main</code>, where app gets initialized:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="intro.html#cb1-1"></a><span class="dt">int</span> app_main(<span class="dt">void</span>)</span>
 <span id="cb1-2"><a href="intro.html#cb1-2"></a>{</span>
@@ -467,8 +471,8 @@ secondary apps can be configured manually.</p>
 <p>Platform, BLE stack and FreeRTOS APIs are all declared in corresponding <code>C</code> header files.
 To use these APIs, just include the necessary header files.</p>
 </div>
-<div id="apps-built-with-nim" class="section level3">
-<h3><span class="header-section-number">2.2.2</span> Apps built with <code>Nim</code></h3>
+<div id="apps-built-with-nim" class="section level4">
+<h4><span class="header-section-number">2.2.1.2</span> Apps built with <code>Nim</code></h4>
 <p>App executable’s main function is named <code>appMain</code>, where app gets initialized:</p>
 <pre class="nim"><code>proc appMain*(): int {.exportc noconv.} =
   ...
@@ -485,6 +489,19 @@ There are several benefits of this, not limited to:</p>
 <p>Flash tools are available for all supported IDEs and installed when installing SDK.
 App debugging is also quite easy: download platform binary with flash downloader
 (Section <a href="core-tools.html#ch2-downloader">4.2</a>), then download &amp; debug apps in IDE as usual.</p>
+</div>
+</div>
+<div id="noos-bundles" class="section level3">
+<h3><span class="header-section-number">2.2.2</span> “NoOS” Bundles</h3>
+<p>When developers want to use other RTOS, or use features that are missing in those RTOS bundles,
+developers can choose the “NoOS” bundles.</p>
+<p>A generic RTOS interface is defined, and developers should provide an implementation of this
+interface to platform binaries through the returning value of <code>app_main</code>:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="intro.html#cb3-1"></a><span class="dt">uintptr_t</span> app_main(<span class="dt">void</span>)</span>
+<span id="cb3-2"><a href="intro.html#cb3-2"></a>{</span>
+<span id="cb3-3"><a href="intro.html#cb3-3"></a>    ...</span>
+<span id="cb3-4"><a href="intro.html#cb3-4"></a>    <span class="cf">return</span> (<span class="dt">uintptr_t</span>)os_impl_get_driver();</span>
+<span id="cb3-5"><a href="intro.html#cb3-5"></a>}</span></code></pre></div>
 </div>
 </div>
 <div id="abbreviations-terminology" class="section level2">

@@ -21,10 +21,10 @@
   <meta name="twitter:description" content="This is the user guide of INGCHIPS SDK." />
   <meta name="twitter:image" content="./img/sdk_overview.png" />
 
-<meta name="author" content="v1.2.4" />
+<meta name="author" content="v1.2.6" />
 
 
-<meta name="date" content="2020-10-20" />
+<meta name="date" content="2021-01-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -138,8 +138,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> Introduction</a><ul>
 <li class="chapter" data-level="2.1" data-path="intro.html"><a href="intro.html#scope"><i class="fa fa-check"></i><b>2.1</b> Scope</a></li>
 <li class="chapter" data-level="2.2" data-path="intro.html"><a href="intro.html#architecture"><i class="fa fa-check"></i><b>2.2</b> Architecture</a><ul>
-<li class="chapter" data-level="2.2.1" data-path="intro.html"><a href="intro.html#apps-built-with-c"><i class="fa fa-check"></i><b>2.2.1</b> Apps built with <code>C</code></a></li>
-<li class="chapter" data-level="2.2.2" data-path="intro.html"><a href="intro.html#apps-built-with-nim"><i class="fa fa-check"></i><b>2.2.2</b> Apps built with <code>Nim</code></a></li>
+<li class="chapter" data-level="2.2.1" data-path="intro.html"><a href="intro.html#rtos-bundles"><i class="fa fa-check"></i><b>2.2.1</b> RTOS Bundles</a></li>
+<li class="chapter" data-level="2.2.2" data-path="intro.html"><a href="intro.html#noos-bundles"><i class="fa fa-check"></i><b>2.2.2</b> “NoOS” Bundles</a></li>
 </ul></li>
 <li class="chapter" data-level="2.3" data-path="intro.html"><a href="intro.html#abbreviations-terminology"><i class="fa fa-check"></i><b>2.3</b> Abbreviations &amp; Terminology</a></li>
 <li class="chapter" data-level="2.4" data-path="intro.html"><a href="intro.html#references"><i class="fa fa-check"></i><b>2.4</b> References</a></li>
@@ -418,10 +418,14 @@ stack.</p>
 <p>Cares must be taken that size of stack is limited, and it might overflow if too much memory is allocated.</p>
 <ol style="list-style-type: decimal">
 <li><p>The <code>app_main</code> function &amp; interrupts serving routines shares the same global stack with
-platform’s <code>main</code> function, whose size is defined as <code>256</code> bytes.</p></li>
+platform’s <code>main</code> function.</p>
+<p>For RTOS bundles, this stack is defined in platform binaries as <code>1024</code> bytes, and can be replaced
+by a user defined one with the help of <code>platform_install_isr_stack</code>.</p>
+<p>For “NoOS” bundles, this stack is defined in app binariy as usual.</p></li>
 <li><p>Callback functions registered into Bluetooth stack shares the same task stack with the stack task,
 whose size is defined as <code>1024</code> bytes, and about half is left to be used by app.</p></li>
-<li><p>Developers can create new tasks by calling <code>FreeRTOS</code> APIs. In these cases, stack size should be carefully examined.</p></li>
+<li><p>Developers can create new tasks by calling RTOS APIs. In these cases, stack size should be<br />
+carefully examined.</p></li>
 </ol>
 <div class="rmdtip">
 <p>
@@ -487,7 +491,7 @@ this value, indicating a <em>lower</em> or <em>equal</em> priority.</p></li>
 </div>
 <div id="power-management" class="section level2">
 <h2><span class="header-section-number">5.4</span> Power Management</h2>
-<p>In most case, platform manages the power saving feature of <code>ING918xx</code> SoC automatically and tries the
+<p>In most case, platform manages the power saving feature of ING918xx/ING9186xx SoC automatically and tries the
 minimize the power consumption in all circumstances, with only one exception, <em>deep sleep</em>.</p>
 <p>In deep sleep, all components, except those required for power saving control and real-time clocks,
 are powered down. Some peripherals may be used by apps, and platform does not know how to configure

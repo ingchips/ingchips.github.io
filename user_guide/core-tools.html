@@ -21,10 +21,10 @@
   <meta name="twitter:description" content="This is the user guide of INGCHIPS SDK." />
   <meta name="twitter:image" content="./img/sdk_overview.png" />
 
-<meta name="author" content="v1.2.4" />
+<meta name="author" content="v1.2.6" />
 
 
-<meta name="date" content="2020-10-20" />
+<meta name="date" content="2021-01-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -138,8 +138,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> Introduction</a><ul>
 <li class="chapter" data-level="2.1" data-path="intro.html"><a href="intro.html#scope"><i class="fa fa-check"></i><b>2.1</b> Scope</a></li>
 <li class="chapter" data-level="2.2" data-path="intro.html"><a href="intro.html#architecture"><i class="fa fa-check"></i><b>2.2</b> Architecture</a><ul>
-<li class="chapter" data-level="2.2.1" data-path="intro.html"><a href="intro.html#apps-built-with-c"><i class="fa fa-check"></i><b>2.2.1</b> Apps built with <code>C</code></a></li>
-<li class="chapter" data-level="2.2.2" data-path="intro.html"><a href="intro.html#apps-built-with-nim"><i class="fa fa-check"></i><b>2.2.2</b> Apps built with <code>Nim</code></a></li>
+<li class="chapter" data-level="2.2.1" data-path="intro.html"><a href="intro.html#rtos-bundles"><i class="fa fa-check"></i><b>2.2.1</b> RTOS Bundles</a></li>
+<li class="chapter" data-level="2.2.2" data-path="intro.html"><a href="intro.html#noos-bundles"><i class="fa fa-check"></i><b>2.2.2</b> “NoOS” Bundles</a></li>
 </ul></li>
 <li class="chapter" data-level="2.3" data-path="intro.html"><a href="intro.html#abbreviations-terminology"><i class="fa fa-check"></i><b>2.3</b> Abbreviations &amp; Terminology</a></li>
 <li class="chapter" data-level="2.4" data-path="intro.html"><a href="intro.html#references"><i class="fa fa-check"></i><b>2.4</b> References</a></li>
@@ -513,29 +513,29 @@ run for <code>4</code> rounds in total, with <code>Counter.Current</code> equals
 <p>The language used for scripting is <em>RemObjects Pascal Script</em><a href="#fn17" class="footnote-ref" id="fnref17"><sup>17</sup></a>,
 which is quite similar to <code>C</code>, and easy to develop. Below is an simple but working example, in which, the
 batch round number (<code>BatchCounter</code>) is written to a fixed location in the binary.</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode pascal"><code class="sourceCode pascal"><span id="cb32-1"><a href="core-tools.html#cb32-1"></a><span class="co">// we can use constants</span></span>
-<span id="cb32-2"><a href="core-tools.html#cb32-2"></a><span class="kw">const</span></span>
-<span id="cb32-3"><a href="core-tools.html#cb32-3"></a>  BD_ADDR_ADDR = <span class="bn">$1;</span></span>
-<span id="cb32-4"><a href="core-tools.html#cb32-4"></a></span>
-<span id="cb32-5"><a href="core-tools.html#cb32-5"></a><span class="co">// BatchCounter is just Counter.Current</span></span>
-<span id="cb32-6"><a href="core-tools.html#cb32-6"></a><span class="kw">procedure</span> OnStartRun(<span class="kw">const</span> BatchCounter: <span class="dt">Integer</span>; <span class="kw">var</span> Abort: <span class="dt">Boolean</span>);</span>
-<span id="cb32-7"><a href="core-tools.html#cb32-7"></a><span class="kw">begin</span></span>
-<span id="cb32-8"><a href="core-tools.html#cb32-8"></a>  <span class="co">// Use *Print* for logging and debugging</span></span>
-<span id="cb32-9"><a href="core-tools.html#cb32-9"></a>  Print(<span class="st">&#39;OnStartRun %d&#39;</span>, [BatchCounter]);</span>
-<span id="cb32-10"><a href="core-tools.html#cb32-10"></a>  <span class="co">// we can abort downloading by assigning True to *Abort*</span></span>
-<span id="cb32-11"><a href="core-tools.html#cb32-11"></a>  <span class="co">// Abort := True;</span></span>
-<span id="cb32-12"><a href="core-tools.html#cb32-12"></a><span class="kw">end</span>;</span>
-<span id="cb32-13"><a href="core-tools.html#cb32-13"></a></span>
-<span id="cb32-14"><a href="core-tools.html#cb32-14"></a><span class="kw">procedure</span> OnStartBin(<span class="kw">const</span> BatchCounter, BinIndex: <span class="dt">Integer</span>;</span>
-<span id="cb32-15"><a href="core-tools.html#cb32-15"></a>                     <span class="kw">var</span> Data: TBytes; <span class="kw">var</span> Abort: <span class="dt">Boolean</span>);</span>
-<span id="cb32-16"><a href="core-tools.html#cb32-16"></a><span class="kw">begin</span></span>
-<span id="cb32-17"><a href="core-tools.html#cb32-17"></a>  <span class="co">// </span><span class="al">Note</span><span class="co"> that BinIndex counts from 1 (not 0), just as shown on GUI</span></span>
-<span id="cb32-18"><a href="core-tools.html#cb32-18"></a>  <span class="kw">if</span> BinIndex &lt;&gt; <span class="dv">2</span> <span class="kw">then</span> <span class="kw">Exit</span>;</span>
-<span id="cb32-19"><a href="core-tools.html#cb32-19"></a>  <span class="co">// We can modify binary data before it is downloaded into flash</span></span>
-<span id="cb32-20"><a href="core-tools.html#cb32-20"></a>  Data[BD_ADDR_ADDR + <span class="dv">0</span>] := BatchCounter <span class="kw">and</span> <span class="bn">$FF;</span></span>
-<span id="cb32-21"><a href="core-tools.html#cb32-21"></a>  Data[BD_ADDR_ADDR + <span class="dv">1</span>] := (BatchCounter <span class="kw">shr</span> <span class="dv">8</span>) <span class="kw">and</span> <span class="bn">$FF;</span></span>
-<span id="cb32-22"><a href="core-tools.html#cb32-22"></a>  Data[BD_ADDR_ADDR + <span class="dv">2</span>] := (BatchCounter <span class="kw">shr</span> <span class="dv">8</span>) <span class="kw">and</span> <span class="bn">$FF;</span></span>
-<span id="cb32-23"><a href="core-tools.html#cb32-23"></a><span class="kw">end</span>;</span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode pascal"><code class="sourceCode pascal"><span id="cb33-1"><a href="core-tools.html#cb33-1"></a><span class="co">// we can use constants</span></span>
+<span id="cb33-2"><a href="core-tools.html#cb33-2"></a><span class="kw">const</span></span>
+<span id="cb33-3"><a href="core-tools.html#cb33-3"></a>  BD_ADDR_ADDR = <span class="bn">$1;</span></span>
+<span id="cb33-4"><a href="core-tools.html#cb33-4"></a></span>
+<span id="cb33-5"><a href="core-tools.html#cb33-5"></a><span class="co">// BatchCounter is just Counter.Current</span></span>
+<span id="cb33-6"><a href="core-tools.html#cb33-6"></a><span class="kw">procedure</span> OnStartRun(<span class="kw">const</span> BatchCounter: <span class="dt">Integer</span>; <span class="kw">var</span> Abort: <span class="dt">Boolean</span>);</span>
+<span id="cb33-7"><a href="core-tools.html#cb33-7"></a><span class="kw">begin</span></span>
+<span id="cb33-8"><a href="core-tools.html#cb33-8"></a>  <span class="co">// Use *Print* for logging and debugging</span></span>
+<span id="cb33-9"><a href="core-tools.html#cb33-9"></a>  Print(<span class="st">&#39;OnStartRun %d&#39;</span>, [BatchCounter]);</span>
+<span id="cb33-10"><a href="core-tools.html#cb33-10"></a>  <span class="co">// we can abort downloading by assigning True to *Abort*</span></span>
+<span id="cb33-11"><a href="core-tools.html#cb33-11"></a>  <span class="co">// Abort := True;</span></span>
+<span id="cb33-12"><a href="core-tools.html#cb33-12"></a><span class="kw">end</span>;</span>
+<span id="cb33-13"><a href="core-tools.html#cb33-13"></a></span>
+<span id="cb33-14"><a href="core-tools.html#cb33-14"></a><span class="kw">procedure</span> OnStartBin(<span class="kw">const</span> BatchCounter, BinIndex: <span class="dt">Integer</span>;</span>
+<span id="cb33-15"><a href="core-tools.html#cb33-15"></a>                     <span class="kw">var</span> Data: TBytes; <span class="kw">var</span> Abort: <span class="dt">Boolean</span>);</span>
+<span id="cb33-16"><a href="core-tools.html#cb33-16"></a><span class="kw">begin</span></span>
+<span id="cb33-17"><a href="core-tools.html#cb33-17"></a>  <span class="co">// </span><span class="al">Note</span><span class="co"> that BinIndex counts from 1 (not 0), just as shown on GUI</span></span>
+<span id="cb33-18"><a href="core-tools.html#cb33-18"></a>  <span class="kw">if</span> BinIndex &lt;&gt; <span class="dv">2</span> <span class="kw">then</span> <span class="kw">Exit</span>;</span>
+<span id="cb33-19"><a href="core-tools.html#cb33-19"></a>  <span class="co">// We can modify binary data before it is downloaded into flash</span></span>
+<span id="cb33-20"><a href="core-tools.html#cb33-20"></a>  Data[BD_ADDR_ADDR + <span class="dv">0</span>] := BatchCounter <span class="kw">and</span> <span class="bn">$FF;</span></span>
+<span id="cb33-21"><a href="core-tools.html#cb33-21"></a>  Data[BD_ADDR_ADDR + <span class="dv">1</span>] := (BatchCounter <span class="kw">shr</span> <span class="dv">8</span>) <span class="kw">and</span> <span class="bn">$FF;</span></span>
+<span id="cb33-22"><a href="core-tools.html#cb33-22"></a>  Data[BD_ADDR_ADDR + <span class="dv">2</span>] := (BatchCounter <span class="kw">shr</span> <span class="dv">8</span>) <span class="kw">and</span> <span class="bn">$FF;</span></span>
+<span id="cb33-23"><a href="core-tools.html#cb33-23"></a><span class="kw">end</span>;</span></code></pre></div>
 </div>
 <div id="flash-read-protection" class="section level3">
 <h3><span class="header-section-number">4.2.3</span> Flash Read Protection</h3>
@@ -566,24 +566,24 @@ path or a relative path (relative to the location of the <em>ini</em> file).</p>
 two methods are required to be defined to handle events as in the GUI downloader,
 <code>on_start_run</code> &amp; <code>on_start_bin</code>. Below is an example, in which, the
 batch round number (<code>batch_counter</code>) is written to a fixed location in #2 binary.</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb33-1"><a href="core-tools.html#cb33-1"></a><span class="co"># return abort_flag</span></span>
-<span id="cb33-2"><a href="core-tools.html#cb33-2"></a><span class="kw">def</span> on_start_run(batch_counter: <span class="bu">int</span>):</span>
-<span id="cb33-3"><a href="core-tools.html#cb33-3"></a>    <span class="cf">return</span> <span class="va">False</span></span>
-<span id="cb33-4"><a href="core-tools.html#cb33-4"></a></span>
-<span id="cb33-5"><a href="core-tools.html#cb33-5"></a><span class="co"># return abort_flag, new_data</span></span>
-<span id="cb33-6"><a href="core-tools.html#cb33-6"></a><span class="kw">def</span> on_start_bin(batch_counter: <span class="bu">int</span>, bin_index: <span class="bu">int</span>, data: <span class="bu">bytes</span>):</span>
-<span id="cb33-7"><a href="core-tools.html#cb33-7"></a>    <span class="cf">if</span> bin_index <span class="op">!=</span> <span class="dv">2</span>:</span>
-<span id="cb33-8"><a href="core-tools.html#cb33-8"></a>        <span class="cf">return</span> <span class="va">False</span>, data</span>
-<span id="cb33-9"><a href="core-tools.html#cb33-9"></a>    ba <span class="op">=</span> <span class="bu">bytearray</span>(data)</span>
-<span id="cb33-10"><a href="core-tools.html#cb33-10"></a>    addr <span class="op">=</span> batch_counter.to_bytes(<span class="dv">4</span>, <span class="st">&#39;little&#39;</span>)</span>
-<span id="cb33-11"><a href="core-tools.html#cb33-11"></a>    ba[<span class="dv">1</span>:<span class="dv">5</span>] <span class="op">=</span> addr</span>
-<span id="cb33-12"><a href="core-tools.html#cb33-12"></a>    <span class="cf">return</span> <span class="va">False</span>, <span class="bu">bytes</span>(ba)</span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb34-1"><a href="core-tools.html#cb34-1"></a><span class="co"># return abort_flag</span></span>
+<span id="cb34-2"><a href="core-tools.html#cb34-2"></a><span class="kw">def</span> on_start_run(batch_counter: <span class="bu">int</span>):</span>
+<span id="cb34-3"><a href="core-tools.html#cb34-3"></a>    <span class="cf">return</span> <span class="va">False</span></span>
+<span id="cb34-4"><a href="core-tools.html#cb34-4"></a></span>
+<span id="cb34-5"><a href="core-tools.html#cb34-5"></a><span class="co"># return abort_flag, new_data</span></span>
+<span id="cb34-6"><a href="core-tools.html#cb34-6"></a><span class="kw">def</span> on_start_bin(batch_counter: <span class="bu">int</span>, bin_index: <span class="bu">int</span>, data: <span class="bu">bytes</span>):</span>
+<span id="cb34-7"><a href="core-tools.html#cb34-7"></a>    <span class="cf">if</span> bin_index <span class="op">!=</span> <span class="dv">2</span>:</span>
+<span id="cb34-8"><a href="core-tools.html#cb34-8"></a>        <span class="cf">return</span> <span class="va">False</span>, data</span>
+<span id="cb34-9"><a href="core-tools.html#cb34-9"></a>    ba <span class="op">=</span> <span class="bu">bytearray</span>(data)</span>
+<span id="cb34-10"><a href="core-tools.html#cb34-10"></a>    addr <span class="op">=</span> batch_counter.to_bytes(<span class="dv">4</span>, <span class="st">&#39;little&#39;</span>)</span>
+<span id="cb34-11"><a href="core-tools.html#cb34-11"></a>    ba[<span class="dv">1</span>:<span class="dv">5</span>] <span class="op">=</span> addr</span>
+<span id="cb34-12"><a href="core-tools.html#cb34-12"></a>    <span class="cf">return</span> <span class="va">False</span>, <span class="bu">bytes</span>(ba)</span></code></pre></div>
 </div>
 </div>
 <div id="ingtracer" class="section level2">
 <h2><span class="header-section-number">4.3</span> ingTracer</h2>
 <p><code>ingTracer</code> is the visual tool for inspecting recorded Trace data introduced in
-[Debugging &amp; Tracing].</p>
+<a href="dive-into-sdk.html#debugging-tracing">Debugging &amp; Tracing</a>.</p>
 <p>To limit items drawn on screen, <code>ingTracer</code> breaks trace data into frames. Each frame has
 a length of 5sec. When a frame is selected, besides the current frame, the previous and the
 next one are also shown for continuity.</p>

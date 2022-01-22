@@ -49,12 +49,20 @@ function flashInfo() {
         {
             base: 0x4000,
             total_size: 512 * 1024,
-            page_size: 8 * 1024
+            page_size: 8 * 1024,
+            manual_reboot: true,
         },
         {
             base: 0x4000,
             total_size: 256 * 1024,
-            page_size: 8 * 1024
+            page_size: 8 * 1024,
+            manual_reboot: true,
+        },
+        {
+            base: 0x02000000,
+            total_size: 2048 * 1024,
+            page_size: 4 * 1024,
+            manual_reboot: false,
         }
     ];
     return FLASH_INFOS[$('#series_id option:selected').index()];
@@ -168,6 +176,8 @@ async function buildMetaData(plan) {
         view.setUint32(c, item.data.length, true); c+= 4;
     }
 
+    console.log(buffer);
+
     if (is_secure_fota) {
         const sig = new Uint8Array(await ecdsa_sign_data(session_key_pair.sk, buffer.slice(2)));
         for (let i = 2; i < buffer.byteLength; i++)
@@ -247,6 +257,8 @@ async function burnPage(emitProgress, acc_size, addr, page) {
         for (let i = 0; i < page.length; i++)
             page[i] ^= xor_key[i & 31];
     }
+
+    console.log({page: page.length});
 
     var buffer = new ArrayBuffer(1 + 4);
     var cmd = new DataView(buffer);
@@ -344,7 +356,20 @@ async function burnMetaData(meta) {
         v.setUint8(i + 1, meta.data[i]);
     }
     await writeCtrl(buf);
-    return checkDevStatus();
+}
+
+async function applyUpdate(plan) {
+    const flash = flashInfo();
+    await burnMetaData(await buildMetaData(plan));
+    if (flash.manual_reboot) {
+        if (await checkDevStatus()) {
+            await rebootDev();
+        }
+        else
+            return false;
+    }
+    else;
+    return true;
 }
 
 async function enableFOTA() {
@@ -379,10 +404,9 @@ async function doUpdate() {
 
     try {
         const result = (await enableFOTA()) && (await burnFiles(emitProgress, plan))
-                        && (await burnMetaData(await buildMetaData(plan)));
+                        && (await applyUpdate(plan));
         if (result) {
             showProgress(msg.fota_complete, -1);
-            await rebootDev();
         }
     } catch (e) {
         alert(msg.exception + e.message);

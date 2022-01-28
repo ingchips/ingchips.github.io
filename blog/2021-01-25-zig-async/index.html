@@ -202,7 +202,7 @@
 这意思着 <code class="highlighter-rouge">async</code> 函数可以直接在 ING918xx 这样的嵌入式系统上使用。</p>
 
 <p>以用 C 语言读取远端设备一个特性（Characteristics）的值为例，需要定义一个回调函数，
-在这个回同函数里响应 <code class="highlighter-rouge">GATT_EVENT_CHARACTERISTIC_VALUE_QUERY_RESULT</code> 事件获取特性的值。
+在这个回调函数里响应 <code class="highlighter-rouge">GATT_EVENT_CHARACTERISTIC_VALUE_QUERY_RESULT</code> 事件获取特性的值。
 代码如下：</p>
 
 <pre><code class="language-C">void read_characteristic_value_callback(uint8_t packet_type, uint16_t _,
@@ -341,7 +341,7 @@ const ServiceDiscoverer = struct {
 };
 </code></pre>
 
-<p>最后，由于 <code class="highlighter-rouge">demo()</code> 函数遵从 <code class="highlighter-rouge">.Async</code> 调用规范，无法在被 C 世界所调用，需要用一个“桥接”函数连通
+<p>最后，由于 <code class="highlighter-rouge">demo()</code> 函数遵从 <code class="highlighter-rouge">.Async</code> 调用规范，无法被 C 世界所调用，需要一个“桥接”函数连通
 <code class="highlighter-rouge">.Async</code> 和 C：</p>
 
 <pre><code class="language-zig">var the_frame: @Frame(demo) = undefined;
@@ -353,7 +353,8 @@ export fn zig_discover() void {
 
 <p>这个 <code class="highlighter-rouge">zig_discover</code> 可以在 C 模块里直接调用。</p>
 
-<p><strong>说明: </strong> 本文使用的是　Zig　主分支最新版本，编译器在嵌入式系统交差编译方面仍存在一些问题，
+<p><strong>说明: </strong> 本文使用的是 Zig 主分支最新版本 (撰写本文时 0.8.0 尚未发布)，
+编译器在嵌入式系统交差编译方面仍存在一些问题，
 <code class="highlighter-rouge">@frameSize</code> 和 <code class="highlighter-rouge">@asyncCall</code> 的行为异常，上面的 <code class="highlighter-rouge">the_frame</code> 只能定义为全局变量。
 对使用 Zig 进行嵌入式开发感兴趣的读者可以<a href="https://github.com/ingchips/doc_release/releases/download/v1.0/zig_demo_0.1.zip">下载</a>示例代码。</p>
 

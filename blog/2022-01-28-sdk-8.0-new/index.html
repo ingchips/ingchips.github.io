@@ -203,9 +203,12 @@
   <li>开始支持 ING916xx 系列（软件包、外设驱动、工具、示例）</li>
 </ul>
 
+<p><a href="https://github.com/ingchips/ING918XX_SDK_SOURCE/releases/tag/v8.0.0_preview2/ingchips_sdk_setup_v8.0.0_preview2.exe">点此</a>下载
+(<a href="https://download.fastgit.org/ingchips/ING918XX_SDK_SOURCE/releases/tag/v8.0.0_preview2/ingchips_sdk_setup_v8.0.0_preview2.exe">镜像</a>)。</p>
+
 <div class="important">
-<strong>注意:</strong> 对 ING916xx 系列的支持目前为“预览”。
-<a href="https://github.com/ingchips/ING918XX_SDK_SOURCE/releases/tag/v8.0.0_preview">点此</a>下载。
+<strong>注意:</strong>对 ING916xx 系列的支持目前为“预览”。
+<br />如需调试 ING916xx，务必将复位方式设为 VECTRESET（不同调试器叫法不同，J-Link 里称为 Core）。
 </div>
 
 <h2 id="1-软件包">1. 软件包</h2>
@@ -224,6 +227,24 @@
     <p>[<strong>新增</strong>] 导出 FreeRTOS 任务优先级控制相关的函数 <span style="background:yellow">(<strong>8.0.0</strong>)</span></p>
 
     <p>3 个相关的函数为：<code class="highlighter-rouge">uxTaskPriorityGet</code>, <code class="highlighter-rouge">uxTaskPriorityGetFromISR</code>, <code class="highlighter-rouge">vTaskPrioritySet</code>。</p>
+  </li>
+  <li>
+    <p>[<strong>新增</strong>] SM 事件 <code class="highlighter-rouge">SM_EVENT_STATE_CHANGED</code> <span style="background:yellow">(<strong>8.0.0</strong>)</span></p>
+
+    <p>借助该事件可直截了当地获知配对流程的最终结果。使用方法参考 <code class="highlighter-rouge">HID Keyboard</code> 示例。</p>
+  </li>
+  <li>
+    <p>[<strong>新增</strong>] <code class="highlighter-rouge">platform_set_timer</code> <span style="background:yellow">(<strong>8.0.0</strong>)</span></p>
+
+    <p>一种低功耗场景适用的软件定时器，精度优于 RTOS 提供的软件定时器。使用方法可参考示例
+  <code class="highlighter-rouge">Ext. Raw Packet Tx/Rx (NoOS)</code>。</p>
+  </li>
+  <li>
+    <p>[<strong>新增</strong>] 链路层“裸跑” <span style="background:yellow">(<strong>8.0.0</strong>)</span></p>
+
+    <p>新增的链路层“裸跑”功能适于于只使用链路层扩展 API，并且对实时性要求高的场景。将 <code class="highlighter-rouge">gen_os_driver</code> 里
+  的 <code class="highlighter-rouge">task_create</code> 置为 <code class="highlighter-rouge">NULL</code> 就可以起用该模式。使用方法可参考示例
+  <code class="highlighter-rouge">Ext. Raw Packet Tx/Rx (NoOS)</code>。</p>
   </li>
 </ul>
 
@@ -249,19 +270,19 @@
     <p>演示如何将 NoOS 软件包与 LiteOS 集成。</p>
   </li>
   <li>
-    <p>[<strong>更新</strong>] 部分示例 <span style="background:yellow">(<strong>8.0.0</strong>)</span></p>
+    <p>[<strong>更新</strong>] 绝大部分示例 <span style="background:yellow">(<strong>8.0.0</strong>)</span></p>
 
-    <p>部分示例涉及芯片外设，相关代码需要移植才能运行于 ING916xx 系列。以下示例已移植：</p>
-
-    <ul>
-      <li>Thermometer with FOTA</li>
-      <li>Voice Remote Control</li>
-    </ul>
+    <p>绝大部分示例已同时适配 ING918xx、ING916xx 两个芯片系列。</p>
   </li>
   <li>
     <p>[<strong>新增</strong>] <code class="highlighter-rouge">BQB RF Test App</code> <span style="background:yellow">(<strong>8.0.0</strong>)</span></p>
 
     <p>演示测试相关 API 的用法。</p>
+  </li>
+  <li>
+    <p>[<strong>新增</strong>] <code class="highlighter-rouge">Ext. Raw Packet Tx/Rx (NoOS)</code> <span style="background:yellow">(<strong>8.0.0</strong>)</span></p>
+
+    <p>演示链路层“裸跑” 。</p>
   </li>
 </ul>
 
@@ -274,7 +295,55 @@
   <li>
     <p>[<strong>更新</strong>] 广播数据编辑器：当数据超过 Legacy 广播最大长度时给出提示 <span style="background:yellow">(<strong>8.0.0</strong>)</span></p>
   </li>
+  <li>
+    <p>[<strong>更新</strong>] AoA 寻向 demo：支持指定子阵列类型，辅助评估子阵列性能 <span style="background:yellow">(<strong>8.0.0</strong>)</span></p>
+  </li>
 </ul>
+
+<p>通过 AoA 寻向工具的 <code class="highlighter-rouge">-array</code> 参数可以指定以下阵列类型：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">类型</th>
+      <th style="text-align: left">说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">4x4</td>
+      <td style="text-align: left">整个 4x4 天线阵</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">3x3</td>
+      <td style="text-align: left">$3 \times 3$ URA 子阵列</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">2x2</td>
+      <td style="text-align: left">$2 \times 2$ URA 子阵列</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">1x4</td>
+      <td style="text-align: left">$1 \times 4$ ULA 子阵列</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">1x3</td>
+      <td style="text-align: left">$1 \times 3$ ULA 子阵列</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">1100</td>
+      <td style="text-align: left">$1 \times 2$ ULA 子阵列</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">1010</td>
+      <td style="text-align: left">$1 \times 2$ ULA 子阵列</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">1001</td>
+      <td style="text-align: left">$1 \times 2$ ULA 子阵列</td>
+    </tr>
+  </tbody>
+</table>
 
 <h2 id="5-sdk-迁移">5. SDK 迁移</h2>
 
@@ -323,13 +392,13 @@
     <p>对于仅有一个系列支持的外设功能，无法实现兼容。</p>
 
     <div class="note">
- <strong>说明:</strong> ING916xx 系列芯片的外设除了串口外全部更新，在开发驱动程序时已尽量保持软件接口的兼容性，
- 但是为了充分利用外设的全部功能，无法做到完全兼容。
+ <strong>说明:</strong> ING916x 系列芯片的外设除了串口外全部更新，在开发驱动程序时已尽量保持软件接口x的兼容性，
+ 但是 1) 由于外设硬件功能差异, 2) 为了充分利用外设的全部功能，无法做到完全兼容。
  </div>
   </li>
 </ol>
 
-<p>综上，主要在于外设相关的部分代码需要区分芯片系列分别开发。以下示例项目已经兼容两个芯片系列，可供参考：</p>
+<p>综上，主要在于外设相关的部分代码需要区分芯片系列分别开发。SDK 里的绝大部分示例已兼容两个系列，可供参考，比如：</p>
 
 <ul>
   <li>Thermometer with FOTA：完全兼容，涉及 I2C、FOTA</li>

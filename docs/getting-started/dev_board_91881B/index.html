@@ -435,7 +435,7 @@
 
 <h3 id="21供电">2.1、供电</h3>
 
-<p>ING91881B 开发板供电方式：通过开发板的 micro USB 接口供电。如果需要下载程序、Jlink调试，确保使用数据线，此时D2长亮；如果仅供电可使用充电线，此时D2闪烁。</p>
+<p>ING91881B 开发板供电方式：通过开发板的 micro USB 接口供电。如果需要下载、调试程序，确保使用数据线，此时D2长亮；如果仅供电可使用充电线，此时D2闪烁。</p>
 
 <p>开发板上留有 2.5V 对外供电接口（开发板右上角VCC丝印）和GND（开发板右上角GND丝印），供电时要注意电流限值：通过 micro USB 供电时，2.5V 电流限值是 200mA。</p>
 
@@ -456,13 +456,21 @@
 
 <h3 id="23调试接口">2.3、调试接口</h3>
 
-<p>ING91881B 开发板上集成了 JLINK 和 UART 功能，通过 STM32 来实现，在开发板上的丝印为 U1，实际使用中通过 micro USB 接口与 PC 机通信，虚拟出的串口端口号在 PC 机设备管理器中查看，使用此串口与 ING91881B 通信前，必须在 UART_TX 和 UART_RX 处用跳线帽短接。</p>
+<p>开发板集成了 <a href="https://daplink.io/">DAPLink (CMSIS-DAP 的升级版)</a> 功能，
+支持 CDC 串口、拖放烧写。该功能通过一片 STM32 来实现，在开发板上的丝印为 U1，实际使用中通过 micro USB 接口与 PC 机通信，
+虚拟出的串口端口号在 PC 机设备管理器中查看，使用此串口与 ING91881B 通信前，必须在 UART_TX 和 UART_RX 处用跳线帽短接。</p>
 
-<p>ST芯片的 SW_CLK 和 SW_DIO 用插针引出来，这样开发板可以做 Jlink 来用。</p>
+<p>DAPLink 的 SW_CLK 和 SW_DIO 与 ING918 的 SWD 接口使用跳帽连接，断开跳帽，
+既可以将开发板用做 DAPLink 调试其它设备，也可以使用其它调试器来调试开发板。
+STM32 芯片的 SW_CLK 和 SW_DIO 用插针引出，可以用来烧写STM32。</p>
+
+<p>DAPLink 固件 <a href="https://github.com/ingchips/DAPLink">开源</a>。</p>
 
 <div class="note">
-<strong>说明:</strong> 该 STM32 提供的串口转 USB 内部缓存较小，从 ING91881B 向 PC 机传输时可能丢失数据。
-而 ING91881B 可立即响应串口数据，所以从 PC 机到 ING91881B 传输时不存在此问题。
+<strong>说明:</strong> 不同调试器提供的串口能力不同，某些调试器从 ING918 向 PC 机进行高速传输时可能丢失数据。
+而 ING918 可立即响应串口数据，所以从 PC 机到 ING918 传输时不存在此问题。
+例如使用了相同型号 STM32 芯片的 DAPLink 与 J-Link OB，以 921600 波特从 ING918 向 PC 机传输时，DAPLink 不丢数据，
+而 J-Link OB 则存在问题。
 </div>
 
 <h3 id="24iic接口传感器">2.4、IIC接口传感器</h3>
@@ -598,7 +606,9 @@
 
 <h3 id="32使用调试器烧写">3.2、使用调试器烧写</h3>
 
-<p>所有示例都可以在 IDE 直接通过 JLINK 调试器下载，例如在 Keil 里直接点击“Download”。</p>
+<p>所有示例都可以在支持 CMSIS-DAP 的 IDE 直接通过 DAPLink 调试器下载，例如在 Keil 里直接点击“Download”。
+如果开发者选择使用 J-Link 调试器，那么所有示例都可以在支持 J-Link 的 IDE 直接通过 J-Link 调试器下载，
+例如在 Keil 里直接点击“Download”。</p>
 
 <div class="important">
 <strong>注意:</strong> 此方法只烧写 App 编译出的程序，不烧写 platform.bin，所以开发板初次使用时，应该先
@@ -607,10 +617,33 @@
 </div>
 
 <div class="note">
-<strong>说明:</strong> 如果单独安装过 JLINK 软件，第一次下载时 JLINK 将弹出对话框要求
+<strong>说明:</strong> 如果单独安装过 J-Link 软件，第一次下载时 J-Link 将弹出对话框要求
 用户选择芯片类型，请选择“Unspecified Cortex-M3”。
 <img src="jlink_m3.png" width="85%" />
 </div>
+
+<h3 id="33拖放烧写">3.3、拖放烧写</h3>
+
+<p>DAPLink 调试器会在上位机里呈现一个 U 盘，将 .bin 文件或者 .hex 文件复制（通过命令行或者<strong>拖放</strong>）到 U 盘即可完成烧写。
+烧写完成后，U 盘会重新挂载，查看 U 盘内的 DETAILS.TXT 文件，可发现 Remount count 计数增加 1。如果烧写失败，则会出现
+FAIL.TXT 文件，里面包含了详细错误信息；如果烧写成功，U 盘内无此文件。无论烧写是否成功，重新挂载后的 U 盘都不会“保存”
+所烧写的 .bin 文件或者 .hex 文件。</p>
+
+<p><img src="dap_drag.png" /></p>
+
+<ul>
+  <li>
+    <p>.bin 文件烧写</p>
+
+    <p>此模式只支持完整烧写，.bin 文件必须<strong>完整</strong>，同时包含 platform.bin 和 App Bin。建议通过 Flash Downloader 菜单项 File →
+  Merge &amp; Export … 自动合并导出完整 .bin 文件，然后烧写。</p>
+  </li>
+  <li>
+    <p>.hex 文件烧写</p>
+
+    <p><a href="http://en.wikipedia.org/wiki/Intel_HEX">Intel Hex</a> 文件包含地址信息，支持部分烧写。</p>
+  </li>
+</ul>
 
 <h2 id="4注意事项">4、注意事项</h2>
 

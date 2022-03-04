@@ -2,10 +2,10 @@
 <html lang="en">
     <head>
 
-        <title>使用量产套件进行量产 - INGCHIPS</title>
+        <title>Playground - INGCHIPS</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content="如何使用量产套件进行产品量产。"/>
+        <meta name="description" content="使用 Playground 立即开始体验桃芯科技"/>
         <link rel="stylesheet" href="/assets/css/main.css">
         <link rel="icon" href="/favicon.ico" type="image/x-icon" />
         <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
@@ -199,7 +199,7 @@
           
           
           
-          <li class="toc-item has-children">
+          <li class="toc-item has-children active">
             <a href="/docs/getting-started/">快速上手</a>
             
             
@@ -215,7 +215,7 @@
     <a href="/docs/getting-started/dev_board_91880/">ING91880 开发板使用手册</a>
   </li>
 
-  <li class="toc-item">
+  <li class="toc-item current">
     <a href="/docs/getting-started/playground/">Playground</a>
   </li>
 
@@ -327,7 +327,7 @@
           
           
           
-          <li class="toc-item has-children active">
+          <li class="toc-item has-children">
             <a href="/docs/mass_production/">产品量产</a>
             
             
@@ -339,7 +339,7 @@
     <a href="/docs/mass_production/uart_burn/">使用 UART 接口进行产品量产</a>
   </li>
 
-  <li class="toc-item current">
+  <li class="toc-item">
     <a href="/docs/mass_production/prod_suite/">使用量产套件进行量产</a>
   </li>
 
@@ -422,216 +422,145 @@
         <article class="post type-docs">
           <div class="post-inside">
             <header class="post-header">
-              <h1 class="post-title line-left">使用量产套件进行量产</h1>
+              <h1 class="post-title line-left">Playground</h1>
             </header><!-- .post-header -->
             <div class="post-content">
-              <p>ING918xx 系列量产套件可以高效地进行产品量产，主要特性如下：</p>
+              <h2 id="0-认识开发板">0. 认识开发板</h2>
+
+<h3 id="01-ing91881b-开发板">0.1 ING91881B 开发板</h3>
+
+<p><img src="9188_board_review.png" alt="board" /></p>
+
+<p>确保开发板上的跳帽拔插状态与上图一致。</p>
+
+<h2 id="1-下载-playground">1. 下载 Playground</h2>
 
 <ul>
-  <li>支持 15 路并行烧录；</li>
-  <li>内置射频、ADC、GPIO 等测试；</li>
-  <li>支持自定义测试项；</li>
-  <li>支持产品个人化（基于 Python）；</li>
-  <li>支持在线、离线两种方式。</li>
+  <li>适用于 <a href="dev_board_91881B/">ING91881B 开发板</a>：
+  <a href="https://github.com/ingchips/doc_release/releases/download/v1.0/ING91881B_dev_board_playground_win_x86.exe">下载</a>
+  （<a href="https://download.fastgit.org/ingchips/doc_release/releases/download/v1.0/ING91881B_dev_board_playground_win_x86.exe">镜像</a>）</li>
 </ul>
 
-<div class="note">
-<strong>说明:</strong> 目前量产套件仍在开发、完善中，暂时存在以下限制：
-<ul>
-<li>软件仅用于 64bit Windows</li>
-<li>不支持自定义测试项</li>
-<li>不支持离线方式</li>
-</ul>
-</div>
+<h2 id="2-解压缩">2. 解压缩</h2>
 
-<h2 id="1-量产板说明">1. 量产板说明</h2>
+<p>下载的 Playground 软件为 <a href="https://www.7-zip.org/">7-Zip</a> 自解压压缩包。运行软件，任意选择一个目录（下文以 C:\temp\游乐园 为例）完成解压缩。
+Playground 为纯绿色软件，体验之后，如果不想保留，直接将整个目录删除即可。</p>
 
-<p>量产板板载 8 组共 16 路接口，其中第 1~15 路可用于产品量产，第 16 路保留。每路接口如下图。</p>
+<p><img src="extract.png" width="60%" /></p>
 
-<p><img src="./full_pinout_one_channel.png" alt="" /></p>
-
-<p>如下表所示，使用不同的功能需要连续不同的引脚。</p>
-
-<table>
-  <thead>
-    <tr>
-      <th style="text-align: left"><strong>功能</strong></th>
-      <th style="text-align: left">引脚</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td style="text-align: left">供电</td>
-      <td style="text-align: left">VCC、GND</td>
-    </tr>
-    <tr>
-      <td style="text-align: left">烧录</td>
-      <td style="text-align: left">GPIO-2、GPIO-3<br />RST、EXT_INT</td>
-    </tr>
-    <tr>
-      <td style="text-align: left">射频测试</td>
-      <td style="text-align: left">GPIO-2、GPIO-3</td>
-    </tr>
-    <tr>
-      <td style="text-align: left">ADC 测试</td>
-      <td style="text-align: left">GPIO-2、GPIO-3<br />对应的 ADC 通道<br />(要测试 AIN-X 通道，则将产品的 AIN-X 连接至量产板的 ADC-X)</td>
-    </tr>
-    <tr>
-      <td style="text-align: left">GPIO 测试</td>
-      <td style="text-align: left">GPIO-2、GPIO-3<br />对应的 GPIO<br />(要测试 GPIO-X，则将产品的 GPIO-X 连接至量产板的 GPIO-X)</td>
-    </tr>
-  </tbody>
-</table>
-
-<p>量产板板载两颗 ING918xx 芯片，其中一颗用于控制（CTRLER），另一颗用于测试（TESTER）。
-短接量产板上的固件升级跳帽（ J1 ），然后将量产板连接到计算机，CTRLER 即进入升级状态。</p>
-
-<h2 id="2-软件使用说明">2. 软件使用说明</h2>
-
-<p>量产软件包含两个工具：向导工具用来检测和准备量产板，生成量产数据；执行工具用来进行实际的生产（测试、烧录）。</p>
-
-<p><img src="./overview.png" alt="" /></p>
-
-<h3 id="21-安装">2.1 安装</h3>
+<p>进入 C:\temp\游乐园 目录，可以看到两个<a href="https://baike.baidu.com/item/%E6%89%B9%E5%A4%84%E7%90%86">批处理</a>文件：</p>
 
 <ul>
-  <li>Production Suite</li>
+  <li><code class="highlighter-rouge">restore.bat</code>：运行此文件，可以将开发板恢复为初始设置</li>
+  <li><code class="highlighter-rouge">update.bat</code>：运行此文件，可以将编写的程序更新（下载、部署）到开发板</li>
 </ul>
 
-<p>从 <a href="https://github.com/ingchips/doc_release/releases/download/v1.0/ingchips_production_suite_setup_win_x64_v0.9.1.exe">Github</a> 或者 <a href="https://download.fastgit.org/ingchips/doc_release/releases/download/v1.0/ingchips_production_suite_setup_win_x64_v0.9.1.exe">镜像</a>
-获取最新的软件，直接安装。</p>
+<h2 id="3-连接开发板">3. 连接开发板</h2>
 
-<ul>
-  <li>串口驱动</li>
-</ul>
+<p>将开发板连接到 Windows 10 及以上的计算机。首次连接时需要稍候片刻以待计算机自动安装驱动程序，安装成功后，Windows 会做出“设备已就绪”的提醒。
+打开 Windows 设备管理器，可发现一个串口设备，其中的串口号由 Windows 自动分配。</p>
 
-<p>将量产板连接到 PC 后，如果未能自动识别并安装驱动，手动 <a href="https://ftdichip.com/Drivers/vcp-drivers/">下载</a> 并安装串口驱动。
-驱动程序正确安装后，可从设备管理器中看到 16 个串口。</p>
+<p><img src="com_port.png" width="50%" /></p>
 
-<ul>
-  <li>PowerShell</li>
-</ul>
+<p>请不要连接多个开发板，也不要连接其它的 J-Link、DAPLink 调试器，以免干扰串口检测功能。</p>
 
-<p>PowerShell 是微软开发的开源软件，可以从 <a href="ms-windows-store://pdp/?ProductId=9mz1snwt0n5d">Windows 10 商店</a>安装，或者手动 <a href="https://github.com/PowerShell/PowerShell/releases">下载</a> 安装。</p>
+<h2 id="4-初始化开发板">4. 初始化开发板</h2>
 
-<h3 id="22-准备工作">2.2 准备工作</h3>
+<p>运行 <code class="highlighter-rouge">restore.bat</code>，屏幕上将出现如下提示信息：</p>
 
-<p>将量产板连接到 PC，从 Windows 开始菜单 “Production Suite for ING918xx” 里打开向导工具（Wizard）。</p>
-
-<h4 id="221-准备量产板">2.2.1 准备量产板</h4>
-
-<p>首先在 “量产板” 页面点击 “设置” 打开 “Board View” 窗口。首次运行该程序时，点击 “Detect COM” 按钮进行自动检测（此过程可能需要十几秒钟）。
-检测完成后，界面上会罗列出所有串口号。</p>
-
-<p><img src="./board_detect.png" alt="" /></p>
-
-<div class="note">
-<strong>说明:</strong> 如果向导工具未能如期列出 16 个串口，请在安装目录下找到 “usb_serial.txt” 文件，然后寻求技术支持。</div>
-
-<p>点击 “Connect” 按钮，向导工具会尝试与 CTRLER 通信并读取版本（成功连接后，量产板上会呈现一段灯光闪动效果）。
-成功后，“Check Tester” 变为可用状态，点击该按钮，
-向导工具会尝试与 TESTER 通信并读取版本。如果两者的版本都合适，向导工具会给出 “READY” 的提示信息，说明该 PC
-上的量产板已经准备就绪，可以用于生产，如下图所示：</p>
-
-<p><img src="./board_check_tester.png" alt="" /></p>
-
-<p>如果 CTRLER 版本不合适，向导工具会提示需要升级，如下图所示。请参考后文进行 <a href="#24-固件升级">固件升级</a>。</p>
-
-<p><img src="./board_need_update.png" alt="" /></p>
-
-<div class="note">
-<strong>说明:</strong> 以上步骤中如果遇到问题，建议重新拔插量产板、重新启动向导工具。</div>
-
-<h4 id="222-设置内置测试项">2.2.2 设置内置测试项</h4>
-
-<p>内置测试项由量产套件自动完成，不需要客户开发程序。</p>
-
-<ul>
-  <li>射频测试：评估产品频偏、功率两个指标；</li>
-  <li>GPIO 测试：检测产品的各 GPIO 管脚高、低电平是否正常；</li>
-  <li>ADC 测试：评估 ADC 读取值误差是否在预定范围内。</li>
-</ul>
-
-<p>以上各测试项目都可以按照需要启用或者不启用。</p>
-
-<h4 id="222-设置自定义测试程序">2.2.2 设置自定义测试程序</h4>
-
-<p>对于以下场景，内置测试项目功能无法满足需求，客户可以自行开发测试程序，并由量产工具自动执行：</p>
-
-<ul>
-  <li>检查内部的传感器是否正常；</li>
-  <li>……</li>
-</ul>
-
-<h4 id="223-设置待烧录程序">2.2.3 设置待烧录程序</h4>
-
-<p>如果待烧录程序使用了 <a href="/user_guide/core-tools.html#script-mass-prod">Pascal 脚本</a>，
-则需要转换为 <a href="user_guide/core-tools.html#python-version">Python</a>。</p>
-
-<h4 id="225-个人化数据">2.2.5 个人化数据</h4>
-
-<p>个人化数据由 Python 动态生成。量产套件在生产时会维护一个全局计数器，Python 脚本生成个人化数据可以参考该计数器。</p>
-
-<p>在生产时，除了计数器，还可以为每一产品输入一段字符串数据（用户数据），这一数据也会传递给 Python 脚本。
-要使用这一数据，Python 脚本需要用 <code class="highlighter-rouge">on_start_bin2</code> 替换原有的 <code class="highlighter-rouge">on_start_bin</code>，<code class="highlighter-rouge">user_data</code> 参数即为该字符串：</p>
-
-<pre><code class="language-Python">def on_start_bin2(batch_counter: int, bin_index: int, data: bytes, \
-                  user_data: str)::
-</code></pre>
-
-<p>需要调试 Python 脚本时，可以找到安装目录下的 “prod_suite.ini”，修改 <code class="highlighter-rouge">show_wnd</code> 参数：</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[options]
-show_wnd=1
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>USING COM3
+<span class="nb">wait </span><span class="k">for </span>handshaking...
 </code></pre></div></div>
 
-<p>此后，烧录时会显示控制台窗口。如遇异常，烧录程序将自动等待一段时间才退出，以便开发者查看错误信息。</p>
+<p>这里的 COM 号码与设备管理器里显示的一致。出现上述提示信息后，按下开发板上的“下载键”，一套 Playground 支撑程序就会被下载到开发板。
+如果一切顺利会看到如下（类似）信息：</p>
 
-<h4 id="224-导出数据">2.2.4 导出数据</h4>
-
-<p>点击 “导出数据包” 导出生产所需的完整数据。该数据包是 “自包含” 的。</p>
-
-<h3 id="23-进行生产">2.3 进行生产</h3>
-
-<p>从 Windows 开始菜单 “Production Suite for ING918xx” 里打开生产工具（Runner），选择生产数据包里的“.prod”文件。</p>
-
-<p>生产工具将自动连接到量产板，成功连接后，量产板上同样会呈现一段灯光闪动效果。</p>
-
-<p>按下 F8 输入焦点将定位到第一个生产通道的用户数据输入区。在用户数据输入区里输入回车（Enter/Return）或者制表符（Tab），
-输入焦点会移动到下一个生产通道（回车可以循环切换）。这种切换方式适合使用扫码枪输入数据。</p>
-
-<p>按下 F5 开始生产。如果启用了测试，则首先进行测试，通过后再烧录程序。如果未启用测试，则直接烧录程序。</p>
-
-<p>完成一轮产品的生产后（烧录成功或者测试失败），“Run” 按钮恢复为可点击状态，允许进行下一轮生产。</p>
-
-<p>下图显示了只在一路生产通道上连接了产品时，一轮生产完成后的界面：</p>
-
-<p><img src="./runner_overview_2.png" alt="" /></p>
-
-<h3 id="24-固件升级">2.4 固件升级</h3>
-
-<p>升级量产固件时需要首先升级 CTRLER，然后升级 TESTER。</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>USING COM3
+baud -&gt; 921600
+downloading platform.bin @ 0x4000 ...
+ |████████████████████████████████████████████████████████████| 100.0%
+downloading default.bin @ 0x26000 ...
+ |████████████████████████████████████████████████████████████| 100.0%
+downloading boot.bin @ 0x44000 ...
+ |████████████████████████████████████████████████████████████| 100.0%
+</code></pre></div></div>
 
 <ul>
-  <li>升级 CTRLER</li>
+  <li>
+    <p>对于 ING91881B 开发板</p>
+
+    <p>初始化完成后，8 个 LED 灯会循环点亮。</p>
+  </li>
 </ul>
 
-<p>短接量产板上的固件升级跳帽，然后接入 PC，打开向导工具，进入 “Board View”，直接点击 “Update” → “Controller”：</p>
+<h2 id="5-编写一个程序">5. 编写一个程序</h2>
 
-<p><img src="./board_update_ctrler.png" alt="" /></p>
+<p>用文本编辑器（比如记事本）打开 <code class="highlighter-rouge">C:\temp\游乐园\demo</code> 文件夹下的 <code class="highlighter-rouge">cn.md</code>，可以看到许多用中文编写的演示程序。每段程序由一对 “```c”
+和 “```” 包围。从中选择一段程序，复制。然后用文本编辑器打开 <code class="highlighter-rouge">C:\temp\游乐园\code.cpp</code>，粘贴替换里面的代码。例如：</p>
 
-<p>升级完成后，断开量产板上的固件升级跳帽，重新连接到 PC，重新启动向导工具。进入 “Board View”，
-点击 “Connect”，检查是否可以获取 CTRLER 的版本。</p>
+<p><img src="new_prog.png" width="60%" /></p>
+
+<p>显而易见，这段文字说的是开灯，等待 1 秒，关灯，再等待 1 秒，再打开，循环往复。</p>
+
+<h2 id="6-更新开发板">6. 更新开发板</h2>
+
+<p>运行 <code class="highlighter-rouge">update.bat</code>，屏幕上将出现如下的类似信息：</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>USING COM3
+building...done
+starting download mode...done
+baud -&gt; 921600
+downloading ../project/get_started.bin @ 0x26000 ...
+ |████████████████████████████████████████████████████████████| 100.0%
+</code></pre></div></div>
+
+<p>观察开发板，可看到一排 LED 灯在周期性地亮、灭，跟文字里的描述一致。恭喜！您已成功编写、编译并下载了一段程序。</p>
+
+<h2 id="7-下一步">7. 下一步</h2>
+
+<p>接下来，您可以在游乐园 <a href="/blog/2022-03-03-ing918-playground">半日游</a>，
+或者 <a href="/docs/sdk/download">下载</a> SDK，正式开启桃芯科技系列芯片上的开发之旅。</p>
+
+<h2 id="8-疑难解答">8. 疑难解答</h2>
 
 <ul>
-  <li>升级 TESTER</li>
+  <li>
+    <p>无法找到串口：<code class="highlighter-rouge">No UART found</code></p>
+
+    <p>打开 Windows 设备管理器检查开发板是否已被 Windows 正确识别，驱动程序已自动安装。</p>
+  </li>
+  <li>
+    <p>更新开发板时可能出现的错误</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align: left">现象</th>
+          <th style="text-align: left">解决方法</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align: left"><code class="highlighter-rouge">buiding...fail</code></td>
+          <td style="text-align: left">检查粘贴的代码是否过多，或者有缺失；<br />检查编写的代码是否使用了全角标点</td>
+        </tr>
+        <tr>
+          <td style="text-align: left"><code class="highlighter-rouge">starting download mode...fail</code></td>
+          <td style="text-align: left">尝试重新插拔开发板；<br />重新初始化开发板</td>
+        </tr>
+        <tr>
+          <td style="text-align: left">进度条中途停止</td>
+          <td style="text-align: left">重新初始化开发板</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li>
+    <p>初始化开发板时如果出现错误</p>
+
+    <p>再试一次。</p>
+  </li>
 </ul>
-
-<p>继续上面的步骤，点击 “Update” → “Tester”：</p>
-
-<p><img src="./board_update_ctrler.png" alt="" /></p>
-
-<p>升级完成后，重新连接到 PC。</p>
 
               
               
@@ -644,13 +573,11 @@ show_wnd=1
                 
                   <ul class="docs-section-items">
                     
-                    <li class="docs-section-item"><a href="/docs/mass_production/uart_burn/" class="docs-item-link">使用 UART 接口进行产品量产<span class="icon-angle-right" aria-hidden="true"></span></a></li>
+                    <li class="docs-section-item"><a href="/docs/getting-started/dev_board_91881B/" class="docs-item-link">ING91881B 开发板使用手册<span class="icon-angle-right" aria-hidden="true"></span></a></li>
                     
-                    <li class="docs-section-item"><a href="/docs/mass_production/prod_suite/" class="docs-item-link">使用量产套件进行量产<span class="icon-angle-right" aria-hidden="true"></span></a></li>
+                    <li class="docs-section-item"><a href="/docs/getting-started/dev_board_91880/" class="docs-item-link">ING91880 开发板使用手册<span class="icon-angle-right" aria-hidden="true"></span></a></li>
                     
-                    <li class="docs-section-item"><a href="/docs/mass_production/swd_burn/" class="docs-item-link">使用 SWD 接口进行产品量产<span class="icon-angle-right" aria-hidden="true"></span></a></li>
-                    
-                    <li class="docs-section-item"><a href="/docs/mass_production/ip_protection/" class="docs-item-link">IP 保护<span class="icon-angle-right" aria-hidden="true"></span></a></li>
+                    <li class="docs-section-item"><a href="/docs/getting-started/playground/" class="docs-item-link">Playground<span class="icon-angle-right" aria-hidden="true"></span></a></li>
                     
                   </ul><!-- .docs-section-pages -->
                 

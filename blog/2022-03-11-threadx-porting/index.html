@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>使用 Azure RTOS ThreadX - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="以 Azure RTOS ThreadX 为例，说明如何在一种新的 RTOS 上运行 NoOS 项目。"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item has-children">
+              
+              
+<a class="" href="/docs/sdk/apps/#web-apps">
+  
+  Web 工具
+  
+</a>
+
+              
+                
+                <ul class="submenu">
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/callgraph">
+  
+  Callgraph (调用图)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index_cn.html">
+  
+  ING918/ING916 FOTA (空中升级)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/powerprofiler/">
+  
+  Online Power Profiler
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/air_trace/">
+  
+  Trace Logger
+  
+</a>
+
+  </li>
+  
+</ul>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+              
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <article class="post post-full">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <header class="post-header has-gradient outer">
+      
+      
+      <div class="inner-sm">
+        <div class="post-meta">
+          <time class="published" datetime="2022-03-11 00:00">March 11, 2022</time>
+        </div>
+        <h1 class="post-title">使用 Azure RTOS ThreadX</h1>
+        
+        
+      </div>
+    </header>
+    <div class="inner-md outer">
+      <div class="post-content">
+        <div class="note">
+<strong>说明：</strong>请注意 Azure RTOS ThreadX 的许可协议。本文仅出于研究、评估目的。
+</div>
+
+<p>继 Amazon 将 FreeRTOS 收入麾下之后，微软于 2019 年 4 月将 Express Logic 收购，
+ThreadX 随之更名为 <a href="http://docs.microsoft.com/azure/rtos/threadx">Azure RTOS ThreadX</a>。
+本文以 Azure RTOS ThreadX 为例，说明如何在一种新的 RTOS 上运行 NoOS 项目。</p>
+
+<p>首先创建一个新项目（开发环境可随意选择，ThreadX 全部兼容。），RTOS Options 选择“No RTOS”。下载 ThreadX
+<a href="https://github.com/azure-rtos/threadx/releases">最新版</a>，
+将 common、ports\cortex_m3、utility\low_power 等三部分代码添加到我们的项目里。</p>
+
+<h3 id="初识-threadx">初识 ThreadX</h3>
+
+<p>ThreadX 具有几个鲜明的特点：</p>
+
+<ul>
+  <li>（几乎）一个函数对应一个独立的源文件，醒目、直接；</li>
+  <li>模块化程度高，比如，内存管理 <code class="highlighter-rouge">byte_allocate</code> 模块可以去除；</li>
+  <li>每个 API 都存在两个版本，一个以 <code class="highlighter-rouge">_txe_</code> 开头，包含<strong>详尽</strong>的参数检查，适合调试、学习；另一个是以 <code class="highlighter-rouge">_tx</code> 开头的“正常”版本；
+调用 API 时只用 <code class="highlighter-rouge">tx_</code> 开头的宏版本，这个宏版本会依照编译选项映射成 <code class="highlighter-rouge">_txe_</code> 或者 <code class="highlighter-rouge">_tx</code>；</li>
+  <li>其它特性（如 preemption-threshold, event chaining, 性能分析等）跟移植关系不大，不再赘述。</li>
+</ul>
+
+<h3 id="移植-_tx_initialize_low_level">移植 _tx_initialize_low_level</h3>
+
+<p>从 ThreadX 示例项目的启动文件里找到这个函数，只保留栈指针相关内容：</p>
+
+<pre><code class="language-asm">    EXPORT  _tx_initialize_low_level
+_tx_initialize_low_level
+
+    IMPORT  _tx_thread_system_stack_ptr
+
+    CPSID   i
+
+    ; Set system stack pointer from vector value.
+    LDR     r0, =_tx_thread_system_stack_ptr
+    LDR     r1, =__Vectors
+    LDR     r1, [r1]
+    STR     r1, [r0]
+
+    BX      lr
+</code></pre>
+
+<p>SysTick 和 MCU 异常优先级配置重新封装成两个函数：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">_setup_sys_handlers</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// Setup System Handlers 4-7 Priority Registers</span>
+    <span class="n">io_write</span><span class="p">(</span><span class="n">NVIC_ADDR</span> <span class="o">+</span> <span class="mh">0xD18</span><span class="p">,</span> <span class="mh">0x00000000</span><span class="p">);</span>
+
+    <span class="c1">// SVCl, Rsrv, Rsrv, Rsrv</span>
+    <span class="c1">// Setup System Handlers 8-11 Priority Registers</span>
+    <span class="c1">// Note: SVC must be lowest priority, which is 0xFF</span>
+    <span class="n">io_write</span><span class="p">(</span><span class="n">NVIC_ADDR</span> <span class="o">+</span> <span class="mh">0xD1C</span><span class="p">,</span> <span class="mh">0xFF000000</span><span class="p">);</span>
+
+    <span class="c1">// SysT, PnSV, Rsrv, DbgM</span>
+    <span class="c1">// Setup System Handlers 12-15 Priority Registers</span>
+    <span class="c1">// Note: PnSV must be lowest priority, which is 0xFF</span>
+    <span class="n">io_write</span><span class="p">(</span><span class="n">NVIC_ADDR</span> <span class="o">+</span> <span class="mh">0xD20</span><span class="p">,</span> <span class="mh">0x40FF0000</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="cp">#define TICK_PER_SECOND                     1024
+#define RTC_CYCLES_PER_TICK                 (RTC_CLK_FREQ / TICK_PER_SECOND)
+</span>
+<span class="kt">void</span> <span class="nf">_systick_init</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">portNVIC_SYSTICK_LOAD_REG</span> <span class="o">=</span> <span class="n">RTC_CYCLES_PER_TICK</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="n">portNVIC_SYSTICK_CURRENT_VALUE_REG</span>  <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">portNVIC_SYSTICK_CTRL_REG</span> <span class="o">=</span> <span class="n">portNVIC_SYSTICK_INT_BIT</span> <span class="o">|</span> <span class="n">portNVIC_SYSTICK_ENABLE_BIT</span> <span class="o">|</span> <span class="n">portNVIC_SYSTICK_CLK_BIT</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>下面是通用 OS 接口在 ThreadX 上的具体实现。</p>
+
+<h3 id="堆相关-api">堆相关 API</h3>
+
+<p>我们分配一块大小确定的内存作为堆。</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#ifndef RTOS_HEAP_SIZE
+#define RTOS_HEAP_SIZE             (20 * 1024)
+#endif
+</span><span class="k">static</span> <span class="kt">uint32_t</span> <span class="n">heap</span><span class="p">[</span><span class="n">RTOS_HEAP_SIZE</span> <span class="o">/</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">uint32_t</span><span class="p">)];</span>
+<span class="k">static</span> <span class="n">TX_BYTE_POOL</span> <span class="n">pool</span><span class="p">;</span>
+
+<span class="n">tx_byte_pool_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pool</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">heap</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">heap</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p>实现一对分配、释放函数：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">static</span> <span class="kt">void</span> <span class="o">*</span><span class="nf">port_malloc</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">size</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">void</span> <span class="o">*</span><span class="n">p</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">tx_byte_allocate</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pool</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">p</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="n">TX_SUCCESS</span> <span class="o">?</span> <span class="n">p</span> <span class="o">:</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">port_free</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">p</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">tx_byte_release</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>查看 ThreadX 源代码可知，这对函数是线程安全的。</p>
+
+<h3 id="软件定时器相关-api">软件定时器相关 API</h3>
+
+<p>软件定时器的存储空间由我们在堆上分配，然后将指针作为 <code class="highlighter-rouge">gen_handle_t</code>。具体实现如下：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">gen_handle_t</span> <span class="nf">port_timer_create</span><span class="p">(</span>
+        <span class="kt">uint32_t</span> <span class="n">timeout_in_ms</span><span class="p">,</span>
+        <span class="kt">void</span> <span class="o">*</span><span class="n">user_data</span><span class="p">,</span>
+        <span class="kt">void</span> <span class="p">(</span><span class="o">*</span> <span class="n">timer_cb</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span>
+    <span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">TX_TIMER</span> <span class="o">*</span><span class="n">timer</span> <span class="o">=</span> <span class="p">(</span><span class="n">TX_TIMER</span> <span class="o">*</span><span class="p">)</span><span class="n">port_malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">TX_TIMER</span><span class="p">));</span>
+    <span class="n">tx_timer_create</span><span class="p">(</span><span class="n">timer</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span>
+                    <span class="p">(</span><span class="n">fun_void_ul_f</span><span class="p">)</span><span class="n">timer_cb</span><span class="p">,</span> <span class="p">(</span><span class="n">ULONG</span><span class="p">)</span><span class="n">user_data</span><span class="p">,</span>
+                    <span class="n">ms_to_ticks</span><span class="p">(</span><span class="n">timeout_in_ms</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">TX_NO_ACTIVATE</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">timer</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">port_timer_start</span><span class="p">(</span><span class="n">gen_handle_t</span> <span class="n">timer</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">TX_TIMER</span> <span class="o">*</span><span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">TX_TIMER</span> <span class="o">*</span><span class="p">)</span><span class="n">timer</span><span class="p">;</span>
+    <span class="n">tx_timer_activate</span><span class="p">(</span><span class="n">t</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">port_timer_stop</span><span class="p">(</span><span class="n">gen_handle_t</span> <span class="n">timer</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">TX_TIMER</span> <span class="o">*</span><span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">TX_TIMER</span> <span class="o">*</span><span class="p">)</span><span class="n">timer</span><span class="p">;</span>
+    <span class="n">tx_timer_deactivate</span><span class="p">(</span><span class="n">t</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">port_timer_delete</span><span class="p">(</span><span class="n">gen_handle_t</span> <span class="n">timer</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">TX_TIMER</span> <span class="o">*</span><span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">TX_TIMER</span> <span class="o">*</span><span class="p">)</span><span class="n">timer</span><span class="p">;</span>
+    <span class="n">tx_timer_delete</span><span class="p">(</span><span class="n">t</span><span class="p">);</span>
+    <span class="n">port_free</span><span class="p">(</span><span class="n">t</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="任务相关-api">任务相关 API</h3>
+
+<p>ThreadX 里，优先级数目越大，优先级越低，最高为 0，最低为 (TX_MAX_PRIORITIES - 1)。参考实现：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// ThreadX: Numerically smaller values imply higher priority</span>
+<span class="cp">#define APP_PRIO_LOW               4
+#define APP_PRIO_HIGH              2
+</span>
+<span class="n">gen_handle_t</span> <span class="nf">port_task_create</span><span class="p">(</span>
+        <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">,</span>
+        <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">entry</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="p">),</span>
+        <span class="kt">void</span> <span class="o">*</span><span class="n">parameter</span><span class="p">,</span>
+        <span class="kt">uint32_t</span> <span class="n">stack_size</span><span class="p">,</span>                    <span class="c1">// stack size in bytes</span>
+        <span class="k">enum</span> <span class="n">gen_os_task_priority</span> <span class="n">priority</span>
+    <span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">TX_THREAD</span> <span class="o">*</span><span class="kr">thread</span> <span class="o">=</span> <span class="p">(</span><span class="n">TX_THREAD</span> <span class="o">*</span><span class="p">)</span><span class="n">port_malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">TX_THREAD</span><span class="p">));</span>
+    <span class="n">VOID</span> <span class="o">*</span><span class="n">stack</span> <span class="o">=</span> <span class="n">port_malloc</span><span class="p">(</span><span class="n">stack_size</span><span class="p">);</span>
+    <span class="n">tx_thread_create</span><span class="p">(</span><span class="kr">thread</span><span class="p">,</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">name</span><span class="p">,</span>
+                     <span class="p">(</span><span class="n">fun_void_ul_f</span><span class="p">)</span><span class="n">entry</span><span class="p">,</span> <span class="p">(</span><span class="n">ULONG</span><span class="p">)</span><span class="n">parameter</span><span class="p">,</span>
+                     <span class="n">stack</span><span class="p">,</span> <span class="n">stack_size</span><span class="p">,</span>
+                     <span class="n">priority</span> <span class="o">==</span> <span class="n">GEN_TASK_PRIORITY_LOW</span> <span class="o">?</span> <span class="n">APP_PRIO_LOW</span> <span class="o">:</span> <span class="n">APP_PRIO_HIGH</span><span class="p">,</span>
+                     <span class="mi">2</span><span class="p">,</span>
+                     <span class="n">TX_NO_TIME_SLICE</span><span class="p">,</span> <span class="n">TX_AUTO_START</span><span class="p">);</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">gen_handle_t</span><span class="p">)</span><span class="kr">thread</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="消息队列相关-api">消息队列相关 API</h3>
+
+<p>ThreadX 里消息长度必须是 4 字节的倍数，最长为 64 字节（TX_16_ULONG）。
+通用 OS 接口里消息大小可能不是 4 字节的倍数，不过好在不会超过 64 字节（虽然文档里没注明）。</p>
+
+<p>基于这些考虑，在从 ThreadX 取消息时，为了防止内存溢出，事先准备一段足够长度内存空间。实现如下：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">typedef</span> <span class="k">struct</span>
+<span class="p">{</span>
+    <span class="n">TX_QUEUE</span> <span class="n">queue</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">msg_len</span><span class="p">;</span>
+    <span class="kt">uint32_t</span> <span class="n">msg</span><span class="p">[];</span>
+<span class="p">}</span> <span class="n">tx_queue_sup_t</span><span class="p">;</span>
+
+<span class="n">gen_handle_t</span> <span class="nf">port_queue_create</span><span class="p">(</span><span class="kt">int</span> <span class="n">len</span><span class="p">,</span> <span class="kt">int</span> <span class="n">item_size</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// msg size is in 32-bit words</span>
+    <span class="kt">int</span> <span class="n">word_size</span> <span class="o">=</span> <span class="p">(</span><span class="n">item_size</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">2</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">queue_byte_size</span> <span class="o">=</span> <span class="n">len</span> <span class="o">*</span> <span class="n">word_size</span> <span class="o">*</span> <span class="mi">4</span><span class="p">;</span>
+    <span class="n">tx_queue_sup_t</span> <span class="o">*</span><span class="n">queue</span> <span class="o">=</span> <span class="p">(</span><span class="n">tx_queue_sup_t</span> <span class="o">*</span><span class="p">)</span><span class="n">port_malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">tx_queue_sup_t</span><span class="p">)</span> <span class="o">+</span> <span class="n">word_size</span> <span class="o">*</span> <span class="mi">4</span><span class="p">);</span>
+    <span class="n">queue</span><span class="o">-&gt;</span><span class="n">msg_len</span> <span class="o">=</span> <span class="n">item_size</span><span class="p">;</span>
+    <span class="n">VOID</span> <span class="o">*</span><span class="n">queue_start</span> <span class="o">=</span> <span class="p">(</span><span class="n">VOID</span> <span class="o">*</span><span class="p">)</span><span class="n">port_malloc</span><span class="p">(</span><span class="n">queue_byte_size</span><span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">tx_queue_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">queue</span><span class="o">-&gt;</span><span class="n">queue</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">word_size</span><span class="p">,</span> <span class="n">queue_start</span><span class="p">,</span> <span class="n">queue_byte_size</span><span class="p">)</span> <span class="o">!=</span> <span class="n">TX_SUCCESS</span><span class="p">)</span>
+        <span class="n">platform_raise_assertion</span><span class="p">(</span><span class="n">__FILE__</span><span class="p">,</span> <span class="n">__LINE__</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">gen_handle_t</span><span class="p">)</span><span class="n">queue</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">port_queue_send_msg</span><span class="p">(</span><span class="n">gen_handle_t</span> <span class="n">queue</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">msg</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">tx_queue_sup_t</span> <span class="o">*</span><span class="n">q</span> <span class="o">=</span> <span class="p">(</span><span class="n">tx_queue_sup_t</span> <span class="o">*</span><span class="p">)</span><span class="n">queue</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">tx_queue_send</span><span class="p">(</span><span class="o">&amp;</span><span class="n">q</span><span class="o">-&gt;</span><span class="n">queue</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">TX_WAIT_FOREVER</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// return 0 if msg received; otherwise failed (timeout)</span>
+<span class="kt">int</span> <span class="nf">port_queue_recv_msg</span><span class="p">(</span><span class="n">gen_handle_t</span> <span class="n">queue</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">msg</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">tx_queue_sup_t</span> <span class="o">*</span><span class="n">q</span> <span class="o">=</span> <span class="p">(</span><span class="n">tx_queue_sup_t</span> <span class="o">*</span><span class="p">)</span><span class="n">queue</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">TX_SUCCESS</span> <span class="o">==</span> <span class="n">tx_queue_receive</span><span class="p">(</span><span class="o">&amp;</span><span class="n">q</span><span class="o">-&gt;</span><span class="n">queue</span><span class="p">,</span> <span class="n">q</span><span class="o">-&gt;</span><span class="n">msg</span><span class="p">,</span> <span class="n">TX_WAIT_FOREVER</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="n">memcpy</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">q</span><span class="o">-&gt;</span><span class="n">msg</span><span class="p">,</span> <span class="n">q</span><span class="o">-&gt;</span><span class="n">msg_len</span><span class="p">);</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span>
+        <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="事件相关-api">事件相关 API</h3>
+
+<p>使用 ThreadX 的 EVENT_FLAGS 实现事件接口，设置事件时对应于 ThreadX 的 OR 操作：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">gen_handle_t</span> <span class="nf">port_event_create</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">TX_EVENT_FLAGS_GROUP</span> <span class="o">*</span><span class="n">group</span> <span class="o">=</span> <span class="p">(</span><span class="n">TX_EVENT_FLAGS_GROUP</span> <span class="o">*</span><span class="p">)</span><span class="n">port_malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">TX_EVENT_FLAGS_GROUP</span><span class="p">));</span>
+    <span class="n">tx_event_flags_create</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">gen_handle_t</span><span class="p">)</span><span class="n">group</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// return 0 if msg received; otherwise failed (timeout)</span>
+<span class="kt">int</span> <span class="nf">port_event_wait</span><span class="p">(</span><span class="n">gen_handle_t</span> <span class="n">event</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">ULONG</span> <span class="n">actual_flags_ptr</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">tx_event_flags_get</span><span class="p">((</span><span class="n">TX_EVENT_FLAGS_GROUP</span> <span class="o">*</span><span class="p">)</span><span class="n">event</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="n">TX_AND_CLEAR</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">actual_flags_ptr</span><span class="p">,</span> <span class="n">TX_WAIT_FOREVER</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// event_set(event) will release the task in waiting.</span>
+<span class="kt">void</span> <span class="nf">port_event_set</span><span class="p">(</span><span class="n">gen_handle_t</span> <span class="n">event</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">tx_event_flags_set</span><span class="p">((</span><span class="n">TX_EVENT_FLAGS_GROUP</span> <span class="o">*</span><span class="p">)</span><span class="n">event</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">TX_OR</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="全局临界区-api">全局临界区 API</h3>
+
+<p>可以借助 <code class="highlighter-rouge">TX_DISABLE</code>、<code class="highlighter-rouge">TX_RESTORE</code> 配合计数器实现。</p>
+
+<h3 id="os-入口-api">OS 入口 API</h3>
+
+<p>ThreadX 的入口是 <code class="highlighter-rouge">tx_kernel_enter</code>。把它拆成两个部分：一部分在 <code class="highlighter-rouge">app_main</code> 返回 platform
+之前执行，此时 ThreadX 允许创建线程；后一部分封装成通用 OS 的入口。</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 前一部分</span>
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">port_tx_initialize_kernel</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+    <span class="n">_systick_init</span><span class="p">();</span>
+    <span class="n">_setup_sys_handlers</span><span class="p">();</span>
+    <span class="n">_tx_thread_system_state</span> <span class="o">=</span>  <span class="n">TX_INITIALIZE_IN_PROGRESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// 后一部分</span>
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">port_tx_start</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">_tx_thread_system_state</span> <span class="o">=</span>  <span class="n">TX_INITIALIZE_IS_FINISHED</span><span class="p">;</span>
+
+    <span class="c1">/// ...</span>
+
+<span class="cp">#ifdef TX_SAFETY_CRITICAL
+</span>    <span class="cm">/* If we ever get here, raise safety critical exception.  */</span>
+    <span class="n">TX_SAFETY_CRITICAL_EXCEPTION</span><span class="p">(</span><span class="n">__FILE__</span><span class="p">,</span> <span class="n">__LINE__</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="cp">#endif
+</span><span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="整合">整合</h3>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">const</span> <span class="n">gen_os_driver_t</span> <span class="n">gen_os_driver</span> <span class="o">=</span>
+<span class="p">{</span>
+    <span class="p">.</span><span class="n">timer_create</span> <span class="o">=</span> <span class="n">port_timer_create</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">timer_start</span> <span class="o">=</span> <span class="n">port_timer_start</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">timer_stop</span> <span class="o">=</span> <span class="n">port_timer_stop</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">timer_delete</span> <span class="o">=</span> <span class="n">port_timer_delete</span><span class="p">,</span>
+
+    <span class="p">.</span><span class="n">task_create</span> <span class="o">=</span> <span class="n">port_task_create</span><span class="p">,</span>
+
+    <span class="p">.</span><span class="n">queue_create</span> <span class="o">=</span> <span class="n">port_queue_create</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">queue_send_msg</span> <span class="o">=</span> <span class="n">port_queue_send_msg</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">queue_recv_msg</span> <span class="o">=</span> <span class="n">port_queue_recv_msg</span><span class="p">,</span>
+
+    <span class="p">.</span><span class="n">event_create</span> <span class="o">=</span> <span class="n">port_event_create</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">event_set</span> <span class="o">=</span> <span class="n">port_event_set</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">event_wait</span> <span class="o">=</span> <span class="n">port_event_wait</span><span class="p">,</span>
+
+    <span class="p">.</span><span class="n">malloc</span> <span class="o">=</span> <span class="n">port_malloc</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">free</span> <span class="o">=</span> <span class="n">port_free</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">enter_critical</span> <span class="o">=</span> <span class="n">port_enter_critical</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">leave_critical</span> <span class="o">=</span> <span class="n">port_leave_critical</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">os_start</span> <span class="o">=</span> <span class="n">port_tx_start</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">tick_isr</span> <span class="o">=</span> <span class="n">_tx_timer_interrupt</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">svc_isr</span> <span class="o">=</span> <span class="n">no_op</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">pendsv_isr</span> <span class="o">=</span> <span class="n">__tx_PendSVHandler</span><span class="p">,</span>
+<span class="p">};</span>
+
+<span class="k">const</span> <span class="n">gen_os_driver_t</span> <span class="o">*</span><span class="nf">os_impl_get_driver</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">tx_byte_pool_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pool</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">heap</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">heap</span><span class="p">));</span>
+    <span class="n">port_tx_initialize_kernel</span><span class="p">();</span>
+
+    <span class="k">return</span> <span class="o">&amp;</span><span class="n">gen_os_driver</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>ThreadX 目前不使用 SVC 中断，<code class="highlighter-rouge">no_op</code> 是一个桩函数。</p>
+
+<h3 id="测试">测试</h3>
+
+<p>参照 SDK 里 <code class="highlighter-rouge">Peripheral Console</code> 项目的 <code class="highlighter-rouge">profile.c</code>、<code class="highlighter-rouge">service_console.c</code> 加入项目，然后参照
+<code class="highlighter-rouge">Peripheral Console (RT-Thread)</code> 修改 <code class="highlighter-rouge">main.c</code>，准备一条欢迎信息：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#define expand2(X)  #X
+#define expand(X)   expand2(X)
+</span>
+<span class="k">const</span> <span class="kt">char</span> <span class="n">welcome_msg</span><span class="p">[]</span> <span class="o">=</span> <span class="s">"Built with Azure ThreadX ("</span> <span class="n">expand</span><span class="p">(</span><span class="n">THREADX_MAJOR_VERSION</span><span class="p">)</span> <span class="s">"."</span>
+                     <span class="n">expand</span><span class="p">(</span><span class="n">THREADX_MINOR_VERSION</span><span class="p">)</span>  <span class="s">"."</span> <span class="n">expand</span><span class="p">(</span><span class="n">THREADX_PATCH_VERSION</span><span class="p">)</span> <span class="s">")"</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>编译、下载、测试。</p>
+
+<h3 id="低功耗">低功耗</h3>
+
+<p>ThreadX 默认的低功耗实现方式不合适，需要自行创建一个空闲线程，实现“无滴答”低功耗。空闲线程的具体实现与
+<code class="highlighter-rouge">Peripheral Console (RT-Thread)</code> 类似，主要流程如下：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">thread_idle_entry</span><span class="p">(</span><span class="n">ULONG</span> <span class="n">thread_input</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">for</span> <span class="p">(;;)</span>
+    <span class="p">{</span>
+        <span class="n">tx_timer_get_next</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tx_low_power_next_expiration</span><span class="p">);</span>
+
+        <span class="n">tx_low_power_next_expiration</span> <span class="o">=</span> <span class="n">platform_pre_suppress_ticks_and_sleep_processing</span><span class="p">(</span><span class="n">tx_low_power_next_expiration</span><span class="p">);</span>
+
+        <span class="n">tx_low_power_adjust_ticks</span> <span class="o">=</span> <span class="n">rtos_sleep_process</span><span class="p">(</span><span class="n">tx_low_power_next_expiration</span><span class="p">);</span>
+
+        <span class="n">tx_time_increment</span><span class="p">(</span><span class="n">tx_low_power_adjust_ticks</span><span class="p">);</span>
+
+        <span class="n">platform_os_idle_resumed_hook</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>至此，蓝牙协议栈、低功耗等两项功能都在 ThreadX 上运行起来了。</p>
+
+      </div><!-- .post-content -->
+    </div><!-- .inner-md -->
+  </article><!-- .post -->
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2021-2022. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

@@ -450,6 +450,46 @@ RGB 的每个分量范围为 0 ~ 255，HSL 的每个分量范围为 0 ~ 1.0。</
 
 <p>更新到开发板之后，缓缓举起开发板，看看预想的功能是否得以实现。</p>
 
+<h2 id="保持稳定">保持稳定</h2>
+
+<p>开关板上带有一个 3 轴加速度传感器，可以感知如图所示 X/Y/Z 三个轴向上的加速度，其中 Z 轴为垂直向下。将开发板平放，
+Z 轴上的加速度分量大小等于重力加速度。在机体坐标系里，绕 X、Y、Z 三个轴的旋转角度分别称为横滚角（roll）、俯仰角（pitch）、偏航角（yaw）。
+保持开发板静止，根据重力加速度在三个轴上的分量可以推算出横滚角和俯仰角。</p>
+
+<p><img src="../img/board_pitch.png" alt="" /></p>
+
+<p>现在使用俯仰角开发一个体感小游戏，目标：保持开发板水平静止。实现思路如下：</p>
+
+<ol>
+  <li>将<strong>现在的俯仰角</strong>转换为<strong>亮灯个数</strong>；</li>
+  <li>如果<strong>亮灯个数</strong>为 0，说明为水平状态，彩灯亮红色鼓励；否则熄灭彩灯；</li>
+  <li>如果角度为正数，说明机头上仰，从第 3 个开始向左逐个点亮 LED 灯；</li>
+  <li>如果角度为负数，说明机头下沉，从第 4 个开始向右逐个点亮 LED 灯；</li>
+  <li>每 50 毫秒重复执行上述步骤。</li>
+</ol>
+
+<p>使用<strong>灵敏度</strong>参数控制俯仰角向亮灯个数的转换：灵敏度越低，对角度越不敏感，游戏难度越低；反之越难。完整代码如下：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">定时执行</span><span class="p">([]()</span> <span class="p">{</span>
+    <span class="err">变量</span> <span class="err">灵敏度</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">5</span><span class="p">;</span>
+    <span class="err">变量</span> <span class="err">亮灯个数</span> <span class="o">=</span> <span class="p">(</span><span class="err">整数</span><span class="p">)(</span><span class="err">现在的俯仰角</span> <span class="o">*</span> <span class="err">灵敏度</span><span class="p">);</span>
+    <span class="err">如果</span> <span class="p">(</span><span class="err">亮灯个数</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="err">设置红绿蓝</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="err">关灯</span><span class="p">;</span>
+    <span class="p">}</span> <span class="err">否则</span> <span class="p">{</span>
+        <span class="err">设置红绿蓝</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="err">控制各灯</span><span class="p">([</span><span class="o">=</span><span class="p">](</span><span class="err">变量</span> <span class="err">序号</span><span class="p">)</span> <span class="p">{</span>
+            <span class="err">如果</span> <span class="p">(</span><span class="err">亮灯个数</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="err">返回</span> <span class="p">(</span><span class="mi">4</span> <span class="o">-</span> <span class="err">亮灯个数</span> <span class="o">&lt;=</span> <span class="err">序号</span><span class="p">)</span> <span class="err">并且</span> <span class="p">(</span><span class="err">序号</span> <span class="o">&lt;=</span> <span class="mi">3</span><span class="p">);</span>
+            <span class="err">否则</span>
+                <span class="err">返回</span> <span class="p">(</span><span class="mi">4</span> <span class="o">&lt;=</span> <span class="err">序号</span><span class="p">)</span> <span class="err">并且</span> <span class="p">(</span><span class="err">序号</span> <span class="o">&lt;=</span> <span class="mi">3</span> <span class="o">-</span> <span class="err">亮灯个数</span><span class="p">);</span>
+        <span class="p">});</span>
+    <span class="p">}</span>
+<span class="p">},</span> <span class="mi">50</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>灵敏度</strong>取 0.5，表示大概每偏 2 度多亮 1 个灯，难度适中。</p>
+
 <h2 id="蓝牙">蓝牙</h2>
 
 <p>当然，一款蓝牙芯片肯定可以<strong>设置蓝牙名称</strong>：</p>
@@ -479,7 +519,7 @@ RGB 的每个分量范围为 0 ~ 255，HSL 的每个分量范围为 0 ~ 1.0。</
 <p>更新开发板之后，用蓝牙工具（ING BLE、LightBlue、nRF Connect 等）连接到“我的蓝牙”这个设备，向
 “222…”这个特征多次写入任意数值，可观察到灯在亮灭交替。</p>
 
-<p>可以对写入的数值做出响应，比如下面的例子：</p>
+<p>可以响应写入的数值，比如下面的例子：</p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">设置蓝牙名称</span><span class="p">(</span><span class="s">"我的蓝牙"</span><span class="p">);</span>
 <span class="err">定义服务</span><span class="p">(</span><span class="s">"11111111"</span><span class="p">);</span>
@@ -495,10 +535,29 @@ RGB 的每个分量范围为 0 ~ 255，HSL 的每个分量范围为 0 ~ 1.0。</
 <p>一个完整的自定义编号长度为 16 字节，从图中看出后面的数字不是我们指定的，这是有意为之：只要前面的几个数字容易辨认、区分即可，
 其它数字无所谓。</p>
 
+<p>下面的例子演示了如何从外部读取特征的数值。我们把数据的长度定为 2，第 1 个数值为摄氏温度的整数部分，第 2 个数值为随机数。</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">设置蓝牙名称</span><span class="p">(</span><span class="s">"我的蓝牙"</span><span class="p">);</span>
+    <span class="err">定义服务</span><span class="p">(</span><span class="s">"11111111"</span><span class="p">);</span>
+    <span class="err">定义服务特征</span><span class="p">(</span><span class="s">"33333333"</span><span class="p">,</span>
+        <span class="p">[]()</span> <span class="p">{</span> <span class="err">返回</span> <span class="mi">2</span><span class="p">;</span> <span class="p">},</span>
+        <span class="p">[](</span><span class="err">变量</span> <span class="err">数据</span><span class="p">,</span> <span class="err">变量</span> <span class="err">长度</span><span class="p">)</span> <span class="p">{</span>
+            <span class="err">数据</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="err">整数</span><span class="p">)</span><span class="err">现在的温度</span><span class="p">;</span>
+            <span class="err">数据</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="err">随机数</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">);</span>
+</code></pre></div></div>
+
+<p>使用蓝牙工具连接到“我的蓝牙”这个设备，多次读取“333…”这个特征，可观察到这两个值：</p>
+
+<p><img src="../img/read_char_333.jpg" alt="" /></p>
+
+<p>图中的温度值“15”为 16 进制，等于十进制的 21。</p>
+
 <h2 id="使用英语">使用英语</h2>
 
 <p>上面的演示代码都是用中文编写，可能略感“违和”。Playground 里同样可以使用英语编程，<code class="highlighter-rouge">demo/en.md</code>
-文件提供了以上演示代码的英语版本。</p>
+为以上演示代码的英语版本。</p>
 
       </div><!-- .post-content -->
     </div><!-- .inner-md -->

@@ -19,5 +19,7 @@ const msg = {
     sec_fota_confirm: '请确认设备上具备附属 FOTA 程序，然后点击 Yes/确认',
     exchange_keys: '交换密钥',
     mtu_too_small: '对于安全 FOTA，当前 MTU 太小了',
-    key_error: '设备报告错误. 怀疑根私钥不正确'
+    key_error: '设备报告错误. 怀疑根私钥不正确',
+    app_bin_empty: '应用程序二进制文件为空',
+    on_the_fly_update: 'App 快捷更新',
 }

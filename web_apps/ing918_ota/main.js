@@ -165,11 +165,11 @@ async function writeData(data) {
     await ble_obj.char_data.writeValueWithoutResponse(buf);
 }
 
-async function buildMetaData(plan) {
+async function buildMetaData(plan, entry) {
     var buffer = new ArrayBuffer(2 + 4 + plan.length * 3 * 4);
     var view = new DataView(buffer);
     var c = 2;
-    view.setUint32(c, manifest.entry, true); c+= 4;
+    view.setUint32(c, entry, true); c+= 4;
     for (var item of plan) {
         view.setUint32(c, item.write_addr, true); c+= 4;
         view.setUint32(c, item.addr, true); c+= 4;
@@ -360,7 +360,7 @@ async function burnMetaData(meta) {
 
 async function applyUpdate(plan) {
     const flash = flashInfo();
-    await burnMetaData(await buildMetaData(plan));
+    await burnMetaData(await buildMetaData(plan, manifest.entry));
     if (flash.manual_reboot) {
         if (await checkDevStatus()) {
             await rebootDev();
@@ -384,13 +384,13 @@ async function enableFOTA() {
     return true;
 }
 
-async function doUpdate() {
-    var plan = [];
+
+async function executePlan(plan) {
     if (ble_obj == null) {
         alert(msg.err_dev_not_ready);
         return;
     }
-    try { plan = buildUpdatePlan(); } catch (e) {};
+
     if (plan.length < 1) {
         alert(msg.err_nothing_to_up);
         return;
@@ -413,6 +413,12 @@ async function doUpdate() {
     }
 }
 
+async function doUpdate() {
+    var plan = [];
+    try { plan = buildUpdatePlan(); } catch (e) {};
+    await executePlan(plan);
+}
+
 function updateVerInd() {
     if (manifest === null) return;
     const unitqueVerNum = function (id) {
@@ -424,7 +430,8 @@ function updateVerInd() {
     const p2 = unitqueVerNum('#cur_ver_platform');
 
     const a1 = unitqueVerNum('#dev_ver_app');
-    const a2 = unitqueVerNum('#cur_ver_app');
+    let a2 = unitqueVerNum('#cur_ver_app');
+    if (a2 == 0) a2 = a1 + 1;
 
     manifest.app.update = true;
     manifest.platform.update = true;
@@ -503,28 +510,48 @@ async function processZip(f) {
     updateVerInd();
 }
 
-async function handleFileDrop(evt) {
-    evt.stopPropagation();
-    evt.preventDefault();
-    var files = evt.dataTransfer.files; // FileList object.
+async function processAppBin(f) {
+    manifest = {
+        platform: { name: 'platform', data: [], address: 0, },
+        app: {
+            name: f.name,
+            data: new Uint8Array(await f.arrayBuffer()),
+            address: parseInt($('#app_bin_load_addr').val()),
+        },
+        entry: 0,
+        bins:[]
+    };
 
+    $('#current_file').text(f.name);
+    $('#cur_ver_readme').text(msg.on_the_fly_update + '.\n\r0x' + manifest.app.address.toString(16).padStart(8, "0"));
+
+    $('#cur_ver_platform').text($('#dev_ver_platform').text());
+    $('#cur_ver_app').text('+∞');
+
+    updateVerInd();
+}
+
+async function findThenProcess(files, file_ext, handler) {
     for (var i = 0, f; f = files[i]; i++) {
-        if (f.name.endsWith('.zip')) {
-            await processZip(f);
+        if (f.name.endsWith(file_ext)) {
+            await handler(f);
             return;
         }
     }
 }
 
-async function handleFileSelect(evt) {
-    var files = evt.target.files; // FileList object
+async function handleFileDrop(evt) {
+    evt.stopPropagation();
+    evt.preventDefault();
 
-    for (var i = 0, f; f = files[i]; i++) {
-        if (f.name.endsWith('.zip')) {
-            await processZip(f);
-            return;
-        }
-    }
+    await findThenProcess(evt.dataTransfer.files, '.zip', processZip);
+}
+
+async function handleBinFileDrop(evt) {
+    evt.stopPropagation();
+    evt.preventDefault();
+
+    await findThenProcess(evt.dataTransfer.files, '.bin', processAppBin);
 }
 
 async function closePort() {
@@ -695,6 +722,17 @@ async function dumpKey(sk) {
     $('#public_key_raw').val('04' + base64url_to_hexstr(sk.x) + base64url_to_hexstr(sk.y));
 }
 
+function setup_drop_zone(id, drop_handler)
+{
+    var dropZone = document.getElementById(id);
+    dropZone.addEventListener('dragover', function (evt) {
+            evt.stopPropagation();
+            evt.preventDefault();
+            evt.dataTransfer.dropEffect = 'copy';
+        }, false);
+    dropZone.addEventListener('drop', drop_handler, false);
+}
+
 async function appStart() {
     $('#main_window').hide();
     $('#running_status').hide();
@@ -711,14 +749,19 @@ async function appStart() {
     $('#api_notice').attr('hidden', true);
 
     // Setup the dnd listeners.
-    var dropZone = document.getElementById('zip_file_drop_zone');
-    dropZone.addEventListener('dragover', function (evt) {
-            evt.stopPropagation();
-            evt.preventDefault();
-            evt.dataTransfer.dropEffect = 'copy';
-        }, false);
-    dropZone.addEventListener('drop', handleFileDrop, false);
-    document.getElementById('zip_file_select').addEventListener('change', handleFileSelect, false);
+    setup_drop_zone('zip_file_drop_zone', handleFileDrop);
+    document.getElementById('zip_file_select').addEventListener('change',
+        async function (evt) {
+            await findThenProcess(evt.target.files, '.zip', processZip);
+        },
+        false);
+
+    setup_drop_zone('app_bin_file_drop_zone', handleBinFileDrop);
+    document.getElementById('app_bin_file_select').addEventListener('change',
+        async function (evt) {
+            await findThenProcess(evt.target.files, '.bin', processAppBin);
+        },
+        false);
 
     $("#btn_scan").click(async function () {
         try {

@@ -19,5 +19,7 @@ const msg = {
     sec_fota_confirm: 'Confirm that there is a secondary FOTA app installed, then press Yes',
     exchange_keys: 'exchange keys',
     mtu_too_small: 'mtu is too small for secured FOTA',
-    key_error: 'device report ERROR. Maybe root private key is wrong'
+    key_error: 'device report ERROR. Maybe root private key is wrong',
+    app_bin_empty: 'app binary file is empty',
+    on_the_fly_update: 'on the fly update',
 }

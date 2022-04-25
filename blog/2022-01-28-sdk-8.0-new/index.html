@@ -203,6 +203,7 @@
   <li>开始支持 ING916xx 系列（软件包、外设驱动、工具、示例）</li>
   <li>LiteOS、LVGL、FatFs 相关示例</li>
   <li>新的 SDK 使用方式</li>
+  <li>脱离 RTOS 完整运行协议栈</li>
 </ul>
 
 <div class="important">
@@ -239,11 +240,22 @@
   <code class="highlighter-rouge">Ext. Raw Packet Tx/Rx (NoOS)</code>。</p>
   </li>
   <li>
-    <p>[<strong>新增</strong>] 链路层“裸跑” <span style="background:yellow">(<strong>8.0.0</strong>)</span></p>
+    <p>[<strong>新增</strong>] 链路层或者完整协议栈“裸跑” <span style="background:yellow">(<strong>8.0.0</strong>, <strong>8.0.1</strong>)</span></p>
 
-    <p>新增的链路层“裸跑”功能适于只使用链路层扩展 API，并且对实时性要求高的场景。将 <code class="highlighter-rouge">gen_os_driver</code> 里
-  的 <code class="highlighter-rouge">task_create</code> 置为 <code class="highlighter-rouge">NULL</code> 就可以起用该模式。使用方法可参考示例
-  <code class="highlighter-rouge">Ext. Raw Packet Tx/Rx (NoOS)</code>。</p>
+    <p>新增的“裸跑”功能适于对实时性要求高的场景。</p>
+
+    <ul>
+      <li>
+        <p><code class="highlighter-rouge">Ext. Raw Packet Tx/Rx (NoOS)</code></p>
+
+        <p>将 <code class="highlighter-rouge">gen_os_driver</code> 里的 <code class="highlighter-rouge">task_create</code> 置为 <code class="highlighter-rouge">NULL</code> 就可以启用链路层“裸跑”模式。</p>
+      </li>
+      <li>
+        <p><code class="highlighter-rouge">Peripheral Console (Realtime)</code></p>
+
+        <p>演示了完整协议栈“裸跑”模式。</p>
+      </li>
+    </ul>
   </li>
   <li>
     <p>[<strong>修正</strong>] 多组广播及扫描并发时的潜在错误 <span style="background:yellow">(<strong>8.0.0</strong>)</span></p>
@@ -288,6 +300,11 @@
     <p>[<strong>新增</strong>] <code class="highlighter-rouge">Ext. Raw Packet Tx/Rx (NoOS)</code> <span style="background:yellow">(<strong>8.0.0</strong>)</span></p>
 
     <p>演示链路层“裸跑” 。</p>
+  </li>
+  <li>
+    <p>[<strong>新增</strong>] <code class="highlighter-rouge">Peripheral Console (Realtime)</code> <span style="background:yellow">(<strong>8.0.1</strong>)</span></p>
+
+    <p>演示完整协议栈“裸跑” 。</p>
   </li>
   <li>
     <p>[<strong>新增</strong>] <code class="highlighter-rouge">Get Started</code> <span style="background:yellow">(<strong>8.0.0</strong>)</span></p>
@@ -373,7 +390,7 @@
     </table>
   </li>
   <li>
-    <p>[<strong>更新</strong>] Wizard 创建新项目时提供新选项：链接或者复制 SDK 文件</p>
+    <p>[<strong>更新</strong>] Wizard 创建新项目时提供新选项：链接或者复制 SDK 文件 <span style="background:yellow">(<strong>8.0.0</strong>)</span></p>
 
     <p><img src="../img/wizard_sdk_files.png" alt="" /></p>
 
@@ -399,13 +416,16 @@
     </ul>
   </li>
   <li>
-    <p>[<strong>更新</strong>] Wizard 新增项目文档机制</p>
+    <p>[<strong>更新</strong>] Wizard 新增项目文档机制 <span style="background:yellow">(<strong>8.0.0</strong>)</span></p>
 
     <p>Wizard 现在将项目里 <code class="highlighter-rouge">doc/index.md</code> 文件识别为文档，通过 “More info…” 菜单可直接打开文档：
   使用浏览器作为 Markdown 文档查看器。为浏览器安装 Markdown 插件（如 <a href="https://github.com/simov/markdown-viewer">Markdown Viewer</a>），
   打开 Options，填上浏览器可执行文件的路径，就可以方便地阅读文档了：</p>
 
     <p><img src="../img/view_markdown_doc.png" alt="" /></p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] Wizard 无法在同一 Family 内部切换型号的问题 <span style="background:yellow">(<strong>8.0.1</strong>)</span></p>
   </li>
 </ul>
 

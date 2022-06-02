@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>SDK 8.1：引入 BLE 5.2/5.3 新特性 - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="总结 SDK 8.1 新功能。"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item has-children">
+              
+              
+<a class="" href="/docs/sdk/apps/#web-apps">
+  
+  Web 工具
+  
+</a>
+
+              
+                
+                <ul class="submenu">
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/callgraph">
+  
+  Callgraph (调用图)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index_cn.html">
+  
+  ING918/ING916 FOTA (空中升级)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/powerprofiler/">
+  
+  Online Power Profiler
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/air_trace/">
+  
+  Trace Logger
+  
+</a>
+
+  </li>
+  
+</ul>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+              
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <article class="post post-full">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <header class="post-header has-gradient outer">
+      
+      
+      <div class="inner-sm">
+        <div class="post-meta">
+          <time class="published" datetime="2022-06-02 00:00">June 02, 2022</time>
+        </div>
+        <h1 class="post-title">SDK 8.1：引入 BLE 5.2/5.3 新特性</h1>
+        
+        
+      </div>
+    </header>
+    <div class="inner-md outer">
+      <div class="post-content">
+        <h2 id="highlights">Highlights:</h2>
+
+<ul>
+  <li>5.2 特性：路径损耗监测</li>
+  <li>5.3 特性：功率控制（5.2 Core Spec 有缺陷）</li>
+  <li>5.3 特性：减速（Subrating）模式</li>
+</ul>
+
+<h2 id="1-软件包">1. 软件包</h2>
+
+<ul>
+  <li>
+    <p>[<strong>新增</strong>] ING918xx <em>Experimental</em> (<code class="highlighter-rouge">exp</code>) 软件包 <span style="background:yellow">(<strong>8.1.0</strong>)</span></p>
+
+    <p>为了保证软件包版本的稳定性，我们将这些新特性放到单独的实验性软件包里发布，
+  经过充分验证后再合并入其它软件包。</p>
+  </li>
+</ul>
+
+<h2 id="2-示例">2. 示例</h2>
+
+<ul>
+  <li>
+    <p>[<strong>更新</strong>] <code class="highlighter-rouge">UART GATT Console</code> <span style="background:yellow">(<strong>8.1.0</strong>)</span></p>
+
+    <p>增加了几个相关命令用于演示 5.2/5.3 新特性。详细说明请参考“More Info”文档。</p>
+  </li>
+</ul>
+
+<h2 id="3-工具">3. 工具</h2>
+
+<ul>
+  <li>
+    <p>[<strong>更新</strong>] Tracer: 5.3 消息解析 <span style="background:yellow">(<strong>8.1.0</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] Wizard 对那些不是 SDK 内置但是位于 <em>examples</em> 目录的工程作出提醒 <span style="background:yellow">(<strong>8.1.0</strong>)</span></p>
+
+    <p>我们不建议将开发的新项目/工程存放于 <em>examples</em> 目录。现在当 Wizard 检测到这样的
+  项目时会加上一个醒目的标志，如下图所示：</p>
+
+    <p><img src="../img/et_project.png" width="50%" /></p>
+  </li>
+</ul>
+
+<h2 id="4-新特性解析">4. 新特性解析</h2>
+
+<h3 id="路径损耗监测">路径损耗监测</h3>
+
+<p>BLE 5.2 为路径损耗定义了 3 种分类（或者分区，zone），高损耗、中损耗和低损耗。Controller
+监控损耗情况，当损耗分类发生改变时，上报 HCI_SUBEVENT_LE_PATH_LOSS_THRESHOLD 事件。
+开发者可以响应这些事件，比如调整发射功率。</p>
+
+<p>各分区的门限通过 API <code class="highlighter-rouge">gap_set_path_loss_reporting_param</code> 指定。</p>
+
+<h3 id="功率控制">功率控制</h3>
+
+<p>对于本机的发射功率，SDK 已经提供了链路层 API <code class="highlighter-rouge">ll_set_conn_tx_power</code>。现在，
+链路层新增了可以调整对端发射功率的 API <code class="highlighter-rouge">ll_adjust_conn_peer_tx_power</code>。</p>
+
+<p>联合上述两种功能以及 <code class="highlighter-rouge">gap_read_rssi</code>，开发者可以设计合适的功率自动控制方案。
+<code class="highlighter-rouge">UART GATT Console</code> 里演示里一种简单自动控制方案。</p>
+
+<h3 id="减速subrating模式">减速（Subrating）模式</h3>
+
+<p>试想，当主或从设备没有待发送的数据时，是否有办法节省功耗？
+答案是肯定的：1) 更新为较大的连接间隔；2) <strong>跳过</strong>一部分连接事件。</p>
+
+<p>对于外围设备（从设备），这种 <strong>跳过</strong> 功能，就是 <em>perirpheral latency</em> (<em>slave latency</em>）。
+中心设备（主设备）可以 <strong>跳过</strong> 吗？如果 <em>perirpheral latency</em> 为 0，
+中心设备也是可以 <strong>跳过</strong> 的。
+但是如果中心设备和外围设备都 <strong>跳过</strong> 就有问题了：跳过的节奏不一致，通信中断。</p>
+
+<p>减速（Subrating）模式其实就是为中心设备和外围设备定义了一种统一的<strong>节奏</strong>，保证通信的持续性。</p>
+
+<p>减速模式与调整连接间隔相比，灵活敏捷，反应迅速，优势明显。
+减速模式和功率控制一起，在保证服务质量的前提下，可以明显降低连接状态下功耗。</p>
+
+      </div><!-- .post-content -->
+    </div><!-- .inner-md -->
+  </article><!-- .post -->
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2021-2022. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

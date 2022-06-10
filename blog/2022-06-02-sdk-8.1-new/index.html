@@ -214,6 +214,11 @@
     <p>为了保证软件包版本的稳定性，我们将这些新特性放到单独的实验性软件包里发布，
   经过充分验证后再合并入其它软件包。</p>
   </li>
+  <li>
+    <p>[<strong>更新</strong>] 提高 <em>CONNECT_IND</em> 接收成功率 <span style="background:yellow">(<strong>8.1.1</strong>)</span></p>
+
+    <p>提升作为从设备被主设备连接时的成功率。</p>
+  </li>
 </ul>
 
 <h2 id="2-示例">2. 示例</h2>
@@ -239,6 +244,16 @@
   项目时会加上一个醒目的标志，如下图所示：</p>
 
     <p><img src="../img/et_project.png" width="50%" /></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] Windows 安装包支持静默安装 <span style="background:yellow">(<strong>8.1.1</strong>)</span></p>
+
+    <p>对于通常情况的 SDK 版本升级，带上 <code class="highlighter-rouge">/silent</code> 参数运行安装包，只需要点击一次鼠标就可以完成升级。</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  ingchips_sdk_setup_v8.1.1.exe /silent
+</code></pre></div>    </div>
+
+    <p>当开发工具发生变化（比如更新了 Keil、Gnu 工具链）时，可以再用普通模式安装。</p>
   </li>
 </ul>
 
@@ -268,9 +283,13 @@
 <p>对于外围设备（从设备），这种 <strong>跳过</strong> 功能，就是 <em>perirpheral latency</em> (<em>slave latency</em>）。
 中心设备（主设备）可以 <strong>跳过</strong> 吗？如果 <em>perirpheral latency</em> 为 0，
 中心设备也是可以 <strong>跳过</strong> 的。
-但是如果中心设备和外围设备都 <strong>跳过</strong> 就有问题了：跳过的节奏不一致，通信中断。</p>
+但是如果中心设备和外围设备都 <strong>跳过</strong> 就有问题：跳过的节奏不一致，通信中断。</p>
 
 <p>减速（Subrating）模式其实就是为中心设备和外围设备定义了一种统一的<strong>节奏</strong>，保证通信的持续性。</p>
+
+<p><img src="../img/subrate_start.png" width="80%" /></p>
+
+<p><img src="../img/subrate_att_req.png" width="80%" /></p>
 
 <p>减速模式与调整连接间隔相比，灵活敏捷，反应迅速，优势明显。
 减速模式和功率控制一起，在保证服务质量的前提下，可以明显降低连接状态下功耗。</p>

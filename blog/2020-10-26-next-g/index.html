@@ -252,7 +252,7 @@
 
     <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">create</span> <span class="k">database</span> <span class="n">test</span><span class="p">;</span>
  <span class="n">use</span> <span class="n">test</span><span class="p">;</span>
- <span class="k">create</span> <span class="k">table</span> <span class="n">thermo_data</span> <span class="p">(</span> <span class="n">ts</span> <span class="k">timestamp</span><span class="p">,</span> <span class="n">temperature</span> <span class="n">float</span> <span class="p">)</span> <span class="n">TAGS</span> <span class="p">(</span> <span class="n">dev_id</span> <span class="k">NCHAR</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span> <span class="p">);</span>
+ <span class="k">create</span> <span class="k">table</span> <span class="n">thermo_data</span> <span class="p">(</span> <span class="n">ts</span> <span class="nb">timestamp</span><span class="p">,</span> <span class="n">temperature</span> <span class="nb">float</span> <span class="p">)</span> <span class="n">TAGS</span> <span class="p">(</span> <span class="n">dev_id</span> <span class="nb">NCHAR</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span> <span class="p">);</span>
 </code></pre></div>    </div>
   </li>
   <li>
@@ -303,7 +303,7 @@
 
         <p>Payload Template：</p>
 
-        <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">test</span><span class="p">.</span><span class="err">${</span><span class="n">tname</span><span class="err">}</span> <span class="k">using</span> <span class="n">test</span><span class="p">.</span><span class="n">thermo_data</span> <span class="n">tags</span> <span class="p">(</span><span class="nv">"${dev_id}"</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(</span> <span class="n">now</span><span class="p">,</span> <span class="err">${</span><span class="n">t</span><span class="err">}</span> <span class="p">);</span>
+        <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">test</span><span class="p">.</span><span class="err">$</span><span class="p">{</span><span class="n">tname</span><span class="p">}</span> <span class="k">using</span> <span class="n">test</span><span class="p">.</span><span class="n">thermo_data</span> <span class="n">tags</span> <span class="p">(</span><span class="nv">"${dev_id}"</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(</span> <span class="n">now</span><span class="p">,</span> <span class="err">$</span><span class="p">{</span><span class="n">t</span><span class="p">}</span> <span class="p">);</span>
 </code></pre></div>        </div>
       </li>
     </ul>

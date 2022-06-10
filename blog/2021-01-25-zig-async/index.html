@@ -257,99 +257,99 @@ gatt_client_read_value_of_characteristic_using_value_handle(
 如果服务存在，再发现其中的 <code class="highlighter-rouge">DEVICE_NAME</code> 特性；如果该特性存在，再读取特性的值。这三个
 异步操作以同步执行的方式集中在一个函数里，逻辑清晰易懂。</p>
 
-<pre><code class="language-zig">fn demo() void {
-    var service = service_discoverer.discover_16(0,
-        SIG_UUID_SERVICE_GENERIC_ACCESS) orelse return;
-    var char_name = characteristics_discoverer.discover_16(0,
-        service.start_group_handle, service.end_group_handle,
-        SIG_UUID_CHARACT_GAP_DEVICE_NAME) orelse return;
-    print("DEVICE_NAME       :");
-    show_char_value(0, char_name.value_handle);
-}
+<div class="language-zig highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="n">demo</span><span class="p">()</span> <span class="k">void</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="n">service</span> <span class="o">=</span> <span class="n">service_discoverer</span><span class="p">.</span><span class="nf">discover_16</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">SIG_UUID_SERVICE_GENERIC_ACCESS</span><span class="p">)</span> <span class="k">orelse</span> <span class="k">return</span><span class="p">;</span>
+    <span class="k">var</span> <span class="n">char_name</span> <span class="o">=</span> <span class="n">characteristics_discoverer</span><span class="p">.</span><span class="nf">discover_16</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">service</span><span class="p">.</span><span class="py">start_group_handle</span><span class="p">,</span> <span class="n">service</span><span class="p">.</span><span class="py">end_group_handle</span><span class="p">,</span>
+        <span class="n">SIG_UUID_CHARACT_GAP_DEVICE_NAME</span><span class="p">)</span> <span class="k">orelse</span> <span class="k">return</span><span class="p">;</span>
+    <span class="n">print</span><span class="p">(</span><span class="s">"DEVICE_NAME       :"</span><span class="p">);</span>
+    <span class="n">show_char_value</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">char_name</span><span class="p">.</span><span class="py">value_handle</span><span class="p">);</span>
+<span class="p">}</span>
 
-fn show_char_value(conn_handle: hci_con_handle_t, value_handle: u16) void {
-    var value_size: u16 = 0;
-    if (value_of_characteristic_reader.read(conn_handle,
-        value_handle, &amp;value_size)) |value| {
-        print_hex_table(value, @as(c_int, value_size));
-    }
-}
-</code></pre>
+<span class="k">fn</span> <span class="n">show_char_value</span><span class="p">(</span><span class="n">conn_handle</span><span class="p">:</span> <span class="n">hci_con_handle_t</span><span class="p">,</span> <span class="n">value_handle</span><span class="p">:</span> <span class="kt">u16</span><span class="p">)</span> <span class="k">void</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="n">value_size</span><span class="p">:</span> <span class="kt">u16</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">value_of_characteristic_reader</span><span class="p">.</span><span class="nf">read</span><span class="p">(</span><span class="n">conn_handle</span><span class="p">,</span>
+        <span class="n">value_handle</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">value_size</span><span class="p">))</span> <span class="p">|</span><span class="n">value</span><span class="p">|</span> <span class="p">{</span>
+        <span class="n">print_hex_table</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">@as</span><span class="p">(</span><span class="k">c_int</span><span class="p">,</span> <span class="n">value_size</span><span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
 
 <p>Zig 的“野心”之一是取代 C。与 SDK 已经支持的 <a href="/blog/sdk2.0_nim_zh/">Nim</a> 语言相比，
 Zig 与 C 完全无缝衔接，
 几行代码就可以把 <code class="highlighter-rouge">platform</code> 提供的各种 API 导入：</p>
 
-<pre><code class="language-zig">pub usingnamespace @cImport({
-    @cInclude("platform_api.h");
-    @cInclude("btstack_defines.h");
-    @cInclude("gatt_client.h");
-    @cInclude("sig_uuid.h");
-    @cInclude("gap.h");
-    @cInclude("FreeRTOS.h");
-    @cInclude("task.h");
-});
-</code></pre>
+<div class="language-zig highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">pub</span> <span class="k">usingnamespace</span> <span class="nb">@cImport</span><span class="p">({</span>
+    <span class="nb">@cInclude</span><span class="p">(</span><span class="s">"platform_api.h"</span><span class="p">);</span>
+    <span class="nb">@cInclude</span><span class="p">(</span><span class="s">"btstack_defines.h"</span><span class="p">);</span>
+    <span class="nb">@cInclude</span><span class="p">(</span><span class="s">"gatt_client.h"</span><span class="p">);</span>
+    <span class="nb">@cInclude</span><span class="p">(</span><span class="s">"sig_uuid.h"</span><span class="p">);</span>
+    <span class="nb">@cInclude</span><span class="p">(</span><span class="s">"gap.h"</span><span class="p">);</span>
+    <span class="nb">@cInclude</span><span class="p">(</span><span class="s">"FreeRTOS.h"</span><span class="p">);</span>
+    <span class="nb">@cInclude</span><span class="p">(</span><span class="s">"task.h"</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre></div></div>
 
 <p><code class="highlighter-rouge">demo()</code> 函数用到的 <code class="highlighter-rouge">service_discoverer</code> 的实现如下。这段 Zig 代码与 C 版本相比，
 关键的区别就在于 Zig 引入的 <code class="highlighter-rouge">anyframe</code> 类型，及两个相应的操作 <code class="highlighter-rouge">suspend</code> 和 <code class="highlighter-rouge">resume</code>。</p>
 
-<pre><code class="language-zig">bool session_complete = true;
+<div class="language-zig highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">bool</span> <span class="n">session_complete</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
 
-pub var service_discoverer: ServiceDiscoverer = undefined;
+<span class="k">pub</span> <span class="k">var</span> <span class="n">service_discoverer</span><span class="p">:</span> <span class="n">ServiceDiscoverer</span> <span class="o">=</span> <span class="k">undefined</span><span class="p">;</span>
 
-const ServiceDiscoverer = struct {
-    status: u8 = 0,
-    frame: ? (anyframe -&gt; ?gatt_client_service_t)= null,
-    service: ?gatt_client_service_t = undefined,
+<span class="k">const</span> <span class="n">ServiceDiscoverer</span> <span class="o">=</span> <span class="k">struct</span> <span class="p">{</span>
+    <span class="n">status</span><span class="p">:</span> <span class="kt">u8</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">frame</span><span class="p">:</span> <span class="o">?</span> <span class="p">(</span><span class="k">anyframe</span> <span class="o">-&gt;</span> <span class="o">?</span><span class="n">gatt_client_service_t</span><span class="p">)</span><span class="o">=</span> <span class="kc">null</span><span class="p">,</span>
+    <span class="n">service</span><span class="p">:</span> <span class="o">?</span><span class="n">gatt_client_service_t</span> <span class="o">=</span> <span class="k">undefined</span><span class="p">,</span>
 
-    fn callback(packet_type: u8, _: u16, packet: [*c] const u8, size: u16) callconv(.C) void {
-        switch (packet[0]) {
-            GATT_EVENT_SERVICE_QUERY_RESULT =&gt; {
-                var result = gatt_event_service_query_result_parse(packet);
-                service_discoverer.service = result.*.service;
-            },
-            GATT_EVENT_QUERY_COMPLETE =&gt; {
-                session_complete = true;
-                service_discoverer.status = gatt_event_query_complete_parse(packet).*.status;
-                if (service_discoverer.frame) |f| {
-                    resume f;
-                }
-            },
-            else =&gt; { }
-        }
-    }
+    <span class="k">fn</span> <span class="n">callback</span><span class="p">(</span><span class="n">packet_type</span><span class="p">:</span> <span class="kt">u8</span><span class="p">,</span> <span class="mi">_</span><span class="p">:</span> <span class="kt">u16</span><span class="p">,</span> <span class="n">packet</span><span class="p">:</span> <span class="p">[</span><span class="o">*</span><span class="n">c</span><span class="p">]</span> <span class="k">const</span> <span class="kt">u8</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="kt">u16</span><span class="p">)</span> <span class="k">callconv</span><span class="p">(.</span><span class="py">C</span><span class="p">)</span> <span class="k">void</span> <span class="p">{</span>
+        <span class="k">switch</span> <span class="p">(</span><span class="n">packet</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="p">{</span>
+            <span class="n">GATT_EVENT_SERVICE_QUERY_RESULT</span> <span class="o">=&gt;</span> <span class="p">{</span>
+                <span class="k">var</span> <span class="n">result</span> <span class="o">=</span> <span class="n">gatt_event_service_query_result_parse</span><span class="p">(</span><span class="n">packet</span><span class="p">);</span>
+                <span class="n">service_discoverer</span><span class="p">.</span><span class="py">service</span> <span class="o">=</span> <span class="n">result</span><span class="o">.*</span><span class="p">.</span><span class="py">service</span><span class="p">;</span>
+            <span class="p">},</span>
+            <span class="n">GATT_EVENT_QUERY_COMPLETE</span> <span class="o">=&gt;</span> <span class="p">{</span>
+                <span class="n">session_complete</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+                <span class="n">service_discoverer</span><span class="p">.</span><span class="py">status</span> <span class="o">=</span> <span class="n">gatt_event_query_complete_parse</span><span class="p">(</span><span class="n">packet</span><span class="p">)</span><span class="o">.*</span><span class="p">.</span><span class="py">status</span><span class="p">;</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">service_discoverer</span><span class="p">.</span><span class="py">frame</span><span class="p">)</span> <span class="p">|</span><span class="n">f</span><span class="p">|</span> <span class="p">{</span>
+                    <span class="k">resume</span> <span class="n">f</span><span class="p">;</span>
+                <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="k">else</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
 
-    pub fn discover_16(self: *ServiceDiscoverer, conn_handle: hci_con_handle_t, uuid: u16) ?g
-            gatt_client_service_t {
-        if (!session_complete) return null;
+    <span class="k">pub</span> <span class="k">fn</span> <span class="n">discover_16</span><span class="p">(</span><span class="n">self</span><span class="p">:</span> <span class="o">*</span><span class="n">ServiceDiscoverer</span><span class="p">,</span> <span class="n">conn_handle</span><span class="p">:</span> <span class="n">hci_con_handle_t</span><span class="p">,</span> <span class="n">uuid</span><span class="p">:</span> <span class="kt">u16</span><span class="p">)</span> <span class="o">?</span><span class="n">g</span>
+            <span class="n">gatt_client_service_t</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">session_complete</span><span class="p">)</span> <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
 
-        self.frame = null;
-        self.service = null;
-        session_complete = false;
-        if (0 != gatt_client_discover_primary_services_by_uuid16(callback, conn_handle, uuid)) {
-            session_complete = true;
-            return null;
-        }
+        <span class="n">self</span><span class="p">.</span><span class="py">frame</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+        <span class="n">self</span><span class="p">.</span><span class="py">service</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+        <span class="n">session_complete</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="mi">0</span> <span class="o">!=</span> <span class="n">gatt_client_discover_primary_services_by_uuid16</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">conn_handle</span><span class="p">,</span> <span class="n">uuid</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">session_complete</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+            <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+        <span class="p">}</span>
 
-        suspend {
-            self.frame = @frame();
-        }
+        <span class="k">suspend</span> <span class="p">{</span>
+            <span class="n">self</span><span class="p">.</span><span class="py">frame</span> <span class="o">=</span> <span class="nb">@frame</span><span class="p">();</span>
+        <span class="p">}</span>
 
-        return self.service;
-    }
-};
-</code></pre>
+        <span class="k">return</span> <span class="n">self</span><span class="p">.</span><span class="py">service</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div></div>
 
 <p>最后，由于 <code class="highlighter-rouge">demo()</code> 函数遵从 <code class="highlighter-rouge">.Async</code> 调用规范，无法被 C 世界所调用，需要一个“桥接”函数连通
 <code class="highlighter-rouge">.Async</code> 和 C：</p>
 
-<pre><code class="language-zig">var the_frame: @Frame(demo) = undefined;
+<div class="language-zig highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span> <span class="n">the_frame</span><span class="p">:</span> <span class="nb">@Frame</span><span class="p">(</span><span class="n">demo</span><span class="p">)</span> <span class="o">=</span> <span class="k">undefined</span><span class="p">;</span>
 
-export fn zig_discover() void {
-    the_frame = async demo();
-}
-</code></pre>
+<span class="k">export</span> <span class="k">fn</span> <span class="n">zig_discover</span><span class="p">()</span> <span class="k">void</span> <span class="p">{</span>
+    <span class="n">the_frame</span> <span class="o">=</span> <span class="k">async</span> <span class="n">demo</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
 
 <p>这个 <code class="highlighter-rouge">zig_discover</code> 可以在 C 模块里直接调用。</p>
 

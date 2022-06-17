@@ -203,6 +203,7 @@
   <li>5.2 特性：路径损耗监测</li>
   <li>5.3 特性：功率控制（5.2 Core Spec 有缺陷）</li>
   <li>5.3 特性：减速（Subrating）模式</li>
+  <li>SDK 自动升级</li>
 </ul>
 
 <h2 id="1-软件包">1. 软件包</h2>
@@ -219,15 +220,32 @@
 
     <p>提升作为从设备被主设备连接时的成功率。</p>
   </li>
+  <li>
+    <p>[<strong>更新</strong>] 所有 Nim 模块已移动到 <em>Smart Home Hub</em> 示例内 <span style="background:yellow">(<strong>8.1.2</strong>)</span></p>
+  </li>
 </ul>
 
 <h2 id="2-示例">2. 示例</h2>
 
 <ul>
   <li>
-    <p>[<strong>更新</strong>] <code class="highlighter-rouge">UART GATT Console</code> <span style="background:yellow">(<strong>8.1.0</strong>)</span></p>
+    <p>[<strong>更新</strong>] <em>UART GATT Console</em> <span style="background:yellow">(<strong>8.1.0</strong>)</span></p>
 
     <p>增加了几个相关命令用于演示 5.2/5.3 新特性。详细说明请参考“More Info”文档。</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] <em>Peripheral Ccnsole</em> <span style="background:yellow">(<strong>8.1.2</strong>)</span></p>
+
+    <p>增加 <code class="highlighter-rouge">latency</code> 命令，用来主动为 Peripheral Latency 参数赋值。</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] Nim <em>Smart Home Hub</em> 现在作为 Gnu Arm Toolchain 示例存在 <span style="background:yellow">(<strong>8.1.2</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>删除</strong>] Nim <em>Peripheral Battery</em> <span style="background:yellow">(<strong>8.1.2</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] 若干示例的文档 <span style="background:yellow">(<strong>8.1.2</strong>)</span></p>
   </li>
 </ul>
 
@@ -255,6 +273,26 @@
 
     <p>当开发工具发生变化（比如更新了 Keil、Gnu 工具链）时，可以再用普通模式安装。</p>
   </li>
+  <li>
+    <p>[<strong>更新</strong>] Wizard：移除了对 Nim 语言的支持 <span style="background:yellow">(<strong>8.1.2</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] Wizard：添加在线更新功能 <span style="background:yellow">(<strong>8.1.2</strong>)</span></p>
+
+    <p>当 Wizard 检测到新 SDK 版本时，会弹出 Online Update 窗口，点击 Update 按钮可直接完成升级。
+  Online Update 窗口里的版本号可以修改，不但可以自动升级，而且可以降级。</p>
+
+    <p><img src="../img/online_update.png" alt="" /></p>
+
+    <div class="note">
+  <strong>禁用此功能：</strong>
+  如果开发者认为自动检查更新功能带来了不便，必须禁用此功能，那么可以在 ING_SDK\wizard\data 目录下创建一个名为
+  NO_UPDATE （无扩展名）的空白文件，然后重启 Wizard。
+  </div>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] AoX 工具：命令行解析、去掉无关的 <code class="highlighter-rouge">printf</code> <span style="background:yellow">(<strong>8.1.2</strong>)</span></p>
+  </li>
 </ul>
 
 <h2 id="4-新特性解析">4. 新特性解析</h2>
@@ -273,7 +311,7 @@
 链路层新增了可以调整对端发射功率的 API <code class="highlighter-rouge">ll_adjust_conn_peer_tx_power</code>。</p>
 
 <p>联合上述两种功能以及 <code class="highlighter-rouge">gap_read_rssi</code>，开发者可以设计合适的功率自动控制方案。
-<code class="highlighter-rouge">UART GATT Console</code> 里演示里一种简单自动控制方案。</p>
+<code class="highlighter-rouge">UART GATT Console</code> 里演示里一种简单的自动控制方案。</p>
 
 <h3 id="减速subrating模式">减速（Subrating）模式</h3>
 
@@ -293,6 +331,15 @@
 
 <p>减速模式与调整连接间隔相比，灵活敏捷，反应迅速，优势明显。
 减速模式和功率控制一起，在保证服务质量的前提下，可以明显降低连接状态下功耗。</p>
+
+<div class="note">
+<strong>关于 Perirpheral Latency：</strong>
+目前除了 <a href="https://docs.microsoft.com/en-us/uwp/api/windows.devices.bluetooth.bluetoothleconnectionparameters">Windows</a> 以外，
+<a href="https://developer.android.com/reference/android/bluetooth/BluetoothGatt">Android</a>、
+<a href="https://developer.apple.com/documentation/corebluetooth/cbperipheral">iOS/macOS</a> 皆未提供 Peripheral Latency 的相关接口。
+当蓝牙设备被 Android、iOS 连接时，此参数往往为 0。开发者可以通过 ll_set_conn_latency API 主动为 Peripheral Latency 赋一个非 0 值。
+具体数值需要综合考虑功耗、连接响应速度、连接稳定性等因素。
+</div>
 
       </div><!-- .post-content -->
     </div><!-- .inner-md -->

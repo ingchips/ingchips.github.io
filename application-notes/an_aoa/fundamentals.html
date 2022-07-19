@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>3 Direction Finding Fundamentals | Application Note: Direction Finding Solution</title>
+  <meta name="description" content="Application note on INGCHIPS’s direction finding solution." />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="3 Direction Finding Fundamentals | Application Note: Direction Finding Solution" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Application note on INGCHIPS’s direction finding solution." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="3 Direction Finding Fundamentals | Application Note: Direction Finding Solution" />
+  
+  <meta name="twitter:description" content="Application note on INGCHIPS’s direction finding solution." />
+  
+
+<meta name="author" content="v1.3" />
+
+
+<meta name="date" content="2022-04-12" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="introduction.html"/>
+<link rel="next" href="quick-start.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+
+
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Application Note: Direction Finding Solutio</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Welcome</a></li>
+<li class="chapter" data-level="2" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>2</b> Introduction</a><ul>
+<li class="chapter" data-level="2.1" data-path="introduction.html"><a href="introduction.html#abbreviations-terminology"><i class="fa fa-check"></i><b>2.1</b> Abbreviations &amp; Terminology</a></li>
+<li class="chapter" data-level="2.2" data-path="introduction.html"><a href="introduction.html#references"><i class="fa fa-check"></i><b>2.2</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="fundamentals.html"><a href="fundamentals.html"><i class="fa fa-check"></i><b>3</b> Direction Finding Fundamentals</a><ul>
+<li class="chapter" data-level="3.1" data-path="fundamentals.html"><a href="fundamentals.html#positioning"><i class="fa fa-check"></i><b>3.1</b> Positioning</a></li>
+<li class="chapter" data-level="3.2" data-path="fundamentals.html"><a href="fundamentals.html#direction-finding-methods"><i class="fa fa-check"></i><b>3.2</b> Direction Finding Methods</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="fundamentals.html"><a href="fundamentals.html#angle-of-arrival"><i class="fa fa-check"></i><b>3.2.1</b> Angle of Arrival</a></li>
+<li class="chapter" data-level="3.2.2" data-path="fundamentals.html"><a href="fundamentals.html#angle-of-departure"><i class="fa fa-check"></i><b>3.2.2</b> Angle of Departure</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="fundamentals.html"><a href="fundamentals.html#direction-finding-theory"><i class="fa fa-check"></i><b>3.3</b> Direction Finding Theory</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="fundamentals.html"><a href="fundamentals.html#antenna-arrays"><i class="fa fa-check"></i><b>3.3.1</b> Antenna Arrays</a></li>
+<li class="chapter" data-level="3.3.2" data-path="fundamentals.html"><a href="fundamentals.html#algorithm-with-a-trivial-example"><i class="fa fa-check"></i><b>3.3.2</b> Algorithm with A Trivial Example</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="fundamentals.html"><a href="fundamentals.html#location-finding"><i class="fa fa-check"></i><b>3.4</b> Location Finding</a></li>
+<li class="chapter" data-level="3.5" data-path="fundamentals.html"><a href="fundamentals.html#constant-tone-extension"><i class="fa fa-check"></i><b>3.5</b> Constant Tone Extension</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="quick-start.html"><a href="quick-start.html"><i class="fa fa-check"></i><b>4</b> Quick-Start Guide</a><ul>
+<li class="chapter" data-level="4.1" data-path="quick-start.html"><a href="quick-start.html#setup"><i class="fa fa-check"></i><b>4.1</b> Setup</a></li>
+<li class="chapter" data-level="4.2" data-path="quick-start.html"><a href="quick-start.html#run-the-demo"><i class="fa fa-check"></i><b>4.2</b> Run the Demo</a></li>
+<li class="chapter" data-level="4.3" data-path="quick-start.html"><a href="quick-start.html#aoa-accuracy"><i class="fa fa-check"></i><b>4.3</b> AoA Accuracy</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="quick-start.html"><a href="quick-start.html#test-platform"><i class="fa fa-check"></i><b>4.3.1</b> Test Platform</a></li>
+<li class="chapter" data-level="4.3.2" data-path="quick-start.html"><a href="quick-start.html#test-results"><i class="fa fa-check"></i><b>4.3.2</b> Test Results</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="quick-start.html"><a href="quick-start.html#trouble-shooting"><i class="fa fa-check"></i><b>4.4</b> Trouble Shooting</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="sdk-support.html"><a href="sdk-support.html"><i class="fa fa-check"></i><b>5</b> SDK Support of Direction Finding</a><ul>
+<li class="chapter" data-level="5.1" data-path="sdk-support.html"><a href="sdk-support.html#types-of-solutions"><i class="fa fa-check"></i><b>5.1</b> Types of Solutions</a><ul>
+<li class="chapter" data-level="5.1.1" data-path="sdk-support.html"><a href="sdk-support.html#connection-based-solution"><i class="fa fa-check"></i><b>5.1.1</b> Connection Based Solution</a></li>
+<li class="chapter" data-level="5.1.2" data-path="sdk-support.html"><a href="sdk-support.html#connectionless-solution"><i class="fa fa-check"></i><b>5.1.2</b> Connectionless Solution</a></li>
+<li class="chapter" data-level="5.1.3" data-path="sdk-support.html"><a href="sdk-support.html#proprietary-solution-1"><i class="fa fa-check"></i><b>5.1.3</b> Proprietary Solution #1</a></li>
+<li class="chapter" data-level="5.1.4" data-path="sdk-support.html"><a href="sdk-support.html#proprietary-solution-2"><i class="fa fa-check"></i><b>5.1.4</b> Proprietary Solution #2</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="sdk-support.html"><a href="sdk-support.html#recommendation"><i class="fa fa-check"></i><b>5.2</b> Recommendation</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="futher-info.html"><a href="futher-info.html"><i class="fa fa-check"></i><b>6</b> Further Information</a><ul>
+<li class="chapter" data-level="6.1" data-path="futher-info.html"><a href="futher-info.html#algorithm-integeration"><i class="fa fa-check"></i><b>6.1</b> Algorithm Integeration</a></li>
+<li class="chapter" data-level="6.2" data-path="futher-info.html"><a href="futher-info.html#evaluation-of-different-antenna-array-types"><i class="fa fa-check"></i><b>6.2</b> Evaluation of Different Antenna Array Types</a></li>
+<li class="chapter" data-level="6.3" data-path="futher-info.html"><a href="futher-info.html#hardware-design-of-antenna-arrays"><i class="fa fa-check"></i><b>6.3</b> Hardware Design of Antenna Arrays</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="revision-history.html"><a href="revision-history.html"><i class="fa fa-check"></i><b>7</b> Revision History</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Application Note: Direction Finding Solution</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="fundamentals" class="section level1">
+<h1><span class="header-section-number">3</span> Direction Finding Fundamentals</h1>
+<div id="positioning" class="section level2">
+<h2><span class="header-section-number">3.1</span> Positioning</h2>
+<p>Positioning technologies have many useful applications, one example being GNSS (GPS, Beidou, GLONASS,
+Galileo, etc.), which is widely used all over the world.</p>
+<p>Unfortunately, GNSS systems do not work very well indoors, so there is a real need for better indoor positioning technologies.</p>
+<p>There are two conventional methods to calculate the position of an asset: trilateration and triangulation.</p>
+<p>Trilateration uses the distance of the asset from multiple fixed-position locators to determine the
+position by finding
+the point that satisfies all distance measurements best. The distance can be deduced from Received
+Signal Strength Indicator (RSSI)
+measurement or Time of Flight measurement, for example.
+Unfortunately, RSSI measurement can be very inaccurate and Time of
+Flight measurement needs highly accurate time measurement.</p>
+<p>Triangulation uses the angles under which the fixed-position locators see the asset
+(or under which the asset sees the fixed-position locators). The position of the asset is then
+determined by the intersection point of the lines of sight. Take two locators as an example,
+with the two measured angles, one can construct a unique triangle by the angle-side-angle
+congruence theorem within a given plane, and the asset is sitting at the third vertex of this
+triangle.</p>
+<div class="figure" style="text-align: center"><span id="fig:ch1-triangulation"></span>
+<img src="img/tri_tri.png" alt="Trilateration (a) and Triangulation (b)" width="70%" />
+<p class="caption">
+Figure 3.1: Trilateration (a) and Triangulation (b)
+</p>
+</div>
+<p>The technology to determine these angles is called Direction Finding. Direction finding, or radio direction finding, is – in accordance with International Telecommunication
+Union (ITU) – defined as radio location that uses the reception of radio waves to determine the
+direction in which a radio station or an object is located.
+Direction finding has a very long history, for example, in World War II, it played an
+important role in combating German threats during both the Battle of Britain
+and the long running Battle of the Atlantic.
+It is even a sport, and there are amateur radio direction
+finding events held all over the world today.</p>
+<p>Triangulation can give a more accurate position than trilateration with RSSI measurement,
+and requires less expensive time measurement hardware than Time of Flight measurement.</p>
+<p>However, triangulation needs an antenna array and a method with which the direction (angle) of the incoming signal can be determined.</p>
+</div>
+<div id="direction-finding-methods" class="section level2">
+<h2><span class="header-section-number">3.2</span> Direction Finding Methods</h2>
+<p>There are two direction finding methods available in BLE, called Angle of Arrival (AoA) and
+Angle of Departure (AoD) respectively.</p>
+<p>In each method, from the received samples, phase differences can be deduced, and then, direction
+can be estimated.</p>
+<div id="angle-of-arrival" class="section level3">
+<h3><span class="header-section-number">3.2.1</span> Angle of Arrival</h3>
+<p>In this method, an antenna array is deployed in the receiver. An un-modulated radio wave emitted
+by a single transmitter will reach different antennas in different phases.</p>
+<p>There two methods to measure phases on antennas:</p>
+<ul>
+<li><p>Sampling all antennas simultaneously</p>
+<p>This requires separated and dedicated RF path for each antenna, which is too expensive for
+BLE systems.</p></li>
+<li><p>Sampling each antenna periodically</p>
+<p>This needs one or more RF switches, but only one RF path, which is much more affordable.
+When receiving, the receiver
+will sampling each antenna periodically controlled by a list which is called
+a <em>switching pattern</em>.</p></li>
+</ul>
+</div>
+<div id="angle-of-departure" class="section level3">
+<h3><span class="header-section-number">3.2.2</span> Angle of Departure</h3>
+<p>In this method, the setup is reversed: an antenna array is deployed in the transmitter.
+An single un-modulated radio wave is generated, and emitted on antennas periodically
+controlled by a switching pattern by the transmitter.</p>
+<p>If multiple transmitter antennas
+are placed close enough to each other, and the wave is transmitting within a short duration,
+we can assume that the signals coming from each antenna
+will reach the receiver’s single antenna inheriting the same propagation path. Therefore,
+phases for each transmitting antenna can be measured and utilized for direction estimation, too.
+Obviously, the receiver needs to <strong>know all information</strong> about the antenna array used by the
+transmitter a priori.</p>
+</div>
+</div>
+<div id="direction-finding-theory" class="section level2">
+<h2><span class="header-section-number">3.3</span> Direction Finding Theory</h2>
+<p>Antenna arrays and algorithm are both essential for a direction finding system.
+This section discusses the basics of some typical antenna arrays and estimation algorithms. Here,
+direction finding refers to the general problem of estimating AoA and AoD.</p>
+<div id="antenna-arrays" class="section level3">
+<h3><span class="header-section-number">3.3.1</span> Antenna Arrays</h3>
+<p>There are several types of arrays, mounted on a line (Linear Array), on a flat surface
+(Rectangular Array, Circular Array, L-Array), or on a curved surface (Conformal Array, 3D Array).</p>
+<div class="figure" style="text-align: center"><span id="fig:ch1-array-types-1d2d"></span>
+<img src="img/array_types_1d_2d.png" alt="Uniform Linear Array (a), Uniform Rectangular Array (b) and Uniform Circular Array (c)" width="70%" />
+<p class="caption">
+Figure 3.2: Uniform Linear Array (a), Uniform Rectangular Array (b) and Uniform Circular Array (c)
+</p>
+</div>
+<p>By using a one-dimensional antenna array, one can measure only the azimuth angle, while
+with two-dimensional arrays, one can measure both azimuth (<span class="math inline">\(\theta\)</span>) and elevation (<span class="math inline">\(\phi\)</span>)
+angles in the 3D half-space splitted by the plane in which the arrays are embedded.
+If the array is extended to 3D, then it is possible to measure in
+the full 3D space.</p>
+<div class="figure" style="text-align: center"><span id="fig:ch1-array-types-3d"></span>
+<img src="img/array_types_3d.png" alt="Conformal Array on LEO satellites (a) and 3D Microphone Array in a commercial product (b)" width="70%" />
+<p class="caption">
+Figure 3.3: Conformal Array on LEO satellites (a) and 3D Microphone Array in a commercial product (b)
+</p>
+</div>
+</div>
+<div id="algorithm-with-a-trivial-example" class="section level3">
+<h3><span class="header-section-number">3.3.2</span> Algorithm with A Trivial Example</h3>
+<p>Figure <a href="fundamentals.html#fig:ch1-phase-concept">3.4</a> shows how a change in the direction of the incoming signal
+causes a difference in the phase of the received signal on two antennas.</p>
+<div class="figure" style="text-align: center"><span id="fig:ch1-phase-concept"></span>
+<img src="img/phase_concept.png" alt="Phase Differences Between Antennas" width="80%" />
+<p class="caption">
+Figure 3.4: Phase Differences Between Antennas
+</p>
+</div>
+<p>In Figure <a href="fundamentals.html#fig:ch1-phase-calc">3.5</a> the direction of the incoming signal is <span class="math inline">\(\theta\)</span>,
+and the distance between the two antenna is <span class="math inline">\(d\)</span>.</p>
+<div class="figure" style="text-align: center"><span id="fig:ch1-phase-calc"></span>
+<img src="img/phase_calc.png" alt="Phase Differences Calcuation" width="60%" />
+<p class="caption">
+Figure 3.5: Phase Differences Calcuation
+</p>
+</div>
+<p>Then, the time difference of the incoming signal on the two antennas is:</p>
+<p><span class="math display">\[\Delta t=\frac{d \ cos(\theta)}{c}\]</span></p>
+<p>Where <span class="math inline">\(c\)</span> is the speed of light. The phase difference caused by <span class="math inline">\(\Delta t\)</span> is:</p>
+<p><span class="math display">\[\Delta phase=2 \pi f \Delta t \]</span></p>
+<p>Where <span class="math inline">\(f\)</span> is the frequency of the un-modulated radio signal.
+From the measurement of phase difference, <span class="math inline">\(\theta\)</span> can be deduced:</p>
+<p><span class="math display">\[\theta = arccos(\frac{c \ \Delta phase}{2 \pi f d})= arccos(\frac{\lambda \ \Delta phase}{2 \pi d})\]</span></p>
+<p>Where <span class="math inline">\(\lambda\)</span> is the wave length. Note that, <span class="math inline">\(\Delta phase\)</span> is between <span class="math inline">\(-\pi\)</span> and <span class="math inline">\(\pi\)</span>, which
+requires that <span class="math inline">\(d &lt; \frac{\lambda}{2}\)</span>.</p>
+<p>Readers are recommended to read standard textbooks on advanced(array/radar) signal processing for direction estimation algorithms suitable for antenna arrays.</p>
+</div>
+</div>
+<div id="location-finding" class="section level2">
+<h2><span class="header-section-number">3.4</span> Location Finding</h2>
+<p>Without knowing the accurate distance of the asset, and if the asset is moving in full 3D space,
+one two-dimensional antenna array can provide the direction of the asset, but not its position.</p>
+<p>To determine the precise position of the asset in full 3D space,
+multiple antenna arrays (locators) must be used.
+By using more than one locator, the position of the asset can then be determined using triangulation.
+Adding RSSI measurements to the direction estimations may further enhance the position estimation.</p>
+</div>
+<div id="constant-tone-extension" class="section level2">
+<h2><span class="header-section-number">3.5</span> Constant Tone Extension</h2>
+<p>The un-modulated radio signal is introduced in Bluetooth Core Specification as
+<em>Constant Tone Extension</em> for uncoded PHYs (i.e. 1M &amp; 2M PHYs), starting from Version 5.1.</p>
+<div class="figure" style="text-align: center"><span id="fig:ch1-cte-packet"></span>
+<img src="img/link_layer_cte_packet.png" alt="Link Layer packet format for the LE Uncoded PHYs" width="80%" />
+<p class="caption">
+Figure 3.6: Link Layer packet format for the LE Uncoded PHYs
+</p>
+</div>
+<p>The Constant Tone Extension has a variable length between 16 µs and 160 µs. The contents are a
+constantly modulated series of <span class="math inline">\(1\)</span>s, which is an un-modulated wave due to
+to nature of GFSK, and no whitening is applied to them.</p>
+<p>The first 4 µs of the Constant Tone Extension are termed the guard period and
+the next 8 µs are termed the reference period. After the reference period, the
+Constant Tone Extension consists of a sequence of alternating switch slots and
+sample slots, each either 1 µs or 2 µs long as specified by the Host.</p>
+<p>The first antenna in the switching pattern is used during the reference period.
+The second antenna in the pattern shall be used during the first sample slot, the
+third antenna during the second sample slot, and so on. For example, the switching
+pattern is <span class="math inline">\(\{5,6,8,7,10\}\)</span>, slot duration is 1 µs, and the antenna selected for each
+sample is shown in Figure <a href="fundamentals.html#fig:ch1-switching-pattern">3.7</a>.</p>
+<div class="figure" style="text-align: center"><span id="fig:ch1-switching-pattern"></span>
+<img src="img/switching_pattern.png" alt="Antenna Switching" width="80%" />
+<p class="caption">
+Figure 3.7: Antenna Switching
+</p>
+</div>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="introduction.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="quick-start.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["an_direction_finding.pdf", "an_direction_finding.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

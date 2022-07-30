@@ -21,10 +21,10 @@
   <meta name="twitter:description" content="本文是 INGCHIPS SDK 的开发者用户手册。" />
   <meta name="twitter:image" content="./img/sdk_overview.png" />
 
-<meta name="author" content="v1.2.6" />
+<meta name="author" content="v1.2.7" />
 
 
-<meta name="date" content="2022-01-10" />
+<meta name="date" content="2022-07-30" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -395,9 +395,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>下面的教程将一步一步地讲解 SDK 里的基本概念，核心工具的使用方法。</p>
 <div id="ch1-hello-world" class="section level2">
 <h2><span class="header-section-number">3.1</span> 世界你好</h2>
-<p>在本教程里，我们将创建一个设备，发送的广播里带着它的名字：“Hello, 世界”。</p>
+<p>在本教程里，我们将创建一个设备，发送的广播里带着它的名字：“Hello,
+世界”。</p>
 <p>从开始菜单里打开 <code>ingWizard</code>，选择菜单 <code>Project</code> -&gt; <code>New Project ...</code>。
-这个菜单项会打开项目向导。向导的第一页是 <code>Development Tool</code> （见图 <a href="tutorial.html#fig:ch1-welcome">3.1</a>）。</p>
+这个菜单项会打开项目向导。向导的第一页是 <code>Development Tool</code> （见图
+<a href="tutorial.html#fig:ch1-welcome">3.1</a>）。</p>
 <div id="development-tool-页面" class="section level3">
 <h3><span class="header-section-number">3.1.1</span> <code>Development Tool</code> 页面</h3>
 <div class="figure" style="text-align: center"><span id="fig:ch1-welcome"></span>
@@ -415,7 +417,8 @@ Figure 3.1: 选择项目类型
 <p><code>ingWizard</code> 提供以下便利功能：</p>
 <ul>
 <li><p>如果需要用 <code>Git</code> 做软件版本管理，选择 <code>Setup .gitignore</code>；</p></li>
-<li><p>如果准备使用 <code>Visual Studio Code</code> 作为代码编辑器，选择 <code>Setup Visual Studio Code</code>。</p></li>
+<li><p>如果准备使用 <code>Visual Studio Code</code> 作为代码编辑器，选择
+<code>Setup Visual Studio Code</code>。</p></li>
 </ul>
 <p>然后点击 <code>Next</code> 按钮进入下一页，<code>Choose Chip Series</code>。</p>
 </div>
@@ -427,7 +430,9 @@ Figure 3.1: 选择项目类型
 Figure 3.2: Choose Chip Series
 </p>
 </div>
-<p>在这个页面（图 <a href="tutorial.html#fig:ch1-wiz-series">3.2</a>）选择项目的目标芯片型号，然后点击 <code>Next</code> 进入下一页，<code>Choose Project Type</code>。</p>
+<p>在这个页面（图
+<a href="tutorial.html#fig:ch1-wiz-series">3.2</a>）选择项目的目标芯片型号，然后点击 <code>Next</code>
+进入下一页，<code>Choose Project Type</code>。</p>
 </div>
 <div id="choose-project-type-页面" class="section level3">
 <h3><span class="header-section-number">3.1.3</span> <code>Choose Project Type</code> 页面</h3>
@@ -448,7 +453,8 @@ Figure 3.3: Choose Project Type
 Figure 3.4: Role of Your Device
 </p>
 </div>
-<p>在这个页面 （图 <a href="tutorial.html#fig:ch1-role">3.4</a>），选择 Peripheral，然后点击 <code>Next</code> 进入下一页，<code>Peripheral Setup</code>。</p>
+<p>在这个页面 （图 <a href="tutorial.html#fig:ch1-role">3.4</a>），选择 Peripheral，然后点击 <code>Next</code>
+进入下一页，<code>Peripheral Setup</code>。</p>
 </div>
 <div id="peripheral-setup-页面" class="section level3">
 <h3><span class="header-section-number">3.1.5</span> <code>Peripheral Setup</code> 页面</h3>
@@ -464,19 +470,22 @@ Figure 3.5: Peripheral Setup
 支持 BLE 5.x 扩展广播的手机目前依然凤毛麟角，即使声称了“支持” BLE 5.0。为了更好的兼容性，这里我们选择 使用 <code>Legacy</code> 广播。此外，待项目创建之后，通过修改一个比特就能将 <code>Legacy</code> 广播切换成 BLE 5.x 扩展广播。
 </p>
 </div>
-<p>点击 <code>Setup Advertising Data</code> 按钮，
-打开广播数据编辑器（图 <a href="tutorial.html#fig:ch1-hello-adv">3.6</a>）。
-在编辑器里，输入 <code>name</code> 可以快速定位到 GAP 广播项 <code>09 - «Complete Local Name»</code>，点击 <code>Add</code> 将这个项添加到设备的广播数据里。</p>
+<p>点击 <code>Setup Advertising Data</code> 按钮， 打开广播数据编辑器（图
+<a href="tutorial.html#fig:ch1-hello-adv">3.6</a>）。 在编辑器里，输入 <code>name</code> 可以快速定位到 GAP
+广播项 <code>09 - «Complete Local Name»</code>，点击 <code>Add</code>
+将这个项添加到设备的广播数据里。</p>
 <p>点击刚刚添加的 <code>09 - «Complete Local Name»</code> 数据项，
-然后将在下面的数据编辑框里输入 “Hello, 世界” 并按回车。
-<code>Data Preview</code> 会更新，整个广播都将已原始字节流的形式显示其中。显而易见，工具对中文字符使用了 <code>UTF-8</code> 编码。</p>
+然后将在下面的数据编辑框里输入 “Hello, 世界” 并按回车。 <code>Data Preview</code>
+会更新，整个广播都将已原始字节流的形式显示其中。显而易见，工具对中文字符使用了
+<code>UTF-8</code> 编码。</p>
 <div class="figure" style="text-align: center"><span id="fig:ch1-hello-adv"></span>
 <img src="img/hello_adv.png" alt="Edit Advertising Data" width="80%" />
 <p class="caption">
 Figure 3.6: Edit Advertising Data
 </p>
 </div>
-<p>现在点击 <code>OK</code> 回到项目向导，然后点击 <code>Next</code> 进入下一页，<code>Security &amp; Privacy</code>。</p>
+<p>现在点击 <code>OK</code> 回到项目向导，然后点击 <code>Next</code>
+进入下一页，<code>Security &amp; Privacy</code>。</p>
 </div>
 <div id="security-privacy-页面" class="section level3">
 <h3><span class="header-section-number">3.1.6</span> <code>Security &amp; Privacy</code> 页面</h3>
@@ -486,7 +495,8 @@ Figure 3.6: Edit Advertising Data
 Figure 3.7: Firmare Over-The-Air
 </p>
 </div>
-<p>保持默认值（图 <a href="tutorial.html#fig:ch1-wiz-security">3.7</a>），然后点击 <code>Next</code> 进入下一页，<code>Firmare Over-The-Air</code>。</p>
+<p>保持默认值（图 <a href="tutorial.html#fig:ch1-wiz-security">3.7</a>），然后点击 <code>Next</code>
+进入下一页，<code>Firmare Over-The-Air</code>。</p>
 </div>
 <div id="firmare-over-the-air-页面" class="section level3">
 <h3><span class="header-section-number">3.1.7</span> <code>Firmare Over-The-Air</code> 页面</h3>
@@ -496,7 +506,8 @@ Figure 3.7: Firmare Over-The-Air
 Figure 3.8: Firmare Over-The-Air
 </p>
 </div>
-<p>保持默认值（图 <a href="tutorial.html#fig:ch1-hello-fota">3.8</a>），然后点击 <code>Next</code> 进入下一页，<code>Common Functions</code>.</p>
+<p>保持默认值（图 <a href="tutorial.html#fig:ch1-hello-fota">3.8</a>），然后点击 <code>Next</code>
+进入下一页，<code>Common Functions</code>.</p>
 </div>
 <div id="common-functions-页面" class="section level3">
 <h3><span class="header-section-number">3.1.8</span> <code>Common Functions</code> 页面</h3>
@@ -506,8 +517,9 @@ Figure 3.8: Firmare Over-The-Air
 Figure 3.9: Common Functions
 </p>
 </div>
-<p>在这一页（图 <a href="tutorial.html#fig:ch1-hello-common">3.9</a>），我们依然保持默认值不变，点击 <code>Create</code>。
-现在项目创建好了（图 <a href="tutorial.html#fig:ch1-hello-proj-ready">3.10</a>），可以随时编译、下载。</p>
+<p>在这一页（图 <a href="tutorial.html#fig:ch1-hello-common">3.9</a>），我们依然保持默认值不变，点击
+<code>Create</code>。 现在项目创建好了（图
+<a href="tutorial.html#fig:ch1-hello-proj-ready">3.10</a>），可以随时编译、下载。</p>
 <div class="figure" style="text-align: center"><span id="fig:ch1-hello-proj-ready"></span>
 <img src="img/proj_ready.png" alt="&quot;Hello, 世界&quot; is Ready" width="70%" />
 <p class="caption">
@@ -517,12 +529,16 @@ Figure 3.10: “Hello, 世界” is Ready
 </div>
 <div id="编译您的项目" class="section level3">
 <h3><span class="header-section-number">3.1.9</span> 编译您的项目</h3>
-<p>回到 <code>ingWizard</code> 的主窗口（图 <a href="tutorial.html#fig:ch1-hello-proj-ready">3.10</a>），点击打开您的项目。在 IDE 里编译您的项目。</p>
+<p>回到 <code>ingWizard</code> 的主窗口（图
+<a href="tutorial.html#fig:ch1-hello-proj-ready">3.10</a>），点击打开您的项目。在 IDE
+里编译您的项目。</p>
 </div>
 <div id="下载" class="section level3">
 <h3><span class="header-section-number">3.1.10</span> 下载</h3>
-<p>回到 <code>ingWizard</code> （图 <a href="tutorial.html#fig:ch1-hello-proj-ready">3.10</a>），右键点击您的项目，从弹出的快捷菜单中选择 <code>Download to Flash</code>
-就可以打开下载工具（图 <a href="tutorial.html#fig:ch1-hello-downloader">3.11</a>）。</p>
+<p>回到 <code>ingWizard</code> （图
+<a href="tutorial.html#fig:ch1-hello-proj-ready">3.10</a>），右键点击您的项目，从弹出的快捷菜单中选择
+<code>Download to Flash</code> 就可以打开下载工具（图
+<a href="tutorial.html#fig:ch1-hello-downloader">3.11</a>）。</p>
 <div class="figure" style="text-align: center"><span id="fig:ch1-hello-downloader"></span>
 <img src="img/downloader.png" alt="Download to Flash" width="70%" />
 <p class="caption">
@@ -530,8 +546,10 @@ Figure 3.11: Download to Flash
 </p>
 </div>
 <p>除了串口号，下载工具的所有设置都已就绪。设置串口口，然后点击 <code>Start</code>。</p>
-<p>下载完成之后，用 LightBlue、<code>INGdemo</code> （图 <a href="tutorial.html#fig:ch1-hello-ingota">3.12</a>）或者其它 app 检查是否可以找到一个名为
-“Hello, 世界”的设备。注意，这个设备目前可能无法在系统设置的蓝牙菜单里看到。</p>
+<p>下载完成之后，用 LightBlue、<code>INGdemo</code> （图
+<a href="tutorial.html#fig:ch1-hello-ingota">3.12</a>）或者其它 app 检查是否可以找到一个名为
+“Hello,
+世界”的设备。注意，这个设备目前可能无法在系统设置的蓝牙菜单里看到。</p>
 <div class="figure" style="text-align: center"><span id="fig:ch1-hello-ingota"></span>
 <img src="img/hello_ingota_2.png" alt="Hello, 世界" width="40%" />
 <p class="caption">
@@ -542,14 +560,19 @@ Figure 3.12: Hello, 世界
 </div>
 <div id="ibeacon" class="section level2">
 <h2><span class="header-section-number">3.2</span> iBeacon</h2>
-<p>在本教程中，让我们创建一个iBeacon。iBeacon是由Apple<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a> 开发的协议，并在2013年的苹果全球开发者大会上发布。Beacons是一类低功耗蓝牙(BLE)设备，可以将其标识符广播到附近的便携式电子设备。这项技术使智能手机、平板电脑和其他设备在接近iBeacon设备时能够执行相应的操作。
-首先，从app Store下载一个iBeacon扫描应用程序。在本教程中，我们将使用一个名为 <code>Locate</code> 的应用程序。 <code>Locate</code> 有一个预配置的近距离UUID列表，其中包括一个全0 Null UUID。我们将使用这个Null UUID<a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a>。</p>
+<p>在本教程中，让我们创建一个iBeacon。iBeacon是由Apple<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a>
+开发的协议，并在2013年的苹果全球开发者大会上发布。Beacons是一类低功耗蓝牙(BLE)设备，可以将其标识符广播到附近的便携式电子设备。这项技术使智能手机、平板电脑和其他设备在接近iBeacon设备时能够执行相应的操作。
+首先，从app
+Store下载一个iBeacon扫描应用程序。在本教程中，我们将使用一个名为
+<code>Locate</code> 的应用程序。 <code>Locate</code>
+有一个预配置的近距离UUID列表，其中包括一个全0 Null
+UUID。我们将使用这个Null UUID<a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a>。</p>
 <div id="建立广播数据" class="section level3">
 <h3><span class="header-section-number">3.2.1</span> 建立广播数据</h3>
-<p>iBeacon广告包中有两个项目。</p>
+<p>iBeacon广播包中有两个项目。</p>
 <ol style="list-style-type: decimal">
 <li><p>Flags</p>
-<p>值固定为0x06，即设置了两位，不支持LE General Discoverable Mode &amp; BR/EDR。</p></li>
+<p>值固定为0x06，即设置了两位，LE General Discoverable Mode &amp; BR/EDR Not Supported。</p></li>
 <li><p>Manufacturer Specific Data</p>
 <p>本项目内容如表 <a href="tutorial.html#tab:ch1-ibeacon">3.1</a>所示</p></li>
 </ol>
@@ -602,8 +625,14 @@ Figure 3.12: Hello, 世界
 </tr>
 </tbody>
 </table>
-<p>为了制作一个iBeacon设备，我们可以遵循[Hello World]示例中的相同步骤，我们只有在个别情况下需要根据规范配置广播包。</p>
-<p>在广播数据编辑器中，添加 <code>0x01 - «Flags»</code> 和 <code>0xFF - «Manufacturer Specific Data»</code> .单击 <code>0x01 - «Flags»</code> ，检查 <code>LE General Discoverable Mode</code> 和 <code>BR/EDR Not Supported</code> 。单击<code>0xFF - «Manufacturer Specific Data»</code> ，然后点击 <code>Edit as</code> 按钮，会有一个菜单弹出并选择 <code>iBeacon ...</code> (Figure <a href="tutorial.html#fig:ch1-edit-beacon-adv">3.13</a>) 来打开iBeacon厂商特定数据编辑器 (Figure <a href="tutorial.html#fig:ch1-edit-beacon-content">3.14</a>).</p>
+<p>为了制作一个iBeacon设备，我们可以遵循[Hello
+World]示例中的相同步骤，我们只有在个别情况下需要根据规范配置广播包。</p>
+<p>在广播数据编辑器中，添加 <code>0x01 - «Flags»</code> 和
+<code>0xFF - «Manufacturer Specific Data»</code> .单击 <code>0x01 - «Flags»</code> ，检查
+<code>LE General Discoverable Mode</code> 和 <code>BR/EDR Not Supported</code>
+。单击<code>0xFF - «Manufacturer Specific Data»</code> ，然后点击 <code>Edit as</code>
+按钮，会有一个菜单弹出并选择 <code>iBeacon ...</code> (图<a href="tutorial.html#fig:ch1-edit-beacon-adv">3.13</a>) 来打开iBeacon厂商特定数据编辑器 (图
+<a href="tutorial.html#fig:ch1-edit-beacon-content">3.14</a>).</p>
 <div class="figure" style="text-align: center"><span id="fig:ch1-edit-beacon-adv"></span>
 <img src="img/beacon_adv2.png" alt="编辑iBeacon广播数据" width="70%" />
 <p class="caption">
@@ -616,33 +645,39 @@ Figure 3.13: 编辑iBeacon广播数据
 Figure 3.14: 编辑iBeacon厂商特定数据
 </p>
 </div>
-<p>信号功率可以设置为任何合理值(如-50dBm)，稍后我们将在 <code>Locate</code> 应用程序的帮助下对其进行校准。</p>
+<p>信号功率可以设置为任何合理值(如-50dBm)，稍后我们将在 <code>Locate</code>
+应用程序的帮助下对其进行校准。</p>
 </div>
 <div id="尝试应用" class="section level3">
 <h3><span class="header-section-number">3.2.2</span> 尝试应用</h3>
-<p>让我们在 <code>Choose Project Type</code> 页面上选择GNU Arm Embedded Toolchain作为我们的开发环境，向导会让一切准备就绪
-(Figure <a href="tutorial.html#fig:ch1-ibeacon-proj">3.15</a>).</p>
+<p>让我们在 <code>Choose Project Type</code> 页面上选择GNU Arm Embedded
+Toolchain作为我们的开发环境，向导会让一切准备就绪 (图 <a href="tutorial.html#fig:ch1-ibeacon-proj">3.15</a>).</p>
 <div class="figure" style="text-align: center"><span id="fig:ch1-ibeacon-proj"></span>
 <img src="img/ch1-ibeacon-proj.png" alt="GNU Arm工具链iBeacon已就绪" width="40%" />
 <p class="caption">
 Figure 3.15: GNU Arm工具链iBeacon已就绪
 </p>
 </div>
-<p>单击项目以打开控制台，输入 <code>make</code><a href="#fn13" class="footnote-ref" id="fnref13"><sup>13</sup></a>来构建它。回到 <code>ingWizard</code> ，按照相同的步骤将其下载。现在，我们可以在 <code>Locate</code> 中找到新创建的iBeacon设备。 (Figure <a href="tutorial.html#fig:ch1-locate-page1-small">3.16</a>)</p>
+<p>单击项目以打开控制台，输入 <code>make</code><a href="#fn13" class="footnote-ref" id="fnref13"><sup>13</sup></a>来构建它。回到 <code>ingWizard</code>
+，按照相同的步骤将其下载。现在，我们可以在 <code>Locate</code>
+中找到新创建的iBeacon设备。 (图 <a href="tutorial.html#fig:ch1-locate-page1-small">3.16</a>)</p>
 <div class="figure" style="text-align: center"><span id="fig:ch1-locate-page1-small"></span>
 <img src="img/locate_page1_small.jpg" alt=" iBeacon本地locate APP界面" width="40%" />
 <p class="caption">
 Figure 3.16:  iBeacon本地locate APP界面
 </p>
 </div>
-<p>点击我们的设备，我们就可以实时校准信号功率或检查距离，如图 <a href="tutorial.html#fig:ch1-locate-page2-small">3.17</a>所示。</p>
+<p>点击我们的设备，我们就可以实时校准信号功率或检查距离，如图
+<a href="tutorial.html#fig:ch1-locate-page2-small">3.17</a>所示。</p>
 <div class="figure" style="text-align: center"><span id="fig:ch1-locate-page2-small"></span>
 <img src="img/locate_page2_small.jpg" alt="iBeacon 在locate APP中的详细信息" width="40%" />
 <p class="caption">
 Figure 3.17: iBeacon 在locate APP中的详细信息
 </p>
 </div>
-<p>一旦信号功率校准，我们可以在 <code>ingWizard</code> 中右键单击我们的项目，并选择 <code>Edit Data</code> -&gt; <code>Advertising</code> 菜单项，以用我们所熟悉的编辑器来编辑其广播数据。更新广播数据后，重新构建项目，检查距离是否更准确。</p>
+<p>一旦信号功率校准，我们可以在 <code>ingWizard</code> 中右键单击我们的项目，并选择
+<code>Edit Data</code> -&gt; <code>Advertising</code>
+菜单项，以用我们所熟悉的编辑器来编辑其广播数据。更新广播数据后，重新构建项目，检查距离是否更准确。</p>
 <div class="rmdcaution">
 <p>
 根据规范，接近beacons必须使用一 个不可连接的无定向广播PDU，使用固定的100ms广播间隔。在本教程中，我们不会去修改代码，所以广播参数也不会被修改。为了使这些参数完全符合规范，请参考相应的主机GAP APIs。
@@ -652,7 +687,11 @@ Figure 3.17: iBeacon 在locate APP中的详细信息
 </div>
 <div id="温度计" class="section level2">
 <h2><span class="header-section-number">3.3</span> 温度计</h2>
-<p>在本教程中，我们将制作一个 <em>重要</em> 的BLE设备，一个温度计。蓝牙SIG已经定义了一个称为健康温度计的GATT服务<a href="#fn14" class="footnote-ref" id="fnref14"><sup>14</sup></a>。这个SDK包含一个名为 <code>INGdemo</code> 的参考APP，它可以安装到 <code>Android</code> 或 <code>iOS</code> 设备上。使用 <code>INGdemo</code> ，我们可以查看蓝牙设备的广播数据，如果设备中有健康体温计功能， <code>INGdemo</code> 可以连接设备并读取温度。</p>
+<p>在本教程中，我们将制作一个 <em>重要</em>
+的BLE设备，一个温度计。蓝牙SIG已经定义了一个称为健康温度计的GATT服务<a href="#fn14" class="footnote-ref" id="fnref14"><sup>14</sup></a>。这个SDK包含一个名为
+<code>INGdemo</code> 的参考APP，它可以安装到 <code>Android</code> 或 <code>iOS</code> 设备上。使用
+<code>INGdemo</code> ，我们可以查看蓝牙设备的广播数据，如果设备中有健康体温计功能，
+<code>INGdemo</code> 可以连接设备并读取温度。</p>
 <p>在本教程中，您将了解如何:</p>
 <ul>
 <li>广播所支持的服务</li>
@@ -661,12 +700,14 @@ Figure 3.17: iBeacon 在locate APP中的详细信息
 </ul>
 <div id="建立广播数据-1" class="section level3">
 <h3><span class="header-section-number">3.3.1</span> 建立广播数据</h3>
-<p>同样，我们遵循与[Hello World]示例中相同的步骤，并在 <code>Peripheral Setup</code> 页面上声明温度计服务并创建GATT配置文件。在广播数据中添加以下三项:</p>
+<p>同样，我们遵循与[Hello World]示例中相同的步骤，并在 <code>Peripheral Setup</code>
+页面上声明温度计服务并创建GATT配置文件。在广播数据中添加以下三项:</p>
 <ol style="list-style-type: decimal">
 <li><p><code>Flags</code></p>
-<p>值固定为0x06，即设置了两位，不支持LE General Discoverable Mode &amp; BR/EDR。</p></li>
+<p>值固定为0x06，即设置了两位，LE General Discoverable Mode &amp; BR/EDR Not Supported。</p></li>
 <li><p><code>Complete List of 16-bit Service Class UUIDs</code></p>
-<p>添加一个如图<a href="tutorial.html#fig:ch1-thermo-adv">3.18</a>.所示的 <code>0x1809 - Health Thermometer</code> 服务。</p></li>
+<p>添加一个如图<a href="tutorial.html#fig:ch1-thermo-adv">3.18</a>.所示的
+<code>0x1809 - Health Thermometer</code> 服务。</p></li>
 <li><p><code>Complete Local Name</code></p>
 <p>让我们将设备命名为“AccurateOne”。</p></li>
 </ol>
@@ -679,19 +720,30 @@ Figure 3.18: 温度计广播数据
 </div>
 <div id="建立gatt配置文件" class="section level3">
 <h3><span class="header-section-number">3.3.2</span> 建立GATT配置文件</h3>
-<p>返回 <code>Peripheral Setup</code> 页面，单击 <code>Setup ATT database ...</code> 打开GATT配置编辑器。添加两个服务，General Access (0x1800) 和Health Thermometer (0x1809)。
-删除General Access service的所有非必选特性。对于Health Thermometer service保留两个特性，即温度测量和温度类型，删除其他两个。</p>
+<p>返回 <code>Peripheral Setup</code> 页面，单击 <code>Setup ATT database ...</code>
+打开GATT配置编辑器。添加两个服务，General Access (0x1800) 和Health
+Thermometer (0x1809)。 删除General Access
+service的所有非必选特性。对于Health Thermometer
+service保留两个特性，即温度测量和温度类型，删除其他两个。</p>
 <p>接下来，编辑每个特性的值:</p>
 <ol style="list-style-type: decimal">
 <li><p>Device Name of General Access:</p>
-<p>右键单击特征，选择 <code>Edit String Value ...</code> 菜单，并设置值为“AccurateOne”。</p></li>
+<p>右键单击特征，选择 <code>Edit String Value ...</code>
+菜单，并设置值为“AccurateOne”。</p></li>
 <li><p>Appearance of General Access:</p>
-<p>右键单击特性，选择 <code>Help</code> ，编辑器将在Bluetooth SIG网站上打开相应的文档。找到普通温度计的值(0x0300)，然后单击 <code>Edit</code> 按钮，并在数据字段中输入 <code>0x00, 0x03</code> 。</p></li>
+<p>右键单击特性，选择 <code>Help</code> ，编辑器将在Bluetooth
+SIG网站上打开相应的文档。找到普通温度计的值(0x0300)，然后单击 <code>Edit</code>
+按钮，并在数据字段中输入 <code>0x00, 0x03</code> 。</p></li>
 <li><p>Temperature Measurement of Health Thermometer</p>
-<p>请查看蓝牙SIG网站文档。点击 <code>Edit</code> 按钮并在data字段中输入5个0(<code>0, 0, 0, 0, 0</code>)。这里的第一个字节包含标志，表明之后的度量单位是一个以摄氏度为单位的 <code>FLOAT</code> 值。检查 <code>read</code> 和 <code>dynamic</code> 属性(Figure <a href="tutorial.html#fig:ch1-thermo-edit-ch">3.19</a>)。</p>
-<p><code>FLOAT</code> 类型为IEEE-11073 32位浮点。最基本的是，它有一个24位的尾数和一个8位的指数(最重要的字节)，以 <em>10</em> 为基数。</p></li>
+<p>请查看蓝牙SIG网站文档。点击 <code>Edit</code>
+按钮并在data字段中输入5个0(<code>0, 0, 0, 0, 0</code>)。这里的第一个字节包含标志，表明之后的度量单位是一个以摄氏度为单位的
+<code>FLOAT</code> 值。检查 <code>read</code> 和 <code>dynamic</code> 属性(图 <a href="tutorial.html#fig:ch1-thermo-edit-ch">3.19</a>)。</p>
+<p><code>FLOAT</code> 类型为IEEE-11073
+32位浮点。最基本的是，它有一个24位的尾数和一个8位的指数(最重要的字节)，以
+<em>10</em> 为基数。</p></li>
 <li><p>Temperature Type of Health Thermometer</p>
-<p>请查看Bluetooth SIG网站文档。通过单击 <code>Edit</code> 按钮将其设置为任何有效值。</p></li>
+<p>请查看Bluetooth SIG网站文档。通过单击 <code>Edit</code>
+按钮将其设置为任何有效值。</p></li>
 </ol>
 <div class="figure" style="text-align: center"><span id="fig:ch1-thermo-edit-ch"></span>
 <img src="img/ch1-thermo-edit-ch.png" alt="编辑温度测量" width="70%" />
@@ -702,7 +754,8 @@ Figure 3.19: 编辑温度测量
 </div>
 <div id="代码编写" class="section level3">
 <h3><span class="header-section-number">3.3.3</span> 代码编写</h3>
-<p>项目创建完成后，在IDE中打开 <code>profile.c</code> ，由 <code>ingWizard</code> 自动生成温度测量特征处理函数 <code>att_read_callback</code> 。</p>
+<p>项目创建完成后，在IDE中打开 <code>profile.c</code> ，由 <code>ingWizard</code>
+自动生成温度测量特征处理函数 <code>att_read_callback</code> 。</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb4-1"><a href="tutorial.html#cb4-1"></a><span class="dt">static</span> <span class="dt">uint16_t</span> att_read_callback(hci_con_handle_t connection_handle,</span>
 <span id="cb4-2"><a href="tutorial.html#cb4-2"></a>                                  <span class="dt">uint16_t</span> att_handle, <span class="dt">uint16_t</span> offset,</span>
 <span id="cb4-3"><a href="tutorial.html#cb4-3"></a>                                  <span class="dt">uint8_t</span> * buffer, <span class="dt">uint16_t</span> buffer_size)</span>
@@ -723,7 +776,10 @@ Figure 3.19: 编辑温度测量
 <span id="cb4-18"><a href="tutorial.html#cb4-18"></a>        <span class="cf">return</span> <span class="dv">0</span>;</span>
 <span id="cb4-19"><a href="tutorial.html#cb4-19"></a>    }</span>
 <span id="cb4-20"><a href="tutorial.html#cb4-20"></a>}</span></code></pre></div>
-<p>当APP读取一个具有 <code>dynamic</code> 特点的特性， <code>att_read_callback</code> 会被调用两次或更多:一次用于查询所需的缓冲区大小， 一次用于读取数据。如果数据很大， <code>att_read_callback</code> 可能会被调用更多次，每次读取由 <code>offset</code> 指定的部分数据。</p>
+<p>当APP读取一个具有 <code>dynamic</code> 特点的特性， <code>att_read_callback</code>
+会被调用两次或更多:一次用于查询所需的缓冲区大小，
+一次用于读取数据。如果数据很大， <code>att_read_callback</code>
+可能会被调用更多次，每次读取由 <code>offset</code> 指定的部分数据。</p>
 <p>如上所述，定义一种温度测量类型:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="tutorial.html#cb5-1"></a><span class="kw">typedef</span> __packed <span class="kw">struct</span> gatt_temperature_meas</span>
 <span id="cb5-2"><a href="tutorial.html#cb5-2"></a>{</span>
@@ -745,7 +801,9 @@ Figure 3.19: 编辑温度测量
 <span id="cb6-9"><a href="tutorial.html#cb6-9"></a>        }</span>
 <span id="cb6-10"><a href="tutorial.html#cb6-10"></a>        <span class="cf">else</span></span>
 <span id="cb6-11"><a href="tutorial.html#cb6-11"></a>            <span class="cf">return</span> <span class="kw">sizeof</span>(gatt_temperature_meas_t);</span></code></pre></div>
-<p>构建并下载项目，然后在 <code>INGdemo</code> app中连接到“AccurateOne”设备。检查每次按下 <code>Refresh</code> 按钮时温度是否随机变化 (Figure <a href="tutorial.html#fig:ch1-ingtemp">3.20</a>).</p>
+<p>构建并下载项目，然后在 <code>INGdemo</code>
+app中连接到“AccurateOne”设备。检查每次按下 <code>Refresh</code>
+按钮时温度是否随机变化 (图 <a href="tutorial.html#fig:ch1-ingtemp">3.20</a>).</p>
 <div class="figure" style="text-align: center"><span id="fig:ch1-ingtemp"></span>
 <img src="img/ch1-ingtemp-1.png" alt="刷新温度测量" width="60%" />
 <p class="caption">
@@ -764,25 +822,39 @@ Figure 3.20: 刷新温度测量
 </div>
 <div id="fota温度计" class="section level2">
 <h2><span class="header-section-number">3.4</span> FOTA温度计</h2>
-<p>在本教程中，我们将在我们的温度计中添加无线固件升级（FOTA）功能。此SDK提供了一个可开箱即用的FOTA设计参考。要使FOTA工作，至少需要涉及三个部分，一个设备、一个APP和一个HTTP服务器。 <code>INGdemo</code> 应用已经有了，所以在本教程中，我们将重点关注设备和HTTP服务器。</p>
+<p>在本教程中，我们将在我们的温度计中添加无线固件升级（FOTA）功能。此SDK提供了一个可开箱即用的FOTA设计参考。要使FOTA工作，至少需要涉及三个部分，一个设备、一个APP和一个HTTP服务器。
+<code>INGdemo</code> 应用已经有了，所以在本教程中，我们将重点关注设备和HTTP服务器。</p>
 <div id="fota设备" class="section level3">
 <h3><span class="header-section-number">3.4.1</span> FOTA设备</h3>
 <p>按照与前面温度计示例相同的步骤创建一个新项目，命名为“ota”。</p>
-<p>当编辑广告数据时，我们可以通过单击在编辑器中的 <code>Open File…</code> 按钮，来导入在前面例子中创建的数据。广播数据存储在 <code>$(ProjectPath)/data/advertising.adv</code> .让我们将设备命名为“clickty Click”。</p>
-<p>当编辑GATT协议数据库时，我们可以通过单击在编辑器中的打开文件 <code>Open File…</code> 按钮来导入在前面例子中创建的数据。GATT协议的数据存储在 <code>$(ProjectPath)/data/gatt.profile</code> .中。在 A<code>dd Service</code> 按钮的下拉菜单中选择 <code>INGChips Service</code> ，添加“INGChips FOTA Service”，接下来，编辑该服务的特征值:</p>
+<p>当编辑广播数据时，我们可以通过单击在编辑器中的 <code>Open File…</code>
+按钮，来导入在前面例子中创建的数据。广播数据存储在
+<code>$(ProjectPath)/data/advertising.adv</code> .让我们将设备命名为“clickty
+Click”。</p>
+<p>当编辑GATT协议数据库时，我们可以通过单击在编辑器中的打开文件
+<code>Open File…</code> 按钮来导入在前面例子中创建的数据。GATT协议的数据存储在
+<code>$(ProjectPath)/data/gatt.profile</code> .中。在 <code>Add Service</code>
+按钮的下拉菜单中选择 <code>INGChips Service</code> ，添加“INGChips FOTA
+Service”，接下来，编辑该服务的特征值:</p>
 <ol style="list-style-type: decimal">
 <li><p>FOTA Version:</p>
-<p>FOTA Version确定了我们项目的完整版本号。如flash downloader所示，整个项目由两个二进制文件组成，一个来自SDK 软件包，称为平台二进制文件；另一个来自我们的项目，称为APP二进制文件。FOTA版本包含两个子版本，它们分别对应一个二进制文件。每个子版本包含三个字段:</p>
+<p>FOTA Version确定了我们项目的完整版本号。如flash
+downloader所示，整个项目由两个二进制文件组成，一个来自SDK
+软件包，称为平台二进制文件；另一个来自我们的项目，称为APP二进制文件。FOTA版本包含两个子版本，它们分别对应一个二进制文件。每个子版本包含三个字段:</p>
 <ul>
 <li><p>Major: A 16-bit field.</p></li>
 <li><p>Minor: A 8-bit field.</p></li>
 <li><p>Patch: Another 8-bit field.</p></li>
 </ul>
-<p>每个软件包都有自己的版本(同平台二进制文件版本)，使用相同的编号方案，可以在 <code>SDK</code> 页面的 <code>Environment Options</code> 对话框中找到(使用菜单项 <code>Tools</code> -&gt; <code>Environment Options</code> 打开此对话框)。假设平台版本为1.0.1，我们想要的APP版本为1.0.0，那么我们将该特征值设为(Fig <a href="tutorial.html#fig:ch1-ota-version">3.21</a>):</p>
+<p>每个软件包都有自己的版本(同平台二进制文件版本)，使用相同的编号方案，可以在
+<code>SDK</code> 页面的 <code>Environment Options</code> 对话框中找到(使用菜单项 <code>Tools</code>
+-&gt; <code>Environment Options</code>
+打开此对话框)。假设平台版本为1.0.1，我们想要的APP版本为1.0.0，那么我们将该特征值设为(图 <a href="tutorial.html#fig:ch1-ota-version">3.21</a>):</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb7-1"><a href="tutorial.html#cb7-1"></a><span class="bn">0x0001</span>, <span class="dv">0</span>, <span class="dv">1</span>  <span class="co">// platform version</span></span>
 <span id="cb7-2"><a href="tutorial.html#cb7-2"></a><span class="bn">0x0001</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="co">// app version</span></span></code></pre></div></li>
 <li><p>FOTA Control</p>
-<p>这是升级期间的控制点。将其值设置为 <code>0</code> (即 <code>OTA_STATUS_DISABLED</code> )，这是FOTA的初始状态。</p></li>
+<p>这是升级期间的控制点。将其值设置为 <code>0</code> (即 <code>OTA_STATUS_DISABLED</code>
+)，这是FOTA的初始状态。</p></li>
 </ol>
 <div class="figure" style="text-align: center"><span id="fig:ch1-ota-version"></span>
 <img src="img/ch1-ota-version.png" alt="FOTA版本设置" width="60%" />
@@ -790,14 +862,24 @@ Figure 3.20: 刷新温度测量
 Figure 3.21: FOTA版本设置
 </p>
 </div>
-<p>单击 <code>OK</code> 关闭 <code>GATT</code> 协议编辑器。(注意:不要点击 <code>Save</code> ，除非你想改变已经在编辑器中打开的 <code>$(ProjectPath)/data/gatt.profile</code> 。)</p>
-<p>回到项目向导，按下 <code>Next</code> 继续下一页的 <code>Firmare Over-The-Air</code> 。在这页上，我们勾选 <code>FOTA</code> 。注意，与FOTA相关的特征句柄是通过检查GATT协议自动生成的。然后在项目向导上完成其余步骤。</p>
-<p>打开我们新的项目“ota”，从上一个例子复制代码来使我们的温度计在 <code>INGdemo</code> APP中可以响应 <code>Refresh</code> 。</p>
+<p>单击 <code>OK</code> 关闭 <code>GATT</code> 协议编辑器。(注意:不要点击 <code>Save</code>
+，除非你想改变已经在编辑器中打开的 <code>$(ProjectPath)/data/gatt.profile</code>
+。)</p>
+<p>回到项目向导，按下 <code>Next</code> 继续下一页的 <code>Firmare Over-The-Air</code>
+。在这页上，我们勾选 <code>FOTA</code>
+。注意，与FOTA相关的特征句柄是通过检查GATT协议自动生成的。然后在项目向导上完成其余步骤。</p>
+<p>打开我们新的项目“ota”，从上一个例子复制代码来使我们的温度计在 <code>INGdemo</code>
+APP中可以响应 <code>Refresh</code> 。</p>
 <p>接下来，让我们制作一个新版本。</p>
 </div>
 <div id="创建一个新版本" class="section level3">
 <h3><span class="header-section-number">3.4.2</span> 创建一个新版本</h3>
-<p>我们“ota”的新版本命名为“Barba Trick”，APP版本号将升级到 <code>2.0.0</code> 。这些数据分别保存在广播数据和协议数据中，右键单击项目并使用编辑器更新它。数据升级以后，使用 <code>Save As ...</code> 将数据保存在相同路径下的另一个文件中。例如，更新广播数据并将其保存到 <code>$(ProjectPath)/data/advertising_2.adv</code> 。并更新GATT配置文件到 <code>$(ProjectPath)/data/gatt_2.profile</code> 。</p>
+<p>我们“ota”的新版本命名为“Barba Trick”，APP版本号将升级到 <code>2.0.0</code>
+。这些数据分别保存在广播数据和协议数据中，右键单击项目并使用编辑器更新它。数据升级以后，使用
+<code>Save As ...</code>
+将数据保存在相同路径下的另一个文件中。例如，更新广播数据并将其保存到
+<code>$(ProjectPath)/data/advertising_2.adv</code> 。并更新GATT配置文件到
+<code>$(ProjectPath)/data/gatt_2.profile</code> 。</p>
 <p>用一个宏 <code>V2</code> 来控制实际用到的广播数据和协议数据：</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb8-1"><a href="tutorial.html#cb8-1"></a><span class="dt">const</span> <span class="dt">static</span> <span class="dt">uint8_t</span> adv_data[] = {</span>
 <span id="cb8-2"><a href="tutorial.html#cb8-2"></a><span class="pp">#ifndef V2</span></span>
@@ -816,7 +898,8 @@ Figure 3.21: FOTA版本设置
 <span id="cb8-15"><a href="tutorial.html#cb8-15"></a>    <span class="pp">#include </span><span class="im">&quot;../data/gatt_2.profile&quot;</span></span>
 <span id="cb8-16"><a href="tutorial.html#cb8-16"></a><span class="pp">#endif</span></span>
 <span id="cb8-17"><a href="tutorial.html#cb8-17"></a>};</span></code></pre></div>
-<p>用定义的 <code>V2</code> 宏重新编译项目，将 <code>ota.bin</code> 和 <code>platform.bin</code> (在 <code>SDK_DIR/sdk/bundles/typical</code> 中)复制到一个空路径下，<code>如ota_app_v2</code> 。</p>
+<p>用定义的 <code>V2</code> 宏重新编译项目，将 <code>ota.bin</code> 和 <code>platform.bin</code> (在
+<code>SDK_DIR/sdk/bundles/typical</code> 中)复制到一个空路径下，<code>如ota_app_v2</code> 。</p>
 <p>在 <code>ota_app_v2</code> 创建一个名为 <code>manifest.json</code> 的文件，包含以下数据:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb9-1"><a href="tutorial.html#cb9-1"></a><span class="op">{</span></span>
 <span id="cb9-2"><a href="tutorial.html#cb9-2"></a>    <span class="st">&quot;platform&quot;</span><span class="op">:</span> <span class="op">{</span></span>
@@ -832,9 +915,15 @@ Figure 3.21: FOTA版本设置
 <span id="cb9-12"><a href="tutorial.html#cb9-12"></a>    <span class="st">&quot;entry&quot;</span><span class="op">:</span> <span class="dv">16384</span><span class="op">,</span></span>
 <span id="cb9-13"><a href="tutorial.html#cb9-13"></a>    <span class="st">&quot;bins&quot;</span><span class="op">:</span>[]</span>
 <span id="cb9-14"><a href="tutorial.html#cb9-14"></a><span class="op">}</span></span></code></pre></div>
-<p>这些地址可以在 <code>Environment Options</code> . <code>entry</code> 中找到。地址值固定为 <code>0x4000</code> ，即 <code>16384</code> 。注意 <code>json</code> 不识别常规的 <code>0xabcd</code> 十六进制文字。 <code>INGdemo</code> 可以下载其他 <code>bin</code> 指定的二进制文件到设备。在本例中，我们没有这样的二进制文件，所以这个字段作为空数组保留。</p>
+<p>这些地址可以在 <code>Environment Options</code> . <code>entry</code> 中找到。地址值固定为
+<code>0x4000</code> ，即 <code>16384</code> 。注意 <code>json</code> 不识别常规的 <code>0xabcd</code> 十六进制文字。
+<code>INGdemo</code> 可以下载其他 <code>bin</code>
+指定的二进制文件到设备。在本例中，我们没有这样的二进制文件，所以这个字段作为空数组保留。</p>
 <p>然后为这个更新创建一个 <code>readme</code> 文件，其中包含一些关于本次更新的信息。</p>
-<p>现在FOTA包已经准备好了。为整个 <code>ota_app_v2</code> 路径制作一个 <code>ota_app_v2.zip</code> 的ZIP压缩包。注意，不应该将 <code>ota_app_v2</code> 设置为 <code>ota_app_v2.zip</code> 中的子目录。表 <a href="tutorial.html#tab:ch1-ota-package">3.2</a> 给出了压缩文件中的文件清单。</p>
+<p>现在FOTA包已经准备好了。为整个 <code>ota_app_v2</code> 路径制作一个
+<code>ota_app_v2.zip</code> 的ZIP压缩包。注意，不应该将 <code>ota_app_v2</code> 设置为
+<code>ota_app_v2.zip</code> 中的子目录。表 <a href="tutorial.html#tab:ch1-ota-package">3.2</a>
+给出了压缩文件中的文件清单。</p>
 <table>
 <caption><span id="tab:ch1-ota-package">Table 3.2: </span> FOTA包文件清单</caption>
 <thead>
@@ -862,11 +951,15 @@ Figure 3.21: FOTA版本设置
 </tr>
 </tbody>
 </table>
-<p>回到IDE，在没有定义宏 <code>V2</code> 的情况下重新构建项目，然后下载该项目到开发板。</p>
+<p>回到IDE，在没有定义宏 <code>V2</code>
+的情况下重新构建项目，然后下载该项目到开发板。</p>
 </div>
 <div id="fota服务器" class="section level3">
 <h3><span class="header-section-number">3.4.3</span> FOTA服务器</h3>
-<p><code>INGdemo</code> APP需要一个FOTA服务器URL，定义在 <code>class Thermometer.FOTA_SERVERr</code> 。将 <code>ota_app_v2.zip</code> 移动到HTTP服务器的文档目录，并创建一个 <code>latest.json</code> 文件，它包含最新版本的信息。内容是:</p>
+<p><code>INGdemo</code> APP需要一个FOTA服务器URL，定义在
+<code>class Thermometer.FOTA_SERVERr</code> 。将 <code>ota_app_v2.zip</code>
+移动到HTTP服务器的文档目录，并创建一个 <code>latest.json</code>
+文件，它包含最新版本的信息。内容是:</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb10-1"><a href="tutorial.html#cb10-1"></a><span class="op">{</span></span>
 <span id="cb10-2"><a href="tutorial.html#cb10-2"></a>    <span class="st">&quot;app&quot;</span><span class="op">:</span> [<span class="dv">2</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span>]<span class="op">,</span></span>
 <span id="cb10-3"><a href="tutorial.html#cb10-3"></a>    <span class="st">&quot;platform&quot;</span><span class="op">:</span> [<span class="dv">1</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">1</span>]<span class="op">,</span></span>
@@ -877,8 +970,11 @@ Figure 3.21: FOTA版本设置
 </div>
 <div id="尝试应用-1" class="section level3">
 <h3><span class="header-section-number">3.4.4</span> 尝试应用</h3>
-<p>在 <code>INGdemo</code> 中连接“Clickety Click”，点击 <code>Update</code> (Figure <a href="tutorial.html#fig:ch1-fota-update">3.22</a>).
-由于 <code>platform.bin</code> 是最新的，所以只需要升级 <code>app.bin</code> 就可以了，整个升级过程在很短的时间内完成。回到主页，再次扫描并检查我们的新版本是否起作用，有了一个名为“Barba Trick”的设备。连接到“Barba Trick”，可以看到现在固件是最新的。</p>
+<p>在 <code>INGdemo</code> 中连接“Clickety Click”，点击 <code>Update</code> (图
+<a href="tutorial.html#fig:ch1-fota-update">3.22</a>). 由于 <code>platform.bin</code>
+是最新的，所以只需要升级 <code>app.bin</code>
+就可以了，整个升级过程在很短的时间内完成。回到主页，再次扫描并检查我们的新版本是否起作用，有了一个名为“Barba
+Trick”的设备。连接到“Barba Trick”，可以看到现在固件是最新的。</p>
 <div class="figure" style="text-align: center"><span id="fig:ch1-fota-update"></span>
 <img src="img/ch1-fota-update.png" alt="&quot;Clickety Click&quot;升级可用" width="40%" />
 <p class="caption">
@@ -898,15 +994,19 @@ Figure 3.22: “Clickety Click”升级可用
 <div id="ibeacon扫描设备" class="section level2">
 <h2><span class="header-section-number">3.5</span> iBeacon扫描设备</h2>
 <p>我们已经知道如何配置iBeacon设备。在本教程中，我们将创建一个iBeacon扫描器。</p>
-<p>扫描器在蓝牙微距网络中起着核心作用。和之前一样，我们在 <code>ingWizard</code> 中创建一个名为“iscanner”的新项目 (Fig <a href="tutorial.html#fig:ch1-proj-iscanner">3.23</a>).
-在 <code>Role of Your Device</code> 页面，选择<em>Central</em>。中心设备会一直扫描其他设备然后这些设备执行其相应的动作，我们的新项目向导自动添加代码开始扫描。</p>
+<p>扫描器在蓝牙微距网络中起着核心作用。和之前一样，我们在 <code>ingWizard</code>
+中创建一个名为“iscanner”的新项目 (图 <a href="tutorial.html#fig:ch1-proj-iscanner">3.23</a>). 在
+<code>Role of Your Device</code>
+页面，选择<em>Central</em>。中心设备会一直扫描其他设备然后这些设备执行其相应的动作，我们的新项目向导自动添加代码开始扫描。</p>
 <div class="figure" style="text-align: center"><span id="fig:ch1-proj-iscanner"></span>
 <img src="img/ch1-proj-iscanner.png" alt="创建IAR Embedded Workbench的“iscanner”" width="40%" />
 <p class="caption">
 Figure 3.23: 创建IAR Embedded Workbench的“iscanner”
 </p>
 </div>
-<p>在IDE中打开这个新项目，并找到函数 <code>user_packet_handler</code> 。我们可以看到有一个名为 <code>HCI_SUBEVENT_LE_EXTENDED_ADVERTISING_REPORT</code> 的事件:</p>
+<p>在IDE中打开这个新项目，并找到函数 <code>user_packet_handler</code>
+。我们可以看到有一个名为 <code>HCI_SUBEVENT_LE_EXTENDED_ADVERTISING_REPORT</code>
+的事件:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb11-1"><a href="tutorial.html#cb11-1"></a>    <span class="cf">case</span> HCI_SUBEVENT_LE_EXTENDED_ADVERTISING_REPORT:</span>
 <span id="cb11-2"><a href="tutorial.html#cb11-2"></a>        {</span>
 <span id="cb11-3"><a href="tutorial.html#cb11-3"></a>            <span class="dt">const</span> le_ext_adv_report_t *report = decode_hci_le_meta_event(packet,</span>
@@ -915,7 +1015,8 @@ Figure 3.23: 创建IAR Embedded Workbench的“iscanner”
 <span id="cb11-6"><a href="tutorial.html#cb11-6"></a>        }</span>
 <span id="cb11-7"><a href="tutorial.html#cb11-7"></a>        <span class="cf">break</span>;</span></code></pre></div>
 <p>每次接收到这个事件时，我们可以检查广播报告是否包含
-<code>0xFF - «Manufacturer Specific Data»</code>，以及它是否是一个iBeacon包。有了制作iBeacon设备的知识，就可以直接用 <code>C</code> 语言定义一个iBeacon数据包的类型。</p>
+<code>0xFF - «Manufacturer Specific Data»</code>，以及它是否是一个iBeacon包。有了制作iBeacon设备的知识，就可以直接用
+<code>C</code> 语言定义一个iBeacon数据包的类型。</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb12-1"><a href="tutorial.html#cb12-1"></a><span class="kw">typedef</span> __packed <span class="kw">struct</span> ibeacon_adv</span>
 <span id="cb12-2"><a href="tutorial.html#cb12-2"></a>{</span>
 <span id="cb12-3"><a href="tutorial.html#cb12-3"></a>    <span class="dt">uint16_t</span> apple_id;</span>
@@ -928,7 +1029,9 @@ Figure 3.23: 创建IAR Embedded Workbench的“iscanner”
 <span id="cb12-10"><a href="tutorial.html#cb12-10"></a></span>
 <span id="cb12-11"><a href="tutorial.html#cb12-11"></a><span class="pp">#define APPLE_COMPANY_ID        0x004C</span></span>
 <span id="cb12-12"><a href="tutorial.html#cb12-12"></a><span class="pp">#define IBEACON_ID              0x1502</span></span></code></pre></div>
-<p><code>__packed</code> 是一个扩展关键字，用于指定数据类型使用第一种数据对齐方式。幸运的是， <em>ARM</em> 和 <em>IAR</em> 编译器都支持它。或者可以使用 <code>#pragma pack</code> 指令:</p>
+<p><code>__packed</code>
+是一个扩展关键字，用于指定数据类型使用第一种数据对齐方式。幸运的是，
+<em>ARM</em> 和 <em>IAR</em> 编译器都支持它。或者可以使用 <code>#pragma pack</code> 指令:</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb13-1"><a href="tutorial.html#cb13-1"></a><span class="pp">#pragma pack (push, 1)</span></span>
 <span id="cb13-2"><a href="tutorial.html#cb13-2"></a><span class="kw">typedef</span> <span class="kw">struct</span> ibeacon_adv</span>
 <span id="cb13-3"><a href="tutorial.html#cb13-3"></a>{</span>
@@ -949,7 +1052,8 @@ Figure 3.23: 创建IAR Embedded Workbench的“iscanner”
 <h3><span class="header-section-number">3.5.1</span> 估算距离</h3>
 <p>接收到的信号强度指示(RSSI)与广播数据一起播报。一般来说，点源辐射出的电磁波强度与信号源距离的平方成反比。著名的自由空间损失方程为:</p>
 <p><span class="math display">\[ Loss = 32.45 + 20log(d) + 20log(f) \]</span></p>
-<p>其中 <span class="math inline">\(d\)</span> 的单位是km, <span class="math inline">\(f\)</span> 的单位是MHz, <span class="math inline">\(Loss\)</span> 的单位是dB。通过比较RSSI和1米距离下的测量功率(<code>ref_power</code>)，我们可以利用自由空间损失方程大致估计出扫描仪和信标之间的距离:</p>
+<p>其中 <span class="math inline">\(d\)</span> 的单位是km, <span class="math inline">\(f\)</span> 的单位是MHz, <span class="math inline">\(Loss\)</span>
+的单位是dB。通过比较RSSI和1米距离下的测量功率(<code>ref_power</code>)，我们可以利用自由空间损失方程大致估计出扫描仪和信标之间的距离:</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb15-1"><a href="tutorial.html#cb15-1"></a><span class="dt">double</span> estimate_distance(<span class="dt">int8_t</span> ref_power, <span class="dt">int8_t</span> rssi)</span>
 <span id="cb15-2"><a href="tutorial.html#cb15-2"></a>{</span>
 <span id="cb15-3"><a href="tutorial.html#cb15-3"></a>    <span class="cf">return</span> pow(<span class="dv">10</span>, (ref_power - rssi) / <span class="fl">20.0</span>);</span>
@@ -976,7 +1080,9 @@ Figure 3.23: 创建IAR Embedded Workbench的“iscanner”
 <span id="cb16-19"><a href="tutorial.html#cb16-19"></a>                p_ibeacon-&gt;major, p_ibeacon-&gt;minor,</span>
 <span id="cb16-20"><a href="tutorial.html#cb16-20"></a>                estimate_distance(p_ibeacon-&gt;ref_power, report-&gt;rssi));</span>
 <span id="cb16-21"><a href="tutorial.html#cb16-21"></a>        <span class="cf">break</span>;</span></code></pre></div>
-<p>使用 <code>Locate</code> 应用程序发送iBeacon信号，并查看我们的设备是否能找到它 (Figure <a href="tutorial.html#fig:ch1-iscanner">3.24</a>). 最后，由于RSSI值是波动的，可以在RSSI上增加一个低通滤波器使估算值更加稳定。</p>
+<p>使用 <code>Locate</code> 应用程序发送iBeacon信号，并查看我们的设备是否能找到它
+(图 <a href="tutorial.html#fig:ch1-iscanner">3.24</a>).
+最后，由于RSSI值是波动的，可以在RSSI上增加一个低通滤波器使估算值更加稳定。</p>
 <div class="figure" style="text-align: center"><span id="fig:ch1-iscanner"></span>
 <img src="img/ch1-iscanner.png" alt="iBeacon扫描结果" width="50%" />
 <p class="caption">
@@ -1002,13 +1108,18 @@ Figure 3.24: iBeacon扫描结果
 <div id="通知指示" class="section level2">
 <h2><span class="header-section-number">3.6</span> 通知&amp;指示</h2>
 <p>服务器可以使用通知或指示过程来通知(不需要确认)或指示(需要确认)一个特征值。现在，让我们将通知和指示功能添加到我们在之前教程中创建的温度计中。</p>
-<p>我们分别使用 <code>att_server_notify</code> 和 <code>att_server_indicate</code> 来通知或指示一个特征值。这两个函数只允许在 <code>ATT</code> 模块的 <code>ATT_EVENT_CAN_SEND_NOW</code> 事件中调用，这个事件是由 <code>att_server_request_can_send_now_event</code> 请求的。这些 <code>API</code> 接口必须在蓝牙协议栈 (<code>Host</code>) 任务中调用。</p>
+<p>我们分别使用 <code>att_server_notify</code> 和 <code>att_server_indicate</code>
+来通知或指示一个特征值。这两个函数只允许在 <code>ATT</code> 模块的
+<code>ATT_EVENT_CAN_SEND_NOW</code> 事件中调用，这个事件是由
+<code>att_server_request_can_send_now_event</code> 请求的。这些 <code>API</code>
+接口必须在蓝牙协议栈 (<code>Host</code>) 任务中调用。</p>
 <p>自动获取的通知和指示可以由定时器或中断触发，例如蓝牙任务栈之外的源。提供有一种基于RTOS消息的任务间通信机制来调用这些蓝牙协议栈API接口。</p>
 <div id="inter-task-comm" class="section level3">
 <h3><span class="header-section-number">3.6.1</span> 任务间通信</h3>
 <p>使用 <code>btstack_push_user_msg</code> 发送消息到蓝牙协议栈:</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb17-1"><a href="tutorial.html#cb17-1"></a><span class="dt">uint32_t</span>  btstack_push_user_msg(<span class="dt">uint32_t</span> msg_id, <span class="dt">void</span> *data, <span class="dt">const</span> <span class="dt">uint16_t</span> len);</span></code></pre></div>
-<p>这个消息将被传递到你的 <code>user_packet_handler</code> 下的事件ID <code>BTSTACK_EVENT_USER_MSG</code> :</p>
+<p>这个消息将被传递到你的 <code>user_packet_handler</code> 下的事件ID
+<code>BTSTACK_EVENT_USER_MSG</code> :</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb18-1"><a href="tutorial.html#cb18-1"></a><span class="dt">static</span> <span class="dt">void</span> user_packet_handler(<span class="dt">uint8_t</span> packet_type, <span class="dt">uint16_t</span> channel,</span>
 <span id="cb18-2"><a href="tutorial.html#cb18-2"></a>                                <span class="dt">uint8_t</span> *packet, <span class="dt">uint16_t</span> size)</span>
 <span id="cb18-3"><a href="tutorial.html#cb18-3"></a>{</span>
@@ -1027,12 +1138,15 @@ Figure 3.24: iBeacon扫描结果
 <span id="cb18-16"><a href="tutorial.html#cb18-16"></a>    <span class="co">// ......</span></span>
 <span id="cb18-17"><a href="tutorial.html#cb18-17"></a>    }</span>
 <span id="cb18-18"><a href="tutorial.html#cb18-18"></a>}</span></code></pre></div>
-<p>在这里，我们将用户消息的处理传递给另一个叫 <code>user_msg_handler</code> 的函数。注意 <code>user_msg_handler</code> 是在蓝牙协议栈任务的上下文中运行的，现在我们可以调用那些蓝牙栈APIs了。</p>
+<p>在这里，我们将用户消息的处理传递给另一个叫 <code>user_msg_handler</code>
+的函数。注意 <code>user_msg_handler</code>
+是在蓝牙协议栈任务的上下文中运行的，现在我们可以调用那些蓝牙栈APIs了。</p>
 <p>事件 <code>BTSTACK_EVENT_USER_MSG</code> 被广播到所有 <code>HCI</code> 事件回调函数。</p>
 </div>
 <div id="定时器" class="section level3">
 <h3><span class="header-section-number">3.6.2</span> 定时器</h3>
-<p>现在让我们让温度计“AccurateOne”每秒钟更新一次它的值。首先，在初始化时创建一个定时器，例如在 <code>app_main</code> 或 <code>setup_profile</code> 中。</p>
+<p>现在让我们让温度计“AccurateOne”每秒钟更新一次它的值。首先，在初始化时创建一个定时器，例如在
+<code>app_main</code> 或 <code>setup_profile</code> 中。</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb19-1"><a href="tutorial.html#cb19-1"></a>TimerHandle_t app_timer = <span class="dv">0</span>;</span>
 <span id="cb19-2"><a href="tutorial.html#cb19-2"></a></span>
 <span id="cb19-3"><a href="tutorial.html#cb19-3"></a><span class="dt">uint32_t</span> setup_profile(<span class="dt">void</span> *data, <span class="dt">void</span> *user_data)</span>
@@ -1051,8 +1165,12 @@ Figure 3.24: iBeacon扫描结果
 <span id="cb20-4"><a href="tutorial.html#cb20-4"></a>    <span class="cf">if</span> (temperture_notify_enable | temperture_indicate_enable)</span>
 <span id="cb20-5"><a href="tutorial.html#cb20-5"></a>        btstack_push_user_msg(USER_MSG_ID_REQUEST_SEND, NULL, <span class="dv">0</span>);</span>
 <span id="cb20-6"><a href="tutorial.html#cb20-6"></a>}</span></code></pre></div>
-<p>当我们在 <code>HCI_EVENT_LE_META</code> 中得到 <code>HCI_SUBEVENT_LE_ENHANCED_CONNECTION_COMPLETE</code> 时，定时器开始计时，并在我们得到 <code>HCI_EVENT_DISCONNECTION_COMPLETE</code> 时定时器停止。</p>
-<p>这里的 <code>temperture_notify_enable</code> 和 <code>temperture_indicate_enable</code> 是两个初始化为 <code>0s</code> 的标志，并在 <code>att_write_callback</code> 中设置为 <code>1</code> :</p>
+<p>当我们在 <code>HCI_EVENT_LE_META</code> 中得到
+<code>HCI_SUBEVENT_LE_ENHANCED_CONNECTION_COMPLETE</code>
+时，定时器开始计时，并在我们得到 <code>HCI_EVENT_DISCONNECTION_COMPLETE</code>
+时定时器停止。</p>
+<p>这里的 <code>temperture_notify_enable</code> 和 <code>temperture_indicate_enable</code>
+是两个初始化为 <code>0s</code> 的标志，并在 <code>att_write_callback</code> 中设置为 <code>1</code> :</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb21-1"><a href="tutorial.html#cb21-1"></a><span class="dt">static</span> <span class="dt">int</span> att_write_callback(hci_con_handle_t connection_handle,</span>
 <span id="cb21-2"><a href="tutorial.html#cb21-2"></a>                              <span class="dt">uint16_t</span> att_handle, <span class="dt">uint16_t</span> transaction_mode,</span>
 <span id="cb21-3"><a href="tutorial.html#cb21-3"></a>                              <span class="dt">uint16_t</span> offset, <span class="dt">uint8_t</span> *buffer, <span class="dt">uint16_t</span> buffer_size)</span>
@@ -1074,7 +1192,9 @@ Figure 3.24: iBeacon扫描结果
 <span id="cb21-19"><a href="tutorial.html#cb21-19"></a>    <span class="co">// ...</span></span>
 <span id="cb21-20"><a href="tutorial.html#cb21-20"></a>    }</span>
 <span id="cb21-21"><a href="tutorial.html#cb21-21"></a>}</span></code></pre></div>
-<p>在这里，我们将 <code>connection_handle</code> 存储到一个全局变量 <code>handle_send</code> ，并在之后会使用该变量。最后一段代码是在 <code>user_msg_handler</code> 中处理消息 <code>USER_MSG_ID_REQUEST_SEND</code> :</p>
+<p>在这里，我们将 <code>connection_handle</code> 存储到一个全局变量 <code>handle_send</code>
+，并在之后会使用该变量。最后一段代码是在 <code>user_msg_handler</code> 中处理消息
+<code>USER_MSG_ID_REQUEST_SEND</code> :</p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb22-1"><a href="tutorial.html#cb22-1"></a><span class="dt">static</span> <span class="dt">void</span> user_msg_handler(<span class="dt">uint32_t</span> msg_id, <span class="dt">void</span> *data, <span class="dt">uint16_t</span> size)</span>
 <span id="cb22-2"><a href="tutorial.html#cb22-2"></a>{</span>
 <span id="cb22-3"><a href="tutorial.html#cb22-3"></a>    <span class="cf">switch</span> (msg_id)</span>
@@ -1105,7 +1225,8 @@ Figure 3.24: iBeacon扫描结果
 <span id="cb23-18"><a href="tutorial.html#cb23-18"></a>    }</span>
 <span id="cb23-19"><a href="tutorial.html#cb23-19"></a>    <span class="cf">break</span>;</span>
 <span id="cb23-20"><a href="tutorial.html#cb23-20"></a>...</span></code></pre></div>
-<p>尝试重新构建并下载项目，并检查 <code>INGdemo</code> 中显示的温度值是否每秒变化一次。</p>
+<p>尝试重新构建并下载项目，并检查 <code>INGdemo</code>
+中显示的温度值是否每秒变化一次。</p>
 <div class="rmdnote">
 <p>
 有一个完整功能的温度计示例，即<code>thermoota</code>，它支持FOTA，通知和指示。
@@ -1118,17 +1239,19 @@ Figure 3.24: iBeacon扫描结果
 <p>BLE 5.0介绍了一种新的采样率为2M的非编码PHY。</p>
 <div id="理论峰值吞吐量" class="section level3">
 <h3><span class="header-section-number">3.7.1</span> 理论峰值吞吐量</h3>
-<p>数据物理通道PDU的最大有效载荷长度为251字节。采用2M PHY，传输时间为1048 μs。一个空的数据物理通道PDU的传输时间为44 μs。</p>
+<p>数据物理通道PDU的最大有效载荷长度为251字节。采用2M PHY，传输时间为1048
+μs。一个空的数据物理通道PDU的传输时间为44 μs。</p>
 <p>为了实现一个方向上的最大吞吐量，该方向上所有pdu的长度应该为251字节，而另一个方向上所有pdu的长度应该为空。所以，251个字节总的传输时间为：</p>
 <p><span class="math display">\[ 1048 + 44 + 150 * 2 = 1392 (\mu s) \]</span></p>
 <p>因此，链路层提供的理论峰值吞吐量为：</p>
 <p><span class="math display">\[ 251 * 8 / 1392 * 1000000 \approx 1442.528 (kbps) \]</span></p>
-<p>对于一个运行在GATT之上的应用程序，I2CAP和ATT都有它们自己的开销。通常，GATT的最大有效负载为(251 - 7 =)244字节。因此，GATT可以提供的理论上的峰值吞吐量为：</p>
+<p>对于一个运行在GATT之上的应用程序，I2CAP和ATT都有它们自己的开销。通常，GATT的最大有效负载为(251 -
+7 =)244字节。因此，GATT可以提供的理论上的峰值吞吐量为：</p>
 <p><span class="math display">\[ 244 * 8 / 1392 * 1000000 \approx 1402.298 (kbps) \]</span></p>
 </div>
 <div id="测试吞吐量" class="section level3">
 <h3><span class="header-section-number">3.7.2</span> 测试吞吐量</h3>
-<p>在SDK中有一对用于吞吐量测试的示例 (Figure ).</p>
+<p>在SDK中有一对用于吞吐量测试的示例 （图 <a href="tutorial.html#fig:ch1-tpt">3.25</a>）.</p>
 <div class="figure" style="text-align: center"><span id="fig:ch1-tpt"></span>
 <img src="img/ch1-tpt.png" alt="吞吐量测试示例" width="60%" />
 <p class="caption">
@@ -1137,8 +1260,10 @@ Figure 3.25: 吞吐量测试示例
 </div>
 <div id="对-ingdemo-进行测试" class="section level4">
 <h4><span class="header-section-number">3.7.2.1</span> 对 <code>INGdemo</code> 进行测试</h4>
-<p>下载 <code>peripheral_throughput</code>. 使用 <code>INGdemo</code> 连接到 <code>ING Tpt</code> , 打开吞吐量测试页面。在这个页面上，我们可以测试从主到从、从到主或同时在两个方向上的吞吐量。</p>
-<p>图中 显示，使用支持2M PHY的普通Android手机，我们可以实现1M+ bps的空中传输吞吐量。</p>
+<p>下载 <code>peripheral_throughput</code>. 使用 <code>INGdemo</code> 连接到 <code>ING Tpt</code> ,
+打开吞吐量测试页面。在这个页面上，我们可以测试从主到从、从到主或同时在两个方向上的吞吐量。</p>
+<p>图中 （图 <a href="tutorial.html#fig:ch1-tpt-app">3.26</a>）显示，使用支持2M
+PHY的普通Android手机，我们可以实现1M+ bps的空中传输吞吐量。</p>
 <div class="figure" style="text-align: center"><span id="fig:ch1-tpt-app"></span>
 <img src="img/ch1-tpt_app.png" alt="Android手机上的吞吐量" width="30%" />
 <p class="caption">
@@ -1163,14 +1288,18 @@ Figure 3.26: Android手机上的吞吐量
 <li><p>通用输入</p>
 <p>通过这个特性，中心设备向外围设备发送数据。</p></li>
 </ul>
-<p>下载 <code>central_throughput</code> 到另一块板。这个应用程序有一个UART命令行接口给到主机。连接到主机，输入“?”以查看所支持的命令。这个APP自动连接到 <code>peripheral_throughput</code> 。输入命令 <code>start s-&gt;m</code> 或 <code>start m-&gt;s</code> 开始测试从外设到中心设备的吞吐量，或从中心设备到外设的。</p>
+<p>下载 <code>central_throughput</code>
+到另一块板。这个应用程序有一个UART命令行接口给到主机。连接到主机，输入“?”以查看所支持的命令。这个APP自动连接到
+<code>peripheral_throughput</code> 。输入命令 <code>start s-&gt;m</code> 或 <code>start m-&gt;s</code>
+开始测试从外设到中心设备的吞吐量，或从中心设备到外设的。</p>
 <div class="figure" style="text-align: center"><span id="fig:ch1-cmd"></span>
 <img src="img/ch1-cmd.png" alt="指令接口" width="40%" />
 <p class="caption">
 Figure 3.27: 指令接口
 </p>
 </div>
-<p>图中 显示，使用两块板，我们在空中实现了1.2M+ bps的稳定数据传输。</p>
+<p>图中（图 <a href="tutorial.html#fig:ch1-board-tpt">3.28</a>）显示，使用两块板，我们在空中实现了1.2M+
+bps的稳定数据传输。</p>
 <div class="figure" style="text-align: center"><span id="fig:ch1-board-tpt"></span>
 <img src="img/ch1-board_tpt.png" alt="板间吞吐量" width="70%" />
 <p class="caption">
@@ -1195,7 +1324,9 @@ Figure 3.28: 板间吞吐量
 Figure 3.29: Smart Meter架构
 </p>
 </div>
-<p><code>smart_meter</code> 使用一个通用型基于字符串的输出服务将数据报告到中心设备，比如运行在智能手机上的 <code>INGdemo</code> 。它还拥有可以连接到主机的UART控制接口。</p>
+<p><code>smart_meter</code>
+使用一个通用型基于字符串的输出服务将数据报告到中心设备，比如运行在智能手机上的
+<code>INGdemo</code> 。它还拥有可以连接到主机的UART控制接口。</p>
 <div class="rmdnote">
 <p>
 检查示例 <code>peripheral_console</code> 以了解如何进行字符串输入和输出。
@@ -1208,7 +1339,8 @@ Figure 3.29: Smart Meter架构
 <div id="用-ingwizard-创建一个外设app" class="section level3">
 <h3><span class="header-section-number">3.8.1</span> 用 <code>ingWizard</code> 创建一个外设APP</h3>
 <p>使用GUI编辑器编辑广播数据，命名我们的应用程序为“ING Smart Meter”。</p>
-<p>使用GUI编辑器编辑GATT配置文件。将 <code>INGChips Console Service</code> 添加到GATT配置文件 (Figure ).</p>
+<p>使用GUI编辑器编辑GATT配置文件。将 <code>INGChips Console Service</code>
+添加到GATT配置文件 （图 <a href="tutorial.html#fig:ch1-smart-meter-gatt">3.30</a>）.</p>
 <div class="figure" style="text-align: center"><span id="fig:ch1-smart-meter-gatt"></span>
 <img src="img/ch1-smart-meter-gatt.png" alt="Smart Meter GATT配置文件" width="60%" />
 <p class="caption">
@@ -1218,7 +1350,8 @@ Figure 3.30: Smart Meter GATT配置文件
 </div>
 <div id="定义温度计数据" class="section level3">
 <h3><span class="header-section-number">3.8.2</span> 定义温度计数据</h3>
-<p>温度计由它的设备地址和id来识别。每个温度计使用由 <code>conn_handle</code> 来显示自己的连接状态。</p>
+<p>温度计由它的设备地址和id来识别。每个温度计使用由 <code>conn_handle</code>
+来显示自己的连接状态。</p>
 <div class="sourceCode" id="cb24"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb24-1"><a href="tutorial.html#cb24-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> slave_info</span>
 <span id="cb24-2"><a href="tutorial.html#cb24-2"></a>{</span>
 <span id="cb24-3"><a href="tutorial.html#cb24-3"></a>    <span class="dt">uint8_t</span>     id;</span>
@@ -1233,7 +1366,9 @@ Figure 3.30: Smart Meter GATT配置文件
 </div>
 <div id="扫描温度计" class="section level3">
 <h3><span class="header-section-number">3.8.3</span> 扫描温度计</h3>
-<p>调用两个GAP API接口开始扫描。一旦找到一个设备，会检查它的设备地址是否是温度计。如果是，停止扫描并调用 <code>gap_ext_create_connection</code> 进行连接。
+<p>调用两个GAP
+API接口开始扫描。一旦找到一个设备，会检查它的设备地址是否是温度计。如果是，停止扫描并调用
+<code>gap_ext_create_connection</code> 进行连接。
 连接建立后，如果有温度计未连接，则重新开始扫描。</p>
 </div>
 <div id="发现服务" class="section level3">
@@ -1243,7 +1378,8 @@ Figure 3.30: Smart Meter GATT配置文件
 </div>
 <div id="数据处理" class="section level3">
 <h3><span class="header-section-number">3.8.5</span> 数据处理</h3>
-<p>预定温度计的 <code>Temperature Measurement</code> 特性。当接收到一个新的测量值时，将该值转换为一个字符串并将其报告给主机。如果我们的应用程序已经连接到一个中心设备，通过GATT特性将该信息转发给它。</p>
+<p>预定温度计的 <code>Temperature Measurement</code>
+特性。当接收到一个新的测量值时，将该值转换为一个字符串并将其报告给主机。如果我们的应用程序已经连接到一个中心设备，通过GATT特性将该信息转发给它。</p>
 </div>
 <div id="鲁棒性" class="section level3">
 <h3><span class="header-section-number">3.8.6</span> 鲁棒性</h3>
@@ -1255,7 +1391,8 @@ Figure 3.30: Smart Meter GATT配置文件
 </div>
 <div id="准备温度计" class="section level3">
 <h3><span class="header-section-number">3.8.7</span> 准备温度计</h3>
-<p>我们可以将示例 <code>thermo_ota</code> 用做温度计。但是我们需要为每一个温度计配置不同的地址。</p>
+<p>我们可以将示例 <code>thermo_ota</code>
+用做温度计。但是我们需要为每一个温度计配置不同的地址。</p>
 <p>我们可以写一个简单的脚本为下载程序自动生成这些地址:</p>
 <div class="sourceCode" id="cb25"><pre class="sourceCode pascal"><code class="sourceCode pascal"><span id="cb25-1"><a href="tutorial.html#cb25-1"></a><span class="kw">procedure</span> OnStartBin(<span class="kw">const</span> BatchCounter, BinIndex: <span class="dt">Integer</span>;</span>
 <span id="cb25-2"><a href="tutorial.html#cb25-2"></a>                     <span class="kw">var</span> Data: TBytes; <span class="kw">var</span> Abort: <span class="dt">Boolean</span>);</span>
@@ -1263,34 +1400,42 @@ Figure 3.30: Smart Meter GATT配置文件
 <span id="cb25-4"><a href="tutorial.html#cb25-4"></a>  <span class="kw">if</span> BinIndex &lt;&gt; <span class="dv">6</span> <span class="kw">then</span> <span class="kw">Exit</span>;</span>
 <span id="cb25-5"><a href="tutorial.html#cb25-5"></a>  Data[<span class="dv">0</span>] := BatchCounter;</span>
 <span id="cb25-6"><a href="tutorial.html#cb25-6"></a><span class="kw">end</span>;</span></code></pre></div>
-<p>有关下载脚本的更多信息，请参见 <a href="core-tools.html#script-mass-prod">脚本与量产</a>.</p>
+<p>有关下载脚本的更多信息，请参见 <a href="core-tools.html#script-mass-prod">Scripting &amp; Mass
+Production</a>.</p>
 </div>
 <div id="测试" class="section level3">
 <h3><span class="header-section-number">3.8.8</span> 测试</h3>
-<p>在主机上输入 <code>start</code> 命令来启动我们的应用程序(开始扫描并广播)。使用 <code>INGdemo</code> 连接到名为“ING Smart Meter”的设备，检查温度测量结果。</p>
+<p>在主机上输入 <code>start</code> 命令来启动我们的应用程序(开始扫描并广播)。使用
+<code>INGdemo</code> 连接到名为“ING Smart Meter”的设备，检查温度测量结果。</p>
 <p>关闭和打开一个或多个温度计，我们的应用程序应该能够重新连接到它们。</p>
 </div>
 </div>
 <div id="hello-nim" class="section level2">
 <h2><span class="header-section-number">3.9</span> Hello, Nim</h2>
-<p>要使用 <code>Nim</code> 开发应用程序，需要 <code>Nim</code> 和 <code>Gnu 工具链</code> 。 <code>Nim</code> 编译器将 <code>Nim</code> 源代码翻译成 <code>C</code> 源代码，然后调用 <code>Gnu工具链</code> 将翻译后的 <code>C</code> 源代码与SDK进行编译链接，如图所示。 .</p>
+<p>要使用 <code>Nim</code> 开发应用程序，需要 <code>Nim</code> 和 <code>Gnu 工具链</code> 。 <code>Nim</code> 编译器将
+<code>Nim</code> 源代码翻译成 <code>C</code> 源代码，然后调用 <code>Gnu工具链</code> 将翻译后的 <code>C</code>
+源代码与SDK进行编译链接，如图所示。（图 <a href="tutorial.html#fig:ch1-nim-build">3.31</a>）.</p>
 <div class="figure" style="text-align: center"><span id="fig:ch1-nim-build"></span>
 <img src="img/ch1-nim-build.png" alt="建立一个Nim应用程序" width="80%" />
 <p class="caption">
 Figure 3.31: 建立一个Nim应用程序
 </p>
 </div>
-<p>推荐使用 <code>Visual Studio Code</code> 编辑和构建 <code>Nim</code> 代码。让我们使用 <code>Nim</code> 制作一个简单的应用程序。</p>
+<p>推荐使用 <code>Visual Studio Code</code> 编辑和构建 <code>Nim</code> 代码。让我们使用 <code>Nim</code>
+制作一个简单的应用程序。</p>
 <div id="创建一个-nim-app" class="section level3">
 <h3><span class="header-section-number">3.9.1</span> 创建一个 <code>Nim</code> APP</h3>
-<p>在 <code>Develpment Tool</code> 页面，选择 <code>Nim + Gnu Toolchain</code> 。选择 <code>By Code</code> 生成广告和ATT数据库 (Figure ).</p>
+<p>在 <code>Develpment Tool</code> 页面，选择 <code>Nim + Gnu Toolchain</code> 。选择 <code>By Code</code>
+生成广播和ATT数据库 （图 <a href="tutorial.html#fig:ch1-nim-by-code">3.32</a>）.</p>
 <div class="figure" style="text-align: center"><span id="fig:ch1-nim-by-code"></span>
 <img src="img/ch1-nim-by-code.png" alt="通过代码生成数据" width="60%" />
 <p class="caption">
 Figure 3.32: 通过代码生成数据
 </p>
 </div>
-<p><code>ingWizard</code> 也支持为 <code>Nim</code> 应用程序创建这些数据。在本教程中，我们将展示轻松地在 <code>Nim</code> 中使用元程序创建这些数据。</p>
+<p><code>ingWizard</code> 也支持为 <code>Nim</code>
+应用程序创建这些数据。在本教程中，我们将展示轻松地在 <code>Nim</code>
+中使用元程序创建这些数据。</p>
 </div>
 <div id="创建广播数据" class="section level3">
 <h3><span class="header-section-number">3.9.2</span> 创建广播数据</h3>
@@ -1318,8 +1463,11 @@ Figure 3.32: 通过代码生成数据
                Characteristic(SIG_UUID_CHARACT_BATTERY_LEVEL, ATT_PROPERTY_READ,
                               [20u8], &quot;HANDLE_BATTERY_LEVEL&quot;)],
                &quot;profileData&quot;)</code></pre>
-<p>上述代码编译完成后，ATT数据库存储在 <code>profileData</code> 中，电池电量特性由常量 <code>HANDLE_BATTERY_LEVEL</code> 标识，电池电量值在ATT基础(即 <code>profileData</code> )中的偏移量(以字节为单位)由常量 <code>HANDLE_BATTERY_LEVEL_OFFSET</code> 标识。
-我们可以通过宏 <code>defineProfile</code> 像使用普通变量一样使用这些生成的变量和常量。例如，让我们创建一个任务来随机更新电池电量:</p>
+<p>上述代码编译完成后，ATT数据库存储在 <code>profileData</code> 中，电池电量特性由常量
+<code>HANDLE_BATTERY_LEVEL</code> 标识，电池电量值在ATT基础(即 <code>profileData</code>
+)中的偏移量(以字节为单位)由常量 <code>HANDLE_BATTERY_LEVEL_OFFSET</code> 标识。
+我们可以通过宏 <code>defineProfile</code>
+像使用普通变量一样使用这些生成的变量和常量。例如，让我们创建一个任务来随机更新电池电量:</p>
 <pre class="nim"><code>proc updateBatteryLevel(unused: pointer) {.noconv.} =
   while true:
     vTaskDelay(pdMS_TO_TICKS(1000))
@@ -1328,7 +1476,8 @@ Figure 3.32: 通过代码生成数据
 discard xTaskCreate(updateBatteryLevel, &quot;b&quot;,
                     configMINIMAL_STACK_SIZE, nil,
                     configMAX_PRIORITIES - 1, nil)</code></pre>
-<p>在 <code>Nim</code> 中至少有三种方法可以生成伪随机数，使用 <code>C</code> 语言stdlib库提供的PRNG，使用 <code>Nim</code> 提供的PRNG，或者创建我们自己的PRNG。</p>
+<p>在 <code>Nim</code> 中至少有三种方法可以生成伪随机数，使用 <code>C</code>
+语言stdlib库提供的PRNG，使用 <code>Nim</code> 提供的PRNG，或者创建我们自己的PRNG。</p>
 <ul>
 <li>使用 <code>C</code> 的PRNG</li>
 </ul>
@@ -1357,10 +1506,13 @@ proc rand_level(): uint8 = cast[uint8](rand(0..100))</code></pre>
 </div>
 <div id="使用-nim-的好处" class="section level3">
 <h3><span class="header-section-number">3.9.4</span> 使用 <code>Nim</code> 的好处</h3>
-<p><code>Nim</code> 和 <code>C</code> 一样强大，因为SDK为 <code>Nim</code> 提供了所有绑定在 <code>C</code> 语言上的API接口 。采用 <code>Nim</code> 有很多好处，比如它支持元编程，而且是强类型的。</p>
+<p><code>Nim</code> 和 <code>C</code> 一样强大，因为SDK为 <code>Nim</code> 提供了所有绑定在 <code>C</code>
+语言上的API接口 。采用 <code>Nim</code>
+有很多好处，比如它支持元编程，而且是强类型的。</p>
 <ul>
 <li><p><em>元编程</em></p>
-<p>使用元编程，我们可以在编译时创建广播和ATT数据库，这显然在运行时开销为 <code>0</code> 。</p></li>
+<p>使用元编程，我们可以在编译时创建广播和ATT数据库，这显然在运行时开销为
+<code>0</code> 。</p></li>
 <li><p><em>强类型</em></p>
 <p><code>Nim</code> 比 <code>C</code> 属于更强的类型，这有助于使代码更安全。</p></li>
 </ul>
@@ -1373,8 +1525,7 @@ proc rand_level(): uint8 = cast[uint8](rand(0..100))</code></pre>
 <ol start="11">
 <li id="fn11"><p><a href="https://developer.apple.com/ibeacon/" class="uri">https://developer.apple.com/ibeacon/</a><a href="tutorial.html#fnref11" class="footnote-back">↩︎</a></p></li>
 <li id="fn12"><p>Note that UUID is not allowed to be all 0s in final products.<a href="tutorial.html#fnref12" class="footnote-back">↩︎</a></p></li>
-<li id="fn13"><p><code>Makefile</code> follows the
-syntax of GNU <code>make</code>.<a href="tutorial.html#fnref13" class="footnote-back">↩︎</a></p></li>
+<li id="fn13"><p><code>Makefile</code> follows the syntax of GNU <code>make</code>.<a href="tutorial.html#fnref13" class="footnote-back">↩︎</a></p></li>
 <li id="fn14"><p><a href="https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.service.health_thermometer.xml" class="uri">https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.service.health_thermometer.xml</a><a href="tutorial.html#fnref14" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>

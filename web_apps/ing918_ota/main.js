@@ -675,13 +675,13 @@ function showProgress(msg, progress) {
 }
 
 function startRunning() {
-    $('#main_window').hide();
+    $('#main_window').attr('hidden', true);
     $('#running_status').show();
     showProgress('', -1);
 }
 
 function stopRunning() {
-    $('#main_window').show();
+    $('#main_window').attr('hidden', false);
     $('#running_status').hide();
 }
 
@@ -734,7 +734,6 @@ function setup_drop_zone(id, drop_handler)
 }
 
 async function appStart() {
-    $('#main_window').hide();
     $('#running_status').hide();
 
     if (window.File && window.FileReader && window.FileList && window.Blob

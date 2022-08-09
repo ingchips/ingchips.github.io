@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.15.1/dist/css/uikit.min.css" />
+    <title>BLE2MQTT</title>
+</head>
+<body>
+
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.15.1/dist/js/uikit.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.15.1/dist/js/uikit-icons.min.js"></script>
+
+<script src="https://www.unpkg.com/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="msg.js"></script>
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+<script>
+    console.log(mqtt);
+</script>
+<script src="main.js"></script>
+
+<div class="uk-container">
+
+    <div class="uk-margin"></div>
+    <div class="uk-margin">
+        <h2 id="title">Forward BLE Data to MQTT Server</h2>
+    </div>
+
+    <div id="main_window">
+        <div class="uk-margin"></div>
+
+        <div class="uk-card uk-card-default uk-card-body">
+            <div class="uk-card-header">
+                <div class="uk-grid-small uk-flex-middle" uk-grid>
+                    <div class="uk-width-expand">
+                        <h3 class="uk-card-title uk-margin-remove-bottom">Connect to MQTT Server</h3>
+                        <p class="uk-text-meta uk-margin-remove-top">When running from browsers, only websockets are supported</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="uk-margin"></div>
+            <form class="uk-form-horizontal">
+                <div class="uk-margin">
+                    <label class="uk-form-label">Protocol</label>
+                    <div class="uk-form-controls">
+                        <select class="uk-select" id="in_proto">
+                            <option>ws://</option>
+                            <option>wss://</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="uk-margin">
+                    <label class="uk-form-label">Server</label>
+                    <div class="uk-form-controls">
+                        <input class="uk-input uk-form-danger" type="text" id="in_server" value="192.168.1.2"></input>
+                    </div>
+                </div>
+                <div class="uk-margin">
+                    <label class="uk-form-label">Port</label>
+                    <div class="uk-form-controls">
+                        <input class="uk-input" type="text" id="in_port" value="9001"></input>
+                    </div>
+                </div>
+                <div class="uk-margin">
+                    <label class="uk-form-label">User Name</label>
+                    <div class="uk-form-controls">
+                        <input class="uk-input" type="text" id="in_user" value=""></input>
+                    </div>
+                </div>
+                <div class="uk-margin">
+                    <label class="uk-form-label">Password</label>
+                    <div class="uk-form-controls">
+                        <input class="uk-input" type="text" id="in_pass" value=""></input>
+                    </div>
+                </div>
+                <div class="uk-margin">
+                    <label class="uk-form-label">Publish to topic</label>
+                    <div class="uk-form-controls">
+                        <input class="uk-input" type="text" id="in_topic" value="ingchips/iq_report"></input>
+                    </div>
+                </div>
+                <div class="uk-margin">
+                    <label class="uk-form-label">Data prefix</label>
+                    <div class="uk-form-controls">
+                        <input class="uk-input uk-form-danger" type="text" id="in_prefix" value="D1:29:F6:BE:F3:26"></input>
+                    </div>
+                </div>
+            </form>
+
+            <div class="uk-margin">
+                <button id="btn_conn_mqtt" class="uk-button uk-button-primary">Connect To Server</button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div id="window_ble">
+        <div class="uk-margin"></div>
+
+        <div class="uk-card uk-card-default uk-card-body">
+            <div class="uk-card-header">
+                <div class="uk-grid-small uk-flex-middle" uk-grid>
+                    <div class="uk-width-expand">
+                        <h3 class="uk-card-title uk-margin-remove-bottom">BLE Deivce UUID</h3>
+                        <p class="uk-text-meta uk-margin-remove-top">Configure UUID of service & characteristic here</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="uk-margin"></div>
+            <form class="uk-form-horizontal">
+
+                <div class="uk-margin">
+                    <label class="uk-form-label">Service</label>
+                    <div class="uk-form-controls">
+                        <input class="uk-input" type="text" id="uuid_service" value="43f4b114-ca67-48e8-a46f-9a8ffeb7146a"></input>
+                    </div>
+                </div>
+                <div class="uk-margin">
+                    <label class="uk-form-label">Characteristic</label>
+                    <div class="uk-form-controls">
+                        <input class="uk-input" type="text" id="uuid_char" value="bf83f3f2-399a-414d-9035-ce64ceb3ff67"></input>
+                    </div>
+                </div>
+            </form>
+
+            <div class="uk-margin">
+                <button id="btn_select_ble" class="uk-button uk-button-primary">Select Device</button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div id="window_info">
+        <div class="uk-margin"> </div>
+
+        <div class="uk-card uk-card-default uk-card-body">
+
+            <div class="uk-card-header">
+                <div class="uk-grid-small uk-flex-middle" uk-grid>
+                    <div class="uk-width-expand">
+                        <h3 class="uk-card-title uk-margin-remove-bottom">Report Count</h3>
+                    </div>
+                </div>
+            </div>
+
+            <h3 id="report_cnt">0</h3>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,22 @@
+const msg = {
+    try_smaller_mtu: 'try smaller MTU: ',
+    burning: 'burning ',
+    fallback_mtu: 'fallback to MTU size = minimum (23)',
+    error_retry: 'error occurs, retry...',
+    enable_fota: "enable FOTA...",
+    failed_fota: "failed to enable FOTA",
+    err_dev_not_ready: 'Error: device not ready',
+    err_nothing_to_up: 'Error: nothing to update',
+    fota_complete: "FOTA burn complete, reboot...",
+    exception: 'EXCEPTION: ',
+    scaning: 'Scanning for BLE devices ...',
+    connecting: 'connecting ...',
+    cannot_conn: 'Can not connect to selected device',
+    dev_disc: 'Device disconected',
+    discover_fota: 'discovering INGCHIPS FOTA Service ...',
+    query_ver: 'querying version ...',
+    sel_dev: 'SELECT a BLE device',
+    sec_fota_confirm: 'Confirm that there is a secondary FOTA app installed, then press Yes',
+    exchange_keys: 'exchange keys',
+    mtu_too_small: 'mtu is too small for secured FOTA'
+}

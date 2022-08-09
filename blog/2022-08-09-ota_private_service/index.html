@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>在 ING918xx 上实现客户私有 OTA Service - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="本文介绍一种客户私有 OTA Service 的移植、实现过程。"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item has-children">
+              
+              
+<a class="" href="/docs/sdk/apps/#web-apps">
+  
+  Web 工具
+  
+</a>
+
+              
+                
+                <ul class="submenu">
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/callgraph">
+  
+  Callgraph (调用图)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index_cn.html">
+  
+  ING918/ING916 FOTA (空中升级)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/powerprofiler/">
+  
+  Online Power Profiler
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/air_trace/">
+  
+  Trace Logger
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ble_mqtt/">
+  
+  BLE2MQTT
+  
+</a>
+
+  </li>
+  
+</ul>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+              
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <article class="post post-full">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <header class="post-header has-gradient outer">
+      
+      
+      <div class="inner-sm">
+        <div class="post-meta">
+          <time class="published" datetime="2022-08-09 00:00">August 09, 2022</time>
+        </div>
+        <h1 class="post-title">在 ING918xx 上实现客户私有 OTA Service</h1>
+        
+        
+      </div>
+    </header>
+    <div class="inner-md outer">
+      <div class="post-content">
+        <h2 id="1-概述">1. 概述</h2>
+
+<p>本文介绍在 ING918xx 上移植、实现一种客户私有 <em>OTA Service</em> 过程。<em>INGCHIPS OTA Service</em> 的开发和演示请参考
+<a href="https://ingchips.github.io/blog/fota_demo_zh/">空中固件升级（FOTA）的快速演示</a>。</p>
+
+<h2 id="2-ing918xx-ota-实现方式">2. ING918xx OTA 实现方式</h2>
+
+<ol>
+  <li>下载新的程序（下图中的Application 2）到 Flash 的空闲区域。</li>
+  <li>提供新程序的启动地址</li>
+  <li>重启，BootLoader 会自动搬移并完成更新</li>
+</ol>
+
+<p><img src="../img/ota.jpg" alt="OTA memory layout" /></p>
+
+<h2 id="3-实现细节">3. 实现细节</h2>
+
+<p>创建新文件 <em>ota_private_service.c</em>。</p>
+
+<h3 id="31-准备状态记录信息结构体">3.1 准备状态记录信息结构体</h3>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 包含必须的头文件</span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">"ingsoc.h"</span><span class="cp">
+#include</span> <span class="cpf">"platform_api.h"</span><span class="cp">
+#include</span> <span class="cpf">"rom_tools.h"</span><span class="cp">
+#include</span> <span class="cpf">"eflash.h"</span><span class="cp">
+#include</span> <span class="cpf">"ota_service.h"</span><span class="cp">
+</span></code></pre></div></div>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 创建状态记录信息结构体</span>
+<span class="cp">#define PAGE_SIZE (8192)//static size for one flash page
+</span>
+<span class="k">typedef</span> <span class="k">enum</span>
+<span class="p">{</span>
+  <span class="n">OTA_SERVICE_DISABLED</span>  <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="n">OTA_SERVICE_START</span>     <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span><span class="p">),</span>
+  <span class="n">OTA_SERVICE_END</span>       <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span>
+<span class="p">}</span> <span class="n">ota_service_flag_e</span><span class="p">;</span>
+
+<span class="k">typedef</span> <span class="k">struct</span>
+<span class="p">{</span>
+  <span class="n">ota_ver_t</span>             <span class="n">ota_ver</span><span class="p">;</span><span class="c1">//place to save app version</span>
+  <span class="n">ota_service_flag_e</span>    <span class="n">ota_service_flag</span><span class="p">;</span><span class="c1">//start/end</span>
+
+  <span class="c1">// static data from controller</span>
+  <span class="kt">uint32_t</span>    <span class="n">ota_load_addr</span><span class="p">;</span><span class="c1">//load address of new app</span>
+  <span class="kt">uint32_t</span>    <span class="n">ota_flash_base_addr</span><span class="p">;</span><span class="c1">//flash address to save ota data</span>
+  <span class="kt">uint32_t</span>    <span class="n">ota_file_size</span><span class="p">;</span><span class="c1">//total size of new app bin</span>
+
+  <span class="c1">// dynamic variables to hold downloading progess</span>
+  <span class="kt">uint32_t</span>                    <span class="n">ota_curr_page_addr</span><span class="p">;</span>
+  <span class="kt">uint32_t</span>                    <span class="n">ota_curr_page_size</span><span class="p">;</span>
+  <span class="kt">uint8_t</span>                     <span class="n">page_buffer</span><span class="p">[</span><span class="n">PAGE_SIZE</span><span class="p">];</span>
+
+  <span class="kt">uint32_t</span>    <span class="n">ota_total_size</span><span class="p">;</span><span class="c1">//size that has been program to flash</span>
+<span class="p">}</span> <span class="n">ota_service_data_s</span><span class="p">;</span>
+
+<span class="n">ota_service_data_s</span> <span class="n">ota_service_data</span> <span class="o">=</span>
+<span class="p">{</span>
+  <span class="p">.</span><span class="n">ota_service_flag</span> <span class="o">=</span> <span class="n">OTA_SERVICE_DISABLED</span><span class="p">,</span>
+  <span class="p">.</span><span class="n">ota_ver</span> <span class="o">=</span> <span class="p">{</span> <span class="p">.</span><span class="n">app</span> <span class="o">=</span> <span class="p">{.</span><span class="n">major</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="p">.</span><span class="n">minor</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="p">.</span><span class="n">patch</span> <span class="o">=</span> <span class="mi">0</span><span class="p">}</span> <span class="p">},</span>
+  <span class="p">.</span><span class="n">ota_curr_page_addr</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="p">.</span><span class="n">ota_total_size</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="p">};</span>
+</code></pre></div></div>
+<h3 id="32-创建初始化接口">3.2 创建初始化接口</h3>
+
+<p>在开始下载之前，有三个信息需要提供：</p>
+
+<ol>
+  <li>load addr：新程序的启动地址。</li>
+  <li>flash addr：重启之前，用来放置新程序的 Flash 基地址。</li>
+  <li>file size: 新程序的大小。</li>
+</ol>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//需要注意的是所有地址都必须是word对齐的，文件大小不能超过flash的空闲区域大小。</span>
+<span class="kt">uint8_t</span> <span class="nf">ota_service_init</span><span class="p">(</span><span class="kt">uint32_t</span> <span class="n">load_addr</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">flash_addr</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">file_size</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">((</span><span class="n">load_addr</span> <span class="o">&amp;</span> <span class="mh">0x3</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">flash_addr</span> <span class="o">&amp;</span> <span class="mh">0x3</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="o">!</span><span class="n">file_size</span><span class="p">)</span> <span class="o">||</span>
+      <span class="p">((</span><span class="n">flash_addr</span> <span class="o">+</span> <span class="n">file_size</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mh">0x84000</span><span class="p">))</span>
+  <span class="p">{</span>
+      <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="n">ota_service_data</span><span class="p">.</span><span class="n">ota_load_addr</span> <span class="o">=</span> <span class="n">load_addr</span><span class="p">;</span>
+  <span class="n">ota_service_data</span><span class="p">.</span><span class="n">ota_flash_base_addr</span> <span class="o">=</span> <span class="n">flash_addr</span><span class="p">;</span>
+  <span class="n">ota_service_data</span><span class="p">.</span><span class="n">ota_file_size</span> <span class="o">=</span> <span class="n">file_size</span><span class="p">;</span>
+  <span class="n">ota_service_data</span><span class="p">.</span><span class="n">ota_curr_page_addr</span> <span class="o">=</span> <span class="n">flash_addr</span><span class="p">;</span>
+  <span class="n">ota_service_data</span><span class="p">.</span><span class="n">ota_service_flag</span> <span class="o">=</span> <span class="n">OTA_SERVICE_START</span><span class="p">;</span>
+  <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>接口返回为0， 代表初始化失败。</p>
+
+<h3 id="33-创建初始化接口">3.3 创建初始化接口</h3>
+
+<p>准备 OTA 数据的下载接口：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 将接受到的数据暂时放在buffer中，满足一个page的大小才可以擦写到flash</span>
+<span class="cp">#define OTA_SERVICE_SAVE_PAGE_DATA(data, len) \
+{ \
+    memcpy(ota_service_data.page_buffer + ota_service_data.ota_curr_page_size, data, len); \
+    ota_service_data.ota_curr_page_size += len; \
+}
+</span></code></pre></div></div>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 将一个page的数据写到flash</span>
+<span class="cp">#define OTA_SERVICE_FLUSH_PAGE_DATA \
+{ \
+    if(ota_service_data.ota_curr_page_size &gt; 0) {\
+    program_flash(ota_service_data.ota_curr_page_addr, ota_service_data.page_buffer, ota_service_data.ota_curr_page_size); \
+    ota_service_data.ota_curr_page_addr += 0x2000; \
+    ota_service_data.ota_curr_page_size = 0; }\
+}
+</span></code></pre></div></div>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 数据处理接口，全部OTA数据下载完成后，返回1，否则返回0</span>
+<span class="kt">uint8_t</span> <span class="nf">ota_service_handle</span><span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span><span class="o">*</span> <span class="n">data</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">len</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="kt">uint8_t</span> <span class="n">complete</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="kt">uint32_t</span> <span class="n">part1_size</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="kt">uint32_t</span> <span class="n">part2_size</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="k">if</span><span class="p">(</span><span class="n">ota_service_data</span><span class="p">.</span><span class="n">ota_service_flag</span> <span class="o">!=</span> <span class="n">OTA_SERVICE_START</span><span class="p">)</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="k">if</span><span class="p">((</span><span class="n">ota_service_data</span><span class="p">.</span><span class="n">ota_curr_page_size</span> <span class="o">+</span> <span class="n">len</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">PAGE_SIZE</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">part1_size</span> <span class="o">=</span> <span class="n">PAGE_SIZE</span> <span class="o">-</span> <span class="n">ota_service_data</span><span class="p">.</span><span class="n">ota_curr_page_size</span><span class="p">;</span>
+    <span class="n">part2_size</span> <span class="o">=</span> <span class="n">len</span> <span class="o">-</span> <span class="n">part1_size</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">else</span>
+  <span class="p">{</span>
+    <span class="n">part1_size</span> <span class="o">=</span> <span class="n">len</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">if</span><span class="p">(</span><span class="n">part1_size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">OTA_SERVICE_SAVE_PAGE_DATA</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">part1_size</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">if</span><span class="p">((</span><span class="n">part2_size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">ota_service_data</span><span class="p">.</span><span class="n">ota_curr_page_size</span> <span class="o">==</span> <span class="n">PAGE_SIZE</span><span class="p">))</span>
+  <span class="p">{</span>
+    <span class="n">OTA_SERVICE_FLUSH_PAGE_DATA</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">if</span><span class="p">(</span><span class="n">part2_size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">OTA_SERVICE_SAVE_PAGE_DATA</span><span class="p">(</span><span class="n">data</span><span class="o">+</span><span class="n">part1_size</span><span class="p">,</span> <span class="n">part2_size</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="n">ota_service_data</span><span class="p">.</span><span class="n">ota_total_size</span> <span class="o">+=</span> <span class="n">len</span><span class="p">;</span>
+  <span class="k">if</span><span class="p">(</span><span class="n">ota_service_data</span><span class="p">.</span><span class="n">ota_total_size</span> <span class="o">==</span> <span class="n">ota_service_data</span><span class="p">.</span><span class="n">ota_file_size</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">complete</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="n">OTA_SERVICE_FLUSH_PAGE_DATA</span><span class="p">;</span>
+    <span class="n">ota_service_data</span><span class="p">.</span><span class="n">ota_service_flag</span> <span class="o">=</span> <span class="n">OTA_SERVICE_END</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span><span class="p">(</span><span class="n">complete</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<h3 id="34-创建重启接口">3.4 创建重启接口</h3>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 数据下载完成后，重启系统</span>
+<span class="kt">void</span> <span class="nf">ota_service_reboot</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="kt">uint8_t</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">50</span><span class="p">];</span>
+
+  <span class="k">if</span><span class="p">(</span><span class="n">ota_service_data</span><span class="p">.</span><span class="n">ota_service_flag</span> <span class="o">!=</span> <span class="n">OTA_SERVICE_END</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+
+  <span class="n">ota_meta_t</span>  <span class="o">*</span><span class="n">meta</span> <span class="o">=</span> <span class="p">(</span><span class="n">ota_meta_t</span> <span class="o">*</span><span class="p">)(</span><span class="n">buffer</span> <span class="o">+</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="n">meta</span><span class="o">-&gt;</span><span class="n">entry</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">meta</span><span class="o">-&gt;</span><span class="n">blocks</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">dest</span> <span class="o">=</span> <span class="n">ota_service_data</span><span class="p">.</span><span class="n">ota_load_addr</span><span class="p">;</span>
+  <span class="n">meta</span><span class="o">-&gt;</span><span class="n">blocks</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">src</span> <span class="o">=</span> <span class="n">ota_service_data</span><span class="p">.</span><span class="n">ota_flash_base_addr</span><span class="p">;</span>
+  <span class="n">meta</span><span class="o">-&gt;</span><span class="n">blocks</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">size</span> <span class="o">=</span> <span class="n">ota_service_data</span><span class="p">.</span><span class="n">ota_total_size</span><span class="p">;</span>
+
+  <span class="n">program_fota_metadata</span><span class="p">(</span><span class="n">meta</span><span class="o">-&gt;</span><span class="n">entry</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">meta</span><span class="o">-&gt;</span><span class="n">blocks</span><span class="p">);</span>
+
+  <span class="n">platform_reset</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<h2 id="4-实现细节">4. 实现细节</h2>
+
+<p>调用流程如下：</p>
+
+<ol>
+  <li>
+    <p>在profile.c中找到以下 API，以及确定 OTA 使用到的 <code class="highlighter-rouge">handle</code>（eg. HANDLE_OF_OTA_DATA）</p>
+
+    <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">static</span> <span class="kt">int</span> <span class="nf">att_write_callback</span><span class="p">(</span><span class="err">……</span><span class="p">)</span>
+ <span class="p">{</span>
+     <span class="k">switch</span> <span class="p">(</span><span class="n">att_handle</span><span class="p">)</span>
+     <span class="p">{</span>
+     <span class="k">case</span> <span class="n">HANDLE_OF_OTA_DATA</span><span class="p">:</span>
+         <span class="c1">// add your ota code</span>
+         <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+
+     <span class="nl">default:</span>
+         <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+     <span class="p">}</span>
+ <span class="p">}</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>主设备发送 <em>start cmd</em>，启动 OTA，并传递相关信息(load_addr, flash_addr, file_size)</p>
+
+    <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>     <span class="k">case</span> <span class="n">HANDLE_OF_DATA</span><span class="p">:</span>
+         <span class="p">...</span>
+         <span class="k">if</span><span class="p">(</span><span class="n">start</span> <span class="n">cmd</span><span class="p">)</span>
+         <span class="p">{</span>
+         <span class="n">ret</span> <span class="o">=</span> <span class="n">ota_service_init</span><span class="p">(</span><span class="n">load_addr</span><span class="p">,</span> <span class="n">flash_addr</span><span class="p">,</span> <span class="n">file_size</span><span class="p">);</span>
+         <span class="c1">//check ret</span>
+         <span class="p">}</span>
+         <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>主设备发送 <em>data cmd</em>，开始 OTA 下载</p>
+
+    <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>     <span class="k">case</span> <span class="n">HANDLE_OF_DATA</span><span class="p">:</span>
+         <span class="p">...</span>
+         <span class="k">if</span><span class="p">(</span><span class="n">data</span> <span class="n">cmd</span><span class="p">)</span>
+         <span class="p">{</span>
+         <span class="n">ret</span> <span class="o">&amp;=</span> <span class="n">ota_service_handle</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">buffer_size</span><span class="p">);</span>
+         <span class="c1">//check ret</span>
+         <span class="p">}</span>
+         <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>主设备发送 <em>reboot cmd</em>，重启设备，完成 OTA 下载</p>
+
+    <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   <span class="k">case</span> <span class="n">HANDLE_OF_DATA</span><span class="p">:</span>
+         <span class="p">...</span>
+         <span class="k">if</span><span class="p">(</span><span class="n">reboot</span> <span class="n">cmd</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">ret</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+         <span class="p">{</span>
+         <span class="n">ota_service_reboot</span><span class="p">();</span>
+         <span class="p">}</span>
+         <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h2 id="5-可能的问题">5. 可能的问题</h2>
+
+<ol>
+  <li>下载程序没有添加应用层的校验，视情况可以自行实现，比如CRC。</li>
+  <li>没有验证功能（将下载后的程序读取到主设备，对比验证），读取部分可以用memcpy实现，可以根据情况自行添加。</li>
+</ol>
+
+      </div><!-- .post-content -->
+    </div><!-- .inner-md -->
+  </article><!-- .post -->
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2021-2022. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

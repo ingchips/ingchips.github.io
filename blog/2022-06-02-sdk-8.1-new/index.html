@@ -257,6 +257,11 @@
   <li>
     <p>[<strong>修正</strong>] <code class="highlighter-rouge">xxxx_request_can_send_now()</code> 潜在的递归调用问题 <span style="background:yellow">(<strong>8.1.4</strong>)</span></p>
   </li>
+  <li>
+    <p>[<strong>修正</strong>] <em>typical</em> 软件包里的一个 HardFault <span style="background:yellow">(<strong>8.1.6</strong>)</span></p>
+
+    <p>对于 ING916xx 的软件包，后续版本我们将考虑使用 Keil 5 编译。ING918xx 软件包仍将使用 Keil 4 编译。</p>
+  </li>
 </ul>
 
 <h2 id="2-示例">2. 示例</h2>
@@ -285,6 +290,55 @@
   </li>
   <li>
     <p>[<strong>更新</strong>] 若干示例的文档 <span style="background:yellow">(<strong>8.1.2</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] <em>Central CTE</em> 增加 FOTA 功能 <span style="background:yellow">(<strong>8.1.6</strong>)</span></p>
+
+    <p>通过串口为天线板下载/更新程序比较麻烦，因此添加了 FOTA 功能。</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] <em>LittlevGL</em>: 加入对 ILI9488 的支持 <span style="background:yellow">(<strong>8.1.6</strong>)</span></p>
+
+    <p>整理了 <em>LittlevGL</em> 里的驱动程序，加入对 ILI9488 的支持。通过编译开关设置显示屏类型:</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>编译开关（宏）</th>
+          <th>说明</th>
+          <th>取值范围</th>
+          <th>默认值</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>SPI_LCD_DRIVER</td>
+          <td>驱动芯片名称</td>
+          <td>LCD_DRIVER_ST7735, LCD_DRIVER_ST7789, LCD_DRIVER_ILI9488</td>
+          <td>LCD_DRIVER_ST7735</td>
+        </tr>
+        <tr>
+          <td>LCD_WIDTH</td>
+          <td>显示屏水平分辨率</td>
+          <td>整数</td>
+          <td>128</td>
+        </tr>
+        <tr>
+          <td>LCD_HEIGHT</td>
+          <td>显示屏垂直分辨率</td>
+          <td>整数</td>
+          <td>160</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>在下列显示屏模块上做过测试：</p>
+
+    <ul>
+      <li><a href="http://www.lcdwiki.com/1.44inch_SPI_Module_ST7735S_SKU:MSP1443">1.44inch SPI Module ST7735S (128x128)</a></li>
+      <li><a href="http://www.lcdwiki.com/1.8inch_SPI_Module_ST7735S_SKU:MSP1803">1.8inch SPI Module ST7735S (128x160)</a></li>
+      <li><a href="http://www.lcdwiki.com/3.5inch_SPI_Module_ILI9488_SKU:MSP3520">3.5inch SPI Module ILI9488</a></li>
+    </ul>
   </li>
 </ul>
 
@@ -358,6 +412,11 @@
   <strong>说明：</strong>
   用于 log 可以会丢失，所以以上统计数据可能偏小。一部分 ISR 负载可能被再次统计到 TASK 负载里。
   </div>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] Wizard 的代码生成：Keil 启动文件兼容 MicroLib 及标准 Lib <span style="background:yellow">(<strong>8.1.6</strong>)</span></p>
+
+    <p>现在 Wizard 为生成的启动文件兼容 MicroLib 及标准 Lib，方便开发者使用标准 Lib、C++ 语言。</p>
   </li>
 </ul>
 

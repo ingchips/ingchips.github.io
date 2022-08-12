@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>AoA 自动跟随小车 - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="本文介绍如何利用 BLE AoA 开发具备自动跟随功能的小车。"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item has-children">
+              
+              
+<a class="" href="/docs/sdk/apps/#web-apps">
+  
+  Web 工具
+  
+</a>
+
+              
+                
+                <ul class="submenu">
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/callgraph">
+  
+  Callgraph (调用图)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index_cn.html">
+  
+  ING918/ING916 FOTA (空中升级)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/powerprofiler/">
+  
+  Online Power Profiler
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/air_trace/">
+  
+  Trace Logger
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ble_mqtt/">
+  
+  BLE2MQTT
+  
+</a>
+
+  </li>
+  
+</ul>
+
+              
+            </li>
+            
+            <li class="menu-item">
+              
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+              
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <article class="post post-full">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <header class="post-header has-gradient outer">
+      
+      
+      <div class="inner-sm">
+        <div class="post-meta">
+          <time class="published" datetime="2022-08-12 00:00">August 12, 2022</time>
+        </div>
+        <h1 class="post-title">AoA 自动跟随小车</h1>
+        
+        
+      </div>
+    </header>
+    <div class="inner-md outer">
+      <div class="post-content">
+        <p>目前市场上可见几种具备自动跟随功能的行李箱，多依靠视觉或者 UWB 技术实现。
+本文介绍如何利用 BLE AoA 寻向技术开发一个具有自动跟随功能的小车。这个小车能够跟随信标前进、转向、停止。</p>
+
+<blockquote>
+  <table>
+    <tbody>
+      <tr>
+        <td><a href="https://github.com/ingchips/auto_follow_car">项目源代码</a></td>
+        <td><strong>注意:</strong> 本文及参考代码仅为概念演示，不考虑信标与小车的配对等问题。</td>
+      </tr>
+    </tbody>
+  </table>
+</blockquote>
+
+<h1 id="整体框架">整体框架</h1>
+
+<p>自动跟随小车主要包括以下部件、模块。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>名称</th>
+      <th>功能</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ING9188xx 4x4 URA 天线阵</td>
+      <td>CTE 采集，主控</td>
+    </tr>
+    <tr>
+      <td>树莓派 Raspberry Pi Zero</td>
+      <td>负责 AoA 计算</td>
+    </tr>
+    <tr>
+      <td><a href="https://m.tb.cn/h.fAdmjFw?tk=7lXj2HrVoHn">智能小车底盘</a></td>
+      <td>包含车架、电机、转向舵机</td>
+    </tr>
+    <tr>
+      <td>TB6612 电机驱动模块（带 3.3V 输出）</td>
+      <td>底盘电机驱动，为天线阵供电</td>
+    </tr>
+    <tr>
+      <td>可调 DC-DC 模块</td>
+      <td>为树莓派、舵机提供 5V 输出</td>
+    </tr>
+    <tr>
+      <td>128x64 OLED 模块（驱动芯片 SSD1306）</td>
+      <td>显示调试或者状态信息（可选）</td>
+    </tr>
+    <tr>
+      <td>锂电池</td>
+      <td>提供动力</td>
+    </tr>
+    <tr>
+      <td>若干杜邦线</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>小车的框图如下所示。其中主控为 4x4 URA 上的 ING9188xx，它将采集到的 CTE 数据提交到树莓派完成方位角解算，再据此调整小车的前进方向。
+另外需要一块 ING9188xx 开发板用来发送 CTE 信标（烧录 <em>Peripheral LEC &amp; CTE</em> 即可），引导小车前进。
+OLED 模块可用来显示调试或者状态信息，它的驱动、使用方法参考 <em>Central Throughput</em>。
+由于树莓派及底盘上的舵机都需要 5V 电源，且耗电较大，所以使用了 DC-DC 模块提供 5V 输出。</p>
+
+<p><img src="../img/follower_car_overview.png" alt="" /></p>
+
+<h1 id="主要功能详解">主要功能详解</h1>
+
+<h2 id="1-底盘控制">1. 底盘控制</h2>
+
+<p>由于天线阵的 IO 口数据有限，小车只能前进，不能后退。有关 TB6612、电机的驱动、舵机控制等，请参考 <a href="../2022-08-08-ble_remote_ctrl_car">蓝牙遥控车</a>。</p>
+
+<blockquote>
+  <p>Q：树莓派 IO 丰富、功能强大，为什么不用它做主控？</p>
+
+  <p>A：我们总是倾向于使用自己的产品。</p>
+</blockquote>
+
+<h2 id="2-cte-采集">2. CTE 采集</h2>
+
+<p>AoX 算法时间、空间复杂度都非常大，无法在 ING918 这样的低功耗 SoC 上运行。事实上，即便对于树莓派的低端型号 Raspberry Pi Zero 来说，
+进行 4x4 全阵列计算仍然非常吃力。考虑到我们只需要方位角，可以只使用 $1 \times 4$ ULA 子阵列，Pi Zero 完成一次计算大概需要 $0.1s$。</p>
+
+<p>实现上，仿照 <em>Central CTE</em>，以<strong>扩展广播 + 桃芯扩展</strong>的方式采集 CTE，经过 Base64 编码后送入树莓派进行方位角解算。</p>
+
+<h2 id="3-树莓派的控制">3. 树莓派的控制</h2>
+
+<p>主控通过串口登录到树莓派并启动寻向算法程序 <a href="/application-notes/an_aoa/futher-info.html#algorithm-integeration"><code class="highlighter-rouge">alg -array 1x4</code></a>。
+之后的任务是将 Base64 编码的 CTE 数据送入树莓派，然后解析 JSON 格式的解算结果。</p>
+
+<p>实现时要考虑：</p>
+
+<ol>
+  <li>树莓派的启动时间长，登录 Shell 时要判断输出然后填写用户名、密码；</li>
+  <li>解析 JSON 结果时，算法程序可能报错（<code class="highlighter-rouge">status != 'ok'</code>）；</li>
+  <li>主控程序重新执行（调试、更新程序），树莓派已经处于登录状态（重启树莓派效率太低），需要做判断。</li>
+</ol>
+
+<p>以上几种情况可能导致相关代码比较混乱。</p>
+
+<h2 id="4-转向控制">4. 转向控制</h2>
+
+<p>小车的转向采用 <a href="https://en.wikipedia.org/wiki/PID_controller">PID</a> 控制：</p>
+
+<ul>
+  <li>误差：(当前方位角 - 目标值)</li>
+  <li>被控量：舵机角度</li>
+</ul>
+
+<p>我们把 $K_i$ 参数设置为 $0$，即只使用 $P$、$D$ 两项进行控制。</p>
+
+<h2 id="5-速度控制">5. 速度控制</h2>
+
+<p>基本原理是小车距离信标比较远时速度快一些，反之就慢一些。但是<a href="../ibeacon_zh#距离估计">根据 RSSI 估计距离效果很差</a>，
+我们联合使用了一个 Kalman 滤波器和一个 IIR 滤波器尝试提高距离估计的准确度。</p>
+
+<h2 id="6-停车控制">6. 停车控制</h2>
+
+<p>安全第一，为了 1) 防止小车撞到自己的脚，2) 实现“急停”功能，在速度控制之外使用迟滞比较器实现了一个单独的停车控制逻辑：一旦（原始）RSSI
+值超过某个门限（RSSI_LOCK），就立即停车，并屏蔽其它速度控制逻辑；当（原始）RSSI 低于另一个门限时，解除停车，允许其它速度控制逻辑控制小车移动。</p>
+
+<h1 id="测试">测试</h1>
+
+<p>参考 <em>pin_def.h</em> 及上面的整体框图搭建硬件。我们搭建的小车如图所示，附加了一个内置 ING9187xx 芯片的 <a href="">Insta360 GO 2</a> 用来拍摄 FPV 视频：</p>
+
+<p><img src="../img/car_follower.png" /></p>
+
+<p>各模块使用的软件总结如下：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>模块</th>
+      <th>软件</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ING9188xx 4x4 URA 天线阵</td>
+      <td>本文所介绍的 app</td>
+    </tr>
+    <tr>
+      <td>树莓派 Raspberry Pi Zero</td>
+      <td>Raspberry Pi OS 及 <code class="highlighter-rouge">alg</code></td>
+    </tr>
+    <tr>
+      <td>ING9188xx 开发板</td>
+      <td><em>Peripheral LEC &amp; CTE</em></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>源代码里附带了 FOTA 功能，完成初次烧录后，通过 OTA 就能方便地升级。建议根据实际情况调整 <code class="highlighter-rouge">REF_RSSI</code> （即小车在距离信标 $1m$ 远处所接收到的信号强度），
+以改善速度控制、停车控制的效果。</p>
+
+      </div><!-- .post-content -->
+    </div><!-- .inner-md -->
+  </article><!-- .post -->
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2021-2022. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

@@ -258,7 +258,7 @@ Figure 4.2: 2D 定位整体架构（参考设计）
 </div>
 <div id="mqtt-消息代理" class="section level3">
 <h3><span class="header-section-number">4.3.4</span> MQTT 消息代理</h3>
-<p>需要打开代理的 <em>wesockets</em> 接口。
+<p>需要使能消息代理的 <em>websockets</em> 接口。
 以 <em>Mosquitto</em> 为例，找到安装目录下的 <em>mosquitto.conf</em> 文件，
 定位到配置 <em>listener</em> 的地方，加入以下几行（IP 地址应当根据实际情况填写）：</p>
 <pre><code>listener 9001 192.168.100.102
@@ -268,7 +268,7 @@ socket_domain ipv4
 listener 1883 192.168.100.102
 socket_domain ipv4</code></pre>
 <p>通过命令 <code>mosquitto -c mosquitto.conf -v</code> 以调试方式启动 <em>Mosquitto</em>，确认
-<em>wesockets</em> 接口是否打开。如果打开了，会出现类似这样的输出：</p>
+<em>websockets</em> 接口是否打开。如果打开了，会出现类似这样的输出：</p>
 <pre><code>Opening websockets listen socket on port 9001</code></pre>
 <p>杀掉 <em>Mosquitto</em> 进程，并重新通过命令 <code>mosquitto -c mosquitto.conf</code> 以正常方式启动。</p>
 <p>尝试用 MQTT 调试工具连接到 <em>Mosquitto</em>，检查是否正常。</p>

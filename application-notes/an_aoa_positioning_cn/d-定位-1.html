@@ -230,8 +230,9 @@ Figure 4.2: 2D 定位整体架构（参考设计）
 <li>新版 Edge 或者 Chrome 浏览器</li>
 <li>MQTT 消息代理，如 <a href="https://mosquitto.org/">Eclipse Mosquitto</a></li>
 <li>MQTT 调试工具，如 <a href="https://apps.microsoft.com/store/detail/mqttexplorer/9PP8SFM082WD?hl=en-us&amp;gl=US">MQTT-Explorer</a></li>
-<li>Python 开发环境，并安装以下软件包
+<li>Python 开发环境（建议使用 Anaconda<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>），并按需要安装以下软件包
 <ul>
+<li><a href="https://numpy.org/install/"><em>numpy</em></a>（Anaconda 已内置）</li>
 <li><a href="https://pypi.org/project/paho-mqtt/"><em>paho-mqtt</em></a></li>
 <li><a href="https://pypi.org/project/pyimgui-wheels/"><em>pyimgui</em></a></li>
 </ul></li>
@@ -318,11 +319,11 @@ Figure 4.6: 2D 定位测试环境
 <li><p>天线阵的位置</p>
 <p>天线阵的位置由软件集里的 <em>scripts/station_2d.json</em> 文件定义。
 下面的内容表示地址为 “D1:29:F6:BE:F3:26” 的天线阵的坐标为 <span class="math inline">\((0, 0, 1.5)\)</span>，即位于原点之上 <span class="math inline">\(1.5m\)</span> 处。
-<code>min_evelation</code> 为仰角的最小值，当计算出的仰角超过此范围时（即标签位置距离天线板在
+<code>min_elevation</code> 为仰角的最小值，当计算出的仰角超过此范围时（即标签位置距离天线板在
 <span class="math inline">\(xoy\)</span> 平面上的投影太远时），忽略它。</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb10-1"><a href="d-定位-1.html#cb10-1"></a><span class="fu">{</span></span>
 <span id="cb10-2"><a href="d-定位-1.html#cb10-2"></a>    <span class="dt">&quot;D1:29:F6:BE:F3:26&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="dv">0</span><span class="ot">,</span> <span class="dv">0</span><span class="ot">,</span> <span class="fl">1.5</span><span class="ot">]</span><span class="fu">,</span></span>
-<span id="cb10-3"><a href="d-定位-1.html#cb10-3"></a>    <span class="dt">&quot;min_evelation&quot;</span><span class="fu">:</span> <span class="fl">30.0</span></span>
+<span id="cb10-3"><a href="d-定位-1.html#cb10-3"></a>    <span class="dt">&quot;min_elevation&quot;</span><span class="fu">:</span> <span class="fl">30.0</span></span>
 <span id="cb10-4"><a href="d-定位-1.html#cb10-4"></a><span class="fu">}</span></span></code></pre></div></li>
 <li><p>场景平面图</p>
 <p>场景平面图由软件集里的 <em>scripts/scene.json</em> 文件定义。下面的内容表示整个场景宽度为 <span class="math inline">\(4m\)</span>，高度为 <span class="math inline">\(3m\)</span>，
@@ -375,7 +376,7 @@ Figure 4.6: 2D 定位测试环境
 <h3><span class="header-section-number">4.3.8</span> 可视化</h3>
 <p>运行以下 Python 模块就可以可视化标签的实时位置：</p>
 <ul>
-<li><em>scripts/calc_dir.py</em></li>
+<li><em>scripts/vis_2d.py</em></li>
 </ul>
 <p>标签用一个彩色的圆形表示，旁边标注蓝牙地址。背景为场景平面图。</p>
 <div class="figure" style="text-align: center"><span id="fig:ch02-world-view"></span>
@@ -392,6 +393,7 @@ Figure 4.7: 2D 定位的可视化
 <hr />
 <ol start="2">
 <li id="fn2"><p>Application Note - Direction Finding Solution<a href="d-定位-1.html#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p><a href="https://www.anaconda.com" class="uri">https://www.anaconda.com</a><a href="d-定位-1.html#fnref3" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

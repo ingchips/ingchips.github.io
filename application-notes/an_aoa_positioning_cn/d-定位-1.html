@@ -6,11 +6,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>4 2D 定位 | 应用指南：BLE 定位解决方案</title>
   <meta name="description" content="本文是 BLE 定位方案的应用指南。" />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
 
   <meta property="og:title" content="4 2D 定位 | 应用指南：BLE 定位解决方案" />
   <meta property="og:type" content="book" />
-  
   
   <meta property="og:description" content="本文是 BLE 定位方案的应用指南。" />
   
@@ -33,7 +32,8 @@
   
 <link rel="prev" href="d-定位.html"/>
 <link rel="next" href="revision-history.html"/>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -49,8 +49,10 @@
 
 
 
-
 <script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
 <style type="text/css">
@@ -117,6 +119,7 @@ code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
+
 
 <link rel="stylesheet" href="css/style.css" type="text/css" />
 </head>
@@ -192,24 +195,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="d-定位-1" class="section level1">
-<h1><span class="header-section-number">4</span> 2D 定位</h1>
-<div id="定位原理-1" class="section level2">
-<h2><span class="header-section-number">4.1</span> 定位原理</h2>
+<div id="d-定位-1" class="section level1 hasAnchor">
+<h1><span class="header-section-number">4</span> 2D 定位<a href="d-定位-1.html#d-定位-1" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="定位原理-1" class="section level2 hasAnchor">
+<h2><span class="header-section-number">4.1</span> 定位原理<a href="d-定位-1.html#定位原理-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>使用 BLE AoA 寻向功能<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>可以计算目标到天线阵的来波方向对应的方位角、仰角。
-假设目标在一个已知的二维平面（或者某些曲面，如半球面）上，根据来波方面可以推算出目标的 2D 坐标，
+假设目标在一个已知的二维平面（或者某些曲面，如半球面）上，根据来波方向可以推算出目标的 2D 坐标，
 见图 <a href="d-定位-1.html#fig:ch02-dir-to-2d-position">4.1</a> 。</p>
-<div class="figure" style="text-align: center"><span id="fig:ch02-dir-to-2d-position"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch02-dir-to-2d-position"></span>
 <img src="img/dir_to_2d_position.png" alt="从寻向到 2D 定位" width="50%" />
 <p class="caption">
 Figure 4.1: 从寻向到 2D 定位
 </p>
 </div>
 </div>
-<div id="整体架构" class="section level2">
-<h2><span class="header-section-number">4.2</span> 整体架构</h2>
+<div id="整体架构" class="section level2 hasAnchor">
+<h2><span class="header-section-number">4.2</span> 整体架构<a href="d-定位-1.html#整体架构" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>图 <a href="d-定位-1.html#fig:ch02-2d-arch">4.2</a> 是 2D 定位系统的一个参考设计。</p>
-<div class="figure" style="text-align: center"><span id="fig:ch02-2d-arch"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch02-2d-arch"></span>
 <img src="img/aoa_2d_arch.png" alt="2D 定位整体架构（参考设计）" width="85%" />
 <p class="caption">
 Figure 4.2: 2D 定位整体架构（参考设计）
@@ -217,10 +220,10 @@ Figure 4.2: 2D 定位整体架构（参考设计）
 </div>
 <p>这个系统使用 MQTT 消息代理（服务器）作为数据中转中心，具有良好的可扩展性、伸缩性，也适合云端部署。</p>
 </div>
-<div id="系统搭建" class="section level2">
-<h2><span class="header-section-number">4.3</span> 系统搭建</h2>
-<div id="资源需求及准备工作" class="section level3">
-<h3><span class="header-section-number">4.3.1</span> 资源需求及准备工作</h3>
+<div id="系统搭建" class="section level2 hasAnchor">
+<h2><span class="header-section-number">4.3</span> 系统搭建<a href="d-定位-1.html#系统搭建" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="资源需求及准备工作" class="section level3 hasAnchor">
+<h3><span class="header-section-number">4.3.1</span> 资源需求及准备工作<a href="d-定位-1.html#资源需求及准备工作" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>要测试 2D 定位系统，至少需要准备以下软硬件资源：</p>
 <ol style="list-style-type: decimal">
 <li><p>PC 机 1 台，要求：</p>
@@ -244,21 +247,22 @@ Figure 4.2: 2D 定位整体架构（参考设计）
 <p>准备工作：</p>
 <ol style="list-style-type: decimal">
 <li><p>下载、安装 <a href="https://ingchips.github.io/docs/getting-started/">SDK</a>；</p></li>
-<li><p>使用 Git 克隆或者下载 <a href="https://github.com/ingchips/ble_positioning">BLE 定位</a> 软件集。</p></li>
+<li><p>使用 Git 克隆或者下载 <a href="https://github.com/ingchips/ble_positioning">BLE 定位</a> 软件集；</p></li>
+<li><p>进入 SDK 安装目录，把 <em>RTL</em> 文件夹内的 <em>alg</em> 可执行文件及　<em>AlgDLL</em> 动态链接库复制到软件集的 <em>scripts</em> 目录；</p></li>
 </ol>
 </div>
-<div id="标签" class="section level3">
-<h3><span class="header-section-number">4.3.2</span> 标签</h3>
+<div id="标签" class="section level3 hasAnchor">
+<h3><span class="header-section-number">4.3.2</span> 标签<a href="d-定位-1.html#标签" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>使用开发板模块代表待定位的标签，直接烧录 SDK 里的 <em>Peripheral LED &amp; CTE</em> 示例即可。开发者也可以根据测试需要修改程序，比如使用固定蓝牙地址、更改广播名称等。</p>
 <p>为开发板上电，保持运行状态。</p>
 </div>
-<div id="天线阵" class="section level3">
-<h3><span class="header-section-number">4.3.3</span> 天线阵</h3>
+<div id="天线阵" class="section level3 hasAnchor">
+<h3><span class="header-section-number">4.3.3</span> 天线阵<a href="d-定位-1.html#天线阵" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>天线阵直接烧录 SDK 里的 <em>Central CTE</em> 示例即可。开发者也可以根据测试需要修改程序，比如修改蓝牙地址、更改广播名称等。</p>
 <p>为天线阵上电，保持运行状态。</p>
 </div>
-<div id="mqtt-消息代理" class="section level3">
-<h3><span class="header-section-number">4.3.4</span> MQTT 消息代理</h3>
+<div id="mqtt-消息代理" class="section level3 hasAnchor">
+<h3><span class="header-section-number">4.3.4</span> MQTT 消息代理<a href="d-定位-1.html#mqtt-消息代理" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>需要使能消息代理的 <em>websockets</em> 接口。
 以 <em>Mosquitto</em> 为例，找到安装目录下的 <em>mosquitto.conf</em> 文件，
 定位到配置 <em>listener</em> 的地方，加入以下几行（IP 地址应当根据实际情况填写）：</p>
@@ -274,12 +278,12 @@ socket_domain ipv4</code></pre>
 <p>杀掉 <em>Mosquitto</em> 进程，并重新通过命令 <code>mosquitto -c mosquitto.conf</code> 以正常方式启动。</p>
 <p>尝试用 MQTT 调试工具连接到 <em>Mosquitto</em>，检查是否正常。</p>
 </div>
-<div id="数据采集" class="section level3">
-<h3><span class="header-section-number">4.3.5</span> 数据采集</h3>
+<div id="数据采集" class="section level3 hasAnchor">
+<h3><span class="header-section-number">4.3.5</span> 数据采集<a href="d-定位-1.html#数据采集" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>用浏览器打开软件集里的 <em>BLE2MQTT</em> 工具（<em>ble2mqtt/index.html</em>）。如图
 <a href="d-定位-1.html#fig:ch02-ble2mqtt-server">4.3</a> 所示，在两个红色框里分别填写 MQTT
 消息代理的 IP 地址和天线阵的蓝牙地址，然后点击 <em>CONNECT TO SERVER</em> 按钮。</p>
-<div class="figure" style="text-align: center"><span id="fig:ch02-ble2mqtt-server"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch02-ble2mqtt-server"></span>
 <img src="img/ble2mqtt_server.png" alt="配置 MQTT 消息代理" width="60%" />
 <p class="caption">
 Figure 4.3: 配置 MQTT 消息代理
@@ -287,14 +291,14 @@ Figure 4.3: 配置 MQTT 消息代理
 </div>
 <p>点击 <em>SELECT DEVICE</em> 按钮，浏览器会列出可见的蓝牙设备（如图 <a href="d-定位-1.html#fig:ch02-ble2mqtt-select-ble">4.4</a>），从中找到名为 <em>ING IQ Forwarder</em> 的设备，
 点击 <em>配对</em> 按钮（这个按钮上的文字随浏览器版本不同而不同，其真实含义为<strong>连接</strong>）。</p>
-<div class="figure" style="text-align: center"><span id="fig:ch02-ble2mqtt-select-ble"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch02-ble2mqtt-select-ble"></span>
 <img src="img/ble2mqtt_select_ble.png" alt="选择蓝牙设备" width="50%" />
 <p class="caption">
 Figure 4.4: 选择蓝牙设备
 </p>
 </div>
 <p><em>BLE2MQTT</em> 工具之后就会自动从天线阵收集 CTE 数据并转发到 MQTT 消息代理。界面上会实时显示转发的消息的总数。</p>
-<div class="figure" style="text-align: center"><span id="fig:ch02-ble2mqtt-reporting"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch02-ble2mqtt-reporting"></span>
 <img src="img/ble2mqtt_reporting.png" alt="BLE2MQTT 工具持续转发消息" width="50%" />
 <p class="caption">
 Figure 4.5: BLE2MQTT 工具持续转发消息
@@ -302,11 +306,11 @@ Figure 4.5: BLE2MQTT 工具持续转发消息
 </div>
 <p>这个工具需要一直保持运行。用 MQTT 调试工具可看到消息上报。</p>
 </div>
-<div id="环境模型" class="section level3">
-<h3><span class="header-section-number">4.3.6</span> 环境模型</h3>
+<div id="环境模型" class="section level3 hasAnchor">
+<h3><span class="header-section-number">4.3.6</span> 环境模型<a href="d-定位-1.html#环境模型" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>假定将天线阵固定在天花板下方，定位标签在一个平面内（比如桌子上）移动，桌子在天线阵下方，
 如图 <a href="d-定位-1.html#fig:ch02-world-model">4.6</a>。</p>
-<div class="figure" style="text-align: center"><span id="fig:ch02-world-model"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch02-world-model"></span>
 <img src="img/world_model.png" alt="2D 定位测试环境" width="30%" />
 <p class="caption">
 Figure 4.6: 2D 定位测试环境
@@ -362,8 +366,8 @@ Figure 4.6: 2D 定位测试环境
 <span id="cb11-19"><a href="d-定位-1.html#cb11-19"></a><span class="fu">}</span></span></code></pre></div></li>
 </ol>
 </div>
-<div id="位置解算" class="section level3">
-<h3><span class="header-section-number">4.3.7</span> 位置解算</h3>
+<div id="位置解算" class="section level3 hasAnchor">
+<h3><span class="header-section-number">4.3.7</span> 位置解算<a href="d-定位-1.html#位置解算" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>根据 MQTT 消息代理的实际情况更新软件集里的 <em>scripts/server_cfg.py</em> 模块。</p>
 <p>分别运行以下两个 Python 模块：</p>
 <ul>
@@ -372,14 +376,14 @@ Figure 4.6: 2D 定位测试环境
 </ul>
 <p>这两个模块需要一直保持运行。</p>
 </div>
-<div id="可视化" class="section level3">
-<h3><span class="header-section-number">4.3.8</span> 可视化</h3>
+<div id="可视化" class="section level3 hasAnchor">
+<h3><span class="header-section-number">4.3.8</span> 可视化<a href="d-定位-1.html#可视化" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>运行以下 Python 模块就可以可视化标签的实时位置：</p>
 <ul>
 <li><em>scripts/vis_2d.py</em></li>
 </ul>
 <p>标签用一个彩色的圆形表示，旁边标注蓝牙地址。背景为场景平面图。</p>
-<div class="figure" style="text-align: center"><span id="fig:ch02-world-view"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch02-world-view"></span>
 <img src="img/world_view.png" alt="2D 定位的可视化" width="60%" />
 <p class="caption">
 Figure 4.7: 2D 定位的可视化
@@ -406,7 +410,6 @@ Figure 4.7: 2D 定位的可视化
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -425,6 +428,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
@@ -445,6 +449,10 @@ gitbook.start({
 "text": null
 },
 "download": ["an_aoa_positioning.pdf", "an_aoa_positioning.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "subsection"
 }
@@ -458,7 +466,7 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

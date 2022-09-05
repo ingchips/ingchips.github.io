@@ -6,11 +6,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>3 3D 定位 | 应用指南：BLE 定位解决方案</title>
   <meta name="description" content="本文是 BLE 定位方案的应用指南。" />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
 
   <meta property="og:title" content="3 3D 定位 | 应用指南：BLE 定位解决方案" />
   <meta property="og:type" content="book" />
-  
   
   <meta property="og:description" content="本文是 BLE 定位方案的应用指南。" />
   
@@ -33,7 +32,8 @@
   
 <link rel="prev" href="intro.html"/>
 <link rel="next" href="d-定位-1.html"/>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -49,8 +49,10 @@
 
 
 
-
 <script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
 <style type="text/css">
@@ -117,6 +119,7 @@ code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
+
 
 <link rel="stylesheet" href="css/style.css" type="text/css" />
 </head>
@@ -192,42 +195,42 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="d-定位" class="section level1">
-<h1><span class="header-section-number">3</span> 3D 定位</h1>
-<div id="定位原理" class="section level2">
-<h2><span class="header-section-number">3.1</span> 定位原理</h2>
+<div id="d-定位" class="section level1 hasAnchor">
+<h1><span class="header-section-number">3</span> 3D 定位<a href="d-定位.html#d-定位" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="定位原理" class="section level2 hasAnchor">
+<h2><span class="header-section-number">3.1</span> 定位原理<a href="d-定位.html#定位原理" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>使用 BLE AoA 寻向功能<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>可以计算目标到天线阵的来波方向对应的方位角、仰角。
 综合使用多个天线阵的来波方向，就可以计算出目标在三维空间中的坐标，
 见图 <a href="d-定位.html#fig:ch1-dir-to-position">3.1</a> 。</p>
-<div class="figure" style="text-align: center"><span id="fig:ch1-dir-to-position"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch1-dir-to-position"></span>
 <img src="img/dir_to_position.png" alt="从寻向到 3D 定位" width="100%" />
 <p class="caption">
 Figure 3.1: 从寻向到 3D 定位
 </p>
 </div>
 </div>
-<div id="ch1-AoA-structure" class="section level2">
-<h2><span class="header-section-number">3.2</span> 工作架构</h2>
+<div id="ch1-AoA-structure" class="section level2 hasAnchor">
+<h2><span class="header-section-number">3.2</span> 工作架构<a href="d-定位.html#ch1-AoA-structure" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>我们将先对 AoA 定位工作的整体架构进行介绍。</p>
-<div id="整体架构图" class="section level3">
-<h3><span class="header-section-number">3.2.1</span> 整体架构图</h3>
+<div id="整体架构图" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.2.1</span> 整体架构图<a href="d-定位.html#整体架构图" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>AoA 定位的整体架构图如下（图 <a href="d-定位.html#fig:ch1-AoA-work-structure">3.2</a>）：</p>
-<div class="figure" style="text-align: center"><span id="fig:ch1-AoA-work-structure"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch1-AoA-work-structure"></span>
 <img src="img/AOA-work-structure.png" alt="AoA整体架构图" width="100%" />
 <p class="caption">
 Figure 3.2: AoA整体架构图
 </p>
 </div>
 </div>
-<div id="aoa-定位工作流程" class="section level3">
-<h3><span class="header-section-number">3.2.2</span> AoA 定位工作流程</h3>
+<div id="aoa-定位工作流程" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.2.2</span> AoA 定位工作流程<a href="d-定位.html#aoa-定位工作流程" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>工作流程有以下3步：</p>
 <p><strong>1.</strong> 位置参数生成</p>
 <p><strong>2.</strong> 位置参数的采集上报</p>
 <p><strong>3.</strong> 角度解算并上报</p>
 </div>
-<div id="aoa-定位主要角色" class="section level3">
-<h3><span class="header-section-number">3.2.3</span> AoA 定位主要角色</h3>
+<div id="aoa-定位主要角色" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.2.3</span> AoA 定位主要角色<a href="d-定位.html#aoa-定位主要角色" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>这里主要有以下几种角色：</p>
 <ul>
 <li><p><strong><em>tag:</em></strong> 被定位的目标板</p></li>
@@ -238,8 +241,8 @@ Figure 3.2: AoA整体架构图
 <li><p><strong><em>alg.exe:</em></strong> 基于Python脚本运行的alg角度解算程序</p></li>
 </ul>
 </div>
-<div id="角色功能说明" class="section level3">
-<h3><span class="header-section-number">3.2.4</span> 角色功能说明</h3>
+<div id="角色功能说明" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.2.4</span> 角色功能说明<a href="d-定位.html#角色功能说明" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <ul>
 <li><p><strong>tag:</strong> <code>tag</code> 是我们最终要定位到的目标板。 <code>tag</code> 可以在蓝牙支持的合理范围内任意移动，并持续发送CTE信号给天线板阵列。</p></li>
 <li><p><strong>Array Board #:</strong> <code>Array Board</code> 默认的由3块天线板组成阵列，每个天线板都有其固定编号。在这里为了方便起见我们用天线板的特有蓝牙地址作为其编号，如：<code>D1:29:F6:BE:F3:26</code> 、 <code>D2:29:F6:BE:F3:26</code> 、 <code>D3:29:F6:BE:F3:26</code> 。每个天线板独立工作，其在开始阶段由接收板发起并建立蓝牙连接，并在工作中实时上报从 <code>tag</code> 收到的位置参数。 <code>Array Board</code> 发送给接收板的位置参数为 <code>BASE64</code> 编码格式，上报速率大约为每秒4条消息。</p></li>
@@ -250,19 +253,19 @@ Figure 3.2: AoA整体架构图
 </ul>
 </div>
 </div>
-<div id="ch2-AoA-establishment" class="section level2">
-<h2><span class="header-section-number">3.3</span> 环境搭建</h2>
+<div id="ch2-AoA-establishment" class="section level2 hasAnchor">
+<h2><span class="header-section-number">3.3</span> 环境搭建<a href="d-定位.html#ch2-AoA-establishment" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>目标板只需要烧录好相应的程序一直运行就好，主要的环境搭建工作有：</p>
 <p><strong>1.</strong> 天线板阵列搭建</p>
 <p><strong>2.</strong> 接收板&amp;8266接收上报系统搭建</p>
 <p><strong>3.</strong> alg程序Python脚本运行</p>
-<div id="天线板阵列搭建" class="section level3">
-<h3><span class="header-section-number">3.3.1</span> 天线板阵列搭建</h3>
+<div id="天线板阵列搭建" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.3.1</span> 天线板阵列搭建<a href="d-定位.html#天线板阵列搭建" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>下面将主要对天线板的结构、烧录以及阵列搭建进行介绍。</p>
-<div id="天线板结构" class="section level4">
-<h4><span class="header-section-number">3.3.1.1</span> 天线板结构</h4>
+<div id="天线板结构" class="section level4 hasAnchor">
+<h4><span class="header-section-number">3.3.1.1</span> 天线板结构<a href="d-定位.html#天线板结构" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>天线板阵列由3块如下天线板组成（图 <a href="d-定位.html#fig:ch2-array-board">3.3</a>）：</p>
-<div class="figure" style="text-align: center"><span id="fig:ch2-array-board"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-array-board"></span>
 <img src="img/Array-Board.png" alt="AoA阵列天线板" width="70%" />
 <p class="caption">
 Figure 3.3: AoA阵列天线板
@@ -270,15 +273,15 @@ Figure 3.3: AoA阵列天线板
 </div>
 <div style="page-break-after: always;"></div>
 <p>其中每块天线板的引脚定义如下（图 <a href="d-定位.html#fig:ch1-welcome">3.4</a>）：</p>
-<div class="figure" style="text-align: center"><span id="fig:ch1-welcome"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch1-welcome"></span>
 <img src="img/Array-Board-Pin.png" alt="天线板引脚" width="70%" />
 <p class="caption">
 Figure 3.4: 天线板引脚
 </p>
 </div>
 </div>
-<div id="天线板烧录" class="section level4">
-<h4><span class="header-section-number">3.3.1.2</span> 天线板烧录</h4>
+<div id="天线板烧录" class="section level4 hasAnchor">
+<h4><span class="header-section-number">3.3.1.2</span> 天线板烧录<a href="d-定位.html#天线板烧录" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>在拿到天线板之后如果不确定天线板地址建议自行烧录一次程序。天线板集成我们 <code>ING918</code> 芯片，程序可以使用SDK里面的 <code>Central CTE</code> 例程。</p>
 <p>在打开的例程中，请先确认宏 <code>AOA_REPORT</code> 已经被定义。之后修改代码中设定的蓝牙地址，位于 <code>./Central CTE/profile.c</code> ，有如下代码段：</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="d-定位.html#cb1-1"></a>    <span class="co">/* You can modify the BT address here */</span></span>
@@ -286,8 +289,8 @@ Figure 3.4: 天线板引脚
 <p>如果修改了此处的蓝牙地址请同时注册蓝牙地址到接收板程序中，详见<a href="d-定位.html#连接天线板">连接天线板</a>。</p>
 <p>在烧录时需要连接 <code>RST</code> 、 <code>EXT</code> 、 <code>GND</code> 、 <code>VCC</code> 、 <code>UART TX</code> 和 <code>UART RX</code> 六个引脚到另一块开发板，之后按下按键正常烧录即可。</p>
 </div>
-<div id="阵列搭建" class="section level4">
-<h4><span class="header-section-number">3.3.1.3</span> 阵列搭建</h4>
+<div id="阵列搭建" class="section level4 hasAnchor">
+<h4><span class="header-section-number">3.3.1.3</span> 阵列搭建<a href="d-定位.html#阵列搭建" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>在搭建环境时需要将三个天线板分别接通电源（ <code>3.3V</code> 和 <code>GND</code> ）即可开始正常工作。</p>
 <p>天线板摆放方面并无特殊要求，但需要注意以下3点：</p>
 <p><strong>1.</strong> 每块天线板要背面（没有丝印的一面）朝向目标板</p>
@@ -295,17 +298,17 @@ Figure 3.4: 天线板引脚
 <p><strong>3.</strong> 两个天线板之间不要距离太近，建议1m以上</p>
 </div>
 </div>
-<div id="接收板8266接收上报系统搭建" class="section level3">
-<h3><span class="header-section-number">3.3.2</span> 接收板&amp;8266接收上报系统搭建</h3>
+<div id="接收板8266接收上报系统搭建" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.3.2</span> 接收板&amp;8266接收上报系统搭建<a href="d-定位.html#接收板8266接收上报系统搭建" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>本接收上报系统所使用的接收板是我们 <code>ING9188</code>开发板，如图所示（图 <a href="d-定位.html#fig:ch2-AoA-Received-Board">3.5</a>）：</p>
-<div class="figure" style="text-align: center"><span id="fig:ch2-AoA-Received-Board"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-AoA-Received-Board"></span>
 <img src="img/AOA-Received-Board.png" alt="ING9188接收板" width="30%" />
 <p class="caption">
 Figure 3.5: ING9188接收板
 </p>
 </div>
 <p>所用到的8266开发板（图 <a href="d-定位.html#fig:ch2-8266-Wifi-Board">3.6</a>）：</p>
-<div class="figure" style="text-align: center"><span id="fig:ch2-8266-Wifi-Board"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-8266-Wifi-Board"></span>
 <img src="img/8266-Wifi-Board.png" alt="8266 WiFi开发板" width="20%" />
 <p class="caption">
 Figure 3.6: 8266 WiFi开发板
@@ -315,19 +318,19 @@ Figure 3.6: 8266 WiFi开发板
 <p>在环境搭建时需要将接收板的 <code>Tx</code> 接到8266的 <code>Rx</code> 即可与8266正常通信。如需查看串口log打印请另外将接收板的 <code>Rx</code> 接到8266的 <code>Tx</code> ，并将串口波特率设置为 <code>115200</code> 即可正常查看log。</p>
 <p>在开始工作之前要先把线接好，如需重新配置8266或重新建立连接只需按下接收板的 <code>reset</code> 键。</p>
 </div>
-<div id="mosquitto服务器搭建" class="section level3">
-<h3><span class="header-section-number">3.3.3</span> mosquitto服务器搭建</h3>
+<div id="mosquitto服务器搭建" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.3.3</span> mosquitto服务器搭建<a href="d-定位.html#mosquitto服务器搭建" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>由于需要用到 <code>mosquitto</code> 下的私网MQTT，在这里我们介绍一下私网MQTT服务器搭建。关于 <code>mosquitto</code> 用法很多在这里我们只介绍和AoA运行有关的内容。</p>
 <p>首先从官网下载 <code>Windows</code> 版本 <code>mosquitto</code> ，<a href="https://mosquitto.org/download">下载路径</a>.</p>
 安装完成，直接启动服务即可开始使用（图 <a href="d-定位.html#fig:ch2-Mosquitto-service-start">3.7</a>），而不用每次都通过命令行打开MQTT服务器。
-<div class="figure" style="text-align: center"><span id="fig:ch2-Mosquitto-service-start"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-Mosquitto-service-start"></span>
 <img src="img/Mosquitto-service-start.png" alt="mosquitto服务" width="70%" />
 <p class="caption">
 Figure 3.7: mosquitto服务
 </p>
 </div>
 之后需要配置账号和密码。在 <code>mosquitto</code> 目录下找到配置文件 <code>mosquitto.conf</code> 任意位置加入下面文本，保存退出（全新安装的情况下，如果是维护已经使用很久的系统，可在配置文件中找到对应的属性进行更改）
-<div class="figure" style="text-align: center"><span id="fig:ch2-Mosquitto-Cfg-File"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-Mosquitto-Cfg-File"></span>
 <img src="img/Mosquitto-Cfg-File.png" alt="mosquitto配置文件" width="70%" />
 <p class="caption">
 Figure 3.8: mosquitto配置文件
@@ -345,14 +348,14 @@ mosquitto_passwd -c /Mosquitto/pwfile.example FirstUserName
 
 mosquitto_passwd /Mosquitto/pwfile.example SecondUserName</code></pre>
 <p>这样就可以添加多个用户信息。（图 <a href="d-定位.html#fig:ch2-Mosquitto-User-Password">3.9</a>）</p>
-<div class="figure" style="text-align: center"><span id="fig:ch2-Mosquitto-User-Password"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-Mosquitto-User-Password"></span>
 <img src="img/Mosquitto-User-Password.png" alt="mosquitto用户注册" width="90%" />
 <p class="caption">
 Figure 3.9: mosquitto用户注册
 </p>
 </div>
 <p>在配置好用户信息之后还需关闭本地电脑的防火墙，否则MQTT服务器开启不成功。</p>
-<div class="figure" style="text-align: center"><span id="fig:ch2-Mosquitto-Firewall"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-Mosquitto-Firewall"></span>
 <img src="img/Mosquitto-Firewall.png" alt="mosquitto防火墙关闭" width="70%" />
 <p class="caption">
 Figure 3.10: mosquitto防火墙关闭
@@ -360,8 +363,8 @@ Figure 3.10: mosquitto防火墙关闭
 </div>
 <p>在完成以上工作之后可以尝试连接MQTT服务器。一般情况下可以正常进行连接，如果连接失败请检查以上配置是否完成，MQTT参数是否正确。</p>
 </div>
-<div id="alg程序python脚本运行" class="section level3">
-<h3><span class="header-section-number">3.3.4</span> alg程序Python脚本运行</h3>
+<div id="alg程序python脚本运行" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.3.4</span> alg程序Python脚本运行<a href="d-定位.html#alg程序python脚本运行" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>首先要保证所运行的Python脚本和 <code>alg.exe</code> 在同一个路径下。</p>
 <p>之后在运行Python脚本之前需要先配置好脚本中的MQTT参数：</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="d-定位.html#cb4-1"></a>broker <span class="op">=</span> <span class="st">&#39;192.168.3.1&#39;</span></span>
@@ -374,15 +377,15 @@ Figure 3.10: mosquitto防火墙关闭
 <span id="cb4-8"><a href="d-定位.html#cb4-8"></a>client_id <span class="op">=</span> <span class="st">&#39;python-mqtt-11111&#39;</span> <span class="co"># generate client ID with pub prefix randomly</span></span></code></pre></div>
 <p>其中 <code>broker</code> 、 <code>username</code> 、 <code>password</code> 和 <code>client_id</code> 是需要根据配置进行修改的参数，其他参数一般不需要修改，也强烈建议不要修改其他参数，否则可能会脚本运行失败。</p>
 <p>之后运行Python脚本，出现如图（图 <a href="d-定位.html#fig:ch2-Python-Alg-Output">3.11</a>）的结果说明已经正常生成角度解算结果：</p>
-<div class="figure" style="text-align: center"><span id="fig:ch2-Python-Alg-Output"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-Python-Alg-Output"></span>
 <img src="img/Python-Alg-Output.png" alt="Python脚本运行alg.exe正常输出" width="90%" />
 <p class="caption">
 Figure 3.11: Python脚本运行alg.exe正常输出
 </p>
 </div>
 </div>
-<div id="方位解算" class="section level3">
-<h3><span class="header-section-number">3.3.5</span> 方位解算</h3>
+<div id="方位解算" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.3.5</span> 方位解算<a href="d-定位.html#方位解算" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <ol style="list-style-type: decimal">
 <li><p>天线板按等边三角形布置，以其中一个天线板为原点标记坐标[0,0,0]，其他两个天线板按实际距离等比标记坐标，配置坐标文件“localfile”，以供角度解算使用。</p></li>
 <li><p>通过mqtt server 获取方位角（azimuth）和仰角（elevation），天线阵ID和蓝牙设备ID</p></li>
@@ -393,14 +396,14 @@ Figure 3.11: Python脚本运行alg.exe正常输出
 </ol>
 </div>
 </div>
-<div id="ch3-AoA-direction---for-use" class="section level2">
-<h2><span class="header-section-number">3.4</span> 使用方法</h2>
+<div id="ch3-AoA-direction---for-use" class="section level2 hasAnchor">
+<h2><span class="header-section-number">3.4</span> 使用方法<a href="d-定位.html#ch3-AoA-direction---for-use" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>我们将在本节为大家介绍具体的AoA使用方法，以及一些软件层面的说明。</p>
-<div id="操作步骤" class="section level3">
-<h3><span class="header-section-number">3.4.1</span> 操作步骤</h3>
+<div id="操作步骤" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.4.1</span> 操作步骤<a href="d-定位.html#操作步骤" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>在我们搭建好所有硬件环境以后，我们开始运行AoA。</p>
 <p>由于所有的软件配置以及数据传输及处理都已经集成到了我们的接收板程序中，在此我们只需要按下 <code>reset</code> 键并等待一段时间。如果所有配置都成功即完成AoA启动。</p>
-<div class="figure" style="text-align: center"><span id="fig:ch3-Software-Cfg-Flowchart"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch3-Software-Cfg-Flowchart"></span>
 <img src="img/Software-Cfg-Flowchart.png" alt="软件配置流程图" width="20%" />
 <p class="caption">
 Figure 3.12: 软件配置流程图
@@ -411,8 +414,8 @@ Figure 3.12: 软件配置流程图
 <p><strong>2.</strong> 连接第一个天线板，发现服务并订阅 <code>GENERIC_OUTPUT</code> （handle=8）</p>
 <p><strong>3.</strong> 重复上一个过程直到三个天线板都连接并订阅成功</p>
 <p><strong>4.</strong> 运行数据输出到8266，正常运行</p>
-<div id="配置8266" class="section level4">
-<h4><span class="header-section-number">3.4.1.1</span> 配置8266</h4>
+<div id="配置8266" class="section level4 hasAnchor">
+<h4><span class="header-section-number">3.4.1.1</span> 配置8266<a href="d-定位.html#配置8266" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>要注意在配置8266之前需要将已有的WiFi信息和MQTT信息修改好并烧录到接收板程序中。具体代码位置在 <code>ingchips_AoA/src/AoA_service.h</code> 中，有如下注释和代码：</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="d-定位.html#cb5-1"></a>    <span class="co">/*</span></span>
 <span id="cb5-2"><a href="d-定位.html#cb5-2"></a><span class="co">    * This MQTT is base on mosquitto of a PC.</span></span>
@@ -441,8 +444,8 @@ Figure 3.12: 软件配置流程图
 </ul>
 <p><strong>注意</strong>：8266整个配置过程大概需要10S时间，请耐心等待。</p>
 </div>
-<div id="连接天线板" class="section level4">
-<h4><span class="header-section-number">3.4.1.2</span> 连接天线板</h4>
+<div id="连接天线板" class="section level4 hasAnchor">
+<h4><span class="header-section-number">3.4.1.2</span> 连接天线板<a href="d-定位.html#连接天线板" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>为了提高AoA工作效率以及整体系统的可靠性，我们将目标板的地址固定并写入到程序中。当然的，为了提高程序的适应性，我们也在程序中留有手动配置地址的开关 <code>AoA_MANAUL_SETUP_ARRAY</code> ，在 <code>ingchips_AoA/src/AoA_service.h</code> 中：</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb6-1"><a href="d-定位.html#cb6-1"></a>    <span class="co">/*</span></span>
 <span id="cb6-2"><a href="d-定位.html#cb6-2"></a><span class="co">    * If your array-boards&#39; addresses are not in default,</span></span>
@@ -470,14 +473,14 @@ Figure 3.12: 软件配置流程图
 <span id="cb7-12"><a href="d-定位.html#cb7-12"></a>    };</span></code></pre></div>
 <p>同样的，请阅读并理解注释，根据实际情况修改地址值，烧录程序。</p>
 <p>通常的，如果出现如下打印则说明连接天线板成功（图 <a href="d-定位.html#fig:ch3-Array-Board-Connect-successfully">3.13</a>）：</p>
-<div class="figure" style="text-align: center"><span id="fig:ch3-Array-Board-Connect-successfully"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch3-Array-Board-Connect-successfully"></span>
 <img src="img/Array-Board-Connect-successfully.png" alt="连接天线板成功" width="30%" />
 <p class="caption">
 Figure 3.13: 连接天线板成功
 </p>
 </div>
 <p>如果出现下图（图 <a href="d-定位.html#fig:ch3-Array-Board-Connect-waiting">3.14</a>）则说明一直在等待建立连接中：</p>
-<div class="figure" style="text-align: center"><span id="fig:ch3-Array-Board-Connect-waiting"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch3-Array-Board-Connect-waiting"></span>
 <img src="img/Array-Board-Connect-waiting.png" alt="等待建立连接" width="40%" />
 <p class="caption">
 Figure 3.14: 等待建立连接
@@ -492,8 +495,8 @@ Figure 3.14: 等待建立连接
 <p>注意：整个连接天线板的过程时间较长且实际用时不确定，会受到测试环境以及实际连接情况的影响。如果环境良好，一般整个连接过程会在15秒内完成。</p>
 </blockquote>
 </div>
-<div id="正常工作" class="section level4">
-<h4><span class="header-section-number">3.4.1.3</span> 正常工作</h4>
+<div id="正常工作" class="section level4 hasAnchor">
+<h4><span class="header-section-number">3.4.1.3</span> 正常工作<a href="d-定位.html#正常工作" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>当以上所有配置过程成功后，会自动进入正常工作状态。</p>
 <p>在正常工作阶段，程序会完成以下工作：</p>
 <ul>
@@ -512,8 +515,8 @@ Figure 3.14: 等待建立连接
 <p>更多芯片&amp;SDK资料请参考 <code>ingchips</code> 官方网站<a href="https://ingchips.github.io/">ingchips</a></p>
 </div>
 </div>
-<div id="app-展示定位" class="section level3">
-<h3><span class="header-section-number">3.4.2</span> APP 展示定位</h3>
+<div id="app-展示定位" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.4.2</span> APP 展示定位<a href="d-定位.html#app-展示定位" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <ol style="list-style-type: decimal">
 <li><p>app通过mqtt server 获取蓝牙设备地址和x、y、z坐标</p></li>
 <li><p>过滤偏差较大坐标</p></li>
@@ -523,9 +526,9 @@ Figure 3.14: 等待建立连接
 </ol>
 </div>
 </div>
-<div id="app预览" class="section level2">
-<h2><span class="header-section-number">3.5</span> APP预览</h2>
-<div class="figure" style="text-align: center"><span id="fig:ch4-app-show"></span>
+<div id="app预览" class="section level2 hasAnchor">
+<h2><span class="header-section-number">3.5</span> APP预览<a href="d-定位.html#app预览" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch4-app-show"></span>
 <img src="img/app-show.png" alt="app预览" width="100%" />
 <p class="caption">
 Figure 3.15: app预览
@@ -550,7 +553,6 @@ Figure 3.15: app预览
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -569,6 +571,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
@@ -589,6 +592,10 @@ gitbook.start({
 "text": null
 },
 "download": ["an_aoa_positioning.pdf", "an_aoa_positioning.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "subsection"
 }
@@ -602,7 +609,7 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

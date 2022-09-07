@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>5 GAP - 扫描 | 低功耗蓝牙开发者手册</title>
+  <meta name="description" content="5 GAP - 扫描 | 低功耗蓝牙开发者手册." />
+  <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="5 GAP - 扫描 | 低功耗蓝牙开发者手册" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="5 GAP - 扫描 | 低功耗蓝牙开发者手册." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="5 GAP - 扫描 | 低功耗蓝牙开发者手册" />
+  
+  <meta name="twitter:description" content="5 GAP - 扫描 | 低功耗蓝牙开发者手册." />
+  
+
+<meta name="author" content="Ingchips Technology Co., Ltd." />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="ch-adv.html"/>
+<link rel="next" href="ch-conn.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">低功耗蓝牙开发者手册</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> 版本历史</a></li>
+<li class="chapter" data-level="2" data-path="ch-intro.html"><a href="ch-intro.html"><i class="fa fa-check"></i><b>2</b> 简介</a><ul>
+<li class="chapter" data-level="2.1" data-path="ch-intro.html"><a href="ch-intro.html#缩略语及术语"><i class="fa fa-check"></i><b>2.1</b> 缩略语及术语</a></li>
+<li class="chapter" data-level="2.2" data-path="ch-intro.html"><a href="ch-intro.html#参考文档"><i class="fa fa-check"></i><b>2.2</b> 参考文档</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="ch-overview.html"><a href="ch-overview.html"><i class="fa fa-check"></i><b>3</b> 概览</a><ul>
+<li class="chapter" data-level="3.1" data-path="ch-overview.html"><a href="ch-overview.html#基本原则"><i class="fa fa-check"></i><b>3.1</b> 基本原则</a></li>
+<li class="chapter" data-level="3.2" data-path="ch-overview.html"><a href="ch-overview.html#协议栈架构"><i class="fa fa-check"></i><b>3.2</b> 协议栈架构</a></li>
+<li class="chapter" data-level="3.3" data-path="ch-overview.html"><a href="ch-overview.html#通信模型"><i class="fa fa-check"></i><b>3.3</b> 通信模型</a></li>
+<li class="chapter" data-level="3.4" data-path="ch-overview.html"><a href="ch-overview.html#回调函数事件包"><i class="fa fa-check"></i><b>3.4</b> 回调函数事件包</a></li>
+<li class="chapter" data-level="3.5" data-path="ch-overview.html"><a href="ch-overview.html#事件包的解析"><i class="fa fa-check"></i><b>3.5</b> 事件包的解析</a></li>
+<li class="chapter" data-level="3.6" data-path="ch-overview.html"><a href="ch-overview.html#ch-ctrl-err-code"><i class="fa fa-check"></i><b>3.6</b> Controller 错误码</a></li>
+<li class="chapter" data-level="3.7" data-path="ch-overview.html"><a href="ch-overview.html#白名单"><i class="fa fa-check"></i><b>3.7</b> 白名单</a></li>
+<li class="chapter" data-level="3.8" data-path="ch-overview.html"><a href="ch-overview.html#异步特性"><i class="fa fa-check"></i><b>3.8</b> 异步特性</a></li>
+<li class="chapter" data-level="3.9" data-path="ch-overview.html"><a href="ch-overview.html#线程安全性"><i class="fa fa-check"></i><b>3.9</b> 线程安全性</a></li>
+<li class="chapter" data-level="3.10" data-path="ch-overview.html"><a href="ch-overview.html#ble-设备地址"><i class="fa fa-check"></i><b>3.10</b> BLE 设备地址</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="ch-adv.html"><a href="ch-adv.html"><i class="fa fa-check"></i><b>4</b> GAP - 广播</a><ul>
+<li class="chapter" data-level="4.1" data-path="ch-adv.html"><a href="ch-adv.html#概览"><i class="fa fa-check"></i><b>4.1</b> 概览</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="ch-adv.html"><a href="ch-adv.html#类型"><i class="fa fa-check"></i><b>4.1.1</b> 类型</a></li>
+<li class="chapter" data-level="4.1.2" data-path="ch-adv.html"><a href="ch-adv.html#ch1-adv-filter"><i class="fa fa-check"></i><b>4.1.2</b> 过滤策略</a></li>
+<li class="chapter" data-level="4.1.3" data-path="ch-adv.html"><a href="ch-adv.html#phy"><i class="fa fa-check"></i><b>4.1.3</b> PHY</a></li>
+<li class="chapter" data-level="4.1.4" data-path="ch-adv.html"><a href="ch-adv.html#广播集"><i class="fa fa-check"></i><b>4.1.4</b> 广播集</a></li>
+<li class="chapter" data-level="4.1.5" data-path="ch-adv.html"><a href="ch-adv.html#相关事件"><i class="fa fa-check"></i><b>4.1.5</b> 相关事件</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="ch-adv.html"><a href="ch-adv.html#使用说明"><i class="fa fa-check"></i><b>4.2</b> 使用说明</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="ch-adv.html"><a href="ch-adv.html#配置广播"><i class="fa fa-check"></i><b>4.2.1</b> 配置广播</a></li>
+<li class="chapter" data-level="4.2.2" data-path="ch-adv.html"><a href="ch-adv.html#ch1-adv-data-edit"><i class="fa fa-check"></i><b>4.2.2</b> 广播数据</a></li>
+<li class="chapter" data-level="4.2.3" data-path="ch-adv.html"><a href="ch-adv.html#配置周期广播"><i class="fa fa-check"></i><b>4.2.3</b> 配置周期广播</a></li>
+<li class="chapter" data-level="4.2.4" data-path="ch-adv.html"><a href="ch-adv.html#起停广播"><i class="fa fa-check"></i><b>4.2.4</b> 起停广播</a></li>
+<li class="chapter" data-level="4.2.5" data-path="ch-adv.html"><a href="ch-adv.html#起停周期广播"><i class="fa fa-check"></i><b>4.2.5</b> 起停周期广播</a></li>
+<li class="chapter" data-level="4.2.6" data-path="ch-adv.html"><a href="ch-adv.html#为周期广播添加-cte"><i class="fa fa-check"></i><b>4.2.6</b> 为周期广播添加 CTE</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="ch-scan.html"><a href="ch-scan.html"><i class="fa fa-check"></i><b>5</b> GAP - 扫描</a><ul>
+<li class="chapter" data-level="5.1" data-path="ch-scan.html"><a href="ch-scan.html#概览-1"><i class="fa fa-check"></i><b>5.1</b> 概览</a><ul>
+<li class="chapter" data-level="5.1.1" data-path="ch-scan.html"><a href="ch-scan.html#间隔与窗口"><i class="fa fa-check"></i><b>5.1.1</b> 间隔与窗口</a></li>
+<li class="chapter" data-level="5.1.2" data-path="ch-scan.html"><a href="ch-scan.html#过滤策略"><i class="fa fa-check"></i><b>5.1.2</b> 过滤策略</a></li>
+<li class="chapter" data-level="5.1.3" data-path="ch-scan.html"><a href="ch-scan.html#主动与被动"><i class="fa fa-check"></i><b>5.1.3</b> 主动与被动</a></li>
+<li class="chapter" data-level="5.1.4" data-path="ch-scan.html"><a href="ch-scan.html#phy-1"><i class="fa fa-check"></i><b>5.1.4</b> PHY</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="ch-scan.html"><a href="ch-scan.html#使用说明-1"><i class="fa fa-check"></i><b>5.2</b> 使用说明</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="ch-scan.html"><a href="ch-scan.html#配置参数"><i class="fa fa-check"></i><b>5.2.1</b> 配置参数</a></li>
+<li class="chapter" data-level="5.2.2" data-path="ch-scan.html"><a href="ch-scan.html#起停扫描"><i class="fa fa-check"></i><b>5.2.2</b> 起停扫描</a></li>
+<li class="chapter" data-level="5.2.3" data-path="ch-scan.html"><a href="ch-scan.html#处理数据"><i class="fa fa-check"></i><b>5.2.3</b> 处理数据</a></li>
+<li class="chapter" data-level="5.2.4" data-path="ch-scan.html"><a href="ch-scan.html#与周期广播同步"><i class="fa fa-check"></i><b>5.2.4</b> 与周期广播同步</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="ch-conn.html"><a href="ch-conn.html"><i class="fa fa-check"></i><b>6</b> GAP - 连接</a><ul>
+<li class="chapter" data-level="6.1" data-path="ch-conn.html"><a href="ch-conn.html#概览-2"><i class="fa fa-check"></i><b>6.1</b> 概览</a></li>
+<li class="chapter" data-level="6.2" data-path="ch-conn.html"><a href="ch-conn.html#使用说明-2"><i class="fa fa-check"></i><b>6.2</b> 使用说明</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="ch-conn.html"><a href="ch-conn.html#建立连接"><i class="fa fa-check"></i><b>6.2.1</b> 建立连接</a></li>
+<li class="chapter" data-level="6.2.2" data-path="ch-conn.html"><a href="ch-conn.html#取消连接"><i class="fa fa-check"></i><b>6.2.2</b> 取消连接</a></li>
+<li class="chapter" data-level="6.2.3" data-path="ch-conn.html"><a href="ch-conn.html#获取对端版本"><i class="fa fa-check"></i><b>6.2.3</b> 获取对端版本</a></li>
+<li class="chapter" data-level="6.2.4" data-path="ch-conn.html"><a href="ch-conn.html#获取对端特性"><i class="fa fa-check"></i><b>6.2.4</b> 获取对端特性</a></li>
+<li class="chapter" data-level="6.2.5" data-path="ch-conn.html"><a href="ch-conn.html#设置-phy"><i class="fa fa-check"></i><b>6.2.5</b> 设置 PHY</a></li>
+<li class="chapter" data-level="6.2.6" data-path="ch-conn.html"><a href="ch-conn.html#更新连接参数"><i class="fa fa-check"></i><b>6.2.6</b> 更新连接参数</a></li>
+<li class="chapter" data-level="6.2.7" data-path="ch-conn.html"><a href="ch-conn.html#减速模式"><i class="fa fa-check"></i><b>6.2.7</b> 减速模式</a></li>
+<li class="chapter" data-level="6.2.8" data-path="ch-conn.html"><a href="ch-conn.html#功率控制"><i class="fa fa-check"></i><b>6.2.8</b> 功率控制</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="ch-gatt-server.html"><a href="ch-gatt-server.html"><i class="fa fa-check"></i><b>7</b> GATT - 服务器</a><ul>
+<li class="chapter" data-level="7.1" data-path="ch-gatt-server.html"><a href="ch-gatt-server.html#概览-3"><i class="fa fa-check"></i><b>7.1</b> 概览</a></li>
+<li class="chapter" data-level="7.2" data-path="ch-gatt-server.html"><a href="ch-gatt-server.html#使用说明-3"><i class="fa fa-check"></i><b>7.2</b> 使用说明</a><ul>
+<li class="chapter" data-level="7.2.1" data-path="ch-gatt-server.html"><a href="ch-gatt-server.html#profile-数据"><i class="fa fa-check"></i><b>7.2.1</b> Profile 数据</a></li>
+<li class="chapter" data-level="7.2.2" data-path="ch-gatt-server.html"><a href="ch-gatt-server.html#实现读回调"><i class="fa fa-check"></i><b>7.2.2</b> 实现读回调</a></li>
+<li class="chapter" data-level="7.2.3" data-path="ch-gatt-server.html"><a href="ch-gatt-server.html#实现写回调"><i class="fa fa-check"></i><b>7.2.3</b> 实现写回调</a></li>
+<li class="chapter" data-level="7.2.4" data-path="ch-gatt-server.html"><a href="ch-gatt-server.html#发送通知notification"><i class="fa fa-check"></i><b>7.2.4</b> 发送通知（Notification）</a></li>
+<li class="chapter" data-level="7.2.5" data-path="ch-gatt-server.html"><a href="ch-gatt-server.html#发送指示indication"><i class="fa fa-check"></i><b>7.2.5</b> 发送指示（Indication）</a></li>
+<li class="chapter" data-level="7.2.6" data-path="ch-gatt-server.html"><a href="ch-gatt-server.html#响应事件"><i class="fa fa-check"></i><b>7.2.6</b> 响应事件</a></li>
+<li class="chapter" data-level="7.2.7" data-path="ch-gatt-server.html"><a href="ch-gatt-server.html#att_mtu"><i class="fa fa-check"></i><b>7.2.7</b> ATT_MTU</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html"><i class="fa fa-check"></i><b>8</b> GATT - 客户端</a><ul>
+<li class="chapter" data-level="8.1" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#概览-4"><i class="fa fa-check"></i><b>8.1</b> 概览</a><ul>
+<li class="chapter" data-level="8.1.1" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#句柄范围"><i class="fa fa-check"></i><b>8.1.1</b> 句柄范围</a></li>
+</ul></li>
+<li class="chapter" data-level="8.2" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#使用说明-4"><i class="fa fa-check"></i><b>8.2</b> 使用说明</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#创建客户端"><i class="fa fa-check"></i><b>8.2.1</b> 创建客户端</a></li>
+<li class="chapter" data-level="8.2.2" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#发现服务"><i class="fa fa-check"></i><b>8.2.2</b> 发现服务</a></li>
+<li class="chapter" data-level="8.2.3" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#读取特征"><i class="fa fa-check"></i><b>8.2.3</b> 读取特征</a></li>
+<li class="chapter" data-level="8.2.4" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#写入特征"><i class="fa fa-check"></i><b>8.2.4</b> 写入特征</a></li>
+<li class="chapter" data-level="8.2.5" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#订阅特征"><i class="fa fa-check"></i><b>8.2.5</b> 订阅特征</a></li>
+<li class="chapter" data-level="8.2.6" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#att_mtu-1"><i class="fa fa-check"></i><b>8.2.6</b> ATT_MTU</a></li>
+<li class="chapter" data-level="8.2.7" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#gatt-client-synced-api"><i class="fa fa-check"></i><b>8.2.7</b> 使用同步版 API</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="ch-l2cap.html"><a href="ch-l2cap.html"><i class="fa fa-check"></i><b>9</b> L2CAP</a><ul>
+<li class="chapter" data-level="9.1" data-path="ch-l2cap.html"><a href="ch-l2cap.html#概览-5"><i class="fa fa-check"></i><b>9.1</b> 概览</a></li>
+<li class="chapter" data-level="9.2" data-path="ch-l2cap.html"><a href="ch-l2cap.html#使用说明-5"><i class="fa fa-check"></i><b>9.2</b> 使用说明</a><ul>
+<li class="chapter" data-level="9.2.1" data-path="ch-l2cap.html"><a href="ch-l2cap.html#从端请求更新连接参数"><i class="fa fa-check"></i><b>9.2.1</b> 从端请求更新连接参数</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="ch-sm.html"><a href="ch-sm.html"><i class="fa fa-check"></i><b>10</b> 安全管理</a><ul>
+<li class="chapter" data-level="10.1" data-path="ch-sm.html"><a href="ch-sm.html#概览-6"><i class="fa fa-check"></i><b>10.1</b> 概览</a></li>
+<li class="chapter" data-level="10.2" data-path="ch-sm.html"><a href="ch-sm.html#使用说明-6"><i class="fa fa-check"></i><b>10.2</b> 使用说明</a><ul>
+<li class="chapter" data-level="10.2.1" data-path="ch-sm.html"><a href="ch-sm.html#初始化"><i class="fa fa-check"></i><b>10.2.1</b> 初始化</a></li>
+<li class="chapter" data-level="10.2.2" data-path="ch-sm.html"><a href="ch-sm.html#sm-事件回调"><i class="fa fa-check"></i><b>10.2.2</b> SM 事件回调</a></li>
+<li class="chapter" data-level="10.2.3" data-path="ch-sm.html"><a href="ch-sm.html#每个连接的个性化设置"><i class="fa fa-check"></i><b>10.2.3</b> 每个连接的个性化设置</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="ch-misc.html"><a href="ch-misc.html"><i class="fa fa-check"></i><b>11</b> 杂项</a><ul>
+<li class="chapter" data-level="11.1" data-path="ch-misc.html"><a href="ch-misc.html#接收-cte"><i class="fa fa-check"></i><b>11.1</b> 接收 CTE</a><ul>
+<li class="chapter" data-level="11.1.1" data-path="ch-misc.html"><a href="ch-misc.html#基于连接的-cte-接收和发送"><i class="fa fa-check"></i><b>11.1.1</b> 基于连接的 CTE 接收和发送</a></li>
+<li class="chapter" data-level="11.1.2" data-path="ch-misc.html"><a href="ch-misc.html#misc-cte-periodic-adv"><i class="fa fa-check"></i><b>11.1.2</b> 基于周期广播的 CTE 接收和发送</a></li>
+<li class="chapter" data-level="11.1.3" data-path="ch-misc.html"><a href="ch-misc.html#基于私有方式-1-的-cte-接收和发送"><i class="fa fa-check"></i><b>11.1.3</b> 基于私有方式 #1 的 CTE 接收和发送</a></li>
+<li class="chapter" data-level="11.1.4" data-path="ch-misc.html"><a href="ch-misc.html#基于私有方式-2-的-cte-接收和发送"><i class="fa fa-check"></i><b>11.1.4</b> 基于私有方式 #2 的 CTE 接收和发送</a></li>
+</ul></li>
+<li class="chapter" data-level="11.2" data-path="ch-misc.html"><a href="ch-misc.html#兼容性"><i class="fa fa-check"></i><b>11.2</b> 兼容性</a><ul>
+<li class="chapter" data-level="11.2.1" data-path="ch-misc.html"><a href="ch-misc.html#data-length-与-mtu"><i class="fa fa-check"></i><b>11.2.1</b> Data Length 与 MTU</a></li>
+</ul></li>
+<li class="chapter" data-level="11.3" data-path="ch-misc.html"><a href="ch-misc.html#api-返回值"><i class="fa fa-check"></i><b>11.3</b> API 返回值</a></li>
+<li class="chapter" data-level="11.4" data-path="ch-misc.html"><a href="ch-misc.html#键值存储"><i class="fa fa-check"></i><b>11.4</b> 键值存储</a></li>
+<li class="chapter" data-level="11.5" data-path="ch-misc.html"><a href="ch-misc.html#ch98-le-dev-db"><i class="fa fa-check"></i><b>11.5</b> 设备数据库</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="ch-cap.html"><a href="ch-cap.html"><i class="fa fa-check"></i><b>12</b> 协议栈能力</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">低功耗蓝牙开发者手册</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="ch-scan" class="section level1 hasAnchor">
+<h1><span class="header-section-number">5</span> GAP - 扫描<a href="ch-scan.html#ch-scan" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="概览-1" class="section level2 hasAnchor">
+<h2><span class="header-section-number">5.1</span> 概览<a href="ch-scan.html#概览-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>接收广播的过程称为扫描。</p>
+<div id="间隔与窗口" class="section level3 hasAnchor">
+<h3><span class="header-section-number">5.1.1</span> 间隔与窗口<a href="ch-scan.html#间隔与窗口" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>接收机实际进行扫描工作的时机受扫描间隔和窗口两个参数控制，其含义如图 <a href="ch-scan.html#fig:ch2-scan-win-interval">5.1</a> 所示。</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-scan-win-interval"></span>
+<img src="img/scan_win_interval.png" alt="扫描间隔与扫描窗口" width="70%" />
+<p class="caption">
+图 5.1: 扫描间隔与扫描窗口
+</p>
+</div>
+<p><strong>注意</strong>：Controller 在执行扫描任务时，遵循最大努力原则，实际真正用于扫描的时机可能并不与两个参数所指定的完全一致。</p>
+</div>
+<div id="过滤策略" class="section level3 hasAnchor">
+<h3><span class="header-section-number">5.1.2</span> 过滤策略<a href="ch-scan.html#过滤策略" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>与广播的<a href="ch-adv.html#ch1-adv-filter">过滤策略</a>类似，扫描也有几种过滤策略：</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb18-1"><a href="ch-scan.html#cb18-1"></a><span class="kw">typedef</span> <span class="kw">enum</span> scan_filter_policy</span>
+<span id="cb18-2"><a href="ch-scan.html#cb18-2"></a>{</span>
+<span id="cb18-3"><a href="ch-scan.html#cb18-3"></a>    <span class="co">// 接收所有广播（定向到其它设备的除外）</span></span>
+<span id="cb18-4"><a href="ch-scan.html#cb18-4"></a>    SCAN_ACCEPT_ALL_EXCEPT_NOT_DIRECTED,</span>
+<span id="cb18-5"><a href="ch-scan.html#cb18-5"></a>    <span class="co">// 只接收来自白名单内的设备的广播（定向到其它设备的除外）</span></span>
+<span id="cb18-6"><a href="ch-scan.html#cb18-6"></a>    SCAN_ACCEPT_WLIST_EXCEPT_NOT_DIRECTED,</span>
+<span id="cb18-7"><a href="ch-scan.html#cb18-7"></a>    <span class="co">// 接收所有广播（所定向的设备与本设备身份地址不同的除外）</span></span>
+<span id="cb18-8"><a href="ch-scan.html#cb18-8"></a>    SCAN_ACCEPT_ALL_EXCEPT_IDENTITY_NOT_MATCH,</span>
+<span id="cb18-9"><a href="ch-scan.html#cb18-9"></a>    <span class="co">// 只接收来自白名单内的设备的广播（所定向的设备与本设备身份地址不同的除外）</span></span>
+<span id="cb18-10"><a href="ch-scan.html#cb18-10"></a>    SCAN_ACCEPT_WLIST_EXCEPT_IDENTITY_NOT_MATCH</span>
+<span id="cb18-11"><a href="ch-scan.html#cb18-11"></a>} scan_filter_policy_t;</span></code></pre></div>
+</div>
+<div id="主动与被动" class="section level3 hasAnchor">
+<h3><span class="header-section-number">5.1.3</span> 主动与被动<a href="ch-scan.html#主动与被动" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>所谓被动扫描（Passive Scan）指只接收广播数据包，对于可扫描广播也是如此；所谓主动扫描（Active Scan）指除了接收广播数据包之外，
+对于可扫描广播会主动发送扫描请求并接收扫描响应包。</p>
+</div>
+<div id="phy-1" class="section level3 hasAnchor">
+<h3><span class="header-section-number">5.1.4</span> PHY<a href="ch-scan.html#phy-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>由于扩展广播可在主广播信道使用两种 PHY 发送，相应地，扫描时也需要配置扫描哪种 PHY。</p>
+</div>
+</div>
+<div id="使用说明-1" class="section level2 hasAnchor">
+<h2><span class="header-section-number">5.2</span> 使用说明<a href="ch-scan.html#使用说明-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="配置参数" class="section level3 hasAnchor">
+<h3><span class="header-section-number">5.2.1</span> 配置参数<a href="ch-scan.html#配置参数" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>在开始扫描之前，需要先通过 <code>gap_set_random_device_address</code> 为设备配置地址，这个地址用于扫描、发起连接等场景。
+使用 <code>gap_set_ext_scan_para</code> 配置扫描参数：</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb19-1"><a href="ch-scan.html#cb19-1"></a><span class="dt">uint8_t</span> gap_set_ext_scan_para(</span>
+<span id="cb19-2"><a href="ch-scan.html#cb19-2"></a>  <span class="co">// 本设备地址类型</span></span>
+<span id="cb19-3"><a href="ch-scan.html#cb19-3"></a>  <span class="dt">const</span> bd_addr_type_t own_addr_type,</span>
+<span id="cb19-4"><a href="ch-scan.html#cb19-4"></a>  <span class="co">// 过滤策略</span></span>
+<span id="cb19-5"><a href="ch-scan.html#cb19-5"></a>  <span class="dt">const</span> scan_filter_policy_t filter,</span>
+<span id="cb19-6"><a href="ch-scan.html#cb19-6"></a>  <span class="co">// PHY 配置个数</span></span>
+<span id="cb19-7"><a href="ch-scan.html#cb19-7"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> config_num,</span>
+<span id="cb19-8"><a href="ch-scan.html#cb19-8"></a>  <span class="co">// 关于每种 PHY 的参数配置</span></span>
+<span id="cb19-9"><a href="ch-scan.html#cb19-9"></a>  <span class="dt">const</span> scan_phy_config_t *configs);</span></code></pre></div>
+<p>每种 PHY 的参数配置如下：</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb20-1"><a href="ch-scan.html#cb20-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> scan_phy_config</span>
+<span id="cb20-2"><a href="ch-scan.html#cb20-2"></a>{</span>
+<span id="cb20-3"><a href="ch-scan.html#cb20-3"></a>    <span class="co">// PHY</span></span>
+<span id="cb20-4"><a href="ch-scan.html#cb20-4"></a>    phy_type_t phy;</span>
+<span id="cb20-5"><a href="ch-scan.html#cb20-5"></a>    <span class="co">// 扫描方式：主动或被动</span></span>
+<span id="cb20-6"><a href="ch-scan.html#cb20-6"></a>    scan_type_t type;</span>
+<span id="cb20-7"><a href="ch-scan.html#cb20-7"></a>    <span class="co">// 扫描间隔，单位是 625us</span></span>
+<span id="cb20-8"><a href="ch-scan.html#cb20-8"></a>    <span class="dt">uint16_t</span> interval;</span>
+<span id="cb20-9"><a href="ch-scan.html#cb20-9"></a>    <span class="co">// 扫描窗口，单位是 625us</span></span>
+<span id="cb20-10"><a href="ch-scan.html#cb20-10"></a>    <span class="dt">uint16_t</span> window;</span>
+<span id="cb20-11"><a href="ch-scan.html#cb20-11"></a>} scan_phy_config_t;</span></code></pre></div>
+</div>
+<div id="起停扫描" class="section level3 hasAnchor">
+<h3><span class="header-section-number">5.2.2</span> 起停扫描<a href="ch-scan.html#起停扫描" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>gap_set_ext_scan_enable</code> 起停扫描：</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb21-1"><a href="ch-scan.html#cb21-1"></a><span class="dt">uint8_t</span> gap_set_ext_scan_enable(</span>
+<span id="cb21-2"><a href="ch-scan.html#cb21-2"></a>  <span class="co">// 开始或者停止扫描</span></span>
+<span id="cb21-3"><a href="ch-scan.html#cb21-3"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> enable,</span>
+<span id="cb21-4"><a href="ch-scan.html#cb21-4"></a>  <span class="co">// 是否对数据做去重处理：0 - 不去重；1 - 去重；</span></span>
+<span id="cb21-5"><a href="ch-scan.html#cb21-5"></a>  <span class="co">//                       2 - 去重，但是每个周期复位过滤器</span></span>
+<span id="cb21-6"><a href="ch-scan.html#cb21-6"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> filter,</span>
+<span id="cb21-7"><a href="ch-scan.html#cb21-7"></a>  <span class="co">// 持续时间，单位为 10ms</span></span>
+<span id="cb21-8"><a href="ch-scan.html#cb21-8"></a>  <span class="dt">const</span> <span class="dt">uint16_t</span> duration,</span>
+<span id="cb21-9"><a href="ch-scan.html#cb21-9"></a>  <span class="co">// 周期，单位为 1.28s</span></span>
+<span id="cb21-10"><a href="ch-scan.html#cb21-10"></a>  <span class="dt">const</span> <span class="dt">uint16_t</span> period);</span></code></pre></div>
+<p><code>duration</code> 和 <code>period</code> 两个参数的目的是实现每个 <code>period</code> 里扫描 <code>duration</code> 长的时间。另有两种特殊情况，从开发者的角度总结如下：</p>
+<ol style="list-style-type: decimal">
+<li>持续、一直地扫描：<code>duration</code> 和 <code>period</code> 两个参数皆置为 <span class="math inline">\(0\)</span></li>
+<li>只扫描一段时间：<code>duration</code> 置为扫描时长，<code>period</code> 置为 <span class="math inline">\(0\)</span></li>
+</ol>
+<div class="rmdcaution">
+<p>
+Controller 在做数据去重时遵循最大努力原则，受限于存储空间、处理能力，去重可能失效。
+</p>
+</div>
+</div>
+<div id="处理数据" class="section level3 hasAnchor">
+<h3><span class="header-section-number">5.2.3</span> 处理数据<a href="ch-scan.html#处理数据" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>收到广播包后，HCI 回调函数将收到 <code>HCI_SUBEVENT_LE_EXTENDED_ADVERTISING_REPORT</code> 事件。利用 <code>decode_hci_le_meta_event</code>
+宏可将事件转换为 <code>le_ext_adv_report_t</code> 结构体指针：</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb22-1"><a href="ch-scan.html#cb22-1"></a><span class="dt">const</span> le_ext_adv_report_t *report =</span>
+<span id="cb22-2"><a href="ch-scan.html#cb22-2"></a>  decode_hci_le_meta_event(packet, le_meta_event_ext_adv_report_t)-&gt;reports;</span></code></pre></div>
+<p>这个结构体的定义如下：</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb23-1"><a href="ch-scan.html#cb23-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> le_ext_adv_report</span>
+<span id="cb23-2"><a href="ch-scan.html#cb23-2"></a>{</span>
+<span id="cb23-3"><a href="ch-scan.html#cb23-3"></a>    <span class="co">// 事件类型比特位组合</span></span>
+<span id="cb23-4"><a href="ch-scan.html#cb23-4"></a>    <span class="dt">uint16_t</span>        evt_type;</span>
+<span id="cb23-5"><a href="ch-scan.html#cb23-5"></a>    <span class="co">// 广播者地址类型</span></span>
+<span id="cb23-6"><a href="ch-scan.html#cb23-6"></a>    bd_addr_type_t  addr_type;</span>
+<span id="cb23-7"><a href="ch-scan.html#cb23-7"></a>    <span class="co">// 广播者地址</span></span>
+<span id="cb23-8"><a href="ch-scan.html#cb23-8"></a>    bd_addr_t       address;</span>
+<span id="cb23-9"><a href="ch-scan.html#cb23-9"></a>    <span class="co">// 主信道上用的 PHY</span></span>
+<span id="cb23-10"><a href="ch-scan.html#cb23-10"></a>    <span class="dt">uint8_t</span>         p_phy;</span>
+<span id="cb23-11"><a href="ch-scan.html#cb23-11"></a>    <span class="co">// 辅信道上用的 PHY</span></span>
+<span id="cb23-12"><a href="ch-scan.html#cb23-12"></a>    <span class="dt">uint8_t</span>         s_phy;</span>
+<span id="cb23-13"><a href="ch-scan.html#cb23-13"></a>    <span class="co">// SID</span></span>
+<span id="cb23-14"><a href="ch-scan.html#cb23-14"></a>    <span class="dt">uint8_t</span>         sid;</span>
+<span id="cb23-15"><a href="ch-scan.html#cb23-15"></a>    <span class="co">// 发射功率（单位 dBm）</span></span>
+<span id="cb23-16"><a href="ch-scan.html#cb23-16"></a>     <span class="dt">int8_t</span>         tx_power;</span>
+<span id="cb23-17"><a href="ch-scan.html#cb23-17"></a>    <span class="co">// RSSI （单位 dBm）</span></span>
+<span id="cb23-18"><a href="ch-scan.html#cb23-18"></a>     <span class="dt">int8_t</span>         rssi;</span>
+<span id="cb23-19"><a href="ch-scan.html#cb23-19"></a>    <span class="co">// 周期广播的间隔（仅对周期广播有效）</span></span>
+<span id="cb23-20"><a href="ch-scan.html#cb23-20"></a>    <span class="dt">uint16_t</span>        prd_adv_interval;</span>
+<span id="cb23-21"><a href="ch-scan.html#cb23-21"></a>    <span class="co">// 定向广播的目的地址类型</span></span>
+<span id="cb23-22"><a href="ch-scan.html#cb23-22"></a>    bd_addr_type_t  direct_addr_type;</span>
+<span id="cb23-23"><a href="ch-scan.html#cb23-23"></a>    <span class="co">// 定向广播的目的地址</span></span>
+<span id="cb23-24"><a href="ch-scan.html#cb23-24"></a>    bd_addr_t       direct_addr;</span>
+<span id="cb23-25"><a href="ch-scan.html#cb23-25"></a>    <span class="co">// 广播数据长度</span></span>
+<span id="cb23-26"><a href="ch-scan.html#cb23-26"></a>    <span class="dt">uint8_t</span>         data_len;</span>
+<span id="cb23-27"><a href="ch-scan.html#cb23-27"></a>    <span class="co">// 广播数据</span></span>
+<span id="cb23-28"><a href="ch-scan.html#cb23-28"></a>    <span class="dt">uint8_t</span>         data[<span class="dv">0</span>];</span>
+<span id="cb23-29"><a href="ch-scan.html#cb23-29"></a>} le_ext_adv_report_t;</span></code></pre></div>
+</div>
+<div id="与周期广播同步" class="section level3 hasAnchor">
+<h3><span class="header-section-number">5.2.4</span> 与周期广播同步<a href="ch-scan.html#与周期广播同步" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>发现周期广播后，可以通过 <code>gap_periodic_adv_create_sync</code> 与周期广播同步<a href="#fn15" class="footnote-ref" id="fnref15"><sup>15</sup></a>：</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb24-1"><a href="ch-scan.html#cb24-1"></a><span class="dt">uint8_t</span> gap_periodic_adv_create_sync(</span>
+<span id="cb24-2"><a href="ch-scan.html#cb24-2"></a>  <span class="co">// 过滤策略：目标地址来自白名单还是参数</span></span>
+<span id="cb24-3"><a href="ch-scan.html#cb24-3"></a>  <span class="dt">const</span> periodic_adv_filter_policy_t filter_policy,</span>
+<span id="cb24-4"><a href="ch-scan.html#cb24-4"></a>  <span class="co">// SID</span></span>
+<span id="cb24-5"><a href="ch-scan.html#cb24-5"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> adv_sid,</span>
+<span id="cb24-6"><a href="ch-scan.html#cb24-6"></a>  <span class="co">// 目标地址类型</span></span>
+<span id="cb24-7"><a href="ch-scan.html#cb24-7"></a>  <span class="dt">const</span> bd_addr_type_t addr_type,</span>
+<span id="cb24-8"><a href="ch-scan.html#cb24-8"></a>  <span class="co">// 目标地址</span></span>
+<span id="cb24-9"><a href="ch-scan.html#cb24-9"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> *addr,</span>
+<span id="cb24-10"><a href="ch-scan.html#cb24-10"></a>  <span class="co">// 成功接收一次之后，可跳过的数目</span></span>
+<span id="cb24-11"><a href="ch-scan.html#cb24-11"></a>  <span class="dt">const</span> <span class="dt">uint16_t</span> skip,</span>
+<span id="cb24-12"><a href="ch-scan.html#cb24-12"></a>  <span class="co">// 同步超时（单位 100ms）</span></span>
+<span id="cb24-13"><a href="ch-scan.html#cb24-13"></a>  <span class="dt">const</span> <span class="dt">uint16_t</span> sync_timeout,</span>
+<span id="cb24-14"><a href="ch-scan.html#cb24-14"></a>  <span class="co">// 周期广播里的 CTE 类型（如果存在）</span></span>
+<span id="cb24-15"><a href="ch-scan.html#cb24-15"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> sync_cte_type</span>
+<span id="cb24-16"><a href="ch-scan.html#cb24-16"></a>);</span></code></pre></div>
+<p>成功建立同步后，HCI 回调会收到 <code>HCI_SUBEVENT_LE_PERIODIC_ADVERTISING_SYNC_ESTABLISHED</code> 事件。接收到的周期广播通过
+<code>HCI_SUBEVENT_LE_PERIODIC_ADVERTISING_REPORT</code> 事件上报，其内容与 <code>le_ext_adv_report_t</code> 类似。</p>
+<p>周期广播的接收可参考 SDK <em>Periodic Scanner</em>。</p>
+</div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="15">
+<li id="fn15"><p>即周期性地接收周期广播。<a href="ch-scan.html#fnref15" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="ch-adv.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ch-conn.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["pg_ble_stack.pdf", "pg_ble_stack.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

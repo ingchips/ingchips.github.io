@@ -194,7 +194,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6.2.5" data-path="ch-conn.html"><a href="ch-conn.html#设置-phy"><i class="fa fa-check"></i><b>6.2.5</b> 设置 PHY</a></li>
 <li class="chapter" data-level="6.2.6" data-path="ch-conn.html"><a href="ch-conn.html#更新连接参数"><i class="fa fa-check"></i><b>6.2.6</b> 更新连接参数</a></li>
 <li class="chapter" data-level="6.2.7" data-path="ch-conn.html"><a href="ch-conn.html#减速模式"><i class="fa fa-check"></i><b>6.2.7</b> 减速模式</a></li>
-<li class="chapter" data-level="6.2.8" data-path="ch-conn.html"><a href="ch-conn.html#功率控制"><i class="fa fa-check"></i><b>6.2.8</b> 功率控制</a></li>
+<li class="chapter" data-level="6.2.8" data-path="ch-conn.html"><a href="ch-conn.html#路损检测与上报"><i class="fa fa-check"></i><b>6.2.8</b> 路损检测与上报</a></li>
+<li class="chapter" data-level="6.2.9" data-path="ch-conn.html"><a href="ch-conn.html#功率控制"><i class="fa fa-check"></i><b>6.2.9</b> 功率控制</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="ch-gatt-server.html"><a href="ch-gatt-server.html"><i class="fa fa-check"></i><b>7</b> GATT - 服务器</a><ul>
@@ -233,8 +234,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="10.1" data-path="ch-sm.html"><a href="ch-sm.html#概览-6"><i class="fa fa-check"></i><b>10.1</b> 概览</a></li>
 <li class="chapter" data-level="10.2" data-path="ch-sm.html"><a href="ch-sm.html#使用说明-6"><i class="fa fa-check"></i><b>10.2</b> 使用说明</a><ul>
 <li class="chapter" data-level="10.2.1" data-path="ch-sm.html"><a href="ch-sm.html#初始化"><i class="fa fa-check"></i><b>10.2.1</b> 初始化</a></li>
-<li class="chapter" data-level="10.2.2" data-path="ch-sm.html"><a href="ch-sm.html#sm-事件回调"><i class="fa fa-check"></i><b>10.2.2</b> SM 事件回调</a></li>
-<li class="chapter" data-level="10.2.3" data-path="ch-sm.html"><a href="ch-sm.html#每个连接的个性化设置"><i class="fa fa-check"></i><b>10.2.3</b> 每个连接的个性化设置</a></li>
+<li class="chapter" data-level="10.2.2" data-path="ch-sm.html"><a href="ch-sm.html#使用私有随机地址"><i class="fa fa-check"></i><b>10.2.2</b> 使用私有随机地址</a></li>
+<li class="chapter" data-level="10.2.3" data-path="ch-sm.html"><a href="ch-sm.html#sm-事件回调"><i class="fa fa-check"></i><b>10.2.3</b> SM 事件回调</a></li>
+<li class="chapter" data-level="10.2.4" data-path="ch-sm.html"><a href="ch-sm.html#每个连接的个性化设置"><i class="fa fa-check"></i><b>10.2.4</b> 每个连接的个性化设置</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="11" data-path="ch-misc.html"><a href="ch-misc.html"><i class="fa fa-check"></i><b>11</b> 杂项</a><ul>
@@ -276,56 +278,56 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1><span class="header-section-number">7</span> GATT - 服务器<a href="ch-gatt-server.html#ch-gatt-server" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <div id="概览-3" class="section level2 hasAnchor">
 <h2><span class="header-section-number">7.1</span> 概览<a href="ch-gatt-server.html#概览-3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>GATT 服务器<a href="#fn19" class="footnote-ref" id="fnref19"><sup>19</sup></a>为客户端提供服务。
+<p>GATT 服务器<a href="#fn20" class="footnote-ref" id="fnref20"><sup>20</sup></a>为客户端提供服务。
 协议栈支持多个连接，每个连接的配置（Profile）可以独立设置。
 需要注意，GATT 服务器和客户端这两个角色与主、从两个角色没有任何关联：一个连接的主角色既可以充当 GATT 的客户端，也可以充当服务器，
 还可以两种角色一起扮演；一个连接的从角色也是如此。</p>
-<p>要使用 GATT 服务器，开放者需要做三件事<a href="#fn20" class="footnote-ref" id="fnref20"><sup>20</sup></a>：</p>
+<p>要使用 GATT 服务器，开放者需要做三件事<a href="#fn21" class="footnote-ref" id="fnref21"><sup>21</sup></a>：</p>
 <ol style="list-style-type: decimal">
 <li><p>初试化：设置事件回调</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb29-1"><a href="ch-gatt-server.html#cb29-1"></a><span class="dt">void</span> att_server_register_packet_handler(</span>
-<span id="cb29-2"><a href="ch-gatt-server.html#cb29-2"></a>  btstack_packet_handler_t handler);</span></code></pre></div></li>
+<div class="sourceCode" id="cb40"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb40-1"><a href="ch-gatt-server.html#cb40-1"></a><span class="dt">void</span> att_server_register_packet_handler(</span>
+<span id="cb40-2"><a href="ch-gatt-server.html#cb40-2"></a>  btstack_packet_handler_t handler);</span></code></pre></div></li>
 <li><p>初始化：提供调写回调函数</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb30-1"><a href="ch-gatt-server.html#cb30-1"></a><span class="dt">void</span> att_server_init(</span>
-<span id="cb30-2"><a href="ch-gatt-server.html#cb30-2"></a>  <span class="co">// 特征的读回调</span></span>
-<span id="cb30-3"><a href="ch-gatt-server.html#cb30-3"></a>  att_read_callback_t read_callback,</span>
-<span id="cb30-4"><a href="ch-gatt-server.html#cb30-4"></a>  <span class="co">// 特征的写回调</span></span>
-<span id="cb30-5"><a href="ch-gatt-server.html#cb30-5"></a>  att_write_callback_t write_callback);</span></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb41-1"><a href="ch-gatt-server.html#cb41-1"></a><span class="dt">void</span> att_server_init(</span>
+<span id="cb41-2"><a href="ch-gatt-server.html#cb41-2"></a>  <span class="co">// 特征的读回调</span></span>
+<span id="cb41-3"><a href="ch-gatt-server.html#cb41-3"></a>  att_read_callback_t read_callback,</span>
+<span id="cb41-4"><a href="ch-gatt-server.html#cb41-4"></a>  <span class="co">// 特征的写回调</span></span>
+<span id="cb41-5"><a href="ch-gatt-server.html#cb41-5"></a>  att_write_callback_t write_callback);</span></code></pre></div>
 <p>读回调的类型如下：</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb31-1"><a href="ch-gatt-server.html#cb31-1"></a><span class="kw">typedef</span> <span class="dt">uint16_t</span> (*att_read_callback_t)(</span>
-<span id="cb31-2"><a href="ch-gatt-server.html#cb31-2"></a>  <span class="co">// 连接句柄</span></span>
-<span id="cb31-3"><a href="ch-gatt-server.html#cb31-3"></a>  hci_con_handle_t con_handle,</span>
-<span id="cb31-4"><a href="ch-gatt-server.html#cb31-4"></a>  <span class="co">// 特征句柄</span></span>
-<span id="cb31-5"><a href="ch-gatt-server.html#cb31-5"></a>  <span class="dt">uint16_t</span> attribute_handle,</span>
-<span id="cb31-6"><a href="ch-gatt-server.html#cb31-6"></a>  <span class="co">// 数据偏移</span></span>
-<span id="cb31-7"><a href="ch-gatt-server.html#cb31-7"></a>  <span class="dt">uint16_t</span> offset,</span>
-<span id="cb31-8"><a href="ch-gatt-server.html#cb31-8"></a>  <span class="co">// 缓存</span></span>
-<span id="cb31-9"><a href="ch-gatt-server.html#cb31-9"></a>  <span class="dt">uint8_t</span> *buffer,</span>
-<span id="cb31-10"><a href="ch-gatt-server.html#cb31-10"></a>  <span class="co">// 缓存的大小</span></span>
-<span id="cb31-11"><a href="ch-gatt-server.html#cb31-11"></a>  <span class="dt">uint16_t</span> buffer_size);</span></code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb42-1"><a href="ch-gatt-server.html#cb42-1"></a><span class="kw">typedef</span> <span class="dt">uint16_t</span> (*att_read_callback_t)(</span>
+<span id="cb42-2"><a href="ch-gatt-server.html#cb42-2"></a>  <span class="co">// 连接句柄</span></span>
+<span id="cb42-3"><a href="ch-gatt-server.html#cb42-3"></a>  hci_con_handle_t con_handle,</span>
+<span id="cb42-4"><a href="ch-gatt-server.html#cb42-4"></a>  <span class="co">// 特征句柄</span></span>
+<span id="cb42-5"><a href="ch-gatt-server.html#cb42-5"></a>  <span class="dt">uint16_t</span> attribute_handle,</span>
+<span id="cb42-6"><a href="ch-gatt-server.html#cb42-6"></a>  <span class="co">// 数据偏移</span></span>
+<span id="cb42-7"><a href="ch-gatt-server.html#cb42-7"></a>  <span class="dt">uint16_t</span> offset,</span>
+<span id="cb42-8"><a href="ch-gatt-server.html#cb42-8"></a>  <span class="co">// 缓存</span></span>
+<span id="cb42-9"><a href="ch-gatt-server.html#cb42-9"></a>  <span class="dt">uint8_t</span> *buffer,</span>
+<span id="cb42-10"><a href="ch-gatt-server.html#cb42-10"></a>  <span class="co">// 缓存的大小</span></span>
+<span id="cb42-11"><a href="ch-gatt-server.html#cb42-11"></a>  <span class="dt">uint16_t</span> buffer_size);</span></code></pre></div>
 <p>写回调的类型如下：</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb32-1"><a href="ch-gatt-server.html#cb32-1"></a><span class="kw">typedef</span> <span class="dt">int</span> (*att_write_callback_t)(</span>
-<span id="cb32-2"><a href="ch-gatt-server.html#cb32-2"></a>  <span class="co">// 连接句柄</span></span>
-<span id="cb32-3"><a href="ch-gatt-server.html#cb32-3"></a>  hci_con_handle_t con_handle,</span>
-<span id="cb32-4"><a href="ch-gatt-server.html#cb32-4"></a>  <span class="co">// 特征句柄</span></span>
-<span id="cb32-5"><a href="ch-gatt-server.html#cb32-5"></a>  <span class="dt">uint16_t</span> attribute_handle,</span>
-<span id="cb32-6"><a href="ch-gatt-server.html#cb32-6"></a>  <span class="co">// 会话模式</span></span>
-<span id="cb32-7"><a href="ch-gatt-server.html#cb32-7"></a>  <span class="dt">uint16_t</span> transaction_mode,</span>
-<span id="cb32-8"><a href="ch-gatt-server.html#cb32-8"></a>  <span class="co">// 数据偏移</span></span>
-<span id="cb32-9"><a href="ch-gatt-server.html#cb32-9"></a>  <span class="dt">uint16_t</span> offset,</span>
-<span id="cb32-10"><a href="ch-gatt-server.html#cb32-10"></a>  <span class="co">// 缓存</span></span>
-<span id="cb32-11"><a href="ch-gatt-server.html#cb32-11"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> *buffer,</span>
-<span id="cb32-12"><a href="ch-gatt-server.html#cb32-12"></a>  <span class="co">// 缓存的大小</span></span>
-<span id="cb32-13"><a href="ch-gatt-server.html#cb32-13"></a>  <span class="dt">uint16_t</span> buffer_size);</span></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb43-1"><a href="ch-gatt-server.html#cb43-1"></a><span class="kw">typedef</span> <span class="dt">int</span> (*att_write_callback_t)(</span>
+<span id="cb43-2"><a href="ch-gatt-server.html#cb43-2"></a>  <span class="co">// 连接句柄</span></span>
+<span id="cb43-3"><a href="ch-gatt-server.html#cb43-3"></a>  hci_con_handle_t con_handle,</span>
+<span id="cb43-4"><a href="ch-gatt-server.html#cb43-4"></a>  <span class="co">// 特征句柄</span></span>
+<span id="cb43-5"><a href="ch-gatt-server.html#cb43-5"></a>  <span class="dt">uint16_t</span> attribute_handle,</span>
+<span id="cb43-6"><a href="ch-gatt-server.html#cb43-6"></a>  <span class="co">// 会话模式</span></span>
+<span id="cb43-7"><a href="ch-gatt-server.html#cb43-7"></a>  <span class="dt">uint16_t</span> transaction_mode,</span>
+<span id="cb43-8"><a href="ch-gatt-server.html#cb43-8"></a>  <span class="co">// 数据偏移</span></span>
+<span id="cb43-9"><a href="ch-gatt-server.html#cb43-9"></a>  <span class="dt">uint16_t</span> offset,</span>
+<span id="cb43-10"><a href="ch-gatt-server.html#cb43-10"></a>  <span class="co">// 缓存</span></span>
+<span id="cb43-11"><a href="ch-gatt-server.html#cb43-11"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> *buffer,</span>
+<span id="cb43-12"><a href="ch-gatt-server.html#cb43-12"></a>  <span class="co">// 缓存的大小</span></span>
+<span id="cb43-13"><a href="ch-gatt-server.html#cb43-13"></a>  <span class="dt">uint16_t</span> buffer_size);</span></code></pre></div>
 <p>将 <code>con_handle</code> 和 <code>attribute_handle</code> 组合到一起，回调函数就可以确定是在访问哪个 Profile 里的哪个特征。
 对于长度超过<span class="math inline">\((ATT\_MTU - 3)\)</span>的长值，BLE 支持分块读写模式，相应地，两个回调函数都有一个 <code>offset</code> 参数。</p>
 <p>关于会话模式 <code>transaction_mode</code> 的说明见后文。</p></li>
 <li><p>适时提供 Profile 数据</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb33-1"><a href="ch-gatt-server.html#cb33-1"></a><span class="dt">void</span> att_set_db(</span>
-<span id="cb33-2"><a href="ch-gatt-server.html#cb33-2"></a>  <span class="co">// 要关联的句柄</span></span>
-<span id="cb33-3"><a href="ch-gatt-server.html#cb33-3"></a>  hci_con_handle_t con_handle,</span>
-<span id="cb33-4"><a href="ch-gatt-server.html#cb33-4"></a>  <span class="co">// Profile 数据库</span></span>
-<span id="cb33-5"><a href="ch-gatt-server.html#cb33-5"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> *db);</span></code></pre></div></li>
+<div class="sourceCode" id="cb44"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb44-1"><a href="ch-gatt-server.html#cb44-1"></a><span class="dt">void</span> att_set_db(</span>
+<span id="cb44-2"><a href="ch-gatt-server.html#cb44-2"></a>  <span class="co">// 要关联的句柄</span></span>
+<span id="cb44-3"><a href="ch-gatt-server.html#cb44-3"></a>  hci_con_handle_t con_handle,</span>
+<span id="cb44-4"><a href="ch-gatt-server.html#cb44-4"></a>  <span class="co">// Profile 数据库</span></span>
+<span id="cb44-5"><a href="ch-gatt-server.html#cb44-5"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> *db);</span></code></pre></div></li>
 </ol>
 <p>协议栈内的 GATT 服务器可以通过 2 种方式获得特征的值，然后传输到客户端：</p>
 <ol style="list-style-type: decimal">
@@ -406,7 +408,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">7.2</span> 使用说明<a href="ch-gatt-server.html#使用说明-3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <div id="profile-数据" class="section level3 hasAnchor">
 <h3><span class="header-section-number">7.2.1</span> Profile 数据<a href="ch-gatt-server.html#profile-数据" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>Profile 数据<a href="#fn21" class="footnote-ref" id="fnref21"><sup>21</sup></a> 使用了协议栈自定义的数据结构。
+<p>Profile 数据<a href="#fn22" class="footnote-ref" id="fnref22"><sup>22</sup></a> 使用了协议栈自定义的数据结构。
 开发者不需要了解这个数据结构的定义，而是借助图形化工具或者编程地生成。</p>
 <ol style="list-style-type: decimal">
 <li><p>使用图形化的 Profile 编辑器。</p>
@@ -425,113 +427,113 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="实现读回调" class="section level3 hasAnchor">
 <h3><span class="header-section-number">7.2.2</span> 实现读回调<a href="ch-gatt-server.html#实现读回调" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>一个典型的读回调函数大概是这种样子：</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb34-1"><a href="ch-gatt-server.html#cb34-1"></a><span class="dt">static</span> <span class="dt">uint16_t</span> att_read_callback(hci_con_handle_t connection_handle,</span>
-<span id="cb34-2"><a href="ch-gatt-server.html#cb34-2"></a>  <span class="dt">uint16_t</span> att_handle, <span class="dt">uint16_t</span> offset,</span>
-<span id="cb34-3"><a href="ch-gatt-server.html#cb34-3"></a>  <span class="dt">uint8_t</span> * buffer, <span class="dt">uint16_t</span> buffer_size)</span>
-<span id="cb34-4"><a href="ch-gatt-server.html#cb34-4"></a>{</span>
-<span id="cb34-5"><a href="ch-gatt-server.html#cb34-5"></a>    <span class="cf">switch</span> (att_handle)</span>
-<span id="cb34-6"><a href="ch-gatt-server.html#cb34-6"></a>    {</span>
-<span id="cb34-7"><a href="ch-gatt-server.html#cb34-7"></a>    <span class="cf">case</span> HANDLE_0:</span>
-<span id="cb34-8"><a href="ch-gatt-server.html#cb34-8"></a>        <span class="cf">if</span> (buffer)</span>
-<span id="cb34-9"><a href="ch-gatt-server.html#cb34-9"></a>        {</span>
-<span id="cb34-10"><a href="ch-gatt-server.html#cb34-10"></a>            memcpy(buffer, ...)</span>
-<span id="cb34-11"><a href="ch-gatt-server.html#cb34-11"></a>            <span class="cf">return</span> buffer_size;</span>
-<span id="cb34-12"><a href="ch-gatt-server.html#cb34-12"></a>        }</span>
-<span id="cb34-13"><a href="ch-gatt-server.html#cb34-13"></a>        <span class="cf">else</span></span>
-<span id="cb34-14"><a href="ch-gatt-server.html#cb34-14"></a>            <span class="cf">return</span> size of value;</span>
-<span id="cb34-15"><a href="ch-gatt-server.html#cb34-15"></a>    <span class="co">//...</span></span>
-<span id="cb34-16"><a href="ch-gatt-server.html#cb34-16"></a>    <span class="cf">default</span>:</span>
-<span id="cb34-17"><a href="ch-gatt-server.html#cb34-17"></a>        <span class="cf">return</span> <span class="dv">0</span>;</span>
-<span id="cb34-18"><a href="ch-gatt-server.html#cb34-18"></a>    }</span>
-<span id="cb34-19"><a href="ch-gatt-server.html#cb34-19"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb45-1"><a href="ch-gatt-server.html#cb45-1"></a><span class="dt">static</span> <span class="dt">uint16_t</span> att_read_callback(hci_con_handle_t connection_handle,</span>
+<span id="cb45-2"><a href="ch-gatt-server.html#cb45-2"></a>  <span class="dt">uint16_t</span> att_handle, <span class="dt">uint16_t</span> offset,</span>
+<span id="cb45-3"><a href="ch-gatt-server.html#cb45-3"></a>  <span class="dt">uint8_t</span> * buffer, <span class="dt">uint16_t</span> buffer_size)</span>
+<span id="cb45-4"><a href="ch-gatt-server.html#cb45-4"></a>{</span>
+<span id="cb45-5"><a href="ch-gatt-server.html#cb45-5"></a>    <span class="cf">switch</span> (att_handle)</span>
+<span id="cb45-6"><a href="ch-gatt-server.html#cb45-6"></a>    {</span>
+<span id="cb45-7"><a href="ch-gatt-server.html#cb45-7"></a>    <span class="cf">case</span> HANDLE_0:</span>
+<span id="cb45-8"><a href="ch-gatt-server.html#cb45-8"></a>        <span class="cf">if</span> (buffer)</span>
+<span id="cb45-9"><a href="ch-gatt-server.html#cb45-9"></a>        {</span>
+<span id="cb45-10"><a href="ch-gatt-server.html#cb45-10"></a>            memcpy(buffer, ...)</span>
+<span id="cb45-11"><a href="ch-gatt-server.html#cb45-11"></a>            <span class="cf">return</span> buffer_size;</span>
+<span id="cb45-12"><a href="ch-gatt-server.html#cb45-12"></a>        }</span>
+<span id="cb45-13"><a href="ch-gatt-server.html#cb45-13"></a>        <span class="cf">else</span></span>
+<span id="cb45-14"><a href="ch-gatt-server.html#cb45-14"></a>            <span class="cf">return</span> size of value;</span>
+<span id="cb45-15"><a href="ch-gatt-server.html#cb45-15"></a>    <span class="co">//...</span></span>
+<span id="cb45-16"><a href="ch-gatt-server.html#cb45-16"></a>    <span class="cf">default</span>:</span>
+<span id="cb45-17"><a href="ch-gatt-server.html#cb45-17"></a>        <span class="cf">return</span> <span class="dv">0</span>;</span>
+<span id="cb45-18"><a href="ch-gatt-server.html#cb45-18"></a>    }</span>
+<span id="cb45-19"><a href="ch-gatt-server.html#cb45-19"></a>}</span></code></pre></div>
 <p>延迟读取的情况：</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb35-1"><a href="ch-gatt-server.html#cb35-1"></a><span class="dt">static</span> <span class="dt">uint16_t</span> att_read_callback(hci_con_handle_t connection_handle,</span>
-<span id="cb35-2"><a href="ch-gatt-server.html#cb35-2"></a>  <span class="dt">uint16_t</span> att_handle, <span class="dt">uint16_t</span> offset,</span>
-<span id="cb35-3"><a href="ch-gatt-server.html#cb35-3"></a>  <span class="dt">uint8_t</span> * buffer, <span class="dt">uint16_t</span> buffer_size)</span>
-<span id="cb35-4"><a href="ch-gatt-server.html#cb35-4"></a>{</span>
-<span id="cb35-5"><a href="ch-gatt-server.html#cb35-5"></a>    <span class="cf">switch</span> (att_handle)</span>
-<span id="cb35-6"><a href="ch-gatt-server.html#cb35-6"></a>    {</span>
-<span id="cb35-7"><a href="ch-gatt-server.html#cb35-7"></a>    <span class="cf">case</span> HANDLE_0:</span>
-<span id="cb35-8"><a href="ch-gatt-server.html#cb35-8"></a>        <span class="co">//...</span></span>
-<span id="cb35-9"><a href="ch-gatt-server.html#cb35-9"></a>        <span class="cf">return</span> ATT_DEFERRED_READ;</span>
-<span id="cb35-10"><a href="ch-gatt-server.html#cb35-10"></a>    <span class="co">//...</span></span>
-<span id="cb35-11"><a href="ch-gatt-server.html#cb35-11"></a>    <span class="cf">default</span>:</span>
-<span id="cb35-12"><a href="ch-gatt-server.html#cb35-12"></a>        <span class="cf">return</span> <span class="dv">0</span>;</span>
-<span id="cb35-13"><a href="ch-gatt-server.html#cb35-13"></a>    }</span>
-<span id="cb35-14"><a href="ch-gatt-server.html#cb35-14"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb46-1"><a href="ch-gatt-server.html#cb46-1"></a><span class="dt">static</span> <span class="dt">uint16_t</span> att_read_callback(hci_con_handle_t connection_handle,</span>
+<span id="cb46-2"><a href="ch-gatt-server.html#cb46-2"></a>  <span class="dt">uint16_t</span> att_handle, <span class="dt">uint16_t</span> offset,</span>
+<span id="cb46-3"><a href="ch-gatt-server.html#cb46-3"></a>  <span class="dt">uint8_t</span> * buffer, <span class="dt">uint16_t</span> buffer_size)</span>
+<span id="cb46-4"><a href="ch-gatt-server.html#cb46-4"></a>{</span>
+<span id="cb46-5"><a href="ch-gatt-server.html#cb46-5"></a>    <span class="cf">switch</span> (att_handle)</span>
+<span id="cb46-6"><a href="ch-gatt-server.html#cb46-6"></a>    {</span>
+<span id="cb46-7"><a href="ch-gatt-server.html#cb46-7"></a>    <span class="cf">case</span> HANDLE_0:</span>
+<span id="cb46-8"><a href="ch-gatt-server.html#cb46-8"></a>        <span class="co">//...</span></span>
+<span id="cb46-9"><a href="ch-gatt-server.html#cb46-9"></a>        <span class="cf">return</span> ATT_DEFERRED_READ;</span>
+<span id="cb46-10"><a href="ch-gatt-server.html#cb46-10"></a>    <span class="co">//...</span></span>
+<span id="cb46-11"><a href="ch-gatt-server.html#cb46-11"></a>    <span class="cf">default</span>:</span>
+<span id="cb46-12"><a href="ch-gatt-server.html#cb46-12"></a>        <span class="cf">return</span> <span class="dv">0</span>;</span>
+<span id="cb46-13"><a href="ch-gatt-server.html#cb46-13"></a>    }</span>
+<span id="cb46-14"><a href="ch-gatt-server.html#cb46-14"></a>}</span></code></pre></div>
 <p>延迟读取的数据通过 <code>att_server_deferred_read_response</code> 传递给协议栈：</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb36-1"><a href="ch-gatt-server.html#cb36-1"></a><span class="dt">int</span> att_server_deferred_read_response(</span>
-<span id="cb36-2"><a href="ch-gatt-server.html#cb36-2"></a>  <span class="co">// 连接句柄</span></span>
-<span id="cb36-3"><a href="ch-gatt-server.html#cb36-3"></a>  hci_con_handle_t con_handle,</span>
-<span id="cb36-4"><a href="ch-gatt-server.html#cb36-4"></a>  <span class="co">// 特征句柄</span></span>
-<span id="cb36-5"><a href="ch-gatt-server.html#cb36-5"></a>  <span class="dt">uint16_t</span> attribute_handle,</span>
-<span id="cb36-6"><a href="ch-gatt-server.html#cb36-6"></a>  <span class="co">// 指向值的指针</span></span>
-<span id="cb36-7"><a href="ch-gatt-server.html#cb36-7"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> *value,</span>
-<span id="cb36-8"><a href="ch-gatt-server.html#cb36-8"></a>  <span class="co">// 值的长度</span></span>
-<span id="cb36-9"><a href="ch-gatt-server.html#cb36-9"></a>  <span class="dt">uint16_t</span> value_len);</span></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb47-1"><a href="ch-gatt-server.html#cb47-1"></a><span class="dt">int</span> att_server_deferred_read_response(</span>
+<span id="cb47-2"><a href="ch-gatt-server.html#cb47-2"></a>  <span class="co">// 连接句柄</span></span>
+<span id="cb47-3"><a href="ch-gatt-server.html#cb47-3"></a>  hci_con_handle_t con_handle,</span>
+<span id="cb47-4"><a href="ch-gatt-server.html#cb47-4"></a>  <span class="co">// 特征句柄</span></span>
+<span id="cb47-5"><a href="ch-gatt-server.html#cb47-5"></a>  <span class="dt">uint16_t</span> attribute_handle,</span>
+<span id="cb47-6"><a href="ch-gatt-server.html#cb47-6"></a>  <span class="co">// 指向值的指针</span></span>
+<span id="cb47-7"><a href="ch-gatt-server.html#cb47-7"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> *value,</span>
+<span id="cb47-8"><a href="ch-gatt-server.html#cb47-8"></a>  <span class="co">// 值的长度</span></span>
+<span id="cb47-9"><a href="ch-gatt-server.html#cb47-9"></a>  <span class="dt">uint16_t</span> value_len);</span></code></pre></div>
 <p>SDK <em>GATT Relay</em> 演示了延迟读取的具体用法。</p>
 </div>
 <div id="实现写回调" class="section level3 hasAnchor">
 <h3><span class="header-section-number">7.2.3</span> 实现写回调<a href="ch-gatt-server.html#实现写回调" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>当写特性时，可能触发服务器执行某个动作。BLE 为了精度控制动作的执行引入了会话<a href="#fn22" class="footnote-ref" id="fnref22"><sup>22</sup></a>概念：
+<p>当写特性时，可能触发服务器执行某个动作。BLE 为了精度控制动作的执行引入了会话<a href="#fn23" class="footnote-ref" id="fnref23"><sup>23</sup></a>概念：
 一个会话包含对 1 个或多个特性的写入，最后是一个显式的“执行”命令通知服务器开始执行。此外还有一个“取消”命令，通知服务器会话不要执行动作、直接终止。相应地，
 写回调的会话模式 <code>transaction_mode</code> 参数包含四种值：</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb37-1"><a href="ch-gatt-server.html#cb37-1"></a><span class="co">// 无会话的普通写入</span></span>
-<span id="cb37-2"><a href="ch-gatt-server.html#cb37-2"></a><span class="pp">#define ATT_TRANSACTION_MODE_NONE      ...</span></span>
-<span id="cb37-3"><a href="ch-gatt-server.html#cb37-3"></a><span class="co">// 带会话的写入</span></span>
-<span id="cb37-4"><a href="ch-gatt-server.html#cb37-4"></a><span class="pp">#define ATT_TRANSACTION_MODE_ACTIVE    ...</span></span>
-<span id="cb37-5"><a href="ch-gatt-server.html#cb37-5"></a><span class="co">// 执行</span></span>
-<span id="cb37-6"><a href="ch-gatt-server.html#cb37-6"></a><span class="pp">#define ATT_TRANSACTION_MODE_EXECUTE   ...</span></span>
-<span id="cb37-7"><a href="ch-gatt-server.html#cb37-7"></a><span class="co">// 取消</span></span>
-<span id="cb37-8"><a href="ch-gatt-server.html#cb37-8"></a><span class="pp">#define ATT_TRANSACTION_MODE_CANCEL    ...</span></span></code></pre></div>
+<div class="sourceCode" id="cb48"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb48-1"><a href="ch-gatt-server.html#cb48-1"></a><span class="co">// 无会话的普通写入</span></span>
+<span id="cb48-2"><a href="ch-gatt-server.html#cb48-2"></a><span class="pp">#define ATT_TRANSACTION_MODE_NONE      ...</span></span>
+<span id="cb48-3"><a href="ch-gatt-server.html#cb48-3"></a><span class="co">// 带会话的写入</span></span>
+<span id="cb48-4"><a href="ch-gatt-server.html#cb48-4"></a><span class="pp">#define ATT_TRANSACTION_MODE_ACTIVE    ...</span></span>
+<span id="cb48-5"><a href="ch-gatt-server.html#cb48-5"></a><span class="co">// 执行</span></span>
+<span id="cb48-6"><a href="ch-gatt-server.html#cb48-6"></a><span class="pp">#define ATT_TRANSACTION_MODE_EXECUTE   ...</span></span>
+<span id="cb48-7"><a href="ch-gatt-server.html#cb48-7"></a><span class="co">// 取消</span></span>
+<span id="cb48-8"><a href="ch-gatt-server.html#cb48-8"></a><span class="pp">#define ATT_TRANSACTION_MODE_CANCEL    ...</span></span></code></pre></div>
 <p>对于 <code>NONE</code> 和 <code>ACTIVE</code> 两种模式，都会传入要写入的数据，而 <code>EXECUTE</code> 和 <code>CANCEL</code> 则既不会传入特征句柄，也不传入数据，
 也就是说这两个命令只关联到连接，施加于整个服务器，而不针对某个特征。</p>
 <p>一个典型的写回调函数大概是这种样子：</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb38-1"><a href="ch-gatt-server.html#cb38-1"></a><span class="dt">static</span> <span class="dt">int</span> att_write_callback(</span>
-<span id="cb38-2"><a href="ch-gatt-server.html#cb38-2"></a>  hci_con_handle_t connection_handle, <span class="dt">uint16_t</span> att_handle,</span>
-<span id="cb38-3"><a href="ch-gatt-server.html#cb38-3"></a>  <span class="dt">uint16_t</span> transaction_mode,</span>
-<span id="cb38-4"><a href="ch-gatt-server.html#cb38-4"></a>  <span class="dt">uint16_t</span> offset, <span class="dt">const</span> <span class="dt">uint8_t</span> *buffer, <span class="dt">uint16_t</span> buffer_size)</span>
-<span id="cb38-5"><a href="ch-gatt-server.html#cb38-5"></a>{</span>
-<span id="cb38-6"><a href="ch-gatt-server.html#cb38-6"></a>    处理 EXECUTE 和 CANCEL 两种会话模式并返回;</span>
-<span id="cb38-7"><a href="ch-gatt-server.html#cb38-7"></a></span>
-<span id="cb38-8"><a href="ch-gatt-server.html#cb38-8"></a>    <span class="co">//</span></span>
-<span id="cb38-9"><a href="ch-gatt-server.html#cb38-9"></a>    <span class="cf">switch</span> (att_handle)</span>
-<span id="cb38-10"><a href="ch-gatt-server.html#cb38-10"></a>    {</span>
-<span id="cb38-11"><a href="ch-gatt-server.html#cb38-11"></a>    <span class="cf">case</span> HANDLE_0:</span>
-<span id="cb38-12"><a href="ch-gatt-server.html#cb38-12"></a>        <span class="co">//...</span></span>
-<span id="cb38-13"><a href="ch-gatt-server.html#cb38-13"></a>        <span class="cf">return</span> <span class="dv">0</span>;</span>
-<span id="cb38-14"><a href="ch-gatt-server.html#cb38-14"></a>    <span class="co">//...</span></span>
-<span id="cb38-15"><a href="ch-gatt-server.html#cb38-15"></a>    <span class="cf">default</span>:</span>
-<span id="cb38-16"><a href="ch-gatt-server.html#cb38-16"></a>        <span class="cf">return</span> <span class="dv">0</span>;</span>
-<span id="cb38-17"><a href="ch-gatt-server.html#cb38-17"></a>    }</span>
-<span id="cb38-18"><a href="ch-gatt-server.html#cb38-18"></a>}</span></code></pre></div>
-<p>如果发现错误，可以返回非 0 值告知客户端<a href="#fn23" class="footnote-ref" id="fnref23"><sup>23</sup></a>。</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb49-1"><a href="ch-gatt-server.html#cb49-1"></a><span class="dt">static</span> <span class="dt">int</span> att_write_callback(</span>
+<span id="cb49-2"><a href="ch-gatt-server.html#cb49-2"></a>  hci_con_handle_t connection_handle, <span class="dt">uint16_t</span> att_handle,</span>
+<span id="cb49-3"><a href="ch-gatt-server.html#cb49-3"></a>  <span class="dt">uint16_t</span> transaction_mode,</span>
+<span id="cb49-4"><a href="ch-gatt-server.html#cb49-4"></a>  <span class="dt">uint16_t</span> offset, <span class="dt">const</span> <span class="dt">uint8_t</span> *buffer, <span class="dt">uint16_t</span> buffer_size)</span>
+<span id="cb49-5"><a href="ch-gatt-server.html#cb49-5"></a>{</span>
+<span id="cb49-6"><a href="ch-gatt-server.html#cb49-6"></a>    处理 EXECUTE 和 CANCEL 两种会话模式并返回;</span>
+<span id="cb49-7"><a href="ch-gatt-server.html#cb49-7"></a></span>
+<span id="cb49-8"><a href="ch-gatt-server.html#cb49-8"></a>    <span class="co">//</span></span>
+<span id="cb49-9"><a href="ch-gatt-server.html#cb49-9"></a>    <span class="cf">switch</span> (att_handle)</span>
+<span id="cb49-10"><a href="ch-gatt-server.html#cb49-10"></a>    {</span>
+<span id="cb49-11"><a href="ch-gatt-server.html#cb49-11"></a>    <span class="cf">case</span> HANDLE_0:</span>
+<span id="cb49-12"><a href="ch-gatt-server.html#cb49-12"></a>        <span class="co">//...</span></span>
+<span id="cb49-13"><a href="ch-gatt-server.html#cb49-13"></a>        <span class="cf">return</span> <span class="dv">0</span>;</span>
+<span id="cb49-14"><a href="ch-gatt-server.html#cb49-14"></a>    <span class="co">//...</span></span>
+<span id="cb49-15"><a href="ch-gatt-server.html#cb49-15"></a>    <span class="cf">default</span>:</span>
+<span id="cb49-16"><a href="ch-gatt-server.html#cb49-16"></a>        <span class="cf">return</span> <span class="dv">0</span>;</span>
+<span id="cb49-17"><a href="ch-gatt-server.html#cb49-17"></a>    }</span>
+<span id="cb49-18"><a href="ch-gatt-server.html#cb49-18"></a>}</span></code></pre></div>
+<p>如果发现错误，可以返回非 0 值告知客户端<a href="#fn24" class="footnote-ref" id="fnref24"><sup>24</sup></a>。</p>
 </div>
 <div id="发送通知notification" class="section level3 hasAnchor">
 <h3><span class="header-section-number">7.2.4</span> 发送通知（Notification）<a href="ch-gatt-server.html#发送通知notification" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>通过 <code>att_server_notify</code> 发送通知：</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb39-1"><a href="ch-gatt-server.html#cb39-1"></a><span class="dt">int</span> att_server_notify(</span>
-<span id="cb39-2"><a href="ch-gatt-server.html#cb39-2"></a>  <span class="co">// 连接句柄</span></span>
-<span id="cb39-3"><a href="ch-gatt-server.html#cb39-3"></a>  hci_con_handle_t con_handle,</span>
-<span id="cb39-4"><a href="ch-gatt-server.html#cb39-4"></a>  <span class="co">// 特征句柄</span></span>
-<span id="cb39-5"><a href="ch-gatt-server.html#cb39-5"></a>  <span class="dt">uint16_t</span> attribute_handle,</span>
-<span id="cb39-6"><a href="ch-gatt-server.html#cb39-6"></a>  <span class="co">// 指向值的指针</span></span>
-<span id="cb39-7"><a href="ch-gatt-server.html#cb39-7"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> *value,</span>
-<span id="cb39-8"><a href="ch-gatt-server.html#cb39-8"></a>  <span class="co">// 值的长度</span></span>
-<span id="cb39-9"><a href="ch-gatt-server.html#cb39-9"></a>  <span class="dt">uint16_t</span> value_len);</span></code></pre></div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb50-1"><a href="ch-gatt-server.html#cb50-1"></a><span class="dt">int</span> att_server_notify(</span>
+<span id="cb50-2"><a href="ch-gatt-server.html#cb50-2"></a>  <span class="co">// 连接句柄</span></span>
+<span id="cb50-3"><a href="ch-gatt-server.html#cb50-3"></a>  hci_con_handle_t con_handle,</span>
+<span id="cb50-4"><a href="ch-gatt-server.html#cb50-4"></a>  <span class="co">// 特征句柄</span></span>
+<span id="cb50-5"><a href="ch-gatt-server.html#cb50-5"></a>  <span class="dt">uint16_t</span> attribute_handle,</span>
+<span id="cb50-6"><a href="ch-gatt-server.html#cb50-6"></a>  <span class="co">// 指向值的指针</span></span>
+<span id="cb50-7"><a href="ch-gatt-server.html#cb50-7"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> *value,</span>
+<span id="cb50-8"><a href="ch-gatt-server.html#cb50-8"></a>  <span class="co">// 值的长度</span></span>
+<span id="cb50-9"><a href="ch-gatt-server.html#cb50-9"></a>  <span class="dt">uint16_t</span> value_len);</span></code></pre></div>
 </div>
 <div id="发送指示indication" class="section level3 hasAnchor">
 <h3><span class="header-section-number">7.2.5</span> 发送指示（Indication）<a href="ch-gatt-server.html#发送指示indication" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>通过 <code>att_server_indicate</code> 发送指示：</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb40-1"><a href="ch-gatt-server.html#cb40-1"></a><span class="dt">int</span> att_server_indicate(</span>
-<span id="cb40-2"><a href="ch-gatt-server.html#cb40-2"></a>  <span class="co">// 连接句柄</span></span>
-<span id="cb40-3"><a href="ch-gatt-server.html#cb40-3"></a>  hci_con_handle_t con_handle,</span>
-<span id="cb40-4"><a href="ch-gatt-server.html#cb40-4"></a>  <span class="co">// 特征句柄</span></span>
-<span id="cb40-5"><a href="ch-gatt-server.html#cb40-5"></a>  <span class="dt">uint16_t</span> attribute_handle,</span>
-<span id="cb40-6"><a href="ch-gatt-server.html#cb40-6"></a>  <span class="co">// 指向值的指针</span></span>
-<span id="cb40-7"><a href="ch-gatt-server.html#cb40-7"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> *value,</span>
-<span id="cb40-8"><a href="ch-gatt-server.html#cb40-8"></a>  <span class="co">// 值的长度</span></span>
-<span id="cb40-9"><a href="ch-gatt-server.html#cb40-9"></a>  <span class="dt">uint16_t</span> value_len);</span></code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb51-1"><a href="ch-gatt-server.html#cb51-1"></a><span class="dt">int</span> att_server_indicate(</span>
+<span id="cb51-2"><a href="ch-gatt-server.html#cb51-2"></a>  <span class="co">// 连接句柄</span></span>
+<span id="cb51-3"><a href="ch-gatt-server.html#cb51-3"></a>  hci_con_handle_t con_handle,</span>
+<span id="cb51-4"><a href="ch-gatt-server.html#cb51-4"></a>  <span class="co">// 特征句柄</span></span>
+<span id="cb51-5"><a href="ch-gatt-server.html#cb51-5"></a>  <span class="dt">uint16_t</span> attribute_handle,</span>
+<span id="cb51-6"><a href="ch-gatt-server.html#cb51-6"></a>  <span class="co">// 指向值的指针</span></span>
+<span id="cb51-7"><a href="ch-gatt-server.html#cb51-7"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> *value,</span>
+<span id="cb51-8"><a href="ch-gatt-server.html#cb51-8"></a>  <span class="co">// 值的长度</span></span>
+<span id="cb51-9"><a href="ch-gatt-server.html#cb51-9"></a>  <span class="dt">uint16_t</span> value_len);</span></code></pre></div>
 <p>指示的响应通过 <code>ATT_EVENT_HANDLE_VALUE_INDICATION_COMPLETE</code> 事件通知 App。</p>
 <div class="rmdcaution">
 <p>
@@ -567,9 +569,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="att_mtu" class="section level3 hasAnchor">
 <h3><span class="header-section-number">7.2.7</span> ATT_MTU<a href="ch-gatt-server.html#att_mtu" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>除了通过监听 <code>ATT_EVENT_MTU_EXCHANGE_COMPLETE</code> 事件以外，通过 <code>att_server_get_mtu</code> 可以随时获取 ATT_MTU：</p>
-<div class="sourceCode" id="cb41"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb41-1"><a href="ch-gatt-server.html#cb41-1"></a><span class="dt">uint16_t</span> att_server_get_mtu(</span>
-<span id="cb41-2"><a href="ch-gatt-server.html#cb41-2"></a>  <span class="co">// 连接句柄</span></span>
-<span id="cb41-3"><a href="ch-gatt-server.html#cb41-3"></a>  hci_con_handle_t con_handle);</span></code></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb52-1"><a href="ch-gatt-server.html#cb52-1"></a><span class="dt">uint16_t</span> att_server_get_mtu(</span>
+<span id="cb52-2"><a href="ch-gatt-server.html#cb52-2"></a>  <span class="co">// 连接句柄</span></span>
+<span id="cb52-3"><a href="ch-gatt-server.html#cb52-3"></a>  hci_con_handle_t con_handle);</span></code></pre></div>
 <p>特征的值的最大长度为 <span class="math inline">\((ATT\_MTU - 3)\)</span>。调用 <code>att_server_indicate</code> 或 <code>att_server_notify</code> 上报数据时，
 如果超过最大长度，会被自动截短。</p>
 
@@ -578,12 +580,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="footnotes">
 <hr />
-<ol start="19">
-<li id="fn19"><p>在不引起混淆的前提下，本手册混用 ATT 服务器、GATT 服务器，代码里也用 <code>att_server</code> 代指 <code>gatt_server</code>。<a href="ch-gatt-server.html#fnref19" class="footnote-back">↩︎</a></p></li>
-<li id="fn20"><p>事实上，这几件事已由 Wizard 工具代劳。<a href="ch-gatt-server.html#fnref20" class="footnote-back">↩︎</a></p></li>
-<li id="fn21"><p>在手册、工具、代码的不同位置可能使用了不同的名词，如 Profile 数据库、GATT 数据库、GATT 数据等。<a href="ch-gatt-server.html#fnref21" class="footnote-back">↩︎</a></p></li>
-<li id="fn22"><p>协议栈里称为“会话”，规范里称为“队列”。<a href="ch-gatt-server.html#fnref22" class="footnote-back">↩︎</a></p></li>
-<li id="fn23"><p>仅适用于有响应的写入，无响应的写入无效。<a href="ch-gatt-server.html#fnref23" class="footnote-back">↩︎</a></p></li>
+<ol start="20">
+<li id="fn20"><p>在不引起混淆的前提下，本手册混用 ATT 服务器、GATT 服务器，代码里也用 <code>att_server</code> 代指 <code>gatt_server</code>。<a href="ch-gatt-server.html#fnref20" class="footnote-back">↩︎</a></p></li>
+<li id="fn21"><p>事实上，这几件事已由 Wizard 工具代劳。<a href="ch-gatt-server.html#fnref21" class="footnote-back">↩︎</a></p></li>
+<li id="fn22"><p>在手册、工具、代码的不同位置可能使用了不同的名词，如 Profile 数据库、GATT 数据库、GATT 数据等。<a href="ch-gatt-server.html#fnref22" class="footnote-back">↩︎</a></p></li>
+<li id="fn23"><p>协议栈里称为“会话”，规范里称为“队列”。<a href="ch-gatt-server.html#fnref23" class="footnote-back">↩︎</a></p></li>
+<li id="fn24"><p>仅适用于有响应的写入，无响应的写入无效。<a href="ch-gatt-server.html#fnref24" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

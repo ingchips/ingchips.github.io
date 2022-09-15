@@ -194,7 +194,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6.2.5" data-path="ch-conn.html"><a href="ch-conn.html#设置-phy"><i class="fa fa-check"></i><b>6.2.5</b> 设置 PHY</a></li>
 <li class="chapter" data-level="6.2.6" data-path="ch-conn.html"><a href="ch-conn.html#更新连接参数"><i class="fa fa-check"></i><b>6.2.6</b> 更新连接参数</a></li>
 <li class="chapter" data-level="6.2.7" data-path="ch-conn.html"><a href="ch-conn.html#减速模式"><i class="fa fa-check"></i><b>6.2.7</b> 减速模式</a></li>
-<li class="chapter" data-level="6.2.8" data-path="ch-conn.html"><a href="ch-conn.html#功率控制"><i class="fa fa-check"></i><b>6.2.8</b> 功率控制</a></li>
+<li class="chapter" data-level="6.2.8" data-path="ch-conn.html"><a href="ch-conn.html#路损检测与上报"><i class="fa fa-check"></i><b>6.2.8</b> 路损检测与上报</a></li>
+<li class="chapter" data-level="6.2.9" data-path="ch-conn.html"><a href="ch-conn.html#功率控制"><i class="fa fa-check"></i><b>6.2.9</b> 功率控制</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="ch-gatt-server.html"><a href="ch-gatt-server.html"><i class="fa fa-check"></i><b>7</b> GATT - 服务器</a><ul>
@@ -233,8 +234,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="10.1" data-path="ch-sm.html"><a href="ch-sm.html#概览-6"><i class="fa fa-check"></i><b>10.1</b> 概览</a></li>
 <li class="chapter" data-level="10.2" data-path="ch-sm.html"><a href="ch-sm.html#使用说明-6"><i class="fa fa-check"></i><b>10.2</b> 使用说明</a><ul>
 <li class="chapter" data-level="10.2.1" data-path="ch-sm.html"><a href="ch-sm.html#初始化"><i class="fa fa-check"></i><b>10.2.1</b> 初始化</a></li>
-<li class="chapter" data-level="10.2.2" data-path="ch-sm.html"><a href="ch-sm.html#sm-事件回调"><i class="fa fa-check"></i><b>10.2.2</b> SM 事件回调</a></li>
-<li class="chapter" data-level="10.2.3" data-path="ch-sm.html"><a href="ch-sm.html#每个连接的个性化设置"><i class="fa fa-check"></i><b>10.2.3</b> 每个连接的个性化设置</a></li>
+<li class="chapter" data-level="10.2.2" data-path="ch-sm.html"><a href="ch-sm.html#使用私有随机地址"><i class="fa fa-check"></i><b>10.2.2</b> 使用私有随机地址</a></li>
+<li class="chapter" data-level="10.2.3" data-path="ch-sm.html"><a href="ch-sm.html#sm-事件回调"><i class="fa fa-check"></i><b>10.2.3</b> SM 事件回调</a></li>
+<li class="chapter" data-level="10.2.4" data-path="ch-sm.html"><a href="ch-sm.html#每个连接的个性化设置"><i class="fa fa-check"></i><b>10.2.4</b> 每个连接的个性化设置</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="11" data-path="ch-misc.html"><a href="ch-misc.html"><i class="fa fa-check"></i><b>11</b> 杂项</a><ul>
@@ -389,7 +391,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tr>
 </tbody>
 </table>
-<p><code>phy_option_t</code> 目前用来指示 Coded PHY 为 S2 还是 S8。</p>
+<p><code>phy_option_t</code> 目前用来指示本端 Coded PHY 采用 S2 或 S8。对于对端，可以在对端 App 里调用 <code>ll_set_conn_coded_scheme</code> 选择 S2 或者 S8。
+默认为 S8。</p>
 </div>
 <div id="更新连接参数" class="section level3 hasAnchor">
 <h3><span class="header-section-number">6.2.6</span> 更新连接参数<a href="ch-conn.html#更新连接参数" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -413,10 +416,119 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="减速模式" class="section level3 hasAnchor">
 <h3><span class="header-section-number">6.2.7</span> 减速模式<a href="ch-conn.html#减速模式" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>减速模式的使用方法可参考 SDK <em>UART GATT Console</em>。</p>
+<p>减速（Subrating）模式为中心设备和外围设备定义了一种统一的节奏，在保证通信的持续性前提下跳过若干连接间隔，减少射频占用、降低功耗。
+调用 <code>gap_subrate_request</code><a href="#fn19" class="footnote-ref" id="fnref19"><sup>19</sup></a> 即可在主从两端协商启动减速模式。</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb29-1"><a href="ch-conn.html#cb29-1"></a><span class="dt">uint8_t</span> gap_subrate_request(</span>
+<span id="cb29-2"><a href="ch-conn.html#cb29-2"></a>  <span class="co">// 连接句柄</span></span>
+<span id="cb29-3"><a href="ch-conn.html#cb29-3"></a>  hci_con_handle_t con_handle,</span>
+<span id="cb29-4"><a href="ch-conn.html#cb29-4"></a>  <span class="co">// 最小减速比</span></span>
+<span id="cb29-5"><a href="ch-conn.html#cb29-5"></a>  <span class="dt">uint16_t</span> subrate_min,</span>
+<span id="cb29-6"><a href="ch-conn.html#cb29-6"></a>  <span class="co">// 最大减速比</span></span>
+<span id="cb29-7"><a href="ch-conn.html#cb29-7"></a>  <span class="dt">uint16_t</span> subrate_max,</span>
+<span id="cb29-8"><a href="ch-conn.html#cb29-8"></a>  <span class="co">// 最大从延迟（单位：减速后连接间隔）</span></span>
+<span id="cb29-9"><a href="ch-conn.html#cb29-9"></a>  <span class="dt">uint16_t</span> max_latency,</span>
+<span id="cb29-10"><a href="ch-conn.html#cb29-10"></a>  <span class="co">// 最小连续传输次数</span></span>
+<span id="cb29-11"><a href="ch-conn.html#cb29-11"></a>  <span class="dt">uint16_t</span> continuation_number,</span>
+<span id="cb29-12"><a href="ch-conn.html#cb29-12"></a>  <span class="co">// 超时时间（单位 10ms）</span></span>
+<span id="cb29-13"><a href="ch-conn.html#cb29-13"></a>  <span class="dt">uint16_t</span> supervision_timeout);</span></code></pre></div>
+<p>例如，将连接 0 的减速比设置为 8，在双方无数据传输时，每 8 个连接间隔对发 1 次空包维持连接：</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb30-1"><a href="ch-conn.html#cb30-1"></a>gap_subrate_request(<span class="dv">0</span>, <span class="dv">8</span>, <span class="dv">8</span>,</span>
+<span id="cb30-2"><a href="ch-conn.html#cb30-2"></a>  <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">2000</span>);</span></code></pre></div>
+<p>使用 BLE 空口抓包工具或者高端电流表可观察到这种减速行为，见图 <a href="ch-conn.html#fig:ch2-subrate-8-start">6.1</a>。</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-subrate-8-start"></span>
+<img src="img/subrate_start.png" alt="减速比为 8 时的行为" width="85%" />
+<p class="caption">
+图 6.1: 减速比为 8 时的行为
+</p>
+</div>
+<p><code>continuation_number</code> 表示每个减速周期开始时，至少再连续传输多少个连接间隔。如果为 1，在上述配置下当双方无数据传输时，每 8 个连接间隔有 2 个激活；
+如果为 7，则每个连接间隔有 8 个激活，即都激活。</p>
+<p>启用减速模式后，从机延迟的单位从原来的连接间隔变为 (连接间隔 <span class="math inline">\(\times\)</span> 减速比)。</p>
+<p>减速参数更新后，HCI 回调函数会收到 <code>HCI_SUBEVENT_LE_SUBRATE_CHANGE</code> 事件。</p>
+<p>当出现通信需求时，可以迅速从减速模块回到连接通信模式，<strong>兼顾功耗与效率</strong>，如图 <a href="ch-conn.html#fig:ch2-subrate-8-data">6.2</a>。</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-subrate-8-data"></span>
+<img src="img/subrate_att_req.png" alt="减速下出现数据通信" width="85%" />
+<p class="caption">
+图 6.2: 减速下出现数据通信
+</p>
+</div>
+<p>通过 <code>gap_set_default_subrate</code> 设置 Controller 所接受的减速模式参数范围。</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb31-1"><a href="ch-conn.html#cb31-1"></a><span class="dt">uint8_t</span> gap_set_default_subrate(</span>
+<span id="cb31-2"><a href="ch-conn.html#cb31-2"></a>  <span class="dt">uint16_t</span> subrate_min,</span>
+<span id="cb31-3"><a href="ch-conn.html#cb31-3"></a>  <span class="dt">uint16_t</span> subrate_max,</span>
+<span id="cb31-4"><a href="ch-conn.html#cb31-4"></a>  <span class="dt">uint16_t</span> max_latency,</span>
+<span id="cb31-5"><a href="ch-conn.html#cb31-5"></a>  <span class="dt">uint16_t</span> continuation_number,</span>
+<span id="cb31-6"><a href="ch-conn.html#cb31-6"></a>  <span class="dt">uint16_t</span> supervision_timeout);</span></code></pre></div>
+</div>
+<div id="路损检测与上报" class="section level3 hasAnchor">
+<h3><span class="header-section-number">6.2.8</span> 路损检测与上报<a href="ch-conn.html#路损检测与上报" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>BLE 5.2 为路径损耗定义了 3 种分类（或者分区，zone），高损耗、中损耗和低损耗。
+Controller 监控损耗情况，当损耗分类发生改变时（图 <a href="ch-conn.html#fig:ch2-path-loss-notification">6.3</a> 中的虚线箭头），上报 HCI_SUBEVENT_LE_PATH_LOSS_THRESHOLD 事件。</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-path-loss-notification"></span>
+<img src="img/path_loss_report_zone.png" alt="路径损耗上报" width="60%" />
+<p class="caption">
+图 6.3: 路径损耗上报
+</p>
+</div>
+<ul>
+<li><p>配置路损分类参数：</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb32-1"><a href="ch-conn.html#cb32-1"></a><span class="dt">uint8_t</span> gap_set_path_loss_reporting_param(</span>
+<span id="cb32-2"><a href="ch-conn.html#cb32-2"></a>  hci_con_handle_t con_handle,  <span class="co">// 连接句柄</span></span>
+<span id="cb32-3"><a href="ch-conn.html#cb32-3"></a>  <span class="dt">uint8_t</span> high_threshold,       <span class="co">// 高路损门限</span></span>
+<span id="cb32-4"><a href="ch-conn.html#cb32-4"></a>  <span class="dt">uint8_t</span> high_hysteresis,      <span class="co">// 高路损迟滞</span></span>
+<span id="cb32-5"><a href="ch-conn.html#cb32-5"></a>  <span class="dt">uint8_t</span> low_threshold,        <span class="co">// 低路损门限</span></span>
+<span id="cb32-6"><a href="ch-conn.html#cb32-6"></a>  <span class="dt">uint8_t</span> low_hysteresis,       <span class="co">// 低路损迟滞</span></span>
+<span id="cb32-7"><a href="ch-conn.html#cb32-7"></a>  <span class="dt">uint8_t</span> min_time_spent);      <span class="co">// 最小停留时间（单位连接间隔）</span></span></code></pre></div>
+<p>图 <a href="ch-conn.html#fig:ch2-path-loss-notification">6.3</a> 中的 <em>upwards boundary</em> 为 (threshold + hysteresis)，
+<em>downwards boundary</em> 为 (threshold - hysteresis)。</p></li>
+<li><p>使能上报：</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb33-1"><a href="ch-conn.html#cb33-1"></a><span class="dt">uint8_t</span> gap_set_path_loss_reporting_enable(</span>
+<span id="cb33-2"><a href="ch-conn.html#cb33-2"></a>  hci_con_handle_t con_handle,  <span class="co">// 连接句柄</span></span>
+<span id="cb33-3"><a href="ch-conn.html#cb33-3"></a>  <span class="dt">uint8_t</span> enable                <span class="co">// 使能</span></span>
+<span id="cb33-4"><a href="ch-conn.html#cb33-4"></a>);</span></code></pre></div></li>
+</ul>
 </div>
 <div id="功率控制" class="section level3 hasAnchor">
-<h3><span class="header-section-number">6.2.8</span> 功率控制<a href="ch-conn.html#功率控制" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<h3><span class="header-section-number">6.2.9</span> 功率控制<a href="ch-conn.html#功率控制" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>功率控制的使用方法可参考 SDK <em>UART GATT Console</em>。</p>
+<ul>
+<li><p>读取发射功率</p>
+<p>读取本端发射功率：</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb34-1"><a href="ch-conn.html#cb34-1"></a><span class="dt">uint8_t</span> gap_read_local_tx_power_level(</span>
+<span id="cb34-2"><a href="ch-conn.html#cb34-2"></a>  hci_con_handle_t con_handle, <span class="co">// 连接句柄</span></span>
+<span id="cb34-3"><a href="ch-conn.html#cb34-3"></a>  unified_phy_type_t phy       <span class="co">// PHY</span></span>
+<span id="cb34-4"><a href="ch-conn.html#cb34-4"></a>);</span></code></pre></div>
+<p>从对应的 <code>HCI_EVENT_COMMAND_COMPLETE</code> 事件的返回参数中取得发射功率值：</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb35-1"><a href="ch-conn.html#cb35-1"></a><span class="dt">uint8_t</span> Status,                 <span class="co">// 状态码</span></span>
+<span id="cb35-2"><a href="ch-conn.html#cb35-2"></a><span class="dt">uint8_t</span> Connection_Handle,      <span class="co">// 连接句柄</span></span>
+<span id="cb35-3"><a href="ch-conn.html#cb35-3"></a><span class="dt">uint8_t</span> PHY,</span>
+<span id="cb35-4"><a href="ch-conn.html#cb35-4"></a> <span class="dt">int8_t</span> Current_TX_Power_Level, <span class="co">// 当前发射功率（dBm）</span></span>
+<span id="cb35-5"><a href="ch-conn.html#cb35-5"></a> <span class="dt">int8_t</span> Max_TX_Power_Level      <span class="co">// 最大发射功率（dBm）</span></span></code></pre></div>
+<p>读取对端发射功率：</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb36-1"><a href="ch-conn.html#cb36-1"></a><span class="dt">uint8_t</span> gap_read_remote_tx_power_level(</span>
+<span id="cb36-2"><a href="ch-conn.html#cb36-2"></a>  hci_con_handle_t con_handle, <span class="co">// 连接句柄</span></span>
+<span id="cb36-3"><a href="ch-conn.html#cb36-3"></a>  unified_phy_type_t phy       <span class="co">// PHY</span></span>
+<span id="cb36-4"><a href="ch-conn.html#cb36-4"></a>);</span></code></pre></div>
+<p>从 <code>HCI_SUBEVENT_LE_TRANSMIT_POWER_REPORTING</code> 事件中取得发射功率值。</p></li>
+<li><p>设置发射功率</p>
+<p>设置本端发射功率：</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb37-1"><a href="ch-conn.html#cb37-1"></a><span class="dt">void</span> ll_set_conn_tx_power(</span>
+<span id="cb37-2"><a href="ch-conn.html#cb37-2"></a>  <span class="dt">uint16_t</span> conn_handle, <span class="co">// 连接句柄</span></span>
+<span id="cb37-3"><a href="ch-conn.html#cb37-3"></a>  <span class="dt">int16_t</span> tx_power      <span class="co">// 发射功率（dBm）</span></span>
+<span id="cb37-4"><a href="ch-conn.html#cb37-4"></a>);</span></code></pre></div>
+<p>调整对端发射功率：</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb38-1"><a href="ch-conn.html#cb38-1"></a><span class="dt">void</span> ll_adjust_conn_peer_tx_power(</span>
+<span id="cb38-2"><a href="ch-conn.html#cb38-2"></a>  <span class="dt">uint16_t</span> conn_handle, <span class="co">// 连接句柄</span></span>
+<span id="cb38-3"><a href="ch-conn.html#cb38-3"></a>  <span class="dt">int8_t</span> delta          <span class="co">// 调整量，正值为增大，负值为减小（dB）</span></span>
+<span id="cb38-4"><a href="ch-conn.html#cb38-4"></a>);</span></code></pre></div></li>
+<li><p>发射功率自动上报</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb39-1"><a href="ch-conn.html#cb39-1"></a></span>
+<span id="cb39-2"><a href="ch-conn.html#cb39-2"></a><span class="dt">uint8_t</span> gap_set_tx_power_reporting_enable(</span>
+<span id="cb39-3"><a href="ch-conn.html#cb39-3"></a>  hci_con_handle_t con_handle,  <span class="co">// 连接句柄</span></span>
+<span id="cb39-4"><a href="ch-conn.html#cb39-4"></a>  <span class="dt">uint8_t</span> local_enable,         <span class="co">// 使能本端上报</span></span>
+<span id="cb39-5"><a href="ch-conn.html#cb39-5"></a>  <span class="dt">uint8_t</span> remote_enable         <span class="co">// 使能对端上报</span></span>
+<span id="cb39-6"><a href="ch-conn.html#cb39-6"></a>);</span></code></pre></div></li>
+</ul>
 
 </div>
 </div>
@@ -427,6 +539,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li id="fn16"><p>需要连接多个设备，使用白名单方式效率更高。<a href="ch-conn.html#fnref16" class="footnote-back">↩︎</a></p></li>
 <li id="fn17"><p>参考 《Controller API Reference》。<a href="ch-conn.html#fnref17" class="footnote-back">↩︎</a></p></li>
 <li id="fn18"><p>从角色使用 <code>l2cap_request_connection_parameter_update</code> 请求更新。<a href="ch-conn.html#fnref18" class="footnote-back">↩︎</a></p></li>
+<li id="fn19"><p>调用之前建议先检查对方是否支持此特性。此 API 无论主从角色都可以调用。<a href="ch-conn.html#fnref19" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

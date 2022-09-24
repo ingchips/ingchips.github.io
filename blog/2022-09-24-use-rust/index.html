@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>使用 Rust 开发 BLE 应用 - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="通过使用 Rust 语言开发一个极简的 BLE 应用说明 Rust 语言开发环境的搭建。"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+
+      <div id="box">
+        <input id="in_search" type="search" name="search" placeholder="搜索：输入并回车">
+      </div>
+
+      <script>
+        let search_input = document.getElementById('in_search');
+        if (search_input) {
+          search_input.addEventListener("keypress", function(event) {
+          if (event.key === "Enter") {
+            window.open('https://www.bing.com/search?q=' + encodeURIComponent(search_input.value) + '%20site%3A' + window.location.hostname);
+            event.preventDefault();
+            }
+          });
+        }
+      </script>
+
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item has-children">
+
+              
+<a class="" href="/docs/sdk/apps/#web-apps">
+  
+  Web 工具
+  
+</a>
+
+              
+
+                <ul class="submenu">
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/callgraph">
+  
+  Callgraph (调用图)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index_cn.html">
+  
+  ING918/ING916 FOTA (空中升级)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/powerprofiler/">
+  
+  Online Power Profiler
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/air_trace/">
+  
+  Trace Logger
+  
+</a>
+
+  </li>
+  
+</ul>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <article class="post post-full">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <header class="post-header has-gradient outer">
+      
+      
+      <div class="inner-sm">
+        <div class="post-meta">
+          <time class="published" datetime="2022-09-24 00:00">September 24, 2022</time>
+        </div>
+        <h1 class="post-title">使用 Rust 开发 BLE 应用</h1>
+        
+        
+      </div>
+    </header>
+    <div class="inner-md outer">
+      <div class="post-content">
+        <p>Rust 语言原本是 Mozilla 员工 Graydon Hoare 的私人计划，在 2010 年首次公开。Rust 1.0 是第一个稳定版本，于 2015 年 5 月 15 日发布。
+Mozilla 2020 年 8 月裁员波及到 Rust 开发团队，一年后，AWS、华为、Google、微软、Mozilla 等五公司发起 Rust Foundation。</p>
+
+<p>最近，在 Linux 内核维护者峰会上，<a href="https://www.zdnet.com/article/linus-torvalds-rust-will-go-into-linux-6-1/">Linus Torvalds 表示</a>除非有意外发生，Rust 将进入 Linux 6.1；
+微软 Azure CTO Mark Russinovich 在<a href="https://new.qq.com/rain/a/20220922A04QBO00.html">推特上表示</a> “是时候停止用C/C++启动任何新项目了，
+一切需要无垃圾回收语言的场景都该使用 Rust”。</p>
+
+<p>对于嵌入式领域，Rust 官方一直着力<a href="https://www.rust-lang.org/what/embedded">推广</a>，网络上资料、教程众多。本文与这些资料不同：不使用 Rust
+的 Cargo 等 <em>时髦</em> 工具，坚持使用 <code class="highlighter-rouge">rustc</code>、<code class="highlighter-rouge">makefile</code> 这些 <em>老派</em> 工具 —— 与 C 共存而不是<a href="https://github.com/stm32-rs">从头重写</a>，充分享受现有的 C 红利。</p>
+
+<h2 id="准备-rust">准备 Rust</h2>
+
+<p>以 Windows 为例。</p>
+
+<ol>
+  <li>
+    <p><a href="https://www.rust-lang.org/learn/get-started">下载</a>、安装 Rust</p>
+  </li>
+  <li>
+    <p><a href="http://releases.llvm.org/download.html">下载</a>、安装 LLVM</p>
+
+    <p>假设 LLVM 的安装目录为 <code class="highlighter-rouge">D:\programs\LLVM</code>，那么新建一个环境变量 <code class="highlighter-rouge">LIBCLANG_PATH</code>，值为 <code class="highlighter-rouge">D:\programs\LLVM\bin</code>。</p>
+  </li>
+  <li>
+    <p>安装 <code class="highlighter-rouge">bindgen</code></p>
+
+    <p>执行命令 <code class="highlighter-rouge">cargo install bindgen</code> 安装 <code class="highlighter-rouge">bindgen</code>。</p>
+  </li>
+  <li>
+    <p>为 Rust 编译器添加编译目标</p>
+
+    <p>关于 ARM Cortex-M 的几种编译目标如下：</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align: left">编译目标</th>
+          <th style="text-align: left">说明</th>
+          <th style="text-align: left"> </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align: left">thumbv6m-none-eabi</td>
+          <td style="text-align: left">Cortex-M0, Cortex-M0+</td>
+          <td style="text-align: left"> </td>
+        </tr>
+        <tr>
+          <td style="text-align: left">thumbv7m-none-eabi</td>
+          <td style="text-align: left">Cortex-M3</td>
+          <td style="text-align: left">ING918xx</td>
+        </tr>
+        <tr>
+          <td style="text-align: left">thumbv7em-none-eabi</td>
+          <td style="text-align: left">Cortex-M4, Cortex-M7 (无 FPU)</td>
+          <td style="text-align: left"> </td>
+        </tr>
+        <tr>
+          <td style="text-align: left">thumbv7em-none-eabihf</td>
+          <td style="text-align: left">Cortex-M4F, Cortex-M7F (有 FPU)</td>
+          <td style="text-align: left">ING9168x</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>如果使用的是 ING918xx 开发板，则执行命令添加对应的编译目标：</p>
+
+    <p><code class="highlighter-rouge">rustup target add thumbv7m-none-eabi</code></p>
+  </li>
+</ol>
+
+<h2 id="创建使用-gnu-工具链项目">创建使用 Gnu 工具链项目</h2>
+
+<p>参照 SDK 教程，创建一个使用 Gnu 工具链的外设型项目，广播名称设置为 <em>Hello from Rust</em>。</p>
+
+<h2 id="生成-rust-bindings">生成 Rust Bindings</h2>
+
+<p>这一步的目的是为 SDK 的 C 头文件生成对应的 Rust FFI bindings。有了这个，Rust 源代码就可以调用 SDK 提供的所有功能，BLE、外设等等。</p>
+
+<h3 id="ble_bindingsh"><em>ble_bindings.h</em></h3>
+
+<p>同 <a href="/blog/2021-01-25-zig-async">Zig 类似</a>，在 <em>src</em> 目录下创建文件 <em>ble_bindings.h</em>，把可能用到的头文件一并写进去：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// ble_bindings.h 文件内容</span>
+<span class="cp">#include</span> <span class="cpf">"platform_api.h"</span><span class="cp">
+#include</span> <span class="cpf">"ll_api.h"</span><span class="cp">
+#include</span> <span class="cpf">"btstack_defines.h"</span><span class="cp">
+#include</span> <span class="cpf">"btstack_event.h"</span><span class="cp">
+#include</span> <span class="cpf">"gatt_client.h"</span><span class="cp">
+#include</span> <span class="cpf">"sig_uuid.h"</span><span class="cp">
+#include</span> <span class="cpf">"gap.h"</span><span class="cp">
+#include</span> <span class="cpf">"att_db.h"</span><span class="cp">
+#include</span> <span class="cpf">"btstack_util.h"</span><span class="cp">
+#include</span> <span class="cpf">"FreeRTOS.h"</span><span class="cp">
+#include</span> <span class="cpf">"task.h"</span><span class="cp">
+</span></code></pre></div></div>
+
+<h3 id="ble_lib-模块">ble_lib 模块</h3>
+
+<p>这一步将所有的 bindings 打包为 Rust 模块 <em>ble_lib</em> 。在 <em>src</em> 目录下创建 <em>ble_lib</em> 文件夹。
+在 <em>ble_lib 文件夹里新建两个文件：_mod.rs</em> 和 <em>cty.rs</em>。</p>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// mod.rs 文件的内容</span>
+<span class="nd">#![allow(non_upper_case_globals)]</span>
+<span class="nd">#![allow(non_camel_case_types)]</span>
+<span class="nd">#![allow(non_snake_case)]</span>
+
+<span class="k">pub</span> <span class="k">mod</span> <span class="n">cty</span><span class="p">;</span>
+
+<span class="nd">include!</span><span class="p">(</span><span class="s">"ble_bindings.rs"</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>这里的 <em>ble_bindings.rs</em> 稍后通过 <code class="highlighter-rouge">bindgen</code> 工具从 <em>ble_bindings.h</em> 生成。</p>
+
+<p><em>cty.rs</em> 文件定义了 C 常见类型与 Rust 标准类型之间的映射，其完整内容见文末附录。</p>
+
+<h3 id="生成-ble_bindingsrs">生成 <em>ble_bindings.rs</em></h3>
+
+<p>在 <em>makefile.conf</em> 添加 <em>ble_bindings.rs</em> 生成规则：</p>
+
+<div class="language-makefile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">src/ble_lib/$(RS_BINDINGS).rs</span><span class="o">:</span> <span class="nf">src/$(RS_BINDINGS).h</span>
+	<span class="err">$</span><span class="o">(</span>info GEN BINDINGS<span class="o">)</span>
+	bindgen <span class="nt">-o</span> src/ble_lib/<span class="nv">$(RS_BINDINGS)</span>.rs src/<span class="nv">$(RS_BINDINGS)</span>.h <span class="nt">--no-debug</span> <span class="s2">".*"</span> <span class="nt">--no-default</span> <span class="s2">".*"</span> <span class="nt">--rustified-enum</span> <span class="s2">".*"</span> <span class="nt">--use-core</span> <span class="nt">--ctypes-prefix</span><span class="o">=</span>cty <span class="nt">--</span> <span class="nv">$(ING_SRC_INC)</span> <span class="nv">$(ING_BUNDLE_INC)</span> <span class="nt">-D__SOFTFP__</span> <span class="nt">-target</span> armv7m-none-eabi
+</code></pre></div></div>
+
+<p>这里，<code class="highlighter-rouge">--no-debug</code> 用来禁止 <code class="highlighter-rouge">bindgen</code> 生成 Debug trait，因为 <code class="highlighter-rouge">bindgen</code> 只能 <em>尽力</em> 生成 Debug trait，不能保证 100%；<code class="highlighter-rouge">--no-default</code> 用来禁止 <code class="highlighter-rouge">bindgen</code> 生成 Default traits。<code class="highlighter-rouge">--use-core</code> 和 <code class="highlighter-rouge">--ctypes-prefix=cty</code> 配合，告诉 <code class="highlighter-rouge">bindgen</code> 转换时不要从 <code class="highlighter-rouge">std</code> 导入 C 类型。</p>
+
+<p><code class="highlighter-rouge">--</code> 后面的参数供 LLVM 使用，对于 ING918xx，需要添加参数 <code class="highlighter-rouge">-D__SOFTFP__ -target armv7m-none-eabi</code>。</p>
+
+<h2 id="替换-mainc">替换 <em>main.c</em></h2>
+
+<p>我们的目标是用 Rust 重写 <em>main.c</em>。删掉这个文件，把 <em>Makefile</em> 的 PROJECT_FILES 里的 <em>main.c</em> 也删掉。</p>
+
+<p>新建 <em>main.rs</em> 文件。最简单的 <em>main.c</em> 是这样的：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// #include "xxx"</span>
+<span class="kt">int</span> <span class="nf">app_main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">platform_set_evt_callback</span><span class="p">(</span><span class="n">PLATFORM_CB_EVT_PROFILE_INIT</span><span class="p">,</span> <span class="n">setup_profile</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>与之对应的最简单的 <em>main.rs</em> 是这样的：</p>
+
+<div class="language-rs highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">#![no_std]</span>
+<span class="nd">#![no_main]</span>
+<span class="nd">#![deny(warnings)]</span>
+<span class="nd">#![allow(dead_code,</span> <span class="nd">unused_imports)]</span>
+
+<span class="k">use</span> <span class="nn">core</span><span class="p">::</span><span class="nn">panic</span><span class="p">::</span><span class="n">PanicInfo</span><span class="p">;</span>
+
+<span class="k">mod</span> <span class="n">ble_lib</span><span class="p">;</span>
+
+<span class="nd">#[panic_handler]</span>
+<span class="k">fn</span> <span class="nf">panic</span><span class="p">(</span><span class="n">_info</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">PanicInfo</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="o">!</span> <span class="p">{</span>
+    <span class="k">loop</span> <span class="p">{}</span>
+<span class="p">}</span>
+
+<span class="k">extern</span> <span class="s">"C"</span> <span class="p">{</span>
+    <span class="k">pub</span> <span class="k">fn</span> <span class="nf">setup_profile</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="o">*</span> <span class="k">mut</span> <span class="nn">ble_lib</span><span class="p">::</span><span class="nn">cty</span><span class="p">::</span><span class="nb">c_void</span><span class="p">,</span>
+        <span class="n">user_data</span><span class="p">:</span> <span class="o">*</span> <span class="k">mut</span> <span class="nn">ble_lib</span><span class="p">::</span><span class="nn">cty</span><span class="p">::</span><span class="nb">c_void</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="nb">u32</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nd">#[no_mangle]</span>
+<span class="k">unsafe</span> <span class="k">fn</span> <span class="nf">app_main</span><span class="p">()</span> <span class="k">-&gt;</span> <span class="nb">i32</span> <span class="p">{</span>
+    <span class="nn">ble_lib</span><span class="p">::</span><span class="nf">platform_set_evt_callback</span><span class="p">(</span>
+        <span class="nn">ble_lib</span><span class="p">::</span><span class="nn">platform_evt_callback_type_t</span><span class="p">::</span><span class="n">PLATFORM_CB_EVT_PROFILE_INIT</span><span class="p">,</span>
+        <span class="nn">core</span><span class="p">::</span><span class="nn">prelude</span><span class="p">::</span><span class="nn">v1</span><span class="p">::</span><span class="nf">Some</span><span class="p">(</span><span class="n">setup_profile</span><span class="p">),</span>
+        <span class="nn">ble_lib</span><span class="p">::</span><span class="nn">cty</span><span class="p">::</span><span class="n">null</span><span class="p">);</span>
+    <span class="mi">0</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="更新-makefile">更新 <em>makefile</em></h2>
+
+<p>添加 Rust 源代码及目标文件：</p>
+
+<div class="language-makefile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">RUST_FILES</span> <span class="o">+=</span> src/main.rs
+<span class="nv">APP_O_FILES</span> <span class="o">+=</span> <span class="nf">$(</span><span class="nb">addprefix</span> <span class="nv">$(OBJ_PATH)</span>/,<span class="nf">$(</span><span class="nb">notdir</span> <span class="nv">$(RUST_FILES:.rs=.o)</span><span class="nf">))</span>
+</code></pre></div></div>
+
+<p>添加 Rust 编译规则：</p>
+
+<div class="language-makefile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">RC</span>      <span class="o">:=</span> rustc
+
+<span class="nl">$(OBJ_PATH)/%.o</span><span class="o">:</span> <span class="nf">src/%.rs</span>
+	<span class="err">$</span><span class="o">(</span>info RC <span class="nv">$&lt;</span><span class="o">)</span>
+	<span class="nv">$(RC)</span> <span class="nt">--emit</span> obj <span class="nt">--target</span> thumbv7em-none-eabi <span class="nt">-o</span> <span class="nv">$@</span> <span class="nv">$&lt;</span>
+</code></pre></div></div>
+
+<h2 id="测试">测试</h2>
+
+<p><code class="highlighter-rouge">make</code>，回到 <em>Wizard</em>，从右键菜单打开 Flash Downder，下载到开发板。通过手机 App 可搜索到名为 <em>Hello from Rust</em> 的设备。</p>
+
+<p>至此，Rust 语言开发已全线打通。</p>
+
+<h2 id="附录">附录</h2>
+
+<h3 id="ctyrs-文件的内容">cty.rs 文件的内容</h3>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">#![allow(non_camel_case_types)]</span>
+<span class="nd">#![deny(warnings)]</span>
+
+<span class="k">pub</span> <span class="k">type</span> <span class="nb">c_char</span> <span class="o">=</span> <span class="nb">u8</span><span class="p">;</span>
+
+<span class="k">pub</span> <span class="k">type</span> <span class="nb">c_int</span> <span class="o">=</span> <span class="nb">i32</span><span class="p">;</span>
+<span class="k">pub</span> <span class="k">type</span> <span class="nb">c_uint</span> <span class="o">=</span> <span class="nb">u32</span><span class="p">;</span>
+
+<span class="k">mod</span> <span class="n">pwd</span> <span class="p">{}</span>
+
+<span class="k">pub</span> <span class="k">type</span> <span class="n">int8_t</span> <span class="o">=</span> <span class="nb">i8</span><span class="p">;</span>
+<span class="k">pub</span> <span class="k">type</span> <span class="n">int16_t</span> <span class="o">=</span> <span class="nb">i16</span><span class="p">;</span>
+<span class="k">pub</span> <span class="k">type</span> <span class="n">int32_t</span> <span class="o">=</span> <span class="nb">i32</span><span class="p">;</span>
+<span class="k">pub</span> <span class="k">type</span> <span class="n">int64_t</span> <span class="o">=</span> <span class="nb">i64</span><span class="p">;</span>
+
+<span class="k">pub</span> <span class="k">type</span> <span class="n">uint8_t</span> <span class="o">=</span> <span class="nb">u8</span><span class="p">;</span>
+<span class="k">pub</span> <span class="k">type</span> <span class="n">uint16_t</span> <span class="o">=</span> <span class="nb">u16</span><span class="p">;</span>
+<span class="k">pub</span> <span class="k">type</span> <span class="n">uint32_t</span> <span class="o">=</span> <span class="nb">u32</span><span class="p">;</span>
+<span class="k">pub</span> <span class="k">type</span> <span class="n">uint64_t</span> <span class="o">=</span> <span class="nb">u64</span><span class="p">;</span>
+
+<span class="k">pub</span> <span class="k">type</span> <span class="nb">c_schar</span> <span class="o">=</span> <span class="nb">i8</span><span class="p">;</span>
+<span class="k">pub</span> <span class="k">type</span> <span class="nb">c_short</span> <span class="o">=</span> <span class="nb">i16</span><span class="p">;</span>
+<span class="k">pub</span> <span class="k">type</span> <span class="nb">c_longlong</span> <span class="o">=</span> <span class="nb">i64</span><span class="p">;</span>
+<span class="k">pub</span> <span class="k">type</span> <span class="nb">c_long</span> <span class="o">=</span> <span class="nb">i32</span><span class="p">;</span>
+
+<span class="k">pub</span> <span class="k">type</span> <span class="nb">c_uchar</span> <span class="o">=</span> <span class="nb">u8</span><span class="p">;</span>
+<span class="k">pub</span> <span class="k">type</span> <span class="nb">c_ushort</span> <span class="o">=</span> <span class="nb">u16</span><span class="p">;</span>
+<span class="k">pub</span> <span class="k">type</span> <span class="nb">c_ulonglong</span> <span class="o">=</span> <span class="nb">u64</span><span class="p">;</span>
+<span class="k">pub</span> <span class="k">type</span> <span class="nb">c_ulong</span> <span class="o">=</span> <span class="nb">u32</span><span class="p">;</span>
+
+<span class="k">pub</span> <span class="k">type</span> <span class="nb">c_float</span> <span class="o">=</span> <span class="nb">f32</span><span class="p">;</span>
+<span class="k">pub</span> <span class="k">type</span> <span class="nb">c_double</span> <span class="o">=</span> <span class="nb">f64</span><span class="p">;</span>
+
+<span class="k">pub</span> <span class="k">type</span> <span class="n">intmax_t</span> <span class="o">=</span> <span class="nb">i64</span><span class="p">;</span>
+<span class="k">pub</span> <span class="k">type</span> <span class="n">uintmax_t</span> <span class="o">=</span> <span class="nb">u64</span><span class="p">;</span>
+
+<span class="k">pub</span> <span class="k">type</span> <span class="nb">size_t</span> <span class="o">=</span> <span class="nb">usize</span><span class="p">;</span>
+<span class="k">pub</span> <span class="k">type</span> <span class="nb">ptrdiff_t</span> <span class="o">=</span> <span class="nb">i32</span><span class="p">;</span>
+<span class="k">pub</span> <span class="k">type</span> <span class="nb">intptr_t</span> <span class="o">=</span> <span class="nb">isize</span><span class="p">;</span>
+<span class="k">pub</span> <span class="k">type</span> <span class="nb">uintptr_t</span> <span class="o">=</span> <span class="nb">u32</span><span class="p">;</span>
+<span class="k">pub</span> <span class="k">type</span> <span class="nb">ssize_t</span> <span class="o">=</span> <span class="nb">isize</span><span class="p">;</span>
+
+<span class="k">pub</span> <span class="k">type</span> <span class="nb">c_void</span> <span class="o">=</span> <span class="nn">core</span><span class="p">::</span><span class="nn">ffi</span><span class="p">::</span><span class="nb">c_void</span><span class="p">;</span>
+
+<span class="k">pub</span> <span class="k">const</span> <span class="n">null</span><span class="p">:</span> <span class="o">*</span> <span class="k">mut</span> <span class="nb">c_void</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">as</span> <span class="o">*</span> <span class="k">mut</span> <span class="nb">c_void</span><span class="p">;</span>
+</code></pre></div></div>
+
+      </div><!-- .post-content -->
+    </div><!-- .inner-md -->
+  </article><!-- .post -->
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2021-2022. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

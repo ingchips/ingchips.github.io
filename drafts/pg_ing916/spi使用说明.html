@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>7 SPI使用说明 | ING916XX 系列芯片外设开发者手册</title>
+  <meta name="description" content="ING916XX 系列芯片开发者手册." />
+  <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="7 SPI使用说明 | ING916XX 系列芯片外设开发者手册" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="ING916XX 系列芯片开发者手册." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="7 SPI使用说明 | ING916XX 系列芯片外设开发者手册" />
+  
+  <meta name="twitter:description" content="ING916XX 系列芯片开发者手册." />
+  
+
+<meta name="author" content="Ingchips Technology Co., Ltd." />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="spi功能概述.html"/>
+<link rel="next" href="ch-sysctrl.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">ING916XX 系列芯片开发者手册</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> 版本历史</a></li>
+<li class="chapter" data-level="2" data-path="ch-overview.html"><a href="ch-overview.html"><i class="fa fa-check"></i><b>2</b> 概览</a><ul>
+<li class="chapter" data-level="2.1" data-path="ch-overview.html"><a href="ch-overview.html#缩略语及术语"><i class="fa fa-check"></i><b>2.1</b> 缩略语及术语</a></li>
+<li class="chapter" data-level="2.2" data-path="ch-overview.html"><a href="ch-overview.html#参考文档"><i class="fa fa-check"></i><b>2.2</b> 参考文档</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="ch-gpio.html"><a href="ch-gpio.html"><i class="fa fa-check"></i><b>3</b> 通用输入输出（GPIO）</a><ul>
+<li class="chapter" data-level="3.1" data-path="ch-gpio.html"><a href="ch-gpio.html#功能概述"><i class="fa fa-check"></i><b>3.1</b> 功能概述</a></li>
+<li class="chapter" data-level="3.2" data-path="ch-gpio.html"><a href="ch-gpio.html#使用说明"><i class="fa fa-check"></i><b>3.2</b> 使用说明</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="ch-gpio.html"><a href="ch-gpio.html#设置-io-方向"><i class="fa fa-check"></i><b>3.2.1</b> 设置 IO 方向</a></li>
+<li class="chapter" data-level="3.2.2" data-path="ch-gpio.html"><a href="ch-gpio.html#读取输入"><i class="fa fa-check"></i><b>3.2.2</b> 读取输入</a></li>
+<li class="chapter" data-level="3.2.3" data-path="ch-gpio.html"><a href="ch-gpio.html#设置输出"><i class="fa fa-check"></i><b>3.2.3</b> 设置输出</a></li>
+<li class="chapter" data-level="3.2.4" data-path="ch-gpio.html"><a href="ch-gpio.html#配置中断请求"><i class="fa fa-check"></i><b>3.2.4</b> 配置中断请求</a></li>
+<li class="chapter" data-level="3.2.5" data-path="ch-gpio.html"><a href="ch-gpio.html#处理中断状态"><i class="fa fa-check"></i><b>3.2.5</b> 处理中断状态</a></li>
+<li class="chapter" data-level="3.2.6" data-path="ch-gpio.html"><a href="ch-gpio.html#输入防抖"><i class="fa fa-check"></i><b>3.2.6</b> 输入防抖</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html"><i class="fa fa-check"></i><b>4</b> 管脚管理（PINCTRL）</a></li>
+<li class="chapter" data-level="5" data-path="ch-pwm.html"><a href="ch-pwm.html"><i class="fa fa-check"></i><b>5</b> 脉宽调制发生器（PWM）</a></li>
+<li class="chapter" data-level="6" data-path="spi功能概述.html"><a href="spi功能概述.html"><i class="fa fa-check"></i><b>6</b> SPI功能概述</a></li>
+<li class="chapter" data-level="7" data-path="spi使用说明.html"><a href="spi使用说明.html"><i class="fa fa-check"></i><b>7</b> SPI使用说明</a><ul>
+<li class="chapter" data-level="7.1" data-path="spi使用说明.html"><a href="spi使用说明.html#场景1只读只写不带dma"><i class="fa fa-check"></i><b>7.1</b> 场景1：只读只写不带DMA</a><ul>
+<li class="chapter" data-level="7.1.1" data-path="spi使用说明.html"><a href="spi使用说明.html#spi主配置"><i class="fa fa-check"></i><b>7.1.1</b> SPI主配置</a></li>
+<li class="chapter" data-level="7.1.2" data-path="spi使用说明.html"><a href="spi使用说明.html#spi从配置"><i class="fa fa-check"></i><b>7.1.2</b> SPI从配置</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="spi使用说明.html"><a href="spi使用说明.html#场景2只读只写并且使用dma"><i class="fa fa-check"></i><b>7.2</b> 场景2：只读只写并且使用DMA</a><ul>
+<li class="chapter" data-level="7.2.1" data-path="spi使用说明.html"><a href="spi使用说明.html#spi主配置-1"><i class="fa fa-check"></i><b>7.2.1</b> SPI主配置</a></li>
+<li class="chapter" data-level="7.2.2" data-path="spi使用说明.html"><a href="spi使用说明.html#spi从配置-1"><i class="fa fa-check"></i><b>7.2.2</b> SPI从配置</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="spi使用说明.html"><a href="spi使用说明.html#场景3同时读写不带dma"><i class="fa fa-check"></i><b>7.3</b> 场景3：同时读写不带DMA</a><ul>
+<li class="chapter" data-level="7.3.1" data-path="spi使用说明.html"><a href="spi使用说明.html#spi主配置-2"><i class="fa fa-check"></i><b>7.3.1</b> SPI主配置</a></li>
+<li class="chapter" data-level="7.3.2" data-path="spi使用说明.html"><a href="spi使用说明.html#spi从配置-2"><i class="fa fa-check"></i><b>7.3.2</b> SPI从配置</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="spi使用说明.html"><a href="spi使用说明.html#场景4同时读写并且使用dma"><i class="fa fa-check"></i><b>7.4</b> 场景4：同时读写并且使用DMA</a><ul>
+<li class="chapter" data-level="7.4.1" data-path="spi使用说明.html"><a href="spi使用说明.html#spi主配置-3"><i class="fa fa-check"></i><b>7.4.1</b> SPI主配置</a></li>
+<li class="chapter" data-level="7.4.2" data-path="spi使用说明.html"><a href="spi使用说明.html#spi从配置-3"><i class="fa fa-check"></i><b>7.4.2</b> SPI从配置</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html"><i class="fa fa-check"></i><b>8</b> 系统控制（SYSCTRL）</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">ING916XX 系列芯片外设开发者手册</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="spi使用说明" class="section level1 hasAnchor">
+<h1><span class="header-section-number">7</span> SPI使用说明<a href="spi使用说明.html#spi使用说明" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>以下场景中均以SPI1为例，如果需要SPI0则可以根据情况修改</p>
+<div id="场景1只读只写不带dma" class="section level2 hasAnchor">
+<h2><span class="header-section-number">7.1</span> 场景1：只读只写不带DMA<a href="spi使用说明.html#场景1只读只写不带dma" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>其中SPI主配置为只写模式，SPI从配置为只读模式，CPU操作读写，没有使用DMA 配置之前需要决定使用的GPIO，如果是普通模式，则不需要SPI_MIC_WP和SPI_MIC_HOLD</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb14-1"><a href="spi使用说明.html#cb14-1"></a><span class="pp">#define SPI_MIC_CLK         GIO_GPIO_10</span></span>
+<span id="cb14-2"><a href="spi使用说明.html#cb14-2"></a><span class="pp">#define SPI_MIC_MOSI        GIO_GPIO_11</span></span>
+<span id="cb14-3"><a href="spi使用说明.html#cb14-3"></a><span class="pp">#define SPI_MIC_MISO        GIO_GPIO_12</span></span>
+<span id="cb14-4"><a href="spi使用说明.html#cb14-4"></a><span class="pp">#define SPI_MIC_CS          GIO_GPIO_13</span></span>
+<span id="cb14-5"><a href="spi使用说明.html#cb14-5"></a><span class="pp">#define SPI_MIC_WP          GIO_GPIO_14</span></span>
+<span id="cb14-6"><a href="spi使用说明.html#cb14-6"></a><span class="pp">#define SPI_MIC_HOLD        GIO_GPIO_15</span></span></code></pre></div>
+<div id="spi主配置" class="section level3 hasAnchor">
+<h3><span class="header-section-number">7.1.1</span> SPI主配置<a href="spi使用说明.html#spi主配置" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="接口配置" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.1.1.1</span> 接口配置<a href="spi使用说明.html#接口配置" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb15-1"><a href="spi使用说明.html#cb15-1"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_spi_pin(<span class="dt">void</span>)</span>
+<span id="cb15-2"><a href="spi使用说明.html#cb15-2"></a>{</span>
+<span id="cb15-3"><a href="spi使用说明.html#cb15-3"></a>    <span class="co">// 打开SPI模块时钟</span></span>
+<span id="cb15-4"><a href="spi使用说明.html#cb15-4"></a>    <span class="co">// 此处是以SPI1为例，如果是SPI0则需要更改</span></span>
+<span id="cb15-5"><a href="spi使用说明.html#cb15-5"></a>    <span class="co">// 根据使用的GPIO，选择打开GPIO0或者GPIO1的时钟</span></span>
+<span id="cb15-6"><a href="spi使用说明.html#cb15-6"></a>    SYSCTRL_ClearClkGateMulti(    (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_SPI1)</span>
+<span id="cb15-7"><a href="spi使用说明.html#cb15-7"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_SysCtrl)</span>
+<span id="cb15-8"><a href="spi使用说明.html#cb15-8"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_PinCtrl)</span>
+<span id="cb15-9"><a href="spi使用说明.html#cb15-9"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_GPIO1)</span>
+<span id="cb15-10"><a href="spi使用说明.html#cb15-10"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_GPIO0));</span>
+<span id="cb15-11"><a href="spi使用说明.html#cb15-11"></a></span>
+<span id="cb15-12"><a href="spi使用说明.html#cb15-12"></a>    <span class="co">// 设置IO MUX，将GPIO映射成SPI功能，不需要的pin可以使用IO_NOT_A_PIN替代</span></span>
+<span id="cb15-13"><a href="spi使用说明.html#cb15-13"></a>    PINCTRL_SelSpiIn(SPI_PORT_1, SPI_MIC_CLK, SPI_MIC_CS, SPI_MIC_HOLD, SPI_MIC_WP, SPI_MIC_MISO, SPI_MIC_MOSI);</span>
+<span id="cb15-14"><a href="spi使用说明.html#cb15-14"></a>    PINCTRL_SetPadMux(SPI_MIC_CLK, IO_SOURCE_SPI1_CLK_OUT);</span>
+<span id="cb15-15"><a href="spi使用说明.html#cb15-15"></a>    PINCTRL_SetPadMux(SPI_MIC_CS, IO_SOURCE_SPI1_CSN_OUT);</span>
+<span id="cb15-16"><a href="spi使用说明.html#cb15-16"></a>    PINCTRL_SetPadMux(SPI_MIC_MOSI, IO_SOURCE_SPI1_MOSI_OUT);</span>
+<span id="cb15-17"><a href="spi使用说明.html#cb15-17"></a>    </span>
+<span id="cb15-18"><a href="spi使用说明.html#cb15-18"></a>    <span class="co">// 设置SPI的中断</span></span>
+<span id="cb15-19"><a href="spi使用说明.html#cb15-19"></a>    platform_set_irq_callback(PLATFORM_CB_IRQ_APBSPI, peripherals_spi_isr, NULL);</span></code></pre></div>
+</div>
+<div id="spi模块初始化" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.1.1.2</span> SPI模块初始化<a href="spi使用说明.html#spi模块初始化" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>常用设置项用注释标出，详细定义请参考“peripheral_ssp.h”</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb16-1"><a href="spi使用说明.html#cb16-1"></a><span class="co">// 示例，每次传输大小是8个word</span></span>
+<span id="cb16-2"><a href="spi使用说明.html#cb16-2"></a><span class="pp">#define DATA_LEN (SPI_FIFO_DEPTH)</span></span>
+<span id="cb16-3"><a href="spi使用说明.html#cb16-3"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_spi_module(<span class="dt">void</span>)</span>
+<span id="cb16-4"><a href="spi使用说明.html#cb16-4"></a>{</span>
+<span id="cb16-5"><a href="spi使用说明.html#cb16-5"></a>    apSSP_sDeviceControlBlock pParam;</span>
+<span id="cb16-6"><a href="spi使用说明.html#cb16-6"></a>    pParam.eSclkDiv = SPI_INTERFACETIMINGSCLKDIV_DEFAULT_2M;<span class="co">// SPI 时钟设置</span></span>
+<span id="cb16-7"><a href="spi使用说明.html#cb16-7"></a>    pParam.eSCLKPolarity = SPI_CPOL_SCLK_LOW_IN_IDLE_STATES;<span class="co">// SPI 模式设置</span></span>
+<span id="cb16-8"><a href="spi使用说明.html#cb16-8"></a>    pParam.eSCLKPhase = SPI_CPHA_ODD_SCLK_EDGES;<span class="co">// SPI 模式设置</span></span>
+<span id="cb16-9"><a href="spi使用说明.html#cb16-9"></a>    pParam.eLsbMsbOrder = SPI_LSB_MOST_SIGNIFICANT_BIT_FIRST;</span>
+<span id="cb16-10"><a href="spi使用说明.html#cb16-10"></a>    pParam.eDataSize = SPI_DATALEN_32_BITS;<span class="co">// SPI 每个传输单位的大小</span></span>
+<span id="cb16-11"><a href="spi使用说明.html#cb16-11"></a>    pParam.eMasterSlaveMode = SPI_SLVMODE_MASTER_MODE;<span class="co">// SPI主模式</span></span>
+<span id="cb16-12"><a href="spi使用说明.html#cb16-12"></a>    pParam.eReadWriteMode = SPI_TRANSMODE_WRITE_ONLY;<span class="co">// SPI只写</span></span>
+<span id="cb16-13"><a href="spi使用说明.html#cb16-13"></a>    pParam.eQuadMode = SPI_DUALQUAD_REGULAR_MODE;</span>
+<span id="cb16-14"><a href="spi使用说明.html#cb16-14"></a>    pParam.eWriteTransCnt = DATA_LEN;<span class="co">// SPI每次传输多少个单位（每个单位的大小是pParam.eDataSize）</span></span>
+<span id="cb16-15"><a href="spi使用说明.html#cb16-15"></a>    pParam.eReadTransCnt = DATA_LEN;<span class="co">// SPI每次接收多少个单位（每个单位的大小是pParam.eDataSize）</span></span>
+<span id="cb16-16"><a href="spi使用说明.html#cb16-16"></a>    pParam.eAddrEn = SPI_ADDREN_DISABLE;</span>
+<span id="cb16-17"><a href="spi使用说明.html#cb16-17"></a>    pParam.eCmdEn = SPI_CMDEN_DISABLE;</span>
+<span id="cb16-18"><a href="spi使用说明.html#cb16-18"></a>    pParam.RxThres = DATA_LEN/<span class="dv">2</span>;</span>
+<span id="cb16-19"><a href="spi使用说明.html#cb16-19"></a>    pParam.TxThres = DATA_LEN/<span class="dv">2</span>;</span>
+<span id="cb16-20"><a href="spi使用说明.html#cb16-20"></a>    pParam.SlaveDataOnly = SPI_SLVDATAONLY_ENABLE;</span>
+<span id="cb16-21"><a href="spi使用说明.html#cb16-21"></a>    pParam.eAddrLen = SPI_ADDRLEN_1_BYTE;</span>
+<span id="cb16-22"><a href="spi使用说明.html#cb16-22"></a>    pParam.eInterruptMask = (<span class="dv">1</span> &lt;&lt; bsSPI_INTREN_ENDINTEN);<span class="co">// 打开SPI中断（传输结束后触发）</span></span>
+<span id="cb16-23"><a href="spi使用说明.html#cb16-23"></a>  </span>
+<span id="cb16-24"><a href="spi使用说明.html#cb16-24"></a>    apSSP_DeviceParametersSet(APB_SSP1, &amp;pParam);</span>
+<span id="cb16-25"><a href="spi使用说明.html#cb16-25"></a>}</span></code></pre></div>
+</div>
+<div id="spi-中断" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.1.1.3</span> SPI 中断<a href="spi使用说明.html#spi-中断" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb17"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb17-1"><a href="spi使用说明.html#cb17-1"></a><span class="co">// SPI ENDINT中断触发标志传输结束，清除中断状态</span></span>
+<span id="cb17-2"><a href="spi使用说明.html#cb17-2"></a><span class="dt">static</span> <span class="dt">uint32_t</span> peripherals_spi_isr(<span class="dt">void</span> *user_data)</span>
+<span id="cb17-3"><a href="spi使用说明.html#cb17-3"></a>{</span>
+<span id="cb17-4"><a href="spi使用说明.html#cb17-4"></a>  <span class="dt">uint32_t</span> stat = apSSP_GetIntRawStatus(APB_SSP1);</span>
+<span id="cb17-5"><a href="spi使用说明.html#cb17-5"></a>  </span>
+<span id="cb17-6"><a href="spi使用说明.html#cb17-6"></a>  <span class="cf">if</span>(stat &amp; (<span class="dv">1</span> &lt;&lt; bsSPI_INTREN_ENDINTEN))</span>
+<span id="cb17-7"><a href="spi使用说明.html#cb17-7"></a>  {</span>
+<span id="cb17-8"><a href="spi使用说明.html#cb17-8"></a>    apSSP_ClearIntStatus(APB_SSP1, <span class="dv">1</span> &lt;&lt; bsSPI_INTREN_ENDINTEN);</span>
+<span id="cb17-9"><a href="spi使用说明.html#cb17-9"></a>  }  </span>
+<span id="cb17-10"><a href="spi使用说明.html#cb17-10"></a>}</span></code></pre></div>
+</div>
+<div id="spi-发送数据" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.1.1.4</span> SPI 发送数据<a href="spi使用说明.html#spi-发送数据" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb18"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb18-1"><a href="spi使用说明.html#cb18-1"></a><span class="dt">uint32_t</span> write_data[DATA_LEN];<span class="co">//数据大小等于pParam.eDataSize，数组大小等于pParam.eWriteTransCnt</span></span>
+<span id="cb18-2"><a href="spi使用说明.html#cb18-2"></a><span class="dt">void</span> peripherals_spi_send_data(<span class="dt">void</span>)</span>
+<span id="cb18-3"><a href="spi使用说明.html#cb18-3"></a>{</span>
+<span id="cb18-4"><a href="spi使用说明.html#cb18-4"></a>  <span class="co">// 写入命令，触发SPI传输</span></span>
+<span id="cb18-5"><a href="spi使用说明.html#cb18-5"></a>  apSSP_WriteCmd(APB_SSP1, <span class="bn">0x00</span>, <span class="bn">0x00</span>);<span class="co">//trigger transfer</span></span>
+<span id="cb18-6"><a href="spi使用说明.html#cb18-6"></a>  </span>
+<span id="cb18-7"><a href="spi使用说明.html#cb18-7"></a>  <span class="co">// 填写数据到TX FIFO，这个例子中DATA_LEN等于FIFO的深度（8），如果大于8，可以分为多次发送</span></span>
+<span id="cb18-8"><a href="spi使用说明.html#cb18-8"></a>  <span class="cf">for</span>(i = <span class="dv">0</span>; i &lt; DATA_LEN; i++)</span>
+<span id="cb18-9"><a href="spi使用说明.html#cb18-9"></a>  {</span>
+<span id="cb18-10"><a href="spi使用说明.html#cb18-10"></a>    apSSP_WriteFIFO(APB_SSP1, write_data[i]);</span>
+<span id="cb18-11"><a href="spi使用说明.html#cb18-11"></a>  }</span>
+<span id="cb18-12"><a href="spi使用说明.html#cb18-12"></a></span>
+<span id="cb18-13"><a href="spi使用说明.html#cb18-13"></a>  <span class="co">// 等待发送结束</span></span>
+<span id="cb18-14"><a href="spi使用说明.html#cb18-14"></a>  <span class="cf">while</span>(apSSP_GetSPIActiveStatus(APB_SSP1));</span>
+<span id="cb18-15"><a href="spi使用说明.html#cb18-15"></a>}</span></code></pre></div>
+</div>
+<div id="使用流程" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.1.1.5</span> 使用流程<a href="spi使用说明.html#使用流程" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<ul>
+<li>设置GPIO，setup_peripherals_spi_pin()</li>
+<li>初始化SPI，setup_peripherals_spi_module()</li>
+<li>在需要时候发送SPI数据，peripherals_spi_send_data()</li>
+<li>检查中断状态</li>
+</ul>
+</div>
+</div>
+<div id="spi从配置" class="section level3 hasAnchor">
+<h3><span class="header-section-number">7.1.2</span> SPI从配置<a href="spi使用说明.html#spi从配置" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="接口配置-1" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.1.2.1</span> 接口配置<a href="spi使用说明.html#接口配置-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb19"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb19-1"><a href="spi使用说明.html#cb19-1"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_spi_pin(<span class="dt">void</span>)</span>
+<span id="cb19-2"><a href="spi使用说明.html#cb19-2"></a>{</span>
+<span id="cb19-3"><a href="spi使用说明.html#cb19-3"></a>    <span class="co">// 打开SPI模块时钟</span></span>
+<span id="cb19-4"><a href="spi使用说明.html#cb19-4"></a>    <span class="co">// 此处是以SPI1为例，如果是SPI0则需要更改</span></span>
+<span id="cb19-5"><a href="spi使用说明.html#cb19-5"></a>    <span class="co">// 根据使用的GPIO，选择打开GPIO0或者GPIO1的时钟</span></span>
+<span id="cb19-6"><a href="spi使用说明.html#cb19-6"></a>    SYSCTRL_ClearClkGateMulti(    (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_SPI1)</span>
+<span id="cb19-7"><a href="spi使用说明.html#cb19-7"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_SysCtrl)</span>
+<span id="cb19-8"><a href="spi使用说明.html#cb19-8"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_PinCtrl)</span>
+<span id="cb19-9"><a href="spi使用说明.html#cb19-9"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_GPIO1)</span>
+<span id="cb19-10"><a href="spi使用说明.html#cb19-10"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_GPIO0));</span>
+<span id="cb19-11"><a href="spi使用说明.html#cb19-11"></a></span>
+<span id="cb19-12"><a href="spi使用说明.html#cb19-12"></a>    <span class="co">// 设置IO MUX，将GPIO映射成SPI功能，不需要的pin可以使用IO_NOT_A_PIN替代</span></span>
+<span id="cb19-13"><a href="spi使用说明.html#cb19-13"></a>    PINCTRL_Pull(IO_SOURCE_SPI1_CLK_IN,PINCTRL_PULL_DOWN);</span>
+<span id="cb19-14"><a href="spi使用说明.html#cb19-14"></a>    PINCTRL_Pull(IO_SOURCE_SPI1_CSN_IN,PINCTRL_PULL_UP);<span class="co">// CS 需要默认上拉</span></span>
+<span id="cb19-15"><a href="spi使用说明.html#cb19-15"></a>    PINCTRL_SelSpiIn(SPI_PORT_1, SPI_MIC_CLK, SPI_MIC_CS, SPI_MIC_HOLD, SPI_MIC_WP, SPI_MIC_MISO, SPI_MIC_MOSI);</span>
+<span id="cb19-16"><a href="spi使用说明.html#cb19-16"></a>    PINCTRL_SetPadMux(SPI_MIC_CLK, IO_SOURCE_SPI1_CLK_OUT);</span>
+<span id="cb19-17"><a href="spi使用说明.html#cb19-17"></a>    PINCTRL_SetPadMux(SPI_MIC_MISO, IO_SOURCE_SPI1_MISO_OUT);</span>
+<span id="cb19-18"><a href="spi使用说明.html#cb19-18"></a>    </span>
+<span id="cb19-19"><a href="spi使用说明.html#cb19-19"></a>    <span class="co">// 设置SPI的中断</span></span>
+<span id="cb19-20"><a href="spi使用说明.html#cb19-20"></a>    platform_set_irq_callback(PLATFORM_CB_IRQ_APBSPI, peripherals_spi_isr, NULL);</span></code></pre></div>
+</div>
+<div id="spi模块初始化-1" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.1.2.2</span> SPI模块初始化<a href="spi使用说明.html#spi模块初始化-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>常用设置项用注释标出，详细定义请参考“peripheral_ssp.h”</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb20-1"><a href="spi使用说明.html#cb20-1"></a><span class="co">// 示例，每次传输大小是8个word</span></span>
+<span id="cb20-2"><a href="spi使用说明.html#cb20-2"></a><span class="pp">#define DATA_LEN (SPI_FIFO_DEPTH)</span></span>
+<span id="cb20-3"><a href="spi使用说明.html#cb20-3"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_spi_module(<span class="dt">void</span>)</span>
+<span id="cb20-4"><a href="spi使用说明.html#cb20-4"></a>{</span>
+<span id="cb20-5"><a href="spi使用说明.html#cb20-5"></a>    apSSP_sDeviceControlBlock pParam;</span>
+<span id="cb20-6"><a href="spi使用说明.html#cb20-6"></a>    pParam.eSclkDiv = SPI_INTERFACETIMINGSCLKDIV_DEFAULT_2M;<span class="co">// SPI 时钟设置</span></span>
+<span id="cb20-7"><a href="spi使用说明.html#cb20-7"></a>    pParam.eSCLKPolarity = SPI_CPOL_SCLK_LOW_IN_IDLE_STATES;<span class="co">// SPI 模式设置</span></span>
+<span id="cb20-8"><a href="spi使用说明.html#cb20-8"></a>    pParam.eSCLKPhase = SPI_CPHA_ODD_SCLK_EDGES;<span class="co">// SPI 模式设置</span></span>
+<span id="cb20-9"><a href="spi使用说明.html#cb20-9"></a>    pParam.eLsbMsbOrder = SPI_LSB_MOST_SIGNIFICANT_BIT_FIRST;</span>
+<span id="cb20-10"><a href="spi使用说明.html#cb20-10"></a>    pParam.eDataSize = SPI_DATALEN_32_BITS;<span class="co">// SPI 每个传输单位的大小</span></span>
+<span id="cb20-11"><a href="spi使用说明.html#cb20-11"></a>    pParam.eMasterSlaveMode = SPI_SLVMODE_SLAVE_MODE;<span class="co">// SPI 从模式</span></span>
+<span id="cb20-12"><a href="spi使用说明.html#cb20-12"></a>    pParam.eReadWriteMode = SPI_TRANSMODE_READ_ONLY;<span class="co">// SPI 只读</span></span>
+<span id="cb20-13"><a href="spi使用说明.html#cb20-13"></a>    pParam.eQuadMode = SPI_DUALQUAD_REGULAR_MODE;</span>
+<span id="cb20-14"><a href="spi使用说明.html#cb20-14"></a>    pParam.eWriteTransCnt = DATA_LEN;<span class="co">// SPI每次传输多少个单位（每个单位的大小是pParam.eDataSize）</span></span>
+<span id="cb20-15"><a href="spi使用说明.html#cb20-15"></a>    pParam.eReadTransCnt = DATA_LEN;<span class="co">// SPI每次接收多少个单位（每个单位的大小是pParam.eDataSize）</span></span>
+<span id="cb20-16"><a href="spi使用说明.html#cb20-16"></a>    pParam.eAddrEn = SPI_ADDREN_DISABLE;</span>
+<span id="cb20-17"><a href="spi使用说明.html#cb20-17"></a>    pParam.eCmdEn = SPI_CMDEN_DISABLE;</span>
+<span id="cb20-18"><a href="spi使用说明.html#cb20-18"></a>    pParam.RxThres = DATA_LEN/<span class="dv">2</span>;</span>
+<span id="cb20-19"><a href="spi使用说明.html#cb20-19"></a>    pParam.TxThres = DATA_LEN/<span class="dv">2</span>;</span>
+<span id="cb20-20"><a href="spi使用说明.html#cb20-20"></a>    pParam.SlaveDataOnly = SPI_SLVDATAONLY_ENABLE;</span>
+<span id="cb20-21"><a href="spi使用说明.html#cb20-21"></a>    pParam.eAddrLen = SPI_ADDRLEN_1_BYTE;</span>
+<span id="cb20-22"><a href="spi使用说明.html#cb20-22"></a>    pParam.eInterruptMask = (<span class="dv">1</span> &lt;&lt; bsSPI_INTREN_ENDINTEN);<span class="co">// 打开SPI中断（传输结束后触发）</span></span>
+<span id="cb20-23"><a href="spi使用说明.html#cb20-23"></a>  </span>
+<span id="cb20-24"><a href="spi使用说明.html#cb20-24"></a>    apSSP_DeviceParametersSet(APB_SSP1, &amp;pParam);</span>
+<span id="cb20-25"><a href="spi使用说明.html#cb20-25"></a>}</span></code></pre></div>
+</div>
+<div id="spi-接收数据" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.1.2.3</span> SPI 接收数据<a href="spi使用说明.html#spi-接收数据" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb21"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb21-1"><a href="spi使用说明.html#cb21-1"></a><span class="dt">uint32_t</span> read_data[DATA_LEN];<span class="co">//数据大小等于pParam.eDataSize，数组大小等于pParam.eReadTransCnt</span></span>
+<span id="cb21-2"><a href="spi使用说明.html#cb21-2"></a><span class="dt">static</span> <span class="dt">uint32_t</span> peripherals_spi_isr(<span class="dt">void</span> *user_data)</span>
+<span id="cb21-3"><a href="spi使用说明.html#cb21-3"></a>{</span>
+<span id="cb21-4"><a href="spi使用说明.html#cb21-4"></a>  <span class="dt">uint32_t</span> stat = apSSP_GetIntRawStatus(APB_SSP1), i;</span>
+<span id="cb21-5"><a href="spi使用说明.html#cb21-5"></a>  <span class="cf">if</span>(stat &amp; (<span class="dv">1</span> &lt;&lt; bsSPI_INTREN_ENDINTEN))</span>
+<span id="cb21-6"><a href="spi使用说明.html#cb21-6"></a>  {</span>
+<span id="cb21-7"><a href="spi使用说明.html#cb21-7"></a>    <span class="co">/* check if rx fifo still have some left data */</span></span>
+<span id="cb21-8"><a href="spi使用说明.html#cb21-8"></a>    <span class="co">// 检查当前RX FIFO中有效值的个数，根据个数读取RX FIFO</span></span>
+<span id="cb21-9"><a href="spi使用说明.html#cb21-9"></a>    <span class="dt">uint32_t</span> num = apSSP_GetDataNumInRxFifo(APB_SSP1);</span>
+<span id="cb21-10"><a href="spi使用说明.html#cb21-10"></a>    <span class="cf">for</span>(i = <span class="dv">0</span>; i &lt; num; i++)</span>
+<span id="cb21-11"><a href="spi使用说明.html#cb21-11"></a>    {</span>
+<span id="cb21-12"><a href="spi使用说明.html#cb21-12"></a>      apSSP_ReadFIFO(APB_SSP1, &amp;read_data[i]);</span>
+<span id="cb21-13"><a href="spi使用说明.html#cb21-13"></a>    }</span>
+<span id="cb21-14"><a href="spi使用说明.html#cb21-14"></a></span>
+<span id="cb21-15"><a href="spi使用说明.html#cb21-15"></a>    apSSP_ClearIntStatus(APB_SSP1, <span class="dv">1</span> &lt;&lt; bsSPI_INTREN_ENDINTEN);</span>
+<span id="cb21-16"><a href="spi使用说明.html#cb21-16"></a>    </span>
+<span id="cb21-17"><a href="spi使用说明.html#cb21-17"></a>  }</span>
+<span id="cb21-18"><a href="spi使用说明.html#cb21-18"></a>}</span></code></pre></div>
+</div>
+<div id="使用流程-1" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.1.2.4</span> 使用流程<a href="spi使用说明.html#使用流程-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<ul>
+<li>设置GPIO，setup_peripherals_spi_pin()</li>
+<li>初始化SPI，setup_peripherals_spi_module()</li>
+<li>观察SPI中断，中断触发代表当前传输结束</li>
+</ul>
+<hr />
+</div>
+</div>
+</div>
+<div id="场景2只读只写并且使用dma" class="section level2 hasAnchor">
+<h2><span class="header-section-number">7.2</span> 场景2：只读只写并且使用DMA<a href="spi使用说明.html#场景2只读只写并且使用dma" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>其中SPI主配置为只写模式，SPI从配置为只读模式，同时使用DMA进行读写 配置之前需要决定使用的GPIO，如果是普通模式，则不需要SPI_MIC_WP和SPI_MIC_HOLD</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb22-1"><a href="spi使用说明.html#cb22-1"></a><span class="pp">#define SPI_MIC_CLK         GIO_GPIO_10</span></span>
+<span id="cb22-2"><a href="spi使用说明.html#cb22-2"></a><span class="pp">#define SPI_MIC_MOSI        GIO_GPIO_11</span></span>
+<span id="cb22-3"><a href="spi使用说明.html#cb22-3"></a><span class="pp">#define SPI_MIC_MISO        GIO_GPIO_12</span></span>
+<span id="cb22-4"><a href="spi使用说明.html#cb22-4"></a><span class="pp">#define SPI_MIC_CS          GIO_GPIO_13</span></span>
+<span id="cb22-5"><a href="spi使用说明.html#cb22-5"></a><span class="pp">#define SPI_MIC_WP          GIO_GPIO_14</span></span>
+<span id="cb22-6"><a href="spi使用说明.html#cb22-6"></a><span class="pp">#define SPI_MIC_HOLD        GIO_GPIO_15</span></span></code></pre></div>
+<div id="spi主配置-1" class="section level3 hasAnchor">
+<h3><span class="header-section-number">7.2.1</span> SPI主配置<a href="spi使用说明.html#spi主配置-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="接口配置-2" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.2.1.1</span> 接口配置<a href="spi使用说明.html#接口配置-2" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb23"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb23-1"><a href="spi使用说明.html#cb23-1"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_spi_pin(<span class="dt">void</span>)</span>
+<span id="cb23-2"><a href="spi使用说明.html#cb23-2"></a>{</span>
+<span id="cb23-3"><a href="spi使用说明.html#cb23-3"></a>    <span class="co">// 打开SPI模块时钟</span></span>
+<span id="cb23-4"><a href="spi使用说明.html#cb23-4"></a>    <span class="co">// 此处是以SPI1为例，如果是SPI0则需要更改</span></span>
+<span id="cb23-5"><a href="spi使用说明.html#cb23-5"></a>    <span class="co">// 根据使用的GPIO，选择打开GPIO0或者GPIO1的时钟</span></span>
+<span id="cb23-6"><a href="spi使用说明.html#cb23-6"></a>    SYSCTRL_ClearClkGateMulti(    (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_SPI1)</span>
+<span id="cb23-7"><a href="spi使用说明.html#cb23-7"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_SysCtrl)</span>
+<span id="cb23-8"><a href="spi使用说明.html#cb23-8"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_PinCtrl)</span>
+<span id="cb23-9"><a href="spi使用说明.html#cb23-9"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_GPIO1)</span>
+<span id="cb23-10"><a href="spi使用说明.html#cb23-10"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_GPIO0));</span>
+<span id="cb23-11"><a href="spi使用说明.html#cb23-11"></a></span>
+<span id="cb23-12"><a href="spi使用说明.html#cb23-12"></a>    <span class="co">// 设置IO MUX，将GPIO映射成SPI功能，不需要的pin可以使用IO_NOT_A_PIN替代</span></span>
+<span id="cb23-13"><a href="spi使用说明.html#cb23-13"></a>    PINCTRL_SelSpiIn(SPI_PORT_1, SPI_MIC_CLK, SPI_MIC_CS, SPI_MIC_HOLD, SPI_MIC_WP, SPI_MIC_MISO, SPI_MIC_MOSI);</span>
+<span id="cb23-14"><a href="spi使用说明.html#cb23-14"></a>    PINCTRL_SetPadMux(SPI_MIC_CLK, IO_SOURCE_SPI1_CLK_OUT);</span>
+<span id="cb23-15"><a href="spi使用说明.html#cb23-15"></a>    PINCTRL_SetPadMux(SPI_MIC_CS, IO_SOURCE_SPI1_CSN_OUT);</span>
+<span id="cb23-16"><a href="spi使用说明.html#cb23-16"></a>    PINCTRL_SetPadMux(SPI_MIC_MOSI, IO_SOURCE_SPI1_MOSI_OUT);</span>
+<span id="cb23-17"><a href="spi使用说明.html#cb23-17"></a>    </span>
+<span id="cb23-18"><a href="spi使用说明.html#cb23-18"></a>    <span class="co">// 设置SPI的中断</span></span>
+<span id="cb23-19"><a href="spi使用说明.html#cb23-19"></a>    platform_set_irq_callback(PLATFORM_CB_IRQ_APBSPI, peripherals_spi_isr, NULL);</span></code></pre></div>
+</div>
+<div id="spi模块初始化-2" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.2.1.2</span> SPI模块初始化<a href="spi使用说明.html#spi模块初始化-2" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>常用设置项用注释标出，详细定义请参考“peripheral_ssp.h”</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb24-1"><a href="spi使用说明.html#cb24-1"></a><span class="co">// 示例，每次传输大小是8个word</span></span>
+<span id="cb24-2"><a href="spi使用说明.html#cb24-2"></a><span class="pp">#define DATA_LEN (SPI_FIFO_DEPTH)</span></span>
+<span id="cb24-3"><a href="spi使用说明.html#cb24-3"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_spi_module(<span class="dt">void</span>)</span>
+<span id="cb24-4"><a href="spi使用说明.html#cb24-4"></a>{</span>
+<span id="cb24-5"><a href="spi使用说明.html#cb24-5"></a>    apSSP_sDeviceControlBlock pParam;</span>
+<span id="cb24-6"><a href="spi使用说明.html#cb24-6"></a>    pParam.eSclkDiv = SPI_INTERFACETIMINGSCLKDIV_DEFAULT_2M;<span class="co">// SPI 时钟设置</span></span>
+<span id="cb24-7"><a href="spi使用说明.html#cb24-7"></a>    pParam.eSCLKPolarity = SPI_CPOL_SCLK_LOW_IN_IDLE_STATES;<span class="co">// SPI 模式设置</span></span>
+<span id="cb24-8"><a href="spi使用说明.html#cb24-8"></a>    pParam.eSCLKPhase = SPI_CPHA_ODD_SCLK_EDGES;<span class="co">// SPI 模式设置</span></span>
+<span id="cb24-9"><a href="spi使用说明.html#cb24-9"></a>    pParam.eLsbMsbOrder = SPI_LSB_MOST_SIGNIFICANT_BIT_FIRST;</span>
+<span id="cb24-10"><a href="spi使用说明.html#cb24-10"></a>    pParam.eDataSize = SPI_DATALEN_32_BITS;<span class="co">// SPI 每个传输单位的大小</span></span>
+<span id="cb24-11"><a href="spi使用说明.html#cb24-11"></a>    pParam.eMasterSlaveMode = SPI_SLVMODE_MASTER_MODE;<span class="co">// SPI主模式</span></span>
+<span id="cb24-12"><a href="spi使用说明.html#cb24-12"></a>    pParam.eReadWriteMode = SPI_TRANSMODE_WRITE_ONLY;<span class="co">// SPI只写</span></span>
+<span id="cb24-13"><a href="spi使用说明.html#cb24-13"></a>    pParam.eQuadMode = SPI_DUALQUAD_REGULAR_MODE;</span>
+<span id="cb24-14"><a href="spi使用说明.html#cb24-14"></a>    pParam.eWriteTransCnt = DATA_LEN;<span class="co">// SPI每次传输多少个单位（每个单位的大小是pParam.eDataSize）</span></span>
+<span id="cb24-15"><a href="spi使用说明.html#cb24-15"></a>    pParam.eReadTransCnt = DATA_LEN;<span class="co">// SPI每次接收多少个单位（每个单位的大小是pParam.eDataSize）</span></span>
+<span id="cb24-16"><a href="spi使用说明.html#cb24-16"></a>    pParam.eAddrEn = SPI_ADDREN_DISABLE;</span>
+<span id="cb24-17"><a href="spi使用说明.html#cb24-17"></a>    pParam.eCmdEn = SPI_CMDEN_DISABLE;</span>
+<span id="cb24-18"><a href="spi使用说明.html#cb24-18"></a>    pParam.RxThres = DATA_LEN/<span class="dv">2</span>;</span>
+<span id="cb24-19"><a href="spi使用说明.html#cb24-19"></a>    pParam.TxThres = DATA_LEN/<span class="dv">2</span>;</span>
+<span id="cb24-20"><a href="spi使用说明.html#cb24-20"></a>    pParam.SlaveDataOnly = SPI_SLVDATAONLY_ENABLE;</span>
+<span id="cb24-21"><a href="spi使用说明.html#cb24-21"></a>    pParam.eAddrLen = SPI_ADDRLEN_1_BYTE;</span>
+<span id="cb24-22"><a href="spi使用说明.html#cb24-22"></a>    pParam.eInterruptMask = (<span class="dv">1</span> &lt;&lt; bsSPI_INTREN_ENDINTEN);<span class="co">// 打开SPI中断（传输结束后触发）</span></span>
+<span id="cb24-23"><a href="spi使用说明.html#cb24-23"></a>  </span>
+<span id="cb24-24"><a href="spi使用说明.html#cb24-24"></a>    apSSP_DeviceParametersSet(APB_SSP1, &amp;pParam);</span>
+<span id="cb24-25"><a href="spi使用说明.html#cb24-25"></a>    </span>
+<span id="cb24-26"><a href="spi使用说明.html#cb24-26"></a>}</span></code></pre></div>
+</div>
+<div id="spi-dma初始化" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.2.1.3</span> SPI DMA初始化<a href="spi使用说明.html#spi-dma初始化" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>// 初始化DMA模块</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb25-1"><a href="spi使用说明.html#cb25-1"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_dma_module(<span class="dt">void</span>)</span>
+<span id="cb25-2"><a href="spi使用说明.html#cb25-2"></a>{</span>
+<span id="cb25-3"><a href="spi使用说明.html#cb25-3"></a>    SYSCTRL_ClearClkGateMulti(<span class="dv">1</span> &lt;&lt; SYSCTRL_ClkGate_APB_DMA);</span>
+<span id="cb25-4"><a href="spi使用说明.html#cb25-4"></a>    DMA_Reset(<span class="dv">1</span>);</span>
+<span id="cb25-5"><a href="spi使用说明.html#cb25-5"></a>    DMA_Reset(<span class="dv">0</span>);</span>
+<span id="cb25-6"><a href="spi使用说明.html#cb25-6"></a>}</span></code></pre></div>
+</div>
+<div id="spi-dma设置" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.2.1.4</span> SPI DMA设置<a href="spi使用说明.html#spi-dma设置" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>// 此处是以SPI1为例</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb26-1"><a href="spi使用说明.html#cb26-1"></a><span class="dt">void</span> peripherals_spi_dma_to_txfifo(<span class="dt">int</span> channel_id, <span class="dt">void</span> *src, <span class="dt">int</span> size)</span>
+<span id="cb26-2"><a href="spi使用说明.html#cb26-2"></a>{</span>
+<span id="cb26-3"><a href="spi使用说明.html#cb26-3"></a>    DMA_Descriptor descriptor __attribute__((aligned (<span class="dv">8</span>)));</span>
+<span id="cb26-4"><a href="spi使用说明.html#cb26-4"></a></span>
+<span id="cb26-5"><a href="spi使用说明.html#cb26-5"></a>    descriptor.Next = (DMA_Descriptor *)<span class="dv">0</span>;</span>
+<span id="cb26-6"><a href="spi使用说明.html#cb26-6"></a>    DMA_PrepareMem2Peripheral(&amp;descriptor,SYSCTRL_DMA_SPI1_TX,src,size,DMA_ADDRESS_INC,<span class="dv">0</span>);</span>
+<span id="cb26-7"><a href="spi使用说明.html#cb26-7"></a></span>
+<span id="cb26-8"><a href="spi使用说明.html#cb26-8"></a>    DMA_EnableChannel(channel_id, &amp;descriptor);</span>
+<span id="cb26-9"><a href="spi使用说明.html#cb26-9"></a>}</span></code></pre></div>
+</div>
+<div id="spi-中断-1" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.2.1.5</span> SPI 中断<a href="spi使用说明.html#spi-中断-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb27"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb27-1"><a href="spi使用说明.html#cb27-1"></a><span class="co">// SPI ENDINT中断触发标志传输结束，清除中断状态</span></span>
+<span id="cb27-2"><a href="spi使用说明.html#cb27-2"></a><span class="dt">static</span> <span class="dt">uint32_t</span> peripherals_spi_isr(<span class="dt">void</span> *user_data)</span>
+<span id="cb27-3"><a href="spi使用说明.html#cb27-3"></a>{</span>
+<span id="cb27-4"><a href="spi使用说明.html#cb27-4"></a>  <span class="dt">uint32_t</span> stat = apSSP_GetIntRawStatus(APB_SSP1);</span>
+<span id="cb27-5"><a href="spi使用说明.html#cb27-5"></a>  </span>
+<span id="cb27-6"><a href="spi使用说明.html#cb27-6"></a>  <span class="cf">if</span>(stat &amp; (<span class="dv">1</span> &lt;&lt; bsSPI_INTREN_ENDINTEN))</span>
+<span id="cb27-7"><a href="spi使用说明.html#cb27-7"></a>  {</span>
+<span id="cb27-8"><a href="spi使用说明.html#cb27-8"></a>    apSSP_ClearIntStatus(APB_SSP1, <span class="dv">1</span> &lt;&lt; bsSPI_INTREN_ENDINTEN);</span>
+<span id="cb27-9"><a href="spi使用说明.html#cb27-9"></a>  }  </span>
+<span id="cb27-10"><a href="spi使用说明.html#cb27-10"></a>}</span></code></pre></div>
+</div>
+<div id="spi-发送数据-1" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.2.1.6</span> SPI 发送数据<a href="spi使用说明.html#spi-发送数据-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb28"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb28-1"><a href="spi使用说明.html#cb28-1"></a><span class="dt">uint32_t</span> write_data[DATA_LEN];<span class="co">//数据大小等于pParam.eDataSize，数组大小等于pParam.eWriteTransCnt</span></span>
+<span id="cb28-2"><a href="spi使用说明.html#cb28-2"></a></span>
+<span id="cb28-3"><a href="spi使用说明.html#cb28-3"></a><span class="dt">void</span> peripherals_spi_send_data(<span class="dt">void</span>)</span>
+<span id="cb28-4"><a href="spi使用说明.html#cb28-4"></a>{</span>
+<span id="cb28-5"><a href="spi使用说明.html#cb28-5"></a>  <span class="co">// 首先需要打开 SPI 模块中的DMA功能</span></span>
+<span id="cb28-6"><a href="spi使用说明.html#cb28-6"></a>  apSSP_SetTxDmaEn(APB_SSP1,<span class="dv">1</span>);</span>
+<span id="cb28-7"><a href="spi使用说明.html#cb28-7"></a>  <span class="co">// 初始化中已经设置了pParam.eWriteTransCnt，如果需要调整则可以调用这个API</span></span>
+<span id="cb28-8"><a href="spi使用说明.html#cb28-8"></a>  apSSP_SetTransferControlWrTranCnt(APB_SSP1,DATA_LEN);</span>
+<span id="cb28-9"><a href="spi使用说明.html#cb28-9"></a>  </span>
+<span id="cb28-10"><a href="spi使用说明.html#cb28-10"></a>  <span class="co">// DMA共有8个channel</span></span>
+<span id="cb28-11"><a href="spi使用说明.html#cb28-11"></a>  <span class="pp">#define SPI_DMA_TX_CHANNEL   (0)</span><span class="co">//DMA channel 0</span></span>
+<span id="cb28-12"><a href="spi使用说明.html#cb28-12"></a>  <span class="co">// 配置DMA，指向需要发送的数据</span></span>
+<span id="cb28-13"><a href="spi使用说明.html#cb28-13"></a>  peripherals_spi_dma_to_txfifo(SPI_DMA_TX_CHANNEL, write_data, <span class="kw">sizeof</span>(write_data));</span>
+<span id="cb28-14"><a href="spi使用说明.html#cb28-14"></a>  </span>
+<span id="cb28-15"><a href="spi使用说明.html#cb28-15"></a>  <span class="co">// 写入命令，触发SPI传输</span></span>
+<span id="cb28-16"><a href="spi使用说明.html#cb28-16"></a>  apSSP_WriteCmd(APB_SSP1, <span class="bn">0x00</span>, <span class="bn">0x00</span>);<span class="co">//trigger transfer</span></span>
+<span id="cb28-17"><a href="spi使用说明.html#cb28-17"></a></span>
+<span id="cb28-18"><a href="spi使用说明.html#cb28-18"></a>  <span class="co">// 等待发送结束</span></span>
+<span id="cb28-19"><a href="spi使用说明.html#cb28-19"></a>  <span class="cf">while</span>(apSSP_GetSPIActiveStatus(APB_SSP1));</span>
+<span id="cb28-20"><a href="spi使用说明.html#cb28-20"></a>  </span>
+<span id="cb28-21"><a href="spi使用说明.html#cb28-21"></a>  <span class="co">// 关闭 SPI 模块中的DMA功能</span></span>
+<span id="cb28-22"><a href="spi使用说明.html#cb28-22"></a>  apSSP_SetTxDmaEn(APB_SSP1,<span class="dv">0</span>);</span>
+<span id="cb28-23"><a href="spi使用说明.html#cb28-23"></a>}</span></code></pre></div>
+</div>
+<div id="使用流程-2" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.2.1.7</span> 使用流程<a href="spi使用说明.html#使用流程-2" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<ul>
+<li>设置GPIO，setup_peripherals_spi_pin()</li>
+<li>初始化SPI，setup_peripherals_spi_module()</li>
+<li>初始化DMA，setup_peripherals_dma_module()</li>
+<li>在需要时候发送SPI数据，peripherals_spi_send_data()</li>
+<li>检查中断状态</li>
+</ul>
+</div>
+</div>
+<div id="spi从配置-1" class="section level3 hasAnchor">
+<h3><span class="header-section-number">7.2.2</span> SPI从配置<a href="spi使用说明.html#spi从配置-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="接口配置-3" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.2.2.1</span> 接口配置<a href="spi使用说明.html#接口配置-3" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb29"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb29-1"><a href="spi使用说明.html#cb29-1"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_spi_pin(<span class="dt">void</span>)</span>
+<span id="cb29-2"><a href="spi使用说明.html#cb29-2"></a>{</span>
+<span id="cb29-3"><a href="spi使用说明.html#cb29-3"></a>    <span class="co">// 打开SPI模块时钟</span></span>
+<span id="cb29-4"><a href="spi使用说明.html#cb29-4"></a>    <span class="co">// 此处是以SPI1为例，如果是SPI0则需要更改</span></span>
+<span id="cb29-5"><a href="spi使用说明.html#cb29-5"></a>    <span class="co">// 根据使用的GPIO，选择打开GPIO0或者GPIO1的时钟</span></span>
+<span id="cb29-6"><a href="spi使用说明.html#cb29-6"></a>    SYSCTRL_ClearClkGateMulti(    (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_SPI1)</span>
+<span id="cb29-7"><a href="spi使用说明.html#cb29-7"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_SysCtrl)</span>
+<span id="cb29-8"><a href="spi使用说明.html#cb29-8"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_PinCtrl)</span>
+<span id="cb29-9"><a href="spi使用说明.html#cb29-9"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_GPIO1)</span>
+<span id="cb29-10"><a href="spi使用说明.html#cb29-10"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_GPIO0));</span>
+<span id="cb29-11"><a href="spi使用说明.html#cb29-11"></a></span>
+<span id="cb29-12"><a href="spi使用说明.html#cb29-12"></a>    <span class="co">// 设置IO MUX，将GPIO映射成SPI功能，不需要的pin可以使用IO_NOT_A_PIN替代</span></span>
+<span id="cb29-13"><a href="spi使用说明.html#cb29-13"></a>    PINCTRL_Pull(IO_SOURCE_SPI1_CLK_IN,PINCTRL_PULL_DOWN);</span>
+<span id="cb29-14"><a href="spi使用说明.html#cb29-14"></a>    PINCTRL_Pull(IO_SOURCE_SPI1_CSN_IN,PINCTRL_PULL_UP);<span class="co">// CS 需要默认上拉</span></span>
+<span id="cb29-15"><a href="spi使用说明.html#cb29-15"></a>    PINCTRL_SelSpiIn(SPI_PORT_1, SPI_MIC_CLK, SPI_MIC_CS, SPI_MIC_HOLD, SPI_MIC_WP, SPI_MIC_MISO, SPI_MIC_MOSI);</span>
+<span id="cb29-16"><a href="spi使用说明.html#cb29-16"></a>    PINCTRL_SetPadMux(SPI_MIC_CLK, IO_SOURCE_SPI1_CLK_OUT);</span>
+<span id="cb29-17"><a href="spi使用说明.html#cb29-17"></a>    PINCTRL_SetPadMux(SPI_MIC_MISO, IO_SOURCE_SPI1_MISO_OUT);</span>
+<span id="cb29-18"><a href="spi使用说明.html#cb29-18"></a>    </span>
+<span id="cb29-19"><a href="spi使用说明.html#cb29-19"></a>    <span class="co">// 设置SPI的中断</span></span>
+<span id="cb29-20"><a href="spi使用说明.html#cb29-20"></a>    platform_set_irq_callback(PLATFORM_CB_IRQ_APBSPI, peripherals_spi_isr, NULL);</span></code></pre></div>
+</div>
+<div id="spi模块初始化-3" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.2.2.2</span> SPI模块初始化<a href="spi使用说明.html#spi模块初始化-3" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>常用设置项用注释标出，详细定义请参考“peripheral_ssp.h”</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb30-1"><a href="spi使用说明.html#cb30-1"></a><span class="co">// 示例，每次传输大小是8个word</span></span>
+<span id="cb30-2"><a href="spi使用说明.html#cb30-2"></a><span class="pp">#define DATA_LEN (SPI_FIFO_DEPTH)</span></span>
+<span id="cb30-3"><a href="spi使用说明.html#cb30-3"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_spi_module(<span class="dt">void</span>)</span>
+<span id="cb30-4"><a href="spi使用说明.html#cb30-4"></a>{</span>
+<span id="cb30-5"><a href="spi使用说明.html#cb30-5"></a>    apSSP_sDeviceControlBlock pParam;</span>
+<span id="cb30-6"><a href="spi使用说明.html#cb30-6"></a>    pParam.eSclkDiv = SPI_INTERFACETIMINGSCLKDIV_DEFAULT_2M;<span class="co">// SPI 时钟设置</span></span>
+<span id="cb30-7"><a href="spi使用说明.html#cb30-7"></a>    pParam.eSCLKPolarity = SPI_CPOL_SCLK_LOW_IN_IDLE_STATES;<span class="co">// SPI 模式设置</span></span>
+<span id="cb30-8"><a href="spi使用说明.html#cb30-8"></a>    pParam.eSCLKPhase = SPI_CPHA_ODD_SCLK_EDGES;<span class="co">// SPI 模式设置</span></span>
+<span id="cb30-9"><a href="spi使用说明.html#cb30-9"></a>    pParam.eLsbMsbOrder = SPI_LSB_MOST_SIGNIFICANT_BIT_FIRST;</span>
+<span id="cb30-10"><a href="spi使用说明.html#cb30-10"></a>    pParam.eDataSize = SPI_DATALEN_32_BITS;<span class="co">// SPI 每个传输单位的大小</span></span>
+<span id="cb30-11"><a href="spi使用说明.html#cb30-11"></a>    pParam.eMasterSlaveMode = SPI_SLVMODE_SLAVE_MODE;<span class="co">// SPI 从模式</span></span>
+<span id="cb30-12"><a href="spi使用说明.html#cb30-12"></a>    pParam.eReadWriteMode = SPI_TRANSMODE_READ_ONLY;<span class="co">// SPI 只读</span></span>
+<span id="cb30-13"><a href="spi使用说明.html#cb30-13"></a>    pParam.eQuadMode = SPI_DUALQUAD_REGULAR_MODE;</span>
+<span id="cb30-14"><a href="spi使用说明.html#cb30-14"></a>    pParam.eWriteTransCnt = DATA_LEN;<span class="co">// SPI每次传输多少个单位（每个单位的大小是pParam.eDataSize）</span></span>
+<span id="cb30-15"><a href="spi使用说明.html#cb30-15"></a>    pParam.eReadTransCnt = DATA_LEN;<span class="co">// SPI每次接收多少个单位（每个单位的大小是pParam.eDataSize）</span></span>
+<span id="cb30-16"><a href="spi使用说明.html#cb30-16"></a>    pParam.eAddrEn = SPI_ADDREN_DISABLE;</span>
+<span id="cb30-17"><a href="spi使用说明.html#cb30-17"></a>    pParam.eCmdEn = SPI_CMDEN_DISABLE;</span>
+<span id="cb30-18"><a href="spi使用说明.html#cb30-18"></a>    pParam.RxThres = <span class="dv">0</span>;</span>
+<span id="cb30-19"><a href="spi使用说明.html#cb30-19"></a>    pParam.TxThres = <span class="dv">0</span>;</span>
+<span id="cb30-20"><a href="spi使用说明.html#cb30-20"></a>    pParam.SlaveDataOnly = SPI_SLVDATAONLY_ENABLE;</span>
+<span id="cb30-21"><a href="spi使用说明.html#cb30-21"></a>    pParam.eAddrLen = SPI_ADDRLEN_1_BYTE;</span>
+<span id="cb30-22"><a href="spi使用说明.html#cb30-22"></a>    pParam.eInterruptMask = (<span class="dv">1</span> &lt;&lt; bsSPI_INTREN_ENDINTEN);<span class="co">// 打开SPI中断（传输结束后触发）</span></span>
+<span id="cb30-23"><a href="spi使用说明.html#cb30-23"></a>  </span>
+<span id="cb30-24"><a href="spi使用说明.html#cb30-24"></a>    apSSP_DeviceParametersSet(APB_SSP1, &amp;pParam);</span>
+<span id="cb30-25"><a href="spi使用说明.html#cb30-25"></a>}</span></code></pre></div>
+</div>
+<div id="spi-dma初始化-1" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.2.2.3</span> SPI DMA初始化<a href="spi使用说明.html#spi-dma初始化-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>// 初始化DMA模块</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb31-1"><a href="spi使用说明.html#cb31-1"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_dma_module(<span class="dt">void</span>)</span>
+<span id="cb31-2"><a href="spi使用说明.html#cb31-2"></a>{</span>
+<span id="cb31-3"><a href="spi使用说明.html#cb31-3"></a>    SYSCTRL_ClearClkGateMulti(<span class="dv">1</span> &lt;&lt; SYSCTRL_ClkGate_APB_DMA);</span>
+<span id="cb31-4"><a href="spi使用说明.html#cb31-4"></a>    DMA_Reset(<span class="dv">1</span>);</span>
+<span id="cb31-5"><a href="spi使用说明.html#cb31-5"></a>    DMA_Reset(<span class="dv">0</span>);</span>
+<span id="cb31-6"><a href="spi使用说明.html#cb31-6"></a>}</span></code></pre></div>
+</div>
+<div id="spi-dma设置-1" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.2.2.4</span> SPI DMA设置<a href="spi使用说明.html#spi-dma设置-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>// 此处是以SPI1为例</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb32-1"><a href="spi使用说明.html#cb32-1"></a><span class="dt">void</span> peripherals_spi_rxfifo_to_dma(<span class="dt">int</span> channel_id, <span class="dt">void</span> *dst, <span class="dt">int</span> size)</span>
+<span id="cb32-2"><a href="spi使用说明.html#cb32-2"></a>{</span>
+<span id="cb32-3"><a href="spi使用说明.html#cb32-3"></a>    DMA_Descriptor descriptor __attribute__((aligned (<span class="dv">8</span>)));</span>
+<span id="cb32-4"><a href="spi使用说明.html#cb32-4"></a></span>
+<span id="cb32-5"><a href="spi使用说明.html#cb32-5"></a>    descriptor.Next = (DMA_Descriptor *)<span class="dv">0</span>;</span>
+<span id="cb32-6"><a href="spi使用说明.html#cb32-6"></a>    DMA_PreparePeripheral2Mem(&amp;descriptor,dst,SYSCTRL_DMA_SPI1_RX,size,DMA_ADDRESS_INC,<span class="dv">0</span>);</span>
+<span id="cb32-7"><a href="spi使用说明.html#cb32-7"></a></span>
+<span id="cb32-8"><a href="spi使用说明.html#cb32-8"></a>    DMA_EnableChannel(channel_id, &amp;descriptor);</span>
+<span id="cb32-9"><a href="spi使用说明.html#cb32-9"></a>}</span></code></pre></div>
+</div>
+<div id="spi-接收数据-1" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.2.2.5</span> SPI 接收数据<a href="spi使用说明.html#spi-接收数据-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb33"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb33-1"><a href="spi使用说明.html#cb33-1"></a><span class="dt">uint32_t</span> read_data[DATA_LEN];<span class="co">//数据大小等于pParam.eDataSize，数组大小等于pParam.eReadTransCnt</span></span>
+<span id="cb33-2"><a href="spi使用说明.html#cb33-2"></a><span class="dt">void</span> peripherals_spi_read_data(<span class="dt">void</span>)</span>
+<span id="cb33-3"><a href="spi使用说明.html#cb33-3"></a>{</span>
+<span id="cb33-4"><a href="spi使用说明.html#cb33-4"></a>    <span class="co">// 打开SPI DMA功能</span></span>
+<span id="cb33-5"><a href="spi使用说明.html#cb33-5"></a>    apSSP_SetRxDmaEn(APB_SSP1,<span class="dv">1</span>);</span>
+<span id="cb33-6"><a href="spi使用说明.html#cb33-6"></a>    <span class="co">// 功能等同于重新设置pParam.eReadTransCnt，代表一次传输的单位个数</span></span>
+<span id="cb33-7"><a href="spi使用说明.html#cb33-7"></a>    apSSP_SetTransferControlRdTranCnt(APB_SSP1,DATA_LEN);</span>
+<span id="cb33-8"><a href="spi使用说明.html#cb33-8"></a>    </span>
+<span id="cb33-9"><a href="spi使用说明.html#cb33-9"></a>    <span class="pp">#define SPI_DMA_RX_CHANNEL   (0)</span><span class="co">//DMA channel 0</span></span>
+<span id="cb33-10"><a href="spi使用说明.html#cb33-10"></a>    peripherals_spi_rxfifo_to_dma(SPI_DMA_RX_CHANNEL, read_data, <span class="kw">sizeof</span>(read_data));</span>
+<span id="cb33-11"><a href="spi使用说明.html#cb33-11"></a>}</span></code></pre></div>
+</div>
+<div id="spi-中断-2" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.2.2.6</span> SPI 中断<a href="spi使用说明.html#spi-中断-2" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb34"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb34-1"><a href="spi使用说明.html#cb34-1"></a><span class="co">// SPI ENDINT中断触发标志传输结束，清除中断状态</span></span>
+<span id="cb34-2"><a href="spi使用说明.html#cb34-2"></a><span class="dt">static</span> <span class="dt">uint32_t</span> peripherals_spi_isr(<span class="dt">void</span> *user_data)</span>
+<span id="cb34-3"><a href="spi使用说明.html#cb34-3"></a>{</span>
+<span id="cb34-4"><a href="spi使用说明.html#cb34-4"></a>  <span class="dt">uint32_t</span> stat = apSSP_GetIntRawStatus(APB_SSP1);</span>
+<span id="cb34-5"><a href="spi使用说明.html#cb34-5"></a>  </span>
+<span id="cb34-6"><a href="spi使用说明.html#cb34-6"></a>  <span class="cf">if</span>(stat &amp; (<span class="dv">1</span> &lt;&lt; bsSPI_INTREN_ENDINTEN))</span>
+<span id="cb34-7"><a href="spi使用说明.html#cb34-7"></a>  {</span>
+<span id="cb34-8"><a href="spi使用说明.html#cb34-8"></a>    peripherals_spi_read_data();</span>
+<span id="cb34-9"><a href="spi使用说明.html#cb34-9"></a>    apSSP_ClearIntStatus(APB_SSP1, <span class="dv">1</span> &lt;&lt; bsSPI_INTREN_ENDINTEN);</span>
+<span id="cb34-10"><a href="spi使用说明.html#cb34-10"></a>  }  </span>
+<span id="cb34-11"><a href="spi使用说明.html#cb34-11"></a>}</span></code></pre></div>
+</div>
+<div id="使用流程-3" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.2.2.7</span> 使用流程<a href="spi使用说明.html#使用流程-3" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<ul>
+<li>设置GPIO，setup_peripherals_spi_pin()</li>
+<li>初始化SPI，setup_peripherals_spi_module()</li>
+<li>初始化DMA，setup_peripherals_dma_module()</li>
+<li>设置接收DMA，peripherals_spi_read_data()</li>
+<li>观察SPI中断，中断触发代表当前接收结束</li>
+</ul>
+<hr />
+</div>
+</div>
+</div>
+<div id="场景3同时读写不带dma" class="section level2 hasAnchor">
+<h2><span class="header-section-number">7.3</span> 场景3：同时读写不带DMA<a href="spi使用说明.html#场景3同时读写不带dma" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>其中SPI主从都配置为同时读写模式，CPU操作读写，没有使用DMA 配置之前需要决定使用的GPIO，如果是普通模式，则不需要SPI_MIC_WP和SPI_MIC_HOLD</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb35-1"><a href="spi使用说明.html#cb35-1"></a><span class="pp">#define SPI_MIC_CLK         GIO_GPIO_10</span></span>
+<span id="cb35-2"><a href="spi使用说明.html#cb35-2"></a><span class="pp">#define SPI_MIC_MOSI        GIO_GPIO_11</span></span>
+<span id="cb35-3"><a href="spi使用说明.html#cb35-3"></a><span class="pp">#define SPI_MIC_MISO        GIO_GPIO_12</span></span>
+<span id="cb35-4"><a href="spi使用说明.html#cb35-4"></a><span class="pp">#define SPI_MIC_CS          GIO_GPIO_13</span></span>
+<span id="cb35-5"><a href="spi使用说明.html#cb35-5"></a><span class="pp">#define SPI_MIC_WP          GIO_GPIO_14</span></span>
+<span id="cb35-6"><a href="spi使用说明.html#cb35-6"></a><span class="pp">#define SPI_MIC_HOLD        GIO_GPIO_15</span></span></code></pre></div>
+<div id="spi主配置-2" class="section level3 hasAnchor">
+<h3><span class="header-section-number">7.3.1</span> SPI主配置<a href="spi使用说明.html#spi主配置-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="接口配置-4" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.3.1.1</span> 接口配置<a href="spi使用说明.html#接口配置-4" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb36"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb36-1"><a href="spi使用说明.html#cb36-1"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_spi_pin(<span class="dt">void</span>)</span>
+<span id="cb36-2"><a href="spi使用说明.html#cb36-2"></a>{</span>
+<span id="cb36-3"><a href="spi使用说明.html#cb36-3"></a>    <span class="co">// 打开SPI模块时钟</span></span>
+<span id="cb36-4"><a href="spi使用说明.html#cb36-4"></a>    <span class="co">// 此处是以SPI1为例，如果是SPI0则需要更改</span></span>
+<span id="cb36-5"><a href="spi使用说明.html#cb36-5"></a>    <span class="co">// 根据使用的GPIO，选择打开GPIO0或者GPIO1的时钟</span></span>
+<span id="cb36-6"><a href="spi使用说明.html#cb36-6"></a>    SYSCTRL_ClearClkGateMulti(    (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_SPI1)</span>
+<span id="cb36-7"><a href="spi使用说明.html#cb36-7"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_SysCtrl)</span>
+<span id="cb36-8"><a href="spi使用说明.html#cb36-8"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_PinCtrl)</span>
+<span id="cb36-9"><a href="spi使用说明.html#cb36-9"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_GPIO1)</span>
+<span id="cb36-10"><a href="spi使用说明.html#cb36-10"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_GPIO0));</span>
+<span id="cb36-11"><a href="spi使用说明.html#cb36-11"></a></span>
+<span id="cb36-12"><a href="spi使用说明.html#cb36-12"></a>    <span class="co">// 设置IO MUX，将GPIO映射成SPI功能，不需要的pin可以使用IO_NOT_A_PIN替代</span></span>
+<span id="cb36-13"><a href="spi使用说明.html#cb36-13"></a>    PINCTRL_SelSpiIn(SPI_PORT_1, SPI_MIC_CLK, SPI_MIC_CS, SPI_MIC_HOLD, SPI_MIC_WP, SPI_MIC_MISO, SPI_MIC_MOSI);</span>
+<span id="cb36-14"><a href="spi使用说明.html#cb36-14"></a>    PINCTRL_SetPadMux(SPI_MIC_CLK, IO_SOURCE_SPI1_CLK_OUT);</span>
+<span id="cb36-15"><a href="spi使用说明.html#cb36-15"></a>    PINCTRL_SetPadMux(SPI_MIC_CS, IO_SOURCE_SPI1_CSN_OUT);</span>
+<span id="cb36-16"><a href="spi使用说明.html#cb36-16"></a>    PINCTRL_SetPadMux(SPI_MIC_MOSI, IO_SOURCE_SPI1_MOSI_OUT);</span>
+<span id="cb36-17"><a href="spi使用说明.html#cb36-17"></a>    </span>
+<span id="cb36-18"><a href="spi使用说明.html#cb36-18"></a>    <span class="co">// 设置SPI的中断</span></span>
+<span id="cb36-19"><a href="spi使用说明.html#cb36-19"></a>    platform_set_irq_callback(PLATFORM_CB_IRQ_APBSPI, peripherals_spi_isr, NULL);</span></code></pre></div>
+</div>
+<div id="spi模块初始化-4" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.3.1.2</span> SPI模块初始化<a href="spi使用说明.html#spi模块初始化-4" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>常用设置项用注释标出，详细定义请参考“peripheral_ssp.h”</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb37-1"><a href="spi使用说明.html#cb37-1"></a><span class="co">// 示例，每次传输大小是8个word</span></span>
+<span id="cb37-2"><a href="spi使用说明.html#cb37-2"></a><span class="pp">#define DATA_LEN (SPI_FIFO_DEPTH)</span></span>
+<span id="cb37-3"><a href="spi使用说明.html#cb37-3"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_spi_module(<span class="dt">void</span>)</span>
+<span id="cb37-4"><a href="spi使用说明.html#cb37-4"></a>{</span>
+<span id="cb37-5"><a href="spi使用说明.html#cb37-5"></a>    apSSP_sDeviceControlBlock pParam;</span>
+<span id="cb37-6"><a href="spi使用说明.html#cb37-6"></a>    pParam.eSclkDiv = SPI_INTERFACETIMINGSCLKDIV_DEFAULT_2M;<span class="co">// SPI 时钟设置</span></span>
+<span id="cb37-7"><a href="spi使用说明.html#cb37-7"></a>    pParam.eSCLKPolarity = SPI_CPOL_SCLK_LOW_IN_IDLE_STATES;<span class="co">// SPI 模式设置</span></span>
+<span id="cb37-8"><a href="spi使用说明.html#cb37-8"></a>    pParam.eSCLKPhase = SPI_CPHA_ODD_SCLK_EDGES;<span class="co">// SPI 模式设置</span></span>
+<span id="cb37-9"><a href="spi使用说明.html#cb37-9"></a>    pParam.eLsbMsbOrder = SPI_LSB_MOST_SIGNIFICANT_BIT_FIRST;</span>
+<span id="cb37-10"><a href="spi使用说明.html#cb37-10"></a>    pParam.eDataSize = SPI_DATALEN_32_BITS;<span class="co">// SPI 每个传输单位的大小</span></span>
+<span id="cb37-11"><a href="spi使用说明.html#cb37-11"></a>    pParam.eMasterSlaveMode = SPI_SLVMODE_MASTER_MODE;<span class="co">// SPI主模式</span></span>
+<span id="cb37-12"><a href="spi使用说明.html#cb37-12"></a>    pParam.eReadWriteMode = SPI_TRANSMODE_WRITE_READ_SAME_TIME;<span class="co">// SPI同时读写</span></span>
+<span id="cb37-13"><a href="spi使用说明.html#cb37-13"></a>    pParam.eQuadMode = SPI_DUALQUAD_REGULAR_MODE;</span>
+<span id="cb37-14"><a href="spi使用说明.html#cb37-14"></a>    pParam.eWriteTransCnt = DATA_LEN;<span class="co">// SPI每次传输多少个单位（每个单位的大小是pParam.eDataSize）</span></span>
+<span id="cb37-15"><a href="spi使用说明.html#cb37-15"></a>    pParam.eReadTransCnt = DATA_LEN;<span class="co">// SPI每次接收多少个单位（每个单位的大小是pParam.eDataSize）</span></span>
+<span id="cb37-16"><a href="spi使用说明.html#cb37-16"></a>    pParam.eAddrEn = SPI_ADDREN_DISABLE;</span>
+<span id="cb37-17"><a href="spi使用说明.html#cb37-17"></a>    pParam.eCmdEn = SPI_CMDEN_DISABLE;</span>
+<span id="cb37-18"><a href="spi使用说明.html#cb37-18"></a>    pParam.RxThres = DATA_LEN/<span class="dv">2</span>;</span>
+<span id="cb37-19"><a href="spi使用说明.html#cb37-19"></a>    pParam.TxThres = DATA_LEN/<span class="dv">2</span>;</span>
+<span id="cb37-20"><a href="spi使用说明.html#cb37-20"></a>    pParam.SlaveDataOnly = SPI_SLVDATAONLY_ENABLE;</span>
+<span id="cb37-21"><a href="spi使用说明.html#cb37-21"></a>    pParam.eAddrLen = SPI_ADDRLEN_1_BYTE;</span>
+<span id="cb37-22"><a href="spi使用说明.html#cb37-22"></a>    pParam.eInterruptMask = (<span class="dv">1</span> &lt;&lt; bsSPI_INTREN_ENDINTEN);<span class="co">// 打开SPI中断（传输结束后触发）</span></span>
+<span id="cb37-23"><a href="spi使用说明.html#cb37-23"></a>  </span>
+<span id="cb37-24"><a href="spi使用说明.html#cb37-24"></a>    apSSP_DeviceParametersSet(APB_SSP1, &amp;pParam);</span>
+<span id="cb37-25"><a href="spi使用说明.html#cb37-25"></a>}</span></code></pre></div>
+</div>
+<div id="spi-中断-3" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.3.1.3</span> SPI 中断<a href="spi使用说明.html#spi-中断-3" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb38"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb38-1"><a href="spi使用说明.html#cb38-1"></a><span class="co">// SPI ENDINT中断触发标志传输结束，清除中断状态</span></span>
+<span id="cb38-2"><a href="spi使用说明.html#cb38-2"></a><span class="dt">static</span> <span class="dt">uint32_t</span> peripherals_spi_isr(<span class="dt">void</span> *user_data)</span>
+<span id="cb38-3"><a href="spi使用说明.html#cb38-3"></a>{</span>
+<span id="cb38-4"><a href="spi使用说明.html#cb38-4"></a>  <span class="dt">uint32_t</span> stat = apSSP_GetIntRawStatus(APB_SSP1);</span>
+<span id="cb38-5"><a href="spi使用说明.html#cb38-5"></a>  </span>
+<span id="cb38-6"><a href="spi使用说明.html#cb38-6"></a>  <span class="cf">if</span>(stat &amp; (<span class="dv">1</span> &lt;&lt; bsSPI_INTREN_ENDINTEN))</span>
+<span id="cb38-7"><a href="spi使用说明.html#cb38-7"></a>  {</span>
+<span id="cb38-8"><a href="spi使用说明.html#cb38-8"></a>    apSSP_ClearIntStatus(APB_SSP1, <span class="dv">1</span> &lt;&lt; bsSPI_INTREN_ENDINTEN);</span>
+<span id="cb38-9"><a href="spi使用说明.html#cb38-9"></a>  }  </span>
+<span id="cb38-10"><a href="spi使用说明.html#cb38-10"></a>}</span></code></pre></div>
+</div>
+<div id="spi-发送数据-2" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.3.1.4</span> SPI 发送数据<a href="spi使用说明.html#spi-发送数据-2" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb39"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb39-1"><a href="spi使用说明.html#cb39-1"></a><span class="dt">uint32_t</span> write_data[DATA_LEN];<span class="co">//数据大小等于pParam.eDataSize，数组大小等于pParam.eWriteTransCnt</span></span>
+<span id="cb39-2"><a href="spi使用说明.html#cb39-2"></a><span class="dt">void</span> peripherals_spi_send_data(<span class="dt">void</span>)</span>
+<span id="cb39-3"><a href="spi使用说明.html#cb39-3"></a>{</span>
+<span id="cb39-4"><a href="spi使用说明.html#cb39-4"></a>  <span class="co">// 写入命令，触发SPI传输</span></span>
+<span id="cb39-5"><a href="spi使用说明.html#cb39-5"></a>  apSSP_WriteCmd(APB_SSP1, <span class="bn">0x00</span>, <span class="bn">0x00</span>);<span class="co">//trigger transfer</span></span>
+<span id="cb39-6"><a href="spi使用说明.html#cb39-6"></a>  </span>
+<span id="cb39-7"><a href="spi使用说明.html#cb39-7"></a>  <span class="co">// 填写数据到TX FIFO，这个例子中DATA_LEN等于FIFO的深度（8），如果大于8，可以分为多次发送接收，</span></span>
+<span id="cb39-8"><a href="spi使用说明.html#cb39-8"></a>  <span class="co">// 每次发送完8个单位，需要读取RX FIFO中的数据</span></span>
+<span id="cb39-9"><a href="spi使用说明.html#cb39-9"></a>  <span class="cf">for</span>(i = <span class="dv">0</span>; i &lt; DATA_LEN; i++)</span>
+<span id="cb39-10"><a href="spi使用说明.html#cb39-10"></a>  {</span>
+<span id="cb39-11"><a href="spi使用说明.html#cb39-11"></a>    apSSP_WriteFIFO(APB_SSP1, write_data[i]);</span>
+<span id="cb39-12"><a href="spi使用说明.html#cb39-12"></a>  }</span>
+<span id="cb39-13"><a href="spi使用说明.html#cb39-13"></a></span>
+<span id="cb39-14"><a href="spi使用说明.html#cb39-14"></a>  <span class="co">// 等待发送结束</span></span>
+<span id="cb39-15"><a href="spi使用说明.html#cb39-15"></a>  <span class="cf">while</span>(apSSP_GetSPIActiveStatus(APB_SSP1));</span>
+<span id="cb39-16"><a href="spi使用说明.html#cb39-16"></a>  </span>
+<span id="cb39-17"><a href="spi使用说明.html#cb39-17"></a>  <span class="co">// 读取当前RX FIFO中有效值的个数，然后从RX FIFO中读取返回值</span></span>
+<span id="cb39-18"><a href="spi使用说明.html#cb39-18"></a>  <span class="dt">uint32_t</span> num = apSSP_GetDataNumInRxFifo(APB_SSP1);</span>
+<span id="cb39-19"><a href="spi使用说明.html#cb39-19"></a>  <span class="cf">for</span>(i = <span class="dv">0</span>; i &lt; num; i++)</span>
+<span id="cb39-20"><a href="spi使用说明.html#cb39-20"></a>  {</span>
+<span id="cb39-21"><a href="spi使用说明.html#cb39-21"></a>    apSSP_ReadFIFO(APB_SSP1, &amp;read_data[i]);</span>
+<span id="cb39-22"><a href="spi使用说明.html#cb39-22"></a>  }</span>
+<span id="cb39-23"><a href="spi使用说明.html#cb39-23"></a>}</span></code></pre></div>
+</div>
+<div id="使用流程-4" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.3.1.5</span> 使用流程<a href="spi使用说明.html#使用流程-4" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<ul>
+<li>设置GPIO，setup_peripherals_spi_pin()</li>
+<li>初始化SPI，setup_peripherals_spi_module()</li>
+<li>在需要时候发送SPI数据，peripherals_spi_send_data()</li>
+<li>检查中断状态</li>
+</ul>
+</div>
+</div>
+<div id="spi从配置-2" class="section level3 hasAnchor">
+<h3><span class="header-section-number">7.3.2</span> SPI从配置<a href="spi使用说明.html#spi从配置-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="接口配置-5" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.3.2.1</span> 接口配置<a href="spi使用说明.html#接口配置-5" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb40"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb40-1"><a href="spi使用说明.html#cb40-1"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_spi_pin(<span class="dt">void</span>)</span>
+<span id="cb40-2"><a href="spi使用说明.html#cb40-2"></a>{</span>
+<span id="cb40-3"><a href="spi使用说明.html#cb40-3"></a>    <span class="co">// 打开SPI模块时钟</span></span>
+<span id="cb40-4"><a href="spi使用说明.html#cb40-4"></a>    <span class="co">// 此处是以SPI1为例，如果是SPI0则需要更改</span></span>
+<span id="cb40-5"><a href="spi使用说明.html#cb40-5"></a>    <span class="co">// 根据使用的GPIO，选择打开GPIO0或者GPIO1的时钟</span></span>
+<span id="cb40-6"><a href="spi使用说明.html#cb40-6"></a>    SYSCTRL_ClearClkGateMulti(    (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_SPI1)</span>
+<span id="cb40-7"><a href="spi使用说明.html#cb40-7"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_SysCtrl)</span>
+<span id="cb40-8"><a href="spi使用说明.html#cb40-8"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_PinCtrl)</span>
+<span id="cb40-9"><a href="spi使用说明.html#cb40-9"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_GPIO1)</span>
+<span id="cb40-10"><a href="spi使用说明.html#cb40-10"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_GPIO0));</span>
+<span id="cb40-11"><a href="spi使用说明.html#cb40-11"></a></span>
+<span id="cb40-12"><a href="spi使用说明.html#cb40-12"></a>    <span class="co">// 设置IO MUX，将GPIO映射成SPI功能，不需要的pin可以使用IO_NOT_A_PIN替代</span></span>
+<span id="cb40-13"><a href="spi使用说明.html#cb40-13"></a>    PINCTRL_Pull(IO_SOURCE_SPI1_CLK_IN,PINCTRL_PULL_DOWN);</span>
+<span id="cb40-14"><a href="spi使用说明.html#cb40-14"></a>    PINCTRL_Pull(IO_SOURCE_SPI1_CSN_IN,PINCTRL_PULL_UP);<span class="co">// CS 需要默认上拉</span></span>
+<span id="cb40-15"><a href="spi使用说明.html#cb40-15"></a>    PINCTRL_SelSpiIn(SPI_PORT_1, SPI_MIC_CLK, SPI_MIC_CS, SPI_MIC_HOLD, SPI_MIC_WP, SPI_MIC_MISO, SPI_MIC_MOSI);</span>
+<span id="cb40-16"><a href="spi使用说明.html#cb40-16"></a>    PINCTRL_SetPadMux(SPI_MIC_CLK, IO_SOURCE_SPI1_CLK_OUT);</span>
+<span id="cb40-17"><a href="spi使用说明.html#cb40-17"></a>    PINCTRL_SetPadMux(SPI_MIC_MISO, IO_SOURCE_SPI1_MISO_OUT);</span>
+<span id="cb40-18"><a href="spi使用说明.html#cb40-18"></a>    </span>
+<span id="cb40-19"><a href="spi使用说明.html#cb40-19"></a>    <span class="co">// 设置SPI的中断</span></span>
+<span id="cb40-20"><a href="spi使用说明.html#cb40-20"></a>    platform_set_irq_callback(PLATFORM_CB_IRQ_APBSPI, peripherals_spi_isr, NULL);</span></code></pre></div>
+</div>
+<div id="spi模块初始化-5" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.3.2.2</span> SPI模块初始化<a href="spi使用说明.html#spi模块初始化-5" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>常用设置项用注释标出，详细定义请参考“peripheral_ssp.h”</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb41-1"><a href="spi使用说明.html#cb41-1"></a><span class="co">// 示例，每次传输大小是8个word</span></span>
+<span id="cb41-2"><a href="spi使用说明.html#cb41-2"></a><span class="pp">#define DATA_LEN (SPI_FIFO_DEPTH)</span></span>
+<span id="cb41-3"><a href="spi使用说明.html#cb41-3"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_spi_module(<span class="dt">void</span>)</span>
+<span id="cb41-4"><a href="spi使用说明.html#cb41-4"></a>{</span>
+<span id="cb41-5"><a href="spi使用说明.html#cb41-5"></a>    apSSP_sDeviceControlBlock pParam;</span>
+<span id="cb41-6"><a href="spi使用说明.html#cb41-6"></a>    pParam.eSclkDiv = SPI_INTERFACETIMINGSCLKDIV_DEFAULT_2M;<span class="co">// SPI 时钟设置</span></span>
+<span id="cb41-7"><a href="spi使用说明.html#cb41-7"></a>    pParam.eSCLKPolarity = SPI_CPOL_SCLK_LOW_IN_IDLE_STATES;<span class="co">// SPI 模式设置</span></span>
+<span id="cb41-8"><a href="spi使用说明.html#cb41-8"></a>    pParam.eSCLKPhase = SPI_CPHA_ODD_SCLK_EDGES;<span class="co">// SPI 模式设置</span></span>
+<span id="cb41-9"><a href="spi使用说明.html#cb41-9"></a>    pParam.eLsbMsbOrder = SPI_LSB_MOST_SIGNIFICANT_BIT_FIRST;</span>
+<span id="cb41-10"><a href="spi使用说明.html#cb41-10"></a>    pParam.eDataSize = SPI_DATALEN_32_BITS;<span class="co">// SPI 每个传输单位的大小</span></span>
+<span id="cb41-11"><a href="spi使用说明.html#cb41-11"></a>    pParam.eMasterSlaveMode = SPI_SLVMODE_SLAVE_MODE;<span class="co">// SPI 从模式</span></span>
+<span id="cb41-12"><a href="spi使用说明.html#cb41-12"></a>    pParam.eReadWriteMode = SPI_TRANSMODE_WRITE_READ_SAME_TIME;<span class="co">// SPI 同时读写</span></span>
+<span id="cb41-13"><a href="spi使用说明.html#cb41-13"></a>    pParam.eQuadMode = SPI_DUALQUAD_REGULAR_MODE;</span>
+<span id="cb41-14"><a href="spi使用说明.html#cb41-14"></a>    pParam.eWriteTransCnt = DATA_LEN;<span class="co">// SPI每次传输多少个单位（每个单位的大小是pParam.eDataSize）</span></span>
+<span id="cb41-15"><a href="spi使用说明.html#cb41-15"></a>    pParam.eReadTransCnt = DATA_LEN;<span class="co">// SPI每次接收多少个单位（每个单位的大小是pParam.eDataSize）</span></span>
+<span id="cb41-16"><a href="spi使用说明.html#cb41-16"></a>    pParam.eAddrEn = SPI_ADDREN_DISABLE;</span>
+<span id="cb41-17"><a href="spi使用说明.html#cb41-17"></a>    pParam.eCmdEn = SPI_CMDEN_DISABLE;</span>
+<span id="cb41-18"><a href="spi使用说明.html#cb41-18"></a>    pParam.RxThres = DATA_LEN/<span class="dv">2</span>;</span>
+<span id="cb41-19"><a href="spi使用说明.html#cb41-19"></a>    pParam.TxThres = DATA_LEN/<span class="dv">2</span>;</span>
+<span id="cb41-20"><a href="spi使用说明.html#cb41-20"></a>    pParam.SlaveDataOnly = SPI_SLVDATAONLY_ENABLE;</span>
+<span id="cb41-21"><a href="spi使用说明.html#cb41-21"></a>    pParam.eAddrLen = SPI_ADDRLEN_1_BYTE;</span>
+<span id="cb41-22"><a href="spi使用说明.html#cb41-22"></a>    pParam.eInterruptMask = (<span class="dv">1</span> &lt;&lt; bsSPI_INTREN_ENDINTEN);<span class="co">// 打开SPI中断（传输结束后触发）</span></span>
+<span id="cb41-23"><a href="spi使用说明.html#cb41-23"></a>  </span>
+<span id="cb41-24"><a href="spi使用说明.html#cb41-24"></a>    apSSP_DeviceParametersSet(APB_SSP1, &amp;pParam);</span>
+<span id="cb41-25"><a href="spi使用说明.html#cb41-25"></a>}</span></code></pre></div>
+</div>
+<div id="spi-接收数据-2" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.3.2.3</span> SPI 接收数据<a href="spi使用说明.html#spi-接收数据-2" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb42"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb42-1"><a href="spi使用说明.html#cb42-1"></a><span class="dt">void</span> peripherals_spi_push_data(<span class="dt">void</span>)</span>
+<span id="cb42-2"><a href="spi使用说明.html#cb42-2"></a>{</span>
+<span id="cb42-3"><a href="spi使用说明.html#cb42-3"></a>    <span class="cf">for</span>(i = <span class="dv">0</span>; i &lt; DATA_LEN; i++)</span>
+<span id="cb42-4"><a href="spi使用说明.html#cb42-4"></a>    {</span>
+<span id="cb42-5"><a href="spi使用说明.html#cb42-5"></a>      apSSP_WriteFIFO(APB_SSP1, write_data[i]);</span>
+<span id="cb42-6"><a href="spi使用说明.html#cb42-6"></a>    }</span>
+<span id="cb42-7"><a href="spi使用说明.html#cb42-7"></a>}</span>
+<span id="cb42-8"><a href="spi使用说明.html#cb42-8"></a></span>
+<span id="cb42-9"><a href="spi使用说明.html#cb42-9"></a><span class="dt">uint32_t</span> read_data[DATA_LEN];<span class="co">//数据大小等于pParam.eDataSize，数组大小等于pParam.eReadTransCnt</span></span>
+<span id="cb42-10"><a href="spi使用说明.html#cb42-10"></a><span class="dt">static</span> <span class="dt">uint32_t</span> peripherals_spi_isr(<span class="dt">void</span> *user_data)</span>
+<span id="cb42-11"><a href="spi使用说明.html#cb42-11"></a>{</span>
+<span id="cb42-12"><a href="spi使用说明.html#cb42-12"></a>  <span class="dt">uint32_t</span> stat = apSSP_GetIntRawStatus(APB_SSP1), i;</span>
+<span id="cb42-13"><a href="spi使用说明.html#cb42-13"></a>  <span class="cf">if</span>(stat &amp; (<span class="dv">1</span> &lt;&lt; bsSPI_INTREN_ENDINTEN))</span>
+<span id="cb42-14"><a href="spi使用说明.html#cb42-14"></a>  {</span>
+<span id="cb42-15"><a href="spi使用说明.html#cb42-15"></a>    <span class="co">/* check if rx fifo still have some left data */</span></span>
+<span id="cb42-16"><a href="spi使用说明.html#cb42-16"></a>    <span class="co">// 检查当前RX FIFO中有效值的个数，根据个数读取RX FIFO</span></span>
+<span id="cb42-17"><a href="spi使用说明.html#cb42-17"></a>    <span class="dt">uint32_t</span> num = apSSP_GetDataNumInRxFifo(APB_SSP1);</span>
+<span id="cb42-18"><a href="spi使用说明.html#cb42-18"></a>    <span class="cf">for</span>(i = <span class="dv">0</span>; i &lt; num; i++)</span>
+<span id="cb42-19"><a href="spi使用说明.html#cb42-19"></a>    {</span>
+<span id="cb42-20"><a href="spi使用说明.html#cb42-20"></a>      apSSP_ReadFIFO(APB_SSP1, &amp;read_data[i]);</span>
+<span id="cb42-21"><a href="spi使用说明.html#cb42-21"></a>    }</span>
+<span id="cb42-22"><a href="spi使用说明.html#cb42-22"></a></span>
+<span id="cb42-23"><a href="spi使用说明.html#cb42-23"></a>    <span class="co">// 根据需要填充下一次发送的SPI数据</span></span>
+<span id="cb42-24"><a href="spi使用说明.html#cb42-24"></a>    peripherals_spi_push_data();</span>
+<span id="cb42-25"><a href="spi使用说明.html#cb42-25"></a>    </span>
+<span id="cb42-26"><a href="spi使用说明.html#cb42-26"></a>    apSSP_ClearIntStatus(APB_SSP1, <span class="dv">1</span> &lt;&lt; bsSPI_INTREN_ENDINTEN);</span>
+<span id="cb42-27"><a href="spi使用说明.html#cb42-27"></a>    </span>
+<span id="cb42-28"><a href="spi使用说明.html#cb42-28"></a>  }</span>
+<span id="cb42-29"><a href="spi使用说明.html#cb42-29"></a>}</span></code></pre></div>
+</div>
+<div id="使用流程-5" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.3.2.4</span> 使用流程<a href="spi使用说明.html#使用流程-5" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<ul>
+<li>设置GPIO，setup_peripherals_spi_pin()</li>
+<li>初始化SPI，setup_peripherals_spi_module()</li>
+<li>根据需要填充TX FIFO，peripherals_spi_push_data()</li>
+<li>观察SPI中断，中断触发代表当前传输结束</li>
+</ul>
+<hr />
+</div>
+</div>
+</div>
+<div id="场景4同时读写并且使用dma" class="section level2 hasAnchor">
+<h2><span class="header-section-number">7.4</span> 场景4：同时读写并且使用DMA<a href="spi使用说明.html#场景4同时读写并且使用dma" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>其中SPI主从配置为同时读写模式，同时使用DMA进行读写 配置之前需要决定使用的GPIO，如果是普通模式，则不需要SPI_MIC_WP和SPI_MIC_HOLD</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb43-1"><a href="spi使用说明.html#cb43-1"></a><span class="pp">#define SPI_MIC_CLK         GIO_GPIO_10</span></span>
+<span id="cb43-2"><a href="spi使用说明.html#cb43-2"></a><span class="pp">#define SPI_MIC_MOSI        GIO_GPIO_11</span></span>
+<span id="cb43-3"><a href="spi使用说明.html#cb43-3"></a><span class="pp">#define SPI_MIC_MISO        GIO_GPIO_12</span></span>
+<span id="cb43-4"><a href="spi使用说明.html#cb43-4"></a><span class="pp">#define SPI_MIC_CS          GIO_GPIO_13</span></span>
+<span id="cb43-5"><a href="spi使用说明.html#cb43-5"></a><span class="pp">#define SPI_MIC_WP          GIO_GPIO_14</span></span>
+<span id="cb43-6"><a href="spi使用说明.html#cb43-6"></a><span class="pp">#define SPI_MIC_HOLD        GIO_GPIO_15</span></span>
+<span id="cb43-7"><a href="spi使用说明.html#cb43-7"></a></span>
+<span id="cb43-8"><a href="spi使用说明.html#cb43-8"></a><span class="co">// RX FIFO 和 TX FIFO 使用两个DMA channel</span></span>
+<span id="cb43-9"><a href="spi使用说明.html#cb43-9"></a><span class="pp">#define SPI_DMA_TX_CHANNEL   (0)</span><span class="co">//DMA channel 0</span></span>
+<span id="cb43-10"><a href="spi使用说明.html#cb43-10"></a><span class="pp">#define SPI_DMA_RX_CHANNEL   (1)</span><span class="co">//DMA channel 1</span></span></code></pre></div>
+<div id="spi主配置-3" class="section level3 hasAnchor">
+<h3><span class="header-section-number">7.4.1</span> SPI主配置<a href="spi使用说明.html#spi主配置-3" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="接口配置-6" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.4.1.1</span> 接口配置<a href="spi使用说明.html#接口配置-6" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb44"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb44-1"><a href="spi使用说明.html#cb44-1"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_spi_pin(<span class="dt">void</span>)</span>
+<span id="cb44-2"><a href="spi使用说明.html#cb44-2"></a>{</span>
+<span id="cb44-3"><a href="spi使用说明.html#cb44-3"></a>    <span class="co">// 打开SPI模块时钟</span></span>
+<span id="cb44-4"><a href="spi使用说明.html#cb44-4"></a>    <span class="co">// 此处是以SPI1为例，如果是SPI0则需要更改</span></span>
+<span id="cb44-5"><a href="spi使用说明.html#cb44-5"></a>    <span class="co">// 根据使用的GPIO，选择打开GPIO0或者GPIO1的时钟</span></span>
+<span id="cb44-6"><a href="spi使用说明.html#cb44-6"></a>    SYSCTRL_ClearClkGateMulti(    (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_SPI1)</span>
+<span id="cb44-7"><a href="spi使用说明.html#cb44-7"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_SysCtrl)</span>
+<span id="cb44-8"><a href="spi使用说明.html#cb44-8"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_PinCtrl)</span>
+<span id="cb44-9"><a href="spi使用说明.html#cb44-9"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_GPIO1)</span>
+<span id="cb44-10"><a href="spi使用说明.html#cb44-10"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_GPIO0));</span>
+<span id="cb44-11"><a href="spi使用说明.html#cb44-11"></a></span>
+<span id="cb44-12"><a href="spi使用说明.html#cb44-12"></a>    <span class="co">// 设置IO MUX，将GPIO映射成SPI功能，不需要的pin可以使用IO_NOT_A_PIN替代</span></span>
+<span id="cb44-13"><a href="spi使用说明.html#cb44-13"></a>    PINCTRL_SelSpiIn(SPI_PORT_1, SPI_MIC_CLK, SPI_MIC_CS, SPI_MIC_HOLD, SPI_MIC_WP, SPI_MIC_MISO, SPI_MIC_MOSI);</span>
+<span id="cb44-14"><a href="spi使用说明.html#cb44-14"></a>    PINCTRL_SetPadMux(SPI_MIC_CLK, IO_SOURCE_SPI1_CLK_OUT);</span>
+<span id="cb44-15"><a href="spi使用说明.html#cb44-15"></a>    PINCTRL_SetPadMux(SPI_MIC_CS, IO_SOURCE_SPI1_CSN_OUT);</span>
+<span id="cb44-16"><a href="spi使用说明.html#cb44-16"></a>    PINCTRL_SetPadMux(SPI_MIC_MOSI, IO_SOURCE_SPI1_MOSI_OUT);</span>
+<span id="cb44-17"><a href="spi使用说明.html#cb44-17"></a>    </span>
+<span id="cb44-18"><a href="spi使用说明.html#cb44-18"></a>    <span class="co">// 设置SPI的中断</span></span>
+<span id="cb44-19"><a href="spi使用说明.html#cb44-19"></a>    platform_set_irq_callback(PLATFORM_CB_IRQ_APBSPI, peripherals_spi_isr, NULL);</span></code></pre></div>
+</div>
+<div id="spi模块初始化-6" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.4.1.2</span> SPI模块初始化<a href="spi使用说明.html#spi模块初始化-6" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>常用设置项用注释标出，详细定义请参考“peripheral_ssp.h”</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb45-1"><a href="spi使用说明.html#cb45-1"></a><span class="co">// 示例，每次传输大小是8个word</span></span>
+<span id="cb45-2"><a href="spi使用说明.html#cb45-2"></a><span class="pp">#define DATA_LEN (SPI_FIFO_DEPTH)</span></span>
+<span id="cb45-3"><a href="spi使用说明.html#cb45-3"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_spi_module(<span class="dt">void</span>)</span>
+<span id="cb45-4"><a href="spi使用说明.html#cb45-4"></a>{</span>
+<span id="cb45-5"><a href="spi使用说明.html#cb45-5"></a>    apSSP_sDeviceControlBlock pParam;</span>
+<span id="cb45-6"><a href="spi使用说明.html#cb45-6"></a>    pParam.eSclkDiv = SPI_INTERFACETIMINGSCLKDIV_DEFAULT_2M;<span class="co">// SPI 时钟设置</span></span>
+<span id="cb45-7"><a href="spi使用说明.html#cb45-7"></a>    pParam.eSCLKPolarity = SPI_CPOL_SCLK_LOW_IN_IDLE_STATES;<span class="co">// SPI 模式设置</span></span>
+<span id="cb45-8"><a href="spi使用说明.html#cb45-8"></a>    pParam.eSCLKPhase = SPI_CPHA_ODD_SCLK_EDGES;<span class="co">// SPI 模式设置</span></span>
+<span id="cb45-9"><a href="spi使用说明.html#cb45-9"></a>    pParam.eLsbMsbOrder = SPI_LSB_MOST_SIGNIFICANT_BIT_FIRST;</span>
+<span id="cb45-10"><a href="spi使用说明.html#cb45-10"></a>    pParam.eDataSize = SPI_DATALEN_32_BITS;<span class="co">// SPI 每个传输单位的大小</span></span>
+<span id="cb45-11"><a href="spi使用说明.html#cb45-11"></a>    pParam.eMasterSlaveMode = SPI_SLVMODE_MASTER_MODE;<span class="co">// SPI主模式</span></span>
+<span id="cb45-12"><a href="spi使用说明.html#cb45-12"></a>    pParam.eReadWriteMode = SPI_TRANSMODE_WRITE_READ_SAME_TIME;<span class="co">// SPI 同时读写</span></span>
+<span id="cb45-13"><a href="spi使用说明.html#cb45-13"></a>    pParam.eQuadMode = SPI_DUALQUAD_REGULAR_MODE;</span>
+<span id="cb45-14"><a href="spi使用说明.html#cb45-14"></a>    pParam.eWriteTransCnt = DATA_LEN;<span class="co">// SPI每次传输多少个单位（每个单位的大小是pParam.eDataSize）</span></span>
+<span id="cb45-15"><a href="spi使用说明.html#cb45-15"></a>    pParam.eReadTransCnt = DATA_LEN;<span class="co">// SPI每次接收多少个单位（每个单位的大小是pParam.eDataSize）</span></span>
+<span id="cb45-16"><a href="spi使用说明.html#cb45-16"></a>    pParam.eAddrEn = SPI_ADDREN_DISABLE;</span>
+<span id="cb45-17"><a href="spi使用说明.html#cb45-17"></a>    pParam.eCmdEn = SPI_CMDEN_DISABLE;</span>
+<span id="cb45-18"><a href="spi使用说明.html#cb45-18"></a>    pParam.RxThres = DATA_LEN/<span class="dv">2</span>;</span>
+<span id="cb45-19"><a href="spi使用说明.html#cb45-19"></a>    pParam.TxThres = DATA_LEN/<span class="dv">2</span>;</span>
+<span id="cb45-20"><a href="spi使用说明.html#cb45-20"></a>    pParam.SlaveDataOnly = SPI_SLVDATAONLY_ENABLE;</span>
+<span id="cb45-21"><a href="spi使用说明.html#cb45-21"></a>    pParam.eAddrLen = SPI_ADDRLEN_1_BYTE;</span>
+<span id="cb45-22"><a href="spi使用说明.html#cb45-22"></a>    pParam.eInterruptMask = (<span class="dv">1</span> &lt;&lt; bsSPI_INTREN_ENDINTEN);<span class="co">// 打开SPI中断（传输结束后触发）</span></span>
+<span id="cb45-23"><a href="spi使用说明.html#cb45-23"></a>  </span>
+<span id="cb45-24"><a href="spi使用说明.html#cb45-24"></a>    apSSP_DeviceParametersSet(APB_SSP1, &amp;pParam);</span>
+<span id="cb45-25"><a href="spi使用说明.html#cb45-25"></a>    </span>
+<span id="cb45-26"><a href="spi使用说明.html#cb45-26"></a>}</span></code></pre></div>
+</div>
+<div id="spi-dma初始化-2" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.4.1.3</span> SPI DMA初始化<a href="spi使用说明.html#spi-dma初始化-2" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>// 初始化DMA模块</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb46-1"><a href="spi使用说明.html#cb46-1"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_dma_module(<span class="dt">void</span>)</span>
+<span id="cb46-2"><a href="spi使用说明.html#cb46-2"></a>{</span>
+<span id="cb46-3"><a href="spi使用说明.html#cb46-3"></a>    SYSCTRL_ClearClkGateMulti(<span class="dv">1</span> &lt;&lt; SYSCTRL_ClkGate_APB_DMA);</span>
+<span id="cb46-4"><a href="spi使用说明.html#cb46-4"></a>    DMA_Reset(<span class="dv">1</span>);</span>
+<span id="cb46-5"><a href="spi使用说明.html#cb46-5"></a>    DMA_Reset(<span class="dv">0</span>);</span>
+<span id="cb46-6"><a href="spi使用说明.html#cb46-6"></a>}</span></code></pre></div>
+</div>
+<div id="spi-dma设置-2" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.4.1.4</span> SPI DMA设置<a href="spi使用说明.html#spi-dma设置-2" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>// 此处是以SPI1为例</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb47-1"><a href="spi使用说明.html#cb47-1"></a><span class="co">// 分别设置RX FIFO 和 TX FIFO的DMA</span></span>
+<span id="cb47-2"><a href="spi使用说明.html#cb47-2"></a><span class="dt">void</span> peripherals_spi_dma_to_txfifo(<span class="dt">int</span> channel_id, <span class="dt">void</span> *src, <span class="dt">int</span> size)</span>
+<span id="cb47-3"><a href="spi使用说明.html#cb47-3"></a>{</span>
+<span id="cb47-4"><a href="spi使用说明.html#cb47-4"></a>    DMA_Descriptor descriptor __attribute__((aligned (<span class="dv">8</span>)));</span>
+<span id="cb47-5"><a href="spi使用说明.html#cb47-5"></a></span>
+<span id="cb47-6"><a href="spi使用说明.html#cb47-6"></a>    descriptor.Next = (DMA_Descriptor *)<span class="dv">0</span>;</span>
+<span id="cb47-7"><a href="spi使用说明.html#cb47-7"></a>    DMA_PrepareMem2Peripheral(&amp;descriptor,SYSCTRL_DMA_SPI1_TX,src,size,DMA_ADDRESS_INC,<span class="dv">0</span>);</span>
+<span id="cb47-8"><a href="spi使用说明.html#cb47-8"></a></span>
+<span id="cb47-9"><a href="spi使用说明.html#cb47-9"></a>    DMA_EnableChannel(channel_id, &amp;descriptor);</span>
+<span id="cb47-10"><a href="spi使用说明.html#cb47-10"></a>}</span>
+<span id="cb47-11"><a href="spi使用说明.html#cb47-11"></a></span>
+<span id="cb47-12"><a href="spi使用说明.html#cb47-12"></a><span class="dt">void</span> peripherals_spi_rxfifo_to_dma(<span class="dt">int</span> channel_id, <span class="dt">void</span> *dst, <span class="dt">int</span> size)</span>
+<span id="cb47-13"><a href="spi使用说明.html#cb47-13"></a>{</span>
+<span id="cb47-14"><a href="spi使用说明.html#cb47-14"></a>    DMA_Descriptor descriptor __attribute__((aligned (<span class="dv">8</span>)));</span>
+<span id="cb47-15"><a href="spi使用说明.html#cb47-15"></a></span>
+<span id="cb47-16"><a href="spi使用说明.html#cb47-16"></a>    descriptor.Next = (DMA_Descriptor *)<span class="dv">0</span>;</span>
+<span id="cb47-17"><a href="spi使用说明.html#cb47-17"></a>    DMA_PreparePeripheral2Mem(&amp;descriptor,dst,SYSCTRL_DMA_SPI1_RX,size,DMA_ADDRESS_INC,<span class="dv">0</span>);</span>
+<span id="cb47-18"><a href="spi使用说明.html#cb47-18"></a></span>
+<span id="cb47-19"><a href="spi使用说明.html#cb47-19"></a>    DMA_EnableChannel(channel_id, &amp;descriptor);</span>
+<span id="cb47-20"><a href="spi使用说明.html#cb47-20"></a>}</span></code></pre></div>
+</div>
+<div id="spi-中断-4" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.4.1.5</span> SPI 中断<a href="spi使用说明.html#spi-中断-4" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb48"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb48-1"><a href="spi使用说明.html#cb48-1"></a><span class="co">// SPI ENDINT中断触发标志传输结束，清除中断状态</span></span>
+<span id="cb48-2"><a href="spi使用说明.html#cb48-2"></a><span class="dt">static</span> <span class="dt">uint32_t</span> peripherals_spi_isr(<span class="dt">void</span> *user_data)</span>
+<span id="cb48-3"><a href="spi使用说明.html#cb48-3"></a>{</span>
+<span id="cb48-4"><a href="spi使用说明.html#cb48-4"></a>  <span class="dt">uint32_t</span> stat = apSSP_GetIntRawStatus(APB_SSP1);</span>
+<span id="cb48-5"><a href="spi使用说明.html#cb48-5"></a>  </span>
+<span id="cb48-6"><a href="spi使用说明.html#cb48-6"></a>  <span class="cf">if</span>(stat &amp; (<span class="dv">1</span> &lt;&lt; bsSPI_INTREN_ENDINTEN))</span>
+<span id="cb48-7"><a href="spi使用说明.html#cb48-7"></a>  {</span>
+<span id="cb48-8"><a href="spi使用说明.html#cb48-8"></a>    apSSP_ClearIntStatus(APB_SSP1, <span class="dv">1</span> &lt;&lt; bsSPI_INTREN_ENDINTEN);</span>
+<span id="cb48-9"><a href="spi使用说明.html#cb48-9"></a>  }  </span>
+<span id="cb48-10"><a href="spi使用说明.html#cb48-10"></a>}</span></code></pre></div>
+</div>
+<div id="spi-接收数据-3" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.4.1.6</span> SPI 接收数据<a href="spi使用说明.html#spi-接收数据-3" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb49"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb49-1"><a href="spi使用说明.html#cb49-1"></a><span class="dt">uint32_t</span> read_data[DATA_LEN] = {<span class="dv">0</span>,};<span class="co">//数据大小等于pParam.eDataSize，数组大小等于pParam.eReadTransCnt</span></span>
+<span id="cb49-2"><a href="spi使用说明.html#cb49-2"></a></span>
+<span id="cb49-3"><a href="spi使用说明.html#cb49-3"></a><span class="dt">void</span> peripherals_spi_read_data(<span class="dt">void</span>)</span>
+<span id="cb49-4"><a href="spi使用说明.html#cb49-4"></a>{</span>
+<span id="cb49-5"><a href="spi使用说明.html#cb49-5"></a>  <span class="co">// 首先需要打开 SPI 模块中的DMA功能</span></span>
+<span id="cb49-6"><a href="spi使用说明.html#cb49-6"></a>  apSSP_SetRxDmaEn(APB_SSP1,<span class="dv">1</span>);</span>
+<span id="cb49-7"><a href="spi使用说明.html#cb49-7"></a>  apSSP_SetTransferControlRdTranCnt(APB_SSP1,DATA_LEN);</span>
+<span id="cb49-8"><a href="spi使用说明.html#cb49-8"></a>  <span class="co">// 配置DMA，指向存储接收数据的地址</span></span>
+<span id="cb49-9"><a href="spi使用说明.html#cb49-9"></a>  peripherals_spi_rxfifo_to_dma(SPI_DMA_RX_CHANNEL, read_data, <span class="kw">sizeof</span>(read_data));</span>
+<span id="cb49-10"><a href="spi使用说明.html#cb49-10"></a>}</span></code></pre></div>
+</div>
+<div id="spi-发送数据-3" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.4.1.7</span> SPI 发送数据<a href="spi使用说明.html#spi-发送数据-3" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb50"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb50-1"><a href="spi使用说明.html#cb50-1"></a><span class="dt">uint32_t</span> write_data[DATA_LEN];<span class="co">//数据大小等于pParam.eDataSize，数组大小等于pParam.eWriteTransCnt</span></span>
+<span id="cb50-2"><a href="spi使用说明.html#cb50-2"></a></span>
+<span id="cb50-3"><a href="spi使用说明.html#cb50-3"></a><span class="dt">void</span> peripherals_spi_push_data(<span class="dt">void</span>)</span>
+<span id="cb50-4"><a href="spi使用说明.html#cb50-4"></a>{</span>
+<span id="cb50-5"><a href="spi使用说明.html#cb50-5"></a>  <span class="co">// 首先需要打开 SPI 模块中的DMA功能</span></span>
+<span id="cb50-6"><a href="spi使用说明.html#cb50-6"></a>  apSSP_SetTxDmaEn(APB_SSP1,<span class="dv">1</span>);</span>
+<span id="cb50-7"><a href="spi使用说明.html#cb50-7"></a>  apSSP_SetTransferControlWrTranCnt(APB_SSP1,DATA_LEN);</span>
+<span id="cb50-8"><a href="spi使用说明.html#cb50-8"></a>  <span class="co">// 配置DMA，指向需要发送的数据</span></span>
+<span id="cb50-9"><a href="spi使用说明.html#cb50-9"></a>  peripherals_spi_dma_to_txfifo(SPI_DMA_TX_CHANNEL, write_data, <span class="kw">sizeof</span>(write_data));</span>
+<span id="cb50-10"><a href="spi使用说明.html#cb50-10"></a></span>
+<span id="cb50-11"><a href="spi使用说明.html#cb50-11"></a>}</span>
+<span id="cb50-12"><a href="spi使用说明.html#cb50-12"></a></span>
+<span id="cb50-13"><a href="spi使用说明.html#cb50-13"></a><span class="dt">void</span> peripherals_spi_send_data(<span class="dt">void</span>)</span>
+<span id="cb50-14"><a href="spi使用说明.html#cb50-14"></a>{</span>
+<span id="cb50-15"><a href="spi使用说明.html#cb50-15"></a>  <span class="co">// 分别设置接收和发射的DMA</span></span>
+<span id="cb50-16"><a href="spi使用说明.html#cb50-16"></a>  peripherals_spi_read_data();</span>
+<span id="cb50-17"><a href="spi使用说明.html#cb50-17"></a>  peripherals_spi_push_data();</span>
+<span id="cb50-18"><a href="spi使用说明.html#cb50-18"></a>  </span>
+<span id="cb50-19"><a href="spi使用说明.html#cb50-19"></a>  <span class="co">// 写入命令，触发SPI传输</span></span>
+<span id="cb50-20"><a href="spi使用说明.html#cb50-20"></a>  apSSP_WriteCmd(APB_SSP1, <span class="bn">0x00</span>, <span class="bn">0x00</span>);<span class="co">//trigger transfer</span></span>
+<span id="cb50-21"><a href="spi使用说明.html#cb50-21"></a></span>
+<span id="cb50-22"><a href="spi使用说明.html#cb50-22"></a>  <span class="co">// 等待发送结束</span></span>
+<span id="cb50-23"><a href="spi使用说明.html#cb50-23"></a>  <span class="cf">while</span>(apSSP_GetSPIActiveStatus(APB_SSP1));</span>
+<span id="cb50-24"><a href="spi使用说明.html#cb50-24"></a>  </span>
+<span id="cb50-25"><a href="spi使用说明.html#cb50-25"></a>  <span class="co">// 关闭 SPI 模块中的DMA功能</span></span>
+<span id="cb50-26"><a href="spi使用说明.html#cb50-26"></a>  apSSP_SetTxDmaEn(APB_SSP1,<span class="dv">0</span>);</span>
+<span id="cb50-27"><a href="spi使用说明.html#cb50-27"></a>}</span></code></pre></div>
+</div>
+<div id="使用流程-6" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.4.1.8</span> 使用流程<a href="spi使用说明.html#使用流程-6" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<ul>
+<li>设置GPIO，setup_peripherals_spi_pin()</li>
+<li>初始化SPI，setup_peripherals_spi_module()</li>
+<li>初始化DMA，setup_peripherals_dma_module()</li>
+<li>在需要时候发送SPI数据，peripherals_spi_send_data()</li>
+<li>检查中断状态</li>
+</ul>
+</div>
+</div>
+<div id="spi从配置-3" class="section level3 hasAnchor">
+<h3><span class="header-section-number">7.4.2</span> SPI从配置<a href="spi使用说明.html#spi从配置-3" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="接口配置-7" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.4.2.1</span> 接口配置<a href="spi使用说明.html#接口配置-7" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb51"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb51-1"><a href="spi使用说明.html#cb51-1"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_spi_pin(<span class="dt">void</span>)</span>
+<span id="cb51-2"><a href="spi使用说明.html#cb51-2"></a>{</span>
+<span id="cb51-3"><a href="spi使用说明.html#cb51-3"></a>    <span class="co">// 打开SPI模块时钟</span></span>
+<span id="cb51-4"><a href="spi使用说明.html#cb51-4"></a>    <span class="co">// 此处是以SPI1为例，如果是SPI0则需要更改</span></span>
+<span id="cb51-5"><a href="spi使用说明.html#cb51-5"></a>    <span class="co">// 根据使用的GPIO，选择打开GPIO0或者GPIO1的时钟</span></span>
+<span id="cb51-6"><a href="spi使用说明.html#cb51-6"></a>    SYSCTRL_ClearClkGateMulti(    (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_SPI1)</span>
+<span id="cb51-7"><a href="spi使用说明.html#cb51-7"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_SysCtrl)</span>
+<span id="cb51-8"><a href="spi使用说明.html#cb51-8"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_PinCtrl)</span>
+<span id="cb51-9"><a href="spi使用说明.html#cb51-9"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_GPIO1)</span>
+<span id="cb51-10"><a href="spi使用说明.html#cb51-10"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_GPIO0));</span>
+<span id="cb51-11"><a href="spi使用说明.html#cb51-11"></a></span>
+<span id="cb51-12"><a href="spi使用说明.html#cb51-12"></a>    <span class="co">// 设置IO MUX，将GPIO映射成SPI功能，不需要的pin可以使用IO_NOT_A_PIN替代</span></span>
+<span id="cb51-13"><a href="spi使用说明.html#cb51-13"></a>    PINCTRL_Pull(IO_SOURCE_SPI1_CLK_IN,PINCTRL_PULL_DOWN);</span>
+<span id="cb51-14"><a href="spi使用说明.html#cb51-14"></a>    PINCTRL_Pull(IO_SOURCE_SPI1_CSN_IN,PINCTRL_PULL_UP);<span class="co">// CS 需要默认上拉</span></span>
+<span id="cb51-15"><a href="spi使用说明.html#cb51-15"></a>    PINCTRL_SelSpiIn(SPI_PORT_1, SPI_MIC_CLK, SPI_MIC_CS, SPI_MIC_HOLD, SPI_MIC_WP, SPI_MIC_MISO, SPI_MIC_MOSI);</span>
+<span id="cb51-16"><a href="spi使用说明.html#cb51-16"></a>    PINCTRL_SetPadMux(SPI_MIC_CLK, IO_SOURCE_SPI1_CLK_OUT);</span>
+<span id="cb51-17"><a href="spi使用说明.html#cb51-17"></a>    PINCTRL_SetPadMux(SPI_MIC_MISO, IO_SOURCE_SPI1_MISO_OUT);</span>
+<span id="cb51-18"><a href="spi使用说明.html#cb51-18"></a>    </span>
+<span id="cb51-19"><a href="spi使用说明.html#cb51-19"></a>    <span class="co">// 设置SPI的中断</span></span>
+<span id="cb51-20"><a href="spi使用说明.html#cb51-20"></a>    platform_set_irq_callback(PLATFORM_CB_IRQ_APBSPI, peripherals_spi_isr, NULL);</span></code></pre></div>
+</div>
+<div id="spi模块初始化-7" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.4.2.2</span> SPI模块初始化<a href="spi使用说明.html#spi模块初始化-7" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>常用设置项用注释标出，详细定义请参考“peripheral_ssp.h”</p>
+<div class="sourceCode" id="cb52"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb52-1"><a href="spi使用说明.html#cb52-1"></a><span class="co">// 示例，每次传输大小是8个word</span></span>
+<span id="cb52-2"><a href="spi使用说明.html#cb52-2"></a><span class="pp">#define DATA_LEN (SPI_FIFO_DEPTH)</span></span>
+<span id="cb52-3"><a href="spi使用说明.html#cb52-3"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_spi_module(<span class="dt">void</span>)</span>
+<span id="cb52-4"><a href="spi使用说明.html#cb52-4"></a>{</span>
+<span id="cb52-5"><a href="spi使用说明.html#cb52-5"></a>    apSSP_sDeviceControlBlock pParam;</span>
+<span id="cb52-6"><a href="spi使用说明.html#cb52-6"></a>    pParam.eSclkDiv = SPI_INTERFACETIMINGSCLKDIV_DEFAULT_2M;<span class="co">// SPI 时钟设置</span></span>
+<span id="cb52-7"><a href="spi使用说明.html#cb52-7"></a>    pParam.eSCLKPolarity = SPI_CPOL_SCLK_LOW_IN_IDLE_STATES;<span class="co">// SPI 模式设置</span></span>
+<span id="cb52-8"><a href="spi使用说明.html#cb52-8"></a>    pParam.eSCLKPhase = SPI_CPHA_ODD_SCLK_EDGES;<span class="co">// SPI 模式设置</span></span>
+<span id="cb52-9"><a href="spi使用说明.html#cb52-9"></a>    pParam.eLsbMsbOrder = SPI_LSB_MOST_SIGNIFICANT_BIT_FIRST;</span>
+<span id="cb52-10"><a href="spi使用说明.html#cb52-10"></a>    pParam.eDataSize = SPI_DATALEN_32_BITS;<span class="co">// SPI 每个传输单位的大小</span></span>
+<span id="cb52-11"><a href="spi使用说明.html#cb52-11"></a>    pParam.eMasterSlaveMode = SPI_SLVMODE_SLAVE_MODE;<span class="co">// SPI 从模式</span></span>
+<span id="cb52-12"><a href="spi使用说明.html#cb52-12"></a>    pParam.eReadWriteMode = SPI_TRANSMODE_WRITE_READ_SAME_TIME;<span class="co">// SPI 同时读写</span></span>
+<span id="cb52-13"><a href="spi使用说明.html#cb52-13"></a>    pParam.eQuadMode = SPI_DUALQUAD_REGULAR_MODE;</span>
+<span id="cb52-14"><a href="spi使用说明.html#cb52-14"></a>    pParam.eWriteTransCnt = DATA_LEN;<span class="co">// SPI每次传输多少个单位（每个单位的大小是pParam.eDataSize）</span></span>
+<span id="cb52-15"><a href="spi使用说明.html#cb52-15"></a>    pParam.eReadTransCnt = DATA_LEN;<span class="co">// SPI每次接收多少个单位（每个单位的大小是pParam.eDataSize）</span></span>
+<span id="cb52-16"><a href="spi使用说明.html#cb52-16"></a>    pParam.eAddrEn = SPI_ADDREN_DISABLE;</span>
+<span id="cb52-17"><a href="spi使用说明.html#cb52-17"></a>    pParam.eCmdEn = SPI_CMDEN_DISABLE;</span>
+<span id="cb52-18"><a href="spi使用说明.html#cb52-18"></a>    pParam.RxThres = <span class="dv">0</span>;</span>
+<span id="cb52-19"><a href="spi使用说明.html#cb52-19"></a>    pParam.TxThres = <span class="dv">0</span>;</span>
+<span id="cb52-20"><a href="spi使用说明.html#cb52-20"></a>    pParam.SlaveDataOnly = SPI_SLVDATAONLY_ENABLE;</span>
+<span id="cb52-21"><a href="spi使用说明.html#cb52-21"></a>    pParam.eAddrLen = SPI_ADDRLEN_1_BYTE;</span>
+<span id="cb52-22"><a href="spi使用说明.html#cb52-22"></a>    pParam.eInterruptMask = (<span class="dv">1</span> &lt;&lt; bsSPI_INTREN_ENDINTEN);<span class="co">// 打开SPI中断（传输结束后触发）</span></span>
+<span id="cb52-23"><a href="spi使用说明.html#cb52-23"></a>  </span>
+<span id="cb52-24"><a href="spi使用说明.html#cb52-24"></a>    apSSP_DeviceParametersSet(APB_SSP1, &amp;pParam);</span>
+<span id="cb52-25"><a href="spi使用说明.html#cb52-25"></a>}</span></code></pre></div>
+</div>
+<div id="spi-dma初始化-3" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.4.2.3</span> SPI DMA初始化<a href="spi使用说明.html#spi-dma初始化-3" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>// 初始化DMA模块</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb53-1"><a href="spi使用说明.html#cb53-1"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_dma_module(<span class="dt">void</span>)</span>
+<span id="cb53-2"><a href="spi使用说明.html#cb53-2"></a>{</span>
+<span id="cb53-3"><a href="spi使用说明.html#cb53-3"></a>    SYSCTRL_ClearClkGateMulti(<span class="dv">1</span> &lt;&lt; SYSCTRL_ClkGate_APB_DMA);</span>
+<span id="cb53-4"><a href="spi使用说明.html#cb53-4"></a>    DMA_Reset(<span class="dv">1</span>);</span>
+<span id="cb53-5"><a href="spi使用说明.html#cb53-5"></a>    DMA_Reset(<span class="dv">0</span>);</span>
+<span id="cb53-6"><a href="spi使用说明.html#cb53-6"></a>}</span></code></pre></div>
+</div>
+<div id="spi-dma设置-3" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.4.2.4</span> SPI DMA设置<a href="spi使用说明.html#spi-dma设置-3" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>// 此处是以SPI1为例</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb54-1"><a href="spi使用说明.html#cb54-1"></a><span class="co">// 分别设置RX FIFO 和 TX FIFO的DMA</span></span>
+<span id="cb54-2"><a href="spi使用说明.html#cb54-2"></a><span class="dt">void</span> peripherals_spi_dma_to_txfifo(<span class="dt">int</span> channel_id, <span class="dt">void</span> *src, <span class="dt">int</span> size)</span>
+<span id="cb54-3"><a href="spi使用说明.html#cb54-3"></a>{</span>
+<span id="cb54-4"><a href="spi使用说明.html#cb54-4"></a>    DMA_Descriptor descriptor __attribute__((aligned (<span class="dv">8</span>)));</span>
+<span id="cb54-5"><a href="spi使用说明.html#cb54-5"></a></span>
+<span id="cb54-6"><a href="spi使用说明.html#cb54-6"></a>    descriptor.Next = (DMA_Descriptor *)<span class="dv">0</span>;</span>
+<span id="cb54-7"><a href="spi使用说明.html#cb54-7"></a>    DMA_PrepareMem2Peripheral(&amp;descriptor,SYSCTRL_DMA_SPI1_TX,src,size,DMA_ADDRESS_INC,<span class="dv">0</span>);</span>
+<span id="cb54-8"><a href="spi使用说明.html#cb54-8"></a></span>
+<span id="cb54-9"><a href="spi使用说明.html#cb54-9"></a>    DMA_EnableChannel(channel_id, &amp;descriptor);</span>
+<span id="cb54-10"><a href="spi使用说明.html#cb54-10"></a>}</span>
+<span id="cb54-11"><a href="spi使用说明.html#cb54-11"></a></span>
+<span id="cb54-12"><a href="spi使用说明.html#cb54-12"></a><span class="dt">void</span> peripherals_spi_rxfifo_to_dma(<span class="dt">int</span> channel_id, <span class="dt">void</span> *dst, <span class="dt">int</span> size)</span>
+<span id="cb54-13"><a href="spi使用说明.html#cb54-13"></a>{</span>
+<span id="cb54-14"><a href="spi使用说明.html#cb54-14"></a>    DMA_Descriptor descriptor __attribute__((aligned (<span class="dv">8</span>)));</span>
+<span id="cb54-15"><a href="spi使用说明.html#cb54-15"></a></span>
+<span id="cb54-16"><a href="spi使用说明.html#cb54-16"></a>    descriptor.Next = (DMA_Descriptor *)<span class="dv">0</span>;</span>
+<span id="cb54-17"><a href="spi使用说明.html#cb54-17"></a>    DMA_PreparePeripheral2Mem(&amp;descriptor,dst,SYSCTRL_DMA_SPI1_RX,size,DMA_ADDRESS_INC,<span class="dv">0</span>);</span>
+<span id="cb54-18"><a href="spi使用说明.html#cb54-18"></a></span>
+<span id="cb54-19"><a href="spi使用说明.html#cb54-19"></a>    DMA_EnableChannel(channel_id, &amp;descriptor);</span>
+<span id="cb54-20"><a href="spi使用说明.html#cb54-20"></a>}</span></code></pre></div>
+</div>
+<div id="spi-接收数据-4" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.4.2.5</span> SPI 接收数据<a href="spi使用说明.html#spi-接收数据-4" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb55"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb55-1"><a href="spi使用说明.html#cb55-1"></a><span class="dt">uint32_t</span> read_data[DATA_LEN] = {<span class="dv">0</span>,};<span class="co">//数据大小等于pParam.eDataSize，数组大小等于pParam.eReadTransCnt</span></span>
+<span id="cb55-2"><a href="spi使用说明.html#cb55-2"></a></span>
+<span id="cb55-3"><a href="spi使用说明.html#cb55-3"></a><span class="dt">void</span> peripherals_spi_read_data(<span class="dt">void</span>)</span>
+<span id="cb55-4"><a href="spi使用说明.html#cb55-4"></a>{</span>
+<span id="cb55-5"><a href="spi使用说明.html#cb55-5"></a>  <span class="co">// 首先需要打开 SPI 模块中的DMA功能</span></span>
+<span id="cb55-6"><a href="spi使用说明.html#cb55-6"></a>  apSSP_SetRxDmaEn(APB_SSP1,<span class="dv">1</span>);</span>
+<span id="cb55-7"><a href="spi使用说明.html#cb55-7"></a>  apSSP_SetTransferControlRdTranCnt(APB_SSP1,DATA_LEN);</span>
+<span id="cb55-8"><a href="spi使用说明.html#cb55-8"></a>  <span class="co">// 配置DMA，指向存储接收数据的地址</span></span>
+<span id="cb55-9"><a href="spi使用说明.html#cb55-9"></a>  peripherals_spi_rxfifo_to_dma(SPI_DMA_RX_CHANNEL, read_data, <span class="kw">sizeof</span>(read_data));</span>
+<span id="cb55-10"><a href="spi使用说明.html#cb55-10"></a>}</span></code></pre></div>
+</div>
+<div id="spi-发送数据-4" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.4.2.6</span> SPI 发送数据<a href="spi使用说明.html#spi-发送数据-4" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb56"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb56-1"><a href="spi使用说明.html#cb56-1"></a><span class="dt">uint32_t</span> write_data[DATA_LEN];<span class="co">//数据大小等于pParam.eDataSize，数组大小等于pParam.eWriteTransCnt</span></span>
+<span id="cb56-2"><a href="spi使用说明.html#cb56-2"></a></span>
+<span id="cb56-3"><a href="spi使用说明.html#cb56-3"></a><span class="dt">void</span> peripherals_spi_push_data(<span class="dt">void</span>)</span>
+<span id="cb56-4"><a href="spi使用说明.html#cb56-4"></a>{</span>
+<span id="cb56-5"><a href="spi使用说明.html#cb56-5"></a>  <span class="co">// 首先需要打开 SPI 模块中的DMA功能</span></span>
+<span id="cb56-6"><a href="spi使用说明.html#cb56-6"></a>  apSSP_SetTxDmaEn(APB_SSP1,<span class="dv">1</span>);</span>
+<span id="cb56-7"><a href="spi使用说明.html#cb56-7"></a>  apSSP_SetTransferControlWrTranCnt(APB_SSP1,DATA_LEN);</span>
+<span id="cb56-8"><a href="spi使用说明.html#cb56-8"></a>  <span class="co">// 配置DMA，指向需要发送的数据</span></span>
+<span id="cb56-9"><a href="spi使用说明.html#cb56-9"></a>  peripherals_spi_dma_to_txfifo(SPI_DMA_TX_CHANNEL, write_data, <span class="kw">sizeof</span>(write_data));</span>
+<span id="cb56-10"><a href="spi使用说明.html#cb56-10"></a></span>
+<span id="cb56-11"><a href="spi使用说明.html#cb56-11"></a>}</span></code></pre></div>
+</div>
+<div id="spi-中断-5" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.4.2.7</span> SPI 中断<a href="spi使用说明.html#spi-中断-5" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb57"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb57-1"><a href="spi使用说明.html#cb57-1"></a><span class="co">// SPI ENDINT中断触发标志传输结束，清除中断状态</span></span>
+<span id="cb57-2"><a href="spi使用说明.html#cb57-2"></a><span class="dt">static</span> <span class="dt">uint32_t</span> peripherals_spi_isr(<span class="dt">void</span> *user_data)</span>
+<span id="cb57-3"><a href="spi使用说明.html#cb57-3"></a>{</span>
+<span id="cb57-4"><a href="spi使用说明.html#cb57-4"></a>  <span class="dt">uint32_t</span> stat = apSSP_GetIntRawStatus(APB_SSP1);</span>
+<span id="cb57-5"><a href="spi使用说明.html#cb57-5"></a>  </span>
+<span id="cb57-6"><a href="spi使用说明.html#cb57-6"></a>  <span class="cf">if</span>(stat &amp; (<span class="dv">1</span> &lt;&lt; bsSPI_INTREN_ENDINTEN))</span>
+<span id="cb57-7"><a href="spi使用说明.html#cb57-7"></a>  {</span>
+<span id="cb57-8"><a href="spi使用说明.html#cb57-8"></a>    <span class="co">// 根据情况决定是否需要准备下一次的接收和发射</span></span>
+<span id="cb57-9"><a href="spi使用说明.html#cb57-9"></a>    peripherals_spi_read_data();</span>
+<span id="cb57-10"><a href="spi使用说明.html#cb57-10"></a>    peripherals_spi_push_data();</span>
+<span id="cb57-11"><a href="spi使用说明.html#cb57-11"></a>    apSSP_ClearIntStatus(APB_SSP1, <span class="dv">1</span> &lt;&lt; bsSPI_INTREN_ENDINTEN);</span>
+<span id="cb57-12"><a href="spi使用说明.html#cb57-12"></a>  }  </span>
+<span id="cb57-13"><a href="spi使用说明.html#cb57-13"></a>}</span></code></pre></div>
+</div>
+<div id="使用流程-7" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.4.2.8</span> 使用流程<a href="spi使用说明.html#使用流程-7" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<ul>
+<li>设置GPIO，setup_peripherals_spi_pin()</li>
+<li>初始化SPI，setup_peripherals_spi_module()</li>
+<li>初始化DMA，setup_peripherals_dma_module()</li>
+<li>设置接收DMA，peripherals_spi_read_data();</li>
+<li>设置发射DMA，peripherals_spi_push_data();</li>
+<li>观察SPI中断，中断触发代表当前接收结束</li>
+</ul>
+<hr />
+
+</div>
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="spi功能概述.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ch-sysctrl.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["pg_ing916.pdf", "pg_ing916.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

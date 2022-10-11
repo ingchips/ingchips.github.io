@@ -160,7 +160,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.1.3" data-path="ch-pwm.html"><a href="ch-pwm.html#updown_without_died_zone"><i class="fa fa-check"></i><b>5.1.3</b> UPDOWN_WITHOUT_DIED_ZONE</a></li>
 <li class="chapter" data-level="5.1.4" data-path="ch-pwm.html"><a href="ch-pwm.html#updown_without_died_zone-1"><i class="fa fa-check"></i><b>5.1.4</b> UPDOWN_WITHOUT_DIED_ZONE</a></li>
 <li class="chapter" data-level="5.1.5" data-path="ch-pwm.html"><a href="ch-pwm.html#single_without_died_zone"><i class="fa fa-check"></i><b>5.1.5</b> SINGLE_WITHOUT_DIED_ZONE</a></li>
-<li class="chapter" data-level="5.1.6" data-path="ch-pwm.html"><a href="ch-pwm.html#输出控制"><i class="fa fa-check"></i><b>5.1.6</b> 输出控制</a></li>
+<li class="chapter" data-level="5.1.6" data-path="ch-pwm.html"><a href="ch-pwm.html#dma-模式"><i class="fa fa-check"></i><b>5.1.6</b> DMA 模式</a></li>
+<li class="chapter" data-level="5.1.7" data-path="ch-pwm.html"><a href="ch-pwm.html#输出控制"><i class="fa fa-check"></i><b>5.1.7</b> 输出控制</a></li>
 </ul></li>
 <li class="chapter" data-level="5.2" data-path="ch-pwm.html"><a href="ch-pwm.html#pcap"><i class="fa fa-check"></i><b>5.2</b> PCAP</a></li>
 <li class="chapter" data-level="5.3" data-path="ch-pwm.html"><a href="ch-pwm.html#pwm-使用说明"><i class="fa fa-check"></i><b>5.3</b> PWM 使用说明</a><ul>
@@ -169,6 +170,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.3.3" data-path="ch-pwm.html"><a href="ch-pwm.html#配置门限"><i class="fa fa-check"></i><b>5.3.3</b> 配置门限</a></li>
 <li class="chapter" data-level="5.3.4" data-path="ch-pwm.html"><a href="ch-pwm.html#输出控制-1"><i class="fa fa-check"></i><b>5.3.4</b> 输出控制</a></li>
 <li class="chapter" data-level="5.3.5" data-path="ch-pwm.html"><a href="ch-pwm.html#综合示例"><i class="fa fa-check"></i><b>5.3.5</b> 综合示例</a></li>
+<li class="chapter" data-level="5.3.6" data-path="ch-pwm.html"><a href="ch-pwm.html#使用-dma-实时更新配置"><i class="fa fa-check"></i><b>5.3.6</b> 使用 DMA 实时更新配置</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="spi功能概述.html"><a href="spi功能概述.html"><i class="fa fa-check"></i><b>6</b> SPI功能概述</a></li>
@@ -247,7 +249,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>需要用于输出信号时：配置为输出</li>
 <li>需要用于读取信号时：配置为输入</li>
 <li>需要用于生产中断请求时：配置为输入</li>
-<li>需要三态时：配置为三态</li>
+<li>需要高阻态时：配置为高阻态</li>
 </ul>
 <p>使用 <code>GIO_SetDirection</code> 配置 GPIO 的方向。GPIO 支持四种方向：</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="ch-gpio.html#cb2-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
@@ -255,7 +257,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-3"><a href="ch-gpio.html#cb2-3"></a>    GIO_DIR_INPUT,  <span class="co">// 输入</span></span>
 <span id="cb2-4"><a href="ch-gpio.html#cb2-4"></a>    GIO_DIR_OUTPUT, <span class="co">// 输出</span></span>
 <span id="cb2-5"><a href="ch-gpio.html#cb2-5"></a>    GIO_DIR_BOTH,   <span class="co">// 同时支持输入、输出</span></span>
-<span id="cb2-6"><a href="ch-gpio.html#cb2-6"></a>    GIO_DIR_NONE    <span class="co">// 三态</span></span>
+<span id="cb2-6"><a href="ch-gpio.html#cb2-6"></a>    GIO_DIR_NONE    <span class="co">// 高阻态</span></span>
 <span id="cb2-7"><a href="ch-gpio.html#cb2-7"></a>} GIO_Direction_t;</span></code></pre></div>
 <div class="rmdcaution">
 <p>

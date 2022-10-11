@@ -160,7 +160,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.1.3" data-path="ch-pwm.html"><a href="ch-pwm.html#updown_without_died_zone"><i class="fa fa-check"></i><b>5.1.3</b> UPDOWN_WITHOUT_DIED_ZONE</a></li>
 <li class="chapter" data-level="5.1.4" data-path="ch-pwm.html"><a href="ch-pwm.html#updown_without_died_zone-1"><i class="fa fa-check"></i><b>5.1.4</b> UPDOWN_WITHOUT_DIED_ZONE</a></li>
 <li class="chapter" data-level="5.1.5" data-path="ch-pwm.html"><a href="ch-pwm.html#single_without_died_zone"><i class="fa fa-check"></i><b>5.1.5</b> SINGLE_WITHOUT_DIED_ZONE</a></li>
-<li class="chapter" data-level="5.1.6" data-path="ch-pwm.html"><a href="ch-pwm.html#输出控制"><i class="fa fa-check"></i><b>5.1.6</b> 输出控制</a></li>
+<li class="chapter" data-level="5.1.6" data-path="ch-pwm.html"><a href="ch-pwm.html#dma-模式"><i class="fa fa-check"></i><b>5.1.6</b> DMA 模式</a></li>
+<li class="chapter" data-level="5.1.7" data-path="ch-pwm.html"><a href="ch-pwm.html#输出控制"><i class="fa fa-check"></i><b>5.1.7</b> 输出控制</a></li>
 </ul></li>
 <li class="chapter" data-level="5.2" data-path="ch-pwm.html"><a href="ch-pwm.html#pcap"><i class="fa fa-check"></i><b>5.2</b> PCAP</a></li>
 <li class="chapter" data-level="5.3" data-path="ch-pwm.html"><a href="ch-pwm.html#pwm-使用说明"><i class="fa fa-check"></i><b>5.3</b> PWM 使用说明</a><ul>
@@ -169,6 +170,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.3.3" data-path="ch-pwm.html"><a href="ch-pwm.html#配置门限"><i class="fa fa-check"></i><b>5.3.3</b> 配置门限</a></li>
 <li class="chapter" data-level="5.3.4" data-path="ch-pwm.html"><a href="ch-pwm.html#输出控制-1"><i class="fa fa-check"></i><b>5.3.4</b> 输出控制</a></li>
 <li class="chapter" data-level="5.3.5" data-path="ch-pwm.html"><a href="ch-pwm.html#综合示例"><i class="fa fa-check"></i><b>5.3.5</b> 综合示例</a></li>
+<li class="chapter" data-level="5.3.6" data-path="ch-pwm.html"><a href="ch-pwm.html#使用-dma-实时更新配置"><i class="fa fa-check"></i><b>5.3.6</b> 使用 DMA 实时更新配置</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="spi功能概述.html"><a href="spi功能概述.html"><i class="fa fa-check"></i><b>6</b> SPI功能概述</a></li>
@@ -304,8 +306,12 @@ B = (DZONE_TH &lt;= cnt) &amp;&amp; (cnt &lt; HIGH_TH);
 </p>
 </div>
 </div>
+<div id="dma-模式" class="section level3 hasAnchor">
+<h3><span class="header-section-number">5.1.6</span> DMA 模式<a href="ch-pwm.html#dma-模式" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>此模式支持通过 DMA 实时更新门限。</p>
+</div>
 <div id="输出控制" class="section level3 hasAnchor">
-<h3><span class="header-section-number">5.1.6</span> 输出控制<a href="ch-pwm.html#输出控制" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<h3><span class="header-section-number">5.1.7</span> 输出控制<a href="ch-pwm.html#输出控制" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>对于每个通道的每一路输出，另有 3 个参数控制最终的两路输出：掩膜、停机输出值、反相。
 最终的输出以伪代码描述如下：</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb20-1"><a href="ch-pwm.html#cb20-1"></a>output_control(v)</span>
@@ -361,6 +367,7 @@ B = (DZONE_TH &lt;= cnt) &amp;&amp; (cnt &lt; HIGH_TH);
 <span id="cb25-3"><a href="ch-pwm.html#cb25-3"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> channel_index,</span>
 <span id="cb25-4"><a href="ch-pwm.html#cb25-4"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> multi_duty_index, <span class="co">// 对于 ING916XX，此参数无效</span></span>
 <span id="cb25-5"><a href="ch-pwm.html#cb25-5"></a>    <span class="dt">const</span> <span class="dt">uint32_t</span> threshold);</span></code></pre></div>
+<p>各门限值最大支持 0xFFFFF，共 20 个比特。</p>
 </div>
 <div id="输出控制-1" class="section level3 hasAnchor">
 <h3><span class="header-section-number">5.3.4</span> 输出控制<a href="ch-pwm.html#输出控制-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -405,6 +412,17 @@ B = (DZONE_TH &lt;= cnt) &amp;&amp; (cnt &lt; HIGH_TH);
 <span id="cb29-16"><a href="ch-pwm.html#cb29-16"></a>    PWM_Enable(channel_index, <span class="dv">1</span>);</span>
 <span id="cb29-17"><a href="ch-pwm.html#cb29-17"></a>    PWM_HaltCtrlEnable(channel_index, <span class="dv">0</span>);</span>
 <span id="cb29-18"><a href="ch-pwm.html#cb29-18"></a>}</span></code></pre></div>
+</div>
+<div id="使用-dma-实时更新配置" class="section level3 hasAnchor">
+<h3><span class="header-section-number">5.3.6</span> 使用 DMA 实时更新配置<a href="ch-pwm.html#使用-dma-实时更新配置" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 DMA 能够实时更新配置：每当 PWM 计数器计完一圈回零时，自动使用来自 DMA 的数据更新配置。
+这些数据以 3 个 <code>uint32_t</code> 为一组，依次为：PERA_TH、HIGH_TH、DZONE_TH。</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb30-1"><a href="ch-pwm.html#cb30-1"></a><span class="dt">void</span> PWM_DmaEnable(</span>
+<span id="cb30-2"><a href="ch-pwm.html#cb30-2"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> channel_index,        <span class="co">// 通道号</span></span>
+<span id="cb30-3"><a href="ch-pwm.html#cb30-3"></a>    <span class="dt">uint8_t</span> trig_cfg,                   <span class="co">// DMA 请求触发门限</span></span>
+<span id="cb30-4"><a href="ch-pwm.html#cb30-4"></a>    <span class="dt">uint8_t</span> enable                      <span class="co">// 使能</span></span>
+<span id="cb30-5"><a href="ch-pwm.html#cb30-5"></a>    );</span></code></pre></div>
+<p>当 PWM 内部 FIFO 数据少于 <code>trig_cfg</code>，PWM 请求 DMA 传输数据。</p>
 
 
 

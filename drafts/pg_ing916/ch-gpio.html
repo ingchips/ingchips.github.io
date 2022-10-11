@@ -149,7 +149,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.2.3" data-path="ch-gpio.html"><a href="ch-gpio.html#设置输出"><i class="fa fa-check"></i><b>3.2.3</b> 设置输出</a></li>
 <li class="chapter" data-level="3.2.4" data-path="ch-gpio.html"><a href="ch-gpio.html#配置中断请求"><i class="fa fa-check"></i><b>3.2.4</b> 配置中断请求</a></li>
 <li class="chapter" data-level="3.2.5" data-path="ch-gpio.html"><a href="ch-gpio.html#处理中断状态"><i class="fa fa-check"></i><b>3.2.5</b> 处理中断状态</a></li>
-<li class="chapter" data-level="3.2.6" data-path="ch-gpio.html"><a href="ch-gpio.html#输入防抖"><i class="fa fa-check"></i><b>3.2.6</b> 输入防抖</a></li>
+<li class="chapter" data-level="3.2.6" data-path="ch-gpio.html"><a href="ch-gpio.html#输入去抖"><i class="fa fa-check"></i><b>3.2.6</b> 输入去抖</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html"><i class="fa fa-check"></i><b>4</b> 管脚管理（PINCTRL）</a></li>
@@ -206,7 +206,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>每个 GPIO 都可单独配置为输入或输出</li>
 <li>每个 GPIO 都可作为中断请求，中断触发方式支持边沿触发（上升、下降单沿触发，或者双沿触发）
 和电平触发（高电平或低电平）</li>
-<li>硬件防抖</li>
+<li>硬件去抖</li>
 </ul>
 <p>在硬件上存在 <strong>两个</strong> GPIO 模块，每个模块包含 18 个 GPIO，相应地定义了两个 <code>SYSCTRL_Item</code>：</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="ch-gpio.html#cb1-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
@@ -303,22 +303,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>GPIO 产生中断后，需要消除中断状态方可再次触发。用 <code>GIO_ClearIntStatus</code> 消除某个 GPIO
 上中断状态，用 <code>GIO_ClearAllIntStatus</code> 一次性清除所有 GPIO 上可能存在的中断触发状态。</p>
 </div>
-<div id="输入防抖" class="section level3 hasAnchor">
-<h3><span class="header-section-number">3.2.6</span> 输入防抖<a href="ch-gpio.html#输入防抖" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>GIO_DebounceCtrl</code> 配置输入防抖参数，每个 GPIO 硬件模块使用单独的参数：</p>
+<div id="输入去抖" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.2.6</span> 输入去抖<a href="ch-gpio.html#输入去抖" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>GIO_DebounceCtrl</code> 配置输入去抖参数，每个 GPIO 硬件模块使用单独的参数：</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb12-1"><a href="ch-gpio.html#cb12-1"></a><span class="dt">void</span> GIO_DebounceCtrl(</span>
 <span id="cb12-2"><a href="ch-gpio.html#cb12-2"></a>  <span class="dt">uint8_t</span> group_mask,     <span class="co">// 比特 0 为 1 时配置模块 0</span></span>
 <span id="cb12-3"><a href="ch-gpio.html#cb12-3"></a>                          <span class="co">// 比特 1 为 1 时配置模块 1</span></span>
 <span id="cb12-4"><a href="ch-gpio.html#cb12-4"></a>  <span class="dt">uint8_t</span> clk_pre_scale,</span>
 <span id="cb12-5"><a href="ch-gpio.html#cb12-5"></a>  GIO_DbClk_t clk         <span class="co">// 防抖时钟选择</span></span>
 <span id="cb12-6"><a href="ch-gpio.html#cb12-6"></a>  );</span></code></pre></div>
+<p>所谓去抖就是过滤掉长度小于 <code>(clk_pre_scale + 1)</code> 个防抖时钟周期的“毛刺”。</p>
 <p>防抖时钟共有 2 种：</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb13-1"><a href="ch-gpio.html#cb13-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
 <span id="cb13-2"><a href="ch-gpio.html#cb13-2"></a>{</span>
 <span id="cb13-3"><a href="ch-gpio.html#cb13-3"></a>    GIO_DB_CLK_32K,     <span class="co">// 使用 32k 时钟</span></span>
 <span id="cb13-4"><a href="ch-gpio.html#cb13-4"></a>    GIO_DB_CLK_PCLK,    <span class="co">// 使用快速 PCLK</span></span>
 <span id="cb13-5"><a href="ch-gpio.html#cb13-5"></a>} GIO_DbClk_t;</span></code></pre></div>
-<p>所谓防抖是指过滤掉长度小于 <code>(clk_pre_scale + 1)</code> 个防抖时钟周期的“毛刺”。</p>
+<p>快速 PCLK 的具体频率参考 <a href="ch-sysctrl.html#ch-sysctrl">SYSCTRL</a>。</p>
+<p>通过 <code>GIO_DebounceEn</code> 为单个 GPIO 使能去抖。例如要在 GPIO 0 上启用硬件去抖，忽略宽度小于
+<span class="math inline">\(5/32768 \approx 0.15 (ms)\)</span> 的“毛刺”：</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb14-1"><a href="ch-gpio.html#cb14-1"></a>GIO_DebounceCtrl(<span class="dv">1</span>, <span class="dv">4</span>, GIO_DB_CLK_32K);</span>
+<span id="cb14-2"><a href="ch-gpio.html#cb14-2"></a>GIO_DebounceEn(GIO_GPIO_0, <span class="dv">1</span>);</span></code></pre></div>
 
 
 

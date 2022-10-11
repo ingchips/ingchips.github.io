@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>能用多少 RAM ? - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="本文为你解答：到底有多少 RAM 可供 App 使用？如何才能获得这些 RAM？"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+
+      <div id="box">
+        <input id="in_search" type="search" name="search" placeholder="搜索：输入并回车">
+      </div>
+
+      <script>
+        let search_input = document.getElementById('in_search');
+        if (search_input) {
+          search_input.addEventListener("keypress", function(event) {
+          if (event.key === "Enter") {
+            window.open('https://www.bing.com/search?q=' + encodeURIComponent(search_input.value) + '%20site%3A' + window.location.hostname);
+            event.preventDefault();
+            }
+          });
+        }
+      </script>
+
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item has-children">
+
+              
+<a class="" href="/docs/sdk/apps/#web-apps">
+  
+  Web 工具
+  
+</a>
+
+              
+
+                <ul class="submenu">
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/callgraph">
+  
+  Callgraph (调用图)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index_cn.html">
+  
+  ING918/ING916 FOTA (空中升级)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/powerprofiler/">
+  
+  Online Power Profiler
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/air_trace/">
+  
+  Trace Logger
+  
+</a>
+
+  </li>
+  
+</ul>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <article class="post post-full">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <header class="post-header has-gradient outer">
+      
+      
+      <div class="inner-sm">
+        <div class="post-meta">
+          <time class="published" datetime="2022-10-11 00:00">October 11, 2022</time>
+        </div>
+        <h1 class="post-title">能用多少 RAM ?</h1>
+        
+        
+      </div>
+    </header>
+    <div class="inner-md outer">
+      <div class="post-content">
+        <h2 id="到底有多少-ram-可供-app-使用">到底有多少 RAM 可供 App 使用？</h2>
+
+<p>需要具体分析。如果必须知道一个具体的数字，可参考下图：</p>
+
+<p><img src="../img/ram_scheme.png" alt="" /></p>
+
+<p>上图说明可用的 RAM 分为 3 大块：</p>
+
+<ol>
+  <li>可自由使用的空闲 RAM</li>
+  <li>RTOS 的堆</li>
+  <li>协议栈链路层的堆</li>
+</ol>
+
+<p>下列因素都会影响到可用 RAM 的大小：</p>
+
+<ul>
+  <li>软件包类型</li>
+  <li>连接数目</li>
+  <li>协议栈的运行情况</li>
+  <li>……</li>
+</ul>
+
+<h2 id="如何才能获得这些-ram">如何才能获得这些 RAM？</h2>
+
+<p>同样需要具体分析。</p>
+
+<h3 id="1-可自由使用的空闲-ram">1. 可自由使用的空闲 RAM</h3>
+
+<p>直接使用。如果程序所需要的 RAM 过多，链接时会失败。</p>
+
+<h3 id="2-rtos-的堆">2. RTOS 的堆</h3>
+
+<p>对于内置 FreeRTOS 的软件包，使用 FreeRTOS 的堆内存 API 分配和释放内存：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pvPortMalloc</span>
+<span class="n">vPortFree</span>
+</code></pre></div></div>
+
+<p>这两个 API 的原型及用法与 <code class="highlighter-rouge">malloc/free</code> 类似。</p>
+
+<p>对于 NoOS 的软件包，RTOS 及堆由开发者选择、配置。下表汇总了几种常见 RTOS 的堆内存 API。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>RTOS</th>
+      <th>分配</th>
+      <th>释放</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>FreeRTOS</td>
+      <td><code class="highlighter-rouge">pvPortMalloc</code></td>
+      <td><code class="highlighter-rouge">vPortFree</code></td>
+    </tr>
+    <tr>
+      <td>RT-Thread</td>
+      <td><code class="highlighter-rouge">rt_malloc</code></td>
+      <td><code class="highlighter-rouge">rt_free</code></td>
+    </tr>
+    <tr>
+      <td>ThreadX</td>
+      <td>如 <code class="highlighter-rouge">tx_byte_allocate</code> 等</td>
+      <td>如 <code class="highlighter-rouge">tx_byte_release</code> 等</td>
+    </tr>
+    <tr>
+      <td>LiteOS</td>
+      <td><code class="highlighter-rouge">LOS_MemAlloc</code></td>
+      <td><code class="highlighter-rouge">LOS_MemFree</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="3-协议栈链路层的堆">3. 协议栈链路层的堆</h3>
+
+<p>使用以下 API 分配和释放内存：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="o">*</span><span class="nf">ll_malloc</span><span class="p">(</span><span class="kt">uint16_t</span> <span class="n">size</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">ll_free</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">buffer</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>这两个 API 的原型及用法与 <code class="highlighter-rouge">malloc/free</code> 类似。如果内存不足，<code class="highlighter-rouge">ll_malloc</code> 将返回 <code class="highlighter-rouge">NULL</code>。</p>
+
+<h2 id="其它提示">其它提示</h2>
+
+<h3 id="1-关于-calloc">1. 关于 calloc</h3>
+
+<p>小心栈溢出。</p>
+
+<h3 id="2-关于-mallocfree">2. 关于 malloc/free</h3>
+
+<p>对于 C 标准库函数 <code class="highlighter-rouge">malloc/free</code> 等所使用的堆，Wizard 创建新项目时提供了两种实现方式：</p>
+
+<ul>
+  <li>
+    <p>使用独立的堆</p>
+
+    <p>选择 “Standard malloc/free”，并配置空间大小，默认值为 0:</p>
+
+    <p><img src="../img/wizard_libc_heap.png" alt="" /></p>
+
+    <p>这个堆占用可自由使用的空闲 RAM。</p>
+  </li>
+  <li>
+    <p>重写 <code class="highlighter-rouge">malloc/free</code></p>
+
+    <p>选择 “Overrided malloc/free”:</p>
+
+    <p><img src="../img/wizard_override_malloc.png" alt="" /></p>
+
+    <p>这种方式下，利用 <em>Tools/malloc_override.c</em> 模块重写 <code class="highlighter-rouge">malloc/free</code>。
+  这个模块内又可以通过 <code class="highlighter-rouge">HEAP_OVERRIDE_TYPE</code> 选择不同的堆 API 作为支撑，比如：</p>
+
+    <ul>
+      <li>使用 FreeRTOS 的 <code class="highlighter-rouge">pvPortMalloc/vPortFree</code></li>
+      <li>使用协议栈链路层的 <code class="highlighter-rouge">ll_malloc/ll_free</code></li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="3-关于-newdelete">3. 关于 new/delete</h3>
+
+<p>C++ 标准运算符 <code class="highlighter-rouge">new</code> 的情况比较复杂。对于 Keil，无论是否使用 MicroLIB，当 <code class="highlighter-rouge">new</code> 需要分配内存时，
+也会调用 <code class="highlighter-rouge">malloc</code>，关于 <code class="highlighter-rouge">malloc/free</code> 的说明同样适用；对于其它编译器，请查阅相关文档。</p>
+
+      </div><!-- .post-content -->
+    </div><!-- .inner-md -->
+  </article><!-- .post -->
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2021-2022. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

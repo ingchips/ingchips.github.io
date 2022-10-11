@@ -153,7 +153,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html"><i class="fa fa-check"></i><b>4</b> 管脚管理（PINCTRL）</a></li>
-<li class="chapter" data-level="5" data-path="ch-pwm.html"><a href="ch-pwm.html"><i class="fa fa-check"></i><b>5</b> 脉宽调制发生器（PWM）</a></li>
+<li class="chapter" data-level="5" data-path="ch-pwm.html"><a href="ch-pwm.html"><i class="fa fa-check"></i><b>5</b> 增强型脉宽调制发生器（PWM）</a><ul>
+<li class="chapter" data-level="5.1" data-path="ch-pwm.html"><a href="ch-pwm.html#pwm-工作模式"><i class="fa fa-check"></i><b>5.1</b> PWM 工作模式</a><ul>
+<li class="chapter" data-level="5.1.1" data-path="ch-pwm.html"><a href="ch-pwm.html#最简单的模式up_without_died_zone"><i class="fa fa-check"></i><b>5.1.1</b> 最简单的模式：UP_WITHOUT_DIED_ZONE</a></li>
+<li class="chapter" data-level="5.1.2" data-path="ch-pwm.html"><a href="ch-pwm.html#up_with_died_zone"><i class="fa fa-check"></i><b>5.1.2</b> UP_WITH_DIED_ZONE</a></li>
+<li class="chapter" data-level="5.1.3" data-path="ch-pwm.html"><a href="ch-pwm.html#updown_without_died_zone"><i class="fa fa-check"></i><b>5.1.3</b> UPDOWN_WITHOUT_DIED_ZONE</a></li>
+<li class="chapter" data-level="5.1.4" data-path="ch-pwm.html"><a href="ch-pwm.html#updown_without_died_zone-1"><i class="fa fa-check"></i><b>5.1.4</b> UPDOWN_WITHOUT_DIED_ZONE</a></li>
+<li class="chapter" data-level="5.1.5" data-path="ch-pwm.html"><a href="ch-pwm.html#single_without_died_zone"><i class="fa fa-check"></i><b>5.1.5</b> SINGLE_WITHOUT_DIED_ZONE</a></li>
+<li class="chapter" data-level="5.1.6" data-path="ch-pwm.html"><a href="ch-pwm.html#输出控制"><i class="fa fa-check"></i><b>5.1.6</b> 输出控制</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="ch-pwm.html"><a href="ch-pwm.html#pcap"><i class="fa fa-check"></i><b>5.2</b> PCAP</a></li>
+<li class="chapter" data-level="5.3" data-path="ch-pwm.html"><a href="ch-pwm.html#pwm-使用说明"><i class="fa fa-check"></i><b>5.3</b> PWM 使用说明</a><ul>
+<li class="chapter" data-level="5.3.1" data-path="ch-pwm.html"><a href="ch-pwm.html#启动与停止"><i class="fa fa-check"></i><b>5.3.1</b> 启动与停止</a></li>
+<li class="chapter" data-level="5.3.2" data-path="ch-pwm.html"><a href="ch-pwm.html#配置工作模式"><i class="fa fa-check"></i><b>5.3.2</b> 配置工作模式</a></li>
+<li class="chapter" data-level="5.3.3" data-path="ch-pwm.html"><a href="ch-pwm.html#配置门限"><i class="fa fa-check"></i><b>5.3.3</b> 配置门限</a></li>
+<li class="chapter" data-level="5.3.4" data-path="ch-pwm.html"><a href="ch-pwm.html#输出控制-1"><i class="fa fa-check"></i><b>5.3.4</b> 输出控制</a></li>
+<li class="chapter" data-level="5.3.5" data-path="ch-pwm.html"><a href="ch-pwm.html#综合示例"><i class="fa fa-check"></i><b>5.3.5</b> 综合示例</a></li>
+</ul></li>
+</ul></li>
 <li class="chapter" data-level="6" data-path="spi功能概述.html"><a href="spi功能概述.html"><i class="fa fa-check"></i><b>6</b> SPI功能概述</a></li>
 <li class="chapter" data-level="7" data-path="spi使用说明.html"><a href="spi使用说明.html"><i class="fa fa-check"></i><b>7</b> SPI使用说明</a><ul>
 <li class="chapter" data-level="7.1" data-path="spi使用说明.html"><a href="spi使用说明.html#场景1只读只写不带dma"><i class="fa fa-check"></i><b>7.1</b> 场景1：只读只写不带DMA</a><ul>
@@ -198,10 +215,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1><span class="header-section-number">2</span> 概览<a href="ch-overview.html#ch-overview" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>ING916XX 系列芯片支持蓝牙 5.3 规范，内置高性能 32bit RISC MCU（支持 DSP 和 FPU）、Flash、低功耗 PMU，
 以及丰富的外设、高性能低功耗 BLE RF 收发机。BLE 发射功率。</p>
-<p>本文介绍 SoC 外设及其开发方法。每个章节介绍一种外设，各种外设与芯片数据手册之外设一一对应，考虑到 API 的兼容性，存在以下另外：</p>
+<p>本文介绍 SoC 外设及其开发方法。每个章节介绍一种外设，各种外设与芯片数据手册之外设一一对应，
+基于 API 的兼容性、避免误解等因素，存在以下例外：</p>
 <ul>
 <li>PINCTRL 对应于数据手册之 IOMUX</li>
-<li>SYSCTRL 管理各种 SoC 功能，组合了几种相关的硬件模块</li>
+<li>PCAP 对应于数据手册之 PCM</li>
+<li>SYSCTRL 是一个“虚拟”外设，负责管理各种 SoC 功能，组合了几种相关的硬件模块</li>
 </ul>
 <p>SDK 外设驱动的源代码开放，其中包含很多常数，而且几乎没有注释 —— 这是有意为之，开发者只需要关注头文件，而不要尝试修改源代码。</p>
 <div id="缩略语及术语" class="section level2 hasAnchor">
@@ -218,6 +237,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <tr class="odd">
 <td align="center">GPIO</td>
 <td align="left">通用输入输出（General-Purpose Input/Output）</td>
+</tr>
+<tr class="even">
+<td align="center">PCAP</td>
+<td align="left">脉冲捕捉（Pulse CAPture）</td>
+</tr>
+<tr class="odd">
+<td align="center">PWM</td>
+<td align="left">脉宽调制信号（Pulse Width Modulation）</td>
 </tr>
 <tr class="even">
 <td align="center">UART</td>

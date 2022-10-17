@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>5 通用输入输出（GPIO） | ING916XX 系列芯片外设开发者手册</title>
+  <title>4 eFuses(electronic fuses) | ING916XX 系列芯片外设开发者手册</title>
   <meta name="description" content="ING916XX 系列芯片开发者手册." />
   <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="5 通用输入输出（GPIO） | ING916XX 系列芯片外设开发者手册" />
+  <meta property="og:title" content="4 eFuses(electronic fuses) | ING916XX 系列芯片外设开发者手册" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="ING916XX 系列芯片开发者手册." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="5 通用输入输出（GPIO） | ING916XX 系列芯片外设开发者手册" />
+  <meta name="twitter:title" content="4 eFuses(electronic fuses) | ING916XX 系列芯片外设开发者手册" />
   
   <meta name="twitter:description" content="ING916XX 系列芯片开发者手册." />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="efuseselectronic-fuses.html"/>
-<link rel="next" href="i2c功能概述.html"/>
+<link rel="prev" href="dma简介.html"/>
+<link rel="next" href="ch-gpio.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -282,136 +282,73 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="ch-gpio" class="section level1 hasAnchor">
-<h1><span class="header-section-number">5</span> 通用输入输出（GPIO）<a href="ch-gpio.html#ch-gpio" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div id="功能概述-1" class="section level2 hasAnchor">
-<h2><span class="header-section-number">5.1</span> 功能概述<a href="ch-gpio.html#功能概述-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>GPIO 模块常用于驱动 LED 或者其它指示器，控制片外设备，感知数字信号输入，检测信号边沿，
-或者从低功耗状态唤醒系统。ING916XX 系列芯片内部支持最多 36 个 GPIO，通过 <a href="ch-pinctrl.html#ch-pinctrl">PINCTRL</a>
-可将 GPIO <span class="math inline">\(n\)</span> 引出到芯片 IO 管脚 <span class="math inline">\(n\)</span>。</p>
-<p>特性：</p>
-<ul>
-<li>每个 GPIO 都可单独配置为输入或输出</li>
-<li>每个 GPIO 都可作为中断请求，中断触发方式支持边沿触发（上升、下降单沿触发，或者双沿触发）
-和电平触发（高电平或低电平）</li>
-<li>硬件去抖</li>
-</ul>
-<p>在硬件上存在 <strong>两个</strong> GPIO 模块，每个模块包含 18 个 GPIO，相应地定义了两个 <code>SYSCTRL_Item</code>：</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb7-1"><a href="ch-gpio.html#cb7-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb7-2"><a href="ch-gpio.html#cb7-2"></a>{</span>
-<span id="cb7-3"><a href="ch-gpio.html#cb7-3"></a>    SYSCTRL_ITEM_APB_GPIO0     ,</span>
-<span id="cb7-4"><a href="ch-gpio.html#cb7-4"></a>    SYSCTRL_ITEM_APB_GPIO1     ,</span>
-<span id="cb7-5"><a href="ch-gpio.html#cb7-5"></a>    <span class="co">// ...</span></span>
-<span id="cb7-6"><a href="ch-gpio.html#cb7-6"></a>} SYSCTRL_Item;</span></code></pre></div>
-<div class="rmdcaution">
-<p>
-注意按照所使用的 GPIO 管脚打开对应的 GPIO 模块。
-</p>
+<div id="efuseselectronic-fuses" class="section level1 hasAnchor">
+<h1><span class="header-section-number">4</span> eFuses(electronic fuses)<a href="efuseselectronic-fuses.html#efuseselectronic-fuses" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="功能概述" class="section level2 hasAnchor">
+<h2><span class="header-section-number">4.1</span> 功能概述<a href="efuseselectronic-fuses.html#功能概述" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Efuse是一种片内一次性可编程存储器，可以在断电后保持数据，并且编程后无法被再次修改。 ING916系列提供128bit EFUSE，支持按bit编程或者按Word编程，bit的默认值是0，通过编程可以写成1</p>
 </div>
+<div id="使用说明" class="section level2 hasAnchor">
+<h2><span class="header-section-number">4.2</span> 使用说明<a href="efuseselectronic-fuses.html#使用说明" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="模块初始化" class="section level3 hasAnchor">
+<h3><span class="header-section-number">4.2.1</span> 模块初始化<a href="efuseselectronic-fuses.html#模块初始化" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb4-1"><a href="efuseselectronic-fuses.html#cb4-1"></a><span class="dt">void</span> setup_peripherals_efuse_module(<span class="dt">void</span>)</span>
+<span id="cb4-2"><a href="efuseselectronic-fuses.html#cb4-2"></a>{</span>
+<span id="cb4-3"><a href="efuseselectronic-fuses.html#cb4-3"></a>    <span class="co">// 打开clock，并且reset模块</span></span>
+<span id="cb4-4"><a href="efuseselectronic-fuses.html#cb4-4"></a>    SYSCTRL_ClearClkGateMulti( (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_EFUSE));</span>
+<span id="cb4-5"><a href="efuseselectronic-fuses.html#cb4-5"></a>    SYSCTRL_ResetBlock(SYSCTRL_ITEM_APB_EFUSE);</span>
+<span id="cb4-6"><a href="efuseselectronic-fuses.html#cb4-6"></a>    SYSCTRL_ReleaseBlock(SYSCTRL_ITEM_APB_EFUSE);</span>
+<span id="cb4-7"><a href="efuseselectronic-fuses.html#cb4-7"></a>}</span></code></pre></div>
 </div>
-<div id="使用说明-1" class="section level2 hasAnchor">
-<h2><span class="header-section-number">5.2</span> 使用说明<a href="ch-gpio.html#使用说明-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="设置-io-方向" class="section level3 hasAnchor">
-<h3><span class="header-section-number">5.2.1</span> 设置 IO 方向<a href="ch-gpio.html#设置-io-方向" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>在使用 GPIO 之前先按需要配置 IO 方向：</p>
-<ul>
-<li>需要用于输出信号时：配置为输出</li>
-<li>需要用于读取信号时：配置为输入</li>
-<li>需要用于生产中断请求时：配置为输入</li>
-<li>需要高阻态时：配置为高阻态</li>
-</ul>
-<p>使用 <code>GIO_SetDirection</code> 配置 GPIO 的方向。GPIO 支持四种方向：</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb8-1"><a href="ch-gpio.html#cb8-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb8-2"><a href="ch-gpio.html#cb8-2"></a>{</span>
-<span id="cb8-3"><a href="ch-gpio.html#cb8-3"></a>    GIO_DIR_INPUT,  <span class="co">// 输入</span></span>
-<span id="cb8-4"><a href="ch-gpio.html#cb8-4"></a>    GIO_DIR_OUTPUT, <span class="co">// 输出</span></span>
-<span id="cb8-5"><a href="ch-gpio.html#cb8-5"></a>    GIO_DIR_BOTH,   <span class="co">// 同时支持输入、输出</span></span>
-<span id="cb8-6"><a href="ch-gpio.html#cb8-6"></a>    GIO_DIR_NONE    <span class="co">// 高阻态</span></span>
-<span id="cb8-7"><a href="ch-gpio.html#cb8-7"></a>} GIO_Direction_t;</span></code></pre></div>
-<div class="rmdcaution">
-<p>
-如无必要，不要使用 <code>GIO_DIR_BOTH</code>。
-</p>
+<div id="按bit编程" class="section level3 hasAnchor">
+<h3><span class="header-section-number">4.2.2</span> 按bit编程<a href="efuseselectronic-fuses.html#按bit编程" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="efuseselectronic-fuses.html#cb5-1"></a><span class="dt">void</span> peripherals_efuse_write_bit(<span class="dt">void</span>)</span>
+<span id="cb5-2"><a href="efuseselectronic-fuses.html#cb5-2"></a>{</span>
+<span id="cb5-3"><a href="efuseselectronic-fuses.html#cb5-3"></a>    <span class="co">// 提供需要编程的bit位置,0到127之间</span></span>
+<span id="cb5-4"><a href="efuseselectronic-fuses.html#cb5-4"></a>    EFUSE_UnLock(APB_EFUSE, EFUSE_UNLOCK_FLAG);</span>
+<span id="cb5-5"><a href="efuseselectronic-fuses.html#cb5-5"></a>    EFUSE_WriteEfuseDataBitToOne(APB_EFUSE, pos);<span class="co">//pos is bit position from 0 to 127</span></span>
+<span id="cb5-6"><a href="efuseselectronic-fuses.html#cb5-6"></a>    </span>
+<span id="cb5-7"><a href="efuseselectronic-fuses.html#cb5-7"></a>    <span class="co">//写操作完成</span></span>
+<span id="cb5-8"><a href="efuseselectronic-fuses.html#cb5-8"></a>    <span class="co">//如果要读取，需要reset模块</span></span>
+<span id="cb5-9"><a href="efuseselectronic-fuses.html#cb5-9"></a>    SYSCTRL_ResetBlock(SYSCTRL_ITEM_APB_EFUSE);</span>
+<span id="cb5-10"><a href="efuseselectronic-fuses.html#cb5-10"></a>    SYSCTRL_ReleaseBlock(SYSCTRL_ITEM_APB_EFUSE);</span>
+<span id="cb5-11"><a href="efuseselectronic-fuses.html#cb5-11"></a>    </span>
+<span id="cb5-12"><a href="efuseselectronic-fuses.html#cb5-12"></a>    <span class="co">//设置读取flag</span></span>
+<span id="cb5-13"><a href="efuseselectronic-fuses.html#cb5-13"></a>    EFUSE_SetRdFlag(APB_EFUSE);</span>
+<span id="cb5-14"><a href="efuseselectronic-fuses.html#cb5-14"></a>    <span class="co">//等待数据读取标志</span></span>
+<span id="cb5-15"><a href="efuseselectronic-fuses.html#cb5-15"></a>    <span class="cf">while</span>(!EFUSE_GetDataValidFlag(APB_EFUSE));</span>
+<span id="cb5-16"><a href="efuseselectronic-fuses.html#cb5-16"></a>    <span class="co">//读取数据</span></span>
+<span id="cb5-17"><a href="efuseselectronic-fuses.html#cb5-17"></a>    platform_printf(<span class="st">&quot;word 0: 0x%x </span><span class="sc">\n</span><span class="st">&quot;</span>,EFUSE_GetEfuseData(APB_EFUSE, <span class="dv">0</span>));<span class="co">//bit 0  - 31</span></span>
+<span id="cb5-18"><a href="efuseselectronic-fuses.html#cb5-18"></a>    platform_printf(<span class="st">&quot;word 1: 0x%x </span><span class="sc">\n</span><span class="st">&quot;</span>,EFUSE_GetEfuseData(APB_EFUSE, <span class="dv">1</span>));<span class="co">//bit 32 - 63</span></span>
+<span id="cb5-19"><a href="efuseselectronic-fuses.html#cb5-19"></a>    platform_printf(<span class="st">&quot;word 2: 0x%x </span><span class="sc">\n</span><span class="st">&quot;</span>,EFUSE_GetEfuseData(APB_EFUSE, <span class="dv">2</span>));<span class="co">//bit 64 - 95</span></span>
+<span id="cb5-20"><a href="efuseselectronic-fuses.html#cb5-20"></a>    platform_printf(<span class="st">&quot;word 3: 0x%x </span><span class="sc">\n</span><span class="st">&quot;</span>,EFUSE_GetEfuseData(APB_EFUSE, <span class="dv">3</span>));<span class="co">//bit 96 - 127</span></span>
+<span id="cb5-21"><a href="efuseselectronic-fuses.html#cb5-21"></a>}</span></code></pre></div>
 </div>
-</div>
-<div id="读取输入" class="section level3 hasAnchor">
-<h3><span class="header-section-number">5.2.2</span> 读取输入<a href="ch-gpio.html#读取输入" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>GIO_ReadValue</code> 读取某个 GPIO 当前输入的电平信号，例如读取 GPIO 0 的输入：</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb9-1"><a href="ch-gpio.html#cb9-1"></a><span class="dt">uint8_t</span> value = GIO_ReadValue(GIO_GPIO_0);</span></code></pre></div>
-<p>使用 <code>GIO_ReadAll</code> 可以同时读取所有 GPIO 当前输入的电平信号。其返回值的第 <span class="math inline">\(n\)</span> 比特
-（第 0 比特为最低比特）对应 GPIO <span class="math inline">\(n\)</span> 的输入；如果 GPIO <span class="math inline">\(n\)</span> 当前不支持输入，那么第 <span class="math inline">\(n\)</span>
-比特为 0：</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb10-1"><a href="ch-gpio.html#cb10-1"></a><span class="dt">uint64_t</span> GIO_ReadAll(<span class="dt">void</span>);</span></code></pre></div>
-</div>
-<div id="设置输出" class="section level3 hasAnchor">
-<h3><span class="header-section-number">5.2.3</span> 设置输出<a href="ch-gpio.html#设置输出" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>GIO_WriteValue</code> 设置某个 GPIO 输出的电平信号，例如使 GPIO 0 输出高电平（1）：</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb11-1"><a href="ch-gpio.html#cb11-1"></a>GIO_WriteValue(GIO_GPIO_0, <span class="dv">1</span>);</span></code></pre></div>
-</div>
-<div id="配置中断请求" class="section level3 hasAnchor">
-<h3><span class="header-section-number">5.2.4</span> 配置中断请求<a href="ch-gpio.html#配置中断请求" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>GIO_ConfigIntSource</code> 配置 GPIO 生成中断请求。</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb12-1"><a href="ch-gpio.html#cb12-1"></a><span class="dt">void</span> GIO_ConfigIntSource(</span>
-<span id="cb12-2"><a href="ch-gpio.html#cb12-2"></a>  <span class="dt">const</span> GIO_Index_t io_index,     <span class="co">// GPIO 编号</span></span>
-<span id="cb12-3"><a href="ch-gpio.html#cb12-3"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> enable,           <span class="co">// 使能的边沿或者电平类型组合</span></span>
-<span id="cb12-4"><a href="ch-gpio.html#cb12-4"></a>  <span class="dt">const</span> GIO_IntTriggerType_t type <span class="co">// 触发类型</span></span>
-<span id="cb12-5"><a href="ch-gpio.html#cb12-5"></a>  );</span></code></pre></div>
-<p>其中的 <code>enable</code> 为以下两个值的组合（0 表示禁止产生中断请求）：</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb13-1"><a href="ch-gpio.html#cb13-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb13-2"><a href="ch-gpio.html#cb13-2"></a>{</span>
-<span id="cb13-3"><a href="ch-gpio.html#cb13-3"></a>    ...LOGIC_LOW_OR_FALLING_EDGE = ..., <span class="co">// 低电平或者下降沿</span></span>
-<span id="cb13-4"><a href="ch-gpio.html#cb13-4"></a>    ...LOGIC_HIGH_OR_RISING_EDGE = ...  <span class="co">// 高电平或者上升沿</span></span>
-<span id="cb13-5"><a href="ch-gpio.html#cb13-5"></a>} GIO_IntTriggerEnable_t;</span></code></pre></div>
-<p>触发类型有两种：</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb14-1"><a href="ch-gpio.html#cb14-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb14-2"><a href="ch-gpio.html#cb14-2"></a>{</span>
-<span id="cb14-3"><a href="ch-gpio.html#cb14-3"></a>    GIO_INT_EDGE,   <span class="co">// 边沿触发</span></span>
-<span id="cb14-4"><a href="ch-gpio.html#cb14-4"></a>    GIO_INT_LOGIC   <span class="co">// 电平触发</span></span>
-<span id="cb14-5"><a href="ch-gpio.html#cb14-5"></a>} GIO_IntTriggerType_t;</span></code></pre></div>
-<ul>
-<li><p>例如将 GPIO 0 配置为上升沿触发中断</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb15-1"><a href="ch-gpio.html#cb15-1"></a>GIO_ConfigIntSource(GIO_GPIO_0,</span>
-<span id="cb15-2"><a href="ch-gpio.html#cb15-2"></a>  ...LOGIC_HIGH_OR_RISING_EDGE,</span>
-<span id="cb15-3"><a href="ch-gpio.html#cb15-3"></a>  GIO_INT_EDGE);</span></code></pre></div></li>
-<li><p>例如将 GPIO 0 配置为双沿触发中断</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb16-1"><a href="ch-gpio.html#cb16-1"></a>GIO_ConfigIntSource(GIO_GPIO_0,</span>
-<span id="cb16-2"><a href="ch-gpio.html#cb16-2"></a>  ...LOGIC_HIGH_OR_RISING_EDGE | ..._HIGH_OR_RISING_EDGE,</span>
-<span id="cb16-3"><a href="ch-gpio.html#cb16-3"></a>  GIO_INT_EDGE);</span></code></pre></div></li>
-<li><p>例如将 GPIO 0 配置为高电平触发</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb17-1"><a href="ch-gpio.html#cb17-1"></a>GIO_ConfigIntSource(GIO_GPIO_0,</span>
-<span id="cb17-2"><a href="ch-gpio.html#cb17-2"></a>  ...LOGIC_HIGH_OR_RISING_EDGE,</span>
-<span id="cb17-3"><a href="ch-gpio.html#cb17-3"></a>  GIO_INT_LOGIC);</span></code></pre></div></li>
-</ul>
-</div>
-<div id="处理中断状态" class="section level3 hasAnchor">
-<h3><span class="header-section-number">5.2.5</span> 处理中断状态<a href="ch-gpio.html#处理中断状态" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>用 <code>GIO_GetIntStatus</code> 获取某个 GPIO 上的中断触发状态，返回非 0 值表示该 GPIO
-上产生了中断请求；用 <code>GIO_GetAllIntStatus</code> 一次性获取所有 GPIO 的中断触发状态，
-第 <span class="math inline">\(n\)</span> 比特（第 0 比特为最低比特）对应 GPIO <span class="math inline">\(n\)</span> 上的中断触发状态。</p>
-<p>GPIO 产生中断后，需要消除中断状态方可再次触发。用 <code>GIO_ClearIntStatus</code> 消除某个 GPIO
-上中断状态，用 <code>GIO_ClearAllIntStatus</code> 一次性清除所有 GPIO 上可能存在的中断触发状态。</p>
-</div>
-<div id="输入去抖" class="section level3 hasAnchor">
-<h3><span class="header-section-number">5.2.6</span> 输入去抖<a href="ch-gpio.html#输入去抖" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>GIO_DebounceCtrl</code> 配置输入去抖参数，每个 GPIO 硬件模块使用单独的参数：</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb18-1"><a href="ch-gpio.html#cb18-1"></a><span class="dt">void</span> GIO_DebounceCtrl(</span>
-<span id="cb18-2"><a href="ch-gpio.html#cb18-2"></a>  <span class="dt">uint8_t</span> group_mask,     <span class="co">// 比特 0 为 1 时配置模块 0</span></span>
-<span id="cb18-3"><a href="ch-gpio.html#cb18-3"></a>                          <span class="co">// 比特 1 为 1 时配置模块 1</span></span>
-<span id="cb18-4"><a href="ch-gpio.html#cb18-4"></a>  <span class="dt">uint8_t</span> clk_pre_scale,</span>
-<span id="cb18-5"><a href="ch-gpio.html#cb18-5"></a>  GIO_DbClk_t clk         <span class="co">// 防抖时钟选择</span></span>
-<span id="cb18-6"><a href="ch-gpio.html#cb18-6"></a>  );</span></code></pre></div>
-<p>所谓去抖就是过滤掉长度小于 <code>(clk_pre_scale + 1)</code> 个防抖时钟周期的“毛刺”。</p>
-<p>防抖时钟共有 2 种：</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb19-1"><a href="ch-gpio.html#cb19-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb19-2"><a href="ch-gpio.html#cb19-2"></a>{</span>
-<span id="cb19-3"><a href="ch-gpio.html#cb19-3"></a>    GIO_DB_CLK_32K,     <span class="co">// 使用 32k 时钟</span></span>
-<span id="cb19-4"><a href="ch-gpio.html#cb19-4"></a>    GIO_DB_CLK_PCLK,    <span class="co">// 使用快速 PCLK</span></span>
-<span id="cb19-5"><a href="ch-gpio.html#cb19-5"></a>} GIO_DbClk_t;</span></code></pre></div>
-<p>快速 PCLK 的具体频率参考 <a href="ch-sysctrl.html#ch-sysctrl">SYSCTRL</a>。</p>
-<p>通过 <code>GIO_DebounceEn</code> 为单个 GPIO 使能去抖。例如要在 GPIO 0 上启用硬件去抖，忽略宽度小于
-<span class="math inline">\(5/32768 \approx 0.15 (ms)\)</span> 的“毛刺”：</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb20-1"><a href="ch-gpio.html#cb20-1"></a>GIO_DebounceCtrl(<span class="dv">1</span>, <span class="dv">4</span>, GIO_DB_CLK_32K);</span>
-<span id="cb20-2"><a href="ch-gpio.html#cb20-2"></a>GIO_DebounceEn(GIO_GPIO_0, <span class="dv">1</span>);</span></code></pre></div>
+<div id="按word编程" class="section level3 hasAnchor">
+<h3><span class="header-section-number">4.2.3</span> 按word编程<a href="efuseselectronic-fuses.html#按word编程" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb6-1"><a href="efuseselectronic-fuses.html#cb6-1"></a><span class="dt">void</span> peripherals_efuse_write_word(<span class="dt">void</span>)</span>
+<span id="cb6-2"><a href="efuseselectronic-fuses.html#cb6-2"></a>{</span>
+<span id="cb6-3"><a href="efuseselectronic-fuses.html#cb6-3"></a>    <span class="co">// 提供需要编程的word位置,0到3之间,每个word 32bit，一共128bit</span></span>
+<span id="cb6-4"><a href="efuseselectronic-fuses.html#cb6-4"></a>    <span class="co">// EFUSE_PROGRAMWORDCNT_0代表word 0</span></span>
+<span id="cb6-5"><a href="efuseselectronic-fuses.html#cb6-5"></a>    <span class="co">// data是要写入的32bit数据</span></span>
+<span id="cb6-6"><a href="efuseselectronic-fuses.html#cb6-6"></a>    EFUSE_WriteEfuseDataWord(APB_EFUSE, EFUSE_PROGRAMWORDCNT_0, data);</span>
+<span id="cb6-7"><a href="efuseselectronic-fuses.html#cb6-7"></a>    </span>
+<span id="cb6-8"><a href="efuseselectronic-fuses.html#cb6-8"></a>    <span class="co">//写操作完成</span></span>
+<span id="cb6-9"><a href="efuseselectronic-fuses.html#cb6-9"></a>    <span class="co">//如果要读取，需要reset模块</span></span>
+<span id="cb6-10"><a href="efuseselectronic-fuses.html#cb6-10"></a>    SYSCTRL_ResetBlock(SYSCTRL_ITEM_APB_EFUSE);</span>
+<span id="cb6-11"><a href="efuseselectronic-fuses.html#cb6-11"></a>    SYSCTRL_ReleaseBlock(SYSCTRL_ITEM_APB_EFUSE);</span>
+<span id="cb6-12"><a href="efuseselectronic-fuses.html#cb6-12"></a>    </span>
+<span id="cb6-13"><a href="efuseselectronic-fuses.html#cb6-13"></a>    <span class="co">//设置读取flag</span></span>
+<span id="cb6-14"><a href="efuseselectronic-fuses.html#cb6-14"></a>    EFUSE_SetRdFlag(APB_EFUSE);</span>
+<span id="cb6-15"><a href="efuseselectronic-fuses.html#cb6-15"></a>    <span class="co">//等待数据读取标志</span></span>
+<span id="cb6-16"><a href="efuseselectronic-fuses.html#cb6-16"></a>    <span class="cf">while</span>(!EFUSE_GetDataValidFlag(APB_EFUSE));</span>
+<span id="cb6-17"><a href="efuseselectronic-fuses.html#cb6-17"></a>    <span class="co">//读取数据</span></span>
+<span id="cb6-18"><a href="efuseselectronic-fuses.html#cb6-18"></a>    platform_printf(<span class="st">&quot;word 0: 0x%x </span><span class="sc">\n</span><span class="st">&quot;</span>,EFUSE_GetEfuseData(APB_EFUSE, <span class="dv">0</span>));<span class="co">//bit 0  - 31</span></span>
+<span id="cb6-19"><a href="efuseselectronic-fuses.html#cb6-19"></a>    platform_printf(<span class="st">&quot;word 1: 0x%x </span><span class="sc">\n</span><span class="st">&quot;</span>,EFUSE_GetEfuseData(APB_EFUSE, <span class="dv">1</span>));<span class="co">//bit 32 - 63</span></span>
+<span id="cb6-20"><a href="efuseselectronic-fuses.html#cb6-20"></a>    platform_printf(<span class="st">&quot;word 2: 0x%x </span><span class="sc">\n</span><span class="st">&quot;</span>,EFUSE_GetEfuseData(APB_EFUSE, <span class="dv">2</span>));<span class="co">//bit 64 - 95</span></span>
+<span id="cb6-21"><a href="efuseselectronic-fuses.html#cb6-21"></a>    platform_printf(<span class="st">&quot;word 3: 0x%x </span><span class="sc">\n</span><span class="st">&quot;</span>,EFUSE_GetEfuseData(APB_EFUSE, <span class="dv">3</span>));<span class="co">//bit 96 - 127</span></span>
+<span id="cb6-22"><a href="efuseselectronic-fuses.html#cb6-22"></a>}</span></code></pre></div>
+<hr />
 
 </div>
 </div>
@@ -421,8 +358,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="efuseselectronic-fuses.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="i2c功能概述.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="dma简介.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ch-gpio.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

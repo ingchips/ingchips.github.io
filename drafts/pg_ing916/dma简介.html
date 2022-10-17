@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>5 通用输入输出（GPIO） | ING916XX 系列芯片外设开发者手册</title>
+  <title>3 DMA简介 | ING916XX 系列芯片外设开发者手册</title>
   <meta name="description" content="ING916XX 系列芯片开发者手册." />
   <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="5 通用输入输出（GPIO） | ING916XX 系列芯片外设开发者手册" />
+  <meta property="og:title" content="3 DMA简介 | ING916XX 系列芯片外设开发者手册" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="ING916XX 系列芯片开发者手册." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="5 通用输入输出（GPIO） | ING916XX 系列芯片外设开发者手册" />
+  <meta name="twitter:title" content="3 DMA简介 | ING916XX 系列芯片外设开发者手册" />
   
   <meta name="twitter:description" content="ING916XX 系列芯片开发者手册." />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="efuseselectronic-fuses.html"/>
-<link rel="next" href="i2c功能概述.html"/>
+<link rel="prev" href="ch-overview.html"/>
+<link rel="next" href="efuseselectronic-fuses.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -282,137 +282,241 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="ch-gpio" class="section level1 hasAnchor">
-<h1><span class="header-section-number">5</span> 通用输入输出（GPIO）<a href="ch-gpio.html#ch-gpio" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div id="功能概述-1" class="section level2 hasAnchor">
-<h2><span class="header-section-number">5.1</span> 功能概述<a href="ch-gpio.html#功能概述-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>GPIO 模块常用于驱动 LED 或者其它指示器，控制片外设备，感知数字信号输入，检测信号边沿，
-或者从低功耗状态唤醒系统。ING916XX 系列芯片内部支持最多 36 个 GPIO，通过 <a href="ch-pinctrl.html#ch-pinctrl">PINCTRL</a>
-可将 GPIO <span class="math inline">\(n\)</span> 引出到芯片 IO 管脚 <span class="math inline">\(n\)</span>。</p>
-<p>特性：</p>
+<div id="dma简介" class="section level1 hasAnchor">
+<h1><span class="header-section-number">3</span> DMA简介<a href="dma简介.html#dma简介" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>DMA全称direct memory access，即直接存储器访问。</p>
+<p>其主要作用是不占用CPU大量资源，在AMBA AHB总线上的设备之间以硬件方式高速有效地传输数据。</p>
+<div id="功能描述" class="section level2 hasAnchor">
+<h2><span class="header-section-number">3.1</span> 功能描述<a href="dma简介.html#功能描述" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="特点" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.1.1</span> 特点<a href="dma简介.html#特点" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <ul>
-<li>每个 GPIO 都可单独配置为输入或输出</li>
-<li>每个 GPIO 都可作为中断请求，中断触发方式支持边沿触发（上升、下降单沿触发，或者双沿触发）
-和电平触发（高电平或低电平）</li>
-<li>硬件去抖</li>
-</ul>
-<p>在硬件上存在 <strong>两个</strong> GPIO 模块，每个模块包含 18 个 GPIO，相应地定义了两个 <code>SYSCTRL_Item</code>：</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb7-1"><a href="ch-gpio.html#cb7-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb7-2"><a href="ch-gpio.html#cb7-2"></a>{</span>
-<span id="cb7-3"><a href="ch-gpio.html#cb7-3"></a>    SYSCTRL_ITEM_APB_GPIO0     ,</span>
-<span id="cb7-4"><a href="ch-gpio.html#cb7-4"></a>    SYSCTRL_ITEM_APB_GPIO1     ,</span>
-<span id="cb7-5"><a href="ch-gpio.html#cb7-5"></a>    <span class="co">// ...</span></span>
-<span id="cb7-6"><a href="ch-gpio.html#cb7-6"></a>} SYSCTRL_Item;</span></code></pre></div>
-<div class="rmdcaution">
-<p>
-注意按照所使用的 GPIO 管脚打开对应的 GPIO 模块。
-</p>
-</div>
-</div>
-<div id="使用说明-1" class="section level2 hasAnchor">
-<h2><span class="header-section-number">5.2</span> 使用说明<a href="ch-gpio.html#使用说明-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="设置-io-方向" class="section level3 hasAnchor">
-<h3><span class="header-section-number">5.2.1</span> 设置 IO 方向<a href="ch-gpio.html#设置-io-方向" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>在使用 GPIO 之前先按需要配置 IO 方向：</p>
-<ul>
-<li>需要用于输出信号时：配置为输出</li>
-<li>需要用于读取信号时：配置为输入</li>
-<li>需要用于生产中断请求时：配置为输入</li>
-<li>需要高阻态时：配置为高阻态</li>
-</ul>
-<p>使用 <code>GIO_SetDirection</code> 配置 GPIO 的方向。GPIO 支持四种方向：</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb8-1"><a href="ch-gpio.html#cb8-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb8-2"><a href="ch-gpio.html#cb8-2"></a>{</span>
-<span id="cb8-3"><a href="ch-gpio.html#cb8-3"></a>    GIO_DIR_INPUT,  <span class="co">// 输入</span></span>
-<span id="cb8-4"><a href="ch-gpio.html#cb8-4"></a>    GIO_DIR_OUTPUT, <span class="co">// 输出</span></span>
-<span id="cb8-5"><a href="ch-gpio.html#cb8-5"></a>    GIO_DIR_BOTH,   <span class="co">// 同时支持输入、输出</span></span>
-<span id="cb8-6"><a href="ch-gpio.html#cb8-6"></a>    GIO_DIR_NONE    <span class="co">// 高阻态</span></span>
-<span id="cb8-7"><a href="ch-gpio.html#cb8-7"></a>} GIO_Direction_t;</span></code></pre></div>
-<div class="rmdcaution">
-<p>
-如无必要，不要使用 <code>GIO_DIR_BOTH</code>。
-</p>
-</div>
-</div>
-<div id="读取输入" class="section level3 hasAnchor">
-<h3><span class="header-section-number">5.2.2</span> 读取输入<a href="ch-gpio.html#读取输入" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>GIO_ReadValue</code> 读取某个 GPIO 当前输入的电平信号，例如读取 GPIO 0 的输入：</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb9-1"><a href="ch-gpio.html#cb9-1"></a><span class="dt">uint8_t</span> value = GIO_ReadValue(GIO_GPIO_0);</span></code></pre></div>
-<p>使用 <code>GIO_ReadAll</code> 可以同时读取所有 GPIO 当前输入的电平信号。其返回值的第 <span class="math inline">\(n\)</span> 比特
-（第 0 比特为最低比特）对应 GPIO <span class="math inline">\(n\)</span> 的输入；如果 GPIO <span class="math inline">\(n\)</span> 当前不支持输入，那么第 <span class="math inline">\(n\)</span>
-比特为 0：</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb10-1"><a href="ch-gpio.html#cb10-1"></a><span class="dt">uint64_t</span> GIO_ReadAll(<span class="dt">void</span>);</span></code></pre></div>
-</div>
-<div id="设置输出" class="section level3 hasAnchor">
-<h3><span class="header-section-number">5.2.3</span> 设置输出<a href="ch-gpio.html#设置输出" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>GIO_WriteValue</code> 设置某个 GPIO 输出的电平信号，例如使 GPIO 0 输出高电平（1）：</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb11-1"><a href="ch-gpio.html#cb11-1"></a>GIO_WriteValue(GIO_GPIO_0, <span class="dv">1</span>);</span></code></pre></div>
-</div>
-<div id="配置中断请求" class="section level3 hasAnchor">
-<h3><span class="header-section-number">5.2.4</span> 配置中断请求<a href="ch-gpio.html#配置中断请求" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>GIO_ConfigIntSource</code> 配置 GPIO 生成中断请求。</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb12-1"><a href="ch-gpio.html#cb12-1"></a><span class="dt">void</span> GIO_ConfigIntSource(</span>
-<span id="cb12-2"><a href="ch-gpio.html#cb12-2"></a>  <span class="dt">const</span> GIO_Index_t io_index,     <span class="co">// GPIO 编号</span></span>
-<span id="cb12-3"><a href="ch-gpio.html#cb12-3"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> enable,           <span class="co">// 使能的边沿或者电平类型组合</span></span>
-<span id="cb12-4"><a href="ch-gpio.html#cb12-4"></a>  <span class="dt">const</span> GIO_IntTriggerType_t type <span class="co">// 触发类型</span></span>
-<span id="cb12-5"><a href="ch-gpio.html#cb12-5"></a>  );</span></code></pre></div>
-<p>其中的 <code>enable</code> 为以下两个值的组合（0 表示禁止产生中断请求）：</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb13-1"><a href="ch-gpio.html#cb13-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb13-2"><a href="ch-gpio.html#cb13-2"></a>{</span>
-<span id="cb13-3"><a href="ch-gpio.html#cb13-3"></a>    ...LOGIC_LOW_OR_FALLING_EDGE = ..., <span class="co">// 低电平或者下降沿</span></span>
-<span id="cb13-4"><a href="ch-gpio.html#cb13-4"></a>    ...LOGIC_HIGH_OR_RISING_EDGE = ...  <span class="co">// 高电平或者上升沿</span></span>
-<span id="cb13-5"><a href="ch-gpio.html#cb13-5"></a>} GIO_IntTriggerEnable_t;</span></code></pre></div>
-<p>触发类型有两种：</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb14-1"><a href="ch-gpio.html#cb14-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb14-2"><a href="ch-gpio.html#cb14-2"></a>{</span>
-<span id="cb14-3"><a href="ch-gpio.html#cb14-3"></a>    GIO_INT_EDGE,   <span class="co">// 边沿触发</span></span>
-<span id="cb14-4"><a href="ch-gpio.html#cb14-4"></a>    GIO_INT_LOGIC   <span class="co">// 电平触发</span></span>
-<span id="cb14-5"><a href="ch-gpio.html#cb14-5"></a>} GIO_IntTriggerType_t;</span></code></pre></div>
-<ul>
-<li><p>例如将 GPIO 0 配置为上升沿触发中断</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb15-1"><a href="ch-gpio.html#cb15-1"></a>GIO_ConfigIntSource(GIO_GPIO_0,</span>
-<span id="cb15-2"><a href="ch-gpio.html#cb15-2"></a>  ...LOGIC_HIGH_OR_RISING_EDGE,</span>
-<span id="cb15-3"><a href="ch-gpio.html#cb15-3"></a>  GIO_INT_EDGE);</span></code></pre></div></li>
-<li><p>例如将 GPIO 0 配置为双沿触发中断</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb16-1"><a href="ch-gpio.html#cb16-1"></a>GIO_ConfigIntSource(GIO_GPIO_0,</span>
-<span id="cb16-2"><a href="ch-gpio.html#cb16-2"></a>  ...LOGIC_HIGH_OR_RISING_EDGE | ..._HIGH_OR_RISING_EDGE,</span>
-<span id="cb16-3"><a href="ch-gpio.html#cb16-3"></a>  GIO_INT_EDGE);</span></code></pre></div></li>
-<li><p>例如将 GPIO 0 配置为高电平触发</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb17-1"><a href="ch-gpio.html#cb17-1"></a>GIO_ConfigIntSource(GIO_GPIO_0,</span>
-<span id="cb17-2"><a href="ch-gpio.html#cb17-2"></a>  ...LOGIC_HIGH_OR_RISING_EDGE,</span>
-<span id="cb17-3"><a href="ch-gpio.html#cb17-3"></a>  GIO_INT_LOGIC);</span></code></pre></div></li>
+<li><p>符合AMBA、AHB和APB4标准</p></li>
+<li><p>最多8个DMA通道</p></li>
+<li><p>最多16个硬件握手请求/确认配对</p></li>
+<li><p>支持8/16/32/64位宽的数据传输</p></li>
+<li><p>支持24-64位地址宽度</p></li>
+<li><p>支持成链传输数据</p></li>
 </ul>
 </div>
-<div id="处理中断状态" class="section level3 hasAnchor">
-<h3><span class="header-section-number">5.2.5</span> 处理中断状态<a href="ch-gpio.html#处理中断状态" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>用 <code>GIO_GetIntStatus</code> 获取某个 GPIO 上的中断触发状态，返回非 0 值表示该 GPIO
-上产生了中断请求；用 <code>GIO_GetAllIntStatus</code> 一次性获取所有 GPIO 的中断触发状态，
-第 <span class="math inline">\(n\)</span> 比特（第 0 比特为最低比特）对应 GPIO <span class="math inline">\(n\)</span> 上的中断触发状态。</p>
-<p>GPIO 产生中断后，需要消除中断状态方可再次触发。用 <code>GIO_ClearIntStatus</code> 消除某个 GPIO
-上中断状态，用 <code>GIO_ClearAllIntStatus</code> 一次性清除所有 GPIO 上可能存在的中断触发状态。</p>
+<div id="搬运方式" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.1.2</span> 搬运方式<a href="dma简介.html#搬运方式" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>单次数据块搬运：DMA使用单个通道，一次使能将数据从SRC到DST位置搬运一次</p></li>
+<li><p>成串多数据块搬运：DMA使用单个通道，一次使能按照DMA链表信息依次将数据从SRC到DST位置搬运多次或循环搬运。</p></li>
+</ul>
+<p>其根本区别是有无注册有效的DMA链表。</p>
 </div>
-<div id="输入去抖" class="section level3 hasAnchor">
-<h3><span class="header-section-number">5.2.6</span> 输入去抖<a href="ch-gpio.html#输入去抖" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>GIO_DebounceCtrl</code> 配置输入去抖参数，每个 GPIO 硬件模块使用单独的参数：</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb18-1"><a href="ch-gpio.html#cb18-1"></a><span class="dt">void</span> GIO_DebounceCtrl(</span>
-<span id="cb18-2"><a href="ch-gpio.html#cb18-2"></a>  <span class="dt">uint8_t</span> group_mask,     <span class="co">// 比特 0 为 1 时配置模块 0</span></span>
-<span id="cb18-3"><a href="ch-gpio.html#cb18-3"></a>                          <span class="co">// 比特 1 为 1 时配置模块 1</span></span>
-<span id="cb18-4"><a href="ch-gpio.html#cb18-4"></a>  <span class="dt">uint8_t</span> clk_pre_scale,</span>
-<span id="cb18-5"><a href="ch-gpio.html#cb18-5"></a>  GIO_DbClk_t clk         <span class="co">// 防抖时钟选择</span></span>
-<span id="cb18-6"><a href="ch-gpio.html#cb18-6"></a>  );</span></code></pre></div>
-<p>所谓去抖就是过滤掉长度小于 <code>(clk_pre_scale + 1)</code> 个防抖时钟周期的“毛刺”。</p>
-<p>防抖时钟共有 2 种：</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb19-1"><a href="ch-gpio.html#cb19-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb19-2"><a href="ch-gpio.html#cb19-2"></a>{</span>
-<span id="cb19-3"><a href="ch-gpio.html#cb19-3"></a>    GIO_DB_CLK_32K,     <span class="co">// 使用 32k 时钟</span></span>
-<span id="cb19-4"><a href="ch-gpio.html#cb19-4"></a>    GIO_DB_CLK_PCLK,    <span class="co">// 使用快速 PCLK</span></span>
-<span id="cb19-5"><a href="ch-gpio.html#cb19-5"></a>} GIO_DbClk_t;</span></code></pre></div>
-<p>快速 PCLK 的具体频率参考 <a href="ch-sysctrl.html#ch-sysctrl">SYSCTRL</a>。</p>
-<p>通过 <code>GIO_DebounceEn</code> 为单个 GPIO 使能去抖。例如要在 GPIO 0 上启用硬件去抖，忽略宽度小于
-<span class="math inline">\(5/32768 \approx 0.15 (ms)\)</span> 的“毛刺”：</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb20-1"><a href="ch-gpio.html#cb20-1"></a>GIO_DebounceCtrl(<span class="dv">1</span>, <span class="dv">4</span>, GIO_DB_CLK_32K);</span>
-<span id="cb20-2"><a href="ch-gpio.html#cb20-2"></a>GIO_DebounceEn(GIO_GPIO_0, <span class="dv">1</span>);</span></code></pre></div>
+<div id="搬运类型" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.1.3</span> 搬运类型<a href="dma简介.html#搬运类型" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>memory到memory搬运</p></li>
+<li><p>memory到peripheral搬运</p></li>
+<li><p>peripheral到memory搬运</p></li>
+<li><p>peripheral到peripheral搬运</p></li>
+</ul>
+</div>
+<div id="中断类型" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.1.4</span> 中断类型<a href="dma简介.html#中断类型" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>IntErr：错误中断表示DMA传输发生了错误而触发中断，主要包括总线错误、地址没对齐和传输数据宽度没对齐等。</p></li>
+<li><p>IntAbt：终止传输中断会在终止DMA通道传输时产生。</p></li>
+<li><p>IntTC：TC中断会在没有产生IntErr和IntAbt的情况下完成一次传输时产生。</p></li>
+</ul>
+</div>
+<div id="数据地址类型" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.1.5</span> 数据地址类型<a href="dma简介.html#数据地址类型" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>Increment address</p></li>
+<li><p>Decrement address</p></li>
+<li><p>Fixed address</p></li>
+</ul>
+<p>如果Increment则DMA从地址有小到大搬运数据，相反的Decrement则由大到小搬运。fixed地址适用于外设FIFO的寄存器搬运数据。</p>
+</div>
+<div id="数据方式" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.1.6</span> 数据方式<a href="dma简介.html#数据方式" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>normal mode</p></li>
+<li><p>handshake mode</p></li>
+</ul>
+<p>一般外设寄存器选择用握手方式。</p>
+<p>选择握手方式要和外设协商好SrcBurstSize，当前支持2^n(n = 0-7)大小的SrcBurstSize。</p>
+</div>
+<div id="数据位宽" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.1.7</span> 数据位宽<a href="dma简介.html#数据位宽" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>DMA传输要求传输两端的数据类型一致，支持数据类型有：</p>
+<ul>
+<li><p>Byte transfer</p></li>
+<li><p>Half-word transfer</p></li>
+<li><p>Word transfer</p></li>
+<li><p>Double word transfer</p></li>
+</ul>
+<p>覆盖所有常见数据类型。</p>
+</div>
+</div>
+<div id="使用方法" class="section level2 hasAnchor">
+<h2><span class="header-section-number">3.2</span> 使用方法<a href="dma简介.html#使用方法" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="方法概述" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.2.1</span> 方法概述<a href="dma简介.html#方法概述" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>首先确认数据搬运需求是单次搬运还是成串搬运，搬运类型memory和peripheral的关系。</p>
+<div id="单次搬运" class="section level4 hasAnchor">
+<h4><span class="header-section-number">3.2.1.1</span> 单次搬运<a href="dma简介.html#单次搬运" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><strong>1.</strong> 注册DMA中断</p>
+<p><strong>2.</strong> 定义一个DMA_Descriptor变量用来配置DMA通道寄存器</p>
+<p><strong>3.</strong> 根据数据搬运类型选择DMA寄存器配置接口，正确调用驱动接口配置DMA寄存器</p>
+<p><strong>4.</strong> 使能DMA通道开始搬运</p>
+</div>
+<div id="成串搬运" class="section level4 hasAnchor">
+<h4><span class="header-section-number">3.2.1.2</span> 成串搬运<a href="dma简介.html#成串搬运" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><strong>1.</strong> 注册一个或多个DMA中断</p>
+<p><strong>2.</strong> 定义多个DMA_Descriptor变量用来配置DMA通道寄存器</p>
+<p><strong>3.</strong> 根据数据搬运类型选择DMA寄存器配置接口，正确调用驱动接口配置DMA寄存器</p>
+<p><strong>4.</strong> 将多个DMA_Descriptor变量首尾相连成串，类似链表</p>
+<p><strong>5.</strong> 使能DMA通道开始搬运</p>
+</div>
+</div>
+<div id="注意点" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.2.2</span> 注意点<a href="dma简介.html#注意点" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>定义DMA_Descriptor变量需要8字节对齐，否则DMA搬运不成功</p></li>
+<li><p>成串搬运如果配置多个DMA中断则需要在每个中断里使能DMA，直到最后一次搬运完成</p></li>
+<li><p>对于从外设搬运需要确认外设是否支持DMA</p></li>
+<li><p>建议从外设搬运选择握手方式，并与外设正确协商burstSize</p></li>
+<li><p>burstSize尽量取较大值，有利于减少DMA中断次数提高单次中断处理效率。但burstSize太大可能最后一次不能搬运丢弃较多数据</p></li>
+<li><p>建议设置从外设搬运总数据量为burstSize的整数倍或采用乒乓搬运的方式</p></li>
+<li><p>在DMA从外设搬运的情况下，正确的操作顺序是先配置并使能好DMA，再使能外设开始产生数据</p></li>
+</ul>
+</div>
+</div>
+<div id="编程指南" class="section level2 hasAnchor">
+<h2><span class="header-section-number">3.3</span> 编程指南<a href="dma简介.html#编程指南" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="驱动接口" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.3.1</span> 驱动接口<a href="dma简介.html#驱动接口" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>DMA_PrepareMem2Mem：memory到memory搬运标准DMA寄存器配置接口</p></li>
+<li><p>DMA_PreparePeripheral2Mem：Peripheral到memory搬运标准DMA寄存器配置接口</p></li>
+<li><p>DMA_PrepareMem2Peripheral：memory到Peripheral搬运标准DMA寄存器配置接口</p></li>
+<li><p>DMA_PreparePeripheral2Peripheral：Peripheral到Peripheral搬运标准DMA寄存器配置接口</p></li>
+<li><p>DMA_Reset：DMA复位接口</p></li>
+<li><p>DMA_GetChannelIntState：DMA通道中断状态获取接口</p></li>
+<li><p>DMA_ClearChannelIntState：DMA通道清中断接口</p></li>
+<li><p>DMA_EnableChannel：DMA通道使能接口</p></li>
+<li><p>DMA_AbortChannel：DMA通道终止接口</p></li>
+</ul>
+</div>
+<div id="代码示例" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.3.2</span> 代码示例<a href="dma简介.html#代码示例" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="单次搬运-1" class="section level4 hasAnchor">
+<h4><span class="header-section-number">3.3.2.1</span> 单次搬运<a href="dma简介.html#单次搬运-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>下面以memory到memory单次搬运展示DMA的基本用法：</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="dma简介.html#cb1-1"></a><span class="pp">#define CHANNEL_ID  0</span></span>
+<span id="cb1-2"><a href="dma简介.html#cb1-2"></a><span class="dt">char</span> src[] = <span class="st">&quot;hello world!&quot;</span>;</span>
+<span id="cb1-3"><a href="dma简介.html#cb1-3"></a><span class="dt">char</span> dst[<span class="dv">20</span>];</span>
+<span id="cb1-4"><a href="dma简介.html#cb1-4"></a>DMA_Descriptor test __attribute__((aligned (<span class="dv">8</span>)));                                </span>
+<span id="cb1-5"><a href="dma简介.html#cb1-5"></a><span class="dt">static</span> <span class="dt">uint32_t</span> DMA_cb_isr(<span class="dt">void</span> *user_data)</span>
+<span id="cb1-6"><a href="dma简介.html#cb1-6"></a>{</span>
+<span id="cb1-7"><a href="dma简介.html#cb1-7"></a>    <span class="dt">uint32_t</span> state = DMA_GetChannelIntState(CHANNEL_ID);</span>
+<span id="cb1-8"><a href="dma简介.html#cb1-8"></a>    DMA_ClearChannelIntState(CHANNEL_ID, state);</span>
+<span id="cb1-9"><a href="dma简介.html#cb1-9"></a></span>
+<span id="cb1-10"><a href="dma简介.html#cb1-10"></a>    printf(<span class="st">&quot;dst = %s</span><span class="sc">\n</span><span class="st">&quot;</span>, dst);</span>
+<span id="cb1-11"><a href="dma简介.html#cb1-11"></a>    <span class="cf">return</span> <span class="dv">0</span>;</span>
+<span id="cb1-12"><a href="dma简介.html#cb1-12"></a>}</span>
+<span id="cb1-13"><a href="dma简介.html#cb1-13"></a></span>
+<span id="cb1-14"><a href="dma简介.html#cb1-14"></a><span class="dt">void</span> DMA_Test(<span class="dt">void</span>)</span>
+<span id="cb1-15"><a href="dma简介.html#cb1-15"></a>{</span>
+<span id="cb1-16"><a href="dma简介.html#cb1-16"></a>    DMA_Reset();</span>
+<span id="cb1-17"><a href="dma简介.html#cb1-17"></a>    platform_set_irq_callback(PLATFORM_CB_IRQ_DMA, DMA_cb_isr, <span class="dv">0</span>);  </span>
+<span id="cb1-18"><a href="dma简介.html#cb1-18"></a>    DMA_PrepareMem2Mem(&amp;test[<span class="dv">0</span>], </span>
+<span id="cb1-19"><a href="dma简介.html#cb1-19"></a>                       dst, </span>
+<span id="cb1-20"><a href="dma简介.html#cb1-20"></a>                       src, strlen(src), </span>
+<span id="cb1-21"><a href="dma简介.html#cb1-21"></a>                       DMA_ADDRESS_INC, DMA_ADDRESS_INC, <span class="dv">0</span>);</span>
+<span id="cb1-22"><a href="dma简介.html#cb1-22"></a>    DMA_EnableChannel(CHANNEL_ID, &amp;test);</span>
+<span id="cb1-23"><a href="dma简介.html#cb1-23"></a>}</span></code></pre></div>
+<p>最终会在DMA中断程序里面将搬运到dst中的“hello world!”字符串打印出来。</p>
+</div>
+<div id="成串搬运-1" class="section level4 hasAnchor">
+<h4><span class="header-section-number">3.3.2.2</span> 成串搬运<a href="dma简介.html#成串搬运-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>下面以memory到memory两块数据搬运拼接字符串展示DMA成串搬运的基本用法：</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="dma简介.html#cb2-1"></a><span class="pp">#define CHANNEL_ID  0</span></span>
+<span id="cb2-2"><a href="dma简介.html#cb2-2"></a><span class="dt">char</span> src[] = <span class="st">&quot;hello world!&quot;</span>;</span>
+<span id="cb2-3"><a href="dma简介.html#cb2-3"></a><span class="dt">char</span> src1[] = <span class="st">&quot;I am a chinese.&quot;</span>;</span>
+<span id="cb2-4"><a href="dma简介.html#cb2-4"></a><span class="dt">char</span> dst[<span class="dv">100</span>];</span>
+<span id="cb2-5"><a href="dma简介.html#cb2-5"></a>DMA_Descriptor test[<span class="dv">2</span>] __attribute__((aligned (<span class="dv">8</span>)));</span>
+<span id="cb2-6"><a href="dma简介.html#cb2-6"></a><span class="dt">static</span> <span class="dt">uint32_t</span> DMA_cb_isr(<span class="dt">void</span> *user_data)</span>
+<span id="cb2-7"><a href="dma简介.html#cb2-7"></a>{</span>
+<span id="cb2-8"><a href="dma简介.html#cb2-8"></a>    <span class="dt">uint32_t</span> state = DMA_GetChannelIntState(CHANNEL_ID);</span>
+<span id="cb2-9"><a href="dma简介.html#cb2-9"></a>    DMA_ClearChannelIntState(CHANNEL_ID, state);</span>
+<span id="cb2-10"><a href="dma简介.html#cb2-10"></a></span>
+<span id="cb2-11"><a href="dma简介.html#cb2-11"></a>    printf(<span class="st">&quot;dst = %s</span><span class="sc">\n</span><span class="st">&quot;</span>, dst);</span>
+<span id="cb2-12"><a href="dma简介.html#cb2-12"></a>    <span class="cf">return</span> <span class="dv">0</span>;</span>
+<span id="cb2-13"><a href="dma简介.html#cb2-13"></a>}</span>
+<span id="cb2-14"><a href="dma简介.html#cb2-14"></a></span>
+<span id="cb2-15"><a href="dma简介.html#cb2-15"></a><span class="dt">void</span> DMA_Test(<span class="dt">void</span>)</span>
+<span id="cb2-16"><a href="dma简介.html#cb2-16"></a>{</span>
+<span id="cb2-17"><a href="dma简介.html#cb2-17"></a>    DMA_Reset();</span>
+<span id="cb2-18"><a href="dma简介.html#cb2-18"></a>    platform_set_irq_callback(PLATFORM_CB_IRQ_DMA, DMA_cb_isr, <span class="dv">0</span>);  </span>
+<span id="cb2-19"><a href="dma简介.html#cb2-19"></a>      test[<span class="dv">0</span>].Next = &amp;test[<span class="dv">1</span>];    <span class="co">// make a DMA link chain</span></span>
+<span id="cb2-20"><a href="dma简介.html#cb2-20"></a>      test[<span class="dv">1</span>].Next = NULL;</span>
+<span id="cb2-21"><a href="dma简介.html#cb2-21"></a>    DMA_PrepareMem2Mem(&amp;test[<span class="dv">0</span>], </span>
+<span id="cb2-22"><a href="dma简介.html#cb2-22"></a>                       dst, </span>
+<span id="cb2-23"><a href="dma简介.html#cb2-23"></a>                       src, strlen(src), </span>
+<span id="cb2-24"><a href="dma简介.html#cb2-24"></a>                       DMA_ADDRESS_INC, DMA_ADDRESS_INC, <span class="dv">0</span>);</span>
+<span id="cb2-25"><a href="dma简介.html#cb2-25"></a>    DMA_PrepareMem2Mem(&amp;test[<span class="dv">1</span>], </span>
+<span id="cb2-26"><a href="dma简介.html#cb2-26"></a>                       dst + strlen(src), </span>
+<span id="cb2-27"><a href="dma简介.html#cb2-27"></a>                       src1, <span class="kw">sizeof</span>(src1), </span>
+<span id="cb2-28"><a href="dma简介.html#cb2-28"></a>                       DMA_ADDRESS_INC, DMA_ADDRESS_INC, <span class="dv">0</span>);</span>
+<span id="cb2-29"><a href="dma简介.html#cb2-29"></a>    DMA_EnableChannel(CHANNEL_ID, &amp;test[<span class="dv">0</span>]);</span>
+<span id="cb2-30"><a href="dma简介.html#cb2-30"></a>}</span></code></pre></div>
+<p>最终将会打印出“hello world!I am a chinese.”字符串。</p>
+</div>
+<div id="dma乒乓搬运" class="section level4 hasAnchor">
+<h4><span class="header-section-number">3.3.2.3</span> DMA乒乓搬运<a href="dma简介.html#dma乒乓搬运" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>DMA乒乓搬运是一种DMA搬运的特殊用法，其主要应用场景是将外设FIFO中数据循环搬运到memory中并处理。</p>
+<p>可实现“搬运”和“数据处理”分离，从而大大提高程序处理数据的效率。</p>
+<p>下面将以最常见的DMA乒乓搬运I2s数据为例展示DMA乒乓搬运的用法。</p>
+<p>I2s的相关配置不在本文的介绍范围内，默认I2s已经配置好，DMA和I2s协商burstSize=8。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="dma简介.html#cb3-1"></a><span class="pp">#define CHANNEL_ID  0</span></span>
+<span id="cb3-2"><a href="dma简介.html#cb3-2"></a><span class="dt">char</span> dst[<span class="dv">80</span>];</span>
+<span id="cb3-3"><a href="dma简介.html#cb3-3"></a>DMA_Descriptor test[<span class="dv">2</span>] __attribute__((aligned (<span class="dv">8</span>)));</span>
+<span id="cb3-4"><a href="dma简介.html#cb3-4"></a><span class="dt">uint8_t</span> pingpang = <span class="dv">0</span>;</span>
+<span id="cb3-5"><a href="dma简介.html#cb3-5"></a><span class="dt">static</span> <span class="dt">uint32_t</span> DMA_cb_isr(<span class="dt">void</span> *user_data)</span>
+<span id="cb3-6"><a href="dma简介.html#cb3-6"></a>{ </span>
+<span id="cb3-7"><a href="dma简介.html#cb3-7"></a>    <span class="dt">uint32_t</span> state = DMA_GetChannelIntState(CHANNEL_ID);</span>
+<span id="cb3-8"><a href="dma简介.html#cb3-8"></a>    DMA_ClearChannelIntState(CHANNEL_ID, state);</span>
+<span id="cb3-9"><a href="dma简介.html#cb3-9"></a></span>
+<span id="cb3-10"><a href="dma简介.html#cb3-10"></a>    pingpang ^= <span class="dv">1</span>;</span>
+<span id="cb3-11"><a href="dma简介.html#cb3-11"></a>    DMA_EnableChannel(CHANNEL_ID, &amp;test[pingpang]);</span>
+<span id="cb3-12"><a href="dma简介.html#cb3-12"></a></span>
+<span id="cb3-13"><a href="dma简介.html#cb3-13"></a>    <span class="co">// do something to handle the data in &#39;dst&#39; buffer</span></span>
+<span id="cb3-14"><a href="dma简介.html#cb3-14"></a>    </span>
+<span id="cb3-15"><a href="dma简介.html#cb3-15"></a>    <span class="cf">return</span> <span class="dv">0</span>;</span>
+<span id="cb3-16"><a href="dma简介.html#cb3-16"></a>}</span>
+<span id="cb3-17"><a href="dma简介.html#cb3-17"></a></span>
+<span id="cb3-18"><a href="dma简介.html#cb3-18"></a><span class="dt">void</span> DMA_Test(<span class="dt">void</span>)</span>
+<span id="cb3-19"><a href="dma简介.html#cb3-19"></a>{</span>
+<span id="cb3-20"><a href="dma简介.html#cb3-20"></a>    DMA_Reset();</span>
+<span id="cb3-21"><a href="dma简介.html#cb3-21"></a>    platform_set_irq_callback(PLATFORM_CB_IRQ_DMA, DMA_cb_isr, <span class="dv">0</span>);  </span>
+<span id="cb3-22"><a href="dma简介.html#cb3-22"></a>    test[<span class="dv">0</span>].Next = &amp;test[<span class="dv">1</span>];</span>
+<span id="cb3-23"><a href="dma简介.html#cb3-23"></a>    test[<span class="dv">1</span>].Next = &amp;test[<span class="dv">0</span>];    <span class="co">// make a DMA link cycle</span></span>
+<span id="cb3-24"><a href="dma简介.html#cb3-24"></a>    DMA_PreparePeripheral2RAM(&amp;test[<span class="dv">0</span>], </span>
+<span id="cb3-25"><a href="dma简介.html#cb3-25"></a>                              dst, </span>
+<span id="cb3-26"><a href="dma简介.html#cb3-26"></a>                              SYSCTRL_DMA_I2S_RX, </span>
+<span id="cb3-27"><a href="dma简介.html#cb3-27"></a>                              <span class="dv">80</span>, </span>
+<span id="cb3-28"><a href="dma简介.html#cb3-28"></a>                              DMA_ADDRESS_INC, </span>
+<span id="cb3-29"><a href="dma简介.html#cb3-29"></a>                              <span class="dv">0</span> | <span class="dv">8</span> &lt;&lt; <span class="dv">24</span> | <span class="dv">1</span> &lt;&lt; <span class="dv">28</span>);</span>
+<span id="cb3-30"><a href="dma简介.html#cb3-30"></a>    DMA_PreparePeripheral2RAM(&amp;test[<span class="dv">1</span>], </span>
+<span id="cb3-31"><a href="dma简介.html#cb3-31"></a>                              dst, </span>
+<span id="cb3-32"><a href="dma简介.html#cb3-32"></a>                              SYSCTRL_DMA_I2S_RX, </span>
+<span id="cb3-33"><a href="dma简介.html#cb3-33"></a>                              <span class="dv">80</span>, </span>
+<span id="cb3-34"><a href="dma简介.html#cb3-34"></a>                              DMA_ADDRESS_INC, </span>
+<span id="cb3-35"><a href="dma简介.html#cb3-35"></a>                              <span class="dv">0</span> | <span class="dv">8</span> &lt;&lt; <span class="dv">24</span> | <span class="dv">1</span> &lt;&lt; <span class="dv">28</span>);</span>
+<span id="cb3-36"><a href="dma简介.html#cb3-36"></a>    DMA_EnableChannel(CHANNEL_ID, &amp;test[pingpang]);</span>
+<span id="cb3-37"><a href="dma简介.html#cb3-37"></a>    I2S_ClearRxFIFO(APB_I2S);</span>
+<span id="cb3-38"><a href="dma简介.html#cb3-38"></a>    I2S_DMAEnable(APB_I2S, <span class="dv">1</span>, <span class="dv">1</span>);    </span>
+<span id="cb3-39"><a href="dma简介.html#cb3-39"></a>    I2S_Enable(APB_I2S, <span class="dv">0</span>, <span class="dv">1</span>);   <span class="co">// Enable I2s finally</span></span>
+<span id="cb3-40"><a href="dma简介.html#cb3-40"></a>}</span></code></pre></div>
 
+</div>
 </div>
 </div>
 </div>
@@ -421,8 +525,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="efuseselectronic-fuses.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="i2c功能概述.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="ch-overview.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="efuseselectronic-fuses.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

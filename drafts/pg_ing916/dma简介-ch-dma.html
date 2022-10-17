@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>8 管脚管理（PINCTRL） | ING916XX 系列芯片外设开发者手册</title>
+  <title>3 DMA简介 {ch-dma} | ING916XX 系列芯片外设开发者手册</title>
   <meta name="description" content="ING916XX 系列芯片开发者手册." />
   <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="8 管脚管理（PINCTRL） | ING916XX 系列芯片外设开发者手册" />
+  <meta property="og:title" content="3 DMA简介 {ch-dma} | ING916XX 系列芯片外设开发者手册" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="ING916XX 系列芯片开发者手册." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="8 管脚管理（PINCTRL） | ING916XX 系列芯片外设开发者手册" />
+  <meta name="twitter:title" content="3 DMA简介 {ch-dma} | ING916XX 系列芯片外设开发者手册" />
   
   <meta name="twitter:description" content="ING916XX 系列芯片开发者手册." />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="ir-红外.html"/>
-<link rel="next" href="pte简介.html"/>
+<link rel="prev" href="ch-overview.html"/>
+<link rel="next" href="efuseselectronic-fuses.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -298,17 +298,251 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="ch-pinctrl" class="section level1 hasAnchor">
-<h1><span class="header-section-number">8</span> 管脚管理（PINCTRL）<a href="ch-pinctrl.html#ch-pinctrl" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="dma简介-ch-dma" class="section level1 hasAnchor">
+<h1><span class="header-section-number">3</span> DMA简介 {ch-dma}<a href="dma简介-ch-dma.html#dma简介-ch-dma" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>DMA全称direct memory access，即直接存储器访问。</p>
+<p>其主要作用是不占用CPU大量资源，在AMBA AHB总线上的设备之间以硬件方式高速有效地传输数据。</p>
+<div id="功能描述" class="section level2 hasAnchor">
+<h2><span class="header-section-number">3.1</span> 功能描述<a href="dma简介-ch-dma.html#功能描述" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="特点" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.1.1</span> 特点<a href="dma简介-ch-dma.html#特点" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>符合AMBA、AHB和APB4标准</p></li>
+<li><p>最多8个DMA通道</p></li>
+<li><p>最多16个硬件握手请求/确认配对</p></li>
+<li><p>支持8/16/32/64位宽的数据传输</p></li>
+<li><p>支持24-64位地址宽度</p></li>
+<li><p>支持成链传输数据</p></li>
+</ul>
+</div>
+<div id="搬运方式" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.1.2</span> 搬运方式<a href="dma简介-ch-dma.html#搬运方式" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>单次数据块搬运：DMA使用单个通道，一次使能将数据从SRC到DST位置搬运一次</p></li>
+<li><p>成串多数据块搬运：DMA使用单个通道，一次使能按照DMA链表信息依次将数据从SRC到DST位置搬运多次或循环搬运。</p></li>
+</ul>
+<p>其根本区别是有无注册有效的DMA链表。</p>
+</div>
+<div id="搬运类型" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.1.3</span> 搬运类型<a href="dma简介-ch-dma.html#搬运类型" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>memory到memory搬运</p></li>
+<li><p>memory到peripheral搬运</p></li>
+<li><p>peripheral到memory搬运</p></li>
+<li><p>peripheral到peripheral搬运</p></li>
+</ul>
+</div>
+<div id="中断类型" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.1.4</span> 中断类型<a href="dma简介-ch-dma.html#中断类型" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>IntErr：错误中断表示DMA传输发生了错误而触发中断，主要包括总线错误、地址没对齐和传输数据宽度没对齐等。</p></li>
+<li><p>IntAbt：终止传输中断会在终止DMA通道传输时产生。</p></li>
+<li><p>IntTC：TC中断会在没有产生IntErr和IntAbt的情况下完成一次传输时产生。</p></li>
+</ul>
+</div>
+<div id="数据地址类型" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.1.5</span> 数据地址类型<a href="dma简介-ch-dma.html#数据地址类型" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>Increment address</p></li>
+<li><p>Decrement address</p></li>
+<li><p>Fixed address</p></li>
+</ul>
+<p>如果Increment则DMA从地址有小到大搬运数据，相反的Decrement则由大到小搬运。fixed地址适用于外设FIFO的寄存器搬运数据。</p>
+</div>
+<div id="数据方式" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.1.6</span> 数据方式<a href="dma简介-ch-dma.html#数据方式" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>normal mode</p></li>
+<li><p>handshake mode</p></li>
+</ul>
+<p>一般外设寄存器选择用握手方式。</p>
+<p>选择握手方式要和外设协商好SrcBurstSize，当前支持2^n(n = 0-7)大小的SrcBurstSize。</p>
+</div>
+<div id="数据位宽" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.1.7</span> 数据位宽<a href="dma简介-ch-dma.html#数据位宽" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>DMA传输要求传输两端的数据类型一致，支持数据类型有：</p>
+<ul>
+<li><p>Byte transfer</p></li>
+<li><p>Half-word transfer</p></li>
+<li><p>Word transfer</p></li>
+<li><p>Double word transfer</p></li>
+</ul>
+<p>覆盖所有常见数据类型。</p>
+</div>
+</div>
+<div id="使用方法" class="section level2 hasAnchor">
+<h2><span class="header-section-number">3.2</span> 使用方法<a href="dma简介-ch-dma.html#使用方法" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="方法概述" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.2.1</span> 方法概述<a href="dma简介-ch-dma.html#方法概述" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>首先确认数据搬运需求是单次搬运还是成串搬运，搬运类型memory和peripheral的关系。</p>
+<div id="单次搬运" class="section level4 hasAnchor">
+<h4><span class="header-section-number">3.2.1.1</span> 单次搬运<a href="dma简介-ch-dma.html#单次搬运" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><strong>1.</strong> 注册DMA中断</p>
+<p><strong>2.</strong> 定义一个DMA_Descriptor变量用来配置DMA通道寄存器</p>
+<p><strong>3.</strong> 根据数据搬运类型选择DMA寄存器配置接口，正确调用驱动接口配置DMA寄存器</p>
+<p><strong>4.</strong> 使能DMA通道开始搬运</p>
+</div>
+<div id="成串搬运" class="section level4 hasAnchor">
+<h4><span class="header-section-number">3.2.1.2</span> 成串搬运<a href="dma简介-ch-dma.html#成串搬运" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><strong>1.</strong> 注册一个或多个DMA中断</p>
+<p><strong>2.</strong> 定义多个DMA_Descriptor变量用来配置DMA通道寄存器</p>
+<p><strong>3.</strong> 根据数据搬运类型选择DMA寄存器配置接口，正确调用驱动接口配置DMA寄存器</p>
+<p><strong>4.</strong> 将多个DMA_Descriptor变量首尾相连成串，类似链表</p>
+<p><strong>5.</strong> 使能DMA通道开始搬运</p>
+</div>
+</div>
+<div id="注意点" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.2.2</span> 注意点<a href="dma简介-ch-dma.html#注意点" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>定义DMA_Descriptor变量需要8字节对齐，否则DMA搬运不成功</p></li>
+<li><p>成串搬运如果配置多个DMA中断则需要在每个中断里使能DMA，直到最后一次搬运完成</p></li>
+<li><p>对于从外设搬运需要确认外设是否支持DMA</p></li>
+<li><p>建议从外设搬运选择握手方式，并与外设正确协商burstSize</p></li>
+<li><p>burstSize尽量取较大值，有利于减少DMA中断次数提高单次中断处理效率。但burstSize太大可能最后一次不能搬运丢弃较多数据</p></li>
+<li><p>建议设置从外设搬运总数据量为burstSize的整数倍或采用乒乓搬运的方式</p></li>
+<li><p>在DMA从外设搬运的情况下，正确的操作顺序是先配置并使能好DMA，再使能外设开始产生数据</p></li>
+</ul>
+</div>
+</div>
+<div id="编程指南" class="section level2 hasAnchor">
+<h2><span class="header-section-number">3.3</span> 编程指南<a href="dma简介-ch-dma.html#编程指南" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="驱动接口" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.3.1</span> 驱动接口<a href="dma简介-ch-dma.html#驱动接口" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>DMA_PrepareMem2Mem：memory到memory搬运标准DMA寄存器配置接口</p></li>
+<li><p>DMA_PreparePeripheral2Mem：Peripheral到memory搬运标准DMA寄存器配置接口</p></li>
+<li><p>DMA_PrepareMem2Peripheral：memory到Peripheral搬运标准DMA寄存器配置接口</p></li>
+<li><p>DMA_PreparePeripheral2Peripheral：Peripheral到Peripheral搬运标准DMA寄存器配置接口</p></li>
+<li><p>DMA_Reset：DMA复位接口</p></li>
+<li><p>DMA_GetChannelIntState：DMA通道中断状态获取接口</p></li>
+<li><p>DMA_ClearChannelIntState：DMA通道清中断接口</p></li>
+<li><p>DMA_EnableChannel：DMA通道使能接口</p></li>
+<li><p>DMA_AbortChannel：DMA通道终止接口</p></li>
+</ul>
+</div>
+<div id="代码示例" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.3.2</span> 代码示例<a href="dma简介-ch-dma.html#代码示例" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="单次搬运-1" class="section level4 hasAnchor">
+<h4><span class="header-section-number">3.3.2.1</span> 单次搬运<a href="dma简介-ch-dma.html#单次搬运-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>下面以memory到memory单次搬运展示DMA的基本用法：</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="dma简介-ch-dma.html#cb1-1"></a><span class="pp">#define CHANNEL_ID  0</span></span>
+<span id="cb1-2"><a href="dma简介-ch-dma.html#cb1-2"></a><span class="dt">char</span> src[] = <span class="st">&quot;hello world!&quot;</span>;</span>
+<span id="cb1-3"><a href="dma简介-ch-dma.html#cb1-3"></a><span class="dt">char</span> dst[<span class="dv">20</span>];</span>
+<span id="cb1-4"><a href="dma简介-ch-dma.html#cb1-4"></a>DMA_Descriptor test __attribute__((aligned (<span class="dv">8</span>)));</span>
+<span id="cb1-5"><a href="dma简介-ch-dma.html#cb1-5"></a><span class="dt">static</span> <span class="dt">uint32_t</span> DMA_cb_isr(<span class="dt">void</span> *user_data)</span>
+<span id="cb1-6"><a href="dma简介-ch-dma.html#cb1-6"></a>{</span>
+<span id="cb1-7"><a href="dma简介-ch-dma.html#cb1-7"></a>    <span class="dt">uint32_t</span> state = DMA_GetChannelIntState(CHANNEL_ID);</span>
+<span id="cb1-8"><a href="dma简介-ch-dma.html#cb1-8"></a>    DMA_ClearChannelIntState(CHANNEL_ID, state);</span>
+<span id="cb1-9"><a href="dma简介-ch-dma.html#cb1-9"></a></span>
+<span id="cb1-10"><a href="dma简介-ch-dma.html#cb1-10"></a>    printf(<span class="st">&quot;dst = %s</span><span class="sc">\n</span><span class="st">&quot;</span>, dst);</span>
+<span id="cb1-11"><a href="dma简介-ch-dma.html#cb1-11"></a>    <span class="cf">return</span> <span class="dv">0</span>;</span>
+<span id="cb1-12"><a href="dma简介-ch-dma.html#cb1-12"></a>}</span>
+<span id="cb1-13"><a href="dma简介-ch-dma.html#cb1-13"></a></span>
+<span id="cb1-14"><a href="dma简介-ch-dma.html#cb1-14"></a><span class="dt">void</span> DMA_Test(<span class="dt">void</span>)</span>
+<span id="cb1-15"><a href="dma简介-ch-dma.html#cb1-15"></a>{</span>
+<span id="cb1-16"><a href="dma简介-ch-dma.html#cb1-16"></a>    DMA_Reset();</span>
+<span id="cb1-17"><a href="dma简介-ch-dma.html#cb1-17"></a>    platform_set_irq_callback(PLATFORM_CB_IRQ_DMA, DMA_cb_isr, <span class="dv">0</span>);</span>
+<span id="cb1-18"><a href="dma简介-ch-dma.html#cb1-18"></a>    DMA_PrepareMem2Mem(&amp;test[<span class="dv">0</span>],</span>
+<span id="cb1-19"><a href="dma简介-ch-dma.html#cb1-19"></a>                       dst,</span>
+<span id="cb1-20"><a href="dma简介-ch-dma.html#cb1-20"></a>                       src, strlen(src),</span>
+<span id="cb1-21"><a href="dma简介-ch-dma.html#cb1-21"></a>                       DMA_ADDRESS_INC, DMA_ADDRESS_INC, <span class="dv">0</span>);</span>
+<span id="cb1-22"><a href="dma简介-ch-dma.html#cb1-22"></a>    DMA_EnableChannel(CHANNEL_ID, &amp;test);</span>
+<span id="cb1-23"><a href="dma简介-ch-dma.html#cb1-23"></a>}</span></code></pre></div>
+<p>最终会在DMA中断程序里面将搬运到dst中的“hello world!”字符串打印出来。</p>
+</div>
+<div id="成串搬运-1" class="section level4 hasAnchor">
+<h4><span class="header-section-number">3.3.2.2</span> 成串搬运<a href="dma简介-ch-dma.html#成串搬运-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>下面以memory到memory两块数据搬运拼接字符串展示DMA成串搬运的基本用法：</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="dma简介-ch-dma.html#cb2-1"></a><span class="pp">#define CHANNEL_ID  0</span></span>
+<span id="cb2-2"><a href="dma简介-ch-dma.html#cb2-2"></a><span class="dt">char</span> src[] = <span class="st">&quot;hello world!&quot;</span>;</span>
+<span id="cb2-3"><a href="dma简介-ch-dma.html#cb2-3"></a><span class="dt">char</span> src1[] = <span class="st">&quot;I am a chinese.&quot;</span>;</span>
+<span id="cb2-4"><a href="dma简介-ch-dma.html#cb2-4"></a><span class="dt">char</span> dst[<span class="dv">100</span>];</span>
+<span id="cb2-5"><a href="dma简介-ch-dma.html#cb2-5"></a>DMA_Descriptor test[<span class="dv">2</span>] __attribute__((aligned (<span class="dv">8</span>)));</span>
+<span id="cb2-6"><a href="dma简介-ch-dma.html#cb2-6"></a><span class="dt">static</span> <span class="dt">uint32_t</span> DMA_cb_isr(<span class="dt">void</span> *user_data)</span>
+<span id="cb2-7"><a href="dma简介-ch-dma.html#cb2-7"></a>{</span>
+<span id="cb2-8"><a href="dma简介-ch-dma.html#cb2-8"></a>    <span class="dt">uint32_t</span> state = DMA_GetChannelIntState(CHANNEL_ID);</span>
+<span id="cb2-9"><a href="dma简介-ch-dma.html#cb2-9"></a>    DMA_ClearChannelIntState(CHANNEL_ID, state);</span>
+<span id="cb2-10"><a href="dma简介-ch-dma.html#cb2-10"></a></span>
+<span id="cb2-11"><a href="dma简介-ch-dma.html#cb2-11"></a>    printf(<span class="st">&quot;dst = %s</span><span class="sc">\n</span><span class="st">&quot;</span>, dst);</span>
+<span id="cb2-12"><a href="dma简介-ch-dma.html#cb2-12"></a>    <span class="cf">return</span> <span class="dv">0</span>;</span>
+<span id="cb2-13"><a href="dma简介-ch-dma.html#cb2-13"></a>}</span>
+<span id="cb2-14"><a href="dma简介-ch-dma.html#cb2-14"></a></span>
+<span id="cb2-15"><a href="dma简介-ch-dma.html#cb2-15"></a><span class="dt">void</span> DMA_Test(<span class="dt">void</span>)</span>
+<span id="cb2-16"><a href="dma简介-ch-dma.html#cb2-16"></a>{</span>
+<span id="cb2-17"><a href="dma简介-ch-dma.html#cb2-17"></a>    DMA_Reset();</span>
+<span id="cb2-18"><a href="dma简介-ch-dma.html#cb2-18"></a>    platform_set_irq_callback(PLATFORM_CB_IRQ_DMA, DMA_cb_isr, <span class="dv">0</span>);</span>
+<span id="cb2-19"><a href="dma简介-ch-dma.html#cb2-19"></a>      test[<span class="dv">0</span>].Next = &amp;test[<span class="dv">1</span>];    <span class="co">// make a DMA link chain</span></span>
+<span id="cb2-20"><a href="dma简介-ch-dma.html#cb2-20"></a>      test[<span class="dv">1</span>].Next = NULL;</span>
+<span id="cb2-21"><a href="dma简介-ch-dma.html#cb2-21"></a>    DMA_PrepareMem2Mem(&amp;test[<span class="dv">0</span>],</span>
+<span id="cb2-22"><a href="dma简介-ch-dma.html#cb2-22"></a>                       dst,</span>
+<span id="cb2-23"><a href="dma简介-ch-dma.html#cb2-23"></a>                       src, strlen(src),</span>
+<span id="cb2-24"><a href="dma简介-ch-dma.html#cb2-24"></a>                       DMA_ADDRESS_INC, DMA_ADDRESS_INC, <span class="dv">0</span>);</span>
+<span id="cb2-25"><a href="dma简介-ch-dma.html#cb2-25"></a>    DMA_PrepareMem2Mem(&amp;test[<span class="dv">1</span>],</span>
+<span id="cb2-26"><a href="dma简介-ch-dma.html#cb2-26"></a>                       dst + strlen(src),</span>
+<span id="cb2-27"><a href="dma简介-ch-dma.html#cb2-27"></a>                       src1, <span class="kw">sizeof</span>(src1),</span>
+<span id="cb2-28"><a href="dma简介-ch-dma.html#cb2-28"></a>                       DMA_ADDRESS_INC, DMA_ADDRESS_INC, <span class="dv">0</span>);</span>
+<span id="cb2-29"><a href="dma简介-ch-dma.html#cb2-29"></a>    DMA_EnableChannel(CHANNEL_ID, &amp;test[<span class="dv">0</span>]);</span>
+<span id="cb2-30"><a href="dma简介-ch-dma.html#cb2-30"></a>}</span></code></pre></div>
+<p>最终将会打印出“hello world!I am a chinese.”字符串。</p>
+</div>
+<div id="dma乒乓搬运" class="section level4 hasAnchor">
+<h4><span class="header-section-number">3.3.2.3</span> DMA乒乓搬运<a href="dma简介-ch-dma.html#dma乒乓搬运" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>DMA乒乓搬运是一种DMA搬运的特殊用法，其主要应用场景是将外设FIFO中数据循环搬运到memory中并处理。</p>
+<p>可实现“搬运”和“数据处理”分离，从而大大提高程序处理数据的效率。</p>
+<p>下面将以最常见的DMA乒乓搬运I2s数据为例展示DMA乒乓搬运的用法。</p>
+<p>I2s的相关配置不在本文的介绍范围内，默认I2s已经配置好，DMA和I2s协商burstSize=8。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="dma简介-ch-dma.html#cb3-1"></a><span class="pp">#define CHANNEL_ID  0</span></span>
+<span id="cb3-2"><a href="dma简介-ch-dma.html#cb3-2"></a><span class="dt">char</span> dst[<span class="dv">80</span>];</span>
+<span id="cb3-3"><a href="dma简介-ch-dma.html#cb3-3"></a>DMA_Descriptor test[<span class="dv">2</span>] __attribute__((aligned (<span class="dv">8</span>)));</span>
+<span id="cb3-4"><a href="dma简介-ch-dma.html#cb3-4"></a><span class="dt">uint8_t</span> pingpang = <span class="dv">0</span>;</span>
+<span id="cb3-5"><a href="dma简介-ch-dma.html#cb3-5"></a><span class="dt">static</span> <span class="dt">uint32_t</span> DMA_cb_isr(<span class="dt">void</span> *user_data)</span>
+<span id="cb3-6"><a href="dma简介-ch-dma.html#cb3-6"></a>{</span>
+<span id="cb3-7"><a href="dma简介-ch-dma.html#cb3-7"></a>    <span class="dt">uint32_t</span> state = DMA_GetChannelIntState(CHANNEL_ID);</span>
+<span id="cb3-8"><a href="dma简介-ch-dma.html#cb3-8"></a>    DMA_ClearChannelIntState(CHANNEL_ID, state);</span>
+<span id="cb3-9"><a href="dma简介-ch-dma.html#cb3-9"></a></span>
+<span id="cb3-10"><a href="dma简介-ch-dma.html#cb3-10"></a>    pingpang ^= <span class="dv">1</span>;</span>
+<span id="cb3-11"><a href="dma简介-ch-dma.html#cb3-11"></a>    DMA_EnableChannel(CHANNEL_ID, &amp;test[pingpang]);</span>
+<span id="cb3-12"><a href="dma简介-ch-dma.html#cb3-12"></a></span>
+<span id="cb3-13"><a href="dma简介-ch-dma.html#cb3-13"></a>    <span class="co">// do something to handle the data in &#39;dst&#39; buffer</span></span>
+<span id="cb3-14"><a href="dma简介-ch-dma.html#cb3-14"></a></span>
+<span id="cb3-15"><a href="dma简介-ch-dma.html#cb3-15"></a>    <span class="cf">return</span> <span class="dv">0</span>;</span>
+<span id="cb3-16"><a href="dma简介-ch-dma.html#cb3-16"></a>}</span>
+<span id="cb3-17"><a href="dma简介-ch-dma.html#cb3-17"></a></span>
+<span id="cb3-18"><a href="dma简介-ch-dma.html#cb3-18"></a><span class="dt">void</span> DMA_Test(<span class="dt">void</span>)</span>
+<span id="cb3-19"><a href="dma简介-ch-dma.html#cb3-19"></a>{</span>
+<span id="cb3-20"><a href="dma简介-ch-dma.html#cb3-20"></a>    DMA_Reset();</span>
+<span id="cb3-21"><a href="dma简介-ch-dma.html#cb3-21"></a>    platform_set_irq_callback(PLATFORM_CB_IRQ_DMA, DMA_cb_isr, <span class="dv">0</span>);</span>
+<span id="cb3-22"><a href="dma简介-ch-dma.html#cb3-22"></a>    test[<span class="dv">0</span>].Next = &amp;test[<span class="dv">1</span>];</span>
+<span id="cb3-23"><a href="dma简介-ch-dma.html#cb3-23"></a>    test[<span class="dv">1</span>].Next = &amp;test[<span class="dv">0</span>];    <span class="co">// make a DMA link cycle</span></span>
+<span id="cb3-24"><a href="dma简介-ch-dma.html#cb3-24"></a>    DMA_PreparePeripheral2RAM(&amp;test[<span class="dv">0</span>],</span>
+<span id="cb3-25"><a href="dma简介-ch-dma.html#cb3-25"></a>                              dst,</span>
+<span id="cb3-26"><a href="dma简介-ch-dma.html#cb3-26"></a>                              SYSCTRL_DMA_I2S_RX,</span>
+<span id="cb3-27"><a href="dma简介-ch-dma.html#cb3-27"></a>                              <span class="dv">80</span>,</span>
+<span id="cb3-28"><a href="dma简介-ch-dma.html#cb3-28"></a>                              DMA_ADDRESS_INC,</span>
+<span id="cb3-29"><a href="dma简介-ch-dma.html#cb3-29"></a>                              <span class="dv">0</span> | <span class="dv">8</span> &lt;&lt; <span class="dv">24</span> | <span class="dv">1</span> &lt;&lt; <span class="dv">28</span>);</span>
+<span id="cb3-30"><a href="dma简介-ch-dma.html#cb3-30"></a>    DMA_PreparePeripheral2RAM(&amp;test[<span class="dv">1</span>],</span>
+<span id="cb3-31"><a href="dma简介-ch-dma.html#cb3-31"></a>                              dst,</span>
+<span id="cb3-32"><a href="dma简介-ch-dma.html#cb3-32"></a>                              SYSCTRL_DMA_I2S_RX,</span>
+<span id="cb3-33"><a href="dma简介-ch-dma.html#cb3-33"></a>                              <span class="dv">80</span>,</span>
+<span id="cb3-34"><a href="dma简介-ch-dma.html#cb3-34"></a>                              DMA_ADDRESS_INC,</span>
+<span id="cb3-35"><a href="dma简介-ch-dma.html#cb3-35"></a>                              <span class="dv">0</span> | <span class="dv">8</span> &lt;&lt; <span class="dv">24</span> | <span class="dv">1</span> &lt;&lt; <span class="dv">28</span>);</span>
+<span id="cb3-36"><a href="dma简介-ch-dma.html#cb3-36"></a>    DMA_EnableChannel(CHANNEL_ID, &amp;test[pingpang]);</span>
+<span id="cb3-37"><a href="dma简介-ch-dma.html#cb3-37"></a>    I2S_ClearRxFIFO(APB_I2S);</span>
+<span id="cb3-38"><a href="dma简介-ch-dma.html#cb3-38"></a>    I2S_DMAEnable(APB_I2S, <span class="dv">1</span>, <span class="dv">1</span>);</span>
+<span id="cb3-39"><a href="dma简介-ch-dma.html#cb3-39"></a>    I2S_Enable(APB_I2S, <span class="dv">0</span>, <span class="dv">1</span>);   <span class="co">// Enable I2s finally</span></span>
+<span id="cb3-40"><a href="dma简介-ch-dma.html#cb3-40"></a>}</span></code></pre></div>
 
+</div>
+</div>
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="ir-红外.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="pte简介.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="ch-overview.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="efuseselectronic-fuses.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

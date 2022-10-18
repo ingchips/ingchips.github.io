@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>9 PTE简介 | ING916XX 系列芯片外设开发者手册</title>
+  <title>11 实时时钟（RTC） | ING916XX 系列芯片外设开发者手册</title>
   <meta name="description" content="ING916XX 系列芯片开发者手册." />
   <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="9 PTE简介 | ING916XX 系列芯片外设开发者手册" />
+  <meta property="og:title" content="11 实时时钟（RTC） | ING916XX 系列芯片外设开发者手册" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="ING916XX 系列芯片开发者手册." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="9 PTE简介 | ING916XX 系列芯片外设开发者手册" />
+  <meta name="twitter:title" content="11 实时时钟（RTC） | ING916XX 系列芯片外设开发者手册" />
   
   <meta name="twitter:description" content="ING916XX 系列芯片开发者手册." />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="ch-pinctrl.html"/>
-<link rel="next" href="ch-pwm.html"/>
+<link rel="prev" href="ch-pwm.html"/>
+<link rel="next" href="spi功能概述.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -310,166 +310,90 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="pte简介" class="section level1 hasAnchor">
-<h1><span class="header-section-number">9</span> PTE简介<a href="pte简介.html#pte简介" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p>PTE全称Peripheral trigger engine，即外设触发引擎。</p>
-<p>其主要作用是使外围设备可以通过其他外围设备或事件独立于CPU进行自主交互。PTE允许外围设备之间可以精确触发。</p>
-<div id="功能描述-1" class="section level2 hasAnchor">
-<h2><span class="header-section-number">9.1</span> 功能描述<a href="pte简介.html#功能描述-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="特点-1" class="section level3 hasAnchor">
-<h3><span class="header-section-number">9.1.1</span> 特点<a href="pte简介.html#特点-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="ch-rtc" class="section level1 hasAnchor">
+<h1><span class="header-section-number">11</span> 实时时钟（RTC）<a href="ch-rtc.html#ch-rtc" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="功能描述-2" class="section level2 hasAnchor">
+<h2><span class="header-section-number">11.1</span> 功能描述<a href="ch-rtc.html#功能描述-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>实时时钟是一个独立的定时器。RTC模块拥有一组连续计数的计数器，在相应的软件配置下，
+可提供时钟日历的功能。修改计数器的值可以重新设置系统当前的时间和日期。</p>
+</div>
+<div id="使用说明-3" class="section level2 hasAnchor">
+<h2><span class="header-section-number">11.2</span> 使用说明<a href="ch-rtc.html#使用说明-3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="rtc使能" class="section level3 hasAnchor">
+<h3><span class="header-section-number">11.2.1</span> RTC使能<a href="ch-rtc.html#rtc使能" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>RTC_Enable</code> 使能RTC。</p>
+<div class="sourceCode" id="cb98"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb98-1"><a href="ch-rtc.html#cb98-1"></a><span class="dt">void</span> RTC_Enable(<span class="dt">uint8_t</span> enable);</span></code></pre></div>
+</div>
+<div id="获取当前日期" class="section level3 hasAnchor">
+<h3><span class="header-section-number">11.2.2</span> 获取当前日期<a href="ch-rtc.html#获取当前日期" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>RTC_GetTime</code> 获取当前时间（包括时分秒）。</p>
+<div class="sourceCode" id="cb99"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb99-1"><a href="ch-rtc.html#cb99-1"></a><span class="dt">uint16_t</span> RTC_GetTime(</span>
+<span id="cb99-2"><a href="ch-rtc.html#cb99-2"></a>  <span class="dt">uint8_t</span> *hour, </span>
+<span id="cb99-3"><a href="ch-rtc.html#cb99-3"></a>  <span class="dt">uint8_t</span> *minute, </span>
+<span id="cb99-4"><a href="ch-rtc.html#cb99-4"></a>  <span class="dt">uint8_t</span> *second</span>
+<span id="cb99-5"><a href="ch-rtc.html#cb99-5"></a>  );</span></code></pre></div>
+</div>
+<div id="修改日期" class="section level3 hasAnchor">
+<h3><span class="header-section-number">11.2.3</span> 修改日期<a href="ch-rtc.html#修改日期" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>RTC_ModifyTime</code> 修改当前时间。</p>
+<div class="sourceCode" id="cb100"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb100-1"><a href="ch-rtc.html#cb100-1"></a><span class="dt">void</span> RTC_ModifyTime(</span>
+<span id="cb100-2"><a href="ch-rtc.html#cb100-2"></a>  <span class="dt">uint16_t</span> day, </span>
+<span id="cb100-3"><a href="ch-rtc.html#cb100-3"></a>  <span class="dt">uint8_t</span> hour, </span>
+<span id="cb100-4"><a href="ch-rtc.html#cb100-4"></a>  <span class="dt">uint8_t</span> minute, </span>
+<span id="cb100-5"><a href="ch-rtc.html#cb100-5"></a>  <span class="dt">uint8_t</span> second</span>
+<span id="cb100-6"><a href="ch-rtc.html#cb100-6"></a>  );</span></code></pre></div>
+<p>ws
+### 配置闹钟</p>
+<p>使用 <code>RTC_ConfigAlarm</code></p>
+<div class="sourceCode" id="cb101"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb101-1"><a href="ch-rtc.html#cb101-1"></a><span class="dt">void</span> RTC_ConfigAlarm(</span>
+<span id="cb101-2"><a href="ch-rtc.html#cb101-2"></a>  <span class="dt">uint8_t</span> hour, </span>
+<span id="cb101-3"><a href="ch-rtc.html#cb101-3"></a>  <span class="dt">uint8_t</span> minute, </span>
+<span id="cb101-4"><a href="ch-rtc.html#cb101-4"></a>  <span class="dt">uint8_t</span> second</span>
+<span id="cb101-5"><a href="ch-rtc.html#cb101-5"></a>  );</span></code></pre></div>
+</div>
+<div id="配置中断请求-1" class="section level3 hasAnchor">
+<h3><span class="header-section-number">11.2.4</span> 配置中断请求<a href="ch-rtc.html#配置中断请求-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>RTC_EnableIRQ</code> 配置并使能RTC中断请求。</p>
+<div class="sourceCode" id="cb102"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb102-1"><a href="ch-rtc.html#cb102-1"></a><span class="dt">void</span> RTC_EnableIRQ(<span class="dt">uint32_t</span> mask);</span></code></pre></div>
+<p>其中的 <code>mask</code> 为RTC中断类型，一共有六种：</p>
+<div class="sourceCode" id="cb103"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb103-1"><a href="ch-rtc.html#cb103-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
+<span id="cb103-2"><a href="ch-rtc.html#cb103-2"></a>{</span>
+<span id="cb103-3"><a href="ch-rtc.html#cb103-3"></a>    RTC_IRQ_ALARM = <span class="bn">0x04</span>,</span>
+<span id="cb103-4"><a href="ch-rtc.html#cb103-4"></a>    RTC_IRQ_DAY = <span class="bn">0x08</span>,</span>
+<span id="cb103-5"><a href="ch-rtc.html#cb103-5"></a>    RTC_IRQ_HOUR = <span class="bn">0x10</span>,</span>
+<span id="cb103-6"><a href="ch-rtc.html#cb103-6"></a>    RTC_IRQ_MINUTE = <span class="bn">0x20</span>,</span>
+<span id="cb103-7"><a href="ch-rtc.html#cb103-7"></a>    RTC_IRQ_SECOND = <span class="bn">0x40</span>,</span>
+<span id="cb103-8"><a href="ch-rtc.html#cb103-8"></a>    RTC_IRQ_HALF_SECOND = <span class="bn">0x80</span>,</span>
+<span id="cb103-9"><a href="ch-rtc.html#cb103-9"></a>} rtc_irq_t;</span></code></pre></div>
 <ul>
-<li><p>支持APB总线触发</p></li>
-<li><p>支持4通道PTE</p></li>
-<li><p>支持复用触发源或复用触发地址</p></li>
-<li><p>支持产生CPU中断</p></li>
+<li><p>例如将 RTC 设置为alarm中断</p>
+<div class="sourceCode" id="cb104"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb104-1"><a href="ch-rtc.html#cb104-1"></a>RTC_EnableIRQ(RTC_IRQ_ALARM);</span></code></pre></div></li>
+<li><p>例如将 RTC 设置为day中断</p>
+<div class="sourceCode" id="cb105"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb105-1"><a href="ch-rtc.html#cb105-1"></a>RTC_EnableIRQ(RTC_IRQ_DAY);</span></code></pre></div></li>
+<li><p>例如将 RTC 设置为hour中断</p>
+<div class="sourceCode" id="cb106"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb106-1"><a href="ch-rtc.html#cb106-1"></a>RTC_EnableIRQ(RTC_IRQ_HOUR);</span></code></pre></div></li>
+<li><p>例如将 RTC 设置为minute中断</p>
+<div class="sourceCode" id="cb107"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb107-1"><a href="ch-rtc.html#cb107-1"></a>RTC_EnableIRQ(RTC_IRQ_MINUTE);</span></code></pre></div></li>
+<li><p>例如将 RTC 设置为second中断</p>
+<div class="sourceCode" id="cb108"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb108-1"><a href="ch-rtc.html#cb108-1"></a>RTC_EnableIRQ(RTC_IRQ_SECOND);</span></code></pre></div></li>
+<li><p>例如将 RTC 设置为half-second中断</p>
+<div class="sourceCode" id="cb109"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb109-1"><a href="ch-rtc.html#cb109-1"></a>RTC_EnableIRQ(RTC_IRQ_HALF_SECOND);</span></code></pre></div></li>
 </ul>
 </div>
-<div id="pte原理图" class="section level3 hasAnchor">
-<h3><span class="header-section-number">9.1.2</span> PTE原理图<a href="pte简介.html#pte原理图" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="figure" style="text-align: center"><span style="display:block;" id="fig:PTE"></span>
-<img src="img/PTE/PTE_structure.png" alt="PTE原理图" width="100%" />
-<p class="caption">
-图 9.1: PTE原理图
-</p>
+<div id="获取当前中断状态" class="section level3 hasAnchor">
+<h3><span class="header-section-number">11.2.5</span> 获取当前中断状态<a href="ch-rtc.html#获取当前中断状态" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>RTC_GetIntState</code> 获取当前RTC的中断状态。</p>
+<div class="sourceCode" id="cb110"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb110-1"><a href="ch-rtc.html#cb110-1"></a><span class="dt">uint32_t</span> RTC_GetIntState(<span class="dt">void</span>);</span></code></pre></div>
 </div>
+<div id="清除中断" class="section level3 hasAnchor">
+<h3><span class="header-section-number">11.2.6</span> 清除中断<a href="ch-rtc.html#清除中断" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>RTC_ClearIntState</code> 清除当前RTC的中断状态。</p>
+<div class="sourceCode" id="cb111"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb111-1"><a href="ch-rtc.html#cb111-1"></a><span class="dt">void</span> RTC_ClearIntState(<span class="dt">uint32_t</span> state);</span></code></pre></div>
 </div>
-<div id="功能" class="section level3 hasAnchor">
-<h3><span class="header-section-number">9.1.3</span> 功能<a href="pte简介.html#功能" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>PTE具有不同外设之间的可编程内部通道，可以从src外设触发dst外设。PTE可以不依赖CPU而通过硬件的方式触发任务，因此任务可以在同步DFF所占用的周期内启动。</p>
-<p>src外设通过pte_in_mask配置，dst外设通过pte_out_mask配置。在SOC中集成了4个PTE通道，每个通道可以通过通道使能信号来启用/禁用。</p>
-<p>当DFF为高时PTE中断将挂起。在清除PTE中断之前，src外设中断必须被清除，否则另一个启动脉冲将发送到dst外设，这可能会产生未知的错误。</p>
-</div>
-</div>
-<div id="使用方法-1" class="section level2 hasAnchor">
-<h2><span class="header-section-number">9.2</span> 使用方法<a href="pte简介.html#使用方法-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="方法概述-1" class="section level3 hasAnchor">
-<h3><span class="header-section-number">9.2.1</span> 方法概述<a href="pte简介.html#方法概述-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>PTE使用方法总结为：建议不使用PTE中断，在dst外设中断里清PTE中断（或关闭PTE通道）。</p>
-<p><strong>1.</strong> 配置触发外设和被触发外设以及相应中断（被触发外设中断一定要有）</p>
-<p><strong>2.</strong> 配置要使用的PTE通道寄存器以及中断（建议不使用PTE中断）</p>
-<p><strong>3.</strong> 使能触发外设，等待PTE中断（如定义）和被触发外设来中断</p>
-<p><strong>4.</strong> 在PTE中断中清PTE mask（如定义）</p>
-<p><strong>5.</strong> 在被触发外设中断中清PTE中断（如定义），如果只触发一次则直接关闭PTE通道</p>
-</div>
-<div id="注意点-1" class="section level3 hasAnchor">
-<h3><span class="header-section-number">9.2.2</span> 注意点<a href="pte简介.html#注意点-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<ul>
-<li><p>不清src中断会循环通过PTE触发dst外设，使程序陷入死循环</p></li>
-<li><p>不清PTE中断会循环触发dst外设，使程序陷入死循环</p></li>
-<li><p>PTE中断优先级低容易被打断，在极端情况下如果dst外设来中断非常快会出问题（一般不会）</p></li>
-<li><p>使用PTE中断会更多占用CPU资源并增加触发过程操作复杂度、增加出错风险，中断处理程序完全可以在src和dst中断中完成，所以强烈建议不要使用PTE中断</p></li>
-</ul>
-</div>
-</div>
-<div id="编程指南-1" class="section level2 hasAnchor">
-<h2><span class="header-section-number">9.3</span> 编程指南<a href="pte简介.html#编程指南-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="srcdst外设" class="section level3 hasAnchor">
-<h3><span class="header-section-number">9.3.1</span> src&amp;dst外设<a href="pte简介.html#srcdst外设" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>当前PTE支持的src外设定义在SYSCTRL_PTE_SRC_INT中：</p>
-<div class="sourceCode" id="cb73"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb73-1"><a href="pte简介.html#cb73-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb73-2"><a href="pte简介.html#cb73-2"></a>{</span>
-<span id="cb73-3"><a href="pte简介.html#cb73-3"></a>    SYSCTRL_PTE_I2C0_INT       = <span class="dv">0</span>,</span>
-<span id="cb73-4"><a href="pte简介.html#cb73-4"></a>    SYSCTRL_PTE_I2C1_INT       = <span class="dv">1</span>,</span>
-<span id="cb73-5"><a href="pte简介.html#cb73-5"></a>    SYSCTRL_PTE_SARADC_INT     = <span class="dv">2</span>,</span>
-<span id="cb73-6"><a href="pte简介.html#cb73-6"></a>    SYSCTRL_PTE_I2S_INT        = <span class="dv">3</span>,</span>
-<span id="cb73-7"><a href="pte简介.html#cb73-7"></a>    SYSCTRL_PTE_DMA_INT        = <span class="dv">4</span>,</span>
-<span id="cb73-8"><a href="pte简介.html#cb73-8"></a>    SYSCTRL_PTE_IR_INT         = <span class="dv">5</span>,</span>
-<span id="cb73-9"><a href="pte简介.html#cb73-9"></a>    SYSCTRL_PTE_KEYSCANNER_INT = <span class="dv">6</span>,</span>
-<span id="cb73-10"><a href="pte简介.html#cb73-10"></a>    SYSCTRL_PTE_PWMC0_INT      = <span class="dv">7</span>,</span>
-<span id="cb73-11"><a href="pte简介.html#cb73-11"></a>    SYSCTRL_PTE_PWMC1_INT      = <span class="dv">8</span>,</span>
-<span id="cb73-12"><a href="pte简介.html#cb73-12"></a>    SYSCTRL_PTE_PWMC2_INT      = <span class="dv">9</span>,</span>
-<span id="cb73-13"><a href="pte简介.html#cb73-13"></a>    SYSCTRL_PTE_TIMER0_INT     = <span class="dv">10</span>,</span>
-<span id="cb73-14"><a href="pte简介.html#cb73-14"></a>    SYSCTRL_PTE_TIMER1_INT     = <span class="dv">11</span>,</span>
-<span id="cb73-15"><a href="pte简介.html#cb73-15"></a>    SYSCTRL_PTE_TIMER2_INT     = <span class="dv">12</span>,</span>
-<span id="cb73-16"><a href="pte简介.html#cb73-16"></a>    SYSCTRL_PTE_GPIO0_INT      = <span class="dv">13</span>,</span>
-<span id="cb73-17"><a href="pte简介.html#cb73-17"></a>    SYSCTRL_PTE_GPIO1_INT      = <span class="dv">14</span>,</span>
-<span id="cb73-18"><a href="pte简介.html#cb73-18"></a>    SYSCTRL_PTE_UART0_INT      = <span class="dv">15</span>,</span>
-<span id="cb73-19"><a href="pte简介.html#cb73-19"></a>    SYSCTRL_PTE_UART1_INT      = <span class="dv">16</span>,</span>
-<span id="cb73-20"><a href="pte简介.html#cb73-20"></a>    SYSCTRL_PTE_SPI0_INT       = <span class="dv">17</span>,</span>
-<span id="cb73-21"><a href="pte简介.html#cb73-21"></a>    SYSCTRL_PTE_SPI1_INT       = <span class="dv">18</span>,</span>
-<span id="cb73-22"><a href="pte简介.html#cb73-22"></a>    SYSCTRL_PTE_SPIFLASH       = <span class="dv">19</span>,</span>
-<span id="cb73-23"><a href="pte简介.html#cb73-23"></a>    SYSCTRL_PTE_RCT_CNT        = <span class="dv">20</span>,</span>
-<span id="cb73-24"><a href="pte简介.html#cb73-24"></a>    SYSCTRL_PTE_IR_WAKEUP      = <span class="dv">21</span>,</span>
-<span id="cb73-25"><a href="pte简介.html#cb73-25"></a>    SYSCTRL_PTE_USB_INT        = <span class="dv">22</span>,</span>
-<span id="cb73-26"><a href="pte简介.html#cb73-26"></a>    SYSCTRL_PTE_QDEC_INT       = <span class="dv">23</span>,</span>
-<span id="cb73-27"><a href="pte简介.html#cb73-27"></a></span>
-<span id="cb73-28"><a href="pte简介.html#cb73-28"></a>    SYSCTRL_PTE_SRC_INT_MAX    = <span class="dv">24</span>,</span>
-<span id="cb73-29"><a href="pte简介.html#cb73-29"></a>} SYSCTRL_PTE_SRC_INT;</span></code></pre></div>
-<p>dst外设定义在SYSCTRL_PTE_DST_EN中：</p>
-<div class="sourceCode" id="cb74"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb74-1"><a href="pte简介.html#cb74-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb74-2"><a href="pte简介.html#cb74-2"></a>{</span>
-<span id="cb74-3"><a href="pte简介.html#cb74-3"></a>    SYSCTRL_PTE_I2C0_EN        = <span class="dv">0</span>,</span>
-<span id="cb74-4"><a href="pte简介.html#cb74-4"></a>    SYSCTRL_PTE_I2C1_EN        = <span class="dv">1</span>,</span>
-<span id="cb74-5"><a href="pte简介.html#cb74-5"></a>    SYSCTRL_PTE_SARADC_EN      = <span class="dv">2</span>,</span>
-<span id="cb74-6"><a href="pte简介.html#cb74-6"></a>    SYSCTRL_PTE_I2S_TX_EN      = <span class="dv">3</span>,</span>
-<span id="cb74-7"><a href="pte简介.html#cb74-7"></a>    SYSCTRL_PTE_I2S_RX_EN      = <span class="dv">4</span>,</span>
-<span id="cb74-8"><a href="pte简介.html#cb74-8"></a>    SYSCTRL_PTE_IR_EN          = <span class="dv">5</span>,</span>
-<span id="cb74-9"><a href="pte简介.html#cb74-9"></a>    SYSCTRL_PTE_KEYSCANNER_EN  = <span class="dv">6</span>,</span>
-<span id="cb74-10"><a href="pte简介.html#cb74-10"></a>    SYSCTRL_PTE_PWMC0_EN       = <span class="dv">7</span>,</span>
-<span id="cb74-11"><a href="pte简介.html#cb74-11"></a>    SYSCTRL_PTE_PWMC1_EN       = <span class="dv">8</span>,</span>
-<span id="cb74-12"><a href="pte简介.html#cb74-12"></a>    SYSCTRL_PTE_PWMC2_EN       = <span class="dv">9</span>,</span>
-<span id="cb74-13"><a href="pte简介.html#cb74-13"></a>    SYSCTRL_PTE_TIMER0_CH0_EN  = <span class="dv">10</span>,</span>
-<span id="cb74-14"><a href="pte简介.html#cb74-14"></a>    SYSCTRL_PTE_TIMER0_CH1_EN  = <span class="dv">11</span>,</span>
-<span id="cb74-15"><a href="pte简介.html#cb74-15"></a>    SYSCTRL_PTE_TIMER1_CH0_EN  = <span class="dv">12</span>,</span>
-<span id="cb74-16"><a href="pte简介.html#cb74-16"></a>    SYSCTRL_PTE_TIMER1_CH1_EN  = <span class="dv">13</span>,</span>
-<span id="cb74-17"><a href="pte简介.html#cb74-17"></a>    SYSCTRL_PTE_TIMER2_CH0_EN  = <span class="dv">14</span>,</span>
-<span id="cb74-18"><a href="pte简介.html#cb74-18"></a>    SYSCTRL_PTE_TIMER2_CH1_EN  = <span class="dv">15</span>,</span>
-<span id="cb74-19"><a href="pte简介.html#cb74-19"></a></span>
-<span id="cb74-20"><a href="pte简介.html#cb74-20"></a>    SYSCTRL_PTE_DST_EN_MAX     = <span class="dv">16</span>,</span>
-<span id="cb74-21"><a href="pte简介.html#cb74-21"></a>} SYSCTRL_PTE_DST_EN;</span></code></pre></div>
-<p>通过PTE连接的src外设和dst外设需要在已注册枚举中选取。</p>
-</div>
-<div id="驱动接口-1" class="section level3 hasAnchor">
-<h3><span class="header-section-number">9.3.2</span> 驱动接口<a href="pte简介.html#驱动接口-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<ul>
-<li><p>PTE_ConnectPeripheral：PTE外设连接接口</p></li>
-<li><p>PTE_EnableChennel：PTE通道使能接口</p></li>
-<li><p>PTE_ChennelClose：PTE通道关闭接口</p></li>
-<li><p>PTE_IrqProcess：PTE标准中断程序接口</p></li>
-<li><p>PTE_OutPeripheralContinueProcess：dst外设中断标准PTE中继触发接口</p></li>
-<li><p>PTE_OutPeripheralEndProcess：dst外设中断标准PTE结束接口</p></li>
-</ul>
-</div>
-<div id="代码示例-1" class="section level3 hasAnchor">
-<h3><span class="header-section-number">9.3.3</span> 代码示例<a href="pte简介.html#代码示例-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>下面以Timer0通过PTE通道0触发Timer1为例展示PTE的具体使用方法。</p>
-<p>src外设和dst外设配置方法不在本文档介绍范围内，我们默认Timer0和Timer1已经配置好并注册好中断。</p>
-<div class="sourceCode" id="cb75"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb75-1"><a href="pte简介.html#cb75-1"></a><span class="dt">uint32_t</span> Timer0Isr(<span class="dt">void</span> *user_data)</span>
-<span id="cb75-2"><a href="pte简介.html#cb75-2"></a>{</span>
-<span id="cb75-3"><a href="pte简介.html#cb75-3"></a>    TMR_IntClr(APB_TMR0);</span>
-<span id="cb75-4"><a href="pte简介.html#cb75-4"></a>    <span class="cf">return</span> <span class="dv">0</span>;</span>
-<span id="cb75-5"><a href="pte简介.html#cb75-5"></a>}</span>
-<span id="cb75-6"><a href="pte简介.html#cb75-6"></a></span>
-<span id="cb75-7"><a href="pte简介.html#cb75-7"></a><span class="dt">uint32_t</span> Timer1Isr(<span class="dt">void</span> *user_data)</span>
-<span id="cb75-8"><a href="pte简介.html#cb75-8"></a>{</span>
-<span id="cb75-9"><a href="pte简介.html#cb75-9"></a>    TMR_IntClr(APB_TMR1);</span>
-<span id="cb75-10"><a href="pte简介.html#cb75-10"></a>    PTE_OutPeripheralContinueProcess(<span class="dv">0</span>);</span>
-<span id="cb75-11"><a href="pte简介.html#cb75-11"></a>    <span class="cf">return</span> <span class="dv">0</span>;</span>
-<span id="cb75-12"><a href="pte简介.html#cb75-12"></a>}</span>
-<span id="cb75-13"><a href="pte简介.html#cb75-13"></a></span>
-<span id="cb75-14"><a href="pte简介.html#cb75-14"></a><span class="co">// 仅供参考，不建议注册PTE中断</span></span>
-<span id="cb75-15"><a href="pte简介.html#cb75-15"></a><span class="dt">uint32_t</span> PTE0Isr(<span class="dt">void</span> *user_data)</span>
-<span id="cb75-16"><a href="pte简介.html#cb75-16"></a>{</span>
-<span id="cb75-17"><a href="pte简介.html#cb75-17"></a>    PTE_IrqProcess(<span class="dv">0</span>);</span>
-<span id="cb75-18"><a href="pte简介.html#cb75-18"></a>    <span class="cf">return</span> <span class="dv">0</span>;</span>
-<span id="cb75-19"><a href="pte简介.html#cb75-19"></a>}</span>
-<span id="cb75-20"><a href="pte简介.html#cb75-20"></a></span>
-<span id="cb75-21"><a href="pte简介.html#cb75-21"></a><span class="dt">void</span> PTE_Test(<span class="dt">void</span>)</span>
-<span id="cb75-22"><a href="pte简介.html#cb75-22"></a>{</span>
-<span id="cb75-23"><a href="pte简介.html#cb75-23"></a>    PTE_ConnectPeripheral(SYSCTRL_PTE_CHENNEL_0, </span>
-<span id="cb75-24"><a href="pte简介.html#cb75-24"></a>                          SYSCTRL_PTE_TIMER0_INT, </span>
-<span id="cb75-25"><a href="pte简介.html#cb75-25"></a>                          SYSCTRL_PTE_TIMER1_CH0_EN);</span>
-<span id="cb75-26"><a href="pte简介.html#cb75-26"></a>    TMR_Enable(APB_TMR0);</span>
-<span id="cb75-27"><a href="pte简介.html#cb75-27"></a>}</span></code></pre></div>
-<p>上面示例会保留PTE通道0并等待下一次触发。如果想要触发之后直接关闭通道代码如下：</p>
-<div class="sourceCode" id="cb76"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb76-1"><a href="pte简介.html#cb76-1"></a><span class="dt">uint32_t</span> Timer1Isr(<span class="dt">void</span> *user_data)</span>
-<span id="cb76-2"><a href="pte简介.html#cb76-2"></a>{</span>
-<span id="cb76-3"><a href="pte简介.html#cb76-3"></a>    TMR_IntClr(APB_TMR1);</span>
-<span id="cb76-4"><a href="pte简介.html#cb76-4"></a>    PTE_OutPeripheralEndProcess(<span class="dv">0</span>);</span>
-<span id="cb76-5"><a href="pte简介.html#cb76-5"></a>    <span class="cf">return</span> <span class="dv">0</span>;</span>
-<span id="cb76-6"><a href="pte简介.html#cb76-6"></a>}</span></code></pre></div>
-<p>关闭通道会断开Timer0和Timer1的连接，再次触发需要重新建立连接。</p>
+<div id="处理中断状态-1" class="section level3 hasAnchor">
+<h3><span class="header-section-number">11.2.7</span> 处理中断状态<a href="ch-rtc.html#处理中断状态-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>用 <code>RTC_GetIntState</code> 获取RTC上的中断触发，返回非 0 值表示RTC上产生了中断请求；RTC产生中断后，
+需要消除中断状态方可再次触发。利用 <code>RTC_ClearIntState</code>可清除RTC的中断触发状态。</p>
 
 </div>
 </div>
@@ -479,8 +403,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="ch-pinctrl.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="ch-pwm.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="ch-pwm.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="spi功能概述.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

@@ -668,7 +668,7 @@ I2s的相关配置不在本文的介绍范围内，默认I2s已经配置好，DM
 \begin{Shaded}
 \begin{Highlighting}[]
 \PreprocessorTok{#define CHANNEL_ID  0}
-\DataTypeTok{char}\NormalTok{ dst[}\DecValTok{80}\NormalTok{];}
+\DataTypeTok{uint32_t}\NormalTok{ pingpang_buff[}\DecValTok{2}\NormalTok{][}\DecValTok{80}\NormalTok{];}
 \NormalTok{DMA_Descriptor test[}\DecValTok{2}\NormalTok{] __attribute__((aligned (}\DecValTok{8}\NormalTok{)));}
 \DataTypeTok{uint8_t}\NormalTok{ pingpang = }\DecValTok{0}\NormalTok{;}
 \DataTypeTok{static} \DataTypeTok{uint32_t}\NormalTok{ DMA_cb_isr(}\DataTypeTok{void}\NormalTok{ *user_data)}
@@ -678,9 +678,10 @@ I2s的相关配置不在本文的介绍范围内，默认I2s已经配置好，DM
 
 \NormalTok{    pingpang ^= }\DecValTok{1}\NormalTok{;}
 \NormalTok{    DMA_EnableChannel(CHANNEL_ID, &test[pingpang]);}
+    \DataTypeTok{uint32_t}\NormalTok{ *data = (pingpang) ? (pingpang_buff[}\DecValTok{0}\NormalTok{]) : (pingpang_buff[}\DecValTok{1}\NormalTok{]);}
 
-    \CommentTok{// do something to handle the data in 'dst' buffer}
-
+    \CommentTok{// do something to handle the data in 'data' buffer}
+    
     \ControlFlowTok{return} \DecValTok{0}\NormalTok{;}
 \NormalTok{\}}
 
@@ -691,13 +692,13 @@ I2s的相关配置不在本文的介绍范围内，默认I2s已经配置好，DM
 \NormalTok{    test[}\DecValTok{0}\NormalTok{].Next = &test[}\DecValTok{1}\NormalTok{];}
 \NormalTok{    test[}\DecValTok{1}\NormalTok{].Next = &test[}\DecValTok{0}\NormalTok{];    }\CommentTok{// make a DMA link cycle}
 \NormalTok{    DMA_PreparePeripheral2RAM(&test[}\DecValTok{0}\NormalTok{],}
-\NormalTok{                              dst,}
+\NormalTok{                              pingpang_buff[}\DecValTok{0}\NormalTok{], }
 \NormalTok{                              SYSCTRL_DMA_I2S_RX,}
                               \DecValTok{80}\NormalTok{,}
 \NormalTok{                              DMA_ADDRESS_INC,}
                               \DecValTok{0}\NormalTok{ | }\DecValTok{8}\NormalTok{ << }\DecValTok{24}\NormalTok{ | }\DecValTok{1}\NormalTok{ << }\DecValTok{28}\NormalTok{);}
 \NormalTok{    DMA_PreparePeripheral2RAM(&test[}\DecValTok{1}\NormalTok{],}
-\NormalTok{                              dst,}
+\NormalTok{                              pingpang_buff[}\DecValTok{1}\NormalTok{], }
 \NormalTok{                              SYSCTRL_DMA_I2S_RX,}
                               \DecValTok{80}\NormalTok{,}
 \NormalTok{                              DMA_ADDRESS_INC,}
@@ -2309,6 +2310,433 @@ GPIO 产生中断后，需要消除中断状态方可再次触发。用 \texttt{
   检查中断状态，在中断中设置DMA读取数据，I2C\_STATUS\_CMPL中断代表传输结束
 \end{itemize}
 
+\hypertarget{i2sux7b80ux4ecb}{%
+\chapter{I2s简介}\label{i2sux7b80ux4ecb}}
+
+I2S（inter-IC sound）总线是数字音频专用总线。它有四个引脚，两个数据引脚(DOUT和DIN)，一个位率时钟引脚(BCLK)和一个左右通道选择引脚(LRCLK)。
+
+另外，通过ING91682A的MCLK输出，它可用于给外部 DAC/ADC 芯片提供时钟（可选）。
+
+\hypertarget{ux529fux80fdux63cfux8ff0-1}{%
+\section{功能描述}\label{ux529fux80fdux63cfux8ff0-1}}
+
+\hypertarget{ux7279ux70b9-1}{%
+\subsection{特点}\label{ux7279ux70b9-1}}
+
+\begin{itemize}
+\item
+  遵从 I2S 协议标准，支持12S标准模式和左对齐模式
+\item
+  支持PCM(脉冲编码调制)时序
+\item
+  可编程的主从模式
+\item
+  可配置的LRCLK和BCLK极性
+\item
+  可配置数据位宽
+\item
+  独立发送和接收FIFO
+\item
+  TX和RX的FIFO深度分别为16*32bit
+\item
+  支持立体声和单声道模式
+\item
+  可配置的采样频率
+\item
+  TX和RX分别支持DMA搬运
+\end{itemize}
+
+\hypertarget{i2sux89d2ux8272}{%
+\subsection{I2s角色}\label{i2sux89d2ux8272}}
+
+在 I2S 总线上，提供时钟和通道选择信号的器件是 MASTER，另一方则为 SLAVER。
+
+MASTER和SLAVE都可以进行数据收发。
+
+\hypertarget{i2sux5de5ux4f5cux6a21ux5f0f}{%
+\subsection{I2s工作模式}\label{i2sux5de5ux4f5cux6a21ux5f0f}}
+
+I2S 有两种工作模式：一种是立体声音频模式，另外一种是话音模式。
+
+\hypertarget{ux4e32ux884cux6570ux636e}{%
+\subsection{串行数据}\label{ux4e32ux884cux6570ux636e}}
+
+串行数据是以高位（MSB）在前，低位（LSB）在后的方式进行传送的。
+
+如果音频codec发送的位数多于I2S控制器的接收位数，I2S控制器会将低位多余的位数忽略掉；
+
+如果音频codec发送的位数小于I2S控制器接收位数，I2S控制器将后面的位补零。
+
+\hypertarget{ux65f6ux949fux5206ux9891}{%
+\subsection{时钟分频}\label{ux65f6ux949fux5206ux9891}}
+
+916芯片可选用系统24MHz时钟或者PLL作为I2s时钟源。
+
+位率时钟（BCLK）可以通过对功能时钟进行分频得到；
+
+通道选择时钟（LRCLK）即音频数据的采样频率可以通过对BCLK进行分频得到。
+
+音频 Codec 中对采样频率 LRCLK 要求精度比较高，我们在计算分频时应该首先根据不同的采样频率计算得到对应的 MCLK 和 BCLK。
+
+\hypertarget{ux65f6ux949fux5206ux9891ux8ba1ux7b97}{%
+\subsubsection{时钟分频计算}\label{ux65f6ux949fux5206ux9891ux8ba1ux7b97}}
+
+计算示例：
+
+假设当前codec采用16K采样频率，mic要求一帧64位（参考具体的mic使用手册）。
+
+有以下关系：
+
+\begin{itemize}
+\item
+  f\_bclk = clk/(2*b\_div)
+\item
+  f\_lrclk = f\_bclk/(2*lr\_div)
+\end{itemize}
+
+其中clk为codec时钟，f\_bclk、f\_lrclk分别为BCLK和LRCLK，b\_div、lr\_div分别为BCLK和LRCLK的分频系数。
+
+BCLK和LRCLK之间的关系是可变的，但是BCLK必须大于等于LRCLK的48倍。即lr\_div\textgreater=24。
+
+支持lr\_div = 32，DATA\_LEN = 32位的配置，其他情况下lr\_div - DATA\_LEN \textgreater{} 3。
+
+通过f\_lrclk = 16000，lr\_div = 32计算出f\_bclk = 1.024MHz。也就是clk = 2.048*b\_div。
+
+clk通过时钟源分频得到必定是整数，b\_div也同样是整数，通过计算得知在384MHz内只有当b\_div = 125时clk = 256MHz为整数。
+
+故需要将PLL时钟配置为256MHz，b\_div = 125可以得到16K采样率。
+
+\hypertarget{i2sux5b58ux50a8ux5668}{%
+\subsection{i2s存储器}\label{i2sux5b58ux50a8ux5668}}
+
+采用两个深度为16，宽度为32bit的FIFO分别存储接收、发送的音频数据。
+
+有如下规则：
+
+\begin{itemize}
+\item
+  音频数据位宽为16bit时，每32bit存储两个音频数据，高16bit存储左声道数据，低16bit存储右声道数据。
+\item
+  音频数据位宽大于16bit时，每32bit存储一个音频数据，低地址存储左声道数据，高地址存储右声道数据。
+\end{itemize}
+
+\hypertarget{ux4f7fux7528ux65b9ux6cd5-1}{%
+\section{使用方法}\label{ux4f7fux7528ux65b9ux6cd5-1}}
+
+\hypertarget{ux65b9ux6cd5ux6982ux8ff0-1}{%
+\subsection{方法概述}\label{ux65b9ux6cd5ux6982ux8ff0-1}}
+
+I2s使用方法总结为：时钟配置，I2s配置（包括采样率）和数据处理。
+
+数据发送：
+
+\textbf{1.} I2s引脚GPIO配置
+
+\textbf{2.} 配置外部 codec 芯片，使其处于工作模式
+
+\textbf{3.} 写相应配置寄存器
+
+\textbf{4.} 将数据写入TX\_MEM
+
+\textbf{5.} 使能I2s
+
+\textbf{6.} 等待中断产生
+
+\textbf{7.} 读取状态寄存器，将数据写入TX\_MEM
+
+\textbf{8.} 传输完毕，关闭 I2S
+
+数据接收：
+
+\textbf{1.} I2s引脚GPIO配置
+
+\textbf{2.} 配置外部 codec 芯片，使其处于工作模式
+
+\textbf{3.} 写相应配置寄存器
+
+\textbf{4.} 使能I2s
+
+\textbf{5.} 等待中断产生
+
+\textbf{6.} 读取状态寄存器，读取 RX\_MEM 中数据
+
+\textbf{7.} 传输完毕，关闭 I2S
+
+I2S控制器操作流程图如下：
+
+\begin{figure}
+
+{\centering \includegraphics[width=0.5\linewidth]{./img/I2s/I2s_structure} 
+
+}
+
+\caption{I2S控制器操作流程图}\label{fig:I2S}
+\end{figure}
+
+如果需要用到DMA搬运则需要在使能I2s之前配置DMA并使能。
+
+\hypertarget{ux6ce8ux610fux70b9-1}{%
+\subsection{注意点}\label{ux6ce8ux610fux70b9-1}}
+
+\begin{itemize}
+\item
+  I2s时钟源可以选择晶振24M时钟和PLL时钟，要注意是选择哪一个时钟源
+\item
+  I2s数据可能会进行采样，需要注意具体是数据处理
+\item
+  当前I2s支持的发送/接收数据位宽为16-32bit，需要查阅mic文档或其他使用手册来确定数据位宽，否则不能正常工作
+\item
+  配置DMA要在使能I2s之前完成，使能I2s一定是最后一步
+\item
+  建议采用DMA乒乓搬运的方式来传输I2s数据
+\end{itemize}
+
+\hypertarget{ux7f16ux7a0bux6307ux5357-1}{%
+\section{编程指南}\label{ux7f16ux7a0bux6307ux5357-1}}
+
+\hypertarget{ux9a71ux52a8ux63a5ux53e3-1}{%
+\subsection{驱动接口}\label{ux9a71ux52a8ux63a5ux53e3-1}}
+
+\begin{itemize}
+\item
+  I2S\_ConfigClk：I2s时钟配置接口
+\item
+  I2S\_Config：I2s配置接口
+\item
+  I2S\_ConfigIRQ：I2s中断配置接口
+\item
+  I2S\_DMAEnable：I2s DMA使能接口
+\item
+  I2S\_Enable：I2s使能接口
+\item
+  I2S\_PopRxFIFO、I2S\_PushTxFIFO：I2s FIFO读写接口
+\item
+  I2S\_ClearRxFIFO、I2S\_ClearTxFIFO：I2s清FIFO接口
+\item
+  I2S\_GetIntState、I2S\_ClearIntState：I2s获取中断、清中断接口
+\item
+  I2S\_GetRxFIFOCount、I2S\_GetTxFIFOCount：I2s获取FIFO数据数量接口
+\item
+  I2S\_DataFromPDM：I2s获取PDM数据接口
+\end{itemize}
+
+\hypertarget{ux4ee3ux7801ux793aux4f8b-1}{%
+\subsection{代码示例}\label{ux4ee3ux7801ux793aux4f8b-1}}
+
+下面将通过实际代码展示I2s的基本配置及使用代码。
+
+\hypertarget{i2sux914dux7f6e}{%
+\subsubsection{I2s配置}\label{i2sux914dux7f6e}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\PreprocessorTok{#define I2S_PIN_BCLK        28}
+\PreprocessorTok{#define I2S_PIN_IN          29}
+\PreprocessorTok{#define I2S_PIN_LRCLK       30}
+\DataTypeTok{void}\NormalTok{ I2sSetup(}\DataTypeTok{void}\NormalTok{)}
+\NormalTok{\{}
+    \CommentTok{// pinctrl & GPIO mux}
+\NormalTok{    PINCTRL_SetPadMux(I2S_PIN_BCLK, IO_SOURCE_I2S_BCLK_OUT);}
+\NormalTok{    PINCTRL_SetPadMux(I2S_PIN_IN, IO_SOURCE_I2S_DATA_IN);}
+\NormalTok{    PINCTRL_SelI2sIn(IO_NOT_A_PIN, IO_NOT_A_PIN, I2S_PIN_IN);}
+\NormalTok{    PINCTRL_SetPadMux(I2S_PIN_LRCLK, IO_SOURCE_I2S_LRCLK_OUT);}
+\NormalTok{    PINCTRL_Pull(IO_SOURCE_I2S_DATA_IN, PINCTRL_PULL_DOWN);}
+    
+    \CommentTok{// CLK & Register}
+\NormalTok{    SYSCTRL_ConfigPLLClk(}\DecValTok{6}\NormalTok{, }\DecValTok{128}\NormalTok{, }\DecValTok{2}\NormalTok{); }\CommentTok{// sorce clk PLL = 256MHz}
+\NormalTok{    SYSCTRL_SelectI2sClk(SYSCTRL_CLK_PLL_DIV_1 + }\DecValTok{4}\NormalTok{); }\CommentTok{// I2s_Clk = 51.2MHz}
+\NormalTok{    I2S_ConfigClk(APB_I2S, }\DecValTok{25}\NormalTok{, }\DecValTok{32}\NormalTok{); }\CommentTok{// F_bclk = 1.024MHz, F_lrclk = 16K}
+\NormalTok{    I2S_ConfigIRQ(APB_I2S, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{10}\NormalTok{);}
+\NormalTok{    I2S_DMAEnable(APB_I2S, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{);    }
+\NormalTok{    I2S_Config(APB_I2S, I2S_ROLE_MASTER, I2S_MODE_STANDARD, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{24}\NormalTok{);}
+
+    \CommentTok{// I2s interrupt}
+\NormalTok{    platform_set_irq_callback(PLATFORM_CB_IRQ_I2S, cb_isr, }\DecValTok{0}\NormalTok{);}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{i2sux4f7fux80fd}{%
+\subsubsection{I2s使能}\label{i2sux4f7fux80fd}}
+
+I2s使能分3种情况：I2s发送、I2s接收、使用DMA搬运
+
+接收：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ I2sStart(}\DataTypeTok{void}\NormalTok{)}
+\NormalTok{\{}
+\NormalTok{    I2S_ClearRxFIFO(APB_I2S);}
+\NormalTok{    I2S_Enable(APB_I2S, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{);}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+发送：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{uint8_t}\NormalTok{  sendSize = }\DecValTok{10}\NormalTok{;}
+\DataTypeTok{uint32_t}\NormalTok{ sendData[}\DecValTok{10}\NormalTok{];}
+\DataTypeTok{void}\NormalTok{ I2sStart(}\DataTypeTok{void}\NormalTok{)}
+\NormalTok{\{}
+    \DataTypeTok{int}\NormalTok{ i; }
+\NormalTok{    I2S_ClearTxFIFO(APB_I2S);}
+    \CommentTok{// push data into TX_FIFO first}
+    \ControlFlowTok{for}\NormalTok{ (i = }\DecValTok{0}\NormalTok{; i < sendSize; i++) \{}
+\NormalTok{        I2S_PushTxFIFO(APB_I2S, sendData[i]);}
+\NormalTok{    \}}
+\NormalTok{    I2S_Enable(APB_I2S, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{);}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+使用DMA（接收）：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\PreprocessorTok{#define CHANNEL_ID  0}
+\NormalTok{DMA_Descriptor test __attribute__((aligned (}\DecValTok{8}\NormalTok{)));                                }
+\DataTypeTok{void}\NormalTok{ I2sStart(}\DataTypeTok{uint32_t}\NormalTok{ data)}
+\NormalTok{\{}
+\NormalTok{   DMA_EnableChannel(CHANNEL_ID, &test);}
+\NormalTok{   I2S_ClearRxFIFO(APB_I2S);}
+\NormalTok{   I2S_DMAEnable(APB_I2S, }\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{);    }
+\NormalTok{   I2S_Enable(APB_I2S, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{);}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+无论哪种情况都必须最后一步使能I2s，否则I2s工作异常。
+
+\hypertarget{i2sux4e2dux65ad}{%
+\subsubsection{I2s中断}\label{i2sux4e2dux65ad}}
+
+接收：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{uint32_t}\NormalTok{ cb_isr(}\DataTypeTok{void}\NormalTok{ *user_data)}
+\NormalTok{\{ }
+    \DataTypeTok{uint32_t}\NormalTok{ state = I2S_GetIntState(APB_I2S);}
+\NormalTok{    I2S_ClearIntState(APB_I2S, state);}
+
+    \DataTypeTok{int}\NormalTok{ i = I2S_GetRxFIFOCount(APB_I2S);}
+
+    \ControlFlowTok{while}\NormalTok{ (i) \{}
+        \DataTypeTok{uint32_t}\NormalTok{ data = I2S_PopRxFIFO(APB_I2S);}
+\NormalTok{        i--;}
+        \CommentTok{// do something with data}
+\NormalTok{    \}}
+
+    \ControlFlowTok{return} \DecValTok{0}\NormalTok{;}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+发送：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{uint8_t}\NormalTok{  sendSize = }\DecValTok{10}\NormalTok{;}
+\DataTypeTok{uint32_t}\NormalTok{ sendData[}\DecValTok{10}\NormalTok{];}
+\DataTypeTok{uint32_t}\NormalTok{ cb_isr(}\DataTypeTok{void}\NormalTok{ *user_data)}
+\NormalTok{\{ }
+    \DataTypeTok{uint32_t}\NormalTok{ state = I2S_GetIntState(APB_I2S);}
+\NormalTok{    I2S_ClearIntState(APB_I2S, state);}
+
+    \DataTypeTok{int}\NormalTok{ i;}
+    \ControlFlowTok{for}\NormalTok{ (i = }\DecValTok{0}\NormalTok{; i < sendSize; i++) \{}
+\NormalTok{        I2S_PushTxFIFO(APB_I2S, sendData[i]);}
+\NormalTok{    \}}
+    \ControlFlowTok{return} \DecValTok{0}\NormalTok{;}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{i2s-ux4e52ux4e53dma}{%
+\subsubsection{I2s \& 乒乓DMA}\label{i2s-ux4e52ux4e53dma}}
+
+下面以经典的DMA乒乓搬运I2s接收数据为例展示I2s实际使用方法。
+
+这里我们采用16K采样率，单个数据帧固定64位，和DMA协商握手、burstSize=8、一次搬运80个数据。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\PreprocessorTok{#define I2S_PIN_BCLK        28}
+\PreprocessorTok{#define I2S_PIN_IN          29}
+\PreprocessorTok{#define I2S_PIN_LRCLK       30}
+\PreprocessorTok{#define CHANNEL_ID  0}
+\DataTypeTok{uint32_t}\NormalTok{ pingpang_buff[}\DecValTok{2}\NormalTok{][}\DecValTok{80}\NormalTok{];}
+\NormalTok{DMA_Descriptor test[}\DecValTok{2}\NormalTok{] __attribute__((aligned (}\DecValTok{8}\NormalTok{)));}
+\DataTypeTok{uint8_t}\NormalTok{ pingpang = }\DecValTok{0}\NormalTok{;}
+\DataTypeTok{static} \DataTypeTok{uint32_t}\NormalTok{ DMA_cb_isr(}\DataTypeTok{void}\NormalTok{ *user_data)}
+\NormalTok{\{ }
+      \DataTypeTok{uint32_t}\NormalTok{ state = DMA_GetChannelIntState(CHANNEL_ID);}
+\NormalTok{      DMA_ClearChannelIntState(CHANNEL_ID, state);}
+
+\NormalTok{      pingpang ^= }\DecValTok{1}\NormalTok{;}
+\NormalTok{    DMA_EnableChannel(CHANNEL_ID, &test[pingpang]);}
+    \DataTypeTok{uint32_t}\NormalTok{ *data = (pingpang) ? (pingpang_buff[}\DecValTok{0}\NormalTok{]) : (pingpang_buff[}\DecValTok{1}\NormalTok{]);}
+
+    \CommentTok{// do something with data-buffer's data}
+    
+    \ControlFlowTok{return} \DecValTok{0}\NormalTok{;}
+\NormalTok{\}}
+
+\DataTypeTok{void}\NormalTok{ DMA_SetUpPingPang(}\DataTypeTok{void}\NormalTok{)}
+\NormalTok{\{}
+\NormalTok{    DMA_Reset();}
+\NormalTok{    platform_set_irq_callback(PLATFORM_CB_IRQ_DMA, DMA_cb_isr, }\DecValTok{0}\NormalTok{);  }
+\NormalTok{    test[}\DecValTok{0}\NormalTok{].Next = &test[}\DecValTok{1}\NormalTok{];}
+\NormalTok{    test[}\DecValTok{1}\NormalTok{].Next = &test[}\DecValTok{0}\NormalTok{];    }\CommentTok{// make a DMA link cycle}
+\NormalTok{    DMA_PreparePeripheral2RAM(&test[}\DecValTok{0}\NormalTok{], }
+\NormalTok{                              pingpang_buff[}\DecValTok{0}\NormalTok{], }
+\NormalTok{                              SYSCTRL_DMA_I2S_RX, }
+                              \DecValTok{80}\NormalTok{, }
+\NormalTok{                              DMA_ADDRESS_INC, }
+                              \DecValTok{0}\NormalTok{ | }\DecValTok{8}\NormalTok{ << }\DecValTok{24}\NormalTok{ | }\DecValTok{1}\NormalTok{ << }\DecValTok{28}\NormalTok{);}
+\NormalTok{    DMA_PreparePeripheral2RAM(&test[}\DecValTok{1}\NormalTok{], }
+\NormalTok{                              pingpang_buff[}\DecValTok{1}\NormalTok{], }
+\NormalTok{                              SYSCTRL_DMA_I2S_RX, }
+                              \DecValTok{80}\NormalTok{, }
+\NormalTok{                              DMA_ADDRESS_INC, }
+                              \DecValTok{0}\NormalTok{ | }\DecValTok{8}\NormalTok{ << }\DecValTok{24}\NormalTok{ | }\DecValTok{1}\NormalTok{ << }\DecValTok{28}\NormalTok{);}
+\NormalTok{    DMA_EnableChannel(CHANNEL_ID, &test[pingpang]);}
+\NormalTok{\}}
+\DataTypeTok{void}\NormalTok{ I2sSetup(}\DataTypeTok{void}\NormalTok{)}
+\NormalTok{\{}
+    \CommentTok{// pinctrl & GPIO mux}
+\NormalTok{    PINCTRL_SetPadMux(I2S_PIN_BCLK, IO_SOURCE_I2S_BCLK_OUT);}
+\NormalTok{    PINCTRL_SetPadMux(I2S_PIN_IN, IO_SOURCE_I2S_DATA_IN);}
+\NormalTok{    PINCTRL_SelI2sIn(IO_NOT_A_PIN, IO_NOT_A_PIN, I2S_PIN_IN);}
+\NormalTok{    PINCTRL_SetPadMux(I2S_PIN_LRCLK, IO_SOURCE_I2S_LRCLK_OUT);}
+\NormalTok{    PINCTRL_Pull(IO_SOURCE_I2S_DATA_IN, PINCTRL_PULL_DOWN);}
+    
+    \CommentTok{// CLK & Register}
+\NormalTok{    SYSCTRL_ConfigPLLClk(}\DecValTok{6}\NormalTok{, }\DecValTok{128}\NormalTok{, }\DecValTok{2}\NormalTok{); }\CommentTok{// sorce clk PLL = 256MHz}
+\NormalTok{    SYSCTRL_SelectI2sClk(SYSCTRL_CLK_PLL_DIV_1 + }\DecValTok{4}\NormalTok{); }\CommentTok{// I2s_Clk = 51.2MHz}
+\NormalTok{    I2S_ConfigClk(APB_I2S, }\DecValTok{25}\NormalTok{, }\DecValTok{32}\NormalTok{); }\CommentTok{// F_bclk = 1.024MHz, F_lrclk = 16K}
+\NormalTok{    I2S_ConfigIRQ(APB_I2S, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{8}\NormalTok{);}
+\NormalTok{    I2S_DMAEnable(APB_I2S, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{);    }
+\NormalTok{    I2S_Config(APB_I2S, I2S_ROLE_MASTER, I2S_MODE_STANDARD, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{24}\NormalTok{);}
+
+    \CommentTok{// setup pingpang DMA}
+\NormalTok{    DMA_SetUpPingPang();}
+    
+    \CommentTok{// start working}
+\NormalTok{    I2S_ClearRxFIFO(APB_I2S);}
+\NormalTok{    I2S_DMAEnable(APB_I2S, }\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{);    }
+\NormalTok{    I2S_Enable(APB_I2S, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{);}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+DMA的具体用法请参见本手册DMA一节。
+
+更加系统化的I2s代码请参考SDK中voice\_remote\_ctrl例程。
+
 \hypertarget{ir-ux7ea2ux5916}{%
 \chapter{IR 红外}\label{ir-ux7ea2ux5916}}
 
@@ -2496,6 +2924,207 @@ GPIO 产生中断后，需要消除中断状态方可再次触发。用 \texttt{
 \hypertarget{ch-pinctrl}{%
 \chapter{管脚管理（PINCTRL）}\label{ch-pinctrl}}
 
+PINCTRL 模块管理芯片所有 IO 管脚的功能，包括外设 IO 的映射，上拉、下拉选择，输入模式控制，
+输出驱动能力设置等。
+
+每个 IO 管脚都可以配置为数字或模拟模式，当配置为数字模式时，特性如下：
+
+\begin{itemize}
+\tightlist
+\item
+  每个 IO 管脚可以映射多种不同功能的外设
+\item
+  每个 IO 管脚都支持上拉或下拉
+\item
+  每个 IO 管脚都支持施密特触发输入方式
+\item
+  每个 IO 管脚支持四种输出驱动能力
+\end{itemize}
+
+鉴于片内外设丰富、IO 管脚多，进行管脚全映射并不现实，为此，PINCTRL 尽量保证灵活性的前提下做了一定取舍、优化。
+部分常用外设的输入、输出可与 \(\{{0 .. 17, 21, 22, 31, 34, 35\}}\) 这 23 个常用 IO 之间任意连接（全映射），
+这部分常用外设管脚总结于表 \ref{tab:ch-pinctrl-common-set}。
+
+每个 IO 管脚可配置功能如表 \ref{tab:ch-pinctrl-mapping} 所示。
+
+\begin{longtable}[]{@{}ll@{}}
+\caption{\label{tab:ch-pinctrl-common-set} 支持与常用 IO 全映射的常用外设的输入、输出}\tabularnewline
+\toprule
+\begin{minipage}[b]{0.09\columnwidth}\raggedright
+外设\strut
+\end{minipage} & \begin{minipage}[b]{0.85\columnwidth}\raggedright
+功能管脚\strut
+\end{minipage}\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+\begin{minipage}[b]{0.09\columnwidth}\raggedright
+外设\strut
+\end{minipage} & \begin{minipage}[b]{0.85\columnwidth}\raggedright
+功能管脚\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.09\columnwidth}\raggedright
+I2C\strut
+\end{minipage} & \begin{minipage}[t]{0.85\columnwidth}\raggedright
+I2C0\_SCL\_I, I2C0\_SCL\_O, I2C0\_SDA\_I, I2C0\_SDA\_O, I2C1\_SCL\_I, I2C1\_SCL\_O, I2C1\_SDA\_I, I2C1\_SDA\_O, I2S\_BCLK\_I, I2S\_BCLK\_O, I2S\_DIN, I2S\_DOUT, I2S\_LRCLK\_I, I2S\_LRCLK\_O\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.09\columnwidth}\raggedright
+IR\strut
+\end{minipage} & \begin{minipage}[t]{0.85\columnwidth}\raggedright
+IR\_DATIN, IR\_DATOUT, IR\_WAKEUP\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.09\columnwidth}\raggedright
+PCAP\strut
+\end{minipage} & \begin{minipage}[t]{0.85\columnwidth}\raggedright
+P\_CAP\_IN0, P\_CAP\_IN1, P\_CAP\_IN2, P\_CAP\_IN3, P\_CAP\_IN4, P\_CAP\_IN5\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.09\columnwidth}\raggedright
+PDM\strut
+\end{minipage} & \begin{minipage}[t]{0.85\columnwidth}\raggedright
+PDM\_DMIC\_IN, PDM\_DMIC\_MCLK\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.09\columnwidth}\raggedright
+QDEC\strut
+\end{minipage} & \begin{minipage}[t]{0.85\columnwidth}\raggedright
+QDEC\_INDEX, QDEC\_PHASEA, QDEC\_PHASEB\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.09\columnwidth}\raggedright
+SPI0\strut
+\end{minipage} & \begin{minipage}[t]{0.85\columnwidth}\raggedright
+SPI0\_CLK\_IN, SPI0\_CLK\_OUT, SPI0\_CSN\_IN, SPI0\_CSN\_OUT, SPI0\_HOLD\_IN, SPI0\_HOLD\_OUT, SPI0\_MISO\_IN, SPI0\_MISO\_OUT, SPI0\_MOSI\_IN, SPI0\_MOSI\_OUT, SPI0\_WP\_IN, SPI0\_WP\_OUT\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.09\columnwidth}\raggedright
+SPI\strut
+\end{minipage} & \begin{minipage}[t]{0.85\columnwidth}\raggedright
+SPI1\_CLK\_IN, SPI1\_CLK\_OUT, SPI1\_CSN\_IN, SPI1\_CSN\_OUT, SPI1\_HOLD\_IN, SPI1\_HOLD\_OUT, SPI1\_MISO\_IN, SPI1\_MISO\_OUT, SPI1\_MOSI\_IN, SPI1\_MOSI\_OUT, SPI1\_WP\_IN, SPI1\_WP\_OUT\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.09\columnwidth}\raggedright
+SWD\strut
+\end{minipage} & \begin{minipage}[t]{0.85\columnwidth}\raggedright
+SWDO, SW\_TCK, SW\_TMS\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.09\columnwidth}\raggedright
+UART0\strut
+\end{minipage} & \begin{minipage}[t]{0.85\columnwidth}\raggedright
+UART0\_CTS, UART0\_RTS, UART0\_RXD, UART0\_TXD\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.09\columnwidth}\raggedright
+UART1\strut
+\end{minipage} & \begin{minipage}[t]{0.85\columnwidth}\raggedright
+UART1\_CTS, UART1\_RTS, UART1\_RXD, UART1\_TXD\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{longtable}[]{@{}ll@{}}
+\caption{\label{tab:ch-pinctrl-mapping} 其它外设功能管脚的映射关系}\tabularnewline
+\toprule
+外设功能管脚 & 可连接到的 IO 管脚\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+外设功能管脚 & 可连接到的 IO 管脚\tabularnewline
+\midrule
+\endhead
+KEY\_IN\_COL\_0 & 0, 23\tabularnewline
+KEY\_IN\_COL\_1 & 1, 24\tabularnewline
+KEY\_IN\_COL\_2 & 2, 25\tabularnewline
+KEY\_IN\_COL\_3 & 3, 29\tabularnewline
+KEY\_IN\_COL\_4 & 4, 30\tabularnewline
+KEY\_IN\_COL\_5 & 5, 31\tabularnewline
+KEY\_IN\_COL\_6 & 6, 32\tabularnewline
+KEY\_IN\_COL\_7 & 7, 33\tabularnewline
+KEY\_IN\_COL\_8 & 8, 34\tabularnewline
+KEY\_IN\_COL\_9 & 9, 35\tabularnewline
+KEY\_IN\_COL\_10 & 10\tabularnewline
+KEY\_IN\_COL\_11 & 11\tabularnewline
+KEY\_IN\_COL\_12 & 12\tabularnewline
+KEY\_IN\_COL\_13 & 13\tabularnewline
+KEY\_IN\_COL\_14 & 14\tabularnewline
+KEY\_IN\_COL\_15 & 15\tabularnewline
+KEY\_IN\_COL\_16 & 16\tabularnewline
+KEY\_IN\_COL\_17 & 17\tabularnewline
+KEY\_IN\_COL\_18 & 21\tabularnewline
+KEY\_IN\_COL\_19 & 22\tabularnewline
+KEY\_OUT\_ROW\_0 & 0, 23\tabularnewline
+KEY\_OUT\_ROW\_1 & 1, 24\tabularnewline
+KEY\_OUT\_ROW\_2 & 2, 25\tabularnewline
+KEY\_OUT\_ROW\_3 & 3, 29\tabularnewline
+KEY\_OUT\_ROW\_4 & 4, 30\tabularnewline
+KEY\_OUT\_ROW\_5 & 5, 31\tabularnewline
+KEY\_OUT\_ROW\_6 & 6, 32\tabularnewline
+KEY\_OUT\_ROW\_7 & 7, 33\tabularnewline
+KEY\_OUT\_ROW\_8 & 8, 34\tabularnewline
+KEY\_OUT\_ROW\_9 & 9, 35\tabularnewline
+KEY\_OUT\_ROW\_10 & 10\tabularnewline
+KEY\_OUT\_ROW\_11 & 11\tabularnewline
+KEY\_OUT\_ROW\_12 & 12\tabularnewline
+KEY\_OUT\_ROW\_13 & 13\tabularnewline
+KEY\_OUT\_ROW\_14 & 14\tabularnewline
+KEY\_OUT\_ROW\_15 & 15\tabularnewline
+KEY\_OUT\_ROW\_16 & 16\tabularnewline
+KEY\_OUT\_ROW\_17 & 17\tabularnewline
+KEY\_OUT\_ROW\_18 & 21\tabularnewline
+KEY\_OUT\_ROW\_19 & 22\tabularnewline
+ANT\_SW0 & 0, 3, 6, 9, 12, 15, 21, 34\tabularnewline
+ANT\_SW1 & 1, 4, 7, 10, 13, 16, 22, 35\tabularnewline
+ANT\_SW2 & 2, 5, 8, 11, 14, 17, 31\tabularnewline
+ANT\_SW3 & 0, 3, 6, 9, 12, 15, 21, 34\tabularnewline
+ANT\_SW4 & 1, 4, 7, 10, 13, 16, 22, 35\tabularnewline
+ANT\_SW5 & 2, 5, 8, 11, 14, 17, 31\tabularnewline
+ANT\_SW6 & 0, 3, 6, 9, 12, 15, 21, 34\tabularnewline
+ANT\_SW7 & 1, 4, 7, 10, 13, 16, 22, 35\tabularnewline
+PA\_RXEN & 11, 12, 13, 14, 15, 16, 17, 34, 35\tabularnewline
+PA\_TXEN & 4, 5, 6, 7, 8, 9, 10, 34, 35\tabularnewline
+PWM\_0A & 0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35\tabularnewline
+PWM\_0B & 1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34\tabularnewline
+PWM\_1A & 0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35\tabularnewline
+PWM\_1B & 1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34\tabularnewline
+PWM\_2A & 0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35\tabularnewline
+PWM\_2B & 1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34\tabularnewline
+PWM\_3A & 0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35\tabularnewline
+PWM\_3B & 1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34\tabularnewline
+PWM\_4A & 0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35\tabularnewline
+PWM\_4B & 1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34\tabularnewline
+PWM\_5A & 0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35\tabularnewline
+PWM\_5B & 1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34\tabularnewline
+PWM\_6A & 0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35\tabularnewline
+PWM\_6B & 1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34\tabularnewline
+PWM\_7A & 0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35\tabularnewline
+PWM\_7B & 1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34\tabularnewline
+PWM\_8A & 0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35\tabularnewline
+PWM\_8B & 1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34\tabularnewline
+QDEC\_EXT\_IN\_CLK & 3, 9\tabularnewline
+QDEC\_TIMER\_EXT\_IN\_A1 & 1, 7\tabularnewline
+QDEC\_TIMER\_EXT\_IN\_A2 & 2, 8\tabularnewline
+QDEC\_TIMER\_EXT\_IN\_B2 & 5, 11\tabularnewline
+QDEC\_TIMER\_EXT\_OUT\_A0 & 0, 6\tabularnewline
+QDEC\_TIMER\_EXT\_OUT\_A1 & 1, 7\tabularnewline
+QDEC\_TIMER\_EXT\_OUT\_A2 & 2, 8\tabularnewline
+QDEC\_TIMER\_EXT\_OUT\_B0 & 3, 9\tabularnewline
+QDEC\_TIMER\_EXT\_OUT\_B1 & 4, 10\tabularnewline
+QDEC\_TIMER\_EXT\_OUT\_B2 & 5, 11\tabularnewline
+SPI0\_CLK\_IN & 19\tabularnewline
+SPI0\_CLK\_OUT & 19\tabularnewline
+SPI0\_CSN\_IN & 18\tabularnewline
+SPI0\_CSN\_OUT & 18\tabularnewline
+SPI0\_HOLD\_IN & 20\tabularnewline
+SPI0\_HOLD\_OUT & 20\tabularnewline
+SPI0\_MISO\_IN & 27\tabularnewline
+SPI0\_MISO\_OUT & 27\tabularnewline
+SPI0\_MOSI\_IN & 28\tabularnewline
+SPI0\_MOSI\_OUT & 28\tabularnewline
+SPI0\_WP\_IN & 26\tabularnewline
+SPI0\_WP\_OUT & 26\tabularnewline
+SPI2AHB\_CS & 16\tabularnewline
+SPI2AHB\_DI & 17\tabularnewline
+SPI2AHB\_DO & 17\tabularnewline
+SPI2AHB\_SCLK & 15\tabularnewline
+\bottomrule
+\end{longtable}
+
 \hypertarget{pteux7b80ux4ecb}{%
 \chapter{PTE简介}\label{pteux7b80ux4ecb}}
 
@@ -2503,11 +3132,11 @@ PTE全称Peripheral trigger engine，即外设触发引擎。
 
 其主要作用是使外围设备可以通过其他外围设备或事件独立于CPU进行自主交互。PTE允许外围设备之间可以精确触发。
 
-\hypertarget{ux529fux80fdux63cfux8ff0-1}{%
-\section{功能描述}\label{ux529fux80fdux63cfux8ff0-1}}
+\hypertarget{ux529fux80fdux63cfux8ff0-2}{%
+\section{功能描述}\label{ux529fux80fdux63cfux8ff0-2}}
 
-\hypertarget{ux7279ux70b9-1}{%
-\subsection{特点}\label{ux7279ux70b9-1}}
+\hypertarget{ux7279ux70b9-2}{%
+\subsection{特点}\label{ux7279ux70b9-2}}
 
 \begin{itemize}
 \item
@@ -2541,11 +3170,11 @@ src外设通过pte\_in\_mask配置，dst外设通过pte\_out\_mask配置。在SO
 
 当DFF为高时PTE中断将挂起。在清除PTE中断之前，src外设中断必须被清除，否则另一个启动脉冲将发送到dst外设，这可能会产生未知的错误。
 
-\hypertarget{ux4f7fux7528ux65b9ux6cd5-1}{%
-\section{使用方法}\label{ux4f7fux7528ux65b9ux6cd5-1}}
+\hypertarget{ux4f7fux7528ux65b9ux6cd5-2}{%
+\section{使用方法}\label{ux4f7fux7528ux65b9ux6cd5-2}}
 
-\hypertarget{ux65b9ux6cd5ux6982ux8ff0-1}{%
-\subsection{方法概述}\label{ux65b9ux6cd5ux6982ux8ff0-1}}
+\hypertarget{ux65b9ux6cd5ux6982ux8ff0-2}{%
+\subsection{方法概述}\label{ux65b9ux6cd5ux6982ux8ff0-2}}
 
 PTE使用方法总结为：建议不使用PTE中断，在dst外设中断里清PTE中断（或关闭PTE通道）。
 
@@ -2559,8 +3188,8 @@ PTE使用方法总结为：建议不使用PTE中断，在dst外设中断里清PT
 
 \textbf{5.} 在被触发外设中断中清PTE中断（如定义），如果只触发一次则直接关闭PTE通道
 
-\hypertarget{ux6ce8ux610fux70b9-1}{%
-\subsection{注意点}\label{ux6ce8ux610fux70b9-1}}
+\hypertarget{ux6ce8ux610fux70b9-2}{%
+\subsection{注意点}\label{ux6ce8ux610fux70b9-2}}
 
 \begin{itemize}
 \item
@@ -2573,8 +3202,8 @@ PTE使用方法总结为：建议不使用PTE中断，在dst外设中断里清PT
   使用PTE中断会更多占用CPU资源并增加触发过程操作复杂度、增加出错风险，中断处理程序完全可以在src和dst中断中完成，所以强烈建议不要使用PTE中断
 \end{itemize}
 
-\hypertarget{ux7f16ux7a0bux6307ux5357-1}{%
-\section{编程指南}\label{ux7f16ux7a0bux6307ux5357-1}}
+\hypertarget{ux7f16ux7a0bux6307ux5357-2}{%
+\section{编程指南}\label{ux7f16ux7a0bux6307ux5357-2}}
 
 \hypertarget{srcdstux5916ux8bbe}{%
 \subsection{src\&dst外设}\label{srcdstux5916ux8bbe}}
@@ -2645,8 +3274,8 @@ dst外设定义在SYSCTRL\_PTE\_DST\_EN中：
 
 通过PTE连接的src外设和dst外设需要在已注册枚举中选取。
 
-\hypertarget{ux9a71ux52a8ux63a5ux53e3-1}{%
-\subsection{驱动接口}\label{ux9a71ux52a8ux63a5ux53e3-1}}
+\hypertarget{ux9a71ux52a8ux63a5ux53e3-2}{%
+\subsection{驱动接口}\label{ux9a71ux52a8ux63a5ux53e3-2}}
 
 \begin{itemize}
 \item
@@ -2663,8 +3292,8 @@ dst外设定义在SYSCTRL\_PTE\_DST\_EN中：
   PTE\_OutPeripheralEndProcess：dst外设中断标准PTE结束接口
 \end{itemize}
 
-\hypertarget{ux4ee3ux7801ux793aux4f8b-1}{%
-\subsection{代码示例}\label{ux4ee3ux7801ux793aux4f8b-1}}
+\hypertarget{ux4ee3ux7801ux793aux4f8b-2}{%
+\subsection{代码示例}\label{ux4ee3ux7801ux793aux4f8b-2}}
 
 下面以Timer0通过PTE通道0触发Timer1为例展示PTE的具体使用方法。
 
@@ -3143,6 +3772,181 @@ FIFO：
 \DataTypeTok{uint32_t}\NormalTok{ PCAP_ReadCounter(}\DataTypeTok{void}\NormalTok{);}
 \end{Highlighting}
 \end{Shaded}
+
+\hypertarget{ch-rtc}{%
+\chapter{实时时钟（RTC）}\label{ch-rtc}}
+
+\hypertarget{ux529fux80fdux63cfux8ff0-3}{%
+\section{功能描述}\label{ux529fux80fdux63cfux8ff0-3}}
+
+实时时钟是一个独立的定时器。RTC模块拥有一组连续计数的计数器，在相应的软件配置下，
+可提供时钟日历的功能。修改计数器的值可以重新设置系统当前的时间和日期。
+
+\hypertarget{ux4f7fux7528ux8bf4ux660e-3}{%
+\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-3}}
+
+\hypertarget{rtcux4f7fux80fd}{%
+\subsection{RTC使能}\label{rtcux4f7fux80fd}}
+
+使用 \texttt{RTC\_Enable} 使能RTC。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ RTC_Enable(}\DataTypeTok{uint8_t}\NormalTok{ enable);}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux83b7ux53d6ux5f53ux524dux65e5ux671f}{%
+\subsection{获取当前日期}\label{ux83b7ux53d6ux5f53ux524dux65e5ux671f}}
+
+使用 \texttt{RTC\_GetTime} 获取当前时间（包括时分秒）。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{uint16_t}\NormalTok{ RTC_GetTime(}
+  \DataTypeTok{uint8_t}\NormalTok{ *hour, }
+  \DataTypeTok{uint8_t}\NormalTok{ *minute, }
+  \DataTypeTok{uint8_t}\NormalTok{ *second}
+\NormalTok{  );}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux4feeux6539ux65e5ux671f}{%
+\subsection{修改日期}\label{ux4feeux6539ux65e5ux671f}}
+
+使用 \texttt{RTC\_ModifyTime} 修改当前时间。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ RTC_ModifyTime(}
+  \DataTypeTok{uint16_t}\NormalTok{ day, }
+  \DataTypeTok{uint8_t}\NormalTok{ hour, }
+  \DataTypeTok{uint8_t}\NormalTok{ minute, }
+  \DataTypeTok{uint8_t}\NormalTok{ second}
+\NormalTok{  );}
+\end{Highlighting}
+\end{Shaded}
+
+ws
+\#\#\# 配置闹钟
+
+使用 \texttt{RTC\_ConfigAlarm}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ RTC_ConfigAlarm(}
+  \DataTypeTok{uint8_t}\NormalTok{ hour, }
+  \DataTypeTok{uint8_t}\NormalTok{ minute, }
+  \DataTypeTok{uint8_t}\NormalTok{ second}
+\NormalTok{  );}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux914dux7f6eux4e2dux65adux8bf7ux6c42-1}{%
+\subsection{配置中断请求}\label{ux914dux7f6eux4e2dux65adux8bf7ux6c42-1}}
+
+使用 \texttt{RTC\_EnableIRQ} 配置并使能RTC中断请求。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ RTC_EnableIRQ(}\DataTypeTok{uint32_t}\NormalTok{ mask);}
+\end{Highlighting}
+\end{Shaded}
+
+其中的 \texttt{mask} 为RTC中断类型，一共有六种：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{typedef} \KeywordTok{enum}
+\NormalTok{\{}
+\NormalTok{    RTC_IRQ_ALARM = }\BaseNTok{0x04}\NormalTok{,}
+\NormalTok{    RTC_IRQ_DAY = }\BaseNTok{0x08}\NormalTok{,}
+\NormalTok{    RTC_IRQ_HOUR = }\BaseNTok{0x10}\NormalTok{,}
+\NormalTok{    RTC_IRQ_MINUTE = }\BaseNTok{0x20}\NormalTok{,}
+\NormalTok{    RTC_IRQ_SECOND = }\BaseNTok{0x40}\NormalTok{,}
+\NormalTok{    RTC_IRQ_HALF_SECOND = }\BaseNTok{0x80}\NormalTok{,}
+\NormalTok{\} rtc_irq_t;}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\item
+  例如将 RTC 设置为alarm中断
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{RTC_EnableIRQ(RTC_IRQ_ALARM);}
+\end{Highlighting}
+\end{Shaded}
+\item
+  例如将 RTC 设置为day中断
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{RTC_EnableIRQ(RTC_IRQ_DAY);}
+\end{Highlighting}
+\end{Shaded}
+\item
+  例如将 RTC 设置为hour中断
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{RTC_EnableIRQ(RTC_IRQ_HOUR);}
+\end{Highlighting}
+\end{Shaded}
+\item
+  例如将 RTC 设置为minute中断
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{RTC_EnableIRQ(RTC_IRQ_MINUTE);}
+\end{Highlighting}
+\end{Shaded}
+\item
+  例如将 RTC 设置为second中断
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{RTC_EnableIRQ(RTC_IRQ_SECOND);}
+\end{Highlighting}
+\end{Shaded}
+\item
+  例如将 RTC 设置为half-second中断
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{RTC_EnableIRQ(RTC_IRQ_HALF_SECOND);}
+\end{Highlighting}
+\end{Shaded}
+\end{itemize}
+
+\hypertarget{ux83b7ux53d6ux5f53ux524dux4e2dux65adux72b6ux6001}{%
+\subsection{获取当前中断状态}\label{ux83b7ux53d6ux5f53ux524dux4e2dux65adux72b6ux6001}}
+
+使用 \texttt{RTC\_GetIntState} 获取当前RTC的中断状态。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{uint32_t}\NormalTok{ RTC_GetIntState(}\DataTypeTok{void}\NormalTok{);}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux6e05ux9664ux4e2dux65ad}{%
+\subsection{清除中断}\label{ux6e05ux9664ux4e2dux65ad}}
+
+使用 \texttt{RTC\_ClearIntState} 清除当前RTC的中断状态。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ RTC_ClearIntState(}\DataTypeTok{uint32_t}\NormalTok{ state);}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux5904ux7406ux4e2dux65adux72b6ux6001-1}{%
+\subsection{处理中断状态}\label{ux5904ux7406ux4e2dux65adux72b6ux6001-1}}
+
+用 \texttt{RTC\_GetIntState} 获取RTC上的中断触发，返回非 0 值表示RTC上产生了中断请求；RTC产生中断后，
+需要消除中断状态方可再次触发。利用 \texttt{RTC\_ClearIntState}可清除RTC的中断触发状态。
 
 \hypertarget{spiux529fux80fdux6982ux8ff0}{%
 \chapter{SPI功能概述}\label{spiux529fux80fdux6982ux8ff0}}
@@ -4612,8 +5416,8 @@ UART0\_TX，分别用于触发 DMA 发送请求（通过 DMA 传输接收到的�
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{ux4f7fux7528ux8bf4ux660e-3}{%
-\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-3}}
+\hypertarget{ux4f7fux7528ux8bf4ux660e-4}{%
+\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-4}}
 
 \hypertarget{ux5916ux8bbeux590dux4f4d}{%
 \subsection{外设复位}\label{ux5916ux8bbeux590dux4f4d}}

@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>13 实时时钟（RTC） | ING916XX 系列芯片外设开发者手册</title>
+  <title>7 I2s简介 | ING916XX 系列芯片外设开发者手册</title>
   <meta name="description" content="ING916XX 系列芯片开发者手册." />
   <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="13 实时时钟（RTC） | ING916XX 系列芯片外设开发者手册" />
+  <meta property="og:title" content="7 I2s简介 | ING916XX 系列芯片外设开发者手册" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="ING916XX 系列芯片开发者手册." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="13 实时时钟（RTC） | ING916XX 系列芯片外设开发者手册" />
+  <meta name="twitter:title" content="7 I2s简介 | ING916XX 系列芯片外设开发者手册" />
   
   <meta name="twitter:description" content="ING916XX 系列芯片开发者手册." />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="ch-pwm.html"/>
-<link rel="next" href="spi功能概述.html"/>
+<link rel="prev" href="i2c功能概述.html"/>
+<link rel="next" href="ir-红外.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -392,92 +392,304 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="ch-rtc" class="section level1 hasAnchor">
-<h1><span class="header-section-number">13</span> 实时时钟（RTC）<a href="ch-rtc.html#ch-rtc" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div id="功能描述-4" class="section level2 hasAnchor">
-<h2><span class="header-section-number">13.1</span> 功能描述<a href="ch-rtc.html#功能描述-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>实时时钟是一个独立的定时器。RTC模块拥有一组连续计数的计数器，在相应的软件配置下，
-可提供时钟日历的功能。修改计数器的值可以重新设置系统当前的时间和日期。</p>
-</div>
-<div id="使用说明-4" class="section level2 hasAnchor">
-<h2><span class="header-section-number">13.2</span> 使用说明<a href="ch-rtc.html#使用说明-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="rtc使能" class="section level3 hasAnchor">
-<h3><span class="header-section-number">13.2.1</span> RTC使能<a href="ch-rtc.html#rtc使能" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>RTC_Enable</code> 使能RTC。</p>
-<div class="sourceCode" id="cb111"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb111-1"><a href="ch-rtc.html#cb111-1"></a><span class="dt">void</span> RTC_Enable(<span class="dt">uint8_t</span> enable);</span></code></pre></div>
-</div>
-<div id="获取当前日期" class="section level3 hasAnchor">
-<h3><span class="header-section-number">13.2.2</span> 获取当前日期<a href="ch-rtc.html#获取当前日期" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>RTC_GetTime</code> 获取当前时间（包括时分秒）。</p>
-<div class="sourceCode" id="cb112"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb112-1"><a href="ch-rtc.html#cb112-1"></a><span class="dt">uint16_t</span> RTC_GetTime(</span>
-<span id="cb112-2"><a href="ch-rtc.html#cb112-2"></a>  <span class="dt">uint8_t</span> *hour, </span>
-<span id="cb112-3"><a href="ch-rtc.html#cb112-3"></a>  <span class="dt">uint8_t</span> *minute, </span>
-<span id="cb112-4"><a href="ch-rtc.html#cb112-4"></a>  <span class="dt">uint8_t</span> *second</span>
-<span id="cb112-5"><a href="ch-rtc.html#cb112-5"></a>  );</span></code></pre></div>
-</div>
-<div id="修改日期" class="section level3 hasAnchor">
-<h3><span class="header-section-number">13.2.3</span> 修改日期<a href="ch-rtc.html#修改日期" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>RTC_ModifyTime</code> 修改当前时间。</p>
-<div class="sourceCode" id="cb113"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb113-1"><a href="ch-rtc.html#cb113-1"></a><span class="dt">void</span> RTC_ModifyTime(</span>
-<span id="cb113-2"><a href="ch-rtc.html#cb113-2"></a>  <span class="dt">uint16_t</span> day, </span>
-<span id="cb113-3"><a href="ch-rtc.html#cb113-3"></a>  <span class="dt">uint8_t</span> hour, </span>
-<span id="cb113-4"><a href="ch-rtc.html#cb113-4"></a>  <span class="dt">uint8_t</span> minute, </span>
-<span id="cb113-5"><a href="ch-rtc.html#cb113-5"></a>  <span class="dt">uint8_t</span> second</span>
-<span id="cb113-6"><a href="ch-rtc.html#cb113-6"></a>  );</span></code></pre></div>
-</div>
-<div id="配置闹钟" class="section level3 hasAnchor">
-<h3><span class="header-section-number">13.2.4</span> 配置闹钟<a href="ch-rtc.html#配置闹钟" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>RTC_ConfigAlarm</code></p>
-<div class="sourceCode" id="cb114"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb114-1"><a href="ch-rtc.html#cb114-1"></a><span class="dt">void</span> RTC_ConfigAlarm(</span>
-<span id="cb114-2"><a href="ch-rtc.html#cb114-2"></a>  <span class="dt">uint8_t</span> hour, </span>
-<span id="cb114-3"><a href="ch-rtc.html#cb114-3"></a>  <span class="dt">uint8_t</span> minute, </span>
-<span id="cb114-4"><a href="ch-rtc.html#cb114-4"></a>  <span class="dt">uint8_t</span> second</span>
-<span id="cb114-5"><a href="ch-rtc.html#cb114-5"></a>  );</span></code></pre></div>
-</div>
-<div id="配置中断请求-1" class="section level3 hasAnchor">
-<h3><span class="header-section-number">13.2.5</span> 配置中断请求<a href="ch-rtc.html#配置中断请求-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>RTC_EnableIRQ</code> 配置并使能RTC中断请求。</p>
-<div class="sourceCode" id="cb115"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb115-1"><a href="ch-rtc.html#cb115-1"></a><span class="dt">void</span> RTC_EnableIRQ(<span class="dt">uint32_t</span> mask);</span></code></pre></div>
-<p>其中的 <code>mask</code> 为RTC中断类型，一共有六种：</p>
-<div class="sourceCode" id="cb116"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb116-1"><a href="ch-rtc.html#cb116-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb116-2"><a href="ch-rtc.html#cb116-2"></a>{</span>
-<span id="cb116-3"><a href="ch-rtc.html#cb116-3"></a>    RTC_IRQ_ALARM = <span class="bn">0x04</span>,</span>
-<span id="cb116-4"><a href="ch-rtc.html#cb116-4"></a>    RTC_IRQ_DAY = <span class="bn">0x08</span>,</span>
-<span id="cb116-5"><a href="ch-rtc.html#cb116-5"></a>    RTC_IRQ_HOUR = <span class="bn">0x10</span>,</span>
-<span id="cb116-6"><a href="ch-rtc.html#cb116-6"></a>    RTC_IRQ_MINUTE = <span class="bn">0x20</span>,</span>
-<span id="cb116-7"><a href="ch-rtc.html#cb116-7"></a>    RTC_IRQ_SECOND = <span class="bn">0x40</span>,</span>
-<span id="cb116-8"><a href="ch-rtc.html#cb116-8"></a>    RTC_IRQ_HALF_SECOND = <span class="bn">0x80</span>,</span>
-<span id="cb116-9"><a href="ch-rtc.html#cb116-9"></a>} rtc_irq_t;</span></code></pre></div>
+<div id="ch-I2s" class="section level1 hasAnchor">
+<h1><span class="header-section-number">7</span> I2s简介<a href="ch-I2s.html#ch-I2s" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>I2S（inter-IC sound）总线是数字音频专用总线。它有四个引脚，两个数据引脚(DOUT和DIN)，一个位率时钟引脚(BCLK)和一个左右通道选择引脚(LRCLK)。</p>
+<p>另外，通过ING91682A的MCLK输出，它可用于给外部 DAC/ADC 芯片提供时钟（可选）。</p>
+<div id="功能描述-1" class="section level2 hasAnchor">
+<h2><span class="header-section-number">7.1</span> 功能描述<a href="ch-I2s.html#功能描述-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="特点-1" class="section level3 hasAnchor">
+<h3><span class="header-section-number">7.1.1</span> 特点<a href="ch-I2s.html#特点-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <ul>
-<li><p>例如将 RTC 设置为alarm中断</p>
-<div class="sourceCode" id="cb117"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb117-1"><a href="ch-rtc.html#cb117-1"></a>RTC_EnableIRQ(RTC_IRQ_ALARM);</span></code></pre></div></li>
-<li><p>例如将 RTC 设置为day中断</p>
-<div class="sourceCode" id="cb118"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb118-1"><a href="ch-rtc.html#cb118-1"></a>RTC_EnableIRQ(RTC_IRQ_DAY);</span></code></pre></div></li>
-<li><p>例如将 RTC 设置为hour中断</p>
-<div class="sourceCode" id="cb119"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb119-1"><a href="ch-rtc.html#cb119-1"></a>RTC_EnableIRQ(RTC_IRQ_HOUR);</span></code></pre></div></li>
-<li><p>例如将 RTC 设置为minute中断</p>
-<div class="sourceCode" id="cb120"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb120-1"><a href="ch-rtc.html#cb120-1"></a>RTC_EnableIRQ(RTC_IRQ_MINUTE);</span></code></pre></div></li>
-<li><p>例如将 RTC 设置为second中断</p>
-<div class="sourceCode" id="cb121"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb121-1"><a href="ch-rtc.html#cb121-1"></a>RTC_EnableIRQ(RTC_IRQ_SECOND);</span></code></pre></div></li>
-<li><p>例如将 RTC 设置为half-second中断</p>
-<div class="sourceCode" id="cb122"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb122-1"><a href="ch-rtc.html#cb122-1"></a>RTC_EnableIRQ(RTC_IRQ_HALF_SECOND);</span></code></pre></div></li>
+<li><p>遵从 I2S 协议标准，支持12S标准模式和左对齐模式</p></li>
+<li><p>支持PCM(脉冲编码调制)时序</p></li>
+<li><p>可编程的主从模式</p></li>
+<li><p>可配置的LRCLK和BCLK极性</p></li>
+<li><p>可配置数据位宽</p></li>
+<li><p>独立发送和接收FIFO</p></li>
+<li><p>TX和RX的FIFO深度分别为16*32bit</p></li>
+<li><p>支持立体声和单声道模式</p></li>
+<li><p>可配置的采样频率</p></li>
+<li><p>TX和RX分别支持DMA搬运</p></li>
 </ul>
 </div>
-<div id="获取当前中断状态" class="section level3 hasAnchor">
-<h3><span class="header-section-number">13.2.6</span> 获取当前中断状态<a href="ch-rtc.html#获取当前中断状态" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>RTC_GetIntState</code> 获取当前RTC的中断状态。</p>
-<div class="sourceCode" id="cb123"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb123-1"><a href="ch-rtc.html#cb123-1"></a><span class="dt">uint32_t</span> RTC_GetIntState(<span class="dt">void</span>);</span></code></pre></div>
+<div id="i2s角色" class="section level3 hasAnchor">
+<h3><span class="header-section-number">7.1.2</span> I2s角色<a href="ch-I2s.html#i2s角色" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>在 I2S 总线上，提供时钟和通道选择信号的器件是 MASTER，另一方则为 SLAVER。</p>
+<p>MASTER和SLAVE都可以进行数据收发。</p>
 </div>
-<div id="清除中断" class="section level3 hasAnchor">
-<h3><span class="header-section-number">13.2.7</span> 清除中断<a href="ch-rtc.html#清除中断" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>RTC_ClearIntState</code> 清除当前RTC的中断状态。</p>
-<div class="sourceCode" id="cb124"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb124-1"><a href="ch-rtc.html#cb124-1"></a><span class="dt">void</span> RTC_ClearIntState(<span class="dt">uint32_t</span> state);</span></code></pre></div>
+<div id="i2s工作模式" class="section level3 hasAnchor">
+<h3><span class="header-section-number">7.1.3</span> I2s工作模式<a href="ch-I2s.html#i2s工作模式" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>I2S 有两种工作模式：一种是立体声音频模式，另外一种是话音模式。</p>
 </div>
-<div id="处理中断状态-1" class="section level3 hasAnchor">
-<h3><span class="header-section-number">13.2.8</span> 处理中断状态<a href="ch-rtc.html#处理中断状态-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>用 <code>RTC_GetIntState</code> 获取RTC上的中断触发，返回非 0 值表示RTC上产生了中断请求；RTC产生中断后，
-需要消除中断状态方可再次触发。利用 <code>RTC_ClearIntState</code>可清除RTC的中断触发状态。</p>
+<div id="串行数据" class="section level3 hasAnchor">
+<h3><span class="header-section-number">7.1.4</span> 串行数据<a href="ch-I2s.html#串行数据" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>串行数据是以高位（MSB）在前，低位（LSB）在后的方式进行传送的。</p>
+<p>如果音频codec发送的位数多于I2S控制器的接收位数，I2S控制器会将低位多余的位数忽略掉；</p>
+<p>如果音频codec发送的位数小于I2S控制器接收位数，I2S控制器将后面的位补零。</p>
+</div>
+<div id="时钟分频" class="section level3 hasAnchor">
+<h3><span class="header-section-number">7.1.5</span> 时钟分频<a href="ch-I2s.html#时钟分频" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>916芯片可选用系统24MHz时钟或者PLL作为I2s时钟源。</p>
+<p>位率时钟（BCLK）可以通过对功能时钟进行分频得到；</p>
+<p>通道选择时钟（LRCLK）即音频数据的采样频率可以通过对BCLK进行分频得到。</p>
+<p>音频 Codec 中对采样频率 LRCLK 要求精度比较高，我们在计算分频时应该首先根据不同的采样频率计算得到对应的 MCLK 和 BCLK。</p>
+<div id="时钟分频计算" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.1.5.1</span> 时钟分频计算<a href="ch-I2s.html#时钟分频计算" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>计算示例：</p>
+<p>假设当前codec采用16K采样频率，mic要求一帧64位（参考具体的mic使用手册）。</p>
+<p>有以下关系：</p>
+<ul>
+<li><p>f_bclk = clk/(2*b_div)</p></li>
+<li><p>f_lrclk = f_bclk/(2*lr_div)</p></li>
+</ul>
+<p>其中clk为codec时钟，f_bclk、f_lrclk分别为BCLK和LRCLK，b_div、lr_div分别为BCLK和LRCLK的分频系数。</p>
+<p>BCLK和LRCLK之间的关系是可变的，但是BCLK必须大于等于LRCLK的48倍。即lr_div&gt;=24。</p>
+<p>支持lr_div = 32，DATA_LEN = 32位的配置，其他情况下lr_div - DATA_LEN &gt; 3。</p>
+<p>通过f_lrclk = 16000，lr_div = 32计算出f_bclk = 1.024MHz。也就是clk = 2.048*b_div。</p>
+<p>clk通过时钟源分频得到必定是整数，b_div也同样是整数，通过计算得知在384MHz内只有当b_div = 125时clk = 256MHz为整数。</p>
+<p>故需要将PLL时钟配置为256MHz，b_div = 125可以得到16K采样率。</p>
+</div>
+</div>
+<div id="i2s存储器" class="section level3 hasAnchor">
+<h3><span class="header-section-number">7.1.6</span> i2s存储器<a href="ch-I2s.html#i2s存储器" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>采用两个深度为16，宽度为32bit的FIFO分别存储接收、发送的音频数据。</p>
+<p>有如下规则：</p>
+<ul>
+<li><p>音频数据位宽为16bit时，每32bit存储两个音频数据，高16bit存储左声道数据，低16bit存储右声道数据。</p></li>
+<li><p>音频数据位宽大于16bit时，每32bit存储一个音频数据，低地址存储左声道数据，高地址存储右声道数据。</p></li>
+</ul>
+</div>
+</div>
+<div id="使用方法-1" class="section level2 hasAnchor">
+<h2><span class="header-section-number">7.2</span> 使用方法<a href="ch-I2s.html#使用方法-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="方法概述-1" class="section level3 hasAnchor">
+<h3><span class="header-section-number">7.2.1</span> 方法概述<a href="ch-I2s.html#方法概述-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>I2s使用方法总结为：时钟配置，I2s配置（包括采样率）和数据处理。</p>
+<p>数据发送：</p>
+<p><strong>1.</strong> I2s引脚GPIO配置</p>
+<p><strong>2.</strong> 配置外部 codec 芯片，使其处于工作模式</p>
+<p><strong>3.</strong> 写相应配置寄存器</p>
+<p><strong>4.</strong> 将数据写入TX_MEM</p>
+<p><strong>5.</strong> 使能I2s</p>
+<p><strong>6.</strong> 等待中断产生</p>
+<p><strong>7.</strong> 读取状态寄存器，将数据写入TX_MEM</p>
+<p><strong>8.</strong> 传输完毕，关闭 I2S</p>
+<p>数据接收：</p>
+<p><strong>1.</strong> I2s引脚GPIO配置</p>
+<p><strong>2.</strong> 配置外部 codec 芯片，使其处于工作模式</p>
+<p><strong>3.</strong> 写相应配置寄存器</p>
+<p><strong>4.</strong> 使能I2s</p>
+<p><strong>5.</strong> 等待中断产生</p>
+<p><strong>6.</strong> 读取状态寄存器，读取 RX_MEM 中数据</p>
+<p><strong>7.</strong> 传输完毕，关闭 I2S</p>
+<p>I2S控制器操作流程图如下：</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:I2S"></span>
+<img src="img/I2s/I2s_structure.png" alt="I2S控制器操作流程图" width="50%" />
+<p class="caption">
+图 7.1: I2S控制器操作流程图
+</p>
+</div>
+<p>如果需要用到DMA搬运则需要在使能I2s之前配置DMA并使能。</p>
+</div>
+<div id="注意点-1" class="section level3 hasAnchor">
+<h3><span class="header-section-number">7.2.2</span> 注意点<a href="ch-I2s.html#注意点-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>I2s时钟源可以选择晶振24M时钟和PLL时钟，要注意是选择哪一个时钟源</p></li>
+<li><p>I2s数据可能会进行采样，需要注意具体的数据结构以及对应的数据处理，如是否需要数据移位等</p></li>
+<li><p>当前I2s支持的发送/接收数据位宽为16-32bit，需要查阅mic文档或其他使用手册来确定数据位宽，否则不能正常工作</p></li>
+<li><p>配置DMA要在使能I2s之前完成，使能I2s一定是最后一步</p></li>
+<li><p>建议采用DMA乒乓搬运的方式来传输I2s数据</p></li>
+</ul>
+</div>
+</div>
+<div id="编程指南-1" class="section level2 hasAnchor">
+<h2><span class="header-section-number">7.3</span> 编程指南<a href="ch-I2s.html#编程指南-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="驱动接口-1" class="section level3 hasAnchor">
+<h3><span class="header-section-number">7.3.1</span> 驱动接口<a href="ch-I2s.html#驱动接口-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>I2S_ConfigClk：I2s时钟配置接口</p></li>
+<li><p>I2S_Config：I2s配置接口</p></li>
+<li><p>I2S_ConfigIRQ：I2s中断配置接口</p></li>
+<li><p>I2S_DMAEnable：I2s DMA使能接口</p></li>
+<li><p>I2S_Enable：I2s使能接口</p></li>
+<li><p>I2S_PopRxFIFO、I2S_PushTxFIFO：I2s FIFO读写接口</p></li>
+<li><p>I2S_ClearRxFIFO、I2S_ClearTxFIFO：I2s清FIFO接口</p></li>
+<li><p>I2S_GetIntState、I2S_ClearIntState：I2s获取中断、清中断接口</p></li>
+<li><p>I2S_GetRxFIFOCount、I2S_GetTxFIFOCount：I2s获取FIFO数据数量接口</p></li>
+<li><p>I2S_DataFromPDM：I2s获取PDM数据接口</p></li>
+</ul>
+</div>
+<div id="代码示例-1" class="section level3 hasAnchor">
+<h3><span class="header-section-number">7.3.2</span> 代码示例<a href="ch-I2s.html#代码示例-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>下面将通过实际代码展示I2s的基本配置及使用代码。</p>
+<div id="i2s配置" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.3.2.1</span> I2s配置<a href="ch-I2s.html#i2s配置" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb69"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb69-1"><a href="ch-I2s.html#cb69-1"></a><span class="pp">#define I2S_PIN_BCLK        28</span></span>
+<span id="cb69-2"><a href="ch-I2s.html#cb69-2"></a><span class="pp">#define I2S_PIN_IN          29</span></span>
+<span id="cb69-3"><a href="ch-I2s.html#cb69-3"></a><span class="pp">#define I2S_PIN_LRCLK       30</span></span>
+<span id="cb69-4"><a href="ch-I2s.html#cb69-4"></a><span class="dt">void</span> I2sSetup(<span class="dt">void</span>)</span>
+<span id="cb69-5"><a href="ch-I2s.html#cb69-5"></a>{</span>
+<span id="cb69-6"><a href="ch-I2s.html#cb69-6"></a>    <span class="co">// pinctrl &amp; GPIO mux</span></span>
+<span id="cb69-7"><a href="ch-I2s.html#cb69-7"></a>    PINCTRL_SetPadMux(I2S_PIN_BCLK, IO_SOURCE_I2S_BCLK_OUT);</span>
+<span id="cb69-8"><a href="ch-I2s.html#cb69-8"></a>    PINCTRL_SetPadMux(I2S_PIN_IN, IO_SOURCE_I2S_DATA_IN);</span>
+<span id="cb69-9"><a href="ch-I2s.html#cb69-9"></a>    PINCTRL_SelI2sIn(IO_NOT_A_PIN, IO_NOT_A_PIN, I2S_PIN_IN);</span>
+<span id="cb69-10"><a href="ch-I2s.html#cb69-10"></a>    PINCTRL_SetPadMux(I2S_PIN_LRCLK, IO_SOURCE_I2S_LRCLK_OUT);</span>
+<span id="cb69-11"><a href="ch-I2s.html#cb69-11"></a>    PINCTRL_Pull(IO_SOURCE_I2S_DATA_IN, PINCTRL_PULL_DOWN);</span>
+<span id="cb69-12"><a href="ch-I2s.html#cb69-12"></a>    </span>
+<span id="cb69-13"><a href="ch-I2s.html#cb69-13"></a>    <span class="co">// CLK &amp; Register</span></span>
+<span id="cb69-14"><a href="ch-I2s.html#cb69-14"></a>    SYSCTRL_ConfigPLLClk(<span class="dv">6</span>, <span class="dv">128</span>, <span class="dv">2</span>); <span class="co">// sorce clk PLL = 256MHz</span></span>
+<span id="cb69-15"><a href="ch-I2s.html#cb69-15"></a>    SYSCTRL_SelectI2sClk(SYSCTRL_CLK_PLL_DIV_1 + <span class="dv">4</span>); <span class="co">// I2s_Clk = 51.2MHz</span></span>
+<span id="cb69-16"><a href="ch-I2s.html#cb69-16"></a>    I2S_ConfigClk(APB_I2S, <span class="dv">25</span>, <span class="dv">32</span>); <span class="co">// F_bclk = 1.024MHz, F_lrclk = 16K</span></span>
+<span id="cb69-17"><a href="ch-I2s.html#cb69-17"></a>    I2S_ConfigIRQ(APB_I2S, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">10</span>);</span>
+<span id="cb69-18"><a href="ch-I2s.html#cb69-18"></a>    I2S_DMAEnable(APB_I2S, <span class="dv">0</span>, <span class="dv">0</span>);    </span>
+<span id="cb69-19"><a href="ch-I2s.html#cb69-19"></a>    I2S_Config(APB_I2S, I2S_ROLE_MASTER, I2S_MODE_STANDARD, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">24</span>);</span>
+<span id="cb69-20"><a href="ch-I2s.html#cb69-20"></a></span>
+<span id="cb69-21"><a href="ch-I2s.html#cb69-21"></a>    <span class="co">// I2s interrupt</span></span>
+<span id="cb69-22"><a href="ch-I2s.html#cb69-22"></a>    platform_set_irq_callback(PLATFORM_CB_IRQ_I2S, cb_isr, <span class="dv">0</span>);</span>
+<span id="cb69-23"><a href="ch-I2s.html#cb69-23"></a>}</span></code></pre></div>
+</div>
+<div id="i2s使能" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.3.2.2</span> I2s使能<a href="ch-I2s.html#i2s使能" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>I2s使能分3种情况：I2s发送、I2s接收、使用DMA搬运</p>
+<p>接收：</p>
+<div class="sourceCode" id="cb70"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb70-1"><a href="ch-I2s.html#cb70-1"></a><span class="dt">void</span> I2sStart(<span class="dt">void</span>)</span>
+<span id="cb70-2"><a href="ch-I2s.html#cb70-2"></a>{</span>
+<span id="cb70-3"><a href="ch-I2s.html#cb70-3"></a>    I2S_ClearRxFIFO(APB_I2S);</span>
+<span id="cb70-4"><a href="ch-I2s.html#cb70-4"></a>    I2S_Enable(APB_I2S, <span class="dv">0</span>, <span class="dv">1</span>);</span>
+<span id="cb70-5"><a href="ch-I2s.html#cb70-5"></a>}</span></code></pre></div>
+<p>发送：</p>
+<div class="sourceCode" id="cb71"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb71-1"><a href="ch-I2s.html#cb71-1"></a><span class="dt">uint8_t</span>  sendSize = <span class="dv">10</span>;</span>
+<span id="cb71-2"><a href="ch-I2s.html#cb71-2"></a><span class="dt">uint32_t</span> sendData[<span class="dv">10</span>];</span>
+<span id="cb71-3"><a href="ch-I2s.html#cb71-3"></a><span class="dt">void</span> I2sStart(<span class="dt">void</span>)</span>
+<span id="cb71-4"><a href="ch-I2s.html#cb71-4"></a>{</span>
+<span id="cb71-5"><a href="ch-I2s.html#cb71-5"></a>    <span class="dt">int</span> i; </span>
+<span id="cb71-6"><a href="ch-I2s.html#cb71-6"></a>    I2S_ClearTxFIFO(APB_I2S);</span>
+<span id="cb71-7"><a href="ch-I2s.html#cb71-7"></a>    <span class="co">// push data into TX_FIFO first</span></span>
+<span id="cb71-8"><a href="ch-I2s.html#cb71-8"></a>    <span class="cf">for</span> (i = <span class="dv">0</span>; i &lt; sendSize; i++) {</span>
+<span id="cb71-9"><a href="ch-I2s.html#cb71-9"></a>        I2S_PushTxFIFO(APB_I2S, sendData[i]);</span>
+<span id="cb71-10"><a href="ch-I2s.html#cb71-10"></a>    }</span>
+<span id="cb71-11"><a href="ch-I2s.html#cb71-11"></a>    I2S_Enable(APB_I2S, <span class="dv">0</span>, <span class="dv">1</span>);</span>
+<span id="cb71-12"><a href="ch-I2s.html#cb71-12"></a>}</span></code></pre></div>
+<p>使用DMA（接收）：</p>
+<div class="sourceCode" id="cb72"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb72-1"><a href="ch-I2s.html#cb72-1"></a><span class="pp">#define CHANNEL_ID  0</span></span>
+<span id="cb72-2"><a href="ch-I2s.html#cb72-2"></a>DMA_Descriptor test __attribute__((aligned (<span class="dv">8</span>)));                                </span>
+<span id="cb72-3"><a href="ch-I2s.html#cb72-3"></a><span class="dt">void</span> I2sStart(<span class="dt">uint32_t</span> data)</span>
+<span id="cb72-4"><a href="ch-I2s.html#cb72-4"></a>{</span>
+<span id="cb72-5"><a href="ch-I2s.html#cb72-5"></a>   DMA_EnableChannel(CHANNEL_ID, &amp;test);</span>
+<span id="cb72-6"><a href="ch-I2s.html#cb72-6"></a>   I2S_ClearRxFIFO(APB_I2S);</span>
+<span id="cb72-7"><a href="ch-I2s.html#cb72-7"></a>   I2S_DMAEnable(APB_I2S, <span class="dv">1</span>, <span class="dv">1</span>);    </span>
+<span id="cb72-8"><a href="ch-I2s.html#cb72-8"></a>   I2S_Enable(APB_I2S, <span class="dv">0</span>, <span class="dv">1</span>);</span>
+<span id="cb72-9"><a href="ch-I2s.html#cb72-9"></a>}</span></code></pre></div>
+<p>无论哪种情况都必须最后一步使能I2s，否则I2s工作异常。</p>
+</div>
+<div id="i2s中断" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.3.2.3</span> I2s中断<a href="ch-I2s.html#i2s中断" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>接收：</p>
+<div class="sourceCode" id="cb73"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb73-1"><a href="ch-I2s.html#cb73-1"></a><span class="dt">uint32_t</span> cb_isr(<span class="dt">void</span> *user_data)</span>
+<span id="cb73-2"><a href="ch-I2s.html#cb73-2"></a>{ </span>
+<span id="cb73-3"><a href="ch-I2s.html#cb73-3"></a>    <span class="dt">uint32_t</span> state = I2S_GetIntState(APB_I2S);</span>
+<span id="cb73-4"><a href="ch-I2s.html#cb73-4"></a>    I2S_ClearIntState(APB_I2S, state);</span>
+<span id="cb73-5"><a href="ch-I2s.html#cb73-5"></a></span>
+<span id="cb73-6"><a href="ch-I2s.html#cb73-6"></a>    <span class="dt">int</span> i = I2S_GetRxFIFOCount(APB_I2S);</span>
+<span id="cb73-7"><a href="ch-I2s.html#cb73-7"></a></span>
+<span id="cb73-8"><a href="ch-I2s.html#cb73-8"></a>    <span class="cf">while</span> (i) {</span>
+<span id="cb73-9"><a href="ch-I2s.html#cb73-9"></a>        <span class="dt">uint32_t</span> data = I2S_PopRxFIFO(APB_I2S);</span>
+<span id="cb73-10"><a href="ch-I2s.html#cb73-10"></a>        i--;</span>
+<span id="cb73-11"><a href="ch-I2s.html#cb73-11"></a>        <span class="co">// do something with data</span></span>
+<span id="cb73-12"><a href="ch-I2s.html#cb73-12"></a>    }</span>
+<span id="cb73-13"><a href="ch-I2s.html#cb73-13"></a></span>
+<span id="cb73-14"><a href="ch-I2s.html#cb73-14"></a>    <span class="cf">return</span> <span class="dv">0</span>;</span>
+<span id="cb73-15"><a href="ch-I2s.html#cb73-15"></a>}</span></code></pre></div>
+<p>发送：</p>
+<div class="sourceCode" id="cb74"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb74-1"><a href="ch-I2s.html#cb74-1"></a><span class="dt">uint8_t</span>  sendSize = <span class="dv">10</span>;</span>
+<span id="cb74-2"><a href="ch-I2s.html#cb74-2"></a><span class="dt">uint32_t</span> sendData[<span class="dv">10</span>];</span>
+<span id="cb74-3"><a href="ch-I2s.html#cb74-3"></a><span class="dt">uint32_t</span> cb_isr(<span class="dt">void</span> *user_data)</span>
+<span id="cb74-4"><a href="ch-I2s.html#cb74-4"></a>{ </span>
+<span id="cb74-5"><a href="ch-I2s.html#cb74-5"></a>    <span class="dt">uint32_t</span> state = I2S_GetIntState(APB_I2S);</span>
+<span id="cb74-6"><a href="ch-I2s.html#cb74-6"></a>    I2S_ClearIntState(APB_I2S, state);</span>
+<span id="cb74-7"><a href="ch-I2s.html#cb74-7"></a></span>
+<span id="cb74-8"><a href="ch-I2s.html#cb74-8"></a>    <span class="dt">int</span> i;</span>
+<span id="cb74-9"><a href="ch-I2s.html#cb74-9"></a>    <span class="cf">for</span> (i = <span class="dv">0</span>; i &lt; sendSize; i++) {</span>
+<span id="cb74-10"><a href="ch-I2s.html#cb74-10"></a>        I2S_PushTxFIFO(APB_I2S, sendData[i]);</span>
+<span id="cb74-11"><a href="ch-I2s.html#cb74-11"></a>    }</span>
+<span id="cb74-12"><a href="ch-I2s.html#cb74-12"></a>    <span class="cf">return</span> <span class="dv">0</span>;</span>
+<span id="cb74-13"><a href="ch-I2s.html#cb74-13"></a>}</span></code></pre></div>
+</div>
+<div id="i2s-乒乓dma" class="section level4 hasAnchor">
+<h4><span class="header-section-number">7.3.2.4</span> I2s &amp; 乒乓DMA<a href="ch-I2s.html#i2s-乒乓dma" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>下面以经典的DMA乒乓搬运I2s接收数据为例展示I2s实际使用方法。</p>
+<p>这里我们采用16K采样率，单个数据帧固定64位，和DMA协商握手、burstSize=8、一次搬运80个数据。</p>
+<div class="sourceCode" id="cb75"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb75-1"><a href="ch-I2s.html#cb75-1"></a><span class="pp">#define I2S_PIN_BCLK        28</span></span>
+<span id="cb75-2"><a href="ch-I2s.html#cb75-2"></a><span class="pp">#define I2S_PIN_IN          29</span></span>
+<span id="cb75-3"><a href="ch-I2s.html#cb75-3"></a><span class="pp">#define I2S_PIN_LRCLK       30</span></span>
+<span id="cb75-4"><a href="ch-I2s.html#cb75-4"></a><span class="pp">#define CHANNEL_ID  0</span></span>
+<span id="cb75-5"><a href="ch-I2s.html#cb75-5"></a><span class="dt">uint32_t</span> pingpang_buff[<span class="dv">2</span>][<span class="dv">80</span>];</span>
+<span id="cb75-6"><a href="ch-I2s.html#cb75-6"></a>DMA_Descriptor test[<span class="dv">2</span>] __attribute__((aligned (<span class="dv">8</span>)));</span>
+<span id="cb75-7"><a href="ch-I2s.html#cb75-7"></a><span class="dt">uint8_t</span> pingpang = <span class="dv">0</span>;</span>
+<span id="cb75-8"><a href="ch-I2s.html#cb75-8"></a><span class="dt">static</span> <span class="dt">uint32_t</span> DMA_cb_isr(<span class="dt">void</span> *user_data)</span>
+<span id="cb75-9"><a href="ch-I2s.html#cb75-9"></a>{ </span>
+<span id="cb75-10"><a href="ch-I2s.html#cb75-10"></a>      <span class="dt">uint32_t</span> state = DMA_GetChannelIntState(CHANNEL_ID);</span>
+<span id="cb75-11"><a href="ch-I2s.html#cb75-11"></a>      DMA_ClearChannelIntState(CHANNEL_ID, state);</span>
+<span id="cb75-12"><a href="ch-I2s.html#cb75-12"></a></span>
+<span id="cb75-13"><a href="ch-I2s.html#cb75-13"></a>      pingpang ^= <span class="dv">1</span>;</span>
+<span id="cb75-14"><a href="ch-I2s.html#cb75-14"></a>    DMA_EnableChannel(CHANNEL_ID, &amp;test[pingpang]);</span>
+<span id="cb75-15"><a href="ch-I2s.html#cb75-15"></a>    <span class="dt">uint32_t</span> *data = (pingpang) ? (pingpang_buff[<span class="dv">0</span>]) : (pingpang_buff[<span class="dv">1</span>]);</span>
+<span id="cb75-16"><a href="ch-I2s.html#cb75-16"></a></span>
+<span id="cb75-17"><a href="ch-I2s.html#cb75-17"></a>    <span class="co">// do something with data-buffer&#39;s data</span></span>
+<span id="cb75-18"><a href="ch-I2s.html#cb75-18"></a>    </span>
+<span id="cb75-19"><a href="ch-I2s.html#cb75-19"></a>    <span class="cf">return</span> <span class="dv">0</span>;</span>
+<span id="cb75-20"><a href="ch-I2s.html#cb75-20"></a>}</span>
+<span id="cb75-21"><a href="ch-I2s.html#cb75-21"></a></span>
+<span id="cb75-22"><a href="ch-I2s.html#cb75-22"></a><span class="dt">void</span> DMA_SetUpPingPang(<span class="dt">void</span>)</span>
+<span id="cb75-23"><a href="ch-I2s.html#cb75-23"></a>{</span>
+<span id="cb75-24"><a href="ch-I2s.html#cb75-24"></a>    DMA_Reset();</span>
+<span id="cb75-25"><a href="ch-I2s.html#cb75-25"></a>    platform_set_irq_callback(PLATFORM_CB_IRQ_DMA, DMA_cb_isr, <span class="dv">0</span>);  </span>
+<span id="cb75-26"><a href="ch-I2s.html#cb75-26"></a>    test[<span class="dv">0</span>].Next = &amp;test[<span class="dv">1</span>];</span>
+<span id="cb75-27"><a href="ch-I2s.html#cb75-27"></a>    test[<span class="dv">1</span>].Next = &amp;test[<span class="dv">0</span>];    <span class="co">// make a DMA link cycle</span></span>
+<span id="cb75-28"><a href="ch-I2s.html#cb75-28"></a>    DMA_PreparePeripheral2RAM(&amp;test[<span class="dv">0</span>], </span>
+<span id="cb75-29"><a href="ch-I2s.html#cb75-29"></a>                              pingpang_buff[<span class="dv">0</span>], </span>
+<span id="cb75-30"><a href="ch-I2s.html#cb75-30"></a>                              SYSCTRL_DMA_I2S_RX, </span>
+<span id="cb75-31"><a href="ch-I2s.html#cb75-31"></a>                              <span class="dv">80</span>, </span>
+<span id="cb75-32"><a href="ch-I2s.html#cb75-32"></a>                              DMA_ADDRESS_INC, </span>
+<span id="cb75-33"><a href="ch-I2s.html#cb75-33"></a>                              <span class="dv">0</span> | <span class="dv">8</span> &lt;&lt; <span class="dv">24</span> | <span class="dv">1</span> &lt;&lt; <span class="dv">28</span>);</span>
+<span id="cb75-34"><a href="ch-I2s.html#cb75-34"></a>    DMA_PreparePeripheral2RAM(&amp;test[<span class="dv">1</span>], </span>
+<span id="cb75-35"><a href="ch-I2s.html#cb75-35"></a>                              pingpang_buff[<span class="dv">1</span>], </span>
+<span id="cb75-36"><a href="ch-I2s.html#cb75-36"></a>                              SYSCTRL_DMA_I2S_RX, </span>
+<span id="cb75-37"><a href="ch-I2s.html#cb75-37"></a>                              <span class="dv">80</span>, </span>
+<span id="cb75-38"><a href="ch-I2s.html#cb75-38"></a>                              DMA_ADDRESS_INC, </span>
+<span id="cb75-39"><a href="ch-I2s.html#cb75-39"></a>                              <span class="dv">0</span> | <span class="dv">8</span> &lt;&lt; <span class="dv">24</span> | <span class="dv">1</span> &lt;&lt; <span class="dv">28</span>);</span>
+<span id="cb75-40"><a href="ch-I2s.html#cb75-40"></a>    DMA_EnableChannel(CHANNEL_ID, &amp;test[pingpang]);</span>
+<span id="cb75-41"><a href="ch-I2s.html#cb75-41"></a>}</span>
+<span id="cb75-42"><a href="ch-I2s.html#cb75-42"></a><span class="dt">void</span> I2sSetup(<span class="dt">void</span>)</span>
+<span id="cb75-43"><a href="ch-I2s.html#cb75-43"></a>{</span>
+<span id="cb75-44"><a href="ch-I2s.html#cb75-44"></a>    <span class="co">// pinctrl &amp; GPIO mux</span></span>
+<span id="cb75-45"><a href="ch-I2s.html#cb75-45"></a>    PINCTRL_SetPadMux(I2S_PIN_BCLK, IO_SOURCE_I2S_BCLK_OUT);</span>
+<span id="cb75-46"><a href="ch-I2s.html#cb75-46"></a>    PINCTRL_SetPadMux(I2S_PIN_IN, IO_SOURCE_I2S_DATA_IN);</span>
+<span id="cb75-47"><a href="ch-I2s.html#cb75-47"></a>    PINCTRL_SelI2sIn(IO_NOT_A_PIN, IO_NOT_A_PIN, I2S_PIN_IN);</span>
+<span id="cb75-48"><a href="ch-I2s.html#cb75-48"></a>    PINCTRL_SetPadMux(I2S_PIN_LRCLK, IO_SOURCE_I2S_LRCLK_OUT);</span>
+<span id="cb75-49"><a href="ch-I2s.html#cb75-49"></a>    PINCTRL_Pull(IO_SOURCE_I2S_DATA_IN, PINCTRL_PULL_DOWN);</span>
+<span id="cb75-50"><a href="ch-I2s.html#cb75-50"></a>    </span>
+<span id="cb75-51"><a href="ch-I2s.html#cb75-51"></a>    <span class="co">// CLK &amp; Register</span></span>
+<span id="cb75-52"><a href="ch-I2s.html#cb75-52"></a>    SYSCTRL_ConfigPLLClk(<span class="dv">6</span>, <span class="dv">128</span>, <span class="dv">2</span>); <span class="co">// sorce clk PLL = 256MHz</span></span>
+<span id="cb75-53"><a href="ch-I2s.html#cb75-53"></a>    SYSCTRL_SelectI2sClk(SYSCTRL_CLK_PLL_DIV_1 + <span class="dv">4</span>); <span class="co">// I2s_Clk = 51.2MHz</span></span>
+<span id="cb75-54"><a href="ch-I2s.html#cb75-54"></a>    I2S_ConfigClk(APB_I2S, <span class="dv">25</span>, <span class="dv">32</span>); <span class="co">// F_bclk = 1.024MHz, F_lrclk = 16K</span></span>
+<span id="cb75-55"><a href="ch-I2s.html#cb75-55"></a>    I2S_ConfigIRQ(APB_I2S, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">8</span>);</span>
+<span id="cb75-56"><a href="ch-I2s.html#cb75-56"></a>    I2S_DMAEnable(APB_I2S, <span class="dv">0</span>, <span class="dv">0</span>);    </span>
+<span id="cb75-57"><a href="ch-I2s.html#cb75-57"></a>    I2S_Config(APB_I2S, I2S_ROLE_MASTER, I2S_MODE_STANDARD, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">24</span>);</span>
+<span id="cb75-58"><a href="ch-I2s.html#cb75-58"></a></span>
+<span id="cb75-59"><a href="ch-I2s.html#cb75-59"></a>    <span class="co">// setup pingpang DMA</span></span>
+<span id="cb75-60"><a href="ch-I2s.html#cb75-60"></a>    DMA_SetUpPingPang();</span>
+<span id="cb75-61"><a href="ch-I2s.html#cb75-61"></a>    </span>
+<span id="cb75-62"><a href="ch-I2s.html#cb75-62"></a>    <span class="co">// start working</span></span>
+<span id="cb75-63"><a href="ch-I2s.html#cb75-63"></a>    I2S_ClearRxFIFO(APB_I2S);</span>
+<span id="cb75-64"><a href="ch-I2s.html#cb75-64"></a>    I2S_DMAEnable(APB_I2S, <span class="dv">1</span>, <span class="dv">1</span>);    </span>
+<span id="cb75-65"><a href="ch-I2s.html#cb75-65"></a>    I2S_Enable(APB_I2S, <span class="dv">0</span>, <span class="dv">1</span>);</span>
+<span id="cb75-66"><a href="ch-I2s.html#cb75-66"></a>}</span></code></pre></div>
+<p>DMA的具体用法请参见本手册DMA一节。</p>
+<p>更加系统化的I2s代码请参考SDK中voice_remote_ctrl例程。</p>
 
+</div>
 </div>
 </div>
 </div>
@@ -486,8 +698,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="ch-pwm.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="spi功能概述.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="i2c功能概述.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ir-红外.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

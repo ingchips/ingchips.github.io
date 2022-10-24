@@ -461,7 +461,7 @@ DMA全称direct memory access，即直接存储器访问。
   Fixed address
 \end{itemize}
 
-如果Increment则DMA从地址有小到大搬运数据，相反的Decrement则由大到小搬运。fixed地址适用于外设FIFO的寄存器搬运数据。
+如果Increment则DMA从地址由小到大搬运数据，相反的Decrement则由大到小搬运。fixed地址适用于外设FIFO的寄存器搬运数据。
 
 \hypertarget{ux6570ux636eux65b9ux5f0f}{%
 \subsection{数据方式}\label{ux6570ux636eux65b9ux5f0f}}
@@ -2310,8 +2310,8 @@ GPIO 产生中断后，需要消除中断状态方可再次触发。用 \texttt{
   检查中断状态，在中断中设置DMA读取数据，I2C\_STATUS\_CMPL中断代表传输结束
 \end{itemize}
 
-\hypertarget{i2sux7b80ux4ecb}{%
-\chapter{I2s简介}\label{i2sux7b80ux4ecb}}
+\hypertarget{ch-I2s}{%
+\chapter{I2s简介}\label{ch-I2s}}
 
 I2S（inter-IC sound）总线是数字音频专用总线。它有四个引脚，两个数据引脚(DOUT和DIN)，一个位率时钟引脚(BCLK)和一个左右通道选择引脚(LRCLK)。
 
@@ -2482,7 +2482,7 @@ I2S控制器操作流程图如下：
 \item
   I2s时钟源可以选择晶振24M时钟和PLL时钟，要注意是选择哪一个时钟源
 \item
-  I2s数据可能会进行采样，需要注意具体是数据处理
+  I2s数据可能会进行采样，需要注意具体的数据结构以及对应的数据处理，如是否需要数据移位等
 \item
   当前I2s支持的发送/接收数据位宽为16-32bit，需要查阅mic文档或其他使用手册来确定数据位宽，否则不能正常工作
 \item
@@ -2921,8 +2921,252 @@ DMA的具体用法请参见本手册DMA一节。
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\hypertarget{ch-PDM}{%
+\chapter{PDM简介}\label{ch-PDM}}
+
+PDM全称pulse density modulation，即脉冲密度调制。
+
+PDM模块处理来自外部音频前端(如数字麦克风)的脉冲密度调制信号的输入。该模块生成PDM时钟，支持双通道数据输入。
+
+\hypertarget{ux529fux80fdux63cfux8ff0-2}{%
+\section{功能描述}\label{ux529fux80fdux63cfux8ff0-2}}
+
+\hypertarget{ux7279ux70b9-2}{%
+\subsection{特点}\label{ux7279ux70b9-2}}
+
+\begin{itemize}
+\item
+  支持双通道，数据输入相同
+\item
+  16kHz输出采样率，24位采样
+\item
+  HW抽取过滤器
+\item
+  时钟和输出采样率之间的可选比为64或80
+\item
+  支持DMA和I2S的样本缓冲
+\end{itemize}
+
+\hypertarget{pdm-pcm}{%
+\subsection{PDM \& PCM}\label{pdm-pcm}}
+
+PDM和PCM同为用数字信号表示模拟信号的音频数据调制方法，其主要区别是：
+
+\begin{itemize}
+\item
+  PDM不像PCM等间隔采样
+\item
+  PDM只有1位非0即1的输出，而PCM采样结果可以是Nbit
+\item
+  PDM使用远高于PCM采样率的时钟频率进行采样
+\item
+  PDM逻辑相对PCM复杂
+\item
+  PDM只需要2根信号线，即时钟线和数据线；PCM需要4根线
+\end{itemize}
+
+\hypertarget{ux4f7fux7528ux65b9ux6cd5-2}{%
+\section{使用方法}\label{ux4f7fux7528ux65b9ux6cd5-2}}
+
+\hypertarget{ux65b9ux6cd5ux6982ux8ff0-2}{%
+\subsection{方法概述}\label{ux65b9ux6cd5ux6982ux8ff0-2}}
+
+PDM使用方法分为PDM结合I2s使用和PDM数据直接DMA搬运两种。
+
+PDM结合I2s：
+
+\textbf{1.} PDM引脚GPIO配置（时钟、数据）
+
+\textbf{2.} 外部时钟配置，使其处于工作模式
+
+\textbf{3.} 写相应配置寄存器
+
+\textbf{4.} 配置I2s数据源为PDM，配置I2s时钟、寄存器、中断
+
+\textbf{5.} 使能PDM，使能I2s
+
+\textbf{6.} 等待I2s中断产生
+
+\textbf{7.} 读取状态寄存器，读取RX\_MEM中数据
+
+\textbf{8.} 传输完毕，关闭PDM和I2S
+
+PDM数据DMA搬运：
+
+\textbf{1.} PDM引脚GPIO配置（时钟、数据）
+
+\textbf{2.} 外部时钟配置，使其处于工作模式
+
+\textbf{3.} 写相应配置寄存器
+
+\textbf{4.} 配置DMA寄存器、中断
+
+\textbf{5.} 使能DMA，使能PDM
+
+\textbf{6.} 等待DMA中断产生
+
+\textbf{7.} 传输完毕，关闭PDM和DMA
+
+其中I2s和DMA相关配置不在本节介绍内容范围内，可参考本手册对应章节。
+
+\hypertarget{ux6ce8ux610fux70b9-2}{%
+\subsection{注意点}\label{ux6ce8ux610fux70b9-2}}
+
+\begin{itemize}
+\item
+  I2s时钟源可以选择晶振24M时钟和PLL时钟，要注意是选择哪一个时钟源
+\item
+  建议选择晶振24M作为时钟源，这样可以获得较好的准确度和防抖动效果
+\item
+  需要查阅数字麦克风数据手册了解其时钟要求，并正确配置PDM时钟频率
+\item
+  结合I2s使用时要先使能PDM最后开启I2s
+\item
+  结合DMA使用时要先使能DMA最后开启PDM
+\item
+  建议采用DMA乒乓搬运的方式
+\end{itemize}
+
+\hypertarget{ux7f16ux7a0bux6307ux5357-2}{%
+\section{编程指南}\label{ux7f16ux7a0bux6307ux5357-2}}
+
+\hypertarget{ux9a71ux52a8ux63a5ux53e3-2}{%
+\subsection{驱动接口}\label{ux9a71ux52a8ux63a5ux53e3-2}}
+
+\begin{itemize}
+\item
+  PDM\_Config：PDM配置接口
+\item
+  PDM\_Start：PDM使能接口
+\item
+  PDM\_DmaEnable：PDM使能DMA接口
+\end{itemize}
+
+\hypertarget{ux4ee3ux7801ux793aux4f8b-2}{%
+\subsection{代码示例}\label{ux4ee3ux7801ux793aux4f8b-2}}
+
+下面以PDM结合I2s使用和PDM数据直接DMA搬运两种方式来展示PDM的具体使用方法。
+
+已知现有mic使用的时钟频率为3M，I2s采样率16K。
+
+\hypertarget{pdmux7ed3ux5408i2s}{%
+\subsubsection{PDM结合I2s：}\label{pdmux7ed3ux5408i2s}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\PreprocessorTok{#define PDM_PIN_MCLK        28}
+\PreprocessorTok{#define PDM_PIN_IN          29}
+\DataTypeTok{static} \DataTypeTok{uint32_t}\NormalTok{ I2s_isr(}\DataTypeTok{void}\NormalTok{ *user_data)}
+\NormalTok{\{ }
+    \DataTypeTok{uint32_t}\NormalTok{ state = I2S_GetIntState(APB_I2S);}
+\NormalTok{    I2S_ClearIntState(APB_I2S, state);}
+
+    \DataTypeTok{int}\NormalTok{ i = I2S_GetRxFIFOCount(APB_I2S);}
+    \ControlFlowTok{while}\NormalTok{ (i) \{}
+        \CommentTok{// do something with these data}
+\NormalTok{        i--;}
+\NormalTok{    \}}
+\NormalTok{\}}
+
+\DataTypeTok{void}\NormalTok{ audio_input_setup(}\DataTypeTok{void}\NormalTok{)}
+\NormalTok{\{}
+    \CommentTok{// GPIO & Pin Ctrl}
+\NormalTok{    PINCTRL_SetPadMux(PDM_PIN_MCLK, IO_SOURCE_PDM_DMIC_MCLK);}
+\NormalTok{    PINCTRL_SetPadMux(PDM_PIN_IN, IO_SOURCE_PDM_DMIC_IN);}
+\NormalTok{    PINCTRL_SelPdmIn(PDM_PIN_IN);}
+
+    \CommentTok{// PDM clock configuration, 3M}
+\NormalTok{    SYSCTRL_SetPdmClkDiv(}\DecValTok{8}\NormalTok{, }\DecValTok{1}\NormalTok{);}
+\NormalTok{    SYSCTRL_SelectTypeAClk(SYSCTRL_ITEM_APB_PDM, SYSCTRL_CLK_ADC_DIV);}
+    
+    \CommentTok{// PDM register configuration}
+\NormalTok{    PDM_Config(APB_PDM, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{);    }
+
+    \CommentTok{// I2s configuration, bclk=2.4M, samplerate=16K, data from PDM}
+\NormalTok{    I2S_DataFromPDM(}\DecValTok{1}\NormalTok{);    }
+\NormalTok{    I2S_ConfigClk(APB_I2S, }\DecValTok{5}\NormalTok{, }\DecValTok{75}\NormalTok{);}
+\NormalTok{    I2S_ConfigIRQ(APB_I2S, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{10}\NormalTok{);}
+\NormalTok{    I2S_DMAEnable(APB_I2S, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{);    }
+\NormalTok{    I2S_Config(APB_I2S, I2S_ROLE_MASTER, I2S_MODE_STANDARD, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{24}\NormalTok{);}
+    
+    \CommentTok{// I2s interruption}
+\NormalTok{    platform_set_irq_callback(PLATFORM_CB_IRQ_I2S, I2s_isr, }\DecValTok{0}\NormalTok{);}
+
+    \CommentTok{// enable I2s and PDM}
+\NormalTok{    I2S_ClearRxFIFO(APB_I2S);}
+\NormalTok{    PDM_Start(APB_PDM, }\DecValTok{1}\NormalTok{);}
+\NormalTok{    I2S_Enable(APB_I2S, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{);}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+上面示例涉及到的关于I2s配置参考手册的I2s章节：
+
+\hypertarget{pdmux6570ux636edmaux642cux8fd0}{%
+\subsubsection{PDM数据DMA搬运}\label{pdmux6570ux636edmaux642cux8fd0}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\PreprocessorTok{#define PDM_PIN_MCLK        28}
+\PreprocessorTok{#define PDM_PIN_IN          29}
+\PreprocessorTok{#define CHANNEL_ID  0}
+\DataTypeTok{uint32_t}\NormalTok{ buff[}\DecValTok{80}\NormalTok{];}
+\NormalTok{DMA_Descriptor test __attribute__((aligned (}\DecValTok{8}\NormalTok{)));}
+\DataTypeTok{static} \DataTypeTok{uint32_t}\NormalTok{ DMA_cb_isr(}\DataTypeTok{void}\NormalTok{ *user_data)}
+\NormalTok{\{ }
+    \DataTypeTok{uint32_t}\NormalTok{ state = DMA_GetChannelIntState(CHANNEL_ID);}
+\NormalTok{    DMA_ClearChannelIntState(CHANNEL_ID, state);}
+
+\NormalTok{    DMA_EnableChannel(CHANNEL_ID, &test);}
+
+    \CommentTok{// do something with data in buff}
+\NormalTok{\}}
+
+\DataTypeTok{void}\NormalTok{ DMA_SetUp(}\DataTypeTok{void}\NormalTok{)}
+\NormalTok{\{}
+\NormalTok{    DMA_Reset();}
+\NormalTok{    platform_set_irq_callback(PLATFORM_CB_IRQ_DMA, DMA_cb_isr, }\DecValTok{0}\NormalTok{);  }
+\NormalTok{    test.Next = NULL;}
+\NormalTok{    DMA_PreparePeripheral2RAM(&test, }
+\NormalTok{                              buff, }
+\NormalTok{                              SYSCTRL_DMA_PDM, }
+                              \DecValTok{80}\NormalTok{, }
+\NormalTok{                              DMA_ADDRESS_INC, }
+                              \DecValTok{0}\NormalTok{ | }\DecValTok{1}\NormalTok{ << }\DecValTok{24}\NormalTok{);}
+\NormalTok{    DMA_EnableChannel(CHANNEL_ID, &test);}
+\NormalTok{\}}
+\DataTypeTok{void}\NormalTok{ audio_input_setup(}\DataTypeTok{void}\NormalTok{)}
+\NormalTok{\{}
+    \CommentTok{//GPIO & Pin Ctrl}
+\NormalTok{    PINCTRL_SetPadMux(PDM_PIN_MCLK, IO_SOURCE_PDM_DMIC_MCLK);}
+\NormalTok{    PINCTRL_SetPadMux(PDM_PIN_IN, IO_SOURCE_PDM_DMIC_IN);}
+\NormalTok{    PINCTRL_SelPdmIn(PDM_PIN_IN);}
+
+    \CommentTok{// PDM clock configuration, 3M}
+\NormalTok{    SYSCTRL_SetAdcClkDiv(}\DecValTok{8}\NormalTok{, }\DecValTok{1}\NormalTok{);}
+\NormalTok{    SYSCTRL_SelectTypeAClk(SYSCTRL_ITEM_APB_PDM, SYSCTRL_CLK_ADC_DIV);}
+    
+    \CommentTok{// PDM register configuration}
+\NormalTok{    PDM_Config(APB_PDM, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{);    }
+\NormalTok{    PDM_DmaEnable(APB_PDM, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{);}
+    
+    \CommentTok{// DMA setup}
+\NormalTok{    DMA_SetUp();}
+    
+    \CommentTok{// enable DMA and PDM}
+\NormalTok{    PDM_DmaEnable(APB_PDM, }\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{);}
+\NormalTok{    PDM_Start(APB_PDM, }\DecValTok{1}\NormalTok{);}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+建议采用DMA乒乓搬运的方法进行数据搬运，具体讲解参考手册DMA章节。
+
 \hypertarget{ch-pinctrl}{%
 \chapter{管脚管理（PINCTRL）}\label{ch-pinctrl}}
+
+\hypertarget{ux529fux80fdux6982ux8ff0-3}{%
+\section{功能概述}\label{ux529fux80fdux6982ux8ff0-3}}
 
 PINCTRL 模块管理芯片所有 IO 管脚的功能，包括外设 IO 的映射，上拉、下拉选择，输入模式控制，
 输出驱动能力设置等。
@@ -2942,13 +3186,12 @@ PINCTRL 模块管理芯片所有 IO 管脚的功能，包括外设 IO 的映射�
 \end{itemize}
 
 鉴于片内外设丰富、IO 管脚多，进行管脚全映射并不现实，为此，PINCTRL 尽量保证灵活性的前提下做了一定取舍、优化。
-部分常用外设的输入、输出可与 \(\{{0 .. 17, 21, 22, 31, 34, 35\}}\) 这 23 个常用 IO 之间任意连接（全映射），
-这部分常用外设管脚总结于表 \ref{tab:ch-pinctrl-common-set}。
-
-每个 IO 管脚可配置功能如表 \ref{tab:ch-pinctrl-mapping} 所示。
+部分常用外设的输入、输出功能管脚可与 \(\{{0 .. 17, 21, 22, 31, 34, 35\}}\) 这 23 个常用 IO 之间任意连接（全映射），
+这部分常用外设功能管脚总结于表 \ref{tab:ch-pinctrl-common-set}。
+表 \ref{tab:ch-pinctrl-mapping} 列出了其它外设功能管脚支持映射到哪些 IO 管脚上。
 
 \begin{longtable}[]{@{}ll@{}}
-\caption{\label{tab:ch-pinctrl-common-set} 支持与常用 IO 全映射的常用外设的输入、输出}\tabularnewline
+\caption{\label{tab:ch-pinctrl-common-set} 支持与常用 IO 全映射的常用功能管脚}\tabularnewline
 \toprule
 \begin{minipage}[b]{0.09\columnwidth}\raggedright
 外设\strut
@@ -3125,6 +3368,75 @@ SPI2AHB\_SCLK & 15\tabularnewline
 \bottomrule
 \end{longtable}
 
+\hypertarget{ux4f7fux7528ux8bf4ux660e-3}{%
+\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-3}}
+
+\hypertarget{ux4e3aux5916ux8bbeux914dux7f6e-io-ux7ba1ux811a}{%
+\subsection{为外设配置 IO 管脚}\label{ux4e3aux5916ux8bbeux914dux7f6e-io-ux7ba1ux811a}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  将外设输出连接到 IO 管脚
+
+  通过 \texttt{PINCTRL\_SetPadMux} 将外设输出连接到 IO 管脚。
+  注意按照表 \ref{tab:ch-pinctrl-common-set} 和 表 \ref{tab:ch-pinctrl-mapping}
+  确认硬件是否支持。对于不支持的配置，显然无法生效。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ PINCTRL_SetPadMux(}
+  \DataTypeTok{const} \DataTypeTok{uint8_t}\NormalTok{ io_pin_index, }\CommentTok{// IO 序号 (0..35)}
+  \DataTypeTok{const}\NormalTok{ io_source_t source    }\CommentTok{// IO 源}
+\NormalTok{);}
+\end{Highlighting}
+\end{Shaded}
+\item
+  将 IO 管脚连接到外设的输入
+
+  对于有些外设的输入同样通过 \texttt{PINCTRL\_SetPadMux} 配置。对于另一些输入，
+  PINCTRL 为不同的外设分别提供了 API 用以配置输入。比如对于 UART 用于硬件流控的
+  RXD 和 CTS，需要通过 \texttt{PINCTRL\_SelUartIn} 配置 ：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ PINCTRL_SelUartIn(}
+\NormalTok{  uart_port_t port,     }\CommentTok{// UART 序号}
+  \DataTypeTok{uint8_t}\NormalTok{ io_pin_rxd,   }\CommentTok{// 连接到 RXD 输入的 IO 管脚}
+  \DataTypeTok{uint8_t}\NormalTok{ io_pin_cts);  }\CommentTok{// 连接到 CTS 输入的 IO 管脚}
+\end{Highlighting}
+\end{Shaded}
+
+  对于不需要配置的输入，可在对应的参数上填入值 \texttt{IO\_NOT\_A\_PIN}。
+\end{enumerate}
+
+\hypertarget{ux914dux7f6eux4e0bux62c9ux4e0bux62c9}{%
+\subsection{配置下拉、下拉}\label{ux914dux7f6eux4e0bux62c9ux4e0bux62c9}}
+
+IO 管脚的上拉、下拉模式通过 \texttt{PINCTRL\_Pull} 配置：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ PINCTRL_Pull(}
+  \DataTypeTok{const} \DataTypeTok{uint8_t}\NormalTok{ io_pin_index,     }\CommentTok{// IO 管脚序号}
+  \DataTypeTok{const}\NormalTok{ pinctrl_pull_mode_t mode  }\CommentTok{// 模式}
+\NormalTok{  );}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux914dux7f6eux9a71ux52a8ux80fdux529b}{%
+\subsection{配置驱动能力}\label{ux914dux7f6eux9a71ux52a8ux80fdux529b}}
+
+通过 \texttt{PINCTRL\_SetDriveStrength} 配置 IO 管脚的驱动能力：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ PINCTRL_SetDriveStrength(}
+  \DataTypeTok{const} \DataTypeTok{uint8_t}\NormalTok{ io_pin_index,}
+  \DataTypeTok{const}\NormalTok{ pinctrl_drive_strenght_t strenght);}
+\end{Highlighting}
+\end{Shaded}
+
 \hypertarget{pteux7b80ux4ecb}{%
 \chapter{PTE简介}\label{pteux7b80ux4ecb}}
 
@@ -3132,11 +3444,11 @@ PTE全称Peripheral trigger engine，即外设触发引擎。
 
 其主要作用是使外围设备可以通过其他外围设备或事件独立于CPU进行自主交互。PTE允许外围设备之间可以精确触发。
 
-\hypertarget{ux529fux80fdux63cfux8ff0-2}{%
-\section{功能描述}\label{ux529fux80fdux63cfux8ff0-2}}
+\hypertarget{ux529fux80fdux63cfux8ff0-3}{%
+\section{功能描述}\label{ux529fux80fdux63cfux8ff0-3}}
 
-\hypertarget{ux7279ux70b9-2}{%
-\subsection{特点}\label{ux7279ux70b9-2}}
+\hypertarget{ux7279ux70b9-3}{%
+\subsection{特点}\label{ux7279ux70b9-3}}
 
 \begin{itemize}
 \item
@@ -3170,11 +3482,11 @@ src外设通过pte\_in\_mask配置，dst外设通过pte\_out\_mask配置。在SO
 
 当DFF为高时PTE中断将挂起。在清除PTE中断之前，src外设中断必须被清除，否则另一个启动脉冲将发送到dst外设，这可能会产生未知的错误。
 
-\hypertarget{ux4f7fux7528ux65b9ux6cd5-2}{%
-\section{使用方法}\label{ux4f7fux7528ux65b9ux6cd5-2}}
+\hypertarget{ux4f7fux7528ux65b9ux6cd5-3}{%
+\section{使用方法}\label{ux4f7fux7528ux65b9ux6cd5-3}}
 
-\hypertarget{ux65b9ux6cd5ux6982ux8ff0-2}{%
-\subsection{方法概述}\label{ux65b9ux6cd5ux6982ux8ff0-2}}
+\hypertarget{ux65b9ux6cd5ux6982ux8ff0-3}{%
+\subsection{方法概述}\label{ux65b9ux6cd5ux6982ux8ff0-3}}
 
 PTE使用方法总结为：建议不使用PTE中断，在dst外设中断里清PTE中断（或关闭PTE通道）。
 
@@ -3188,8 +3500,8 @@ PTE使用方法总结为：建议不使用PTE中断，在dst外设中断里清PT
 
 \textbf{5.} 在被触发外设中断中清PTE中断（如定义），如果只触发一次则直接关闭PTE通道
 
-\hypertarget{ux6ce8ux610fux70b9-2}{%
-\subsection{注意点}\label{ux6ce8ux610fux70b9-2}}
+\hypertarget{ux6ce8ux610fux70b9-3}{%
+\subsection{注意点}\label{ux6ce8ux610fux70b9-3}}
 
 \begin{itemize}
 \item
@@ -3202,8 +3514,8 @@ PTE使用方法总结为：建议不使用PTE中断，在dst外设中断里清PT
   使用PTE中断会更多占用CPU资源并增加触发过程操作复杂度、增加出错风险，中断处理程序完全可以在src和dst中断中完成，所以强烈建议不要使用PTE中断
 \end{itemize}
 
-\hypertarget{ux7f16ux7a0bux6307ux5357-2}{%
-\section{编程指南}\label{ux7f16ux7a0bux6307ux5357-2}}
+\hypertarget{ux7f16ux7a0bux6307ux5357-3}{%
+\section{编程指南}\label{ux7f16ux7a0bux6307ux5357-3}}
 
 \hypertarget{srcdstux5916ux8bbe}{%
 \subsection{src\&dst外设}\label{srcdstux5916ux8bbe}}
@@ -3274,8 +3586,8 @@ dst外设定义在SYSCTRL\_PTE\_DST\_EN中：
 
 通过PTE连接的src外设和dst外设需要在已注册枚举中选取。
 
-\hypertarget{ux9a71ux52a8ux63a5ux53e3-2}{%
-\subsection{驱动接口}\label{ux9a71ux52a8ux63a5ux53e3-2}}
+\hypertarget{ux9a71ux52a8ux63a5ux53e3-3}{%
+\subsection{驱动接口}\label{ux9a71ux52a8ux63a5ux53e3-3}}
 
 \begin{itemize}
 \item
@@ -3292,8 +3604,8 @@ dst外设定义在SYSCTRL\_PTE\_DST\_EN中：
   PTE\_OutPeripheralEndProcess：dst外设中断标准PTE结束接口
 \end{itemize}
 
-\hypertarget{ux4ee3ux7801ux793aux4f8b-2}{%
-\subsection{代码示例}\label{ux4ee3ux7801ux793aux4f8b-2}}
+\hypertarget{ux4ee3ux7801ux793aux4f8b-3}{%
+\subsection{代码示例}\label{ux4ee3ux7801ux793aux4f8b-3}}
 
 下面以Timer0通过PTE通道0触发Timer1为例展示PTE的具体使用方法。
 
@@ -3776,14 +4088,14 @@ FIFO：
 \hypertarget{ch-rtc}{%
 \chapter{实时时钟（RTC）}\label{ch-rtc}}
 
-\hypertarget{ux529fux80fdux63cfux8ff0-3}{%
-\section{功能描述}\label{ux529fux80fdux63cfux8ff0-3}}
+\hypertarget{ux529fux80fdux63cfux8ff0-4}{%
+\section{功能描述}\label{ux529fux80fdux63cfux8ff0-4}}
 
 实时时钟是一个独立的定时器。RTC模块拥有一组连续计数的计数器，在相应的软件配置下，
 可提供时钟日历的功能。修改计数器的值可以重新设置系统当前的时间和日期。
 
-\hypertarget{ux4f7fux7528ux8bf4ux660e-3}{%
-\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-3}}
+\hypertarget{ux4f7fux7528ux8bf4ux660e-4}{%
+\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-4}}
 
 \hypertarget{rtcux4f7fux80fd}{%
 \subsection{RTC使能}\label{rtcux4f7fux80fd}}
@@ -3827,8 +4139,8 @@ FIFO：
 \end{Highlighting}
 \end{Shaded}
 
-ws
-\#\#\# 配置闹钟
+\hypertarget{ux914dux7f6eux95f9ux949f}{%
+\subsection{配置闹钟}\label{ux914dux7f6eux95f9ux949f}}
 
 使用 \texttt{RTC\_ConfigAlarm}
 
@@ -5234,8 +5546,8 @@ ws
 \hypertarget{ch-sysctrl}{%
 \chapter{系统控制（SYSCTRL）}\label{ch-sysctrl}}
 
-\hypertarget{ux529fux80fdux6982ux8ff0-3}{%
-\section{功能概述}\label{ux529fux80fdux6982ux8ff0-3}}
+\hypertarget{ux529fux80fdux6982ux8ff0-4}{%
+\section{功能概述}\label{ux529fux80fdux6982ux8ff0-4}}
 
 SYSCTRL 负责管理、控制各种片上外设，主要功能有：
 
@@ -5416,8 +5728,8 @@ UART0\_TX，分别用于触发 DMA 发送请求（通过 DMA 传输接收到的�
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{ux4f7fux7528ux8bf4ux660e-4}{%
-\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-4}}
+\hypertarget{ux4f7fux7528ux8bf4ux660e-5}{%
+\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-5}}
 
 \hypertarget{ux5916ux8bbeux590dux4f4d}{%
 \subsection{外设复位}\label{ux5916ux8bbeux590dux4f4d}}
@@ -5567,6 +5879,627 @@ UART0\_TX，分别用于触发 DMA 发送请求（通过 DMA 传输接收到的�
 \begin{Shaded}
 \begin{Highlighting}[]
 \DataTypeTok{int}\NormalTok{ SYSCTRL_GetDmaId(SYSCTRL_DMA item);}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ch-timer}{%
+\chapter{定时器（TIMER）}\label{ch-timer}}
+
+\hypertarget{ux529fux80fdux6982ux8ff0-5}{%
+\section{功能概述}\label{ux529fux80fdux6982ux8ff0-5}}
+
+定时器（TIMER）是由两个寄存器组成的，其中一个寄存器用来确定计数器的工作形式和功能，
+另外一个计时器是用来控制单片机的启动和停止的，同时也设置了一个
+
+\hypertarget{ux4f7fux7528ux8bf4ux660e-6}{%
+\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-6}}
+
+\hypertarget{ux8bbeux7f6eux5de5ux4f5cux6a21ux5f0f}{%
+\subsection{设置工作模式}\label{ux8bbeux7f6eux5de5ux4f5cux6a21ux5f0f}}
+
+在使用 TIMER 之前，需要使用 \texttt{TMR\_SetOpMode} 按需设置TIMER的工作模式。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ TMR_SetOpMode(}
+\NormalTok{  TMR_TypeDef *pTMR, }
+  \DataTypeTok{uint8_t}\NormalTok{ ch_id, }
+  \DataTypeTok{uint8_t}\NormalTok{ op_mode, }
+  \DataTypeTok{uint8_t}\NormalTok{ clk_mode, }
+  \DataTypeTok{uint8_t}\NormalTok{ pwm_park_value}
+\NormalTok{  );}
+\end{Highlighting}
+\end{Shaded}
+
+TIMER的工作模式有以下6种，分别三类：定时器、PWM、复用。
+* 定时器功能包括：32bit单定时器、16bit双定时器、8bit四定时器
+```c
+\#define TMR\_CTL\_OP\_MODE\_32BIT\_TIMER\_x1 1 // one 32bit timer
+\#define TMR\_CTL\_OP\_MODE\_16BIT\_TIMER\_x2 2 // dual 16bit timers
+\#define TMR\_CTL\_OP\_MODE\_8BIT\_TIMER\_x4 3 // four 8bit timers
+
+\begin{verbatim}
+
+* PWM功能：16bit双计数器
+```c
+  #define TMR_CTL_OP_MODE_16BIT_PWM                 4           // PWM with two 16bit counters
+\end{verbatim}
+
+\begin{itemize}
+\item
+  定时器+PWM复用功能：8bit双计数器+16bit单定时器、 8bit双计数器+8bit双定时器
+
+\begin{Shaded}
+\begin{Highlighting}[]
+  \PreprocessorTok{#define TMR_CTL_OP_MODE_8BIT_PWM_16BIT_TIMER_x1   6           }\CommentTok{// MIXED: PWM with two 8bit counters + one 16bit timer}
+  \PreprocessorTok{#define TMR_CTL_OP_MODE_8BIT_PWM_8BIT_TIMER_x2    7           }\CommentTok{// MIXED: PWM with two 8bit counters + dual 8bit timer}
+\end{Highlighting}
+\end{Shaded}
+\item
+  例如将TIMER1的通道0设置为\texttt{TMR\_CTL\_OP\_MODE\_32BIT\_TIMER\_x1}模式：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{  TMR_SetOpMode(APB_TMR1, }\DecValTok{0}\NormalTok{, TMR_CTL_OP_MODE_32BIT_TIMER_x1, TMR_CLK_MODE_APB, }\DecValTok{0}\NormalTok{);}
+\NormalTok{  TMR_SetReload(APB_TMR1, }\DecValTok{0}\NormalTok{, TMR_GetClk(APB_TMR1, }\DecValTok{0}\NormalTok{) / }\DecValTok{10}\NormalTok{);}
+\NormalTok{  TMR_Enable(APB_TMR1, }\DecValTok{0}\NormalTok{, }\BaseNTok{0xf}\NormalTok{);}
+\NormalTok{  TMR_IntEnable(APB_TMR1, }\DecValTok{0}\NormalTok{, }\BaseNTok{0xf}\NormalTok{);}
+\end{Highlighting}
+\end{Shaded}
+\end{itemize}
+
+\hypertarget{ux65f6ux949fux9891ux7387}{%
+\subsection{时钟频率}\label{ux65f6ux949fux9891ux7387}}
+
+使用 \texttt{TMR\_GetClk} 获取TIMER某个通道的时钟频率。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{uint32_t}\NormalTok{ TMR_GetClk(}
+\NormalTok{  TMR_TypeDef *pTMR, }
+  \DataTypeTok{uint8_t}\NormalTok{ ch_id}
+\NormalTok{  );}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux91cdux8f7dux503c}{%
+\subsection{重载值}\label{ux91cdux8f7dux503c}}
+
+使用 \texttt{TMR\_SetReload} 设置TIMER某个通道的重载值。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ TMR_SetReload(}
+\NormalTok{  TMR_TypeDef *pTMR, }
+  \DataTypeTok{uint8_t}\NormalTok{ ch_id, }
+  \DataTypeTok{uint32_t}\NormalTok{ value}
+\NormalTok{  );}
+\end{Highlighting}
+\end{Shaded}
+
+在不同的TIMER模式中， \texttt{value} 的值分配如下表。
+Table: \label{tab:ch0-abbreviations}
+
+\begin{longtable}[]{@{}ccccc@{}}
+\toprule
+TIMER模式 & bits{[}0:7{]} & bits{[}8:15{]} & bits{[}16:23{]} & bits{[}24:31{]}\tabularnewline
+\midrule
+\endhead
+TMR\_CTL\_OP\_MODE\_32BIT\_TIMER\_x1 & Timer 0 & Timer 0 & Timer 0 & Timer 0\tabularnewline
+TMR\_CTL\_OP\_MODE\_16BIT\_TIMER\_x2 & Timer 0 & Timer 0 & Timer 1 & Timer 1\tabularnewline
+TMR\_CTL\_OP\_MODE\_8BIT\_TIMER\_x4 & Timer 0 & Timer 1 & Timer 2 & Timer 3\tabularnewline
+TMR\_CTL\_OP\_MODE\_16BIT\_PWM & PWM low period & PWM low period & PWM high period & PWM high period\tabularnewline
+TMR\_CTL\_OP\_MODE\_8BIT\_PWM\_16BIT\_TIMER\_x1 & Timer 0 & Timer 0 & PWM low period & PWM low period\tabularnewline
+TMR\_CTL\_OP\_MODE\_8BIT\_PWM\_8BIT\_TIMER\_x2 & Timer 0 & Timer 1 & PWM low period & PWM low period\tabularnewline
+\bottomrule
+\end{longtable}
+
+\hypertarget{ux4f7fux80fd}{%
+\subsection{使能}\label{ux4f7fux80fd}}
+
+使用 \texttt{TMR\_Enable} TIMER的某个通道。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ TMR_Enable(}
+\NormalTok{  TMR_TypeDef *pTMR, }
+  \DataTypeTok{uint8_t}\NormalTok{ ch_id, }
+  \DataTypeTok{uint8_t}\NormalTok{ mask}
+\NormalTok{  );}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux6bd4ux8f83}{%
+\subsection{比较}\label{ux6bd4ux8f83}}
+
+使用 \texttt{TMR\_GetCMP} 。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{uint32_t}\NormalTok{ TMR_GetCMP(}
+\NormalTok{  TMR_TypeDef *pTMR, }
+  \DataTypeTok{uint8_t}\NormalTok{ ch_id}
+\NormalTok{  );}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux914dux7f6eux4e2dux65adux8bf7ux6c42-2}{%
+\subsection{配置中断请求}\label{ux914dux7f6eux4e2dux65adux8bf7ux6c42-2}}
+
+使用 \texttt{TMR\_IntEnable} 配置并使能TIMER中断。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ TMR_IntEnable(}
+\NormalTok{  TMR_TypeDef *pTMR, }
+  \DataTypeTok{uint8_t}\NormalTok{ ch_id, }
+  \DataTypeTok{uint8_t}\NormalTok{ mask}
+\NormalTok{  );}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux4e2dux65adux6e05ux9664}{%
+\subsection{中断清除}\label{ux4e2dux65adux6e05ux9664}}
+
+使用 \texttt{TMR\_IntClr} 清除某个TIMER的中断状态。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ TMR_IntClr(}
+\NormalTok{  TMR_TypeDef *pTMR, }
+  \DataTypeTok{uint8_t}\NormalTok{ ch_id, }
+  \DataTypeTok{uint8_t}\NormalTok{ mask}
+\NormalTok{  );}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux83b7ux53d6ux4e2dux65ad}{%
+\subsection{获取中断}\label{ux83b7ux53d6ux4e2dux65ad}}
+
+使用 \texttt{TMR\_IntHappened} 获取某个TIMER的中断状态。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{uint8_t}\NormalTok{ TMR_IntHappened(}
+\NormalTok{  TMR_TypeDef *pTMR, }
+  \DataTypeTok{uint8_t}\NormalTok{ ch_id}
+\NormalTok{  );}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ch-uart}{%
+\chapter{通用异步收发传输器（UART）}\label{ch-uart}}
+
+\hypertarget{ux529fux80fdux6982ux8ff0-6}{%
+\section{功能概述}\label{ux529fux80fdux6982ux8ff0-6}}
+
+UART负责处理数据总线和串行口之间的串/并、并/串转换，并规定了相应的帧格式，通信双方只要采用相同的帧格式和波特率，
+就能在未共享时钟信号的情况下，仅用两根信号线（RX和TX）完成通信过程。
+
+特性：
+
+\begin{itemize}
+\tightlist
+\item
+  异步串行通信，可为全双工、半双工、单发送（TX）或单接收（RX）模式；
+\item
+  支持5\textasciitilde8位数据位的配置，波特率几百bps至几百Kbbps；
+\item
+  可配置奇校验、偶校验或无校验位；可配置1、1.5或2位停止位；
+\item
+  将并行数据写入内存缓冲区，再通过FIFO逐位发送，接收时同理；
+\item
+  输出传输时，从低位到高位传输。
+\end{itemize}
+
+\hypertarget{ux4f7fux7528ux8bf4ux660e-7}{%
+\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-7}}
+
+\hypertarget{ux8bbeux7f6eux6ce2ux7279ux7387}{%
+\subsection{设置波特率}\label{ux8bbeux7f6eux6ce2ux7279ux7387}}
+
+使用 \texttt{apUART\_BaudRateSet} 设置对应UART设备的波特率。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ apUART_BaudRateSet(}
+\NormalTok{  UART_TypeDef* pBase, }
+  \DataTypeTok{uint32_t}\NormalTok{ ClockFrequency, }
+  \DataTypeTok{uint32_t}\NormalTok{ BaudRate}
+\NormalTok{  );}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux83b7ux53d6ux6ce2ux7279ux7387}{%
+\subsection{获取波特率}\label{ux83b7ux53d6ux6ce2ux7279ux7387}}
+
+使用 \texttt{apUART\_BaudRateGet} 获取对应UART设备的波特率。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{uint32_t}\NormalTok{ apUART_BaudRateGet (}
+\NormalTok{  UART_TypeDef* pBase, }
+  \DataTypeTok{uint32_t}\NormalTok{ ClockFrequency}
+\NormalTok{  );}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux63a5ux6536ux9519ux8befux67e5ux8be2}{%
+\subsection{接收错误查询}\label{ux63a5ux6536ux9519ux8befux67e5ux8be2}}
+
+使用 \texttt{apUART\_Check\_Rece\_ERROR} 查询接收产生的错误。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{uint8_t}\NormalTok{ apUART_Check_Rece_ERROR(}
+\NormalTok{  UART_TypeDef* pBase}
+\NormalTok{  );}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{fifoux8f6eux8be2ux6a21ux5f0f}{%
+\subsection{FIFO轮询模式}\label{fifoux8f6eux8be2ux6a21ux5f0f}}
+
+在轮询模式下，CPU通过检查线路状态寄存器中的位来检测事件：
+
+\begin{itemize}
+\item
+  使用 \texttt{apUART\_Check\_Rece\_ERROR} 查询接收产生的错误字。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+  \DataTypeTok{uint8_t}\NormalTok{ apUART_Check_Rece_ERROR(}
+\NormalTok{    UART_TypeDef* pBase}
+\NormalTok{    );}
+\end{Highlighting}
+\end{Shaded}
+\item
+  用 \texttt{apUART\_Check\_RXFIFO\_EMPTY}查询RXFIFO是否为空。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+  \DataTypeTok{uint8_t}\NormalTok{ apUART_Check_RXFIFO_EMPTY(}
+\NormalTok{    UART_TypeDef* pBase}
+\NormalTok{    );}
+\end{Highlighting}
+\end{Shaded}
+\item
+  使用 \texttt{apUART\_Check\_RXFIFO\_FULL}查询RXFIFO是否已满。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+  \DataTypeTok{uint8_t}\NormalTok{ apUART_Check_RXFIFO_FULL(}
+\NormalTok{    UART_TypeDef* pBase}
+\NormalTok{    );}
+\end{Highlighting}
+\end{Shaded}
+\item
+  使用 \texttt{apUART\_Check\_TXFIFO\_EMPTY} 查询TXFIFO是否为空。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+  \DataTypeTok{uint8_t}\NormalTok{ apUART_Check_TXFIFO_EMPTY(}
+\NormalTok{    UART_TypeDef* pBase}
+\NormalTok{    );}
+\end{Highlighting}
+\end{Shaded}
+\item
+  使用 \texttt{apUART\_Check\_TXFIFO\_FULL} 查询TXFIFO是否已满。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+  \DataTypeTok{uint8_t}\NormalTok{ apUART_Check_TXFIFO_FULL(}
+\NormalTok{    UART_TypeDef* pBase}
+\NormalTok{    ); }
+\end{Highlighting}
+\end{Shaded}
+\end{itemize}
+
+\hypertarget{ux53d1ux9001ux6570ux636e}{%
+\subsection{发送数据}\label{ux53d1ux9001ux6570ux636e}}
+
+使用 \texttt{UART\_SendData} 发送8bits数据。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ UART_SendData(}
+\NormalTok{  UART_TypeDef* pBase, }
+  \DataTypeTok{uint8_t}\NormalTok{ Data}
+\NormalTok{  );}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux63a5ux6536ux6570ux636e}{%
+\subsection{接收数据}\label{ux63a5ux6536ux6570ux636e}}
+
+使用 \texttt{UART\_ReceData} 接收8bits数据。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{uint8_t}\NormalTok{ UART_ReceData(}
+\NormalTok{  UART_TypeDef* pBase}
+\NormalTok{  );}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux914dux7f6eux4e2dux65adux8bf7ux6c42-3}{%
+\subsection{配置中断请求}\label{ux914dux7f6eux4e2dux65adux8bf7ux6c42-3}}
+
+使用 \texttt{apUART\_Enable\_TRANSMIT\_INT} 使能发送中断状态。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ apUART_Enable_TRANSMIT_INT(}
+\NormalTok{  UART_TypeDef* pBase}
+\NormalTok{  );}
+\end{Highlighting}
+\end{Shaded}
+
+使用 \texttt{apUART\_Disable\_TRANSMIT\_INT} 禁用发送中断状态。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ apUART_Disable_TRANSMIT_INT(}
+\NormalTok{  UART_TypeDef* pBase}
+\NormalTok{  );}
+\end{Highlighting}
+\end{Shaded}
+
+使用 \texttt{apUART\_Enable\_RECEIVE\_INT} 使能接收中断状态。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ apUART_Enable_RECEIVE_INT(}
+\NormalTok{  UART_TypeDef* pBase}
+\NormalTok{  );}
+\end{Highlighting}
+\end{Shaded}
+
+使用 \texttt{apUART\_Disable\_RECEIVE\_INT} 禁用接收中断状态。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ apUART_Disable_RECEIVE_INT(}
+\NormalTok{  UART_TypeDef* pBase}
+\NormalTok{  );}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux5904ux7406ux4e2dux65adux72b6ux6001-2}{%
+\subsection{处理中断状态}\label{ux5904ux7406ux4e2dux65adux72b6ux6001-2}}
+
+uint8\_t apUART\_Get\_ITStatus(UART\_TypeDef* pBase,uint8\_t UART\_IT);
+uint32\_t apUART\_Get\_all\_raw\_int\_stat(UART\_TypeDef* pBase);
+
+void apUART\_Clr\_RECEIVE\_INT(UART\_TypeDef* pBase);
+void apUART\_Clr\_TX\_INT(UART\_TypeDef* pBase);
+void apUART\_Clr\_NonRx\_INT(UART\_TypeDef* pBase);
+
+\hypertarget{uartux521dux59cbux5316}{%
+\subsection{UART初始化}\label{uartux521dux59cbux5316}}
+
+两个设备使用UART通讯时，必须先约定好传输速率和一些数据位。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{typedef} \KeywordTok{struct}\NormalTok{ UART_xStateStruct}
+\NormalTok{\{}
+    \CommentTok{// Line Control Register, UARTLCR_H}
+\NormalTok{  UART_eWLEN      word_length;   }\CommentTok{// WLEN}
+\NormalTok{  UART_ePARITY    parity;        }\CommentTok{// PEN, EPS, SPS}
+  \DataTypeTok{uint8_t}\NormalTok{         fifo_enable;   }\CommentTok{// FEN}
+  \DataTypeTok{uint8_t}\NormalTok{         two_stop_bits; }\CommentTok{// STP2}
+  \CommentTok{// Control Register, UARTCR}
+  \DataTypeTok{uint8_t}\NormalTok{         receive_en;        }\CommentTok{// RXE}
+  \DataTypeTok{uint8_t}\NormalTok{         transmit_en;       }\CommentTok{// TXE}
+  \DataTypeTok{uint8_t}\NormalTok{         UART_en;           }\CommentTok{// UARTEN}
+  \DataTypeTok{uint8_t}\NormalTok{         cts_en;            }\CommentTok{//CTSEN}
+  \DataTypeTok{uint8_t}\NormalTok{         rts_en;            }\CommentTok{//RTSEN}
+  \CommentTok{// Interrupt FIFO Level Select Register, UARTIFLS}
+  \DataTypeTok{uint8_t}\NormalTok{         rxfifo_waterlevel; }\CommentTok{// RXIFLSEL}
+  \DataTypeTok{uint8_t}\NormalTok{         txfifo_waterlevel; }\CommentTok{// TXIFLSEL}
+  \CommentTok{//UART_eFIFO_WATERLEVEL    rxfifo_waterlevel; // RXIFLSEL}
+  \CommentTok{//UART_eFIFO_WATERLEVEL    txfifo_watchlevel; // TXIFLSEL}
+
+  \CommentTok{// UART Clock Frequency}
+  \DataTypeTok{uint32_t}\NormalTok{        ClockFrequency;}
+  \DataTypeTok{uint32_t}\NormalTok{        BaudRate;}
+
+\NormalTok{\} UART_sStateStruct;}
+\end{Highlighting}
+\end{Shaded}
+
+定义函数 \texttt{config\_uart} ,
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ config_uart(}
+  \DataTypeTok{uint32_t}\NormalTok{ freq, }
+  \DataTypeTok{uint32_t}\NormalTok{ baud}
+\NormalTok{  );}
+\end{Highlighting}
+\end{Shaded}
+
+在函数中，对UART\_sStateStruct的各项参数初始化，并调用 \texttt{apUART\_Initialize} 对UART进行初始化。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ config_uart(}\DataTypeTok{uint32_t}\NormalTok{ freq, }\DataTypeTok{uint32_t}\NormalTok{ baud)}
+\NormalTok{\{}
+\NormalTok{    UART_sStateStruct config;}
+
+\NormalTok{    config.word_length       = UART_WLEN_8_BITS;}
+\NormalTok{    config.parity            = UART_PARITY_NOT_CHECK;}
+\NormalTok{    config.fifo_enable       = }\DecValTok{1}\NormalTok{;}
+\NormalTok{    config.two_stop_bits     = }\DecValTok{0}\NormalTok{;}
+\NormalTok{    config.receive_en        = }\DecValTok{1}\NormalTok{;}
+\NormalTok{    config.transmit_en       = }\DecValTok{1}\NormalTok{;}
+\NormalTok{    config.UART_en           = }\DecValTok{1}\NormalTok{;}
+\NormalTok{    config.cts_en            = }\DecValTok{0}\NormalTok{;}
+\NormalTok{    config.rts_en            = }\DecValTok{0}\NormalTok{;}
+\NormalTok{    config.rxfifo_waterlevel = }\DecValTok{1}\NormalTok{;}
+\NormalTok{    config.txfifo_waterlevel = }\DecValTok{1}\NormalTok{;}
+\NormalTok{    config.ClockFrequency    = freq;}
+\NormalTok{    config.BaudRate          = baud;}
+
+\NormalTok{    apUART_Initialize(PRINT_PORT, &config, }\DecValTok{0}\NormalTok{);}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux53d1ux9001ux6570ux636e-1}{%
+\subsection{发送数据}\label{ux53d1ux9001ux6570ux636e-1}}
+
+使用 \texttt{UART\_SendData} 发送数据。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ UART_SendData(}
+\NormalTok{  UART_TypeDef* pBase, }
+  \DataTypeTok{uint8_t}\NormalTok{ Data}
+\NormalTok{  );}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux63a5ux6536ux6570ux636e-1}{%
+\subsection{接收数据}\label{ux63a5ux6536ux6570ux636e-1}}
+
+使用 \texttt{UART\_ReceData} 接收数据。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{uint8_t}\NormalTok{ UART_ReceData(}
+\NormalTok{  UART_TypeDef* pBase}
+\NormalTok{  );}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux6e05ux7a7afifo}{%
+\subsection{清空FIFO}\label{ux6e05ux7a7afifo}}
+
+使用 \texttt{uart\_empty\_fifo} 清空UART的FIFO。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{static} \DataTypeTok{void}\NormalTok{ uart_empty_fifo(}
+\NormalTok{  UART_TypeDef* pBase}
+\NormalTok{  );}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux4f7fux80fdfifo}{%
+\subsection{使能FIFO}\label{ux4f7fux80fdfifo}}
+
+使用 \texttt{uart\_enable\_fifo} 使能UART的FIFO。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{static} \DataTypeTok{void}\NormalTok{ uart_enable_fifo(}
+\NormalTok{  UART_TypeDef* pBase}
+\NormalTok{  );}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux5904ux7406ux4e2dux65adux72b6ux6001-3}{%
+\subsection{处理中断状态}\label{ux5904ux7406ux4e2dux65adux72b6ux6001-3}}
+
+用 \texttt{apUART\_Get\_ITStatus} 获取某个UART上的中断触发状态，返回非 0 值表示该 UART
+上产生了中断请求；用 \texttt{apUART\_Get\_all\_raw\_int\_stat} 一次性获取所有 UART 的中断触发状态，
+第 \(n\) 比特（第 0 比特为最低比特）对应 UART \(n\) 上的中断触发状态。
+
+UART产生中断后，需要消除中断状态方可再次触发。用 \texttt{apUART\_Clr\_RECEIVE\_INT} 消除某个 UART上接收中断的状态，
+用 \texttt{apUART\_Clr\_TX\_INT} 消除某个 UART上发送中断的状态。用 \texttt{apUART\_Clr\_NonRx\_INT} 消除某个 UART上除接收以外的中断状态。
+
+\hypertarget{dmaux4f20ux8f93ux6a21ux5f0fux4f7fux80fd}{%
+\subsection{DMA传输模式使能}\label{dmaux4f20ux8f93ux6a21ux5f0fux4f7fux80fd}}
+
+DMA向CPU发出总线请求，CPU将总线交给DMA之后，由DMA控制数据的收发工作。
+
+使用 \texttt{UART\_DmaEnable}使能DMA工作模式。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ UART_DmaEnable(}
+\NormalTok{  UART_TypeDef *pBase, }
+  \DataTypeTok{uint8_t}\NormalTok{ tx_enable, }
+  \DataTypeTok{uint8_t}\NormalTok{ rx_enable, }
+  \DataTypeTok{uint8_t}\NormalTok{ dma_on_err}
+\NormalTok{  );}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ch-watchdog}{%
+\chapter{看门狗（WATCHDOG）}\label{ch-watchdog}}
+
+\hypertarget{ux529fux80fdux6982ux8ff0-7}{%
+\section{功能概述}\label{ux529fux80fdux6982ux8ff0-7}}
+
+看门狗就是定期的查看芯片内部情况，一旦发生错误就向芯片内部发出重启信号。
+看门狗指令在程序的中断中拥有最高的优先级。防止程序跑飞，同时也能防止程序在线运行时出现死循环
+
+\hypertarget{ux4f7fux7528ux8bf4ux660e-8}{%
+\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-8}}
+
+\hypertarget{ux914dux7f6eux770bux95e8ux72d7}{%
+\subsection{配置看门狗}\label{ux914dux7f6eux770bux95e8ux72d7}}
+
+使用 \texttt{TMR\_WatchDogEnable3} 配置并启用看门狗。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ TMR_WatchDogEnable3(}
+  \DataTypeTok{uint32_t}\NormalTok{ int_timeout_ms, }
+  \DataTypeTok{uint32_t}\NormalTok{ reset_timeout_ms, }
+  \DataTypeTok{uint8_t}\NormalTok{ enable_int}
+\NormalTok{  );}
+\end{Highlighting}
+\end{Shaded}
+
+为了ING916xx和ING918xx统一接口，定义宏 \texttt{TMR\_WatchDogEnable} 代替 \texttt{TMR\_WatchDogEnable3} 。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\PreprocessorTok{#define TMR_WatchDogEnable(timeout) do \{ }
+  \DataTypeTok{uint32_t}\NormalTok{ TMR_CLK_FREQ = OSC_CLK_FREQ; }
+  \DataTypeTok{uint32_t}\NormalTok{ cnt = ((}\DataTypeTok{uint64_t}\NormalTok{)(timeout) * }\DecValTok{1000}\NormalTok{ / OSC_CLK_FREQ); }
+\NormalTok{  TMR_WatchDogEnable3(cnt, cnt, }\DecValTok{0}\NormalTok{); }
+\NormalTok{  \} }\ControlFlowTok{while}\NormalTok{ (}\DecValTok{0}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+例如：
+
+\hypertarget{ux91cdux542fux770bux95e8ux72d7}{%
+\subsection{重启看门狗}\label{ux91cdux542fux770bux95e8ux72d7}}
+
+使用 \texttt{TMR\_WatchDogRestart} 重启看门狗。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ TMR_WatchDogRestart(}\DataTypeTok{void}\NormalTok{);}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux6e05ux9664ux4e2dux65ad-1}{%
+\subsection{清除中断}\label{ux6e05ux9664ux4e2dux65ad-1}}
+
+使用 \texttt{TMR\_WatchDogClearInt} 清除看门狗的中断。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ TMR_WatchDogClearInt(}\DataTypeTok{void}\NormalTok{);}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux7981ux7528ux770bux95e8ux72d7}{%
+\subsection{禁用看门狗}\label{ux7981ux7528ux770bux95e8ux72d7}}
+
+在使用\texttt{TMR\_WatchDogEnable} 启用或 \texttt{TMR\_WatchDogRestart} 重启看门狗之后，
+需要使用 \texttt{TMR\_WatchDogDisable} 对其禁用。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ TMR_WatchDogDisable(}\DataTypeTok{void}\NormalTok{);}
 \end{Highlighting}
 \end{Shaded}
 

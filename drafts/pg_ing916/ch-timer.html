@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>13 实时时钟（RTC） | ING916XX 系列芯片外设开发者手册</title>
+  <title>16 定时器（TIMER） | ING916XX 系列芯片外设开发者手册</title>
   <meta name="description" content="ING916XX 系列芯片开发者手册." />
   <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="13 实时时钟（RTC） | ING916XX 系列芯片外设开发者手册" />
+  <meta property="og:title" content="16 定时器（TIMER） | ING916XX 系列芯片外设开发者手册" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="ING916XX 系列芯片开发者手册." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="13 实时时钟（RTC） | ING916XX 系列芯片外设开发者手册" />
+  <meta name="twitter:title" content="16 定时器（TIMER） | ING916XX 系列芯片外设开发者手册" />
   
   <meta name="twitter:description" content="ING916XX 系列芯片开发者手册." />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="ch-pwm.html"/>
-<link rel="next" href="spi功能概述.html"/>
+<link rel="prev" href="ch-sysctrl.html"/>
+<link rel="next" href="ch-uart.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -392,91 +392,163 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="ch-rtc" class="section level1 hasAnchor">
-<h1><span class="header-section-number">13</span> 实时时钟（RTC）<a href="ch-rtc.html#ch-rtc" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div id="功能描述-4" class="section level2 hasAnchor">
-<h2><span class="header-section-number">13.1</span> 功能描述<a href="ch-rtc.html#功能描述-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>实时时钟是一个独立的定时器。RTC模块拥有一组连续计数的计数器，在相应的软件配置下，
-可提供时钟日历的功能。修改计数器的值可以重新设置系统当前的时间和日期。</p>
+<div id="ch-timer" class="section level1 hasAnchor">
+<h1><span class="header-section-number">16</span> 定时器（TIMER）<a href="ch-timer.html#ch-timer" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="功能概述-5" class="section level2 hasAnchor">
+<h2><span class="header-section-number">16.1</span> 功能概述<a href="ch-timer.html#功能概述-5" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>定时器（TIMER）是由两个寄存器组成的，其中一个寄存器用来确定计数器的工作形式和功能，
+另外一个计时器是用来控制单片机的启动和停止的，同时也设置了一个</p>
 </div>
-<div id="使用说明-4" class="section level2 hasAnchor">
-<h2><span class="header-section-number">13.2</span> 使用说明<a href="ch-rtc.html#使用说明-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="rtc使能" class="section level3 hasAnchor">
-<h3><span class="header-section-number">13.2.1</span> RTC使能<a href="ch-rtc.html#rtc使能" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>RTC_Enable</code> 使能RTC。</p>
-<div class="sourceCode" id="cb111"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb111-1"><a href="ch-rtc.html#cb111-1"></a><span class="dt">void</span> RTC_Enable(<span class="dt">uint8_t</span> enable);</span></code></pre></div>
-</div>
-<div id="获取当前日期" class="section level3 hasAnchor">
-<h3><span class="header-section-number">13.2.2</span> 获取当前日期<a href="ch-rtc.html#获取当前日期" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>RTC_GetTime</code> 获取当前时间（包括时分秒）。</p>
-<div class="sourceCode" id="cb112"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb112-1"><a href="ch-rtc.html#cb112-1"></a><span class="dt">uint16_t</span> RTC_GetTime(</span>
-<span id="cb112-2"><a href="ch-rtc.html#cb112-2"></a>  <span class="dt">uint8_t</span> *hour, </span>
-<span id="cb112-3"><a href="ch-rtc.html#cb112-3"></a>  <span class="dt">uint8_t</span> *minute, </span>
-<span id="cb112-4"><a href="ch-rtc.html#cb112-4"></a>  <span class="dt">uint8_t</span> *second</span>
-<span id="cb112-5"><a href="ch-rtc.html#cb112-5"></a>  );</span></code></pre></div>
-</div>
-<div id="修改日期" class="section level3 hasAnchor">
-<h3><span class="header-section-number">13.2.3</span> 修改日期<a href="ch-rtc.html#修改日期" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>RTC_ModifyTime</code> 修改当前时间。</p>
-<div class="sourceCode" id="cb113"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb113-1"><a href="ch-rtc.html#cb113-1"></a><span class="dt">void</span> RTC_ModifyTime(</span>
-<span id="cb113-2"><a href="ch-rtc.html#cb113-2"></a>  <span class="dt">uint16_t</span> day, </span>
-<span id="cb113-3"><a href="ch-rtc.html#cb113-3"></a>  <span class="dt">uint8_t</span> hour, </span>
-<span id="cb113-4"><a href="ch-rtc.html#cb113-4"></a>  <span class="dt">uint8_t</span> minute, </span>
-<span id="cb113-5"><a href="ch-rtc.html#cb113-5"></a>  <span class="dt">uint8_t</span> second</span>
-<span id="cb113-6"><a href="ch-rtc.html#cb113-6"></a>  );</span></code></pre></div>
-</div>
-<div id="配置闹钟" class="section level3 hasAnchor">
-<h3><span class="header-section-number">13.2.4</span> 配置闹钟<a href="ch-rtc.html#配置闹钟" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>RTC_ConfigAlarm</code></p>
-<div class="sourceCode" id="cb114"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb114-1"><a href="ch-rtc.html#cb114-1"></a><span class="dt">void</span> RTC_ConfigAlarm(</span>
-<span id="cb114-2"><a href="ch-rtc.html#cb114-2"></a>  <span class="dt">uint8_t</span> hour, </span>
-<span id="cb114-3"><a href="ch-rtc.html#cb114-3"></a>  <span class="dt">uint8_t</span> minute, </span>
-<span id="cb114-4"><a href="ch-rtc.html#cb114-4"></a>  <span class="dt">uint8_t</span> second</span>
-<span id="cb114-5"><a href="ch-rtc.html#cb114-5"></a>  );</span></code></pre></div>
-</div>
-<div id="配置中断请求-1" class="section level3 hasAnchor">
-<h3><span class="header-section-number">13.2.5</span> 配置中断请求<a href="ch-rtc.html#配置中断请求-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>RTC_EnableIRQ</code> 配置并使能RTC中断请求。</p>
-<div class="sourceCode" id="cb115"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb115-1"><a href="ch-rtc.html#cb115-1"></a><span class="dt">void</span> RTC_EnableIRQ(<span class="dt">uint32_t</span> mask);</span></code></pre></div>
-<p>其中的 <code>mask</code> 为RTC中断类型，一共有六种：</p>
-<div class="sourceCode" id="cb116"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb116-1"><a href="ch-rtc.html#cb116-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb116-2"><a href="ch-rtc.html#cb116-2"></a>{</span>
-<span id="cb116-3"><a href="ch-rtc.html#cb116-3"></a>    RTC_IRQ_ALARM = <span class="bn">0x04</span>,</span>
-<span id="cb116-4"><a href="ch-rtc.html#cb116-4"></a>    RTC_IRQ_DAY = <span class="bn">0x08</span>,</span>
-<span id="cb116-5"><a href="ch-rtc.html#cb116-5"></a>    RTC_IRQ_HOUR = <span class="bn">0x10</span>,</span>
-<span id="cb116-6"><a href="ch-rtc.html#cb116-6"></a>    RTC_IRQ_MINUTE = <span class="bn">0x20</span>,</span>
-<span id="cb116-7"><a href="ch-rtc.html#cb116-7"></a>    RTC_IRQ_SECOND = <span class="bn">0x40</span>,</span>
-<span id="cb116-8"><a href="ch-rtc.html#cb116-8"></a>    RTC_IRQ_HALF_SECOND = <span class="bn">0x80</span>,</span>
-<span id="cb116-9"><a href="ch-rtc.html#cb116-9"></a>} rtc_irq_t;</span></code></pre></div>
+<div id="使用说明-6" class="section level2 hasAnchor">
+<h2><span class="header-section-number">16.2</span> 使用说明<a href="ch-timer.html#使用说明-6" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="设置工作模式" class="section level3 hasAnchor">
+<h3><span class="header-section-number">16.2.1</span> 设置工作模式<a href="ch-timer.html#设置工作模式" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>在使用 TIMER 之前，需要使用 <code>TMR_SetOpMode</code> 按需设置TIMER的工作模式。</p>
+<div class="sourceCode" id="cb185"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb185-1"><a href="ch-timer.html#cb185-1"></a><span class="dt">void</span> TMR_SetOpMode(</span>
+<span id="cb185-2"><a href="ch-timer.html#cb185-2"></a>  TMR_TypeDef *pTMR, </span>
+<span id="cb185-3"><a href="ch-timer.html#cb185-3"></a>  <span class="dt">uint8_t</span> ch_id, </span>
+<span id="cb185-4"><a href="ch-timer.html#cb185-4"></a>  <span class="dt">uint8_t</span> op_mode, </span>
+<span id="cb185-5"><a href="ch-timer.html#cb185-5"></a>  <span class="dt">uint8_t</span> clk_mode, </span>
+<span id="cb185-6"><a href="ch-timer.html#cb185-6"></a>  <span class="dt">uint8_t</span> pwm_park_value</span>
+<span id="cb185-7"><a href="ch-timer.html#cb185-7"></a>  );</span></code></pre></div>
+<p>TIMER的工作模式有以下6种，分别三类：定时器、PWM、复用。
+* 定时器功能包括：32bit单定时器、16bit双定时器、8bit四定时器
+```c
+#define TMR_CTL_OP_MODE_32BIT_TIMER_x1 1 // one 32bit timer
+#define TMR_CTL_OP_MODE_16BIT_TIMER_x2 2 // dual 16bit timers
+#define TMR_CTL_OP_MODE_8BIT_TIMER_x4 3 // four 8bit timers</p>
+<pre><code>
+* PWM功能：16bit双计数器
+```c
+  #define TMR_CTL_OP_MODE_16BIT_PWM                 4           // PWM with two 16bit counters
+</code></pre>
 <ul>
-<li><p>例如将 RTC 设置为alarm中断</p>
-<div class="sourceCode" id="cb117"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb117-1"><a href="ch-rtc.html#cb117-1"></a>RTC_EnableIRQ(RTC_IRQ_ALARM);</span></code></pre></div></li>
-<li><p>例如将 RTC 设置为day中断</p>
-<div class="sourceCode" id="cb118"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb118-1"><a href="ch-rtc.html#cb118-1"></a>RTC_EnableIRQ(RTC_IRQ_DAY);</span></code></pre></div></li>
-<li><p>例如将 RTC 设置为hour中断</p>
-<div class="sourceCode" id="cb119"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb119-1"><a href="ch-rtc.html#cb119-1"></a>RTC_EnableIRQ(RTC_IRQ_HOUR);</span></code></pre></div></li>
-<li><p>例如将 RTC 设置为minute中断</p>
-<div class="sourceCode" id="cb120"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb120-1"><a href="ch-rtc.html#cb120-1"></a>RTC_EnableIRQ(RTC_IRQ_MINUTE);</span></code></pre></div></li>
-<li><p>例如将 RTC 设置为second中断</p>
-<div class="sourceCode" id="cb121"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb121-1"><a href="ch-rtc.html#cb121-1"></a>RTC_EnableIRQ(RTC_IRQ_SECOND);</span></code></pre></div></li>
-<li><p>例如将 RTC 设置为half-second中断</p>
-<div class="sourceCode" id="cb122"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb122-1"><a href="ch-rtc.html#cb122-1"></a>RTC_EnableIRQ(RTC_IRQ_HALF_SECOND);</span></code></pre></div></li>
+<li><p>定时器+PWM复用功能：8bit双计数器+16bit单定时器、 8bit双计数器+8bit双定时器</p>
+<div class="sourceCode" id="cb187"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb187-1"><a href="ch-timer.html#cb187-1"></a>  <span class="pp">#define TMR_CTL_OP_MODE_8BIT_PWM_16BIT_TIMER_x1   6           </span><span class="co">// MIXED: PWM with two 8bit counters + one 16bit timer</span></span>
+<span id="cb187-2"><a href="ch-timer.html#cb187-2"></a>  <span class="pp">#define TMR_CTL_OP_MODE_8BIT_PWM_8BIT_TIMER_x2    7           </span><span class="co">// MIXED: PWM with two 8bit counters + dual 8bit timer</span></span></code></pre></div></li>
+<li><p>例如将TIMER1的通道0设置为<code>TMR_CTL_OP_MODE_32BIT_TIMER_x1</code>模式：</p>
+<div class="sourceCode" id="cb188"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb188-1"><a href="ch-timer.html#cb188-1"></a>  TMR_SetOpMode(APB_TMR1, <span class="dv">0</span>, TMR_CTL_OP_MODE_32BIT_TIMER_x1, TMR_CLK_MODE_APB, <span class="dv">0</span>);</span>
+<span id="cb188-2"><a href="ch-timer.html#cb188-2"></a>  TMR_SetReload(APB_TMR1, <span class="dv">0</span>, TMR_GetClk(APB_TMR1, <span class="dv">0</span>) / <span class="dv">10</span>);</span>
+<span id="cb188-3"><a href="ch-timer.html#cb188-3"></a>  TMR_Enable(APB_TMR1, <span class="dv">0</span>, <span class="bn">0xf</span>);</span>
+<span id="cb188-4"><a href="ch-timer.html#cb188-4"></a>  TMR_IntEnable(APB_TMR1, <span class="dv">0</span>, <span class="bn">0xf</span>);</span></code></pre></div></li>
 </ul>
 </div>
-<div id="获取当前中断状态" class="section level3 hasAnchor">
-<h3><span class="header-section-number">13.2.6</span> 获取当前中断状态<a href="ch-rtc.html#获取当前中断状态" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>RTC_GetIntState</code> 获取当前RTC的中断状态。</p>
-<div class="sourceCode" id="cb123"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb123-1"><a href="ch-rtc.html#cb123-1"></a><span class="dt">uint32_t</span> RTC_GetIntState(<span class="dt">void</span>);</span></code></pre></div>
+<div id="时钟频率" class="section level3 hasAnchor">
+<h3><span class="header-section-number">16.2.2</span> 时钟频率<a href="ch-timer.html#时钟频率" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>TMR_GetClk</code> 获取TIMER某个通道的时钟频率。</p>
+<div class="sourceCode" id="cb189"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb189-1"><a href="ch-timer.html#cb189-1"></a><span class="dt">uint32_t</span> TMR_GetClk(</span>
+<span id="cb189-2"><a href="ch-timer.html#cb189-2"></a>  TMR_TypeDef *pTMR, </span>
+<span id="cb189-3"><a href="ch-timer.html#cb189-3"></a>  <span class="dt">uint8_t</span> ch_id</span>
+<span id="cb189-4"><a href="ch-timer.html#cb189-4"></a>  );</span></code></pre></div>
 </div>
-<div id="清除中断" class="section level3 hasAnchor">
-<h3><span class="header-section-number">13.2.7</span> 清除中断<a href="ch-rtc.html#清除中断" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>RTC_ClearIntState</code> 清除当前RTC的中断状态。</p>
-<div class="sourceCode" id="cb124"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb124-1"><a href="ch-rtc.html#cb124-1"></a><span class="dt">void</span> RTC_ClearIntState(<span class="dt">uint32_t</span> state);</span></code></pre></div>
+<div id="重载值" class="section level3 hasAnchor">
+<h3><span class="header-section-number">16.2.3</span> 重载值<a href="ch-timer.html#重载值" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>TMR_SetReload</code> 设置TIMER某个通道的重载值。</p>
+<div class="sourceCode" id="cb190"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb190-1"><a href="ch-timer.html#cb190-1"></a><span class="dt">void</span> TMR_SetReload(</span>
+<span id="cb190-2"><a href="ch-timer.html#cb190-2"></a>  TMR_TypeDef *pTMR, </span>
+<span id="cb190-3"><a href="ch-timer.html#cb190-3"></a>  <span class="dt">uint8_t</span> ch_id, </span>
+<span id="cb190-4"><a href="ch-timer.html#cb190-4"></a>  <span class="dt">uint32_t</span> value</span>
+<span id="cb190-5"><a href="ch-timer.html#cb190-5"></a>  );</span></code></pre></div>
+<p>在不同的TIMER模式中， <code>value</code> 的值分配如下表。
+Table: (#tab:ch0-abbreviations)</p>
+<table>
+<thead>
+<tr class="header">
+<th align="center">TIMER模式</th>
+<th align="center">bits[0:7]</th>
+<th align="center">bits[8:15]</th>
+<th align="center">bits[16:23]</th>
+<th align="center">bits[24:31]</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">TMR_CTL_OP_MODE_32BIT_TIMER_x1</td>
+<td align="center">Timer 0</td>
+<td align="center">Timer 0</td>
+<td align="center">Timer 0</td>
+<td align="center">Timer 0</td>
+</tr>
+<tr class="even">
+<td align="center">TMR_CTL_OP_MODE_16BIT_TIMER_x2</td>
+<td align="center">Timer 0</td>
+<td align="center">Timer 0</td>
+<td align="center">Timer 1</td>
+<td align="center">Timer 1</td>
+</tr>
+<tr class="odd">
+<td align="center">TMR_CTL_OP_MODE_8BIT_TIMER_x4</td>
+<td align="center">Timer 0</td>
+<td align="center">Timer 1</td>
+<td align="center">Timer 2</td>
+<td align="center">Timer 3</td>
+</tr>
+<tr class="even">
+<td align="center">TMR_CTL_OP_MODE_16BIT_PWM</td>
+<td align="center">PWM low period</td>
+<td align="center">PWM low period</td>
+<td align="center">PWM high period</td>
+<td align="center">PWM high period</td>
+</tr>
+<tr class="odd">
+<td align="center">TMR_CTL_OP_MODE_8BIT_PWM_16BIT_TIMER_x1</td>
+<td align="center">Timer 0</td>
+<td align="center">Timer 0</td>
+<td align="center">PWM low period</td>
+<td align="center">PWM low period</td>
+</tr>
+<tr class="even">
+<td align="center">TMR_CTL_OP_MODE_8BIT_PWM_8BIT_TIMER_x2</td>
+<td align="center">Timer 0</td>
+<td align="center">Timer 1</td>
+<td align="center">PWM low period</td>
+<td align="center">PWM low period</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="处理中断状态-1" class="section level3 hasAnchor">
-<h3><span class="header-section-number">13.2.8</span> 处理中断状态<a href="ch-rtc.html#处理中断状态-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>用 <code>RTC_GetIntState</code> 获取RTC上的中断触发，返回非 0 值表示RTC上产生了中断请求；RTC产生中断后，
-需要消除中断状态方可再次触发。利用 <code>RTC_ClearIntState</code>可清除RTC的中断触发状态。</p>
+<div id="使能" class="section level3 hasAnchor">
+<h3><span class="header-section-number">16.2.4</span> 使能<a href="ch-timer.html#使能" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>TMR_Enable</code> TIMER的某个通道。</p>
+<div class="sourceCode" id="cb191"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb191-1"><a href="ch-timer.html#cb191-1"></a><span class="dt">void</span> TMR_Enable(</span>
+<span id="cb191-2"><a href="ch-timer.html#cb191-2"></a>  TMR_TypeDef *pTMR, </span>
+<span id="cb191-3"><a href="ch-timer.html#cb191-3"></a>  <span class="dt">uint8_t</span> ch_id, </span>
+<span id="cb191-4"><a href="ch-timer.html#cb191-4"></a>  <span class="dt">uint8_t</span> mask</span>
+<span id="cb191-5"><a href="ch-timer.html#cb191-5"></a>  );</span></code></pre></div>
+</div>
+<div id="比较" class="section level3 hasAnchor">
+<h3><span class="header-section-number">16.2.5</span> 比较<a href="ch-timer.html#比较" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>TMR_GetCMP</code> 。</p>
+<div class="sourceCode" id="cb192"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb192-1"><a href="ch-timer.html#cb192-1"></a><span class="dt">uint32_t</span> TMR_GetCMP(</span>
+<span id="cb192-2"><a href="ch-timer.html#cb192-2"></a>  TMR_TypeDef *pTMR, </span>
+<span id="cb192-3"><a href="ch-timer.html#cb192-3"></a>  <span class="dt">uint8_t</span> ch_id</span>
+<span id="cb192-4"><a href="ch-timer.html#cb192-4"></a>  );</span></code></pre></div>
+</div>
+<div id="配置中断请求-2" class="section level3 hasAnchor">
+<h3><span class="header-section-number">16.2.6</span> 配置中断请求<a href="ch-timer.html#配置中断请求-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>TMR_IntEnable</code> 配置并使能TIMER中断。</p>
+<div class="sourceCode" id="cb193"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb193-1"><a href="ch-timer.html#cb193-1"></a><span class="dt">void</span> TMR_IntEnable(</span>
+<span id="cb193-2"><a href="ch-timer.html#cb193-2"></a>  TMR_TypeDef *pTMR, </span>
+<span id="cb193-3"><a href="ch-timer.html#cb193-3"></a>  <span class="dt">uint8_t</span> ch_id, </span>
+<span id="cb193-4"><a href="ch-timer.html#cb193-4"></a>  <span class="dt">uint8_t</span> mask</span>
+<span id="cb193-5"><a href="ch-timer.html#cb193-5"></a>  );</span></code></pre></div>
+</div>
+<div id="中断清除" class="section level3 hasAnchor">
+<h3><span class="header-section-number">16.2.7</span> 中断清除<a href="ch-timer.html#中断清除" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>TMR_IntClr</code> 清除某个TIMER的中断状态。</p>
+<div class="sourceCode" id="cb194"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb194-1"><a href="ch-timer.html#cb194-1"></a><span class="dt">void</span> TMR_IntClr(</span>
+<span id="cb194-2"><a href="ch-timer.html#cb194-2"></a>  TMR_TypeDef *pTMR, </span>
+<span id="cb194-3"><a href="ch-timer.html#cb194-3"></a>  <span class="dt">uint8_t</span> ch_id, </span>
+<span id="cb194-4"><a href="ch-timer.html#cb194-4"></a>  <span class="dt">uint8_t</span> mask</span>
+<span id="cb194-5"><a href="ch-timer.html#cb194-5"></a>  );</span></code></pre></div>
+</div>
+<div id="获取中断" class="section level3 hasAnchor">
+<h3><span class="header-section-number">16.2.8</span> 获取中断<a href="ch-timer.html#获取中断" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>TMR_IntHappened</code> 获取某个TIMER的中断状态。</p>
+<div class="sourceCode" id="cb195"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb195-1"><a href="ch-timer.html#cb195-1"></a><span class="dt">uint8_t</span> TMR_IntHappened(</span>
+<span id="cb195-2"><a href="ch-timer.html#cb195-2"></a>  TMR_TypeDef *pTMR, </span>
+<span id="cb195-3"><a href="ch-timer.html#cb195-3"></a>  <span class="dt">uint8_t</span> ch_id</span>
+<span id="cb195-4"><a href="ch-timer.html#cb195-4"></a>  );</span></code></pre></div>
 
 </div>
 </div>
@@ -486,8 +558,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="ch-pwm.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="spi功能概述.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="ch-sysctrl.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ch-uart.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

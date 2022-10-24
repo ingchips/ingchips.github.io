@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>13 实时时钟（RTC） | ING916XX 系列芯片外设开发者手册</title>
+  <title>17 通用异步收发传输器（UART） | ING916XX 系列芯片外设开发者手册</title>
   <meta name="description" content="ING916XX 系列芯片开发者手册." />
   <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="13 实时时钟（RTC） | ING916XX 系列芯片外设开发者手册" />
+  <meta property="og:title" content="17 通用异步收发传输器（UART） | ING916XX 系列芯片外设开发者手册" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="ING916XX 系列芯片开发者手册." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="13 实时时钟（RTC） | ING916XX 系列芯片外设开发者手册" />
+  <meta name="twitter:title" content="17 通用异步收发传输器（UART） | ING916XX 系列芯片外设开发者手册" />
   
   <meta name="twitter:description" content="ING916XX 系列芯片开发者手册." />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="ch-pwm.html"/>
-<link rel="next" href="spi功能概述.html"/>
+<link rel="prev" href="ch-timer.html"/>
+<link rel="next" href="ch-watchdog.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -392,91 +392,217 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="ch-rtc" class="section level1 hasAnchor">
-<h1><span class="header-section-number">13</span> 实时时钟（RTC）<a href="ch-rtc.html#ch-rtc" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div id="功能描述-4" class="section level2 hasAnchor">
-<h2><span class="header-section-number">13.1</span> 功能描述<a href="ch-rtc.html#功能描述-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>实时时钟是一个独立的定时器。RTC模块拥有一组连续计数的计数器，在相应的软件配置下，
-可提供时钟日历的功能。修改计数器的值可以重新设置系统当前的时间和日期。</p>
-</div>
-<div id="使用说明-4" class="section level2 hasAnchor">
-<h2><span class="header-section-number">13.2</span> 使用说明<a href="ch-rtc.html#使用说明-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="rtc使能" class="section level3 hasAnchor">
-<h3><span class="header-section-number">13.2.1</span> RTC使能<a href="ch-rtc.html#rtc使能" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>RTC_Enable</code> 使能RTC。</p>
-<div class="sourceCode" id="cb111"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb111-1"><a href="ch-rtc.html#cb111-1"></a><span class="dt">void</span> RTC_Enable(<span class="dt">uint8_t</span> enable);</span></code></pre></div>
-</div>
-<div id="获取当前日期" class="section level3 hasAnchor">
-<h3><span class="header-section-number">13.2.2</span> 获取当前日期<a href="ch-rtc.html#获取当前日期" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>RTC_GetTime</code> 获取当前时间（包括时分秒）。</p>
-<div class="sourceCode" id="cb112"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb112-1"><a href="ch-rtc.html#cb112-1"></a><span class="dt">uint16_t</span> RTC_GetTime(</span>
-<span id="cb112-2"><a href="ch-rtc.html#cb112-2"></a>  <span class="dt">uint8_t</span> *hour, </span>
-<span id="cb112-3"><a href="ch-rtc.html#cb112-3"></a>  <span class="dt">uint8_t</span> *minute, </span>
-<span id="cb112-4"><a href="ch-rtc.html#cb112-4"></a>  <span class="dt">uint8_t</span> *second</span>
-<span id="cb112-5"><a href="ch-rtc.html#cb112-5"></a>  );</span></code></pre></div>
-</div>
-<div id="修改日期" class="section level3 hasAnchor">
-<h3><span class="header-section-number">13.2.3</span> 修改日期<a href="ch-rtc.html#修改日期" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>RTC_ModifyTime</code> 修改当前时间。</p>
-<div class="sourceCode" id="cb113"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb113-1"><a href="ch-rtc.html#cb113-1"></a><span class="dt">void</span> RTC_ModifyTime(</span>
-<span id="cb113-2"><a href="ch-rtc.html#cb113-2"></a>  <span class="dt">uint16_t</span> day, </span>
-<span id="cb113-3"><a href="ch-rtc.html#cb113-3"></a>  <span class="dt">uint8_t</span> hour, </span>
-<span id="cb113-4"><a href="ch-rtc.html#cb113-4"></a>  <span class="dt">uint8_t</span> minute, </span>
-<span id="cb113-5"><a href="ch-rtc.html#cb113-5"></a>  <span class="dt">uint8_t</span> second</span>
-<span id="cb113-6"><a href="ch-rtc.html#cb113-6"></a>  );</span></code></pre></div>
-</div>
-<div id="配置闹钟" class="section level3 hasAnchor">
-<h3><span class="header-section-number">13.2.4</span> 配置闹钟<a href="ch-rtc.html#配置闹钟" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>RTC_ConfigAlarm</code></p>
-<div class="sourceCode" id="cb114"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb114-1"><a href="ch-rtc.html#cb114-1"></a><span class="dt">void</span> RTC_ConfigAlarm(</span>
-<span id="cb114-2"><a href="ch-rtc.html#cb114-2"></a>  <span class="dt">uint8_t</span> hour, </span>
-<span id="cb114-3"><a href="ch-rtc.html#cb114-3"></a>  <span class="dt">uint8_t</span> minute, </span>
-<span id="cb114-4"><a href="ch-rtc.html#cb114-4"></a>  <span class="dt">uint8_t</span> second</span>
-<span id="cb114-5"><a href="ch-rtc.html#cb114-5"></a>  );</span></code></pre></div>
-</div>
-<div id="配置中断请求-1" class="section level3 hasAnchor">
-<h3><span class="header-section-number">13.2.5</span> 配置中断请求<a href="ch-rtc.html#配置中断请求-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>RTC_EnableIRQ</code> 配置并使能RTC中断请求。</p>
-<div class="sourceCode" id="cb115"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb115-1"><a href="ch-rtc.html#cb115-1"></a><span class="dt">void</span> RTC_EnableIRQ(<span class="dt">uint32_t</span> mask);</span></code></pre></div>
-<p>其中的 <code>mask</code> 为RTC中断类型，一共有六种：</p>
-<div class="sourceCode" id="cb116"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb116-1"><a href="ch-rtc.html#cb116-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb116-2"><a href="ch-rtc.html#cb116-2"></a>{</span>
-<span id="cb116-3"><a href="ch-rtc.html#cb116-3"></a>    RTC_IRQ_ALARM = <span class="bn">0x04</span>,</span>
-<span id="cb116-4"><a href="ch-rtc.html#cb116-4"></a>    RTC_IRQ_DAY = <span class="bn">0x08</span>,</span>
-<span id="cb116-5"><a href="ch-rtc.html#cb116-5"></a>    RTC_IRQ_HOUR = <span class="bn">0x10</span>,</span>
-<span id="cb116-6"><a href="ch-rtc.html#cb116-6"></a>    RTC_IRQ_MINUTE = <span class="bn">0x20</span>,</span>
-<span id="cb116-7"><a href="ch-rtc.html#cb116-7"></a>    RTC_IRQ_SECOND = <span class="bn">0x40</span>,</span>
-<span id="cb116-8"><a href="ch-rtc.html#cb116-8"></a>    RTC_IRQ_HALF_SECOND = <span class="bn">0x80</span>,</span>
-<span id="cb116-9"><a href="ch-rtc.html#cb116-9"></a>} rtc_irq_t;</span></code></pre></div>
+<div id="ch-uart" class="section level1 hasAnchor">
+<h1><span class="header-section-number">17</span> 通用异步收发传输器（UART）<a href="ch-uart.html#ch-uart" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="功能概述-6" class="section level2 hasAnchor">
+<h2><span class="header-section-number">17.1</span> 功能概述<a href="ch-uart.html#功能概述-6" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>UART负责处理数据总线和串行口之间的串/并、并/串转换，并规定了相应的帧格式，通信双方只要采用相同的帧格式和波特率，
+就能在未共享时钟信号的情况下，仅用两根信号线（RX和TX）完成通信过程。</p>
+<p>特性：</p>
 <ul>
-<li><p>例如将 RTC 设置为alarm中断</p>
-<div class="sourceCode" id="cb117"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb117-1"><a href="ch-rtc.html#cb117-1"></a>RTC_EnableIRQ(RTC_IRQ_ALARM);</span></code></pre></div></li>
-<li><p>例如将 RTC 设置为day中断</p>
-<div class="sourceCode" id="cb118"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb118-1"><a href="ch-rtc.html#cb118-1"></a>RTC_EnableIRQ(RTC_IRQ_DAY);</span></code></pre></div></li>
-<li><p>例如将 RTC 设置为hour中断</p>
-<div class="sourceCode" id="cb119"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb119-1"><a href="ch-rtc.html#cb119-1"></a>RTC_EnableIRQ(RTC_IRQ_HOUR);</span></code></pre></div></li>
-<li><p>例如将 RTC 设置为minute中断</p>
-<div class="sourceCode" id="cb120"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb120-1"><a href="ch-rtc.html#cb120-1"></a>RTC_EnableIRQ(RTC_IRQ_MINUTE);</span></code></pre></div></li>
-<li><p>例如将 RTC 设置为second中断</p>
-<div class="sourceCode" id="cb121"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb121-1"><a href="ch-rtc.html#cb121-1"></a>RTC_EnableIRQ(RTC_IRQ_SECOND);</span></code></pre></div></li>
-<li><p>例如将 RTC 设置为half-second中断</p>
-<div class="sourceCode" id="cb122"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb122-1"><a href="ch-rtc.html#cb122-1"></a>RTC_EnableIRQ(RTC_IRQ_HALF_SECOND);</span></code></pre></div></li>
+<li>异步串行通信，可为全双工、半双工、单发送（TX）或单接收（RX）模式；</li>
+<li>支持5~8位数据位的配置，波特率几百bps至几百Kbbps；</li>
+<li>可配置奇校验、偶校验或无校验位；可配置1、1.5或2位停止位；</li>
+<li>将并行数据写入内存缓冲区，再通过FIFO逐位发送，接收时同理；</li>
+<li>输出传输时，从低位到高位传输。</li>
 </ul>
 </div>
-<div id="获取当前中断状态" class="section level3 hasAnchor">
-<h3><span class="header-section-number">13.2.6</span> 获取当前中断状态<a href="ch-rtc.html#获取当前中断状态" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>RTC_GetIntState</code> 获取当前RTC的中断状态。</p>
-<div class="sourceCode" id="cb123"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb123-1"><a href="ch-rtc.html#cb123-1"></a><span class="dt">uint32_t</span> RTC_GetIntState(<span class="dt">void</span>);</span></code></pre></div>
+<div id="使用说明-7" class="section level2 hasAnchor">
+<h2><span class="header-section-number">17.2</span> 使用说明<a href="ch-uart.html#使用说明-7" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="设置波特率" class="section level3 hasAnchor">
+<h3><span class="header-section-number">17.2.1</span> 设置波特率<a href="ch-uart.html#设置波特率" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>apUART_BaudRateSet</code> 设置对应UART设备的波特率。</p>
+<div class="sourceCode" id="cb196"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb196-1"><a href="ch-uart.html#cb196-1"></a><span class="dt">void</span> apUART_BaudRateSet(</span>
+<span id="cb196-2"><a href="ch-uart.html#cb196-2"></a>  UART_TypeDef* pBase, </span>
+<span id="cb196-3"><a href="ch-uart.html#cb196-3"></a>  <span class="dt">uint32_t</span> ClockFrequency, </span>
+<span id="cb196-4"><a href="ch-uart.html#cb196-4"></a>  <span class="dt">uint32_t</span> BaudRate</span>
+<span id="cb196-5"><a href="ch-uart.html#cb196-5"></a>  );</span></code></pre></div>
 </div>
-<div id="清除中断" class="section level3 hasAnchor">
-<h3><span class="header-section-number">13.2.7</span> 清除中断<a href="ch-rtc.html#清除中断" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>RTC_ClearIntState</code> 清除当前RTC的中断状态。</p>
-<div class="sourceCode" id="cb124"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb124-1"><a href="ch-rtc.html#cb124-1"></a><span class="dt">void</span> RTC_ClearIntState(<span class="dt">uint32_t</span> state);</span></code></pre></div>
+<div id="获取波特率" class="section level3 hasAnchor">
+<h3><span class="header-section-number">17.2.2</span> 获取波特率<a href="ch-uart.html#获取波特率" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>apUART_BaudRateGet</code> 获取对应UART设备的波特率。</p>
+<div class="sourceCode" id="cb197"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb197-1"><a href="ch-uart.html#cb197-1"></a><span class="dt">uint32_t</span> apUART_BaudRateGet (</span>
+<span id="cb197-2"><a href="ch-uart.html#cb197-2"></a>  UART_TypeDef* pBase, </span>
+<span id="cb197-3"><a href="ch-uart.html#cb197-3"></a>  <span class="dt">uint32_t</span> ClockFrequency</span>
+<span id="cb197-4"><a href="ch-uart.html#cb197-4"></a>  );</span></code></pre></div>
 </div>
-<div id="处理中断状态-1" class="section level3 hasAnchor">
-<h3><span class="header-section-number">13.2.8</span> 处理中断状态<a href="ch-rtc.html#处理中断状态-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>用 <code>RTC_GetIntState</code> 获取RTC上的中断触发，返回非 0 值表示RTC上产生了中断请求；RTC产生中断后，
-需要消除中断状态方可再次触发。利用 <code>RTC_ClearIntState</code>可清除RTC的中断触发状态。</p>
+<div id="接收错误查询" class="section level3 hasAnchor">
+<h3><span class="header-section-number">17.2.3</span> 接收错误查询<a href="ch-uart.html#接收错误查询" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>apUART_Check_Rece_ERROR</code> 查询接收产生的错误。</p>
+<div class="sourceCode" id="cb198"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb198-1"><a href="ch-uart.html#cb198-1"></a><span class="dt">uint8_t</span> apUART_Check_Rece_ERROR(</span>
+<span id="cb198-2"><a href="ch-uart.html#cb198-2"></a>  UART_TypeDef* pBase</span>
+<span id="cb198-3"><a href="ch-uart.html#cb198-3"></a>  );</span></code></pre></div>
+</div>
+<div id="fifo轮询模式" class="section level3 hasAnchor">
+<h3><span class="header-section-number">17.2.4</span> FIFO轮询模式<a href="ch-uart.html#fifo轮询模式" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>在轮询模式下，CPU通过检查线路状态寄存器中的位来检测事件：</p>
+<ul>
+<li><p>使用 <code>apUART_Check_Rece_ERROR</code> 查询接收产生的错误字。</p>
+<div class="sourceCode" id="cb199"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb199-1"><a href="ch-uart.html#cb199-1"></a>  <span class="dt">uint8_t</span> apUART_Check_Rece_ERROR(</span>
+<span id="cb199-2"><a href="ch-uart.html#cb199-2"></a>    UART_TypeDef* pBase</span>
+<span id="cb199-3"><a href="ch-uart.html#cb199-3"></a>    );</span></code></pre></div></li>
+<li><p>用 <code>apUART_Check_RXFIFO_EMPTY</code>查询RXFIFO是否为空。</p>
+<div class="sourceCode" id="cb200"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb200-1"><a href="ch-uart.html#cb200-1"></a>  <span class="dt">uint8_t</span> apUART_Check_RXFIFO_EMPTY(</span>
+<span id="cb200-2"><a href="ch-uart.html#cb200-2"></a>    UART_TypeDef* pBase</span>
+<span id="cb200-3"><a href="ch-uart.html#cb200-3"></a>    );</span></code></pre></div></li>
+<li><p>使用 <code>apUART_Check_RXFIFO_FULL</code>查询RXFIFO是否已满。</p>
+<div class="sourceCode" id="cb201"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb201-1"><a href="ch-uart.html#cb201-1"></a>  <span class="dt">uint8_t</span> apUART_Check_RXFIFO_FULL(</span>
+<span id="cb201-2"><a href="ch-uart.html#cb201-2"></a>    UART_TypeDef* pBase</span>
+<span id="cb201-3"><a href="ch-uart.html#cb201-3"></a>    );</span></code></pre></div></li>
+<li><p>使用 <code>apUART_Check_TXFIFO_EMPTY</code> 查询TXFIFO是否为空。</p>
+<div class="sourceCode" id="cb202"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb202-1"><a href="ch-uart.html#cb202-1"></a>  <span class="dt">uint8_t</span> apUART_Check_TXFIFO_EMPTY(</span>
+<span id="cb202-2"><a href="ch-uart.html#cb202-2"></a>    UART_TypeDef* pBase</span>
+<span id="cb202-3"><a href="ch-uart.html#cb202-3"></a>    );</span></code></pre></div></li>
+<li><p>使用 <code>apUART_Check_TXFIFO_FULL</code> 查询TXFIFO是否已满。</p>
+<div class="sourceCode" id="cb203"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb203-1"><a href="ch-uart.html#cb203-1"></a>  <span class="dt">uint8_t</span> apUART_Check_TXFIFO_FULL(</span>
+<span id="cb203-2"><a href="ch-uart.html#cb203-2"></a>    UART_TypeDef* pBase</span>
+<span id="cb203-3"><a href="ch-uart.html#cb203-3"></a>    ); </span></code></pre></div></li>
+</ul>
+</div>
+<div id="发送数据" class="section level3 hasAnchor">
+<h3><span class="header-section-number">17.2.5</span> 发送数据<a href="ch-uart.html#发送数据" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>UART_SendData</code> 发送8bits数据。</p>
+<div class="sourceCode" id="cb204"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb204-1"><a href="ch-uart.html#cb204-1"></a><span class="dt">void</span> UART_SendData(</span>
+<span id="cb204-2"><a href="ch-uart.html#cb204-2"></a>  UART_TypeDef* pBase, </span>
+<span id="cb204-3"><a href="ch-uart.html#cb204-3"></a>  <span class="dt">uint8_t</span> Data</span>
+<span id="cb204-4"><a href="ch-uart.html#cb204-4"></a>  );</span></code></pre></div>
+</div>
+<div id="接收数据" class="section level3 hasAnchor">
+<h3><span class="header-section-number">17.2.6</span> 接收数据<a href="ch-uart.html#接收数据" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>UART_ReceData</code> 接收8bits数据。</p>
+<div class="sourceCode" id="cb205"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb205-1"><a href="ch-uart.html#cb205-1"></a><span class="dt">uint8_t</span> UART_ReceData(</span>
+<span id="cb205-2"><a href="ch-uart.html#cb205-2"></a>  UART_TypeDef* pBase</span>
+<span id="cb205-3"><a href="ch-uart.html#cb205-3"></a>  );</span></code></pre></div>
+</div>
+<div id="配置中断请求-3" class="section level3 hasAnchor">
+<h3><span class="header-section-number">17.2.7</span> 配置中断请求<a href="ch-uart.html#配置中断请求-3" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>apUART_Enable_TRANSMIT_INT</code> 使能发送中断状态。</p>
+<div class="sourceCode" id="cb206"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb206-1"><a href="ch-uart.html#cb206-1"></a><span class="dt">void</span> apUART_Enable_TRANSMIT_INT(</span>
+<span id="cb206-2"><a href="ch-uart.html#cb206-2"></a>  UART_TypeDef* pBase</span>
+<span id="cb206-3"><a href="ch-uart.html#cb206-3"></a>  );</span></code></pre></div>
+<p>使用 <code>apUART_Disable_TRANSMIT_INT</code> 禁用发送中断状态。</p>
+<div class="sourceCode" id="cb207"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb207-1"><a href="ch-uart.html#cb207-1"></a><span class="dt">void</span> apUART_Disable_TRANSMIT_INT(</span>
+<span id="cb207-2"><a href="ch-uart.html#cb207-2"></a>  UART_TypeDef* pBase</span>
+<span id="cb207-3"><a href="ch-uart.html#cb207-3"></a>  );</span></code></pre></div>
+<p>使用 <code>apUART_Enable_RECEIVE_INT</code> 使能接收中断状态。</p>
+<div class="sourceCode" id="cb208"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb208-1"><a href="ch-uart.html#cb208-1"></a><span class="dt">void</span> apUART_Enable_RECEIVE_INT(</span>
+<span id="cb208-2"><a href="ch-uart.html#cb208-2"></a>  UART_TypeDef* pBase</span>
+<span id="cb208-3"><a href="ch-uart.html#cb208-3"></a>  );</span></code></pre></div>
+<p>使用 <code>apUART_Disable_RECEIVE_INT</code> 禁用接收中断状态。</p>
+<div class="sourceCode" id="cb209"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb209-1"><a href="ch-uart.html#cb209-1"></a><span class="dt">void</span> apUART_Disable_RECEIVE_INT(</span>
+<span id="cb209-2"><a href="ch-uart.html#cb209-2"></a>  UART_TypeDef* pBase</span>
+<span id="cb209-3"><a href="ch-uart.html#cb209-3"></a>  );</span></code></pre></div>
+</div>
+<div id="处理中断状态-2" class="section level3 hasAnchor">
+<h3><span class="header-section-number">17.2.8</span> 处理中断状态<a href="ch-uart.html#处理中断状态-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>uint8_t apUART_Get_ITStatus(UART_TypeDef* pBase,uint8_t UART_IT);
+uint32_t apUART_Get_all_raw_int_stat(UART_TypeDef* pBase);</p>
+<p>void apUART_Clr_RECEIVE_INT(UART_TypeDef* pBase);
+void apUART_Clr_TX_INT(UART_TypeDef* pBase);
+void apUART_Clr_NonRx_INT(UART_TypeDef* pBase);</p>
+</div>
+<div id="uart初始化" class="section level3 hasAnchor">
+<h3><span class="header-section-number">17.2.9</span> UART初始化<a href="ch-uart.html#uart初始化" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>两个设备使用UART通讯时，必须先约定好传输速率和一些数据位。</p>
+<div class="sourceCode" id="cb210"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb210-1"><a href="ch-uart.html#cb210-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> UART_xStateStruct</span>
+<span id="cb210-2"><a href="ch-uart.html#cb210-2"></a>{</span>
+<span id="cb210-3"><a href="ch-uart.html#cb210-3"></a>    <span class="co">// Line Control Register, UARTLCR_H</span></span>
+<span id="cb210-4"><a href="ch-uart.html#cb210-4"></a>  UART_eWLEN      word_length;   <span class="co">// WLEN</span></span>
+<span id="cb210-5"><a href="ch-uart.html#cb210-5"></a>  UART_ePARITY    parity;        <span class="co">// PEN, EPS, SPS</span></span>
+<span id="cb210-6"><a href="ch-uart.html#cb210-6"></a>  <span class="dt">uint8_t</span>         fifo_enable;   <span class="co">// FEN</span></span>
+<span id="cb210-7"><a href="ch-uart.html#cb210-7"></a>  <span class="dt">uint8_t</span>         two_stop_bits; <span class="co">// STP2</span></span>
+<span id="cb210-8"><a href="ch-uart.html#cb210-8"></a>  <span class="co">// Control Register, UARTCR</span></span>
+<span id="cb210-9"><a href="ch-uart.html#cb210-9"></a>  <span class="dt">uint8_t</span>         receive_en;        <span class="co">// RXE</span></span>
+<span id="cb210-10"><a href="ch-uart.html#cb210-10"></a>  <span class="dt">uint8_t</span>         transmit_en;       <span class="co">// TXE</span></span>
+<span id="cb210-11"><a href="ch-uart.html#cb210-11"></a>  <span class="dt">uint8_t</span>         UART_en;           <span class="co">// UARTEN</span></span>
+<span id="cb210-12"><a href="ch-uart.html#cb210-12"></a>  <span class="dt">uint8_t</span>         cts_en;            <span class="co">//CTSEN</span></span>
+<span id="cb210-13"><a href="ch-uart.html#cb210-13"></a>  <span class="dt">uint8_t</span>         rts_en;            <span class="co">//RTSEN</span></span>
+<span id="cb210-14"><a href="ch-uart.html#cb210-14"></a>  <span class="co">// Interrupt FIFO Level Select Register, UARTIFLS</span></span>
+<span id="cb210-15"><a href="ch-uart.html#cb210-15"></a>  <span class="dt">uint8_t</span>         rxfifo_waterlevel; <span class="co">// RXIFLSEL</span></span>
+<span id="cb210-16"><a href="ch-uart.html#cb210-16"></a>  <span class="dt">uint8_t</span>         txfifo_waterlevel; <span class="co">// TXIFLSEL</span></span>
+<span id="cb210-17"><a href="ch-uart.html#cb210-17"></a>  <span class="co">//UART_eFIFO_WATERLEVEL    rxfifo_waterlevel; // RXIFLSEL</span></span>
+<span id="cb210-18"><a href="ch-uart.html#cb210-18"></a>  <span class="co">//UART_eFIFO_WATERLEVEL    txfifo_watchlevel; // TXIFLSEL</span></span>
+<span id="cb210-19"><a href="ch-uart.html#cb210-19"></a></span>
+<span id="cb210-20"><a href="ch-uart.html#cb210-20"></a>  <span class="co">// UART Clock Frequency</span></span>
+<span id="cb210-21"><a href="ch-uart.html#cb210-21"></a>  <span class="dt">uint32_t</span>        ClockFrequency;</span>
+<span id="cb210-22"><a href="ch-uart.html#cb210-22"></a>  <span class="dt">uint32_t</span>        BaudRate;</span>
+<span id="cb210-23"><a href="ch-uart.html#cb210-23"></a></span>
+<span id="cb210-24"><a href="ch-uart.html#cb210-24"></a>} UART_sStateStruct;</span></code></pre></div>
+<p>定义函数 <code>config_uart</code> ,</p>
+<div class="sourceCode" id="cb211"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb211-1"><a href="ch-uart.html#cb211-1"></a><span class="dt">void</span> config_uart(</span>
+<span id="cb211-2"><a href="ch-uart.html#cb211-2"></a>  <span class="dt">uint32_t</span> freq, </span>
+<span id="cb211-3"><a href="ch-uart.html#cb211-3"></a>  <span class="dt">uint32_t</span> baud</span>
+<span id="cb211-4"><a href="ch-uart.html#cb211-4"></a>  );</span></code></pre></div>
+<p>在函数中，对UART_sStateStruct的各项参数初始化，并调用 <code>apUART_Initialize</code> 对UART进行初始化。</p>
+<div class="sourceCode" id="cb212"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb212-1"><a href="ch-uart.html#cb212-1"></a><span class="dt">void</span> config_uart(<span class="dt">uint32_t</span> freq, <span class="dt">uint32_t</span> baud)</span>
+<span id="cb212-2"><a href="ch-uart.html#cb212-2"></a>{</span>
+<span id="cb212-3"><a href="ch-uart.html#cb212-3"></a>    UART_sStateStruct config;</span>
+<span id="cb212-4"><a href="ch-uart.html#cb212-4"></a></span>
+<span id="cb212-5"><a href="ch-uart.html#cb212-5"></a>    config.word_length       = UART_WLEN_8_BITS;</span>
+<span id="cb212-6"><a href="ch-uart.html#cb212-6"></a>    config.parity            = UART_PARITY_NOT_CHECK;</span>
+<span id="cb212-7"><a href="ch-uart.html#cb212-7"></a>    config.fifo_enable       = <span class="dv">1</span>;</span>
+<span id="cb212-8"><a href="ch-uart.html#cb212-8"></a>    config.two_stop_bits     = <span class="dv">0</span>;</span>
+<span id="cb212-9"><a href="ch-uart.html#cb212-9"></a>    config.receive_en        = <span class="dv">1</span>;</span>
+<span id="cb212-10"><a href="ch-uart.html#cb212-10"></a>    config.transmit_en       = <span class="dv">1</span>;</span>
+<span id="cb212-11"><a href="ch-uart.html#cb212-11"></a>    config.UART_en           = <span class="dv">1</span>;</span>
+<span id="cb212-12"><a href="ch-uart.html#cb212-12"></a>    config.cts_en            = <span class="dv">0</span>;</span>
+<span id="cb212-13"><a href="ch-uart.html#cb212-13"></a>    config.rts_en            = <span class="dv">0</span>;</span>
+<span id="cb212-14"><a href="ch-uart.html#cb212-14"></a>    config.rxfifo_waterlevel = <span class="dv">1</span>;</span>
+<span id="cb212-15"><a href="ch-uart.html#cb212-15"></a>    config.txfifo_waterlevel = <span class="dv">1</span>;</span>
+<span id="cb212-16"><a href="ch-uart.html#cb212-16"></a>    config.ClockFrequency    = freq;</span>
+<span id="cb212-17"><a href="ch-uart.html#cb212-17"></a>    config.BaudRate          = baud;</span>
+<span id="cb212-18"><a href="ch-uart.html#cb212-18"></a></span>
+<span id="cb212-19"><a href="ch-uart.html#cb212-19"></a>    apUART_Initialize(PRINT_PORT, &amp;config, <span class="dv">0</span>);</span>
+<span id="cb212-20"><a href="ch-uart.html#cb212-20"></a>}</span></code></pre></div>
+</div>
+<div id="发送数据-1" class="section level3 hasAnchor">
+<h3><span class="header-section-number">17.2.10</span> 发送数据<a href="ch-uart.html#发送数据-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>UART_SendData</code> 发送数据。</p>
+<div class="sourceCode" id="cb213"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb213-1"><a href="ch-uart.html#cb213-1"></a><span class="dt">void</span> UART_SendData(</span>
+<span id="cb213-2"><a href="ch-uart.html#cb213-2"></a>  UART_TypeDef* pBase, </span>
+<span id="cb213-3"><a href="ch-uart.html#cb213-3"></a>  <span class="dt">uint8_t</span> Data</span>
+<span id="cb213-4"><a href="ch-uart.html#cb213-4"></a>  );</span></code></pre></div>
+</div>
+<div id="接收数据-1" class="section level3 hasAnchor">
+<h3><span class="header-section-number">17.2.11</span> 接收数据<a href="ch-uart.html#接收数据-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>UART_ReceData</code> 接收数据。</p>
+<div class="sourceCode" id="cb214"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb214-1"><a href="ch-uart.html#cb214-1"></a><span class="dt">uint8_t</span> UART_ReceData(</span>
+<span id="cb214-2"><a href="ch-uart.html#cb214-2"></a>  UART_TypeDef* pBase</span>
+<span id="cb214-3"><a href="ch-uart.html#cb214-3"></a>  );</span></code></pre></div>
+</div>
+<div id="清空fifo" class="section level3 hasAnchor">
+<h3><span class="header-section-number">17.2.12</span> 清空FIFO<a href="ch-uart.html#清空fifo" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>uart_empty_fifo</code> 清空UART的FIFO。</p>
+<div class="sourceCode" id="cb215"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb215-1"><a href="ch-uart.html#cb215-1"></a><span class="dt">static</span> <span class="dt">void</span> uart_empty_fifo(</span>
+<span id="cb215-2"><a href="ch-uart.html#cb215-2"></a>  UART_TypeDef* pBase</span>
+<span id="cb215-3"><a href="ch-uart.html#cb215-3"></a>  );</span></code></pre></div>
+</div>
+<div id="使能fifo" class="section level3 hasAnchor">
+<h3><span class="header-section-number">17.2.13</span> 使能FIFO<a href="ch-uart.html#使能fifo" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>uart_enable_fifo</code> 使能UART的FIFO。</p>
+<div class="sourceCode" id="cb216"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb216-1"><a href="ch-uart.html#cb216-1"></a><span class="dt">static</span> <span class="dt">void</span> uart_enable_fifo(</span>
+<span id="cb216-2"><a href="ch-uart.html#cb216-2"></a>  UART_TypeDef* pBase</span>
+<span id="cb216-3"><a href="ch-uart.html#cb216-3"></a>  );</span></code></pre></div>
+</div>
+<div id="处理中断状态-3" class="section level3 hasAnchor">
+<h3><span class="header-section-number">17.2.14</span> 处理中断状态<a href="ch-uart.html#处理中断状态-3" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>用 <code>apUART_Get_ITStatus</code> 获取某个UART上的中断触发状态，返回非 0 值表示该 UART
+上产生了中断请求；用 <code>apUART_Get_all_raw_int_stat</code> 一次性获取所有 UART 的中断触发状态，
+第 <span class="math inline">\(n\)</span> 比特（第 0 比特为最低比特）对应 UART <span class="math inline">\(n\)</span> 上的中断触发状态。</p>
+<p>UART产生中断后，需要消除中断状态方可再次触发。用 <code>apUART_Clr_RECEIVE_INT</code> 消除某个 UART上接收中断的状态，
+用 <code>apUART_Clr_TX_INT</code> 消除某个 UART上发送中断的状态。用 <code>apUART_Clr_NonRx_INT</code> 消除某个 UART上除接收以外的中断状态。</p>
+</div>
+<div id="dma传输模式使能" class="section level3 hasAnchor">
+<h3><span class="header-section-number">17.2.15</span> DMA传输模式使能<a href="ch-uart.html#dma传输模式使能" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>DMA向CPU发出总线请求，CPU将总线交给DMA之后，由DMA控制数据的收发工作。</p>
+<p>使用 <code>UART_DmaEnable</code>使能DMA工作模式。</p>
+<div class="sourceCode" id="cb217"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb217-1"><a href="ch-uart.html#cb217-1"></a><span class="dt">void</span> UART_DmaEnable(</span>
+<span id="cb217-2"><a href="ch-uart.html#cb217-2"></a>  UART_TypeDef *pBase, </span>
+<span id="cb217-3"><a href="ch-uart.html#cb217-3"></a>  <span class="dt">uint8_t</span> tx_enable, </span>
+<span id="cb217-4"><a href="ch-uart.html#cb217-4"></a>  <span class="dt">uint8_t</span> rx_enable, </span>
+<span id="cb217-5"><a href="ch-uart.html#cb217-5"></a>  <span class="dt">uint8_t</span> dma_on_err</span>
+<span id="cb217-6"><a href="ch-uart.html#cb217-6"></a>  );</span></code></pre></div>
+
 
 </div>
 </div>
@@ -486,8 +612,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="ch-pwm.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="spi功能概述.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="ch-timer.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ch-watchdog.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

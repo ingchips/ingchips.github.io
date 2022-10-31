@@ -1266,11 +1266,110 @@ B = DZONE\_TH \textless= cnt \textless{} HIGH\_TH);
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{ch-sysctrl}{%
-\chapter{系统控制（SYSCTRL）}\label{ch-sysctrl}}
+\hypertarget{rtc}{%
+\chapter{RTC}\label{rtc}}
 
 \hypertarget{ux529fux80fdux6982ux8ff0-2}{%
 \section{功能概述}\label{ux529fux80fdux6982ux8ff0-2}}
+
+实时时钟（\texttt{RTC}）是一个独立的48位定时器，相较于普通\texttt{TIMER}，\texttt{RTC}精度低，同时功耗也会降低，适用于功耗敏感、对于精度要求不高的应用场景。
+
+\hypertarget{ux63a5ux53e3ux8bf4ux660e}{%
+\section{接口说明}\label{ux63a5ux53e3ux8bf4ux660e}}
+
+\hypertarget{rtcux4f7fux80fdux7981ux6b62}{%
+\subsection{RTC使能/禁止}\label{rtcux4f7fux80fdux7981ux6b62}}
+
+使用\texttt{RTC\_Enable}使能或者禁止\texttt{RTC}。
+
+\begin{verbatim}
+void RTC_Enable(const uint8_t flag);
+\end{verbatim}
+
+函数根据\texttt{flag}的值来执行操作:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{flag}为0时，禁止\texttt{RTC} ；
+\item
+  \texttt{flag}不为0时，使能\texttt{RTC}。
+\end{itemize}
+
+\texttt{RTC} 使能后，只要不进行禁能，就会根据设置的初始计数值进行递减，计数器递减为0后发生中断，这时只要设置新的计数值，RTC就会马上按照新的计数值进行计时。
+
+\hypertarget{ux83b7ux53d6rtcux5f53ux524dux503c}{%
+\subsection{获取RTC当前值}\label{ux83b7ux53d6rtcux5f53ux524dux503c}}
+
+可以使用\texttt{RTC\_Current} 读取\texttt{RTC}低32位的当前计数值，用\texttt{RTC\_CurrentFull} 读取全部48位的当前计数值。
+
+\begin{verbatim}
+uint32_t RTC_Current(void);
+uint64_t RTC_CurrentFull(void);
+\end{verbatim}
+
+\hypertarget{ux8bbeux7f6eux4e2dux65adux7684ux8ba1ux6570ux503c}{%
+\subsection{设置中断的计数值}\label{ux8bbeux7f6eux4e2dux65adux7684ux8ba1ux6570ux503c}}
+
+通过\texttt{RTC\_SetNextIntOffset}设置\texttt{RTC}中断的计数值。
+
+\begin{verbatim}
+void RTC_SetNextIntOffset(const uint32_t offset);
+\end{verbatim}
+
+注意\texttt{RTC}使用的时钟为\texttt{32.768K}，因此计数值设置为\texttt{32768}时，\texttt{RTC}的中断时间恰好为1s，可以据此设置中断时间。
+
+\hypertarget{ux6e05rtcux4e2dux65ad}{%
+\subsection{清RTC中断}\label{ux6e05rtcux4e2dux65ad}}
+
+使用\texttt{RTC\_ClearInt}来清除当前的\texttt{RTC} 中断状态，以备下一次使用。
+
+\begin{verbatim}
+void RTC_ClearInt(void);
+\end{verbatim}
+
+\hypertarget{rtcux4e2dux65adux4f7fux7528ux6d41ux7a0b}{%
+\section{RTC中断使用流程}\label{rtcux4e2dux65adux4f7fux7528ux6d41ux7a0b}}
+
+\begin{itemize}
+\item
+  首先，定义一个中断处理函数\texttt{rtc\_timer\_isr} (名字可以根据需要自己定义）。
+
+\begin{verbatim}
+uint32_t rtc_timer_isr(void *user_data)
+{
+    RTC_ClearInt();//清中断状态
+    RTC_SetNextIntOffset(32768 * 10);//设置中断计数值
+    //这里可以添加用户自己的代码
+    return 0;
+}
+\end{verbatim}
+
+  可以通过\texttt{user\_data}给中断传递参数，这通常作为一个预留功能，不常用到。
+\item
+  然后，通过\texttt{platform\_set\_irq\_callback} 注册中断：
+
+\begin{verbatim}
+platform_set_irq_callback(PLATFORM_CB_IRQ_RTC, rtc_timer_isr, NULL);
+\end{verbatim}
+\item
+  接下来，设置中断时间并使能\texttt{RTC} ，时间到后，中断会触发。
+
+\begin{verbatim}
+RTC_SetNextIntOffset(32768 * 10);
+RTC_Enable(RTC_ENABLED);
+\end{verbatim}
+\item
+  这里注意，在使用\texttt{RTC}时，最好先通过\texttt{RTC\_SetNextIntOffset}设置好计数值，再进行使能，这样RTC此次计数时间处于可控状态。
+\item
+  在RTC计数过程中，随时都可以使用\texttt{RTC\_SetNextIntOffset} 进行计数值的设置，设置完成后，新值会马上覆盖旧值，\texttt{RTC} 会按照新值开始进行计时。
+\end{itemize}
+
+\hypertarget{ch-sysctrl}{%
+\chapter{系统控制（SYSCTRL）}\label{ch-sysctrl}}
+
+\hypertarget{ux529fux80fdux6982ux8ff0-3}{%
+\section{功能概述}\label{ux529fux80fdux6982ux8ff0-3}}
 
 SYSCTRL 负责管理、控制各种片上外设，主要功能有：
 
@@ -1336,7 +1435,7 @@ SYSCTRL 为外设定义了几种不同的标识。最常见的几种标识为：
   时钟分布图
 \end{enumerate}
 
-TODO: image is missing
+\includegraphics{images/time_structure.png}
 
 \hypertarget{ux4f7fux7528ux8bf4ux660e-2}{%
 \section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-2}}
@@ -1384,7 +1483,7 @@ TODO: image is missing
 \item
   开启I2C时钟
 
-  使用 \texttt{SYSCTRL\_SelectI2sClk} 为 I2S 配置时钟：
+  使用 \texttt{SYSCTRL\_SelectI2sClk} 为 I2C 配置时钟：
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1404,6 +1503,246 @@ TODO: image is missing
 \end{Highlighting}
 \end{Shaded}
 \end{enumerate}
+
+\hypertarget{timerwatchdog}{%
+\chapter{Timer\&Watchdog}\label{timerwatchdog}}
+
+\hypertarget{ux529fux80fdux6982ux8ff0-4}{%
+\section{功能概述}\label{ux529fux80fdux6982ux8ff0-4}}
+
+ING918xx系列有三个定时器：\texttt{Timer0}、\texttt{Timer1}和\texttt{Timer2}。三个定时器功能基本相同，可以实现定时、比较等功能。唯一的区别在于，\texttt{Timer0} 可以用作看门狗。
+
+\hypertarget{ux8ba1ux65f6ux5668ux529fux80fd}{%
+\subsection{计时器功能}\label{ux8ba1ux65f6ux5668ux529fux80fd}}
+
+用作计时器时，主要实现了以下功能：
+
+\begin{itemize}
+\item
+  用作32位递增计数器或32位比较器。
+\item
+  可以设置为普通模式、一次性模式和自由模式：
+
+  \begin{itemize}
+  \item
+    普通模式（\texttt{TMR\_CTL\_OP\_MODE\_WRAPPING}）------计数器以恒定间隔产生中断，在达到比较计数器中的比较值后重置为0，并继续计数，这是默认采用的模式。
+  \item
+    一次性模式（\texttt{TMR\_CTL\_OP\_MODE\_ONESHOT}）------当计数器增长到等于比较器的值时，定时器会禁用，直到下次主动启用它。
+  \item
+    自由模式（\texttt{TMR\_CTL\_OP\_MODE\_FREERUN}）------计数器达到定时器中的值时不会停止，而是会一直递加到最大值（\texttt{0xffffffff})，之后重置为零，并继续计数。
+  \end{itemize}
+\item
+  可以根据设置产生中断。
+\end{itemize}
+
+\hypertarget{watchdogux7684ux529fux80fd}{%
+\subsection{WATCHDOG的功能}\label{watchdogux7684ux529fux80fd}}
+
+\texttt{Timer0}可以用作看门狗，设定一定的延时时间，在此时间内，如果程序没有主动喂狗，则会发生重启。
+
+看门狗可以在程序跑飞时，让程序复位。
+
+\hypertarget{timerux4f7fux7528ux8bf4ux660e}{%
+\section{TIMER使用说明}\label{timerux4f7fux7528ux8bf4ux660e}}
+
+\hypertarget{ux83b7ux53d6timerux8ba1ux6570ux503c}{%
+\subsection{获取Timer计数值}\label{ux83b7ux53d6timerux8ba1ux6570ux503c}}
+
+可以通过\texttt{TMR\_GetCNT} 获取计数器的当前计数值。
+
+\begin{verbatim}
+uint32_t TMR_GetCNT(TMR_TypeDef *pTMR);
+\end{verbatim}
+
+\texttt{pTMR} ：可以设置为\texttt{APB\_TMR0}、\texttt{APB\_TMR1}、\texttt{APB\_TMR2},对应\texttt{Timer0}、\texttt{Timer1}和\texttt{Timer2}。
+
+注意计数器只有使能后，计数值才会随着程序的运行递加，如果计数器未使能，计数值是不变的。
+
+\hypertarget{timerux8ba1ux6570ux503cux6e05ux96f6}{%
+\subsection{TIMER计数值清零}\label{timerux8ba1ux6570ux503cux6e05ux96f6}}
+
+可以通过\texttt{TMR\_Reload} 将计数器的当前计数值清零。
+
+\begin{verbatim}
+void TMR_Reload(TMR_TypeDef *pTMR);
+\end{verbatim}
+
+\hypertarget{ux8bbeux7f6etimerux7684ux6bd4ux8f83ux503c}{%
+\subsection{设置TIMER的比较值}\label{ux8bbeux7f6etimerux7684ux6bd4ux8f83ux503c}}
+
+可以通过\texttt{TMR\_SetCMP} 设置计数器的比较值。
+
+\begin{verbatim}
+void TMR_SetCMP(TMR_TypeDef *pTMR, uint32_t value);
+\end{verbatim}
+
+\texttt{pTMR} ：选择要设置的计数器，\texttt{APB\_TMR0}、\texttt{APB\_TMR1}或\texttt{APB\_TMR2}；
+
+\texttt{value} ：设置的比较值。
+
+\hypertarget{ux83b7ux53d6timerux7684ux6bd4ux8f83ux503c}{%
+\subsection{获取TIMER的比较值}\label{ux83b7ux53d6timerux7684ux6bd4ux8f83ux503c}}
+
+使用\texttt{TMR\_GetCMP} 获取计数器的比较值；
+
+\begin{verbatim}
+uint32_t TMR_GetCMP(TMR_TypeDef *pTMR);
+\end{verbatim}
+
+\hypertarget{ux4f7fux80fdtimer}{%
+\subsection{使能TIMER}\label{ux4f7fux80fdtimer}}
+
+通过\texttt{TMR\_Enable} 使能计数器。
+
+\begin{verbatim}
+void TMR_Enable(TMR_TypeDef *pTMR);
+\end{verbatim}
+
+计数器使能之后，计数值才会随着时钟的运行递增。
+
+\hypertarget{ux7981ux80fdtimer}{%
+\subsection{禁能TIMER}\label{ux7981ux80fdtimer}}
+
+通过\texttt{TMR\_Disable} 禁能计数器。
+
+\begin{verbatim}
+void TMR_Disable(TMR_TypeDef *pTMR);
+\end{verbatim}
+
+\hypertarget{ux8bbeux7f6etimerux7684ux5de5ux4f5cux6a21ux5f0f}{%
+\subsection{设置TIMER的工作模式}\label{ux8bbeux7f6etimerux7684ux5de5ux4f5cux6a21ux5f0f}}
+
+通过\texttt{TMR\_SetOpMode} 设置计数器的工作模式。
+
+\begin{verbatim}
+void TMR_SetOpMode(TMR_TypeDef *pTMR, uint8_t mode);
+\end{verbatim}
+
+三种模式的定义如下：
+
+\begin{verbatim}
+#define TMR_CTL_OP_MODE_WRAPPING            0
+#define TMR_CTL_OP_MODE_ONESHOT             1
+#define TMR_CTL_OP_MODE_FREERUN             2
+\end{verbatim}
+
+具体说明见\protect\hyperlink{function}{上文}。
+
+\hypertarget{ux4f7fux80fdtimerux4e2dux65ad}{%
+\subsection{使能TIMER中断}\label{ux4f7fux80fdtimerux4e2dux65ad}}
+
+通过\texttt{TMR\_IntEnable} 使能中断，使能中断后计时器计数值达到比较值后，会触发中断。
+
+\begin{verbatim}
+void TMR_IntEnable(TMR_TypeDef *pTMR);
+\end{verbatim}
+
+\hypertarget{ux7981ux80fdtimerux4e2dux65ad}{%
+\subsection{禁能TIMER中断}\label{ux7981ux80fdtimerux4e2dux65ad}}
+
+通过\texttt{TMR\_IntDisable}禁能计数器的中断。
+
+\begin{verbatim}
+void TMR_IntDisable(TMR_TypeDef *pTMR);
+\end{verbatim}
+
+\hypertarget{ux6e05ux9664timerux4e2dux65adux8bf7ux6c42}{%
+\subsection{清除TIMER中断请求}\label{ux6e05ux9664timerux4e2dux65adux8bf7ux6c42}}
+
+通过\texttt{TMR\_IntDisable} 清除计数器的中断请求。注意，进入中断处理函数之后，要第一时间清除中断请求，不然可能会重复触发中断。
+
+\begin{verbatim}
+void TMR_IntDisable(TMR_TypeDef *pTMR);
+\end{verbatim}
+
+\hypertarget{ux83b7ux5f97timerux7684ux4e2dux65adux72b6ux6001}{%
+\subsection{获得TIMER的中断状态}\label{ux83b7ux5f97timerux7684ux4e2dux65adux72b6ux6001}}
+
+通过\texttt{TMR\_IntHappened} 来获取计数器的中断状态。
+
+\begin{verbatim}
+uint8_t TMR_IntHappened(TMR_TypeDef *pTMR);
+\end{verbatim}
+
+\hypertarget{timerux4e2dux65adux4f7fux7528ux6d41ux7a0b}{%
+\section{TIMER中断使用流程}\label{timerux4e2dux65adux4f7fux7528ux6d41ux7a0b}}
+
+\begin{itemize}
+\item
+  配置对应\texttt{Timer}的时钟，下面的代码中配置了三个\texttt{Timer}的时钟，使用时可以根据自己使用的\texttt{Timer}进行配置。
+
+\begin{verbatim}
+SYSCTRL_ClearClkGateMulti( (1 << SYSCTRL_ClkGate_APB_TMR0)
+
+                                   | (1 << SYSCTRL_ClkGate_APB_TMR1)
+
+                         | (1 << SYSCTRL_ClkGate_APB_TMR2));
+\end{verbatim}
+\item
+  对\texttt{Timer}进行初始化，以\texttt{Timer1}为例。
+
+\begin{verbatim}
+    TMR_SetCMP(APB_TMR1, TMR_CLK_FREQ);
+    TMR_SetOpMode(APB_TMR1, TMR_CTL_OP_MODE_WRAPPING);
+    TMR_Reload(APB_TMR1);
+    TMR_IntEnable(APB_TMR1);
+\end{verbatim}
+
+  上面四条语句分别设置了定时器的比较值，设置工作模式，将定时器的当前计数值清零，并使能中断。
+\item
+  注册中断处理函数。
+
+\begin{verbatim}
+platform_set_irq_callback(PLATFORM_CB_IRQ_TIMER1, hr_timer1_isr, NULL);
+\end{verbatim}
+
+  \texttt{hr\_timer1\_isr}为\texttt{Timer1}的中断处理函数。
+\item
+  编写中断处理函数。
+
+\begin{verbatim}
+uint32_t hr_timer1_isr(void *user_data)
+{
+    TMR_IntClr(APB_TMR1);
+    //user code
+    return 0;
+}
+\end{verbatim}
+
+  需要注意，中断处理函数中，要优先清理对应的中断请求。
+\end{itemize}
+
+\hypertarget{watchdogux4f7fux7528ux8bf4ux660e}{%
+\section{Watchdog使用说明}\label{watchdogux4f7fux7528ux8bf4ux660e}}
+
+看门狗（\texttt{Watchdog} )与\texttt{Timer0} 共用一套计数器，看门狗没有使能时，\texttt{Timer0} 与\texttt{Timer1} 、\texttt{Timer2}的使用没有区别，当看门狗使能时，\texttt{Timer0}就不再起作用。
+
+\hypertarget{ux4f7fux80fdux770bux95e8ux72d7}{%
+\subsection{使能看门狗}\label{ux4f7fux80fdux770bux95e8ux72d7}}
+
+通过\texttt{TMR\_WatchDogEnable}使能看门狗。
+
+\begin{verbatim}
+void TMR_WatchDogEnable(uint32_t timeout);
+\end{verbatim}
+
+\texttt{timeout}：设置看门狗的超时时间。
+
+\hypertarget{ux505cux7528ux770bux95e8ux72d7}{%
+\subsection{停用看门狗}\label{ux505cux7528ux770bux95e8ux72d7}}
+
+通过\texttt{MR\_WatchDogDisable}禁能看门狗。
+
+\begin{verbatim}
+void TMR_WatchDogDisable(void);
+\end{verbatim}
+
+\hypertarget{ux5582ux72d7}{%
+\subsection{喂狗}\label{ux5582ux72d7}}
+
+通过\texttt{TMR\_WatchDogRestart} 定期喂狗，如果没有在看门狗的超时之前喂狗，程序会发生重启。
+
+这种情况下发生的重启仅能通过硬件重置（\texttt{POR}或者\texttt{RESETN})清除，在其他复位条件下不会清除，可以帮助启动程序检查最近一次复位发生的原因。
 
   \bibliography{book.bib,packages.bib}
 

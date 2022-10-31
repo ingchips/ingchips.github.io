@@ -355,6 +355,7 @@ ADC & 模数转换器（Analog-to-Digital Converter）\tabularnewline
 DMA & 直接存储器访问（Direct Memory Access）\tabularnewline
 EFUSE & 电编程熔丝（Electronic Fuses）\tabularnewline
 FIFO & 先进先出队列（First In First Out）\tabularnewline
+FOTA & 固件空中升级（Firmware Over-The-Air）\tabularnewline
 GPIO & 通用输入输出（General-Purpose Input/Output）\tabularnewline
 I2C & 集成电路间总线（Inter-Integrated Circuit）\tabularnewline
 I2S & 集成电路音频总线（Inter-IC Sound）\tabularnewline
@@ -6502,6 +6503,128 @@ DMA向CPU发出总线请求，CPU将总线交给DMA之后，由DMA控制数据�
 \DataTypeTok{void}\NormalTok{ TMR_WatchDogDisable(}\DataTypeTok{void}\NormalTok{);}
 \end{Highlighting}
 \end{Shaded}
+
+\hypertarget{ch-eflash}{%
+\chapter{内置 Flash（EFlash）}\label{ch-eflash}}
+
+\hypertarget{ux529fux80fdux6982ux8ff0-8}{%
+\section{功能概述}\label{ux529fux80fdux6982ux8ff0-8}}
+
+芯片内置一定容量的 Flash，可编程擦写。擦除时以扇区（sector）为单位进行，
+写入时以 32bit 为单位。
+
+\hypertarget{ux4f7fux7528ux8bf4ux660e-9}{%
+\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-9}}
+
+\hypertarget{ux64e6ux9664ux5e76ux5199ux5165ux65b0ux6570ux636e}{%
+\subsection{擦除并写入新数据}\label{ux64e6ux9664ux5e76ux5199ux5165ux65b0ux6570ux636e}}
+
+通过 \texttt{program\_flash} 擦除并写入一段数据。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{int}\NormalTok{ program_flash(}
+    \CommentTok{// 待写入的地址}
+    \DataTypeTok{const} \DataTypeTok{uint32_t}\NormalTok{ dest_addr,}
+    \CommentTok{// 数据源的地址}
+    \DataTypeTok{const} \DataTypeTok{uint8_t}\NormalTok{ *buffer,}
+    \CommentTok{// 数据长度（以字节为单位，必须是 4 的倍数）}
+    \DataTypeTok{uint32_t}\NormalTok{ size);}
+\end{Highlighting}
+\end{Shaded}
+
+\texttt{dest\_addr} 为统一编址后的地址，而非 Flash 内部从 0 开始的地址。\texttt{dest\_addr}
+必须对应于某个扇区的起始地址。数据源不可位于 Flash 内。
+
+\texttt{program\_flash} 将根据 \texttt{size} 自动擦除一个或多个扇区并写入数据。
+
+本函数如果成功，则返回 0，否则返回非 0。
+
+\hypertarget{ux4e0dux64e6ux9664ux76f4ux63a5ux5199ux5165ux6570ux636e}{%
+\subsection{不擦除直接写入数据}\label{ux4e0dux64e6ux9664ux76f4ux63a5ux5199ux5165ux6570ux636e}}
+
+通过 \texttt{write\_flash} 不擦除直接写入数据。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{int}\NormalTok{ write_flash(}
+    \CommentTok{// 待写入的地址}
+    \DataTypeTok{const} \DataTypeTok{uint32_t}\NormalTok{ dest_addr,}
+    \CommentTok{// 数据源的地址}
+    \DataTypeTok{const} \DataTypeTok{uint8_t}\NormalTok{ *buffer,}
+    \CommentTok{// 数据长度（以字节为单位，必须是 4 的倍数）}
+    \DataTypeTok{uint32_t}\NormalTok{ size);}
+\end{Highlighting}
+\end{Shaded}
+
+\texttt{dest\_addr} 为统一编址后的地址，必须 32bit 对齐。\texttt{write\_data} 不擦除 Flash，而是直接写入。
+数据源不可位于 Flash 内。如果对应的 Flash 空间未被擦除，将无法写入。
+
+本函数如果成功，则返回 0，否则返回非 0。
+
+\hypertarget{ux5355ux72ecux64e6ux9664}{%
+\subsection{单独擦除}\label{ux5355ux72ecux64e6ux9664}}
+
+通过 \texttt{erase\_flash\_sector} 擦除一个指定的扇区。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{int}\NormalTok{ erase_flash_sector(}
+    \CommentTok{// 待擦除的地址}
+    \DataTypeTok{const} \DataTypeTok{uint32_t}\NormalTok{ addr);}
+\end{Highlighting}
+\end{Shaded}
+
+\texttt{addr} 必须对应于某个扇区的起始地址。本函数如果成功，则返回 0，否则返回非 0。
+
+\hypertarget{flash-ux6570ux636eux5347ux7ea7}{%
+\subsection{Flash 数据升级}\label{flash-ux6570ux636eux5347ux7ea7}}
+
+通过 \texttt{flash\_do\_update} 可以升级 Flash 里的数据。这个函数可用于 FOTA 升级。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{int}\NormalTok{ flash_do_update(}
+    \CommentTok{// 数据块数目}
+    \DataTypeTok{const} \DataTypeTok{int}\NormalTok{ block_num,}
+    \CommentTok{// 每个数据块的信息}
+    \DataTypeTok{const}\NormalTok{ fota_update_block_t *blocks,}
+    \CommentTok{// 用于缓存一个扇区的内存}
+    \DataTypeTok{uint8_t}\NormalTok{ *ram_buffer);}
+\end{Highlighting}
+\end{Shaded}
+
+每个数据块的定为为：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{typedef} \KeywordTok{struct}\NormalTok{ fota_update_block}
+\NormalTok{\{}
+    \DataTypeTok{uint32_t}\NormalTok{ src;}
+    \DataTypeTok{uint32_t}\NormalTok{ dest;}
+    \DataTypeTok{uint32_t}\NormalTok{ size;}
+\NormalTok{\} fota_update_block_t;}
+\end{Highlighting}
+\end{Shaded}
+
+这个函数的行为大致如下：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flash_do_update() \{}
+    \ControlFlowTok{for}\NormalTok{ (block in blocks) \{}
+\NormalTok{        flash_copy(block.dest,}
+\NormalTok{                   block.src,}
+\NormalTok{                   block.size);}
+\NormalTok{    \}}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+如前所述，\texttt{program\_flash} 的数据源不能位于 Flash，所以 \texttt{flash\_copy} 需要把各扇区逐个读入
+\texttt{ram\_buffer}，然后使用 \texttt{program\_flash} 擦除、写入。
+
+这个函数如果成功，将自动重启系统，否则返回非 0。
 
   \bibliography{book.bib,packages.bib}
 

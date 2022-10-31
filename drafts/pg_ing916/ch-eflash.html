@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>2 概览 | ING916XX 系列芯片外设开发者手册</title>
+  <title>19 内置 Flash（EFlash） | ING916XX 系列芯片外设开发者手册</title>
   <meta name="description" content="ING916XX 系列芯片开发者手册." />
   <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="2 概览 | ING916XX 系列芯片外设开发者手册" />
+  <meta property="og:title" content="19 内置 Flash（EFlash） | ING916XX 系列芯片外设开发者手册" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="ING916XX 系列芯片开发者手册." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="2 概览 | ING916XX 系列芯片外设开发者手册" />
+  <meta name="twitter:title" content="19 内置 Flash（EFlash） | ING916XX 系列芯片外设开发者手册" />
   
   <meta name="twitter:description" content="ING916XX 系列芯片开发者手册." />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="index.html"/>
-<link rel="next" href="ch-dma.html"/>
+<link rel="prev" href="ch-watchdog.html"/>
+
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -401,129 +401,102 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="ch-overview" class="section level1 hasAnchor">
-<h1><span class="header-section-number">2</span> 概览<a href="ch-overview.html#ch-overview" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p>欢迎使用 <em>INGCHIPS</em> 918xx/916xx 软件开发工具包 （SDK）.</p>
-<p>ING916XX 系列芯片支持蓝牙 5.3 规范，内置高性能 32bit RISC MCU（支持 DSP 和 FPU）、Flash、低功耗 PMU，
-以及丰富的外设、高性能低功耗 BLE RF 收发机。BLE 发射功率。</p>
-<p>本文介绍 SoC 外设及其开发方法。每个章节介绍一种外设，各种外设与芯片数据手册之外设一一对应，
-基于 API 的兼容性、避免误解等因素，存在以下例外：</p>
-<ul>
-<li>PINCTRL 对应于数据手册之 IOMUX</li>
-<li>PCAP 对应于数据手册之 PCM</li>
-<li>SYSCTRL 是一个“虚拟”外设，负责管理各种 SoC 功能，组合了几种相关的硬件模块</li>
-</ul>
-<p>SDK 外设驱动的源代码开放，其中包含很多常数，而且几乎没有注释 —— 这是有意为之，开发者只需要关注头文件，而不要尝试修改源代码。</p>
-<div id="缩略语及术语" class="section level2 hasAnchor">
-<h2><span class="header-section-number">2.1</span> 缩略语及术语<a href="ch-overview.html#缩略语及术语" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<table>
-<caption><span id="tab:ch0-abbreviations">表 2.1: </span> 缩略语</caption>
-<thead>
-<tr class="header">
-<th align="center">缩略语</th>
-<th align="left">说明</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">ADC</td>
-<td align="left">模数转换器（Analog-to-Digital Converter）</td>
-</tr>
-<tr class="even">
-<td align="center">DMA</td>
-<td align="left">直接存储器访问（Direct Memory Access）</td>
-</tr>
-<tr class="odd">
-<td align="center">EFUSE</td>
-<td align="left">电编程熔丝（Electronic Fuses）</td>
-</tr>
-<tr class="even">
-<td align="center">FIFO</td>
-<td align="left">先进先出队列（First In First Out）</td>
-</tr>
-<tr class="odd">
-<td align="center">FOTA</td>
-<td align="left">固件空中升级（Firmware Over-The-Air）</td>
-</tr>
-<tr class="even">
-<td align="center">GPIO</td>
-<td align="left">通用输入输出（General-Purpose Input/Output）</td>
-</tr>
-<tr class="odd">
-<td align="center">I2C</td>
-<td align="left">集成电路间总线（Inter-Integrated Circuit）</td>
-</tr>
-<tr class="even">
-<td align="center">I2S</td>
-<td align="left">集成电路音频总线（Inter-IC Sound）</td>
-</tr>
-<tr class="odd">
-<td align="center">IR</td>
-<td align="left">红外线（Infrared）</td>
-</tr>
-<tr class="even">
-<td align="center">PCAP</td>
-<td align="left">脉冲捕捉（Pulse CAPture）</td>
-</tr>
-<tr class="odd">
-<td align="center">PDM</td>
-<td align="left">脉冲密度调制（Pulse Density Modulation）</td>
-</tr>
-<tr class="even">
-<td align="center">PTE</td>
-<td align="left">外设触发引擎（Peripheral Trigger Engine）</td>
-</tr>
-<tr class="odd">
-<td align="center">PWM</td>
-<td align="left">脉宽调制信号（Pulse Width Modulation）</td>
-</tr>
-<tr class="even">
-<td align="center">QDEC</td>
-<td align="left">正交解码器（Quadrature Decoder）</td>
-</tr>
-<tr class="odd">
-<td align="center">RTC</td>
-<td align="left">实时时钟（Real-time Clock）</td>
-</tr>
-<tr class="even">
-<td align="center">SPI</td>
-<td align="left">串行外设接口（Serial Peripheral Interface）</td>
-</tr>
-<tr class="odd">
-<td align="center">UART</td>
-<td align="left">通用异步收发器（Universal Asynchronous Receiver/Transmitter）</td>
-</tr>
-<tr class="even">
-<td align="center">USB</td>
-<td align="left">通用串行总线（Universal Serial Bus）</td>
-</tr>
-</tbody>
-</table>
+<div id="ch-eflash" class="section level1 hasAnchor">
+<h1><span class="header-section-number">19</span> 内置 Flash（EFlash）<a href="ch-eflash.html#ch-eflash" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="功能概述-8" class="section level2 hasAnchor">
+<h2><span class="header-section-number">19.1</span> 功能概述<a href="ch-eflash.html#功能概述-8" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>芯片内置一定容量的 Flash，可编程擦写。擦除时以扇区（sector）为单位进行，
+写入时以 32bit 为单位。</p>
 </div>
-<div id="参考文档" class="section level2 hasAnchor">
-<h2><span class="header-section-number">2.2</span> 参考文档<a href="ch-overview.html#参考文档" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<ol style="list-style-type: decimal">
-<li>Bluetooth SIG<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></li>
-<li>ING916XX 系列芯片数据手册</li>
-</ol>
-
-
+<div id="使用说明-9" class="section level2 hasAnchor">
+<h2><span class="header-section-number">19.2</span> 使用说明<a href="ch-eflash.html#使用说明-9" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="擦除并写入新数据" class="section level3 hasAnchor">
+<h3><span class="header-section-number">19.2.1</span> 擦除并写入新数据<a href="ch-eflash.html#擦除并写入新数据" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>通过 <code>program_flash</code> 擦除并写入一段数据。</p>
+<div class="sourceCode" id="cb223"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb223-1"><a href="ch-eflash.html#cb223-1"></a><span class="dt">int</span> program_flash(</span>
+<span id="cb223-2"><a href="ch-eflash.html#cb223-2"></a>    <span class="co">// 待写入的地址</span></span>
+<span id="cb223-3"><a href="ch-eflash.html#cb223-3"></a>    <span class="dt">const</span> <span class="dt">uint32_t</span> dest_addr,</span>
+<span id="cb223-4"><a href="ch-eflash.html#cb223-4"></a>    <span class="co">// 数据源的地址</span></span>
+<span id="cb223-5"><a href="ch-eflash.html#cb223-5"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> *buffer,</span>
+<span id="cb223-6"><a href="ch-eflash.html#cb223-6"></a>    <span class="co">// 数据长度（以字节为单位，必须是 4 的倍数）</span></span>
+<span id="cb223-7"><a href="ch-eflash.html#cb223-7"></a>    <span class="dt">uint32_t</span> size);</span></code></pre></div>
+<p><code>dest_addr</code> 为统一编址后的地址，而非 Flash 内部从 0 开始的地址。<code>dest_addr</code>
+必须对应于某个扇区的起始地址。数据源不可位于 Flash 内。</p>
+<p><code>program_flash</code> 将根据 <code>size</code> 自动擦除一个或多个扇区并写入数据。</p>
+<p>本函数如果成功，则返回 0，否则返回非 0。</p>
+</div>
+<div id="不擦除直接写入数据" class="section level3 hasAnchor">
+<h3><span class="header-section-number">19.2.2</span> 不擦除直接写入数据<a href="ch-eflash.html#不擦除直接写入数据" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>通过 <code>write_flash</code> 不擦除直接写入数据。</p>
+<div class="sourceCode" id="cb224"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb224-1"><a href="ch-eflash.html#cb224-1"></a><span class="dt">int</span> write_flash(</span>
+<span id="cb224-2"><a href="ch-eflash.html#cb224-2"></a>    <span class="co">// 待写入的地址</span></span>
+<span id="cb224-3"><a href="ch-eflash.html#cb224-3"></a>    <span class="dt">const</span> <span class="dt">uint32_t</span> dest_addr,</span>
+<span id="cb224-4"><a href="ch-eflash.html#cb224-4"></a>    <span class="co">// 数据源的地址</span></span>
+<span id="cb224-5"><a href="ch-eflash.html#cb224-5"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> *buffer,</span>
+<span id="cb224-6"><a href="ch-eflash.html#cb224-6"></a>    <span class="co">// 数据长度（以字节为单位，必须是 4 的倍数）</span></span>
+<span id="cb224-7"><a href="ch-eflash.html#cb224-7"></a>    <span class="dt">uint32_t</span> size);</span></code></pre></div>
+<p><code>dest_addr</code> 为统一编址后的地址，必须 32bit 对齐。<code>write_data</code> 不擦除 Flash，而是直接写入。
+数据源不可位于 Flash 内。如果对应的 Flash 空间未被擦除，将无法写入。</p>
+<p>本函数如果成功，则返回 0，否则返回非 0。</p>
+</div>
+<div id="单独擦除" class="section level3 hasAnchor">
+<h3><span class="header-section-number">19.2.3</span> 单独擦除<a href="ch-eflash.html#单独擦除" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>通过 <code>erase_flash_sector</code> 擦除一个指定的扇区。</p>
+<div class="sourceCode" id="cb225"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb225-1"><a href="ch-eflash.html#cb225-1"></a><span class="dt">int</span> erase_flash_sector(</span>
+<span id="cb225-2"><a href="ch-eflash.html#cb225-2"></a>    <span class="co">// 待擦除的地址</span></span>
+<span id="cb225-3"><a href="ch-eflash.html#cb225-3"></a>    <span class="dt">const</span> <span class="dt">uint32_t</span> addr);</span></code></pre></div>
+<p><code>addr</code> 必须对应于某个扇区的起始地址。本函数如果成功，则返回 0，否则返回非 0。</p>
+</div>
+<div id="flash-数据升级" class="section level3 hasAnchor">
+<h3><span class="header-section-number">19.2.4</span> Flash 数据升级<a href="ch-eflash.html#flash-数据升级" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>通过 <code>flash_do_update</code> 可以升级 Flash 里的数据。这个函数可用于 FOTA 升级。</p>
+<div class="sourceCode" id="cb226"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb226-1"><a href="ch-eflash.html#cb226-1"></a><span class="dt">int</span> flash_do_update(</span>
+<span id="cb226-2"><a href="ch-eflash.html#cb226-2"></a>    <span class="co">// 数据块数目</span></span>
+<span id="cb226-3"><a href="ch-eflash.html#cb226-3"></a>    <span class="dt">const</span> <span class="dt">int</span> block_num,</span>
+<span id="cb226-4"><a href="ch-eflash.html#cb226-4"></a>    <span class="co">// 每个数据块的信息</span></span>
+<span id="cb226-5"><a href="ch-eflash.html#cb226-5"></a>    <span class="dt">const</span> fota_update_block_t *blocks,</span>
+<span id="cb226-6"><a href="ch-eflash.html#cb226-6"></a>    <span class="co">// 用于缓存一个扇区的内存</span></span>
+<span id="cb226-7"><a href="ch-eflash.html#cb226-7"></a>    <span class="dt">uint8_t</span> *ram_buffer);</span></code></pre></div>
+<p>每个数据块的定为为：</p>
+<div class="sourceCode" id="cb227"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb227-1"><a href="ch-eflash.html#cb227-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> fota_update_block</span>
+<span id="cb227-2"><a href="ch-eflash.html#cb227-2"></a>{</span>
+<span id="cb227-3"><a href="ch-eflash.html#cb227-3"></a>    <span class="dt">uint32_t</span> src;</span>
+<span id="cb227-4"><a href="ch-eflash.html#cb227-4"></a>    <span class="dt">uint32_t</span> dest;</span>
+<span id="cb227-5"><a href="ch-eflash.html#cb227-5"></a>    <span class="dt">uint32_t</span> size;</span>
+<span id="cb227-6"><a href="ch-eflash.html#cb227-6"></a>} fota_update_block_t;</span></code></pre></div>
+<p>这个函数的行为大致如下：</p>
+<div class="sourceCode" id="cb228"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb228-1"><a href="ch-eflash.html#cb228-1"></a>flash_do_update() {</span>
+<span id="cb228-2"><a href="ch-eflash.html#cb228-2"></a>    <span class="cf">for</span> (block in blocks) {</span>
+<span id="cb228-3"><a href="ch-eflash.html#cb228-3"></a>        flash_copy(block.dest,</span>
+<span id="cb228-4"><a href="ch-eflash.html#cb228-4"></a>                   block.src,</span>
+<span id="cb228-5"><a href="ch-eflash.html#cb228-5"></a>                   block.size);</span>
+<span id="cb228-6"><a href="ch-eflash.html#cb228-6"></a>    }</span>
+<span id="cb228-7"><a href="ch-eflash.html#cb228-7"></a>}</span></code></pre></div>
+<p>如前所述，<code>program_flash</code> 的数据源不能位于 Flash，所以 <code>flash_copy</code> 需要把各扇区逐个读入
+<code>ram_buffer</code>，然后使用 <code>program_flash</code> 擦除、写入。</p>
+<p>这个函数如果成功，将自动重启系统，否则返回非 0。</p>
 
 </div>
 </div>
-<div class="footnotes">
-<hr />
-<ol start="1">
-<li id="fn1"><p><a href="https://www.bluetooth.com/" class="uri">https://www.bluetooth.com/</a><a href="ch-overview.html#fnref1" class="footnote-back">↩︎</a></p></li>
-</ol>
 </div>
+
+
+
+
+
+
+
+
+
+
+
             </section>
 
           </div>
         </div>
       </div>
-<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="ch-dma.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="ch-watchdog.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

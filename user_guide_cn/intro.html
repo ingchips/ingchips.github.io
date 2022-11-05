@@ -6,12 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>2 简介 | INGCHIPS SDK 开发者用户手册</title>
   <meta name="description" content="本文是 INGCHIPS SDK 的开发者用户手册。" />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
 
   <meta property="og:title" content="2 简介 | INGCHIPS SDK 开发者用户手册" />
   <meta property="og:type" content="book" />
-  
-  <meta property="og:image" content="./img/sdk_overview.png" />
+  <meta property="og:image" content="/./img/sdk_overview.png" />
   <meta property="og:description" content="本文是 INGCHIPS SDK 的开发者用户手册。" />
   
 
@@ -19,12 +18,12 @@
   <meta name="twitter:title" content="2 简介 | INGCHIPS SDK 开发者用户手册" />
   
   <meta name="twitter:description" content="本文是 INGCHIPS SDK 的开发者用户手册。" />
-  <meta name="twitter:image" content="./img/sdk_overview.png" />
+  <meta name="twitter:image" content="/./img/sdk_overview.png" />
 
-<meta name="author" content="v1.2.7" />
+<meta name="author" content="Ingchips Technology Co., Ltd." />
 
 
-<meta name="date" content="2022-07-30" />
+<meta name="date" content="2022-10-31" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +32,8 @@
   
 <link rel="prev" href="index.html"/>
 <link rel="next" href="tutorial.html"/>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -49,8 +49,10 @@
 
 
 
-
 <script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
 <style type="text/css">
@@ -117,6 +119,7 @@ code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
+
 
 <link rel="stylesheet" href="css/style.css" type="text/css" />
 </head>
@@ -390,9 +393,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="intro" class="section level1">
-<h1><span class="header-section-number">2</span> 简介</h1>
-<div class="figure" style="text-align: center"><span id="fig:fig-welcome"></span>
+<div id="intro" class="section level1 hasAnchor">
+<h1><span class="header-section-number">2</span> 简介<a href="intro.html#intro" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:fig-welcome"></span>
 <img src="img/sdk_overview.png" alt="SDK Overview" width="80%" />
 <p class="caption">
 Figure 2.1: SDK Overview
@@ -423,20 +426,20 @@ Figure 2.1: SDK Overview
 <li><p>文档</p>
 <p>提供用户手册（本文档），API 参考，应用指南等。</p></li>
 </ol>
-<div id="范围" class="section level2">
-<h2><span class="header-section-number">2.1</span> 范围</h2>
+<div id="范围" class="section level2 hasAnchor">
+<h2><span class="header-section-number">2.1</span> 范围<a href="intro.html#范围" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>本手册介绍平台软件包架构，核心工具，和平台 API。</p>
 </div>
-<div id="架构" class="section level2">
-<h2><span class="header-section-number">2.2</span> 架构</h2>
+<div id="架构" class="section level2 hasAnchor">
+<h2><span class="header-section-number">2.2</span> 架构<a href="intro.html#架构" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>平台软件包分为两种类型，一种内置 FreeRTOS（称为 RTOS 软件包）,
 一种不内置 RTOS （称为 “NoOS” 软件包）。</p>
-<div id="rtos-软件包" class="section level3">
-<h3><span class="header-section-number">2.2.1</span> RTOS 软件包</h3>
+<div id="rtos-软件包" class="section level3 hasAnchor">
+<h3><span class="header-section-number">2.2.1</span> RTOS 软件包<a href="intro.html#rtos-软件包" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>ING918xx/ING916xx 软件架构如图 <a href="intro.html#fig:ch0-concept">2.2</a> 所示。
 Bootloader 存储于 ROM，不可修改，而平台和应用存储于 Flash。
 BLE 协议栈、FreeRTOS 及部分 SoC 功能编译为平台可执行程序。当系统启动时，平台可执行程序首先完成初始化，然后加载主应用。</p>
-<div class="figure" style="text-align: center"><span id="fig:ch0-concept"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch0-concept"></span>
 <img src="img/concept.png" alt="Architecture" width="60%" />
 <p class="caption">
 Figure 2.2: Architecture
@@ -444,8 +447,8 @@ Figure 2.2: Architecture
 </div>
 <p>辅应用以<a href="api-ref.html#api-switch-app">编程</a>方式告知平台运行。可以下载多个辅应用，编程切换。
 芯片复位后，平台又会正常加载主应用。主应用的入口地址由 SDK 工具自动管理，辅应用的入口地址由开发者指定。</p>
-<div id="使用-c-语言开发-app" class="section level4">
-<h4><span class="header-section-number">2.2.1.1</span> 使用 <code>C</code> 语言开发 App</h4>
+<div id="使用-c-语言开发-app" class="section level4 hasAnchor">
+<h4><span class="header-section-number">2.2.1.1</span> 使用 <code>C</code> 语言开发 App<a href="intro.html#使用-c-语言开发-app" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>App 的主函数名为 <code>app_main</code>，app 在这个函数里进行初始化：</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="intro.html#cb1-1"></a><span class="dt">int</span> app_main(<span class="dt">void</span>)</span>
 <span id="cb1-2"><a href="intro.html#cb1-2"></a>{</span>
@@ -455,8 +458,8 @@ Figure 2.2: Architecture
 <p><code>app_main</code> 应该总是返回 <code>0</code>。</p>
 <p>平台，BLE 协议栈和 FreeRTOS 的 API 在相应的 <code>C</code> 头文件里声明，包含头文件就可以使用。</p>
 </div>
-<div id="使用-nim-语言开发-app" class="section level4">
-<h4><span class="header-section-number">2.2.1.2</span> 使用 <code>Nim</code> 语言开发 App</h4>
+<div id="使用-nim-语言开发-app" class="section level4 hasAnchor">
+<h4><span class="header-section-number">2.2.1.2</span> 使用 <code>Nim</code> 语言开发 App<a href="intro.html#使用-nim-语言开发-app" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>App 的主函数名为 <code>appMain</code>，app 在这个函数里进行初始化：</p>
 <pre class="nim"><code>proc appMain*(): int {.exportc noconv.} =
   ...
@@ -472,8 +475,8 @@ Figure 2.2: Architecture
 下载工具（<a href="core-tools.html#ch2-downloader">4.2</a>）下载平台二进制文件，然后在 IDE 里正常下载、调试 app。</p>
 </div>
 </div>
-<div id="noos-软件包" class="section level3">
-<h3><span class="header-section-number">2.2.2</span> “NoOS” 软件包</h3>
+<div id="noos-软件包" class="section level3 hasAnchor">
+<h3><span class="header-section-number">2.2.2</span> “NoOS” 软件包<a href="intro.html#noos-软件包" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>当需要使用另外的 RTOS，或者需要使用那些 RTOS 软件包中未提供的功能时，开发者可以选用“NoOS”软件包。</p>
 <p>“NoOS”软件包定义了一个通用 RTOS 接口，开发者需要实现这个接口，并通过 <code>app_main</code> 的返回值告知平台。</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="intro.html#cb3-1"></a><span class="dt">uintptr_t</span> app_main(<span class="dt">void</span>)</span>
@@ -483,8 +486,8 @@ Figure 2.2: Architecture
 <span id="cb3-5"><a href="intro.html#cb3-5"></a>}</span></code></pre></div>
 </div>
 </div>
-<div id="缩略语和术语" class="section level2">
-<h2><span class="header-section-number">2.3</span> 缩略语和术语</h2>
+<div id="缩略语和术语" class="section level2 hasAnchor">
+<h2><span class="header-section-number">2.3</span> 缩略语和术语<a href="intro.html#缩略语和术语" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <table>
 <caption><span id="tab:ch0-abbreviations">Table 2.1: </span> 缩略语</caption>
 <thead>
@@ -552,8 +555,8 @@ Figure 2.2: Architecture
 </tbody>
 </table>
 </div>
-<div id="参考资料" class="section level2">
-<h2><span class="header-section-number">2.4</span> 参考资料</h2>
+<div id="参考资料" class="section level2 hasAnchor">
+<h2><span class="header-section-number">2.4</span> 参考资料<a href="intro.html#参考资料" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <ol style="list-style-type: decimal">
 <li><p>Host API Reference</p></li>
 <li><p>Bluetooth SIG<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a></p></li>
@@ -590,7 +593,6 @@ Kernel<a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a></p></l
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -609,6 +611,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
@@ -629,6 +632,10 @@ gitbook.start({
 "text": null
 },
 "download": ["user_guide.pdf", "user_guide.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "subsection"
 }
@@ -642,7 +649,7 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

@@ -6,12 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 5 Dive Into SDK | INGCHIPS SDK User Guide</title>
   <meta name="description" content="This is the user guide of INGCHIPS SDK." />
-  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 5 Dive Into SDK | INGCHIPS SDK User Guide" />
   <meta property="og:type" content="book" />
-  
-  <meta property="og:image" content="./img/sdk_overview.png" />
+  <meta property="og:image" content="/./img/sdk_overview.png" />
   <meta property="og:description" content="This is the user guide of INGCHIPS SDK." />
   
 
@@ -19,12 +18,12 @@
   <meta name="twitter:title" content="Chapter 5 Dive Into SDK | INGCHIPS SDK User Guide" />
   
   <meta name="twitter:description" content="This is the user guide of INGCHIPS SDK." />
-  <meta name="twitter:image" content="./img/sdk_overview.png" />
+  <meta name="twitter:image" content="/./img/sdk_overview.png" />
 
-<meta name="author" content="v1.2.6" />
+<meta name="author" content="Ingchips Technology Co., Ltd." />
 
 
-<meta name="date" content="2021-01-10" />
+<meta name="date" content="2022-10-31" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +32,8 @@
   
 <link rel="prev" href="core-tools.html"/>
 <link rel="next" href="api-ref.html"/>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -49,8 +49,10 @@
 
 
 
-
 <script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
 <style type="text/css">
@@ -117,6 +119,7 @@ code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
+
 
 <link rel="stylesheet" href="css/style.css" type="text/css" />
 </head>
@@ -390,11 +393,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="dive-into-sdk" class="section level1">
-<h1><span class="header-section-number">Chapter 5</span> Dive Into SDK</h1>
+<div id="dive-into-sdk" class="section level1 hasAnchor">
+<h1><span class="header-section-number">Chapter 5</span> Dive Into SDK<a href="dive-into-sdk.html#dive-into-sdk" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>This chapter discusses some important topics that are critical to use SDK efficiently.</p>
-<div id="memory-management" class="section level2">
-<h2><span class="header-section-number">5.1</span> Memory Management</h2>
+<div id="memory-management" class="section level2 hasAnchor">
+<h2><span class="header-section-number">5.1</span> Memory Management<a href="dive-into-sdk.html#memory-management" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>There are mainly three type of memory management methods:</p>
 <ol style="list-style-type: decimal">
 <li>Statically allocated global variables</li>
@@ -406,13 +409,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 RAM is shared between platform and user applications. When a new project is created by <code>ingWizard</code>, RAM settings is configured properly. Developers are not suggested to modify these settings.
 </p>
 </div>
-<div id="global-variables" class="section level3">
-<h3><span class="header-section-number">5.1.1</span> Global Variables</h3>
+<div id="global-variables" class="section level3 hasAnchor">
+<h3><span class="header-section-number">5.1.1</span> Global Variables<a href="dive-into-sdk.html#global-variables" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>This is the <em>recommended</em> way to define variables that have a full lift span in the app. They are allocated
 in the fixed location and their content can be checked easily in debugger.</p>
 </div>
-<div id="using-stack" class="section level3">
-<h3><span class="header-section-number">5.1.2</span> Using Stack</h3>
+<div id="using-stack" class="section level3 hasAnchor">
+<h3><span class="header-section-number">5.1.2</span> Using Stack<a href="dive-into-sdk.html#using-stack" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>For variables that are only used within a limited scope, such as a function, we can allocated them on
 stack.</p>
 <p>Cares must be taken that size of stack is limited, and it might overflow if too much memory is allocated.</p>
@@ -424,7 +427,7 @@ by a user defined one with the help of <code>platform_install_isr_stack</code>.<
 <p>For “NoOS” bundles, this stack is defined in app binariy as usual.</p></li>
 <li><p>Callback functions registered into Bluetooth stack shares the same task stack with the stack task,
 whose size is defined as <code>1024</code> bytes, and about half is left to be used by app.</p></li>
-<li><p>Developers can create new tasks by calling RTOS APIs. In these cases, stack size should be<br />
+<li><p>Developers can create new tasks by calling RTOS APIs. In these cases, stack size should be
 carefully examined.</p></li>
 </ol>
 <div class="rmdtip">
@@ -433,8 +436,8 @@ Use tools to check required stack maximum depth of functions.
 </p>
 </div>
 </div>
-<div id="using-heap" class="section level3">
-<h3><span class="header-section-number">5.1.3</span> Using Heap</h3>
+<div id="using-heap" class="section level3 hasAnchor">
+<h3><span class="header-section-number">5.1.3</span> Using Heap<a href="dive-into-sdk.html#using-heap" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Generally, heap is not a recommended way for memory management in embedded applications. There are several
 cons included but not limited to:</p>
 <ul>
@@ -461,20 +464,20 @@ Once overridden, the allocator from libc is omitted, and <code>malloc</code> &am
 </ul>
 </div>
 </div>
-<div id="multitasking" class="section level2">
-<h2><span class="header-section-number">5.2</span> Multitasking</h2>
+<div id="multitasking" class="section level2 hasAnchor">
+<h2><span class="header-section-number">5.2</span> Multitasking<a href="dive-into-sdk.html#multitasking" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>It is recommend to have a check on <em>Mastering the FreeRTOS™ Real Time Kernel</em>.
 Some tips:</p>
 <ol style="list-style-type: decimal">
 <li><p>Do not do too much processing in interrupt handlers, but defer it to tasks as soon as possible</p></li>
 <li><p>Callback functions registered into Bluetooth stack are executed in the context of the stack task,
 so do not do too much processing in these functions either</p></li>
-<li><p>Use message passing function <code>btstack_push_user_msg</code> to get synchronized with Bluetooth stack
+<li><p>Use message passing function <code>btstack_push_user_msg</code> or other special functions<a href="#fn16" class="footnote-ref" id="fnref16"><sup>16</sup></a> to get synchronized with Bluetooth stack
 (see <a href="tutorial.html#inter-task-comm">Inter-task Communication</a>)</p></li>
 </ol>
 </div>
-<div id="interrupt-management" class="section level2">
-<h2><span class="header-section-number">5.3</span> Interrupt Management</h2>
+<div id="interrupt-management" class="section level2 hasAnchor">
+<h2><span class="header-section-number">5.3</span> Interrupt Management<a href="dive-into-sdk.html#interrupt-management" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>To create traditional ISR for interrupts, apps only need to register callback functions through a platform
 API <a href="api-ref.html#platform_set_irq_callback"><code>platform_set_irq_callback</code></a>.</p>
 <p>Apps can use following APIs to modify interrupts configuration and states:</p>
@@ -489,8 +492,8 @@ this value, indicating a <em>lower</em> or <em>equal</em> priority.</p></li>
 <li><p>etc…</p></li>
 </ul>
 </div>
-<div id="power-management" class="section level2">
-<h2><span class="header-section-number">5.4</span> Power Management</h2>
+<div id="power-management" class="section level2 hasAnchor">
+<h2><span class="header-section-number">5.4</span> Power Management<a href="dive-into-sdk.html#power-management" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>In most case, platform manages the power saving feature of ING918xx/ING9186xx SoC automatically and tries the
 minimize the power consumption in all circumstances, with only one exception, <em>deep sleep</em>.</p>
 <p>In deep sleep, all components, except those required for power saving control and real-time clocks,
@@ -511,8 +514,8 @@ provides a pair of APIs for this,
 <a href="api-ref.html#platform_write_persistent_reg"><code>platform_write_persistent_reg</code></a>
 and <a href="api-ref.html#platform_read_persistent_reg"><code>platform_read_persistent_reg</code></a>.</p>
 </div>
-<div id="cmsis-api" class="section level2">
-<h2><span class="header-section-number">5.5</span> CMSIS API</h2>
+<div id="cmsis-api" class="section level2 hasAnchor">
+<h2><span class="header-section-number">5.5</span> CMSIS API<a href="dive-into-sdk.html#cmsis-api" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>SDK tries to encapsulate CMSIS APIs to ease the development. Be careful when calling these APIs
 in apps as it may affect the platform program.</p>
 <p>Following operations are strictly forbidden:</p>
@@ -521,8 +524,8 @@ in apps as it may affect the platform program.</p>
 <li>Modify configurations of internal interrupts, i.e. those not listed in Table <a href="api-ref.html#tab:ch4-irq-summary">6.1</a>.</li>
 </ol>
 </div>
-<div id="debugging-tracing" class="section level2">
-<h2><span class="header-section-number">5.6</span> Debugging &amp; Tracing</h2>
+<div id="debugging-tracing" class="section level2 hasAnchor">
+<h2><span class="header-section-number">5.6</span> Debugging &amp; Tracing<a href="dive-into-sdk.html#debugging-tracing" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Besides online debugging, SDK provides two methods to assist debugging.</p>
 <ol style="list-style-type: decimal">
 <li><p><code>printf</code></p>
@@ -557,7 +560,7 @@ can’t be changed. Which types of trace data are going to be recorded is progra
 </tbody>
 </table>
 <p>Both <code>printf</code> and trace can be directed to UART ports or SEGGER
-RTT<a href="#fn16" class="footnote-ref" id="fnref16"><sup>16</sup></a>. Table
+RTT<a href="#fn17" class="footnote-ref" id="fnref17"><sup>17</sup></a>. Table
 <a href="dive-into-sdk.html#tab:ch3-port-compare">5.2</a> is a comparison of these two transport options.</p>
 <table>
 <caption><span id="tab:ch3-port-compare">Table 5.2: </span> Comparison of UART and SEGGER RTT</caption>
@@ -581,8 +584,8 @@ RTT<a href="#fn16" class="footnote-ref" id="fnref16"><sup>16</sup></a>. Table
 </tr>
 </tbody>
 </table>
-<div id="tips-on-segger-rtt" class="section level3">
-<h3><span class="header-section-number">5.6.1</span> Tips on SEGGER RTT</h3>
+<div id="tips-on-segger-rtt" class="section level3 hasAnchor">
+<h3><span class="header-section-number">5.6.1</span> Tips on SEGGER RTT<a href="dive-into-sdk.html#tips-on-segger-rtt" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <ul>
 <li><p>Use <code>J-LINK RTT Viewer</code> to view <code>printf</code> outputs in real-time.</p></li>
 <li><p>Use <code>J-LINK RTT Logger</code> to record trace outputs to files.</p>
@@ -596,7 +599,7 @@ Blow is a sample session.</p>
 Device name. Default: CORTEX-M3 &gt;
 Target interface. &gt; SWD
 Interface speed [kHz]. Default: 4000 kHz &gt;
-RTT Control Block address. Default: auto-detection &gt; 0x2000xxxx 
+RTT Control Block address. Default: auto-detection &gt; 0x2000xxxx
 RTT Channel name or index. Default: channel 1 &gt; 0
 Output file. Default: RTT_&lt;ChannelName&gt;_&lt;Time&gt;.log &gt;
 
@@ -618,12 +621,12 @@ Getting RTT data from target. Press any key to quit.</code></pre>
 can be specified by a range, and the tool will search for it automatically. For examples,</p>
 <pre class="shell"><code>JLinkRTTLogger.exe -If SWD -Device CORTEX-M3 -Speed 4000
 -RTTSearchRanges &quot;0x20005000 0x8000&quot;
--RTTChannel 0 
+-RTTChannel 0
 file_name</code></pre></li>
 </ul>
 </div>
-<div id="memory-dump" class="section level3">
-<h3><span class="header-section-number">5.6.2</span> Memory Dump</h3>
+<div id="memory-dump" class="section level3 hasAnchor">
+<h3><span class="header-section-number">5.6.2</span> Memory Dump<a href="dive-into-sdk.html#memory-dump" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>We are committed to delivery high quality platform binary. If an assertion had occurred in platform binary,
 it is suggested to create a full memory dump and save all registers, then contact for further support.
 There are two memory regions (Table <a href="dive-into-sdk.html#tab:ch3-mem-region">5.3</a>).</p>
@@ -691,7 +694,8 @@ savebin share.bin 0x400A0000 0x10000</code></pre></li>
 <hr />
 <ol start="15">
 <li id="fn15"><p><a href="https://en.wikipedia.org/wiki/Memory_pool" class="uri">https://en.wikipedia.org/wiki/Memory_pool</a><a href="dive-into-sdk.html#fnref15" class="footnote-back">↩︎</a></p></li>
-<li id="fn16"><p><a href="https://www.segger.com/products/debug-probes/j-link/technology/about-real-time-transfer/" class="uri">https://www.segger.com/products/debug-probes/j-link/technology/about-real-time-transfer/</a><a href="dive-into-sdk.html#fnref16" class="footnote-back">↩︎</a></p></li>
+<li id="fn16"><p><code>btstack_push_user_runnable</code>. See <em>Thread Safety</em> in <em>Developer’s Guide for Bluetooth LE</em>.<a href="dive-into-sdk.html#fnref16" class="footnote-back">↩︎</a></p></li>
+<li id="fn17"><p><a href="https://www.segger.com/products/debug-probes/j-link/technology/about-real-time-transfer/" class="uri">https://www.segger.com/products/debug-probes/j-link/technology/about-real-time-transfer/</a><a href="dive-into-sdk.html#fnref17" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>
@@ -704,7 +708,6 @@ savebin share.bin 0x400A0000 0x10000</code></pre></li>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -723,6 +726,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
@@ -743,6 +747,10 @@ gitbook.start({
 "text": null
 },
 "download": ["user_guide.pdf", "user_guide.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "subsection"
 }
@@ -756,7 +764,7 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

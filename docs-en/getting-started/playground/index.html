@@ -1,0 +1,694 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>Playground - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="Use Playground to experiment with INGChips SoC"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+
+      <div id="box">
+        <input id="in_search" type="search" name="search" placeholder="搜索：输入并回车">
+      </div>
+
+      <script>
+        let search_input = document.getElementById('in_search');
+        if (search_input) {
+          search_input.addEventListener("keypress", function(event) {
+          if (event.key === "Enter") {
+            window.open('https://www.bing.com/search?q=' + encodeURIComponent(search_input.value) + '%20site%3A' + window.location.hostname);
+            event.preventDefault();
+            }
+          });
+        }
+      </script>
+
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item has-children">
+
+              
+<a class="" href="/docs/sdk/apps/#web-apps">
+  
+  Web 工具
+  
+</a>
+
+              
+
+                <ul class="submenu">
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/callgraph">
+  
+  Callgraph (调用图)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index_cn.html">
+  
+  ING918/ING916 FOTA (空中升级)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/powerprofiler/">
+  
+  Online Power Profiler
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/air_trace/">
+  
+  Trace Logger
+  
+</a>
+
+  </li>
+  
+</ul>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <div class="inner outer">
+      <div class="docs-content">
+        
+        <nav id="docs-nav" class="docs-nav">
+  <div id="docs-nav-inside" class="docs-nav-inside sticky">
+    <button id="docs-nav-toggle" class="docs-nav-toggle">Navigate Docs<span class="icon-angle-right" aria-hidden="true"></span></button>
+    <div class="docs-toc-wrap">
+      <ul id="docs-toc" class="docs-toc">
+        
+        
+
+        
+        
+        <li class="toc-item">
+          <a href="/docs/">欢迎</a>
+        </li>
+
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          <li class="toc-item has-children">
+            <a href="/docs/getting-started/">快速上手</a>
+            
+            
+              <button class="submenu-toggle"><span class="screen-reader-text">Submenu</span><span class="icon-angle-right" aria-hidden="true"></span></button>
+              
+              <ul class="toc-submenu">
+
+  <li class="toc-item">
+    <a href="/docs/getting-started/dev_board_91881B/">ING91881B 开发板使用手册</a>
+  </li>
+
+  <li class="toc-item">
+    <a href="/docs/getting-started/dev_board_91880/">ING91880 开发板使用手册</a>
+  </li>
+
+  <li class="toc-item">
+    <a href="/docs/getting-started/playground/">Playground</a>
+  </li>
+
+</ul>
+
+            
+          </li>
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          <li class="toc-item has-children">
+            <a href="/docs/products/">产品</a>
+            
+            
+              <button class="submenu-toggle"><span class="screen-reader-text">Submenu</span><span class="icon-angle-right" aria-hidden="true"></span></button>
+              
+              <ul class="toc-submenu">
+
+  <li class="toc-item">
+    <a href="/docs/products/ing9188xx/">ING9188 系列</a>
+  </li>
+
+  <li class="toc-item">
+    <a href="/docs/products/ing9187xx/">ING9187 系列</a>
+  </li>
+
+</ul>
+
+            
+          </li>
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          <li class="toc-item has-children">
+            <a href="/docs/sdk/">SDK & Apps</a>
+            
+            
+              <button class="submenu-toggle"><span class="screen-reader-text">Submenu</span><span class="icon-angle-right" aria-hidden="true"></span></button>
+              
+              <ul class="toc-submenu">
+
+  <li class="toc-item">
+    <a href="/docs/sdk/download/">Download</a>
+  </li>
+
+  <li class="toc-item">
+    <a href="/docs/sdk/apps/">Apps</a>
+  </li>
+
+</ul>
+
+            
+          </li>
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          <li class="toc-item has-children">
+            <a href="/docs/ref_design/">参考设计</a>
+            
+            
+              <button class="submenu-toggle"><span class="screen-reader-text">Submenu</span><span class="icon-angle-right" aria-hidden="true"></span></button>
+              
+              <ul class="toc-submenu">
+
+  <li class="toc-item">
+    <a href="/docs/ref_design/ing918_hardware_design_notes/">ING918X芯片硬件设计指导</a>
+  </li>
+
+  <li class="toc-item">
+    <a href="/docs/ref_design/ing02-03/">ING02-03</a>
+  </li>
+
+  <li class="toc-item">
+    <a href="/docs/ref_design/ing04-01-05/">ING04-01-05</a>
+  </li>
+
+  <li class="toc-item">
+    <a href="/docs/ref_design/ing04-01-07/">ING04-01-07</a>
+  </li>
+
+</ul>
+
+            
+          </li>
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          <li class="toc-item">
+            <a href="/docs/application-notes/">应用指南 & 开发手册</a>
+            
+            
+          </li>
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          <li class="toc-item has-children">
+            <a href="/docs/mass_production/">产品量产</a>
+            
+            
+              <button class="submenu-toggle"><span class="screen-reader-text">Submenu</span><span class="icon-angle-right" aria-hidden="true"></span></button>
+              
+              <ul class="toc-submenu">
+
+  <li class="toc-item">
+    <a href="/docs/mass_production/uart_burn/">使用 UART 接口进行产品量产</a>
+  </li>
+
+  <li class="toc-item">
+    <a href="/docs/mass_production/prod_suite/">使用量产套件进行量产</a>
+  </li>
+
+  <li class="toc-item">
+    <a href="/docs/mass_production/swd_burn/">使用 SWD 接口进行产品量产</a>
+  </li>
+
+  <li class="toc-item">
+    <a href="/docs/mass_production/ip_protection/">IP 保护</a>
+  </li>
+
+</ul>
+
+            
+          </li>
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          <li class="toc-item has-children">
+            <a href="/docs/faq/">FAQ</a>
+            
+            
+              <button class="submenu-toggle"><span class="screen-reader-text">Submenu</span><span class="icon-angle-right" aria-hidden="true"></span></button>
+              
+              <ul class="toc-submenu">
+
+  <li class="toc-item">
+    <a href="/docs/faq/iar/">IAR 相关问题</a>
+  </li>
+
+</ul>
+
+            
+          </li>
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          <li class="toc-item">
+            <a href="/docs/community/">社区</a>
+            
+            
+          </li>
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          <li class="toc-item">
+            <a href=""></a>
+            
+            
+          </li>
+        
+
+      </ul><!-- .docs-toc -->
+    </div><!-- .docs-toc-wrap -->
+  </div><!-- .docs-nav-inside -->
+</nav><!-- .docs-nav -->
+
+        <article class="post type-docs">
+          <div class="post-inside">
+            <header class="post-header">
+              <h1 class="post-title line-left">Playground</h1>
+            </header><!-- .post-header -->
+            <div class="post-content">
+              <h2 id="0-say-hello-to-dev-boards">0. Say Hello to dev-boards</h2>
+
+<h3 id="01-ing91881b-dev-board">0.1 ING91881B dev-board</h3>
+
+<p><img src="9188_board_review.png" alt="board" /></p>
+
+<p>Ensure all the jumpers are in the same state as above.</p>
+
+<h2 id="1-download-playground">1. Download Playground</h2>
+
+<ul>
+  <li>For <a href="dev_board_91881B/">ING91881B dev-board</a>：
+  <a href="https://github.com/ingchips/doc_release/releases/download/v1.0/ING91881B_dev_board_playground_win_x86.exe">Download</a></li>
+</ul>
+
+<p>The downloaded Playground program is a <a href="https://www.7-zip.org/">7-Zip</a> self-extracted package.
+Run the program and extract it to any directory (here, we will assume it is extracted to
+C:\temp\playground).
+Playground is completely portable. After doing a few experiments, if one don’t want
+to keep it, just delete the whole folder.</p>
+
+<p><img src="extract.png" width="60%" /></p>
+
+<h2 id="2-try-me">2. Try-Me</h2>
+
+<p>Open C:\temp\playground, and start the program named <em>try-me</em>:</p>
+
+<p><img src="main_app.png" alt="" /></p>
+
+<p>There are two buttons on the left panel:</p>
+
+<ul>
+  <li><strong>Restore</strong>: Put to dev-board to initial setup</li>
+  <li><strong>Update</strong>: Deploy your code to the dev-board</li>
+</ul>
+
+<p>There are three buttons on the top:</p>
+
+<ul>
+  <li><strong>My Code</strong>: View and edit your code</li>
+  <li><strong>Demo (English)</strong>: View all demo codes written in English</li>
+  <li><strong>Demo (中文)</strong>: View all demo codes written in Chinese</li>
+</ul>
+
+<h2 id="3-connect-the-dev-board">3. Connect the dev-board</h2>
+
+<p>Connect the dev-board to a Windows 10 or newer computer. When they got connected
+for the first time, please wait a while since Windows would automatically install
+drivers. Once installed, Windows would pop up a notification saying “Device is Ready”.
+Open Windows Device Manager, we can find a new COM device, whose number is assigned
+by Windows.</p>
+
+<p><img src="com_port.png" width="50%" /></p>
+
+<p>Please do not connect multiple dev-board simultaneously, and do not connect other
+J-Link, DAPLink debug probes to avoid issues in detecting COM ports.</p>
+
+<h2 id="4-initialize-your-dev-board">4. Initialize your dev-board</h2>
+
+<p>Click the <strong>Restore</strong> button, below information will be shown in a popped up window:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>USING COM3
+<span class="nb">wait </span><span class="k">for </span>handshaking...
+</code></pre></div></div>
+
+<p>Here the COM number should be the same as found in Device Manager. Click the Load key
+on the dev-board, then a supporting program of Playground is downloaded to the dev-board.
+If everything goes will, we will see such outputs:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>USING COM3
+baud -&gt; 921600
+downloading platform.bin @ 0x4000 ...
+ |████████████████████████████████████████████████████████████| 100.0%
+downloading default.bin @ 0x26000 ...
+ |████████████████████████████████████████████████████████████| 100.0%
+downloading boot.bin @ 0x44000 ...
+ |████████████████████████████████████████████████████████████| 100.0%
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>For a ING91881B dev-board</p>
+
+    <p>Once initialized, all of the 8 LED(s) will be turned on and off one by one.</p>
+  </li>
+</ul>
+
+<h2 id="5-write-a-program">5. Write a program</h2>
+
+<p>Click <strong>Demo (Engligh)</strong> button, we can see a lot of examples. Each example is
+quoted by a pair of “```c” and “```”. Select one example, copy. Then click
+<strong>My Code</strong>, replace the code by pasting. For example:</p>
+
+<p><img src="new_prog.png" alt="" /></p>
+
+<p>Obviously, this piece of code wants to turn on the light, wait for one second,
+turn it off, and wait for another second, and again.</p>
+
+<h2 id="6-update-your-dev-board">6. Update your dev-board</h2>
+
+<p>Click <strong>Update.</strong>, information like this will be displayed on the popped up window:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>USING COM3
+building...done
+starting download mode...done
+baud -&gt; 921600
+downloading ../project/get_started.bin @ 0x26000 ...
+ |████████████████████████████████████████████████████████████| 100.0%
+</code></pre></div></div>
+
+<p>Examining the dev-board, we can see that the whole row of LEDs are now on and off
+periodicity, just as what the code wanted. Congratulations! You have successfully
+coded, built, and downloaded a program.</p>
+
+<h2 id="7-next-step">7. Next step</h2>
+
+<p>Now, you can take [a half day tour][(/blog/2022-03-04-ing918-playground)] in
+this playground, or <a href="/docs/sdk/download">download</a> SDK and start developing on
+INGChips SoC <em>seriously</em>.</p>
+
+<h2 id="8-trouble-shooting">8. Trouble-shooting</h2>
+
+<ul>
+  <li>
+    <p>Can’t find COM:<code class="highlighter-rouge">No UART found</code></p>
+
+    <p>Open Windows Device Manager and check if Windows has recognized it and installed the driver.</p>
+  </li>
+  <li>
+    <p>Errors occur during updating dev-boards</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align: left">Phoneminona</th>
+          <th style="text-align: left">Solution</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align: left"><code class="highlighter-rouge">buiding...fail</code></td>
+          <td style="text-align: left">Check if too much code is pasted or only a portion is pasted.</td>
+        </tr>
+        <tr>
+          <td style="text-align: left"><code class="highlighter-rouge">starting download mode...fail</code></td>
+          <td style="text-align: left">Pull out the dev-board and plug it in again;<br />Re-initialize the dev-board</td>
+        </tr>
+        <tr>
+          <td style="text-align: left">progress bar hangs</td>
+          <td style="text-align: left">Re-initialize the dev-board</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li>
+    <p>Errors occur during initialling dev-boards</p>
+
+    <p>Try again.</p>
+  </li>
+</ul>
+
+              
+              
+              
+                
+                
+                
+                
+                
+                
+                  <ul class="docs-section-items">
+                    
+                    <li class="docs-section-item"><a href="/docs-en/getting-started/dev_board_91881B/" class="docs-item-link">ING91881B 开发板使用手册<span class="icon-angle-right" aria-hidden="true"></span></a></li>
+                    
+                    <li class="docs-section-item"><a href="/docs-en/getting-started/dev_board_91880/" class="docs-item-link">ING91880 开发板使用手册<span class="icon-angle-right" aria-hidden="true"></span></a></li>
+                    
+                    <li class="docs-section-item"><a href="/docs-en/getting-started/playground/" class="docs-item-link">Playground<span class="icon-angle-right" aria-hidden="true"></span></a></li>
+                    
+                  </ul><!-- .docs-section-pages -->
+                
+              
+            </div><!-- .post-content -->
+          </div><!-- .post-inside -->
+        </article><!-- .post -->
+        <nav id="page-nav" class="page-nav">
+          <div id="page-nav-inside" class="page-nav-inside sticky">
+            <h2 class="page-nav-title">Jump to Section</h2>
+          </div><!-- .page-nav-inside -->
+        </nav><!-- .page-nav -->
+      </div><!-- .docs-content -->
+    </div><!-- .inner-->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2021-2022. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

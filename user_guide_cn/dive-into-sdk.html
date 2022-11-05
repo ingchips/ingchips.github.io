@@ -6,12 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>5 深入 SDK | INGCHIPS SDK 开发者用户手册</title>
   <meta name="description" content="本文是 INGCHIPS SDK 的开发者用户手册。" />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
 
   <meta property="og:title" content="5 深入 SDK | INGCHIPS SDK 开发者用户手册" />
   <meta property="og:type" content="book" />
-  
-  <meta property="og:image" content="./img/sdk_overview.png" />
+  <meta property="og:image" content="/./img/sdk_overview.png" />
   <meta property="og:description" content="本文是 INGCHIPS SDK 的开发者用户手册。" />
   
 
@@ -19,12 +18,12 @@
   <meta name="twitter:title" content="5 深入 SDK | INGCHIPS SDK 开发者用户手册" />
   
   <meta name="twitter:description" content="本文是 INGCHIPS SDK 的开发者用户手册。" />
-  <meta name="twitter:image" content="./img/sdk_overview.png" />
+  <meta name="twitter:image" content="/./img/sdk_overview.png" />
 
-<meta name="author" content="v1.2.7" />
+<meta name="author" content="Ingchips Technology Co., Ltd." />
 
 
-<meta name="date" content="2022-07-30" />
+<meta name="date" content="2022-10-31" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +32,8 @@
   
 <link rel="prev" href="core-tools.html"/>
 <link rel="next" href="api-ref.html"/>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -49,8 +49,10 @@
 
 
 
-
 <script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
 <style type="text/css">
@@ -117,6 +119,7 @@ code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
+
 
 <link rel="stylesheet" href="css/style.css" type="text/css" />
 </head>
@@ -390,11 +393,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="dive-into-sdk" class="section level1">
-<h1><span class="header-section-number">5</span> 深入 SDK</h1>
+<div id="dive-into-sdk" class="section level1 hasAnchor">
+<h1><span class="header-section-number">5</span> 深入 SDK<a href="dive-into-sdk.html#dive-into-sdk" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>本章介绍关于高效使用 SDK 的一些关键问题。</p>
-<div id="内存管理" class="section level2">
-<h2><span class="header-section-number">5.1</span> 内存管理</h2>
+<div id="内存管理" class="section level2 hasAnchor">
+<h2><span class="header-section-number">5.1</span> 内存管理<a href="dive-into-sdk.html#内存管理" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>有以下三种主要的内存管理方法：</p>
 <ol style="list-style-type: decimal">
 <li>全局的静态分配</li>
@@ -406,12 +409,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 RAM 由 platform 和 app 共享使用。<code>ingWizard</code> 创建的新项目 RAM 的位置、大小会自动得以配置。不建议开发者修改此设置。
 </p>
 </div>
-<div id="全局分配" class="section level3">
-<h3><span class="header-section-number">5.1.1</span> 全局分配</h3>
+<div id="全局分配" class="section level3 hasAnchor">
+<h3><span class="header-section-number">5.1.1</span> 全局分配<a href="dive-into-sdk.html#全局分配" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>对于在 app 整个生命周期都存在的变量，这是推荐的分配方式。全局变量地址固定，用调试器可以方便地检查其中的数据。</p>
 </div>
-<div id="使用栈" class="section level3">
-<h3><span class="header-section-number">5.1.2</span> 使用栈</h3>
+<div id="使用栈" class="section level3 hasAnchor">
+<h3><span class="header-section-number">5.1.2</span> 使用栈<a href="dive-into-sdk.html#使用栈" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>对于仅在有限范围内——比如一个函数内部——存在的变量，我们可以在栈上分配它们。</p>
 <p>必须注意：栈的大小是有限的，如果分配的空间过多，栈会溢出。</p>
 <ol style="list-style-type: decimal">
@@ -429,8 +432,8 @@ RAM 由 platform 和 app 共享使用。<code>ingWizard</code> 创建的新项�
 </p>
 </div>
 </div>
-<div id="使用堆" class="section level3">
-<h3><span class="header-section-number">5.1.3</span> 使用堆</h3>
+<div id="使用堆" class="section level3 hasAnchor">
+<h3><span class="header-section-number">5.1.3</span> 使用堆<a href="dive-into-sdk.html#使用堆" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>总体而言，不太建议在嵌入式应用里使用堆管理内存。这种方法至少存在以下不足：</p>
 <ul>
 <li><p>空间开销</p>
@@ -454,19 +457,19 @@ RAM 由 platform 和 app 共享使用。<code>ingWizard</code> 创建的新项�
 </ul>
 </div>
 </div>
-<div id="多任务" class="section level2">
-<h2><span class="header-section-number">5.2</span> 多任务</h2>
+<div id="多任务" class="section level2 hasAnchor">
+<h2><span class="header-section-number">5.2</span> 多任务<a href="dive-into-sdk.html#多任务" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>建议先阅读《Mastering the FreeRTOS™ Real Time Kernel》。
 几点建议：</p>
 <ol style="list-style-type: decimal">
 <li><p>不要在中断服务程序里做过多处理，应该尽快延续到任务里，</p></li>
 <li><p>蓝牙协议栈的回调函数在协议栈任务的上下文里运行，所以也不要做过多处理，</p></li>
 <li><p>调用蓝牙协议栈 API （除了 <code>btstack_push_user_msg</code> 本身）之前先利用消息传递函数
-<code>btstack_push_user_msg</code> 与协议栈同步（参见 <a href="tutorial.html#inter-task-comm">任务间通信</a>）</p></li>
+<code>btstack_push_user_msg</code> 或其它特殊函数<a href="#fn18" class="footnote-ref" id="fnref18"><sup>18</sup></a> 与协议栈同步（参见 <a href="tutorial.html#inter-task-comm">任务间通信</a>）</p></li>
 </ol>
 </div>
-<div id="中断管理" class="section level2">
-<h2><span class="header-section-number">5.3</span> 中断管理</h2>
+<div id="中断管理" class="section level2 hasAnchor">
+<h2><span class="header-section-number">5.3</span> 中断管理<a href="dive-into-sdk.html#中断管理" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Apps 通过 platform
 API <a href="api-ref.html#platform_set_irq_callback"><code>platform_set_irq_callback</code></a> 创建经典的中断服务程序。</p>
 <p>Apps 可以使用下列 API 修改中断配置或者状态：</p>
@@ -480,8 +483,8 @@ API <a href="api-ref.html#platform_set_irq_callback"><code>platform_set_irq_call
 <li><p>等等……</p></li>
 </ul>
 </div>
-<div id="功耗管理适用于-ing918xx" class="section level2">
-<h2><span class="header-section-number">5.4</span> 功耗管理（适用于 ING918xx）</h2>
+<div id="功耗管理适用于-ing918xx" class="section level2 hasAnchor">
+<h2><span class="header-section-number">5.4</span> 功耗管理（适用于 ING918xx）<a href="dive-into-sdk.html#功耗管理适用于-ing918xx" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>在大多数情况下，platform 负责自动管理系统的省电功能，尽量降低功能。只有一个例外，
 <em>深睡眠</em>。</p>
 <p>在深睡眠模式下，芯片内除低功耗管理及 RTC 时钟以外的所有部件都会掉电或者进入其它最省电状态。
@@ -494,13 +497,13 @@ Platform 会询问 app 当前是否允许进入深睡眠，如果不允许，则
 在关闭状态下，可以维持一段内存里的数据不丢失，代价是需要增加一点功耗。参见 <a href="api-ref.html#platform_shutdown"><code>platform_shutdown</code></a>。如果仅有很少量的数据需要保持：</p>
 <ul>
 <li><p>对于 ING918xx 系列</p>
-<p>如果不多于 4 个比特，SDK 提供了一对 API<br />
+<p>如果不多于 4 个比特，SDK 提供了一对 API
 可供使用<a href="api-ref.html#platform_write_persistent_reg"><code>platform_write_persistent_reg</code></a>
 和 <a href="api-ref.html#platform_read_persistent_reg"><code>platform_read_persistent_reg</code></a>。</p></li>
 </ul>
 </div>
-<div id="cmsis-api" class="section level2">
-<h2><span class="header-section-number">5.5</span> CMSIS API</h2>
+<div id="cmsis-api" class="section level2 hasAnchor">
+<h2><span class="header-section-number">5.5</span> CMSIS API<a href="dive-into-sdk.html#cmsis-api" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>SDK 尝试对一些 CMSIS API 做了封装以便开发。当直接使用 CMSIS API 时务必小心，因为可能会影响系统的运行。</p>
 <p>以下操作严格禁止：</p>
 <ol style="list-style-type: decimal">
@@ -508,8 +511,8 @@ Platform 会询问 app 当前是否允许进入深睡眠，如果不允许，则
 <li>修改表 <a href="api-ref.html#tab:ch4-irq-summary-918">6.1</a> 和表 <a href="api-ref.html#tab:ch4-irq-summary-916">6.2</a> 中未列出的中断的配置</li>
 </ol>
 </div>
-<div id="debugging-tracing" class="section level2">
-<h2><span class="header-section-number">5.6</span> 调试与跟踪</h2>
+<div id="debugging-tracing" class="section level2 hasAnchor">
+<h2><span class="header-section-number">5.6</span> 调试与跟踪<a href="dive-into-sdk.html#debugging-tracing" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>除了在线调试外，SDK 提供以下两种辅助调试的方法：</p>
 <ol style="list-style-type: decimal">
 <li><p><code>printf</code></p>
@@ -542,7 +545,7 @@ Trace 数据。</p></li>
 </tbody>
 </table>
 <p><code>printf</code> 和 trace 都可以配置成从 UART 口或者 SEGGER
-RTT<a href="#fn18" class="footnote-ref" id="fnref18"><sup>18</sup></a> 输出。
+RTT<a href="#fn19" class="footnote-ref" id="fnref19"><sup>19</sup></a> 输出。
 表
 <a href="dive-into-sdk.html#tab:ch3-port-compare">5.2</a> 对比了两种传输方式。</p>
 <table>
@@ -567,8 +570,8 @@ RTT<a href="#fn18" class="footnote-ref" id="fnref18"><sup>18</sup></a> 输出。
 </tr>
 </tbody>
 </table>
-<div id="有关-segger-rtt-的使用提示" class="section level3">
-<h3><span class="header-section-number">5.6.1</span> 有关 SEGGER RTT 的使用提示</h3>
+<div id="有关-segger-rtt-的使用提示" class="section level3 hasAnchor">
+<h3><span class="header-section-number">5.6.1</span> 有关 SEGGER RTT 的使用提示<a href="dive-into-sdk.html#有关-segger-rtt-的使用提示" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <ul>
 <li><p>使用 <code>J-LINK RTT Viewer</code> 实时查看 <code>printf</code> 输出</p></li>
 <li><p>使用 <code>J-LINK RTT Logger</code> 将 trace 记录到文件</p>
@@ -582,7 +585,7 @@ RTT 通道号为 <code>0</code>。
 Device name. Default: CORTEX-M3 &gt;
 Target interface. &gt; SWD
 Interface speed [kHz]. Default: 4000 kHz &gt;
-RTT Control Block address. Default: auto-detection &gt; 0x2000xxxx 
+RTT Control Block address. Default: auto-detection &gt; 0x2000xxxx
 RTT Channel name or index. Default: channel 1 &gt; 0
 Output file. Default: RTT_&lt;ChannelName&gt;_&lt;Time&gt;.log &gt;
 
@@ -604,13 +607,13 @@ Getting RTT data from target. Press any key to quit.</code></pre>
 的地址范围，工具会自动搜索实际地址。例如：</p>
 <pre class="shell"><code>JLinkRTTLogger.exe -If SWD -Device CORTEX-M3 -Speed 4000
 -RTTSearchRanges &quot;0x20005000 0x8000&quot;
--RTTChannel 0 
+-RTTChannel 0
 file_name</code></pre>
 <p>对于 ING916xx，将上面的 CORTEX-M3 替换为 CORTEX-M4。</p></li>
 </ul>
 </div>
-<div id="内存转储" class="section level3">
-<h3><span class="header-section-number">5.6.2</span> 内存转储</h3>
+<div id="内存转储" class="section level3 hasAnchor">
+<h3><span class="header-section-number">5.6.2</span> 内存转储<a href="dive-into-sdk.html#内存转储" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>我们致力于提供高质量的 platform 软件包。如果在 platform 二进制文件内发生断言（assertion）错误，
 建议转储全部内存，记录各寄存器的值，然后联系我们获得进一步支持。
 内存分为两段（见表 <a href="dive-into-sdk.html#tab:ch3-mem-region">5.3</a>）。</p>
@@ -677,7 +680,8 @@ savebin share.bin 0x400A0000 0x10000</code></pre></li>
 <hr />
 <ol start="17">
 <li id="fn17"><p><a href="https://en.wikipedia.org/wiki/Memory_pool" class="uri">https://en.wikipedia.org/wiki/Memory_pool</a><a href="dive-into-sdk.html#fnref17" class="footnote-back">↩︎</a></p></li>
-<li id="fn18"><p><a href="https://www.segger.com/products/debug-probes/j-link/technology/about-real-time-transfer/" class="uri">https://www.segger.com/products/debug-probes/j-link/technology/about-real-time-transfer/</a><a href="dive-into-sdk.html#fnref18" class="footnote-back">↩︎</a></p></li>
+<li id="fn18"><p>请参考《低功耗蓝牙开发者手册》“线程安全性”一节。<a href="dive-into-sdk.html#fnref18" class="footnote-back">↩︎</a></p></li>
+<li id="fn19"><p><a href="https://www.segger.com/products/debug-probes/j-link/technology/about-real-time-transfer/" class="uri">https://www.segger.com/products/debug-probes/j-link/technology/about-real-time-transfer/</a><a href="dive-into-sdk.html#fnref19" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>
@@ -690,7 +694,6 @@ savebin share.bin 0x400A0000 0x10000</code></pre></li>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -709,6 +712,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
@@ -729,6 +733,10 @@ gitbook.start({
 "text": null
 },
 "download": ["user_guide.pdf", "user_guide.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "subsection"
 }
@@ -742,7 +750,7 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

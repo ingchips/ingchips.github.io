@@ -6,12 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 4 Core Tools | INGCHIPS SDK User Guide</title>
   <meta name="description" content="This is the user guide of INGCHIPS SDK." />
-  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 4 Core Tools | INGCHIPS SDK User Guide" />
   <meta property="og:type" content="book" />
-  
-  <meta property="og:image" content="./img/sdk_overview.png" />
+  <meta property="og:image" content="/./img/sdk_overview.png" />
   <meta property="og:description" content="This is the user guide of INGCHIPS SDK." />
   
 
@@ -19,12 +18,12 @@
   <meta name="twitter:title" content="Chapter 4 Core Tools | INGCHIPS SDK User Guide" />
   
   <meta name="twitter:description" content="This is the user guide of INGCHIPS SDK." />
-  <meta name="twitter:image" content="./img/sdk_overview.png" />
+  <meta name="twitter:image" content="/./img/sdk_overview.png" />
 
-<meta name="author" content="v1.2.6" />
+<meta name="author" content="Ingchips Technology Co., Ltd." />
 
 
-<meta name="date" content="2021-01-10" />
+<meta name="date" content="2022-10-31" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +32,8 @@
   
 <link rel="prev" href="tutorial.html"/>
 <link rel="next" href="dive-into-sdk.html"/>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -49,8 +49,10 @@
 
 
 
-
 <script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
 <style type="text/css">
@@ -117,6 +119,7 @@ code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
+
 
 <link rel="stylesheet" href="css/style.css" type="text/css" />
 </head>
@@ -390,11 +393,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="core-tools" class="section level1">
-<h1><span class="header-section-number">Chapter 4</span> Core Tools</h1>
+<div id="core-tools" class="section level1 hasAnchor">
+<h1><span class="header-section-number">Chapter 4</span> Core Tools<a href="core-tools.html#core-tools" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>SDK core tools play an important role in the BLE device development.</p>
-<div id="ingwizard" class="section level2">
-<h2><span class="header-section-number">4.1</span> ingWizard</h2>
+<div id="ingwizard" class="section level2 hasAnchor">
+<h2><span class="header-section-number">4.1</span> ingWizard<a href="core-tools.html#ingwizard" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p><code>ingWizard</code> is the recommended entry point in the whole development life cycle. With it,
 we can create &amp; open project, edit project data, and migrate projects,
 etc.</p>
@@ -436,10 +439,10 @@ a project and select <code>Check &amp; Fix Settings ...</code>.</p></li>
 </p>
 </div>
 </div>
-<div id="ch2-downloader" class="section level2">
-<h2><span class="header-section-number">4.2</span> Downloader</h2>
-<div id="introduction" class="section level3">
-<h3><span class="header-section-number">4.2.1</span> Introduction</h3>
+<div id="ch2-downloader" class="section level2 hasAnchor">
+<h2><span class="header-section-number">4.2</span> Downloader<a href="core-tools.html#ch2-downloader" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="introduction" class="section level3 hasAnchor">
+<h3><span class="header-section-number">4.2.1</span> Introduction<a href="core-tools.html#introduction" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>This downloader downloads up-to six images (binaries) to flash through UART connection.
 It co-operate with bootloader. Bootloader can be made into flash downloading mode either by:</p>
 <ul>
@@ -462,7 +465,7 @@ to achieve a faster download speed.
 The maximum supported baud rate is <code>921600</code>. Due to the limitation of internal flash characters,
 there isn’t any further significant improvement for baud rate larger than <code>512000</code>.
 Other fields should be left unchanged.</p>
-<div class="figure" style="text-align: center"><span id="fig:ch2-downloader-uart-cfg"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-downloader-uart-cfg"></span>
 <img src="img/ch2-downloader-uart-cfg.png" alt="Configurate UART" width="40%" />
 <p class="caption">
 Figure 4.1: Configurate UART
@@ -471,7 +474,7 @@ Figure 4.1: Configurate UART
 <p>The whole downloading procedure is composed of several steps, such as downloading, verification,
 set entry address, and launching app. These steps can be configured by clicking <code>Options</code>
 (Figure <a href="core-tools.html#fig:ch2-downloader-options">4.2</a>).</p>
-<div class="figure" style="text-align: center"><span id="fig:ch2-downloader-options"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-downloader-options"></span>
 <img src="img/ch2-downloader-options.png" alt="Downloader Options" width="40%" />
 <p class="caption">
 Figure 4.2: Downloader Options
@@ -492,8 +495,8 @@ handshaking message only once, and if chips are already powered up, it may be to
 receive handshaking. In this case, we can click <code>Force</code> to skip handshaking and start downloading
 immediately.</p>
 </div>
-<div id="script-mass-prod" class="section level3">
-<h3><span class="header-section-number">4.2.2</span> Scripting &amp; Mass Production</h3>
+<div id="script-mass-prod" class="section level3 hasAnchor">
+<h3><span class="header-section-number">4.2.2</span> Scripting &amp; Mass Production<a href="core-tools.html#script-mass-prod" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>This downloader supports powerful scripting, making it suitable for mass production. In the script,
 two event handlers (functions) are required to be defined.</p>
 <ul>
@@ -537,8 +540,8 @@ batch round number (<code>BatchCounter</code>) is written to a fixed location in
 <span id="cb33-22"><a href="core-tools.html#cb33-22"></a>  Data[BD_ADDR_ADDR + <span class="dv">2</span>] := (BatchCounter <span class="kw">shr</span> <span class="dv">8</span>) <span class="kw">and</span> <span class="bn">$FF;</span></span>
 <span id="cb33-23"><a href="core-tools.html#cb33-23"></a><span class="kw">end</span>;</span></code></pre></div>
 </div>
-<div id="flash-read-protection" class="section level3">
-<h3><span class="header-section-number">4.2.3</span> Flash Read Protection</h3>
+<div id="flash-read-protection" class="section level3 hasAnchor">
+<h3><span class="header-section-number">4.2.3</span> Flash Read Protection<a href="core-tools.html#flash-read-protection" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>To protect illegal access of data &amp; program stored in flash, 918xx has a read-protection
 mechanism. Once read-protection is enabled, JTAG/SW and this downloader can not be able
 to access flash any more. To re-enable JTAG/SW debugging functionality and downloading,
@@ -550,8 +553,8 @@ from illegal access, just enable “Read Protection” as shown in Figure <a hre
 forget to re-download <code>platform</code> binary.</p>
 <p>All configurations are stored in an <em>ini</em> file.</p>
 </div>
-<div id="python-version" class="section level3">
-<h3><span class="header-section-number">4.2.4</span> Python Version</h3>
+<div id="python-version" class="section level3 hasAnchor">
+<h3><span class="header-section-number">4.2.4</span> Python Version<a href="core-tools.html#python-version" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>SDK also provides a Python version downloader (<em>icsdw.py</em>). It’s open source and easy to be integrated
 with other tools.</p>
 <p>This version is written in Python 3. It uses
@@ -580,14 +583,14 @@ batch round number (<code>batch_counter</code>) is written to a fixed location i
 <span id="cb34-12"><a href="core-tools.html#cb34-12"></a>    <span class="cf">return</span> <span class="va">False</span>, <span class="bu">bytes</span>(ba)</span></code></pre></div>
 </div>
 </div>
-<div id="ingtracer" class="section level2">
-<h2><span class="header-section-number">4.3</span> ingTracer</h2>
+<div id="ingtracer" class="section level2 hasAnchor">
+<h2><span class="header-section-number">4.3</span> ingTracer<a href="core-tools.html#ingtracer" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p><code>ingTracer</code> is the visual tool for inspecting recorded Trace data introduced in
 <a href="dive-into-sdk.html#debugging-tracing">Debugging &amp; Tracing</a>.</p>
 <p>To limit items drawn on screen, <code>ingTracer</code> breaks trace data into frames. Each frame has
 a length of 5sec. When a frame is selected, besides the current frame, the previous and the
 next one are also shown for continuity.</p>
-<div class="figure" style="text-align: center"><span id="fig:ch2-tracer-main"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-tracer-main"></span>
 <img src="img/ch2-tracer-main.png" alt="ingTracer Main UI" width="85%" />
 <p class="caption">
 Figure 4.3: ingTracer Main UI
@@ -598,7 +601,7 @@ detailed information is decoded
 and shown in <strong>Message Decoder</strong> and <strong>Message Hex Viewer</strong>. <strong>Graph</strong> supports some of
 CAD operations, such as zooming, panning, measuring, etc. Checkout menu <code>Help</code> -&gt; <code>About</code> for
 detailed information. (Figure <a href="core-tools.html#fig:ch2-tracer-main">4.3</a>)</p>
-<div class="figure" style="text-align: center"><span id="fig:ch2-tracer-msc"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-tracer-msc"></span>
 <img src="img/ch2-tracer-msc.png" alt="MSC Generated by ingTracer" width="85%" />
 <p class="caption">
 Figure 4.4: MSC Generated by ingTracer
@@ -629,7 +632,6 @@ the <code>[+]</code> mark (Figure <a href="core-tools.html#fig:ch2-tracer-msc">4
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -648,6 +650,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
@@ -668,6 +671,10 @@ gitbook.start({
 "text": null
 },
 "download": ["user_guide.pdf", "user_guide.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "subsection"
 }
@@ -681,7 +688,7 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

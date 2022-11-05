@@ -288,25 +288,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>建立连接后：</p>
 <ol style="list-style-type: decimal">
 <li><p>调用 <code>gap_set_connection_cte_tx_param</code> 配置发送参数：</p>
-<div class="sourceCode" id="cb84"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb84-1"><a href="ch-misc.html#cb84-1"></a><span class="dt">uint8_t</span> gap_set_connection_cte_tx_param(</span>
-<span id="cb84-2"><a href="ch-misc.html#cb84-2"></a>  <span class="co">// 连接句柄</span></span>
-<span id="cb84-3"><a href="ch-misc.html#cb84-3"></a>  <span class="dt">const</span> hci_con_handle_t  conn_handle,</span>
-<span id="cb84-4"><a href="ch-misc.html#cb84-4"></a>  <span class="co">// 允许发送的 CTE 类型组合</span></span>
-<span id="cb84-5"><a href="ch-misc.html#cb84-5"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>           cte_types,</span>
-<span id="cb84-6"><a href="ch-misc.html#cb84-6"></a>  <span class="co">// 用于 AoD 发送的天线切换模板的长度</span></span>
-<span id="cb84-7"><a href="ch-misc.html#cb84-7"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>           switching_pattern_len,</span>
-<span id="cb84-8"><a href="ch-misc.html#cb84-8"></a>  <span class="co">// 用于 AoD 发送的天线切换模板</span></span>
-<span id="cb84-9"><a href="ch-misc.html#cb84-9"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>          *antenna_ids</span>
-<span id="cb84-10"><a href="ch-misc.html#cb84-10"></a>);</span></code></pre></div>
+<div class="sourceCode" id="cb85"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb85-1"><a href="ch-misc.html#cb85-1"></a><span class="dt">uint8_t</span> gap_set_connection_cte_tx_param(</span>
+<span id="cb85-2"><a href="ch-misc.html#cb85-2"></a>  <span class="co">// 连接句柄</span></span>
+<span id="cb85-3"><a href="ch-misc.html#cb85-3"></a>  <span class="dt">const</span> hci_con_handle_t  conn_handle,</span>
+<span id="cb85-4"><a href="ch-misc.html#cb85-4"></a>  <span class="co">// 允许发送的 CTE 类型组合</span></span>
+<span id="cb85-5"><a href="ch-misc.html#cb85-5"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>           cte_types,</span>
+<span id="cb85-6"><a href="ch-misc.html#cb85-6"></a>  <span class="co">// 用于 AoD 发送的天线切换模板的长度</span></span>
+<span id="cb85-7"><a href="ch-misc.html#cb85-7"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>           switching_pattern_len,</span>
+<span id="cb85-8"><a href="ch-misc.html#cb85-8"></a>  <span class="co">// 用于 AoD 发送的天线切换模板</span></span>
+<span id="cb85-9"><a href="ch-misc.html#cb85-9"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>          *antenna_ids</span>
+<span id="cb85-10"><a href="ch-misc.html#cb85-10"></a>);</span></code></pre></div>
 <p>对于 AoA 模式，不需要配置天线切换模板，但是模板的长度必须至少为 <span class="math inline">\(2\)</span>：</p>
-<div class="sourceCode" id="cb85"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb85-1"><a href="ch-misc.html#cb85-1"></a>gap_set_connection_cte_tx_param(</span>
-<span id="cb85-2"><a href="ch-misc.html#cb85-2"></a>  con_handle, (<span class="dv">1</span> &lt;&lt; CTE_AOA), <span class="dv">2</span>, NULL);</span></code></pre></div></li>
+<div class="sourceCode" id="cb86"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb86-1"><a href="ch-misc.html#cb86-1"></a>gap_set_connection_cte_tx_param(</span>
+<span id="cb86-2"><a href="ch-misc.html#cb86-2"></a>  con_handle, (<span class="dv">1</span> &lt;&lt; CTE_AOA), <span class="dv">2</span>, NULL);</span></code></pre></div></li>
 <li><p>调用 <code>gap_set_connection_cte_response_enable</code> 使能 CTE 响应：</p>
-<div class="sourceCode" id="cb86"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb86-1"><a href="ch-misc.html#cb86-1"></a><span class="dt">uint8_t</span> gap_set_connection_cte_response_enable(</span>
-<span id="cb86-2"><a href="ch-misc.html#cb86-2"></a>  <span class="co">// 连接句柄</span></span>
-<span id="cb86-3"><a href="ch-misc.html#cb86-3"></a>  <span class="dt">const</span> hci_con_handle_t  conn_handle,</span>
-<span id="cb86-4"><a href="ch-misc.html#cb86-4"></a>  <span class="co">// 是否使能</span></span>
-<span id="cb86-5"><a href="ch-misc.html#cb86-5"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>           enable);</span></code></pre></div></li>
+<div class="sourceCode" id="cb87"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb87-1"><a href="ch-misc.html#cb87-1"></a><span class="dt">uint8_t</span> gap_set_connection_cte_response_enable(</span>
+<span id="cb87-2"><a href="ch-misc.html#cb87-2"></a>  <span class="co">// 连接句柄</span></span>
+<span id="cb87-3"><a href="ch-misc.html#cb87-3"></a>  <span class="dt">const</span> hci_con_handle_t  conn_handle,</span>
+<span id="cb87-4"><a href="ch-misc.html#cb87-4"></a>  <span class="co">// 是否使能</span></span>
+<span id="cb87-5"><a href="ch-misc.html#cb87-5"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>           enable);</span></code></pre></div></li>
 </ol>
 </div>
 <div id="接收方" class="section level4 hasAnchor">
@@ -314,43 +314,43 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>使用 <code>ll_set_def_antenna</code> 配置默认天线。建立连接后：</p>
 <ol style="list-style-type: decimal">
 <li><p>调用 <code>gap_set_connection_cte_rx_param</code> 配置接收参数：</p>
-<div class="sourceCode" id="cb87"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb87-1"><a href="ch-misc.html#cb87-1"></a><span class="dt">uint8_t</span> gap_set_connection_cte_rx_param(</span>
-<span id="cb87-2"><a href="ch-misc.html#cb87-2"></a>  <span class="co">// 连接句柄</span></span>
-<span id="cb87-3"><a href="ch-misc.html#cb87-3"></a>  <span class="dt">const</span> hci_con_handle_t  conn_handle,</span>
-<span id="cb87-4"><a href="ch-misc.html#cb87-4"></a>  <span class="co">// 是否使能 CTE 采样</span></span>
-<span id="cb87-5"><a href="ch-misc.html#cb87-5"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>           sampling_enable,</span>
-<span id="cb87-6"><a href="ch-misc.html#cb87-6"></a>  <span class="co">// 时隙长度</span></span>
-<span id="cb87-7"><a href="ch-misc.html#cb87-7"></a>  <span class="dt">const</span> cte_slot_duration_type_t slot_durations,</span>
-<span id="cb87-8"><a href="ch-misc.html#cb87-8"></a>  <span class="co">// 天线切换模板的长度</span></span>
-<span id="cb87-9"><a href="ch-misc.html#cb87-9"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>           switching_pattern_len,</span>
-<span id="cb87-10"><a href="ch-misc.html#cb87-10"></a>  <span class="co">// 天线切换模板</span></span>
-<span id="cb87-11"><a href="ch-misc.html#cb87-11"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>          *antenna_ids);</span></code></pre></div>
+<div class="sourceCode" id="cb88"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb88-1"><a href="ch-misc.html#cb88-1"></a><span class="dt">uint8_t</span> gap_set_connection_cte_rx_param(</span>
+<span id="cb88-2"><a href="ch-misc.html#cb88-2"></a>  <span class="co">// 连接句柄</span></span>
+<span id="cb88-3"><a href="ch-misc.html#cb88-3"></a>  <span class="dt">const</span> hci_con_handle_t  conn_handle,</span>
+<span id="cb88-4"><a href="ch-misc.html#cb88-4"></a>  <span class="co">// 是否使能 CTE 采样</span></span>
+<span id="cb88-5"><a href="ch-misc.html#cb88-5"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>           sampling_enable,</span>
+<span id="cb88-6"><a href="ch-misc.html#cb88-6"></a>  <span class="co">// 时隙长度</span></span>
+<span id="cb88-7"><a href="ch-misc.html#cb88-7"></a>  <span class="dt">const</span> cte_slot_duration_type_t slot_durations,</span>
+<span id="cb88-8"><a href="ch-misc.html#cb88-8"></a>  <span class="co">// 天线切换模板的长度</span></span>
+<span id="cb88-9"><a href="ch-misc.html#cb88-9"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>           switching_pattern_len,</span>
+<span id="cb88-10"><a href="ch-misc.html#cb88-10"></a>  <span class="co">// 天线切换模板</span></span>
+<span id="cb88-11"><a href="ch-misc.html#cb88-11"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>          *antenna_ids);</span></code></pre></div>
 <p>时隙长度共有两种：</p>
-<div class="sourceCode" id="cb88"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb88-1"><a href="ch-misc.html#cb88-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb88-2"><a href="ch-misc.html#cb88-2"></a>{</span>
-<span id="cb88-3"><a href="ch-misc.html#cb88-3"></a>    CTE_SLOT_DURATION_1US = <span class="dv">1</span>,</span>
-<span id="cb88-4"><a href="ch-misc.html#cb88-4"></a>    CTE_SLOT_DURATION_2US = <span class="dv">2</span></span>
-<span id="cb88-5"><a href="ch-misc.html#cb88-5"></a>} cte_slot_duration_type_t;</span></code></pre></div>
+<div class="sourceCode" id="cb89"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb89-1"><a href="ch-misc.html#cb89-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
+<span id="cb89-2"><a href="ch-misc.html#cb89-2"></a>{</span>
+<span id="cb89-3"><a href="ch-misc.html#cb89-3"></a>    CTE_SLOT_DURATION_1US = <span class="dv">1</span>,</span>
+<span id="cb89-4"><a href="ch-misc.html#cb89-4"></a>    CTE_SLOT_DURATION_2US = <span class="dv">2</span></span>
+<span id="cb89-5"><a href="ch-misc.html#cb89-5"></a>} cte_slot_duration_type_t;</span></code></pre></div>
 <p>关于天线切换模板的更多信息请参考《Application Note: Direction Finding Solution》。</p></li>
 <li><p>调用 <code>gap_set_connection_cte_request_enable</code> 开始发送 CTE 请求</p>
 <p>连接模式的 CTE 为按需发送：一方发送一次 CTE 请求，对方就响应一次。</p>
-<div class="sourceCode" id="cb89"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb89-1"><a href="ch-misc.html#cb89-1"></a><span class="dt">uint8_t</span> gap_set_connection_cte_request_enable(</span>
-<span id="cb89-2"><a href="ch-misc.html#cb89-2"></a>  <span class="co">// 连接句柄</span></span>
-<span id="cb89-3"><a href="ch-misc.html#cb89-3"></a>  <span class="dt">const</span> hci_con_handle_t  conn_handle,</span>
-<span id="cb89-4"><a href="ch-misc.html#cb89-4"></a>  <span class="co">// 是否使能</span></span>
-<span id="cb89-5"><a href="ch-misc.html#cb89-5"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>           enable,</span>
-<span id="cb89-6"><a href="ch-misc.html#cb89-6"></a>  <span class="co">// 发送 CTE 请求的间隔</span></span>
-<span id="cb89-7"><a href="ch-misc.html#cb89-7"></a>  <span class="dt">const</span> <span class="dt">uint16_t</span>          requested_cte_interval,</span>
-<span id="cb89-8"><a href="ch-misc.html#cb89-8"></a>  <span class="co">// 请求的 CTE 的长度（范围 2~20，单位 8μs）</span></span>
-<span id="cb89-9"><a href="ch-misc.html#cb89-9"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>           requested_cte_length,</span>
-<span id="cb89-10"><a href="ch-misc.html#cb89-10"></a>  <span class="co">// 请求的 CTE 的类型</span></span>
-<span id="cb89-11"><a href="ch-misc.html#cb89-11"></a>  <span class="dt">const</span> cte_type_t        requested_cte_type);</span></code></pre></div>
+<div class="sourceCode" id="cb90"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb90-1"><a href="ch-misc.html#cb90-1"></a><span class="dt">uint8_t</span> gap_set_connection_cte_request_enable(</span>
+<span id="cb90-2"><a href="ch-misc.html#cb90-2"></a>  <span class="co">// 连接句柄</span></span>
+<span id="cb90-3"><a href="ch-misc.html#cb90-3"></a>  <span class="dt">const</span> hci_con_handle_t  conn_handle,</span>
+<span id="cb90-4"><a href="ch-misc.html#cb90-4"></a>  <span class="co">// 是否使能</span></span>
+<span id="cb90-5"><a href="ch-misc.html#cb90-5"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>           enable,</span>
+<span id="cb90-6"><a href="ch-misc.html#cb90-6"></a>  <span class="co">// 发送 CTE 请求的间隔</span></span>
+<span id="cb90-7"><a href="ch-misc.html#cb90-7"></a>  <span class="dt">const</span> <span class="dt">uint16_t</span>          requested_cte_interval,</span>
+<span id="cb90-8"><a href="ch-misc.html#cb90-8"></a>  <span class="co">// 请求的 CTE 的长度（范围 2~20，单位 8μs）</span></span>
+<span id="cb90-9"><a href="ch-misc.html#cb90-9"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>           requested_cte_length,</span>
+<span id="cb90-10"><a href="ch-misc.html#cb90-10"></a>  <span class="co">// 请求的 CTE 的类型</span></span>
+<span id="cb90-11"><a href="ch-misc.html#cb90-11"></a>  <span class="dt">const</span> cte_type_t        requested_cte_type);</span></code></pre></div>
 <p><code>requested_cte_interval</code> 表示每 <code>requested_cte_interval</code> 个连接间隔发送一次 CTE 请求， <span class="math inline">\(0\)</span> 表示只发送一次。
 对于 AoA，<code>requested_cte_type</code> 为 <code>CTE_AOA</code>。</p></li>
 <li><p>响应 <code>HCI_SUBEVENT_LE_CONNECTION_IQ_REPORT</code> 事件</p>
 <p>使用 <code>decode_hci_le_meta_event</code> 解析事件内容：</p>
-<div class="sourceCode" id="cb90"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb90-1"><a href="ch-misc.html#cb90-1"></a><span class="dt">const</span> le_meta_conn_iq_report_t *rpt =</span>
-<span id="cb90-2"><a href="ch-misc.html#cb90-2"></a>  decode_hci_le_meta_event(packet, le_meta_conn_iq_report_t);</span></code></pre></div>
+<div class="sourceCode" id="cb91"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb91-1"><a href="ch-misc.html#cb91-1"></a><span class="dt">const</span> le_meta_conn_iq_report_t *rpt =</span>
+<span id="cb91-2"><a href="ch-misc.html#cb91-2"></a>  decode_hci_le_meta_event(packet, le_meta_conn_iq_report_t);</span></code></pre></div>
 <p>如果 CTE 请求失败（未收到响应），则会收到 <code>HCI_SUBEVENT_LE_CTE_REQ_FAILED</code> 事件。</p></li>
 </ol>
 </div>
@@ -363,45 +363,45 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>使能周期广播后，</p>
 <ol style="list-style-type: decimal">
 <li><p>调用 <code>gap_set_connectionless_cte_tx_param</code> 配置 CTE 发送参数</p>
-<div class="sourceCode" id="cb91"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb91-1"><a href="ch-misc.html#cb91-1"></a><span class="dt">uint8_t</span> gap_set_connectionless_cte_tx_param(</span>
-<span id="cb91-2"><a href="ch-misc.html#cb91-2"></a>  <span class="co">// 广播句柄</span></span>
-<span id="cb91-3"><a href="ch-misc.html#cb91-3"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>       adv_handle,</span>
-<span id="cb91-4"><a href="ch-misc.html#cb91-4"></a>  <span class="co">// CTE 长度（范围 2~20，单位 8μs）</span></span>
-<span id="cb91-5"><a href="ch-misc.html#cb91-5"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>       cte_len,</span>
-<span id="cb91-6"><a href="ch-misc.html#cb91-6"></a>  <span class="co">// CTE 类型（对于 AoA，即 CTE_AOA）</span></span>
-<span id="cb91-7"><a href="ch-misc.html#cb91-7"></a>  <span class="dt">const</span> cte_type_t    cte_type,</span>
-<span id="cb91-8"><a href="ch-misc.html#cb91-8"></a>  <span class="co">// 一个周期广播里 CTE 发送次数</span></span>
-<span id="cb91-9"><a href="ch-misc.html#cb91-9"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>       cte_count,</span>
-<span id="cb91-10"><a href="ch-misc.html#cb91-10"></a>  <span class="co">// 用于 AoD 发送的天线切换模板的长度</span></span>
-<span id="cb91-11"><a href="ch-misc.html#cb91-11"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>       switching_pattern_len,</span>
-<span id="cb91-12"><a href="ch-misc.html#cb91-12"></a>  <span class="co">// 用于 AoD 发送的天线切换模板</span></span>
-<span id="cb91-13"><a href="ch-misc.html#cb91-13"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>      *antenna_ids);</span></code></pre></div></li>
-<li><p>调用 <code>gap_set_connectionless_cte_tx_enable</code> 使能 CTE 发送</p>
-<div class="sourceCode" id="cb92"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb92-1"><a href="ch-misc.html#cb92-1"></a><span class="dt">uint8_t</span> gap_set_connectionless_cte_tx_enable(</span>
+<div class="sourceCode" id="cb92"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb92-1"><a href="ch-misc.html#cb92-1"></a><span class="dt">uint8_t</span> gap_set_connectionless_cte_tx_param(</span>
 <span id="cb92-2"><a href="ch-misc.html#cb92-2"></a>  <span class="co">// 广播句柄</span></span>
 <span id="cb92-3"><a href="ch-misc.html#cb92-3"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>       adv_handle,</span>
-<span id="cb92-4"><a href="ch-misc.html#cb92-4"></a>  <span class="co">// 是否使能</span></span>
-<span id="cb92-5"><a href="ch-misc.html#cb92-5"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>       cte_enable);</span></code></pre></div>
+<span id="cb92-4"><a href="ch-misc.html#cb92-4"></a>  <span class="co">// CTE 长度（范围 2~20，单位 8μs）</span></span>
+<span id="cb92-5"><a href="ch-misc.html#cb92-5"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>       cte_len,</span>
+<span id="cb92-6"><a href="ch-misc.html#cb92-6"></a>  <span class="co">// CTE 类型（对于 AoA，即 CTE_AOA）</span></span>
+<span id="cb92-7"><a href="ch-misc.html#cb92-7"></a>  <span class="dt">const</span> cte_type_t    cte_type,</span>
+<span id="cb92-8"><a href="ch-misc.html#cb92-8"></a>  <span class="co">// 一个周期广播里 CTE 发送次数</span></span>
+<span id="cb92-9"><a href="ch-misc.html#cb92-9"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>       cte_count,</span>
+<span id="cb92-10"><a href="ch-misc.html#cb92-10"></a>  <span class="co">// 用于 AoD 发送的天线切换模板的长度</span></span>
+<span id="cb92-11"><a href="ch-misc.html#cb92-11"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>       switching_pattern_len,</span>
+<span id="cb92-12"><a href="ch-misc.html#cb92-12"></a>  <span class="co">// 用于 AoD 发送的天线切换模板</span></span>
+<span id="cb92-13"><a href="ch-misc.html#cb92-13"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>      *antenna_ids);</span></code></pre></div></li>
+<li><p>调用 <code>gap_set_connectionless_cte_tx_enable</code> 使能 CTE 发送</p>
+<div class="sourceCode" id="cb93"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb93-1"><a href="ch-misc.html#cb93-1"></a><span class="dt">uint8_t</span> gap_set_connectionless_cte_tx_enable(</span>
+<span id="cb93-2"><a href="ch-misc.html#cb93-2"></a>  <span class="co">// 广播句柄</span></span>
+<span id="cb93-3"><a href="ch-misc.html#cb93-3"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>       adv_handle,</span>
+<span id="cb93-4"><a href="ch-misc.html#cb93-4"></a>  <span class="co">// 是否使能</span></span>
+<span id="cb93-5"><a href="ch-misc.html#cb93-5"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>       cte_enable);</span></code></pre></div>
 <h4 id="接收方-1" class="hasAnchor"><span class="header-section-number">11.1.2.1</span> 接收方<a href="ch-misc.html#接收方-1" class="anchor-section" aria-label="Anchor link to header"></a></h4></li>
 </ol>
 <p>与周期广播建立同步后，调用 <code>gap_set_connectionless_iq_sampling_enable</code> 启动 CTE 接收。</p>
-<div class="sourceCode" id="cb93"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb93-1"><a href="ch-misc.html#cb93-1"></a><span class="dt">uint8_t</span> gap_set_connectionless_iq_sampling_enable(</span>
-<span id="cb93-2"><a href="ch-misc.html#cb93-2"></a>  <span class="co">// 同步句柄</span></span>
-<span id="cb93-3"><a href="ch-misc.html#cb93-3"></a>  <span class="dt">const</span> <span class="dt">uint16_t</span>      sync_handle,</span>
-<span id="cb93-4"><a href="ch-misc.html#cb93-4"></a>  <span class="co">// 是否使能采样</span></span>
-<span id="cb93-5"><a href="ch-misc.html#cb93-5"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>       sampling_enable,</span>
-<span id="cb93-6"><a href="ch-misc.html#cb93-6"></a>  <span class="co">// 时隙长度</span></span>
-<span id="cb93-7"><a href="ch-misc.html#cb93-7"></a>  <span class="dt">const</span> cte_slot_duration_type_t slot_durations,</span>
-<span id="cb93-8"><a href="ch-misc.html#cb93-8"></a>  <span class="co">// 每个周期广播间隔内最多接收多少个 CTE</span></span>
-<span id="cb93-9"><a href="ch-misc.html#cb93-9"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>       max_sampled_ctes,</span>
-<span id="cb93-10"><a href="ch-misc.html#cb93-10"></a>  <span class="co">// 天线切换模板长度</span></span>
-<span id="cb93-11"><a href="ch-misc.html#cb93-11"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>       switching_pattern_len,</span>
-<span id="cb93-12"><a href="ch-misc.html#cb93-12"></a>  <span class="co">// 天线切换模板</span></span>
-<span id="cb93-13"><a href="ch-misc.html#cb93-13"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>      *antenna_ids);</span></code></pre></div>
+<div class="sourceCode" id="cb94"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb94-1"><a href="ch-misc.html#cb94-1"></a><span class="dt">uint8_t</span> gap_set_connectionless_iq_sampling_enable(</span>
+<span id="cb94-2"><a href="ch-misc.html#cb94-2"></a>  <span class="co">// 同步句柄</span></span>
+<span id="cb94-3"><a href="ch-misc.html#cb94-3"></a>  <span class="dt">const</span> <span class="dt">uint16_t</span>      sync_handle,</span>
+<span id="cb94-4"><a href="ch-misc.html#cb94-4"></a>  <span class="co">// 是否使能采样</span></span>
+<span id="cb94-5"><a href="ch-misc.html#cb94-5"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>       sampling_enable,</span>
+<span id="cb94-6"><a href="ch-misc.html#cb94-6"></a>  <span class="co">// 时隙长度</span></span>
+<span id="cb94-7"><a href="ch-misc.html#cb94-7"></a>  <span class="dt">const</span> cte_slot_duration_type_t slot_durations,</span>
+<span id="cb94-8"><a href="ch-misc.html#cb94-8"></a>  <span class="co">// 每个周期广播间隔内最多接收多少个 CTE</span></span>
+<span id="cb94-9"><a href="ch-misc.html#cb94-9"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>       max_sampled_ctes,</span>
+<span id="cb94-10"><a href="ch-misc.html#cb94-10"></a>  <span class="co">// 天线切换模板长度</span></span>
+<span id="cb94-11"><a href="ch-misc.html#cb94-11"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>       switching_pattern_len,</span>
+<span id="cb94-12"><a href="ch-misc.html#cb94-12"></a>  <span class="co">// 天线切换模板</span></span>
+<span id="cb94-13"><a href="ch-misc.html#cb94-13"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span>      *antenna_ids);</span></code></pre></div>
 <p>此后就可以周期性收到 <code>HCI_SUBEVENT_LE_CONNECTIONLESS_IQ_REPORT</code> 事件，利用 <code>decode_hci_le_meta_event</code>
 解析事件内容：</p>
-<div class="sourceCode" id="cb94"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb94-1"><a href="ch-misc.html#cb94-1"></a><span class="dt">const</span> le_meta_connless_iq_report_t *rpt =</span>
-<span id="cb94-2"><a href="ch-misc.html#cb94-2"></a>  decode_hci_le_meta_event(packet, le_meta_connless_iq_report_t);</span></code></pre></div>
+<div class="sourceCode" id="cb95"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb95-1"><a href="ch-misc.html#cb95-1"></a><span class="dt">const</span> le_meta_connless_iq_report_t *rpt =</span>
+<span id="cb95-2"><a href="ch-misc.html#cb95-2"></a>  decode_hci_le_meta_event(packet, le_meta_connless_iq_report_t);</span></code></pre></div>
 </div>
 </div>
 <div id="基于私有方式-1-的-cte-接收和发送" class="section level3 hasAnchor">
@@ -431,17 +431,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>按照规范，进入连接模式后，DATA LENGTH 更新流程可以由主或从设备在任何时刻发起。这导致了一个问题：某些芯片无法处理对方设备“随时”发起的
 DATA LENGTH 更新流程<a href="#fn36" class="footnote-ref" id="fnref36"><sup>36</sup></a>。
 为了更新地兼容不同的芯片，协议栈定义了两个配置项：</p>
-<div class="sourceCode" id="cb95"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb95-1"><a href="ch-misc.html#cb95-1"></a><span class="kw">enum</span> btstack_config_item {</span>
-<span id="cb95-2"><a href="ch-misc.html#cb95-2"></a>    STACK_ATT_SERVER_ENABLE_AUTO_DATA_LEN_REQ = <span class="dv">1</span>,</span>
-<span id="cb95-3"><a href="ch-misc.html#cb95-3"></a>    STACK_GATT_CLIENT_DISABLE_AUTO_DATA_LEN_REQ = <span class="dv">2</span>,</span>
-<span id="cb95-4"><a href="ch-misc.html#cb95-4"></a>    <span class="co">//...</span></span>
-<span id="cb95-5"><a href="ch-misc.html#cb95-5"></a>};</span></code></pre></div>
+<div class="sourceCode" id="cb96"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb96-1"><a href="ch-misc.html#cb96-1"></a><span class="kw">enum</span> btstack_config_item {</span>
+<span id="cb96-2"><a href="ch-misc.html#cb96-2"></a>    STACK_ATT_SERVER_ENABLE_AUTO_DATA_LEN_REQ = <span class="dv">1</span>,</span>
+<span id="cb96-3"><a href="ch-misc.html#cb96-3"></a>    STACK_GATT_CLIENT_DISABLE_AUTO_DATA_LEN_REQ = <span class="dv">2</span>,</span>
+<span id="cb96-4"><a href="ch-misc.html#cb96-4"></a>    <span class="co">//...</span></span>
+<span id="cb96-5"><a href="ch-misc.html#cb96-5"></a>};</span></code></pre></div>
 <p>这两个配置分别控制 GATT Server、Client 在 MTU EXCHANGE 时是否自动发起 DATA LENGTH 更新流程。默认情况下，Servier 不会自动发起更新流程，
 而 Client 会自动发起。</p>
 <p>通过 <code>btstack_config</code> 配置：</p>
-<div class="sourceCode" id="cb96"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb96-1"><a href="ch-misc.html#cb96-1"></a><span class="dt">void</span> btstack_config(</span>
-<span id="cb96-2"><a href="ch-misc.html#cb96-2"></a>  <span class="co">// btstack_config_item 的比特组合</span></span>
-<span id="cb96-3"><a href="ch-misc.html#cb96-3"></a>  <span class="dt">uint32_t</span> flags);</span></code></pre></div>
+<div class="sourceCode" id="cb97"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb97-1"><a href="ch-misc.html#cb97-1"></a><span class="dt">void</span> btstack_config(</span>
+<span id="cb97-2"><a href="ch-misc.html#cb97-2"></a>  <span class="co">// btstack_config_item 的比特组合</span></span>
+<span id="cb97-3"><a href="ch-misc.html#cb97-3"></a>  <span class="dt">uint32_t</span> flags);</span></code></pre></div>
 </div>
 </div>
 <div id="api-返回值" class="section level2 hasAnchor">
@@ -472,43 +472,43 @@ DATA LENGTH 更新流程<a href="#fn36" class="footnote-ref" id="fnref36"><sup>3
 <li>该模块不是线程安全的。</li>
 </ol>
 <p>这个模块本身没有数据持久化。持久化需要开发者通过 <code>kv_init</code><a href="#fn37" class="footnote-ref" id="fnref37"><sup>37</sup></a> 提供回调来实现：</p>
-<div class="sourceCode" id="cb97"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb97-1"><a href="ch-misc.html#cb97-1"></a><span class="dt">void</span> kv_init(</span>
-<span id="cb97-2"><a href="ch-misc.html#cb97-2"></a>  <span class="co">// 用来保存数据的回调</span></span>
-<span id="cb97-3"><a href="ch-misc.html#cb97-3"></a>  f_kv_write_to_nvm f_write,</span>
-<span id="cb97-4"><a href="ch-misc.html#cb97-4"></a>  <span class="co">// 用来读取（恢复）数据的回调</span></span>
-<span id="cb97-5"><a href="ch-misc.html#cb97-5"></a>  f_kv_read_from_nvm f_read);</span></code></pre></div>
+<div class="sourceCode" id="cb98"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb98-1"><a href="ch-misc.html#cb98-1"></a><span class="dt">void</span> kv_init(</span>
+<span id="cb98-2"><a href="ch-misc.html#cb98-2"></a>  <span class="co">// 用来保存数据的回调</span></span>
+<span id="cb98-3"><a href="ch-misc.html#cb98-3"></a>  f_kv_write_to_nvm f_write,</span>
+<span id="cb98-4"><a href="ch-misc.html#cb98-4"></a>  <span class="co">// 用来读取（恢复）数据的回调</span></span>
+<span id="cb98-5"><a href="ch-misc.html#cb98-5"></a>  f_kv_read_from_nvm f_read);</span></code></pre></div>
 <p>当键值存储模块初始化时，会调用 <code>f_read</code> 恢复之前的数据状态；当存储里的数据更新后，键值存储模块会自动调用 <code>f_write</code> 回调。
 考虑到 Flash 不宜频繁擦写，键值存储模块通过定时器超时来触发写入。每当数据更新时，复位定时器。整个储存的总大小为
 <code>DB_CAPACITY_SIZE</code>。</p>
 <p>这个存储模块的增、删、改、查等接口如下。</p>
 <ul>
 <li><p>增/改：<code>kv_put</code></p>
-<div class="sourceCode" id="cb98"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb98-1"><a href="ch-misc.html#cb98-1"></a><span class="co">// 如果 key 不存在，为“增”；如果 key 存在，为“改”</span></span>
-<span id="cb98-2"><a href="ch-misc.html#cb98-2"></a><span class="dt">int</span> kv_put(</span>
-<span id="cb98-3"><a href="ch-misc.html#cb98-3"></a>  <span class="dt">const</span> kvkey_t key,</span>
-<span id="cb98-4"><a href="ch-misc.html#cb98-4"></a>  <span class="co">// 值</span></span>
-<span id="cb98-5"><a href="ch-misc.html#cb98-5"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> *data,</span>
-<span id="cb98-6"><a href="ch-misc.html#cb98-6"></a>  <span class="co">// 值的长度</span></span>
-<span id="cb98-7"><a href="ch-misc.html#cb98-7"></a>  <span class="dt">int16_t</span> len);</span></code></pre></div></li>
+<div class="sourceCode" id="cb99"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb99-1"><a href="ch-misc.html#cb99-1"></a><span class="co">// 如果 key 不存在，为“增”；如果 key 存在，为“改”</span></span>
+<span id="cb99-2"><a href="ch-misc.html#cb99-2"></a><span class="dt">int</span> kv_put(</span>
+<span id="cb99-3"><a href="ch-misc.html#cb99-3"></a>  <span class="dt">const</span> kvkey_t key,</span>
+<span id="cb99-4"><a href="ch-misc.html#cb99-4"></a>  <span class="co">// 值</span></span>
+<span id="cb99-5"><a href="ch-misc.html#cb99-5"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> *data,</span>
+<span id="cb99-6"><a href="ch-misc.html#cb99-6"></a>  <span class="co">// 值的长度</span></span>
+<span id="cb99-7"><a href="ch-misc.html#cb99-7"></a>  <span class="dt">int16_t</span> len);</span></code></pre></div></li>
 <li><p>删：<code>kv_remove</code></p>
-<div class="sourceCode" id="cb99"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb99-1"><a href="ch-misc.html#cb99-1"></a><span class="dt">void</span> kv_remove(</span>
-<span id="cb99-2"><a href="ch-misc.html#cb99-2"></a>  <span class="co">// 键</span></span>
-<span id="cb99-3"><a href="ch-misc.html#cb99-3"></a>  <span class="dt">const</span> kvkey_t key)</span></code></pre></div></li>
+<div class="sourceCode" id="cb100"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb100-1"><a href="ch-misc.html#cb100-1"></a><span class="dt">void</span> kv_remove(</span>
+<span id="cb100-2"><a href="ch-misc.html#cb100-2"></a>  <span class="co">// 键</span></span>
+<span id="cb100-3"><a href="ch-misc.html#cb100-3"></a>  <span class="dt">const</span> kvkey_t key)</span></code></pre></div></li>
 <li><p>查：<code>kv_get</code></p>
-<div class="sourceCode" id="cb100"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb100-1"><a href="ch-misc.html#cb100-1"></a><span class="co">// 返回：指向值的指针</span></span>
-<span id="cb100-2"><a href="ch-misc.html#cb100-2"></a><span class="dt">uint8_t</span> *kv_get(</span>
-<span id="cb100-3"><a href="ch-misc.html#cb100-3"></a>  <span class="co">// 键</span></span>
-<span id="cb100-4"><a href="ch-misc.html#cb100-4"></a>  <span class="dt">const</span> kvkey_t key,</span>
-<span id="cb100-5"><a href="ch-misc.html#cb100-5"></a>  <span class="co">// 输出：值的长度</span></span>
-<span id="cb100-6"><a href="ch-misc.html#cb100-6"></a>  <span class="dt">int16_t</span> *len);</span></code></pre></div>
+<div class="sourceCode" id="cb101"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb101-1"><a href="ch-misc.html#cb101-1"></a><span class="co">// 返回：指向值的指针</span></span>
+<span id="cb101-2"><a href="ch-misc.html#cb101-2"></a><span class="dt">uint8_t</span> *kv_get(</span>
+<span id="cb101-3"><a href="ch-misc.html#cb101-3"></a>  <span class="co">// 键</span></span>
+<span id="cb101-4"><a href="ch-misc.html#cb101-4"></a>  <span class="dt">const</span> kvkey_t key,</span>
+<span id="cb101-5"><a href="ch-misc.html#cb101-5"></a>  <span class="co">// 输出：值的长度</span></span>
+<span id="cb101-6"><a href="ch-misc.html#cb101-6"></a>  <span class="dt">int16_t</span> *len);</span></code></pre></div>
 <p>这个 API 返回的指针直接指向模块内值的存储空间，允许开发者在不改变值的长度的前提下修改其的内容。
 修改之后需要调用 <code>kv_value_modified</code> 告知存储模块。</p></li>
 <li><p>遍历：<code>kv_visit</code></p>
-<div class="sourceCode" id="cb101"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb101-1"><a href="ch-misc.html#cb101-1"></a><span class="dt">void</span> kv_visit(</span>
-<span id="cb101-2"><a href="ch-misc.html#cb101-2"></a>  <span class="co">// 访问者回调</span></span>
-<span id="cb101-3"><a href="ch-misc.html#cb101-3"></a>  f_kv_visitor visitor,</span>
-<span id="cb101-4"><a href="ch-misc.html#cb101-4"></a>  <span class="co">// 传递给回调的用户参数</span></span>
-<span id="cb101-5"><a href="ch-misc.html#cb101-5"></a>  <span class="dt">void</span> *user_data);</span></code></pre></div>
+<div class="sourceCode" id="cb102"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb102-1"><a href="ch-misc.html#cb102-1"></a><span class="dt">void</span> kv_visit(</span>
+<span id="cb102-2"><a href="ch-misc.html#cb102-2"></a>  <span class="co">// 访问者回调</span></span>
+<span id="cb102-3"><a href="ch-misc.html#cb102-3"></a>  f_kv_visitor visitor,</span>
+<span id="cb102-4"><a href="ch-misc.html#cb102-4"></a>  <span class="co">// 传递给回调的用户参数</span></span>
+<span id="cb102-5"><a href="ch-misc.html#cb102-5"></a>  <span class="dt">void</span> *user_data);</span></code></pre></div>
 <p>使用这个 API 可以遍历存储内所有的键值对。</p></li>
 </ul>
 </div>
@@ -518,33 +518,33 @@ DATA LENGTH 更新流程<a href="#fn36" class="footnote-ref" id="fnref36"><sup>3
 删、查等接口如下。</p>
 <ul>
 <li><p>查：<code>le_device_db_find</code></p>
-<div class="sourceCode" id="cb102"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb102-1"><a href="ch-misc.html#cb102-1"></a>le_device_memory_db_t *le_device_db_find(</span>
-<span id="cb102-2"><a href="ch-misc.html#cb102-2"></a>  <span class="co">// 待查设备的地址类型</span></span>
-<span id="cb102-3"><a href="ch-misc.html#cb102-3"></a>  <span class="dt">const</span> <span class="dt">int</span> addr_type,</span>
-<span id="cb102-4"><a href="ch-misc.html#cb102-4"></a>  <span class="co">// 待查设备的地址</span></span>
-<span id="cb102-5"><a href="ch-misc.html#cb102-5"></a>  <span class="dt">const</span> bd_addr_t addr,</span>
-<span id="cb102-6"><a href="ch-misc.html#cb102-6"></a>  <span class="co">// 输出：在数据库里的序号</span></span>
-<span id="cb102-7"><a href="ch-misc.html#cb102-7"></a>  <span class="dt">int</span> *index);</span></code></pre></div></li>
+<div class="sourceCode" id="cb103"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb103-1"><a href="ch-misc.html#cb103-1"></a>le_device_memory_db_t *le_device_db_find(</span>
+<span id="cb103-2"><a href="ch-misc.html#cb103-2"></a>  <span class="co">// 待查设备的地址类型</span></span>
+<span id="cb103-3"><a href="ch-misc.html#cb103-3"></a>  <span class="dt">const</span> <span class="dt">int</span> addr_type,</span>
+<span id="cb103-4"><a href="ch-misc.html#cb103-4"></a>  <span class="co">// 待查设备的地址</span></span>
+<span id="cb103-5"><a href="ch-misc.html#cb103-5"></a>  <span class="dt">const</span> bd_addr_t addr,</span>
+<span id="cb103-6"><a href="ch-misc.html#cb103-6"></a>  <span class="co">// 输出：在数据库里的序号</span></span>
+<span id="cb103-7"><a href="ch-misc.html#cb103-7"></a>  <span class="dt">int</span> *index);</span></code></pre></div></li>
 <li><p>删</p>
 <p>直接按地址删除：</p>
-<div class="sourceCode" id="cb103"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb103-1"><a href="ch-misc.html#cb103-1"></a><span class="dt">void</span> le_device_db_remove(</span>
-<span id="cb103-2"><a href="ch-misc.html#cb103-2"></a>  <span class="co">// 待删设备的地址类型</span></span>
-<span id="cb103-3"><a href="ch-misc.html#cb103-3"></a>  <span class="dt">const</span> <span class="dt">int</span> addr_type,</span>
-<span id="cb103-4"><a href="ch-misc.html#cb103-4"></a>  <span class="co">// 待删设备的地址</span></span>
-<span id="cb103-5"><a href="ch-misc.html#cb103-5"></a>  <span class="dt">const</span> bd_addr_t addr);</span></code></pre></div>
+<div class="sourceCode" id="cb104"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb104-1"><a href="ch-misc.html#cb104-1"></a><span class="dt">void</span> le_device_db_remove(</span>
+<span id="cb104-2"><a href="ch-misc.html#cb104-2"></a>  <span class="co">// 待删设备的地址类型</span></span>
+<span id="cb104-3"><a href="ch-misc.html#cb104-3"></a>  <span class="dt">const</span> <span class="dt">int</span> addr_type,</span>
+<span id="cb104-4"><a href="ch-misc.html#cb104-4"></a>  <span class="co">// 待删设备的地址</span></span>
+<span id="cb104-5"><a href="ch-misc.html#cb104-5"></a>  <span class="dt">const</span> bd_addr_t addr);</span></code></pre></div>
 <p>根据在数据库里的编号删除：</p>
-<div class="sourceCode" id="cb104"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb104-1"><a href="ch-misc.html#cb104-1"></a><span class="dt">void</span> le_device_db_remove_key(</span>
-<span id="cb104-2"><a href="ch-misc.html#cb104-2"></a>  <span class="co">// 待删设备在数据库里的编号</span></span>
-<span id="cb104-3"><a href="ch-misc.html#cb104-3"></a>  <span class="dt">int</span> index);</span></code></pre></div></li>
+<div class="sourceCode" id="cb105"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb105-1"><a href="ch-misc.html#cb105-1"></a><span class="dt">void</span> le_device_db_remove_key(</span>
+<span id="cb105-2"><a href="ch-misc.html#cb105-2"></a>  <span class="co">// 待删设备在数据库里的编号</span></span>
+<span id="cb105-3"><a href="ch-misc.html#cb105-3"></a>  <span class="dt">int</span> index);</span></code></pre></div></li>
 <li><p>遍历</p>
 <p>这个模块支持迭代器遍历：</p>
-<div class="sourceCode" id="cb105"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb105-1"><a href="ch-misc.html#cb105-1"></a>le_device_memory_db_iter_t iter;</span>
-<span id="cb105-2"><a href="ch-misc.html#cb105-2"></a>le_device_db_iter_init(&amp;iter);</span>
-<span id="cb105-3"><a href="ch-misc.html#cb105-3"></a><span class="cf">while</span> (le_device_db_iter_next(&amp;iter))</span>
-<span id="cb105-4"><a href="ch-misc.html#cb105-4"></a>{</span>
-<span id="cb105-5"><a href="ch-misc.html#cb105-5"></a>    le_device_memory_db_t *cur = le_device_db_iter_cur(&amp;iter);</span>
-<span id="cb105-6"><a href="ch-misc.html#cb105-6"></a>    <span class="co">// ...</span></span>
-<span id="cb105-7"><a href="ch-misc.html#cb105-7"></a>}</span></code></pre></div></li>
+<div class="sourceCode" id="cb106"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb106-1"><a href="ch-misc.html#cb106-1"></a>le_device_memory_db_iter_t iter;</span>
+<span id="cb106-2"><a href="ch-misc.html#cb106-2"></a>le_device_db_iter_init(&amp;iter);</span>
+<span id="cb106-3"><a href="ch-misc.html#cb106-3"></a><span class="cf">while</span> (le_device_db_iter_next(&amp;iter))</span>
+<span id="cb106-4"><a href="ch-misc.html#cb106-4"></a>{</span>
+<span id="cb106-5"><a href="ch-misc.html#cb106-5"></a>    le_device_memory_db_t *cur = le_device_db_iter_cur(&amp;iter);</span>
+<span id="cb106-6"><a href="ch-misc.html#cb106-6"></a>    <span class="co">// ...</span></span>
+<span id="cb106-7"><a href="ch-misc.html#cb106-7"></a>}</span></code></pre></div></li>
 </ul>
 
 </div>

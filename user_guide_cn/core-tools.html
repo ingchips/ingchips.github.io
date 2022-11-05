@@ -6,12 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>4 核心工具 | INGCHIPS SDK 开发者用户手册</title>
   <meta name="description" content="本文是 INGCHIPS SDK 的开发者用户手册。" />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
 
   <meta property="og:title" content="4 核心工具 | INGCHIPS SDK 开发者用户手册" />
   <meta property="og:type" content="book" />
-  
-  <meta property="og:image" content="./img/sdk_overview.png" />
+  <meta property="og:image" content="/./img/sdk_overview.png" />
   <meta property="og:description" content="本文是 INGCHIPS SDK 的开发者用户手册。" />
   
 
@@ -19,12 +18,12 @@
   <meta name="twitter:title" content="4 核心工具 | INGCHIPS SDK 开发者用户手册" />
   
   <meta name="twitter:description" content="本文是 INGCHIPS SDK 的开发者用户手册。" />
-  <meta name="twitter:image" content="./img/sdk_overview.png" />
+  <meta name="twitter:image" content="/./img/sdk_overview.png" />
 
-<meta name="author" content="v1.2.7" />
+<meta name="author" content="Ingchips Technology Co., Ltd." />
 
 
-<meta name="date" content="2022-07-30" />
+<meta name="date" content="2022-10-31" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +32,8 @@
   
 <link rel="prev" href="tutorial.html"/>
 <link rel="next" href="dive-into-sdk.html"/>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -49,8 +49,10 @@
 
 
 
-
 <script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
 <style type="text/css">
@@ -117,6 +119,7 @@ code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
+
 
 <link rel="stylesheet" href="css/style.css" type="text/css" />
 </head>
@@ -390,11 +393,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="core-tools" class="section level1">
-<h1><span class="header-section-number">4</span> 核心工具</h1>
+<div id="core-tools" class="section level1 hasAnchor">
+<h1><span class="header-section-number">4</span> 核心工具<a href="core-tools.html#core-tools" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>SDK 核心工具在整个 BLE 开发过程中扮演重要角色。</p>
-<div id="向导" class="section level2">
-<h2><span class="header-section-number">4.1</span> 向导</h2>
+<div id="向导" class="section level2 hasAnchor">
+<h2><span class="header-section-number">4.1</span> 向导<a href="core-tools.html#向导" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>向导（<code>ingWizard</code>） 是整个开发周期中的推荐入口。我们用这个工具创建、打开项目，编辑项目数据，迁移项目版本等。</p>
 <ol style="list-style-type: decimal">
 <li><p>创建项目</p>
@@ -430,10 +433,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </p>
 </div>
 </div>
-<div id="ch2-downloader" class="section level2">
-<h2><span class="header-section-number">4.2</span> 下载器</h2>
-<div id="介绍" class="section level3">
-<h3><span class="header-section-number">4.2.1</span> 介绍</h3>
+<div id="ch2-downloader" class="section level2 hasAnchor">
+<h2><span class="header-section-number">4.2</span> 下载器<a href="core-tools.html#ch2-downloader" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="介绍" class="section level3 hasAnchor">
+<h3><span class="header-section-number">4.2.1</span> 介绍<a href="core-tools.html#介绍" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>下载器可以将最多 6 个映像文件（二进制文件）通过 UART 烧录到芯片。
 它需要芯片内的引导程序（Bootloader）的配合。Bootloader 可以通过以下途径进入 Flash 下载状态：</p>
 <ul>
@@ -460,7 +463,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 来获得更高的下载速率。
 工具支持的最高波特率为 <code>921600</code>。受限于内部 Flash 的自身特性，
 将波特率设为比 <code>512000</code> 更高的数值并不会带来下载速率的进一步提升。其它 UART 参数保持不变。</p>
-<div class="figure" style="text-align: center"><span id="fig:ch2-downloader-uart-cfg"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-downloader-uart-cfg"></span>
 <img src="img/ch2-downloader-uart-cfg.png" alt="Configurate UART" width="40%" />
 <p class="caption">
 Figure 4.1: Configurate UART
@@ -469,7 +472,7 @@ Figure 4.1: Configurate UART
 <p>整个下载过程包含多个步骤：下载、验证、设置启动地址、启动程序。这些步骤可通过点击
 <code>Options</code> 进行设置（图 <a href="core-tools.html#fig:ch2-downloader-options">4.2</a>）。
 对于 ING918xx，启动地址（入口地址） <code>0x4000</code> 等于 platform 的加载地址。</p>
-<div class="figure" style="text-align: center"><span id="fig:ch2-downloader-options"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-downloader-options"></span>
 <img src="img/ch2-downloader-options.png" alt="Downloader Options" width="40%" />
 <p class="caption">
 Figure 4.2: Downloader Options
@@ -486,8 +489,8 @@ Figure 4.2: Downloader Options
 <p>点击 <code>Start</code> 开始下载，更确切地说是开始等待握手信号。Bootloader 只发送一次握手信号，
 如果芯片已经上电，Bootloader 已经发送过了握手信号，这种情况下，我们可以点击 <code>Force</code> 跳过等待过程，直接开始下载。</p>
 </div>
-<div id="script-mass-prod" class="section level3">
-<h3><span class="header-section-number">4.2.2</span> 脚本与量产</h3>
+<div id="script-mass-prod" class="section level3 hasAnchor">
+<h3><span class="header-section-number">4.2.2</span> 脚本与量产<a href="core-tools.html#script-mass-prod" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>下载器支持脚本，可以应用于量产。在下载脚本里可以捕捉到两个事件：</p>
 <ul>
 <li><p><code>OnStartRun</code></p>
@@ -527,8 +530,8 @@ Figure 4.2: Downloader Options
 <span id="cb33-22"><a href="core-tools.html#cb33-22"></a>  Data[BD_ADDR_ADDR + <span class="dv">2</span>] := (BatchCounter <span class="kw">shr</span> <span class="dv">8</span>) <span class="kw">and</span> <span class="bn">$FF;</span></span>
 <span id="cb33-23"><a href="core-tools.html#cb33-23"></a><span class="kw">end</span>;</span></code></pre></div>
 </div>
-<div id="flash-读保护适用于-ing918xx" class="section level3">
-<h3><span class="header-section-number">4.2.3</span> Flash 读保护（适用于 ING918xx）</h3>
+<div id="flash-读保护适用于-ing918xx" class="section level3 hasAnchor">
+<h3><span class="header-section-number">4.2.3</span> Flash 读保护（适用于 ING918xx）<a href="core-tools.html#flash-读保护适用于-ing918xx" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>为防止对 Flash 内的数据和程序的非法访问，918xx 设计了一种读保护机制。
 读保护一旦启用，JTAG/SWD 就下载器都无法访问 Flash。
 要使芯片重新启用 JTAG/SWD 调试、下载功能，需要一个经过 <em>解锁</em> 过程。<em>解锁</em> 时，
@@ -539,8 +542,8 @@ Flash 里的数据被全部擦除。</p>
 <em>解锁</em> 时，Flash 里的数据被全部擦除，不要忘记重新下载 platform。</p>
 <p>所有的配置参数都保存在一个 <em>ini</em> 文件内。</p>
 </div>
-<div id="python-版本" class="section level3">
-<h3><span class="header-section-number">4.2.4</span> Python 版本</h3>
+<div id="python-版本" class="section level3 hasAnchor">
+<h3><span class="header-section-number">4.2.4</span> Python 版本<a href="core-tools.html#python-版本" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>SDK 同时提供了一个 Python 版本的下载器（<em>icsdw.py</em>）。它是开源的，可以与其它工具集成。</p>
 <p>本工具是用 Python 3 开发，使用
 <code>PySerial</code><a href="#fn16" class="footnote-ref" id="fnref16"><sup>16</sup></a>
@@ -565,14 +568,14 @@ GUI 版工具将 <em>RemObjects Pascal</em> 保存在 “<em>options</em>” 里
 <span id="cb34-12"><a href="core-tools.html#cb34-12"></a>    <span class="cf">return</span> <span class="va">False</span>, <span class="bu">bytes</span>(ba)</span></code></pre></div>
 </div>
 </div>
-<div id="ingtracer" class="section level2">
-<h2><span class="header-section-number">4.3</span> Trace 工具</h2>
+<div id="ingtracer" class="section level2 hasAnchor">
+<h2><span class="header-section-number">4.3</span> Trace 工具<a href="core-tools.html#ingtracer" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Trace 工具（<code>ingTracer</code>）是
 <a href="dive-into-sdk.html#debugging-tracing">调试与跟踪</a> 里提到的 Trace 数据的可视化工具.</p>
 <p>为了限制屏幕上的数据，<code>ingTracer</code> 将数据划分为若干帧。每一帧的长度为 5 秒。
 为了使呈现的数据更具有连续性，当选择了一帧时，除了当前帧，
 其前后各一帧也会显示出来。</p>
-<div class="figure" style="text-align: center"><span id="fig:ch2-tracer-main"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-tracer-main"></span>
 <img src="img/ch2-tracer-main.png" alt="ingTracer 主界面" width="85%" />
 <p class="caption">
 Figure 4.3: ingTracer 主界面
@@ -581,7 +584,7 @@ Figure 4.3: ingTracer 主界面
 <p><strong>Graph</strong> 将所有数据图形化显示。点击 <strong>Graph</strong> 里的一项，
 会在 <strong>Message Decoder</strong> 和 <strong>Message Hex Viewer</strong> 显示详细的解码信息。<strong>Graph</strong> 支持一些 CAD 操作，
 如缩放、平移、测量等。选择菜单 <code>Help</code> -&gt; <code>About</code> 查看详细信息。 （图 <a href="core-tools.html#fig:ch2-tracer-main">4.3</a>）</p>
-<div class="figure" style="text-align: center"><span id="fig:ch2-tracer-msc"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-tracer-msc"></span>
 <img src="img/ch2-tracer-msc.png" alt="MSC Generated by ingTracer" width="85%" />
 <p class="caption">
 Figure 4.4: MSC Generated by ingTracer
@@ -610,7 +613,6 @@ Figure 4.4: MSC Generated by ingTracer
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -629,6 +631,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
@@ -649,6 +652,10 @@ gitbook.start({
 "text": null
 },
 "download": ["user_guide.pdf", "user_guide.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "subsection"
 }
@@ -662,7 +669,7 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

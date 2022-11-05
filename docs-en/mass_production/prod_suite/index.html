@@ -1,0 +1,743 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>使用量产套件进行量产 - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="如何使用量产套件进行产品量产。"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+
+      <div id="box">
+        <input id="in_search" type="search" name="search" placeholder="搜索：输入并回车">
+      </div>
+
+      <script>
+        let search_input = document.getElementById('in_search');
+        if (search_input) {
+          search_input.addEventListener("keypress", function(event) {
+          if (event.key === "Enter") {
+            window.open('https://www.bing.com/search?q=' + encodeURIComponent(search_input.value) + '%20site%3A' + window.location.hostname);
+            event.preventDefault();
+            }
+          });
+        }
+      </script>
+
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item has-children">
+
+              
+<a class="" href="/docs/sdk/apps/#web-apps">
+  
+  Web 工具
+  
+</a>
+
+              
+
+                <ul class="submenu">
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/callgraph">
+  
+  Callgraph (调用图)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index_cn.html">
+  
+  ING918/ING916 FOTA (空中升级)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/powerprofiler/">
+  
+  Online Power Profiler
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/air_trace/">
+  
+  Trace Logger
+  
+</a>
+
+  </li>
+  
+</ul>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <div class="inner outer">
+      <div class="docs-content">
+        
+        <nav id="docs-nav" class="docs-nav">
+  <div id="docs-nav-inside" class="docs-nav-inside sticky">
+    <button id="docs-nav-toggle" class="docs-nav-toggle">Navigate Docs<span class="icon-angle-right" aria-hidden="true"></span></button>
+    <div class="docs-toc-wrap">
+      <ul id="docs-toc" class="docs-toc">
+        
+        
+
+        
+        
+        <li class="toc-item">
+          <a href="/docs/">欢迎</a>
+        </li>
+
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          <li class="toc-item has-children">
+            <a href="/docs/getting-started/">快速上手</a>
+            
+            
+              <button class="submenu-toggle"><span class="screen-reader-text">Submenu</span><span class="icon-angle-right" aria-hidden="true"></span></button>
+              
+              <ul class="toc-submenu">
+
+  <li class="toc-item">
+    <a href="/docs/getting-started/dev_board_91881B/">ING91881B 开发板使用手册</a>
+  </li>
+
+  <li class="toc-item">
+    <a href="/docs/getting-started/dev_board_91880/">ING91880 开发板使用手册</a>
+  </li>
+
+  <li class="toc-item">
+    <a href="/docs/getting-started/playground/">Playground</a>
+  </li>
+
+</ul>
+
+            
+          </li>
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          <li class="toc-item has-children">
+            <a href="/docs/products/">产品</a>
+            
+            
+              <button class="submenu-toggle"><span class="screen-reader-text">Submenu</span><span class="icon-angle-right" aria-hidden="true"></span></button>
+              
+              <ul class="toc-submenu">
+
+  <li class="toc-item">
+    <a href="/docs/products/ing9188xx/">ING9188 系列</a>
+  </li>
+
+  <li class="toc-item">
+    <a href="/docs/products/ing9187xx/">ING9187 系列</a>
+  </li>
+
+</ul>
+
+            
+          </li>
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          <li class="toc-item has-children">
+            <a href="/docs/sdk/">SDK & Apps</a>
+            
+            
+              <button class="submenu-toggle"><span class="screen-reader-text">Submenu</span><span class="icon-angle-right" aria-hidden="true"></span></button>
+              
+              <ul class="toc-submenu">
+
+  <li class="toc-item">
+    <a href="/docs/sdk/download/">Download</a>
+  </li>
+
+  <li class="toc-item">
+    <a href="/docs/sdk/apps/">Apps</a>
+  </li>
+
+</ul>
+
+            
+          </li>
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          <li class="toc-item has-children">
+            <a href="/docs/ref_design/">参考设计</a>
+            
+            
+              <button class="submenu-toggle"><span class="screen-reader-text">Submenu</span><span class="icon-angle-right" aria-hidden="true"></span></button>
+              
+              <ul class="toc-submenu">
+
+  <li class="toc-item">
+    <a href="/docs/ref_design/ing918_hardware_design_notes/">ING918X芯片硬件设计指导</a>
+  </li>
+
+  <li class="toc-item">
+    <a href="/docs/ref_design/ing02-03/">ING02-03</a>
+  </li>
+
+  <li class="toc-item">
+    <a href="/docs/ref_design/ing04-01-05/">ING04-01-05</a>
+  </li>
+
+  <li class="toc-item">
+    <a href="/docs/ref_design/ing04-01-07/">ING04-01-07</a>
+  </li>
+
+</ul>
+
+            
+          </li>
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          <li class="toc-item">
+            <a href="/docs/application-notes/">应用指南 & 开发手册</a>
+            
+            
+          </li>
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          <li class="toc-item has-children">
+            <a href="/docs/mass_production/">产品量产</a>
+            
+            
+              <button class="submenu-toggle"><span class="screen-reader-text">Submenu</span><span class="icon-angle-right" aria-hidden="true"></span></button>
+              
+              <ul class="toc-submenu">
+
+  <li class="toc-item">
+    <a href="/docs/mass_production/uart_burn/">使用 UART 接口进行产品量产</a>
+  </li>
+
+  <li class="toc-item">
+    <a href="/docs/mass_production/prod_suite/">使用量产套件进行量产</a>
+  </li>
+
+  <li class="toc-item">
+    <a href="/docs/mass_production/swd_burn/">使用 SWD 接口进行产品量产</a>
+  </li>
+
+  <li class="toc-item">
+    <a href="/docs/mass_production/ip_protection/">IP 保护</a>
+  </li>
+
+</ul>
+
+            
+          </li>
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          <li class="toc-item has-children">
+            <a href="/docs/faq/">FAQ</a>
+            
+            
+              <button class="submenu-toggle"><span class="screen-reader-text">Submenu</span><span class="icon-angle-right" aria-hidden="true"></span></button>
+              
+              <ul class="toc-submenu">
+
+  <li class="toc-item">
+    <a href="/docs/faq/iar/">IAR 相关问题</a>
+  </li>
+
+</ul>
+
+            
+          </li>
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          <li class="toc-item">
+            <a href="/docs/community/">社区</a>
+            
+            
+          </li>
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          <li class="toc-item">
+            <a href=""></a>
+            
+            
+          </li>
+        
+
+      </ul><!-- .docs-toc -->
+    </div><!-- .docs-toc-wrap -->
+  </div><!-- .docs-nav-inside -->
+</nav><!-- .docs-nav -->
+
+        <article class="post type-docs">
+          <div class="post-inside">
+            <header class="post-header">
+              <h1 class="post-title line-left">使用量产套件进行量产</h1>
+            </header><!-- .post-header -->
+            <div class="post-content">
+              <p>ING918xx 系列量产套件可以高效地进行产品量产，主要特性如下：</p>
+
+<ul>
+  <li>支持 15 路并行烧录；</li>
+  <li>内置射频、ADC、GPIO 等测试；</li>
+  <li>支持自定义测试项；</li>
+  <li>支持产品个人化（基于 Python）；</li>
+  <li>支持在线、离线两种方式。</li>
+</ul>
+
+<div class="note">
+<strong>说明:</strong> 目前量产套件仍在开发、完善中，暂时存在以下限制：
+<ul>
+<li>软件仅用于 64bit Windows</li>
+<li>不支持自定义测试项</li>
+<li>不支持离线方式</li>
+</ul>
+</div>
+
+<h2 id="1-量产板说明">1. 量产板说明</h2>
+
+<p>量产板板载 8 组共 16 路接口，其中第 1~15 路可用于产品量产，第 16 路保留。每路接口如下图。</p>
+
+<p><img src="./full_pinout_one_channel.png" alt="" /></p>
+
+<p>如下表所示，使用不同的功能需要连续不同的引脚。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left"><strong>功能</strong></th>
+      <th style="text-align: left">引脚</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">供电</td>
+      <td style="text-align: left">VCC、GND</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">烧录</td>
+      <td style="text-align: left">GPIO-2、GPIO-3<br />RST、EXT_INT</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">射频测试</td>
+      <td style="text-align: left">GPIO-2、GPIO-3</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">ADC 测试</td>
+      <td style="text-align: left">GPIO-2、GPIO-3<br />对应的 ADC 通道<br />(要测试 AIN-X 通道，则将产品的 AIN-X 连接至量产板的 ADC-X)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">GPIO 测试</td>
+      <td style="text-align: left">GPIO-2、GPIO-3<br />对应的 GPIO<br />(要测试 GPIO-X，则将产品的 GPIO-X 连接至量产板的 GPIO-X)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>量产板板载两颗 ING918xx 芯片，其中一颗用于控制（CTRLER），另一颗用于测试（TESTER）。
+短接量产板上的固件升级跳帽（ J1 ），然后将量产板连接到计算机，CTRLER 即进入升级状态。</p>
+
+<h2 id="2-软件使用说明">2. 软件使用说明</h2>
+
+<p>量产软件包含两个工具：向导工具用来检测和准备量产板，生成量产数据；执行工具用来进行实际的生产（测试、烧录）。</p>
+
+<p><img src="./overview.png" alt="" /></p>
+
+<h3 id="21-安装">2.1 安装</h3>
+
+<ul>
+  <li>Production Suite</li>
+</ul>
+
+<p>从 <a href="https://github.com/ingchips/doc_release/releases/download/v1.0/ingchips_production_suite_setup_win_x64_v0.9.1.exe">Github</a> 或者 <a href="https://download.fastgit.org/ingchips/doc_release/releases/download/v1.0/ingchips_production_suite_setup_win_x64_v0.9.1.exe">镜像</a>
+获取最新的软件，直接安装。</p>
+
+<ul>
+  <li>串口驱动</li>
+</ul>
+
+<p>将量产板连接到 PC 后，如果未能自动识别并安装驱动，手动 <a href="https://ftdichip.com/Drivers/vcp-drivers/">下载</a> 并安装串口驱动。
+驱动程序正确安装后，可从设备管理器中看到 16 个串口。</p>
+
+<ul>
+  <li>PowerShell</li>
+</ul>
+
+<p>PowerShell 是微软开发的开源软件，可以从 <a href="ms-windows-store://pdp/?ProductId=9mz1snwt0n5d">Windows 10 商店</a>安装，或者手动 <a href="https://github.com/PowerShell/PowerShell/releases">下载</a> 安装。</p>
+
+<h3 id="22-准备工作">2.2 准备工作</h3>
+
+<p>将量产板连接到 PC，从 Windows 开始菜单 “Production Suite for ING918xx” 里打开向导工具（Wizard）。</p>
+
+<h4 id="221-准备量产板">2.2.1 准备量产板</h4>
+
+<p>首先在 “量产板” 页面点击 “设置” 打开 “Board View” 窗口。首次运行该程序时，点击 “Detect COM” 按钮进行自动检测（此过程可能需要十几秒钟）。
+检测完成后，界面上会罗列出所有串口号。</p>
+
+<p><img src="./board_detect.png" alt="" /></p>
+
+<div class="note">
+<strong>说明:</strong> 如果向导工具未能如期列出 16 个串口，请在安装目录下找到 “usb_serial.txt” 文件，然后寻求技术支持。</div>
+
+<p>点击 “Connect” 按钮，向导工具会尝试与 CTRLER 通信并读取版本（成功连接后，量产板上会呈现一段灯光闪动效果）。
+成功后，“Check Tester” 变为可用状态，点击该按钮，
+向导工具会尝试与 TESTER 通信并读取版本。如果两者的版本都合适，向导工具会给出 “READY” 的提示信息，说明该 PC
+上的量产板已经准备就绪，可以用于生产，如下图所示：</p>
+
+<p><img src="./board_check_tester.png" alt="" /></p>
+
+<p>如果 CTRLER 版本不合适，向导工具会提示需要升级，如下图所示。请参考后文进行 <a href="#24-固件升级">固件升级</a>。</p>
+
+<p><img src="./board_need_update.png" alt="" /></p>
+
+<div class="note">
+<strong>说明:</strong> 以上步骤中如果遇到问题，建议重新拔插量产板、重新启动向导工具。</div>
+
+<h4 id="222-设置内置测试项">2.2.2 设置内置测试项</h4>
+
+<p>内置测试项由量产套件自动完成，不需要客户开发程序。</p>
+
+<ul>
+  <li>射频测试：评估产品频偏、功率两个指标；</li>
+  <li>GPIO 测试：检测产品的各 GPIO 管脚高、低电平是否正常；</li>
+  <li>ADC 测试：评估 ADC 读取值误差是否在预定范围内。</li>
+</ul>
+
+<p>以上各测试项目都可以按照需要启用或者不启用。</p>
+
+<h4 id="222-设置自定义测试程序">2.2.2 设置自定义测试程序</h4>
+
+<p>对于以下场景，内置测试项目功能无法满足需求，客户可以自行开发测试程序，并由量产工具自动执行：</p>
+
+<ul>
+  <li>检查内部的传感器是否正常；</li>
+  <li>……</li>
+</ul>
+
+<h4 id="223-设置待烧录程序">2.2.3 设置待烧录程序</h4>
+
+<p>如果待烧录程序使用了 <a href="/user_guide/core-tools.html#script-mass-prod">Pascal 脚本</a>，
+则需要转换为 <a href="user_guide/core-tools.html#python-version">Python</a>。</p>
+
+<h4 id="225-个人化数据">2.2.5 个人化数据</h4>
+
+<p>个人化数据由 Python 动态生成。量产套件在生产时会维护一个全局计数器，Python 脚本生成个人化数据可以参考该计数器。</p>
+
+<p>在生产时，除了计数器，还可以为每一产品输入一段字符串数据（用户数据），这一数据也会传递给 Python 脚本。
+要使用这一数据，Python 脚本需要用 <code class="highlighter-rouge">on_start_bin2</code> 替换原有的 <code class="highlighter-rouge">on_start_bin</code>，<code class="highlighter-rouge">user_data</code> 参数即为该字符串：</p>
+
+<pre><code class="language-Python">def on_start_bin2(batch_counter: int, bin_index: int, data: bytes, \
+                  user_data: str)::
+</code></pre>
+
+<p>需要调试 Python 脚本时，可以找到安装目录下的 “prod_suite.ini”，修改 <code class="highlighter-rouge">show_wnd</code> 参数：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[options]
+show_wnd=1
+</code></pre></div></div>
+
+<p>此后，烧录时会显示控制台窗口。如遇异常，烧录程序将自动等待一段时间才退出，以便开发者查看错误信息。</p>
+
+<h4 id="224-导出数据">2.2.4 导出数据</h4>
+
+<p>点击 “导出数据包” 导出生产所需的完整数据。该数据包是 “自包含” 的。</p>
+
+<h3 id="23-进行生产">2.3 进行生产</h3>
+
+<p>从 Windows 开始菜单 “Production Suite for ING918xx” 里打开生产工具（Runner），选择生产数据包里的“.prod”文件。</p>
+
+<p>生产工具将自动连接到量产板，成功连接后，量产板上同样会呈现一段灯光闪动效果。</p>
+
+<p>按下 F8 输入焦点将定位到第一个生产通道的用户数据输入区。在用户数据输入区里输入回车（Enter/Return）或者制表符（Tab），
+输入焦点会移动到下一个生产通道（回车可以循环切换）。这种切换方式适合使用扫码枪输入数据。</p>
+
+<p>按下 F5 开始生产。如果启用了测试，则首先进行测试，通过后再烧录程序。如果未启用测试，则直接烧录程序。</p>
+
+<p>完成一轮产品的生产后（烧录成功或者测试失败），“Run” 按钮恢复为可点击状态，允许进行下一轮生产。</p>
+
+<p>下图显示了只在一路生产通道上连接了产品时，一轮生产完成后的界面：</p>
+
+<p><img src="./runner_overview_2.png" alt="" /></p>
+
+<h3 id="24-固件升级">2.4 固件升级</h3>
+
+<p>升级量产固件时需要首先升级 CTRLER，然后升级 TESTER。</p>
+
+<ul>
+  <li>升级 CTRLER</li>
+</ul>
+
+<p>短接量产板上的固件升级跳帽，然后接入 PC，打开向导工具，进入 “Board View”，直接点击 “Update” → “Controller”：</p>
+
+<p><img src="./board_update_ctrler.png" alt="" /></p>
+
+<p>升级完成后，断开量产板上的固件升级跳帽，重新连接到 PC，重新启动向导工具。进入 “Board View”，
+点击 “Connect”，检查是否可以获取 CTRLER 的版本。</p>
+
+<ul>
+  <li>升级 TESTER</li>
+</ul>
+
+<p>继续上面的步骤，点击 “Update” → “Tester”：</p>
+
+<p><img src="./board_update_ctrler.png" alt="" /></p>
+
+<p>升级完成后，重新连接到 PC。</p>
+
+              
+              
+              
+                
+                
+                
+                
+                
+                
+                  <ul class="docs-section-items">
+                    
+                    <li class="docs-section-item"><a href="/docs-en/mass_production/uart_burn/" class="docs-item-link">使用 UART 接口进行产品量产<span class="icon-angle-right" aria-hidden="true"></span></a></li>
+                    
+                    <li class="docs-section-item"><a href="/docs-en/mass_production/prod_suite/" class="docs-item-link">使用量产套件进行量产<span class="icon-angle-right" aria-hidden="true"></span></a></li>
+                    
+                    <li class="docs-section-item"><a href="/docs-en/mass_production/swd_burn/" class="docs-item-link">使用 SWD 接口进行产品量产<span class="icon-angle-right" aria-hidden="true"></span></a></li>
+                    
+                    <li class="docs-section-item"><a href="/docs-en/mass_production/ip_protection/" class="docs-item-link">IP 保护<span class="icon-angle-right" aria-hidden="true"></span></a></li>
+                    
+                  </ul><!-- .docs-section-pages -->
+                
+              
+            </div><!-- .post-content -->
+          </div><!-- .post-inside -->
+        </article><!-- .post -->
+        <nav id="page-nav" class="page-nav">
+          <div id="page-nav-inside" class="page-nav-inside sticky">
+            <h2 class="page-nav-title">Jump to Section</h2>
+          </div><!-- .page-nav-inside -->
+        </nav><!-- .page-nav -->
+      </div><!-- .docs-content -->
+    </div><!-- .inner-->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2021-2022. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

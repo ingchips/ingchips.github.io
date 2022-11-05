@@ -396,7 +396,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="更新连接参数" class="section level3 hasAnchor">
 <h3><span class="header-section-number">6.2.6</span> 更新连接参数<a href="ch-conn.html#更新连接参数" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>连接中的主角色通过 <code>gap_update_connection_parameters</code> 可以更新连接参数<a href="#fn18" class="footnote-ref" id="fnref18"><sup>18</sup></a>：</p>
+<p>连接中的主从角色都可以使用 <code>gap_update_connection_parameters</code><a href="#fn18" class="footnote-ref" id="fnref18"><sup>18</sup></a>：主角色使用这个函数可以更新连接参数；
+从角色使用这个函数则是请求主端更新连接参数：</p>
 <div class="sourceCode" id="cb28"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb28-1"><a href="ch-conn.html#cb28-1"></a><span class="dt">int</span> gap_update_connection_parameters(</span>
 <span id="cb28-2"><a href="ch-conn.html#cb28-2"></a>  <span class="co">// 连接句柄</span></span>
 <span id="cb28-3"><a href="ch-conn.html#cb28-3"></a>  hci_con_handle_t con_handle,</span>
@@ -538,7 +539,8 @@ Controller 监控损耗情况，当损耗分类发生改变时（图 <a href="ch
 <ol start="16">
 <li id="fn16"><p>需要连接多个设备，使用白名单方式效率更高。<a href="ch-conn.html#fnref16" class="footnote-back">↩︎</a></p></li>
 <li id="fn17"><p>参考 《Controller API Reference》。<a href="ch-conn.html#fnref17" class="footnote-back">↩︎</a></p></li>
-<li id="fn18"><p>从角色使用 <code>l2cap_request_connection_parameter_update</code> 请求更新。<a href="ch-conn.html#fnref18" class="footnote-back">↩︎</a></p></li>
+<li id="fn18"><p>对于 v8.2 以下版本，这个函数仅用于主角色，
+从角色需要使用 <code>l2cap_request_connection_parameter_update</code> 请求更新。<a href="ch-conn.html#fnref18" class="footnote-back">↩︎</a></p></li>
 <li id="fn19"><p>调用之前建议先检查对方是否支持此特性。此 API 无论主从角色都可以调用。<a href="ch-conn.html#fnref19" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>

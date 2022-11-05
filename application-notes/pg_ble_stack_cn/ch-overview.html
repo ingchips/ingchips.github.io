@@ -328,8 +328,11 @@ Host 的架构如图 <a href="ch-overview.html#fig:ch0-host-overview">3.1</a> �
 <span id="cb2-14"><a href="ch-overview.html#cb2-14"></a>    <span class="cf">case</span> 用户消息:</span>
 <span id="cb2-15"><a href="ch-overview.html#cb2-15"></a>        弹出用户消息事件();</span>
 <span id="cb2-16"><a href="ch-overview.html#cb2-16"></a>        <span class="cf">break</span>;</span>
-<span id="cb2-17"><a href="ch-overview.html#cb2-17"></a>    }</span>
-<span id="cb2-18"><a href="ch-overview.html#cb2-18"></a>}</span></code></pre></div>
+<span id="cb2-17"><a href="ch-overview.html#cb2-17"></a>    <span class="cf">case</span> 用户执行体:</span>
+<span id="cb2-18"><a href="ch-overview.html#cb2-18"></a>        运行用户执行体();</span>
+<span id="cb2-19"><a href="ch-overview.html#cb2-19"></a>        <span class="cf">break</span>;</span>
+<span id="cb2-20"><a href="ch-overview.html#cb2-20"></a>    }</span>
+<span id="cb2-21"><a href="ch-overview.html#cb2-21"></a>}</span></code></pre></div>
 <p>各个模块（包含协议内部模块及 App<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>）通过注册回调函数以响应这些事件。
 有的模块在处理这些消息时又会产生其它的新事件，
 为了响应这些新事件可以再向这些模块注册回调函数。也就是说，Host 内部各个模块（以及 App）通过消息、回调函数耦合在一起。
@@ -650,8 +653,17 @@ Controller 收到这样的命令后不上报 <code>HCI_EVENT_COMMAND_COMPLETE</c
 </div>
 <div id="线程安全性" class="section level2 hasAnchor">
 <h2><span class="header-section-number">3.9</span> 线程安全性<a href="ch-overview.html#线程安全性" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Host 是线程<strong>不安全</strong>的，除了 <code>btstack_push_user_msg</code> 之外的所有 API 都必须在 Host 任务的上下文内调用。
-当其它任务需要调用 Host API 时，必须先通过 <code>btstack_push_user_msg</code> 发送一条消息，再在消息的回调里调用。</p>
+<p>Host 是线程<strong>不安全</strong>的，除下列函数之外的所有 API，如无特殊说明都必须在 Host 任务的上下文内调用。
+当其它任务需要调用 Host API 时，必须触发一段处于 Host 任务上下文内的代码，再在这段代码里调用 Host API。
+下列函数恰是为该功能设置：</p>
+<ul>
+<li><p><code>btstack_push_user_msg</code></p>
+<p>通过 <code>btstack_push_user_msg</code> 向 Host 发送一条消息，消息的回调处理处于 Host 任务上下文内，
+在这里可以调用 Host API。</p></li>
+<li><p><code>btstack_push_user_runnable</code></p>
+<p>通过 <code>btstack_push_user_msg</code> 向 Host 发送一个可执行体（函数指针及参数），Host
+任务在其上下文内运行这个可执行体。这个可执行体可以自由调用 Host API。</p></li>
+</ul>
 <div class="rmdcaution">
 <p>
 开发者在其它任务里直接调用 Host API，即便发现功能正常，也仅是偶然现象，无法保证总是正常。

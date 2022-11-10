@@ -6,11 +6,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Application Note: Direction Finding Solution</title>
   <meta name="description" content="Application note on INGCHIPS’s direction finding solution." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Application Note: Direction Finding Solution" />
   <meta property="og:type" content="book" />
-  
   
   <meta property="og:description" content="Application note on INGCHIPS’s direction finding solution." />
   
@@ -21,10 +20,9 @@
   <meta name="twitter:description" content="Application note on INGCHIPS’s direction finding solution." />
   
 
-<meta name="author" content="v1.3" />
+<meta name="author" content="Ingchips Technology Co., Ltd." />
 
 
-<meta name="date" content="2022-04-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +31,8 @@
   
 
 <link rel="next" href="introduction.html"/>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -49,8 +48,10 @@
 
 
 
-
 <script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
 <style type="text/css">
@@ -118,6 +119,7 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+
 <link rel="stylesheet" href="css/style.css" type="text/css" />
 </head>
 
@@ -157,7 +159,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.2" data-path="quick-start.html"><a href="quick-start.html#run-the-demo"><i class="fa fa-check"></i><b>4.2</b> Run the Demo</a></li>
 <li class="chapter" data-level="4.3" data-path="quick-start.html"><a href="quick-start.html#aoa-accuracy"><i class="fa fa-check"></i><b>4.3</b> AoA Accuracy</a><ul>
 <li class="chapter" data-level="4.3.1" data-path="quick-start.html"><a href="quick-start.html#test-platform"><i class="fa fa-check"></i><b>4.3.1</b> Test Platform</a></li>
-<li class="chapter" data-level="4.3.2" data-path="quick-start.html"><a href="quick-start.html#test-results"><i class="fa fa-check"></i><b>4.3.2</b> Test Results</a></li>
+<li class="chapter" data-level="4.3.2" data-path="quick-start.html"><a href="quick-start.html#test-results-with-4x4-antenna-array-board-rectangle"><i class="fa fa-check"></i><b>4.3.2</b> Test Results with 4x4 Antenna Array Board (Rectangle)</a></li>
+<li class="chapter" data-level="4.3.3" data-path="quick-start.html"><a href="quick-start.html#test-results-with-3x3-antenna-array-board-round"><i class="fa fa-check"></i><b>4.3.3</b> Test Results with 3x3 Antenna Array Board (Round)</a></li>
 </ul></li>
 <li class="chapter" data-level="4.4" data-path="quick-start.html"><a href="quick-start.html#trouble-shooting"><i class="fa fa-check"></i><b>4.4</b> Trouble Shooting</a></li>
 </ul></li>
@@ -173,7 +176,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6" data-path="futher-info.html"><a href="futher-info.html"><i class="fa fa-check"></i><b>6</b> Further Information</a><ul>
 <li class="chapter" data-level="6.1" data-path="futher-info.html"><a href="futher-info.html#algorithm-integeration"><i class="fa fa-check"></i><b>6.1</b> Algorithm Integeration</a></li>
 <li class="chapter" data-level="6.2" data-path="futher-info.html"><a href="futher-info.html#evaluation-of-different-antenna-array-types"><i class="fa fa-check"></i><b>6.2</b> Evaluation of Different Antenna Array Types</a></li>
-<li class="chapter" data-level="6.3" data-path="futher-info.html"><a href="futher-info.html#hardware-design-of-antenna-arrays"><i class="fa fa-check"></i><b>6.3</b> Hardware Design of Antenna Arrays</a></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="revision-history.html"><a href="revision-history.html"><i class="fa fa-check"></i><b>7</b> Revision History</a></li>
 <li class="divider"></li>
@@ -198,11 +200,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="header">
 <h1 class="title">Application Note: Direction Finding Solution</h1>
-<p class="author"><em>v1.3</em></p>
-<p class="date"><em>2022-04-12</em></p>
+<p class="author"><em>Ingchips Technology Co., Ltd.</em></p>
 </div>
-<div id="welcome" class="section level1">
-<h1><span class="header-section-number">1</span> Welcome</h1>
+<div id="welcome" class="section level1 hasAnchor">
+<h1><span class="header-section-number">1</span> Welcome<a href="index.html#welcome" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>Welcome to use <em>INGCHIPS</em> 91x Software Development Kit.</p>
 <p><em>INGCHIPS</em> 91x is a BLE 5.1 full feature SoC solution.
 This application note walks through the offered solution
@@ -219,7 +220,6 @@ to help anyone get started with Direction Finding.</p>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -238,6 +238,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
@@ -258,6 +259,10 @@ gitbook.start({
 "text": null
 },
 "download": ["an_direction_finding.pdf", "an_direction_finding.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "subsection"
 }
@@ -271,7 +276,7 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

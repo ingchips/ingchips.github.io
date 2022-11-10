@@ -6,11 +6,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>3 Direction Finding Fundamentals | Application Note: Direction Finding Solution</title>
   <meta name="description" content="Application note on INGCHIPS’s direction finding solution." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
 
   <meta property="og:title" content="3 Direction Finding Fundamentals | Application Note: Direction Finding Solution" />
   <meta property="og:type" content="book" />
-  
   
   <meta property="og:description" content="Application note on INGCHIPS’s direction finding solution." />
   
@@ -21,10 +20,9 @@
   <meta name="twitter:description" content="Application note on INGCHIPS’s direction finding solution." />
   
 
-<meta name="author" content="v1.3" />
+<meta name="author" content="Ingchips Technology Co., Ltd." />
 
 
-<meta name="date" content="2022-04-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +31,8 @@
   
 <link rel="prev" href="introduction.html"/>
 <link rel="next" href="quick-start.html"/>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -49,8 +48,10 @@
 
 
 
-
 <script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
 <style type="text/css">
@@ -118,6 +119,7 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+
 <link rel="stylesheet" href="css/style.css" type="text/css" />
 </head>
 
@@ -157,7 +159,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.2" data-path="quick-start.html"><a href="quick-start.html#run-the-demo"><i class="fa fa-check"></i><b>4.2</b> Run the Demo</a></li>
 <li class="chapter" data-level="4.3" data-path="quick-start.html"><a href="quick-start.html#aoa-accuracy"><i class="fa fa-check"></i><b>4.3</b> AoA Accuracy</a><ul>
 <li class="chapter" data-level="4.3.1" data-path="quick-start.html"><a href="quick-start.html#test-platform"><i class="fa fa-check"></i><b>4.3.1</b> Test Platform</a></li>
-<li class="chapter" data-level="4.3.2" data-path="quick-start.html"><a href="quick-start.html#test-results"><i class="fa fa-check"></i><b>4.3.2</b> Test Results</a></li>
+<li class="chapter" data-level="4.3.2" data-path="quick-start.html"><a href="quick-start.html#test-results-with-4x4-antenna-array-board-rectangle"><i class="fa fa-check"></i><b>4.3.2</b> Test Results with 4x4 Antenna Array Board (Rectangle)</a></li>
+<li class="chapter" data-level="4.3.3" data-path="quick-start.html"><a href="quick-start.html#test-results-with-3x3-antenna-array-board-round"><i class="fa fa-check"></i><b>4.3.3</b> Test Results with 3x3 Antenna Array Board (Round)</a></li>
 </ul></li>
 <li class="chapter" data-level="4.4" data-path="quick-start.html"><a href="quick-start.html#trouble-shooting"><i class="fa fa-check"></i><b>4.4</b> Trouble Shooting</a></li>
 </ul></li>
@@ -173,7 +176,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6" data-path="futher-info.html"><a href="futher-info.html"><i class="fa fa-check"></i><b>6</b> Further Information</a><ul>
 <li class="chapter" data-level="6.1" data-path="futher-info.html"><a href="futher-info.html#algorithm-integeration"><i class="fa fa-check"></i><b>6.1</b> Algorithm Integeration</a></li>
 <li class="chapter" data-level="6.2" data-path="futher-info.html"><a href="futher-info.html#evaluation-of-different-antenna-array-types"><i class="fa fa-check"></i><b>6.2</b> Evaluation of Different Antenna Array Types</a></li>
-<li class="chapter" data-level="6.3" data-path="futher-info.html"><a href="futher-info.html#hardware-design-of-antenna-arrays"><i class="fa fa-check"></i><b>6.3</b> Hardware Design of Antenna Arrays</a></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="revision-history.html"><a href="revision-history.html"><i class="fa fa-check"></i><b>7</b> Revision History</a></li>
 <li class="divider"></li>
@@ -196,10 +198,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="fundamentals" class="section level1">
-<h1><span class="header-section-number">3</span> Direction Finding Fundamentals</h1>
-<div id="positioning" class="section level2">
-<h2><span class="header-section-number">3.1</span> Positioning</h2>
+<div id="fundamentals" class="section level1 hasAnchor">
+<h1><span class="header-section-number">3</span> Direction Finding Fundamentals<a href="fundamentals.html#fundamentals" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="positioning" class="section level2 hasAnchor">
+<h2><span class="header-section-number">3.1</span> Positioning<a href="fundamentals.html#positioning" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Positioning technologies have many useful applications, one example being GNSS (GPS, Beidou, GLONASS,
 Galileo, etc.), which is widely used all over the world.</p>
 <p>Unfortunately, GNSS systems do not work very well indoors, so there is a real need for better indoor positioning technologies.</p>
@@ -217,7 +219,7 @@ determined by the intersection point of the lines of sight. Take two locators as
 with the two measured angles, one can construct a unique triangle by the angle-side-angle
 congruence theorem within a given plane, and the asset is sitting at the third vertex of this
 triangle.</p>
-<div class="figure" style="text-align: center"><span id="fig:ch1-triangulation"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch1-triangulation"></span>
 <img src="img/tri_tri.png" alt="Trilateration (a) and Triangulation (b)" width="70%" />
 <p class="caption">
 Figure 3.1: Trilateration (a) and Triangulation (b)
@@ -235,14 +237,14 @@ finding events held all over the world today.</p>
 and requires less expensive time measurement hardware than Time of Flight measurement.</p>
 <p>However, triangulation needs an antenna array and a method with which the direction (angle) of the incoming signal can be determined.</p>
 </div>
-<div id="direction-finding-methods" class="section level2">
-<h2><span class="header-section-number">3.2</span> Direction Finding Methods</h2>
+<div id="direction-finding-methods" class="section level2 hasAnchor">
+<h2><span class="header-section-number">3.2</span> Direction Finding Methods<a href="fundamentals.html#direction-finding-methods" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>There are two direction finding methods available in BLE, called Angle of Arrival (AoA) and
 Angle of Departure (AoD) respectively.</p>
 <p>In each method, from the received samples, phase differences can be deduced, and then, direction
 can be estimated.</p>
-<div id="angle-of-arrival" class="section level3">
-<h3><span class="header-section-number">3.2.1</span> Angle of Arrival</h3>
+<div id="angle-of-arrival" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.2.1</span> Angle of Arrival<a href="fundamentals.html#angle-of-arrival" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>In this method, an antenna array is deployed in the receiver. An un-modulated radio wave emitted
 by a single transmitter will reach different antennas in different phases.</p>
 <p>There two methods to measure phases on antennas:</p>
@@ -257,8 +259,8 @@ will sampling each antenna periodically controlled by a list which is called
 a <em>switching pattern</em>.</p></li>
 </ul>
 </div>
-<div id="angle-of-departure" class="section level3">
-<h3><span class="header-section-number">3.2.2</span> Angle of Departure</h3>
+<div id="angle-of-departure" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.2.2</span> Angle of Departure<a href="fundamentals.html#angle-of-departure" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>In this method, the setup is reversed: an antenna array is deployed in the transmitter.
 An single un-modulated radio wave is generated, and emitted on antennas periodically
 controlled by a switching pattern by the transmitter.</p>
@@ -271,16 +273,16 @@ Obviously, the receiver needs to <strong>know all information</strong> about the
 transmitter a priori.</p>
 </div>
 </div>
-<div id="direction-finding-theory" class="section level2">
-<h2><span class="header-section-number">3.3</span> Direction Finding Theory</h2>
+<div id="direction-finding-theory" class="section level2 hasAnchor">
+<h2><span class="header-section-number">3.3</span> Direction Finding Theory<a href="fundamentals.html#direction-finding-theory" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Antenna arrays and algorithm are both essential for a direction finding system.
 This section discusses the basics of some typical antenna arrays and estimation algorithms. Here,
 direction finding refers to the general problem of estimating AoA and AoD.</p>
-<div id="antenna-arrays" class="section level3">
-<h3><span class="header-section-number">3.3.1</span> Antenna Arrays</h3>
+<div id="antenna-arrays" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.3.1</span> Antenna Arrays<a href="fundamentals.html#antenna-arrays" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>There are several types of arrays, mounted on a line (Linear Array), on a flat surface
 (Rectangular Array, Circular Array, L-Array), or on a curved surface (Conformal Array, 3D Array).</p>
-<div class="figure" style="text-align: center"><span id="fig:ch1-array-types-1d2d"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch1-array-types-1d2d"></span>
 <img src="img/array_types_1d_2d.png" alt="Uniform Linear Array (a), Uniform Rectangular Array (b) and Uniform Circular Array (c)" width="70%" />
 <p class="caption">
 Figure 3.2: Uniform Linear Array (a), Uniform Rectangular Array (b) and Uniform Circular Array (c)
@@ -291,18 +293,18 @@ with two-dimensional arrays, one can measure both azimuth (<span class="math inl
 angles in the 3D half-space splitted by the plane in which the arrays are embedded.
 If the array is extended to 3D, then it is possible to measure in
 the full 3D space.</p>
-<div class="figure" style="text-align: center"><span id="fig:ch1-array-types-3d"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch1-array-types-3d"></span>
 <img src="img/array_types_3d.png" alt="Conformal Array on LEO satellites (a) and 3D Microphone Array in a commercial product (b)" width="70%" />
 <p class="caption">
 Figure 3.3: Conformal Array on LEO satellites (a) and 3D Microphone Array in a commercial product (b)
 </p>
 </div>
 </div>
-<div id="algorithm-with-a-trivial-example" class="section level3">
-<h3><span class="header-section-number">3.3.2</span> Algorithm with A Trivial Example</h3>
+<div id="algorithm-with-a-trivial-example" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.3.2</span> Algorithm with A Trivial Example<a href="fundamentals.html#algorithm-with-a-trivial-example" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Figure <a href="fundamentals.html#fig:ch1-phase-concept">3.4</a> shows how a change in the direction of the incoming signal
 causes a difference in the phase of the received signal on two antennas.</p>
-<div class="figure" style="text-align: center"><span id="fig:ch1-phase-concept"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch1-phase-concept"></span>
 <img src="img/phase_concept.png" alt="Phase Differences Between Antennas" width="80%" />
 <p class="caption">
 Figure 3.4: Phase Differences Between Antennas
@@ -310,7 +312,7 @@ Figure 3.4: Phase Differences Between Antennas
 </div>
 <p>In Figure <a href="fundamentals.html#fig:ch1-phase-calc">3.5</a> the direction of the incoming signal is <span class="math inline">\(\theta\)</span>,
 and the distance between the two antenna is <span class="math inline">\(d\)</span>.</p>
-<div class="figure" style="text-align: center"><span id="fig:ch1-phase-calc"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch1-phase-calc"></span>
 <img src="img/phase_calc.png" alt="Phase Differences Calcuation" width="60%" />
 <p class="caption">
 Figure 3.5: Phase Differences Calcuation
@@ -328,8 +330,8 @@ requires that <span class="math inline">\(d &lt; \frac{\lambda}{2}\)</span>.</p>
 <p>Readers are recommended to read standard textbooks on advanced(array/radar) signal processing for direction estimation algorithms suitable for antenna arrays.</p>
 </div>
 </div>
-<div id="location-finding" class="section level2">
-<h2><span class="header-section-number">3.4</span> Location Finding</h2>
+<div id="location-finding" class="section level2 hasAnchor">
+<h2><span class="header-section-number">3.4</span> Location Finding<a href="fundamentals.html#location-finding" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Without knowing the accurate distance of the asset, and if the asset is moving in full 3D space,
 one two-dimensional antenna array can provide the direction of the asset, but not its position.</p>
 <p>To determine the precise position of the asset in full 3D space,
@@ -337,11 +339,11 @@ multiple antenna arrays (locators) must be used.
 By using more than one locator, the position of the asset can then be determined using triangulation.
 Adding RSSI measurements to the direction estimations may further enhance the position estimation.</p>
 </div>
-<div id="constant-tone-extension" class="section level2">
-<h2><span class="header-section-number">3.5</span> Constant Tone Extension</h2>
+<div id="constant-tone-extension" class="section level2 hasAnchor">
+<h2><span class="header-section-number">3.5</span> Constant Tone Extension<a href="fundamentals.html#constant-tone-extension" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>The un-modulated radio signal is introduced in Bluetooth Core Specification as
 <em>Constant Tone Extension</em> for uncoded PHYs (i.e. 1M &amp; 2M PHYs), starting from Version 5.1.</p>
-<div class="figure" style="text-align: center"><span id="fig:ch1-cte-packet"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch1-cte-packet"></span>
 <img src="img/link_layer_cte_packet.png" alt="Link Layer packet format for the LE Uncoded PHYs" width="80%" />
 <p class="caption">
 Figure 3.6: Link Layer packet format for the LE Uncoded PHYs
@@ -359,7 +361,7 @@ The second antenna in the pattern shall be used during the first sample slot, th
 third antenna during the second sample slot, and so on. For example, the switching
 pattern is <span class="math inline">\(\{5,6,8,7,10\}\)</span>, slot duration is 1 µs, and the antenna selected for each
 sample is shown in Figure <a href="fundamentals.html#fig:ch1-switching-pattern">3.7</a>.</p>
-<div class="figure" style="text-align: center"><span id="fig:ch1-switching-pattern"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch1-switching-pattern"></span>
 <img src="img/switching_pattern.png" alt="Antenna Switching" width="80%" />
 <p class="caption">
 Figure 3.7: Antenna Switching
@@ -378,7 +380,6 @@ Figure 3.7: Antenna Switching
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -397,6 +398,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
@@ -417,6 +419,10 @@ gitbook.start({
 "text": null
 },
 "download": ["an_direction_finding.pdf", "an_direction_finding.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "subsection"
 }
@@ -430,7 +436,7 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

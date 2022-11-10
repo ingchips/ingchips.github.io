@@ -6,11 +6,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>5 SDK Support of Direction Finding | Application Note: Direction Finding Solution</title>
   <meta name="description" content="Application note on INGCHIPS’s direction finding solution." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
 
   <meta property="og:title" content="5 SDK Support of Direction Finding | Application Note: Direction Finding Solution" />
   <meta property="og:type" content="book" />
-  
   
   <meta property="og:description" content="Application note on INGCHIPS’s direction finding solution." />
   
@@ -21,10 +20,9 @@
   <meta name="twitter:description" content="Application note on INGCHIPS’s direction finding solution." />
   
 
-<meta name="author" content="v1.3" />
+<meta name="author" content="Ingchips Technology Co., Ltd." />
 
 
-<meta name="date" content="2022-04-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +31,8 @@
   
 <link rel="prev" href="quick-start.html"/>
 <link rel="next" href="futher-info.html"/>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -49,8 +48,10 @@
 
 
 
-
 <script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
 <style type="text/css">
@@ -118,6 +119,7 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+
 <link rel="stylesheet" href="css/style.css" type="text/css" />
 </head>
 
@@ -157,7 +159,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.2" data-path="quick-start.html"><a href="quick-start.html#run-the-demo"><i class="fa fa-check"></i><b>4.2</b> Run the Demo</a></li>
 <li class="chapter" data-level="4.3" data-path="quick-start.html"><a href="quick-start.html#aoa-accuracy"><i class="fa fa-check"></i><b>4.3</b> AoA Accuracy</a><ul>
 <li class="chapter" data-level="4.3.1" data-path="quick-start.html"><a href="quick-start.html#test-platform"><i class="fa fa-check"></i><b>4.3.1</b> Test Platform</a></li>
-<li class="chapter" data-level="4.3.2" data-path="quick-start.html"><a href="quick-start.html#test-results"><i class="fa fa-check"></i><b>4.3.2</b> Test Results</a></li>
+<li class="chapter" data-level="4.3.2" data-path="quick-start.html"><a href="quick-start.html#test-results-with-4x4-antenna-array-board-rectangle"><i class="fa fa-check"></i><b>4.3.2</b> Test Results with 4x4 Antenna Array Board (Rectangle)</a></li>
+<li class="chapter" data-level="4.3.3" data-path="quick-start.html"><a href="quick-start.html#test-results-with-3x3-antenna-array-board-round"><i class="fa fa-check"></i><b>4.3.3</b> Test Results with 3x3 Antenna Array Board (Round)</a></li>
 </ul></li>
 <li class="chapter" data-level="4.4" data-path="quick-start.html"><a href="quick-start.html#trouble-shooting"><i class="fa fa-check"></i><b>4.4</b> Trouble Shooting</a></li>
 </ul></li>
@@ -173,7 +176,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6" data-path="futher-info.html"><a href="futher-info.html"><i class="fa fa-check"></i><b>6</b> Further Information</a><ul>
 <li class="chapter" data-level="6.1" data-path="futher-info.html"><a href="futher-info.html#algorithm-integeration"><i class="fa fa-check"></i><b>6.1</b> Algorithm Integeration</a></li>
 <li class="chapter" data-level="6.2" data-path="futher-info.html"><a href="futher-info.html#evaluation-of-different-antenna-array-types"><i class="fa fa-check"></i><b>6.2</b> Evaluation of Different Antenna Array Types</a></li>
-<li class="chapter" data-level="6.3" data-path="futher-info.html"><a href="futher-info.html#hardware-design-of-antenna-arrays"><i class="fa fa-check"></i><b>6.3</b> Hardware Design of Antenna Arrays</a></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="revision-history.html"><a href="revision-history.html"><i class="fa fa-check"></i><b>7</b> Revision History</a></li>
 <li class="divider"></li>
@@ -196,22 +198,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="sdk-support" class="section level1">
-<h1><span class="header-section-number">5</span> SDK Support of Direction Finding</h1>
+<div id="sdk-support" class="section level1 hasAnchor">
+<h1><span class="header-section-number">5</span> SDK Support of Direction Finding<a href="sdk-support.html#sdk-support" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>SDK supports four types of CTE solutions, two are defined by Bluetooth SIG
 in Bluetooth Core Specification,
 and the other two are INGCHIPS proprietaries.</p>
-<div id="types-of-solutions" class="section level2">
-<h2><span class="header-section-number">5.1</span> Types of Solutions</h2>
-<div id="connection-based-solution" class="section level3">
-<h3><span class="header-section-number">5.1.1</span> Connection Based Solution</h3>
+<div id="types-of-solutions" class="section level2 hasAnchor">
+<h2><span class="header-section-number">5.1</span> Types of Solutions<a href="sdk-support.html#types-of-solutions" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="connection-based-solution" class="section level3 hasAnchor">
+<h3><span class="header-section-number">5.1.1</span> Connection Based Solution<a href="sdk-support.html#connection-based-solution" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Connection based solution is defined by Bluetooth SIG.
 A connection must be established between two partners, and then CTE signals
 are sent upon the requests from a central device. This is demonstrated in
 <em>Peripheral LED &amp; CTE</em> and <em>Central CTE</em>.</p>
 <p>In <em>Peripheral LED &amp; CTE</em>’s advertising data, the availability of CTE service is broadcasted
 (Figure <a href="sdk-support.html#fig:ch3-adv-cte-service">5.1</a>).</p>
-<div class="figure" style="text-align: center"><span id="fig:ch3-adv-cte-service"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch3-adv-cte-service"></span>
 <img src="img/adv_cte_service.png" alt="Advertising of CTE Service" width="40%" />
 <p class="caption">
 Figure 5.1: Advertising of CTE Service
@@ -219,23 +221,23 @@ Figure 5.1: Advertising of CTE Service
 </div>
 <p>There is an <em>Enable</em> characteristic in CTE service. A GATT client should set it to <code>true</code> before
 requesting the peripheral to send CTE.</p>
-<div class="figure" style="text-align: center"><span id="fig:ch3-gatt-cte-service"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch3-gatt-cte-service"></span>
 <img src="img/gatt_cte_service.png" alt="Service Definition of CTE" width="80%" />
 <p class="caption">
 Figure 5.2: Service Definition of CTE
 </p>
 </div>
 </div>
-<div id="connectionless-solution" class="section level3">
-<h3><span class="header-section-number">5.1.2</span> Connectionless Solution</h3>
+<div id="connectionless-solution" class="section level3 hasAnchor">
+<h3><span class="header-section-number">5.1.2</span> Connectionless Solution<a href="sdk-support.html#connectionless-solution" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Connectionless solution is also defined by Bluetooth SIG.
 The CTE transmitter sends CTE in a periodic advertising set.
 The receiver has to establish synchronization with the periodic advertising set firstly, and then
 CTE can be received. This is demonstrated in
 <em>Periodic Advertiser</em> and <em>Periodic Scanner</em>.</p>
 </div>
-<div id="proprietary-solution-1" class="section level3">
-<h3><span class="header-section-number">5.1.3</span> Proprietary Solution #1</h3>
+<div id="proprietary-solution-1" class="section level3 hasAnchor">
+<h3><span class="header-section-number">5.1.3</span> Proprietary Solution #1<a href="sdk-support.html#proprietary-solution-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>This is based INGCHIPS BLE extension APIs, and provides lots of flexibilities, such as:</p>
 <ul>
 <li>More bits in IQ samples (all bits from RF can be utilized)</li>
@@ -245,8 +247,8 @@ CTE can be received. This is demonstrated in
 </ul>
 <p>Read <em>BLE Extensions Reference</em> for more information.</p>
 </div>
-<div id="proprietary-solution-2" class="section level3">
-<h3><span class="header-section-number">5.1.4</span> Proprietary Solution #2</h3>
+<div id="proprietary-solution-2" class="section level3 hasAnchor">
+<h3><span class="header-section-number">5.1.4</span> Proprietary Solution #2<a href="sdk-support.html#proprietary-solution-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>This type tries to provide compatibility of Silicon Labs proprietary
 AoA<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>,
 which sends CTE in extended advertisements. This is also demonstrated in
@@ -261,8 +263,8 @@ if it is a public or random address) is <strong>0x14</strong> or some other prop
 </ul>
 </div>
 </div>
-<div id="recommendation" class="section level2">
-<h2><span class="header-section-number">5.2</span> Recommendation</h2>
+<div id="recommendation" class="section level2 hasAnchor">
+<h2><span class="header-section-number">5.2</span> Recommendation<a href="sdk-support.html#recommendation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>It is <strong>strongly</strong> recommended to use proprietary direction finding solution, because
 of several shortcomings in the two Bluetooth SIG defined solutions:</p>
 <ul>
@@ -295,7 +297,6 @@ with several periodic advertising sets.</p></li>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -314,6 +315,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
@@ -334,6 +336,10 @@ gitbook.start({
 "text": null
 },
 "download": ["an_direction_finding.pdf", "an_direction_finding.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "subsection"
 }
@@ -347,7 +353,7 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

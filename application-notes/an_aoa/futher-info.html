@@ -6,11 +6,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>6 Further Information | Application Note: Direction Finding Solution</title>
   <meta name="description" content="Application note on INGCHIPS’s direction finding solution." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
 
   <meta property="og:title" content="6 Further Information | Application Note: Direction Finding Solution" />
   <meta property="og:type" content="book" />
-  
   
   <meta property="og:description" content="Application note on INGCHIPS’s direction finding solution." />
   
@@ -21,10 +20,9 @@
   <meta name="twitter:description" content="Application note on INGCHIPS’s direction finding solution." />
   
 
-<meta name="author" content="v1.3" />
+<meta name="author" content="Ingchips Technology Co., Ltd." />
 
 
-<meta name="date" content="2022-04-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +31,8 @@
   
 <link rel="prev" href="sdk-support.html"/>
 <link rel="next" href="revision-history.html"/>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -49,8 +48,10 @@
 
 
 
-
 <script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
 <style type="text/css">
@@ -118,6 +119,7 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+
 <link rel="stylesheet" href="css/style.css" type="text/css" />
 </head>
 
@@ -157,7 +159,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.2" data-path="quick-start.html"><a href="quick-start.html#run-the-demo"><i class="fa fa-check"></i><b>4.2</b> Run the Demo</a></li>
 <li class="chapter" data-level="4.3" data-path="quick-start.html"><a href="quick-start.html#aoa-accuracy"><i class="fa fa-check"></i><b>4.3</b> AoA Accuracy</a><ul>
 <li class="chapter" data-level="4.3.1" data-path="quick-start.html"><a href="quick-start.html#test-platform"><i class="fa fa-check"></i><b>4.3.1</b> Test Platform</a></li>
-<li class="chapter" data-level="4.3.2" data-path="quick-start.html"><a href="quick-start.html#test-results"><i class="fa fa-check"></i><b>4.3.2</b> Test Results</a></li>
+<li class="chapter" data-level="4.3.2" data-path="quick-start.html"><a href="quick-start.html#test-results-with-4x4-antenna-array-board-rectangle"><i class="fa fa-check"></i><b>4.3.2</b> Test Results with 4x4 Antenna Array Board (Rectangle)</a></li>
+<li class="chapter" data-level="4.3.3" data-path="quick-start.html"><a href="quick-start.html#test-results-with-3x3-antenna-array-board-round"><i class="fa fa-check"></i><b>4.3.3</b> Test Results with 3x3 Antenna Array Board (Round)</a></li>
 </ul></li>
 <li class="chapter" data-level="4.4" data-path="quick-start.html"><a href="quick-start.html#trouble-shooting"><i class="fa fa-check"></i><b>4.4</b> Trouble Shooting</a></li>
 </ul></li>
@@ -173,7 +176,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6" data-path="futher-info.html"><a href="futher-info.html"><i class="fa fa-check"></i><b>6</b> Further Information</a><ul>
 <li class="chapter" data-level="6.1" data-path="futher-info.html"><a href="futher-info.html#algorithm-integeration"><i class="fa fa-check"></i><b>6.1</b> Algorithm Integeration</a></li>
 <li class="chapter" data-level="6.2" data-path="futher-info.html"><a href="futher-info.html#evaluation-of-different-antenna-array-types"><i class="fa fa-check"></i><b>6.2</b> Evaluation of Different Antenna Array Types</a></li>
-<li class="chapter" data-level="6.3" data-path="futher-info.html"><a href="futher-info.html#hardware-design-of-antenna-arrays"><i class="fa fa-check"></i><b>6.3</b> Hardware Design of Antenna Arrays</a></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="revision-history.html"><a href="revision-history.html"><i class="fa fa-check"></i><b>7</b> Revision History</a></li>
 <li class="divider"></li>
@@ -196,10 +198,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="futher-info" class="section level1">
-<h1><span class="header-section-number">6</span> Further Information</h1>
-<div id="algorithm-integeration" class="section level2">
-<h2><span class="header-section-number">6.1</span> Algorithm Integeration</h2>
+<div id="futher-info" class="section level1 hasAnchor">
+<h1><span class="header-section-number">6</span> Further Information<a href="futher-info.html#futher-info" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="algorithm-integeration" class="section level2 hasAnchor">
+<h2><span class="header-section-number">6.1</span> Algorithm Integeration<a href="futher-info.html#algorithm-integeration" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>A command line tool called <code>alg</code> which performs the same algorithm as <em>Real-time Locating Demo</em>
 is provided in the <em>RTL</em> sub-directory of SDK.
 It uses ASCII strings over standard input/output as external interface,
@@ -256,21 +258,22 @@ The input is a prefix “EXT0:” followed by the Base64 encoding of below packe
 </tbody>
 </table>
 <p>An example session of <code>alg</code>:</p>
-<pre class="shell"><code>EXT0:ABTzMRQuhAEggP0AAAEAUtjTQ987Rs5Ezto300M7204LQ0XpAd3pztwfPCc
-ltfPX6Sw//NTUssryVH/t4tjkxyw+68nWEMUnGTge2Kj30ycpKO/X1EnWa08Syp/
-XPMc/LuLKNRA+K0ou987+/WwjQCLq1CtIOmk1DMOUQDc+O0nY5i5KOAdE7vPl90V
-jGzv35PIiQzbSOK2+BT5+NeBJ4do2SO0D3erP3R4+KB+y8trpLj/6
-{&quot;status&quot;: &quot;ok&quot;, &quot;id&quot;: &quot;P:84:2E:14:31:F3:14&quot;, &quot;azimuth&quot;: -14.0, &quot;elevation&quot;: 56.0 }</code></pre>
+<pre class="shell"><code>EXT0:ABTzMRQuhAERPv4AAAEAUt7PziEgMjTh4s3LHRw1N+gdE5o/Ka0+1ykTnyI
+E3jv6NjPB+NjYId40J8MH8LQ59g0fhwBKyUr3HCSc6xXlNxgVRszb8cks8xo8xuo
+WtzcQ/SKWx1v3RRsHLbG/HvImLfNJ5MgLyC4I/UHY0TfKJyrtHLydVCUtOvIr2qE
+iAgk70DgCwCXVJB7cNfXDS+0NOeEO+Ig7Rg1J3x4MmhwT7Ti7GyHK
+{&quot;status&quot;: &quot;ok&quot;, &quot;id&quot;: &quot;P:84:2E:14:31:F3:14&quot;, &quot;azimuth&quot;: 174.0, 
+&quot;elevation&quot;: 48.0 }</code></pre>
 <p>Note that, the input must be in a single line.</p>
 </div>
-<div id="evaluation-of-different-antenna-array-types" class="section level2">
-<h2><span class="header-section-number">6.2</span> Evaluation of Different Antenna Array Types</h2>
+<div id="evaluation-of-different-antenna-array-types" class="section level2 hasAnchor">
+<h2><span class="header-section-number">6.2</span> Evaluation of Different Antenna Array Types<a href="futher-info.html#evaluation-of-different-antenna-array-types" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>To assist the evaluation of different antenna array types, both <code>alg</code> and <em>Real-time Locating Demo</em>
-accept an additional command option to specify a sub portion of the whole 4x4 rectangular antenna array by
-“<code>alg -array {TYPE}</code>” or “<code>RTLing_xx -array {TYPE}</code>”. When using this option, the switching pattern used
+might accept an additional command option to specify a sub portion of the whole antenna array board
+by “<code>alg -array {TYPE}</code>” or “<code>RTLing_xx -array {TYPE}</code>”. When using this option, the switching pattern used
 in the firmware (<em>Central CTE</em> example) should be updated accordingly.</p>
 <table>
-<caption><span id="tab:ch4-array-type-opt">Table 6.2: </span> Supported Array Types</caption>
+<caption><span id="tab:ch4-array-type-opt">Table 6.2: </span> Supported Array Types for 4x4 Antenna Array Board (Rectangle)</caption>
 <thead>
 <tr class="header">
 <th align="left">{TYPE}</th>
@@ -321,26 +324,32 @@ in the firmware (<em>Central CTE</em> example) should be updated accordingly.</p
 </tr>
 </tbody>
 </table>
-<p>For example, if we want to evaluate the performance of 1x4 ULA sub-array, then</p>
+<table>
+<caption><span id="tab:ch4-array-type-opt-o3x3">Table 6.3: </span> Supported Array Types for 3x3 Antenna Array Board (Round)</caption>
+<thead>
+<tr class="header">
+<th align="left">{TYPE}</th>
+<th align="left">Switching Pattern</th>
+<th align="left">Note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">o3x3</td>
+<td align="left"><span class="math inline">\(0, 1, 2, 3, 4, 5, 6, 7, 8\)</span></td>
+<td align="left">Whole array is used</td>
+</tr>
+</tbody>
+</table>
+<p>For example, if we want to evaluate the performance of 1x4 ULA sub-array on 4x4 Antenna Array Board (Rectangle), then</p>
 <ol style="list-style-type: decimal">
 <li>Change the switching pattern used in <em>Central CTE</em> to <span class="math inline">\(0, 1, 2, 3\)</span>,</li>
 <li>Build <em>Central CTE</em> and download it to the Antenna Array Board,</li>
 <li>Start <code>alg</code> by <code>alg -array 1x4</code>, or,</li>
 <li>Start <em>Real-time Locating Demo</em> by “<code>RTLing_dx -array 1x4</code>” or “<code>RTLing_gl -array 1x4</code>”.</li>
 </ol>
-</div>
-<div id="hardware-design-of-antenna-arrays" class="section level2">
-<h2><span class="header-section-number">6.3</span> Hardware Design of Antenna Arrays</h2>
-<p>It is recommended to copy the reference design of the 4x4 rectangular antenna array from Silicon
-Labs<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>.</p>
 
 </div>
-</div>
-<div class="footnotes">
-<hr />
-<ol start="7">
-<li id="fn7"><p><a href="https://www.silabs.com/documents/public/application-notes/an1195-antenna-array-direction-finding.pdf" class="uri">https://www.silabs.com/documents/public/application-notes/an1195-antenna-array-direction-finding.pdf</a><a href="futher-info.html#fnref7" class="footnote-back">↩︎</a></p></li>
-</ol>
 </div>
             </section>
 
@@ -352,7 +361,6 @@ Labs<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>.</p>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -371,6 +379,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
@@ -391,6 +400,10 @@ gitbook.start({
 "text": null
 },
 "download": ["an_direction_finding.pdf", "an_direction_finding.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "subsection"
 }
@@ -404,7 +417,7 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

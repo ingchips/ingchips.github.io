@@ -6,11 +6,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>4 Quick-Start Guide | Application Note: Direction Finding Solution</title>
   <meta name="description" content="Application note on INGCHIPS’s direction finding solution." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
 
   <meta property="og:title" content="4 Quick-Start Guide | Application Note: Direction Finding Solution" />
   <meta property="og:type" content="book" />
-  
   
   <meta property="og:description" content="Application note on INGCHIPS’s direction finding solution." />
   
@@ -21,10 +20,9 @@
   <meta name="twitter:description" content="Application note on INGCHIPS’s direction finding solution." />
   
 
-<meta name="author" content="v1.3" />
+<meta name="author" content="Ingchips Technology Co., Ltd." />
 
 
-<meta name="date" content="2022-04-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +31,8 @@
   
 <link rel="prev" href="fundamentals.html"/>
 <link rel="next" href="sdk-support.html"/>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -49,8 +48,10 @@
 
 
 
-
 <script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
 <style type="text/css">
@@ -118,6 +119,7 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+
 <link rel="stylesheet" href="css/style.css" type="text/css" />
 </head>
 
@@ -157,7 +159,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.2" data-path="quick-start.html"><a href="quick-start.html#run-the-demo"><i class="fa fa-check"></i><b>4.2</b> Run the Demo</a></li>
 <li class="chapter" data-level="4.3" data-path="quick-start.html"><a href="quick-start.html#aoa-accuracy"><i class="fa fa-check"></i><b>4.3</b> AoA Accuracy</a><ul>
 <li class="chapter" data-level="4.3.1" data-path="quick-start.html"><a href="quick-start.html#test-platform"><i class="fa fa-check"></i><b>4.3.1</b> Test Platform</a></li>
-<li class="chapter" data-level="4.3.2" data-path="quick-start.html"><a href="quick-start.html#test-results"><i class="fa fa-check"></i><b>4.3.2</b> Test Results</a></li>
+<li class="chapter" data-level="4.3.2" data-path="quick-start.html"><a href="quick-start.html#test-results-with-4x4-antenna-array-board-rectangle"><i class="fa fa-check"></i><b>4.3.2</b> Test Results with 4x4 Antenna Array Board (Rectangle)</a></li>
+<li class="chapter" data-level="4.3.3" data-path="quick-start.html"><a href="quick-start.html#test-results-with-3x3-antenna-array-board-round"><i class="fa fa-check"></i><b>4.3.3</b> Test Results with 3x3 Antenna Array Board (Round)</a></li>
 </ul></li>
 <li class="chapter" data-level="4.4" data-path="quick-start.html"><a href="quick-start.html#trouble-shooting"><i class="fa fa-check"></i><b>4.4</b> Trouble Shooting</a></li>
 </ul></li>
@@ -173,7 +176,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6" data-path="futher-info.html"><a href="futher-info.html"><i class="fa fa-check"></i><b>6</b> Further Information</a><ul>
 <li class="chapter" data-level="6.1" data-path="futher-info.html"><a href="futher-info.html#algorithm-integeration"><i class="fa fa-check"></i><b>6.1</b> Algorithm Integeration</a></li>
 <li class="chapter" data-level="6.2" data-path="futher-info.html"><a href="futher-info.html#evaluation-of-different-antenna-array-types"><i class="fa fa-check"></i><b>6.2</b> Evaluation of Different Antenna Array Types</a></li>
-<li class="chapter" data-level="6.3" data-path="futher-info.html"><a href="futher-info.html#hardware-design-of-antenna-arrays"><i class="fa fa-check"></i><b>6.3</b> Hardware Design of Antenna Arrays</a></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="revision-history.html"><a href="revision-history.html"><i class="fa fa-check"></i><b>7</b> Revision History</a></li>
 <li class="divider"></li>
@@ -196,14 +198,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="quick-start" class="section level1">
-<h1><span class="header-section-number">4</span> Quick-Start Guide</h1>
+<div id="quick-start" class="section level1 hasAnchor">
+<h1><span class="header-section-number">4</span> Quick-Start Guide<a href="quick-start.html#quick-start" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>This guide walks through the offered solution to help anyone get started
 with Direction Finding, especially Direction Finding based on AoA.</p>
-<div id="setup" class="section level2">
-<h2><span class="header-section-number">4.1</span> Setup</h2>
-<p>The whole demo includes 1 or more tags, 1 4x4 antenna array board and 1 PC running Windows.</p>
-<div class="figure" style="text-align: center"><span id="fig:ch2-demo-setup"></span>
+<div id="setup" class="section level2 hasAnchor">
+<h2><span class="header-section-number">4.1</span> Setup<a href="quick-start.html#setup" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The whole demo includes 1 or more tags, 1 antenna array board and 1 PC running Windows.</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-demo-setup"></span>
 <img src="img/demo_setup.png" alt="Hardware Setup" width="70%" />
 <p class="caption">
 Figure 4.1: Hardware Setup
@@ -213,15 +215,27 @@ Figure 4.1: Hardware Setup
 <li><p>Tags - CTE Transmitters</p>
 <p>All ING9188xx based boards/products can be used as tags. Just download
 <em>Peripheral LED &amp; CTE</em> example in SDK.</p></li>
-<li><p>4x4 Antenna Array Board - CTE Receiver</p>
+<li><p>4x4 Antenna Array Board (Rectangle) - CTE Receiver</p>
 <p>App for the 4x4 antenna array board should already have been downloaded, which is exactly the
 <em>Central CTE</em> example in SDK with <code>PRO_MODE</code> defined.</p>
-<p>The top side of the board (shown in the left of Figure <a href="quick-start.html#fig:ch2-array-overview">4.2</a>) should
+<p>The top side of the board (shown in the left of Figure <a href="quick-start.html#fig:ch2-4x4-array-overview">4.2</a>) should
 face tags, but not the opposite side.</p>
-<div class="figure" style="text-align: center"><span id="fig:ch2-array-overview"></span>
-<img src="img/array_overview.png" alt="Antenna Array Board" width="70%" />
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-4x4-array-overview"></span>
+<img src="img/array_overview.png" alt="4x4 Antenna Array Board (Rectangle)" width="70%" />
 <p class="caption">
-Figure 4.2: Antenna Array Board
+Figure 4.2: 4x4 Antenna Array Board (Rectangle)
+</p>
+</div></li>
+</ul>
+<p>Or,</p>
+<ul>
+<li><p>3x3 Antenna Array Board (Round) - CTE Receiver</p>
+<p>App for the 3x3 antenna array board should already have been downloaded, which is exactly the
+<em>Central CTE</em> example in SDK with <code>PRO_MODE</code> defined, and <code>CURRENT_ARRAY = ANTENNA_ARRAY_3x3</code>.</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-3x3-array-overview"></span>
+<img src="img/array_overview_3x3.png" alt="3x3 Antenna Array Board (Round)" width="35%" />
+<p class="caption">
+Figure 4.3: 3x3 Antenna Array Board (Round)
 </p>
 </div></li>
 <li><p>PC</p>
@@ -244,33 +258,35 @@ to install additioal required Python libraries:</p>
 <pre class="shell"><code>pip install pyserial</code></pre></li>
 <li><p>UART2USB</p>
 <p>A UART2USB kit is required to connect the antenna array board to PC. Hardware connection
-(as shown in Figure <a href="quick-start.html#fig:ch2-array-uart-connection">4.3</a>):</p>
+(as shown in Figure <a href="quick-start.html#fig:ch2-array-uart-connection">4.4</a>):</p>
 <ul>
 <li>GPIO2 is used for UART transmission</li>
 <li>Antenna array board is powered through VCC &amp; GND</li>
 <li>3.3V is recommended for VCC</li>
 </ul>
-<div class="figure" style="text-align: center"><span id="fig:ch2-array-uart-connection"></span>
-<img src="img/array_uart_connection.png" alt="Connect Array Board to UART2USB (PC)" width="50%" />
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-array-uart-connection"></span>
+<img src="img/array_uart_connection.png" alt="Connect 4x4 Antenna Array Board (Rectangle) to UART2USB (PC)" width="50%" />
 <p class="caption">
-Figure 4.3: Connect Array Board to UART2USB (PC)
+Figure 4.4: Connect 4x4 Antenna Array Board (Rectangle) to UART2USB (PC)
 </p>
 </div></li>
 </ul>
 </div>
-<div id="run-the-demo" class="section level2">
-<h2><span class="header-section-number">4.2</span> Run the Demo</h2>
-<div class="figure" style="text-align: center"><span id="fig:ch2-demo-main"></span>
+<div id="run-the-demo" class="section level2 hasAnchor">
+<h2><span class="header-section-number">4.2</span> Run the Demo<a href="quick-start.html#run-the-demo" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-demo-main"></span>
 <img src="img/demo_main.png" alt="Main Window of Real-time Locating Demo" width="90%" />
 <p class="caption">
-Figure 4.4: Main Window of Real-time Locating Demo
+Figure 4.5: Main Window of Real-time Locating Demo
 </p>
 </div>
 <p>After all hardware components are ready, the demo can be started.</p>
 <p>From the main menu of <code>Wizard</code>, select “Tools” -&gt; “More” to start <em>Real-time Locating Demo</em>.
 There are two variants, one built against DirectX 12, and the other OpenGL. Both share the
 same functionalities, but have subtle differences on GUI appearance and system dependencies
-as summarized in Table <a href="quick-start.html#tab:ch2-demo-tool-compare">4.1</a>.</p>
+as summarized in Table <a href="quick-start.html#tab:ch2-demo-tool-compare">4.1</a>. If an array board other than the
+default 4x4 Antenna Array Board (Rectangle) is used, check out Table <a href="futher-info.html#tab:ch4-array-type-opt-o3x3">6.3</a>
+for the corresponding parameters when launching the tool.</p>
 <div class="rmdnote">
 <p>
 The <em>real-time</em> used here means that data fed to <em>Real-time Locating Demo</em> is assumed to be in real-time, and the wall clock when each CTE report is received is utilized in post processing of AoA estimations.
@@ -305,7 +321,7 @@ SDK’s installing directory, and run following command to start feeding data to
 <em>Real-time Locating Demo</em>:</p>
 <pre class="shell"><code>python serial2tcp.py --port COM7</code></pre>
 <p>Now, <em>Real-time Locating Demo</em> will start showing AoA results on its main window
-(Figure <a href="quick-start.html#fig:ch2-demo-main">4.4</a>).
+(Figure <a href="quick-start.html#fig:ch2-demo-main">4.5</a>).
 Azimuth (<span class="math inline">\(\theta\)</span>) and elevation (<span class="math inline">\(\phi\)</span>) results are shown on a sky plot. The
 center of the plot corresponds to the zenith seen from the board, i.e., it’s right
 above the center of the board.</p>
@@ -315,76 +331,76 @@ it got powered on, therefore, just reset the tag, and a <strong>new</strong> tag
 <em>Real-time Locating Demo</em>. If CTE from a tag has not been received for a period of time,
 <em>Real-time Locating Demo</em> will forget the tag, and remove it from the plot.</p>
 </div>
-<div id="aoa-accuracy" class="section level2">
-<h2><span class="header-section-number">4.3</span> AoA Accuracy</h2>
+<div id="aoa-accuracy" class="section level2 hasAnchor">
+<h2><span class="header-section-number">4.3</span> AoA Accuracy<a href="quick-start.html#aoa-accuracy" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>As direction finding solutions will be deployed in different scenarios and SIG has not
 defined <strong>standard</strong> scenarios for accuracy assessment, it’s impossible to give accuracy
 results that can be used for evaluation/comparison of different AoA solutions.</p>
 <p>To put it another way, we developed a low cost test platform and
 performed real environment testing with the following results.</p>
-<div id="test-platform" class="section level3">
-<h3><span class="header-section-number">4.3.1</span> Test Platform</h3>
-<p>Figure <a href="quick-start.html#fig:ch2-test-platform">4.5</a> is the overview of the test platform. The antenna
+<div id="test-platform" class="section level3 hasAnchor">
+<h3><span class="header-section-number">4.3.1</span> Test Platform<a href="quick-start.html#test-platform" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Figure <a href="quick-start.html#fig:ch2-test-platform">4.6</a> is the overview of the test platform. The antenna
 array board is turned by a servo which is controlled by Controller. An OLED display is used
 for displaying information during the test. Data output from the array board is saved to an SD
 card. ING918xx development board is used to implement the Controller.</p>
-<div class="figure" style="text-align: center"><span id="fig:ch2-test-platform"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-test-platform"></span>
 <img src="img/test_platform.png" alt="AoA Test Platform" width="70%" />
 <p class="caption">
-Figure 4.5: AoA Test Platform
+Figure 4.6: AoA Test Platform
 </p>
 </div>
 </div>
-<div id="test-results" class="section level3">
-<h3><span class="header-section-number">4.3.2</span> Test Results</h3>
+<div id="test-results-with-4x4-antenna-array-board-rectangle" class="section level3 hasAnchor">
+<h3><span class="header-section-number">4.3.2</span> Test Results with 4x4 Antenna Array Board (Rectangle)<a href="quick-start.html#test-results-with-4x4-antenna-array-board-rectangle" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>The following devices were used for all antenna array accuracy measurements in this section:</p>
 <ul>
-<li>4x4 Antenna Array Board (CTE Receiver)</li>
+<li>4x4 Antenna Array Board (Rectangle) (CTE Receiver)</li>
 <li>ING918xx development boards (Tags - CTE Transmitters)</li>
 </ul>
-<div id="environment-1-1-locator-1-tag" class="section level4">
-<h4><span class="header-section-number">4.3.2.1</span> Environment 1 (1 locator, 1 tag)</h4>
+<div id="environment-1-1-locator-1-tag" class="section level4 hasAnchor">
+<h4><span class="header-section-number">4.3.2.1</span> Environment 1 (1 locator, 1 tag)<a href="quick-start.html#environment-1-1-locator-1-tag" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <ul>
 <li>Location: Indoor, office corner, lots of objects inside measurement area</li>
-<li>Locator height from floor: <span class="math inline">\(\approx 1.7 m\)</span></li>
+<li>Locator height from floor: <span class="math inline">\(\approx 0.7 m\)</span></li>
 <li>Locator is placed horizontally on the test platform</li>
-<li>Tag height from floor: <span class="math inline">\(\approx 0.8 m\)</span></li>
+<li>Tag height from Locator: <span class="math inline">\(\approx 1.5 m\)</span></li>
 <li>Tag is in different poses</li>
 </ul>
-<p>Setup of this test is shown in Figure <a href="quick-start.html#fig:ch2-vertical-test">4.6</a>.
+<p>Setup of this test is shown in Figure <a href="quick-start.html#fig:ch2-vertical-test">4.7</a>.
 Locator rotates between <span class="math inline">\(0 \sim 360 ^ \circ\)</span>. This test is carried with the tag in three different poses.
-Figure <a href="quick-start.html#fig:ch2-pose-closeup">4.7</a> is a closeup of the tag with different poses.</p>
-<div class="figure" style="text-align: center"><span id="fig:ch2-vertical-test"></span>
+Figure <a href="quick-start.html#fig:ch2-pose-closeup">4.8</a> is a closeup of the tag with different poses.</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-vertical-test"></span>
 <img src="img/ch2_vertical_test.jpg" alt="Test Setup (Environment 1)" width="80%" />
 <p class="caption">
-Figure 4.6: Test Setup (Environment 1)
+Figure 4.7: Test Setup (Environment 1)
 </p>
 </div>
-<div class="figure" style="text-align: center"><span id="fig:ch2-pose-closeup"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-pose-closeup"></span>
 <img src="img/ch2_closeup.png" alt="Tag Pose Closeup" width="80%" />
 <p class="caption">
-Figure 4.7: Tag Pose Closeup
+Figure 4.8: Tag Pose Closeup
 </p>
 </div>
-<p>Azimuth error vs. azimuth angle when tag is in vertical polarization is shown in Figure <a href="quick-start.html#fig:ch2-v-azi-err">4.8</a>.
-Azimuth error vs. azimuth angle when tag is in <span class="math inline">\(45 ^ \circ\)</span> polarization is shown in Figure <a href="quick-start.html#fig:ch2-45deg-azi-err">4.9</a>.
-Azimuth error vs. azimuth angle when tag is in horizontal polarization is shown in Figure <a href="quick-start.html#fig:ch2-h-azi-err">4.10</a>.</p>
-<div class="figure" style="text-align: center"><span id="fig:ch2-v-azi-err"></span>
+<p>Azimuth error vs. azimuth angle when tag is in vertical polarization is shown in Figure <a href="quick-start.html#fig:ch2-v-azi-err">4.9</a>.
+Azimuth error vs. azimuth angle when tag is in <span class="math inline">\(45 ^ \circ\)</span> polarization is shown in Figure <a href="quick-start.html#fig:ch2-45deg-azi-err">4.10</a>.
+Azimuth error vs. azimuth angle when tag is in horizontal polarization is shown in Figure <a href="quick-start.html#fig:ch2-h-azi-err">4.11</a>.</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-v-azi-err"></span>
 <img src="img/ch2_v_azi_err.png" alt="Azimuth Error vs. Azimuth Angle (Environment 1, Vertical Polarization)" width="85%" />
 <p class="caption">
-Figure 4.8: Azimuth Error vs. Azimuth Angle (Environment 1, Vertical Polarization)
+Figure 4.9: Azimuth Error vs. Azimuth Angle (Environment 1, Vertical Polarization)
 </p>
 </div>
-<div class="figure" style="text-align: center"><span id="fig:ch2-45deg-azi-err"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-45deg-azi-err"></span>
 <img src="img/ch2_45_azi_err.png" alt="Azimuth Error vs. Azimuth Angle (Environment 1, 45 Degree Polarization)" width="85%" />
 <p class="caption">
-Figure 4.9: Azimuth Error vs. Azimuth Angle (Environment 1, 45 Degree Polarization)
+Figure 4.10: Azimuth Error vs. Azimuth Angle (Environment 1, 45 Degree Polarization)
 </p>
 </div>
-<div class="figure" style="text-align: center"><span id="fig:ch2-h-azi-err"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-h-azi-err"></span>
 <img src="img/ch2_h_azi_err.png" alt="Azimuth Error vs. Azimuth Angle (Environment 1, Horizontal Polarization)" width="85%" />
 <p class="caption">
-Figure 4.10: Azimuth Error vs. Azimuth Angle (Environment 1, Horizontal Polarization)
+Figure 4.11: Azimuth Error vs. Azimuth Angle (Environment 1, Horizontal Polarization)
 </p>
 </div>
 <p>Azimuth measurements summary:</p>
@@ -393,8 +409,8 @@ Figure 4.10: Azimuth Error vs. Azimuth Angle (Environment 1, Horizontal Polariz
 <li>Worst-case azimuth errors: <span class="math inline">\(\pm 14 ^ \circ\)</span></li>
 </ul>
 </div>
-<div id="environment-2-1-locator-1-tag" class="section level4">
-<h4><span class="header-section-number">4.3.2.2</span> Environment 2 (1 locator, 1 tag)</h4>
+<div id="environment-2-1-locator-1-tag" class="section level4 hasAnchor">
+<h4><span class="header-section-number">4.3.2.2</span> Environment 2 (1 locator, 1 tag)<a href="quick-start.html#environment-2-1-locator-1-tag" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <ul>
 <li>Location: Indoor, office corner, lots of objects inside measurement area</li>
 <li>Locator height from floor: <span class="math inline">\(\approx 1.2 m\)</span></li>
@@ -402,48 +418,148 @@ Figure 4.10: Azimuth Error vs. Azimuth Angle (Environment 1, Horizontal Polariz
 <li>Tag height from floor: <span class="math inline">\(\approx 1.2 m\)</span></li>
 <li>Tag is in different poses</li>
 </ul>
-<p>Setup of this test is shown in Figure <a href="quick-start.html#fig:ch2-env2-test-ele">4.11</a>.
+<p>Setup of this test is shown in Figure <a href="quick-start.html#fig:ch2-env2-test-ele">4.12</a>.
 Locator rotates between <span class="math inline">\(0 \sim 180 ^ \circ\)</span>. So, the elevation goes from <span class="math inline">\(0^ \circ\)</span> to <span class="math inline">\(90^ \circ\)</span>,
 i.e. the zenith seen from the board, and then goes back to <span class="math inline">\(0^ \circ\)</span> again.
 This test is carried with the tag in three different poses.
-Figure <a href="quick-start.html#fig:ch2-pose-closeup">4.7</a> is a closeup of the tag with different poses.</p>
-<div class="figure" style="text-align: center"><span id="fig:ch2-env2-test-ele"></span>
+Figure <a href="quick-start.html#fig:ch2-pose-closeup">4.8</a> is a closeup of the tag with different poses.</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-env2-test-ele"></span>
 <img src="img/ch2_env2_test_ele.jpg" alt="Test Setup (Environment 2)" width="85%" />
 <p class="caption">
-Figure 4.11: Test Setup (Environment 2)
+Figure 4.12: Test Setup (Environment 2)
 </p>
 </div>
-<p>Elevation error vs. elevation ideal angle when tag is in vertical polarization is shown in Figure <a href="quick-start.html#fig:ch2-v-ele-err">4.12</a>.
-Elevation error vs. elevation ideal angle when tag is in <span class="math inline">\(45 ^ \circ\)</span> polarization is shown in Figure <a href="quick-start.html#fig:ch2-45deg-ele-err">4.13</a>.
-Elevation error vs. elevation ideal angle when tag is in horizontal polarization is shown in Figure <a href="quick-start.html#fig:ch2-h-ele-err">4.14</a>.</p>
+<p>Elevation error vs. elevation ideal angle when tag is in vertical polarization is shown in Figure <a href="quick-start.html#fig:ch2-v-ele-err">4.13</a>.
+Elevation error vs. elevation ideal angle when tag is in <span class="math inline">\(45 ^ \circ\)</span> polarization is shown in Figure <a href="quick-start.html#fig:ch2-45deg-ele-err">4.14</a>.
+Elevation error vs. elevation ideal angle when tag is in horizontal polarization is shown in Figure <a href="quick-start.html#fig:ch2-h-ele-err">4.15</a>.</p>
 <p>Elevation measurements summary:</p>
 <ul>
 <li>Worst-case elevation errors in full scale: <span class="math inline">\(\pm 35 ^ \circ\)</span></li>
 <li>Worst-case elevation errors in a right cone which has an opening angle of <span class="math inline">\(120 ^ \circ\)</span> : <span class="math inline">\(\pm 5 ^ \circ\)</span></li>
 </ul>
-<div class="figure" style="text-align: center"><span id="fig:ch2-v-ele-err"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-v-ele-err"></span>
 <img src="img/ch2_v_ele_err.png" alt="Elevation Error vs. Elevation Ideal Angle (Environment 2, Vertical Polarization)" width="85%" />
 <p class="caption">
-Figure 4.12: Elevation Error vs. Elevation Ideal Angle (Environment 2, Vertical Polarization)
+Figure 4.13: Elevation Error vs. Elevation Ideal Angle (Environment 2, Vertical Polarization)
 </p>
 </div>
-<div class="figure" style="text-align: center"><span id="fig:ch2-45deg-ele-err"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-45deg-ele-err"></span>
 <img src="img/ch2_45_ele_err.png" alt="Elevation Error vs. Elevation Ideal Angle (Environment 2, 45 Degree Polarization)" width="85%" />
 <p class="caption">
-Figure 4.13: Elevation Error vs. Elevation Ideal Angle (Environment 2, 45 Degree Polarization)
+Figure 4.14: Elevation Error vs. Elevation Ideal Angle (Environment 2, 45 Degree Polarization)
 </p>
 </div>
-<div class="figure" style="text-align: center"><span id="fig:ch2-h-ele-err"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-h-ele-err"></span>
 <img src="img/ch2_h_ele_err.png" alt="Elevation Error vs. Elevation Ideal Angle (Environment 2, Horizontal Polarization)" width="85%" />
 <p class="caption">
-Figure 4.14: Elevation Error vs. Elevation Ideal Angle (Environment 2, Horizontal Polarization)
+Figure 4.15: Elevation Error vs. Elevation Ideal Angle (Environment 2, Horizontal Polarization)
 </p>
 </div>
 </div>
 </div>
+<div id="test-results-with-3x3-antenna-array-board-round" class="section level3 hasAnchor">
+<h3><span class="header-section-number">4.3.3</span> Test Results with 3x3 Antenna Array Board (Round)<a href="quick-start.html#test-results-with-3x3-antenna-array-board-round" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The following devices were used for all antenna array accuracy measurements in this section:</p>
+<ul>
+<li>3x3 Antenna Array Board (Round) (CTE Receiver)</li>
+<li>ING918xx development boards (Tags - CTE Transmitters)</li>
+</ul>
+<div id="environment-1-1-locator-1-tag-1" class="section level4 hasAnchor">
+<h4><span class="header-section-number">4.3.3.1</span> Environment 1 (1 locator, 1 tag)<a href="quick-start.html#environment-1-1-locator-1-tag-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<ul>
+<li>Location: Indoor, office corner, lots of objects inside measurement area</li>
+<li>Locator height from floor: <span class="math inline">\(\approx 0.7 m\)</span></li>
+<li>Locator is placed horizontally with four different poses</li>
+<li>Tag height from floor: <span class="math inline">\(\approx 1.2 m\)</span></li>
+<li>Tag is in horizontal polarization</li>
+</ul>
+<p>Azimuth &amp; elevation are measured at four poses and summarized in Table <a href="quick-start.html#tab:ch2-3x3-azimuth-results">4.2</a> and
+Table <a href="quick-start.html#tab:ch2-3x3-elevation-results">4.3</a>. Summary of the result:</p>
+<ul>
+<li>Worst-case azimuth errors: <span class="math inline">\(\pm 7.0 ^ \circ\)</span></li>
+<li>Worst-case elevation errors: <span class="math inline">\(\pm 8.2 ^ \circ\)</span></li>
+<li>Average <span class="math inline">\(3 \sigma\)</span> azimuth error: <span class="math inline">\(6.3 ^ \circ\)</span></li>
+<li>Average <span class="math inline">\(3 \sigma\)</span> elevation error: <span class="math inline">\(6.9 ^ \circ\)</span></li>
+</ul>
+<table>
+<caption><span id="tab:ch2-3x3-azimuth-results">Table 4.2: </span> Azimuth Results with 3x3 Antenna Array Board (Round)</caption>
+<thead>
+<tr class="header">
+<th align="center">Pose #</th>
+<th align="left">Mean</th>
+<th align="left">Standard Deviation</th>
+<th align="left">(Min, Max)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">1</td>
+<td align="left"><span class="math inline">\(0.9 ^ \circ\)</span></td>
+<td align="left"><span class="math inline">\(1.7 ^ \circ\)</span></td>
+<td align="left"><span class="math inline">\([-4^\circ, 6^\circ]\)</span></td>
+</tr>
+<tr class="even">
+<td align="center">2</td>
+<td align="left"><span class="math inline">\(88.5 ^ \circ\)</span></td>
+<td align="left"><span class="math inline">\(1.5 ^ \circ\)</span></td>
+<td align="left"><span class="math inline">\([84^\circ, 92^\circ]\)</span></td>
+</tr>
+<tr class="odd">
+<td align="center">3</td>
+<td align="left"><span class="math inline">\(175.0^ \circ\)</span></td>
+<td align="left"><span class="math inline">\(2.4 ^ \circ\)</span></td>
+<td align="left"><span class="math inline">\([168^\circ, 178^\circ]\)</span></td>
+</tr>
+<tr class="even">
+<td align="center">4</td>
+<td align="left"><span class="math inline">\(-88.1^ \circ\)</span></td>
+<td align="left"><span class="math inline">\(2.7 ^ \circ\)</span></td>
+<td align="left"><span class="math inline">\([-94^\circ, -82^\circ]\)</span></td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption><span id="tab:ch2-3x3-elevation-results">Table 4.3: </span> Elevation Results with 3x3 Antenna Array Board (Round)</caption>
+<thead>
+<tr class="header">
+<th align="center">Pose #</th>
+<th align="left">Mean</th>
+<th>Standard Deviation</th>
+<th align="left">(Min, Max)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">1</td>
+<td align="left"><span class="math inline">\(45.8 ^ \circ\)</span></td>
+<td><span class="math inline">\(3.2 ^ \circ\)</span></td>
+<td align="left"><span class="math inline">\([40^\circ,54^\circ]\)</span></td>
+</tr>
+<tr class="even">
+<td align="center">2</td>
+<td align="left"><span class="math inline">\(44.8 ^ \circ\)</span></td>
+<td><span class="math inline">\(3.0 ^ \circ\)</span></td>
+<td align="left"><span class="math inline">\([38^\circ,54^\circ]\)</span></td>
+</tr>
+<tr class="odd">
+<td align="center">3</td>
+<td align="left"><span class="math inline">\(51.5 ^ \circ\)</span></td>
+<td><span class="math inline">\(1.5 ^ \circ\)</span></td>
+<td align="left"><span class="math inline">\([50^\circ,56^\circ]\)</span></td>
+</tr>
+<tr class="even">
+<td align="center">4</td>
+<td align="left"><span class="math inline">\(54.6 ^ \circ\)</span></td>
+<td><span class="math inline">\(1.6 ^ \circ\)</span></td>
+<td align="left"><span class="math inline">\([50^\circ,58^\circ]\)</span></td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="trouble-shooting" class="section level2">
-<h2><span class="header-section-number">4.4</span> Trouble Shooting</h2>
+</div>
+</div>
+<div id="trouble-shooting" class="section level2 hasAnchor">
+<h2><span class="header-section-number">4.4</span> Trouble Shooting<a href="quick-start.html#trouble-shooting" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <ul>
 <li><p><em>Real-time Locating Demo</em> shows nothing</p>
 <p>Use other COM tools to check if there are lots of data received from the array board</p>
@@ -493,7 +609,6 @@ example. The antennas in tags should be checked.</p></li>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -512,6 +627,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
@@ -532,6 +648,10 @@ gitbook.start({
 "text": null
 },
 "download": ["an_direction_finding.pdf", "an_direction_finding.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "subsection"
 }
@@ -545,7 +665,7 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

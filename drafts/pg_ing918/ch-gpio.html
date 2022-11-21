@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>10 系统控制（SYSCTRL） | ING918XX 系列芯片外设开发者手册</title>
+  <title>5 通用输入输出（GPIO） | ING918XX 系列芯片外设开发者手册</title>
   <meta name="description" content="ING918XX 系列芯片开发者手册." />
   <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="10 系统控制（SYSCTRL） | ING918XX 系列芯片外设开发者手册" />
+  <meta property="og:title" content="5 通用输入输出（GPIO） | ING918XX 系列芯片外设开发者手册" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="ING918XX 系列芯片开发者手册." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="10 系统控制（SYSCTRL） | ING918XX 系列芯片外设开发者手册" />
+  <meta name="twitter:title" content="5 通用输入输出（GPIO） | ING918XX 系列芯片外设开发者手册" />
   
   <meta name="twitter:description" content="ING918XX 系列芯片开发者手册." />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="ch-rtc.html"/>
-<link rel="next" href="ch-timer.html"/>
+<link rel="prev" href="ch-eflash.html"/>
+<link rel="next" href="ch-i2c.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -290,79 +290,101 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="ch-sysctrl" class="section level1 hasAnchor">
-<h1><span class="header-section-number">10</span> 系统控制（SYSCTRL）<a href="ch-sysctrl.html#ch-sysctrl" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div id="功能概述-4" class="section level2 hasAnchor">
-<h2><span class="header-section-number">10.1</span> 功能概述<a href="ch-sysctrl.html#功能概述-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>SYSCTRL 负责管理、控制各种片上外设，主要功能有：</p>
+<div id="ch-gpio" class="section level1 hasAnchor">
+<h1><span class="header-section-number">5</span> 通用输入输出（GPIO）<a href="ch-gpio.html#ch-gpio" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="功能概述" class="section level2 hasAnchor">
+<h2><span class="header-section-number">5.1</span> 功能概述<a href="ch-gpio.html#功能概述" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>GPIO 模块常用于驱动 LED 或者其它指示器，控制片外设备，感知数字信号输入，检测信号边沿，
+或者从低功耗状态唤醒系统。ING918XX 系列芯片内部支持最多 20 个 GPIO，通过 <a href="ch-pinctrl.html#ch-pinctrl">PINCTRL</a>
+可将 GPIO <span class="math inline">\(n\)</span> 引出到芯片 IO 管脚 <span class="math inline">\(n\)</span>。</p>
+<p>特性：</p>
 <ul>
-<li>外设的复位</li>
-<li>外设的时钟管理，包括时钟源、频率设置、门控等</li>
-<li>其它功能</li>
+<li>每个 GPIO 都可单独配置为输入或输出</li>
+<li>每个 GPIO 都可作为中断请求，中断触发方式支持边沿触发（上升、下降单沿触发，或者双沿触发）
+和电平触发（高电平或低电平）</li>
 </ul>
-<div id="外设标识" class="section level3 hasAnchor">
-<h3><span class="header-section-number">10.1.1</span> 外设标识<a href="ch-sysctrl.html#外设标识" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>SYSCTRL 为外设定义了几种不同的标识。最常见的几种标识为：</p>
-<p>1.SYSCTRL的时钟门控</p>
-<div class="sourceCode" id="cb57"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb57-1"><a href="ch-sysctrl.html#cb57-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb57-2"><a href="ch-sysctrl.html#cb57-2"></a>{</span>
-<span id="cb57-3"><a href="ch-sysctrl.html#cb57-3"></a>    SYSCTRL_ClkGate_APB_I2C0    = <span class="dv">4</span>,</span>
-<span id="cb57-4"><a href="ch-sysctrl.html#cb57-4"></a>    SYSCTRL_ClkGate_APB_SPI1    = <span class="dv">5</span>,</span>
-<span id="cb57-5"><a href="ch-sysctrl.html#cb57-5"></a>    <span class="co">// ...</span></span>
-<span id="cb57-6"><a href="ch-sysctrl.html#cb57-6"></a>    SYSCTRL_ClkGate_APB_I2C1    = <span class="dv">19</span></span>
-<span id="cb57-7"><a href="ch-sysctrl.html#cb57-7"></a>} SYSCTRL_ClkGateItem;</span></code></pre></div>
-<p>2.SYSCTRL的reset</p>
-<div class="sourceCode" id="cb58"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb58-1"><a href="ch-sysctrl.html#cb58-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb58-2"><a href="ch-sysctrl.html#cb58-2"></a>{</span>
-<span id="cb58-3"><a href="ch-sysctrl.html#cb58-3"></a>    SYSCTRL_Reset_AHB_DMA     = <span class="dv">0</span>,</span>
-<span id="cb58-4"><a href="ch-sysctrl.html#cb58-4"></a>    SYSCTRL_Reset_AHB_LLE     = <span class="dv">1</span>,</span>
-<span id="cb58-5"><a href="ch-sysctrl.html#cb58-5"></a>    <span class="co">// ...</span></span>
-<span id="cb58-6"><a href="ch-sysctrl.html#cb58-6"></a>    SYSCTRL_Reset_APH_TRNG    = <span class="dv">21</span></span>
-<span id="cb58-7"><a href="ch-sysctrl.html#cb58-7"></a>} SYSCTRL_ResetItem;</span></code></pre></div>
-<p>这些标识用于外设的复位、时钟门控等。</p>
 </div>
-<div id="时钟树" class="section level3 hasAnchor">
-<h3><span class="header-section-number">10.1.2</span> 时钟树<a href="ch-sysctrl.html#时钟树" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<ol style="list-style-type: decimal">
-<li><p>32KiHz 时钟（<em>clk_32k</em>）</p>
-<p>32k 时钟有两个来源：内部 RC 32KHz，外部 32768Hz 晶体。</p></li>
-<li><p>PLL 输入的 24MHz 时钟（<em>clk_pll_in</em>）</p>
-<p>24MHz 时钟的主要来源：外部 48MHz 晶体。</p></li>
-<li><p>时钟分布图</p></li>
-</ol>
-<p><img src="images/time_structure.png" /></p>
+<div id="使用说明" class="section level2 hasAnchor">
+<h2><span class="header-section-number">5.2</span> 使用说明<a href="ch-gpio.html#使用说明" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="设置-io-方向" class="section level3 hasAnchor">
+<h3><span class="header-section-number">5.2.1</span> 设置 IO 方向<a href="ch-gpio.html#设置-io-方向" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>在使用 GPIO 之前先按需要配置 IO 方向：</p>
+<ul>
+<li>需要用于输出信号时：配置为输出</li>
+<li>需要用于读取信号时：配置为输入</li>
+<li>需要用于生产中断请求时：配置为输入</li>
+<li>需要高阻态时：配置为高阻态</li>
+</ul>
+<p>使用 <code>GIO_SetDirection</code> 配置 GPIO 的方向。GPIO 支持四种方向：</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb10-1"><a href="ch-gpio.html#cb10-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
+<span id="cb10-2"><a href="ch-gpio.html#cb10-2"></a>{</span>
+<span id="cb10-3"><a href="ch-gpio.html#cb10-3"></a>    GIO_DIR_INPUT,  <span class="co">// 输入</span></span>
+<span id="cb10-4"><a href="ch-gpio.html#cb10-4"></a>    GIO_DIR_OUTPUT, <span class="co">// 输出</span></span>
+<span id="cb10-5"><a href="ch-gpio.html#cb10-5"></a>    GIO_DIR_BOTH,   <span class="co">// 同时支持输入、输出</span></span>
+<span id="cb10-6"><a href="ch-gpio.html#cb10-6"></a>    GIO_DIR_NONE    <span class="co">// 高阻态</span></span>
+<span id="cb10-7"><a href="ch-gpio.html#cb10-7"></a>} GIO_Direction_t;</span></code></pre></div>
+<div class="rmdcaution">
+<p>
+如无必要，不要使用 <code>GIO_DIR_BOTH</code>。
+</p>
 </div>
 </div>
-<div id="使用说明-2" class="section level2 hasAnchor">
-<h2><span class="header-section-number">10.2</span> 使用说明<a href="ch-sysctrl.html#使用说明-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="外设复位" class="section level3 hasAnchor">
-<h3><span class="header-section-number">10.2.1</span> 外设复位<a href="ch-sysctrl.html#外设复位" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>通过 <code>SYSCTRL_ResetBlock</code> 复位外设，通过’SYSCTRL_ReleaseBlock’释放复位。</p>
-<div class="sourceCode" id="cb59"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb59-1"><a href="ch-sysctrl.html#cb59-1"></a><span class="dt">void</span> SYSCTRL_ResetBlock(SYSCTRL_ResetItem item);</span>
-<span id="cb59-2"><a href="ch-sysctrl.html#cb59-2"></a><span class="dt">void</span> SYSCTRL_ReleaseBlock(SYSCTRL_ResetItem item);</span></code></pre></div>
+<div id="读取输入" class="section level3 hasAnchor">
+<h3><span class="header-section-number">5.2.2</span> 读取输入<a href="ch-gpio.html#读取输入" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>GIO_ReadValue</code> 读取某个 GPIO 当前输入的电平信号，例如读取 GPIO 0 的输入：</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb11-1"><a href="ch-gpio.html#cb11-1"></a><span class="dt">uint8_t</span> value = GIO_ReadValue(GIO_GPIO_0);</span></code></pre></div>
+<p>使用 <code>GIO_ReadAll</code> 可以同时读取所有 GPIO 当前输入的电平信号。其返回值的第 <span class="math inline">\(n\)</span> 比特
+（第 0 比特为最低比特）对应 GPIO <span class="math inline">\(n\)</span> 的输入；如果 GPIO <span class="math inline">\(n\)</span> 当前不支持输入，那么第 <span class="math inline">\(n\)</span>
+比特为 0：</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb12-1"><a href="ch-gpio.html#cb12-1"></a><span class="dt">uint64_t</span> GIO_ReadAll(<span class="dt">void</span>);</span></code></pre></div>
 </div>
-<div id="时钟门控" class="section level3 hasAnchor">
-<h3><span class="header-section-number">10.2.2</span> 时钟门控<a href="ch-sysctrl.html#时钟门控" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>通过 <code>SYSCTRL_SetClkGateMulti</code> 设置门控（即关闭时钟），通过 <code>SYSCTRL_ClearClkGateMulti</code> 消除门控（即恢复时钟）。</p>
-<div class="sourceCode" id="cb60"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb60-1"><a href="ch-sysctrl.html#cb60-1"></a><span class="dt">void</span> SYSCTRL_SetClkGateMulti(SYSCTRL_ClkGateItem item);</span>
-<span id="cb60-2"><a href="ch-sysctrl.html#cb60-2"></a><span class="dt">void</span> SYSCTRL_ClearClkGateMulti(SYSCTRL_ClkGateItem item);</span></code></pre></div>
-<p><code>SYSCTRL_SetClkGateMulti</code> 和 <code>SYSCTRL_ClearClkGateMulti</code> 可以同时控制多个外设的门控。 <code>items</code> 参数里的各个比特与 <code>SYSCTRL_ClkGateItem</code> 里的各个外设一一对应。</p>
-<div class="sourceCode" id="cb61"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb61-1"><a href="ch-sysctrl.html#cb61-1"></a><span class="dt">void</span> SYSCTRL_SetClkGateMulti(<span class="dt">uint32_t</span> items);</span>
-<span id="cb61-2"><a href="ch-sysctrl.html#cb61-2"></a><span class="dt">void</span> SYSCTRL_ClearClkGateMulti(<span class="dt">uint32_t</span> items);</span></code></pre></div>
+<div id="设置输出" class="section level3 hasAnchor">
+<h3><span class="header-section-number">5.2.3</span> 设置输出<a href="ch-gpio.html#设置输出" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>GIO_WriteValue</code> 设置某个 GPIO 输出的电平信号，例如使 GPIO 0 输出高电平（1）：</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb13-1"><a href="ch-gpio.html#cb13-1"></a>GIO_WriteValue(GIO_GPIO_0, <span class="dv">1</span>);</span></code></pre></div>
 </div>
-<div id="时钟配置" class="section level3 hasAnchor">
-<h3><span class="header-section-number">10.2.3</span> 时钟配置<a href="ch-sysctrl.html#时钟配置" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>举例如下。</p>
-<ol style="list-style-type: decimal">
-<li><p>开启I2C时钟</p>
-<p>使用 <code>SYSCTRL_SelectI2sClk</code> 为 I2C 配置时钟：</p>
-<div class="sourceCode" id="cb62"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb62-1"><a href="ch-sysctrl.html#cb62-1"></a>SYSCTRL_ClearClkGateMulti( (<span class="dv">1</span> &lt;&lt; SYSCTRL_ClkGate_APB_I2C0)</span>
-<span id="cb62-2"><a href="ch-sysctrl.html#cb62-2"></a>                          |(<span class="dv">1</span> &lt;&lt; SYSCTRL_ClkGate_APB_PinCtrl));</span></code></pre></div></li>
-<li><p>关闭定时器TMR0时钟</p>
-<p>使用 <code>SYSCTRL_GetClk</code> 可获得指定外设的时钟频率：</p>
-<div class="sourceCode" id="cb63"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb63-1"><a href="ch-sysctrl.html#cb63-1"></a>SYSCTRL_ClearClkGateMulti(<span class="dv">0</span></span>
-<span id="cb63-2"><a href="ch-sysctrl.html#cb63-2"></a>                        | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ClkGate_APB_TMR0));</span></code></pre></div></li>
-</ol>
+<div id="配置中断请求" class="section level3 hasAnchor">
+<h3><span class="header-section-number">5.2.4</span> 配置中断请求<a href="ch-gpio.html#配置中断请求" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>GIO_ConfigIntSource</code> 配置 GPIO 生成中断请求。</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb14-1"><a href="ch-gpio.html#cb14-1"></a><span class="dt">void</span> GIO_ConfigIntSource(</span>
+<span id="cb14-2"><a href="ch-gpio.html#cb14-2"></a>  <span class="dt">const</span> GIO_Index_t io_index,     <span class="co">// GPIO 编号</span></span>
+<span id="cb14-3"><a href="ch-gpio.html#cb14-3"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> enable,           <span class="co">// 使能的边沿或者电平类型组合</span></span>
+<span id="cb14-4"><a href="ch-gpio.html#cb14-4"></a>  <span class="dt">const</span> GIO_IntTriggerType_t type <span class="co">// 触发类型</span></span>
+<span id="cb14-5"><a href="ch-gpio.html#cb14-5"></a>  );</span></code></pre></div>
+<p>其中的 <code>enable</code> 为以下两个值的组合（0 表示禁止产生中断请求）：</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb15-1"><a href="ch-gpio.html#cb15-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
+<span id="cb15-2"><a href="ch-gpio.html#cb15-2"></a>{</span>
+<span id="cb15-3"><a href="ch-gpio.html#cb15-3"></a>    ...LOGIC_LOW_OR_FALLING_EDGE = ..., <span class="co">// 低电平或者下降沿</span></span>
+<span id="cb15-4"><a href="ch-gpio.html#cb15-4"></a>    ...LOGIC_HIGH_OR_RISING_EDGE = ...  <span class="co">// 高电平或者上升沿</span></span>
+<span id="cb15-5"><a href="ch-gpio.html#cb15-5"></a>} GIO_IntTriggerEnable_t;</span></code></pre></div>
+<p>触发类型有两种：</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb16-1"><a href="ch-gpio.html#cb16-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
+<span id="cb16-2"><a href="ch-gpio.html#cb16-2"></a>{</span>
+<span id="cb16-3"><a href="ch-gpio.html#cb16-3"></a>    GIO_INT_EDGE,   <span class="co">// 边沿触发</span></span>
+<span id="cb16-4"><a href="ch-gpio.html#cb16-4"></a>    GIO_INT_LOGIC   <span class="co">// 电平触发</span></span>
+<span id="cb16-5"><a href="ch-gpio.html#cb16-5"></a>} GIO_IntTriggerType_t;</span></code></pre></div>
+<ul>
+<li><p>例如将 GPIO 0 配置为上升沿触发中断</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb17-1"><a href="ch-gpio.html#cb17-1"></a>GIO_ConfigIntSource(GIO_GPIO_0,</span>
+<span id="cb17-2"><a href="ch-gpio.html#cb17-2"></a>  ...LOGIC_HIGH_OR_RISING_EDGE,</span>
+<span id="cb17-3"><a href="ch-gpio.html#cb17-3"></a>  GIO_INT_EDGE);</span></code></pre></div></li>
+<li><p>例如将 GPIO 0 配置为双沿触发中断</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb18-1"><a href="ch-gpio.html#cb18-1"></a>GIO_ConfigIntSource(GIO_GPIO_0,</span>
+<span id="cb18-2"><a href="ch-gpio.html#cb18-2"></a>  ...LOGIC_HIGH_OR_RISING_EDGE | ..._HIGH_OR_RISING_EDGE,</span>
+<span id="cb18-3"><a href="ch-gpio.html#cb18-3"></a>  GIO_INT_EDGE);</span></code></pre></div></li>
+<li><p>例如将 GPIO 0 配置为高电平触发</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb19-1"><a href="ch-gpio.html#cb19-1"></a>GIO_ConfigIntSource(GIO_GPIO_0,</span>
+<span id="cb19-2"><a href="ch-gpio.html#cb19-2"></a>  ...LOGIC_HIGH_OR_RISING_EDGE,</span>
+<span id="cb19-3"><a href="ch-gpio.html#cb19-3"></a>  GIO_INT_LOGIC);</span></code></pre></div></li>
+</ul>
+</div>
+<div id="处理中断状态" class="section level3 hasAnchor">
+<h3><span class="header-section-number">5.2.5</span> 处理中断状态<a href="ch-gpio.html#处理中断状态" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>在用 <code>platform_set_irq_callback</code> 注册好GPIO中断回调函数后，在中断里用 <code>GIO_GetIntStatus</code> 可获取某个 GPIO 上的中断触发状态，返回非 0 值表示该 GPIO
+上产生了中断请求；用 <code>GIO_GetAllIntStatus</code> 一次性获取所有 GPIO 的中断触发状态，
+第 <span class="math inline">\(n\)</span> 比特（第 0 比特为最低比特）对应 GPIO <span class="math inline">\(n\)</span> 上的中断触发状态。</p>
+<p>GPIO 产生中断后，需要消除中断状态方可再次触发。用 <code>GIO_ClearIntStatus</code> 消除某个 GPIO
+上中断状态，用 <code>GIO_ClearAllIntStatus</code> 一次性清除所有 GPIO 上可能存在的中断触发状态。</p>
 
 </div>
 </div>
@@ -372,8 +394,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="ch-rtc.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="ch-timer.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="ch-eflash.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ch-i2c.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

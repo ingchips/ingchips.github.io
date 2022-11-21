@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>10 系统控制（SYSCTRL） | ING918XX 系列芯片外设开发者手册</title>
+  <title>9 实时时钟（RTC） | ING918XX 系列芯片外设开发者手册</title>
   <meta name="description" content="ING918XX 系列芯片开发者手册." />
   <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="10 系统控制（SYSCTRL） | ING918XX 系列芯片外设开发者手册" />
+  <meta property="og:title" content="9 实时时钟（RTC） | ING918XX 系列芯片外设开发者手册" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="ING918XX 系列芯片开发者手册." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="10 系统控制（SYSCTRL） | ING918XX 系列芯片外设开发者手册" />
+  <meta name="twitter:title" content="9 实时时钟（RTC） | ING918XX 系列芯片外设开发者手册" />
   
   <meta name="twitter:description" content="ING918XX 系列芯片开发者手册." />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="ch-rtc.html"/>
-<link rel="next" href="ch-timer.html"/>
+<link rel="prev" href="ch-pwm.html"/>
+<link rel="next" href="ch-sysctrl.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -290,81 +290,65 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="ch-sysctrl" class="section level1 hasAnchor">
-<h1><span class="header-section-number">10</span> 系统控制（SYSCTRL）<a href="ch-sysctrl.html#ch-sysctrl" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div id="功能概述-4" class="section level2 hasAnchor">
-<h2><span class="header-section-number">10.1</span> 功能概述<a href="ch-sysctrl.html#功能概述-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>SYSCTRL 负责管理、控制各种片上外设，主要功能有：</p>
+<div id="ch-rtc" class="section level1 hasAnchor">
+<h1><span class="header-section-number">9</span> 实时时钟（RTC）<a href="ch-rtc.html#ch-rtc" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="功能概述-3" class="section level2 hasAnchor">
+<h2><span class="header-section-number">9.1</span> 功能概述<a href="ch-rtc.html#功能概述-3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>实时时钟（<code>RTC</code>）是一个独立的48位定时器，相较于普通<code>TIMER</code>，<code>RTC</code>精度低，同时功耗也会降低，适用于功耗敏感、对于精度要求不高的应用场景。</p>
+</div>
+<div id="接口说明" class="section level2 hasAnchor">
+<h2><span class="header-section-number">9.2</span> 接口说明<a href="ch-rtc.html#接口说明" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="rtc使能禁止" class="section level3 hasAnchor">
+<h3><span class="header-section-number">9.2.1</span> RTC使能/禁止<a href="ch-rtc.html#rtc使能禁止" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用<code>RTC_Enable</code>使能或者禁止<code>RTC</code>。</p>
+<pre><code>void RTC_Enable(const uint8_t flag);</code></pre>
+<p>函数根据<code>flag</code>的值来执行操作:</p>
 <ul>
-<li>外设的复位</li>
-<li>外设的时钟管理，包括时钟源、频率设置、门控等</li>
-<li>其它功能</li>
+<li><code>flag</code>为0时，禁止<code>RTC</code> ；</li>
+<li><code>flag</code>不为0时，使能<code>RTC</code>。</li>
 </ul>
-<div id="外设标识" class="section level3 hasAnchor">
-<h3><span class="header-section-number">10.1.1</span> 外设标识<a href="ch-sysctrl.html#外设标识" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>SYSCTRL 为外设定义了几种不同的标识。最常见的几种标识为：</p>
-<p>1.SYSCTRL的时钟门控</p>
-<div class="sourceCode" id="cb57"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb57-1"><a href="ch-sysctrl.html#cb57-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb57-2"><a href="ch-sysctrl.html#cb57-2"></a>{</span>
-<span id="cb57-3"><a href="ch-sysctrl.html#cb57-3"></a>    SYSCTRL_ClkGate_APB_I2C0    = <span class="dv">4</span>,</span>
-<span id="cb57-4"><a href="ch-sysctrl.html#cb57-4"></a>    SYSCTRL_ClkGate_APB_SPI1    = <span class="dv">5</span>,</span>
-<span id="cb57-5"><a href="ch-sysctrl.html#cb57-5"></a>    <span class="co">// ...</span></span>
-<span id="cb57-6"><a href="ch-sysctrl.html#cb57-6"></a>    SYSCTRL_ClkGate_APB_I2C1    = <span class="dv">19</span></span>
-<span id="cb57-7"><a href="ch-sysctrl.html#cb57-7"></a>} SYSCTRL_ClkGateItem;</span></code></pre></div>
-<p>2.SYSCTRL的reset</p>
-<div class="sourceCode" id="cb58"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb58-1"><a href="ch-sysctrl.html#cb58-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb58-2"><a href="ch-sysctrl.html#cb58-2"></a>{</span>
-<span id="cb58-3"><a href="ch-sysctrl.html#cb58-3"></a>    SYSCTRL_Reset_AHB_DMA     = <span class="dv">0</span>,</span>
-<span id="cb58-4"><a href="ch-sysctrl.html#cb58-4"></a>    SYSCTRL_Reset_AHB_LLE     = <span class="dv">1</span>,</span>
-<span id="cb58-5"><a href="ch-sysctrl.html#cb58-5"></a>    <span class="co">// ...</span></span>
-<span id="cb58-6"><a href="ch-sysctrl.html#cb58-6"></a>    SYSCTRL_Reset_APH_TRNG    = <span class="dv">21</span></span>
-<span id="cb58-7"><a href="ch-sysctrl.html#cb58-7"></a>} SYSCTRL_ResetItem;</span></code></pre></div>
-<p>这些标识用于外设的复位、时钟门控等。</p>
+<p><code>RTC</code> 使能后，只要不进行禁能，就会根据设置的初始计数值进行递减，计数器递减为0后发生中断，这时只要设置新的计数值，RTC就会马上按照新的计数值进行计时。</p>
 </div>
-<div id="时钟树" class="section level3 hasAnchor">
-<h3><span class="header-section-number">10.1.2</span> 时钟树<a href="ch-sysctrl.html#时钟树" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<ol style="list-style-type: decimal">
-<li><p>32KiHz 时钟（<em>clk_32k</em>）</p>
-<p>32k 时钟有两个来源：内部 RC 32KHz，外部 32768Hz 晶体。</p></li>
-<li><p>PLL 输入的 24MHz 时钟（<em>clk_pll_in</em>）</p>
-<p>24MHz 时钟的主要来源：外部 48MHz 晶体。</p></li>
-<li><p>时钟分布图</p></li>
-</ol>
-<p><img src="images/time_structure.png" /></p>
+<div id="获取rtc当前值" class="section level3 hasAnchor">
+<h3><span class="header-section-number">9.2.2</span> 获取RTC当前值<a href="ch-rtc.html#获取rtc当前值" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>可以使用<code>RTC_Current</code> 读取<code>RTC</code>低32位的当前计数值，用<code>RTC_CurrentFull</code> 读取全部48位的当前计数值。</p>
+<pre><code>uint32_t RTC_Current(void);
+uint64_t RTC_CurrentFull(void);</code></pre>
+</div>
+<div id="设置中断的计数值" class="section level3 hasAnchor">
+<h3><span class="header-section-number">9.2.3</span> 设置中断的计数值<a href="ch-rtc.html#设置中断的计数值" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>通过<code>RTC_SetNextIntOffset</code>设置<code>RTC</code>中断的计数值。</p>
+<pre><code>void RTC_SetNextIntOffset(const uint32_t offset);</code></pre>
+<p>注意<code>RTC</code>使用的时钟为<code>32.768K</code>，因此计数值设置为<code>32768</code>时，<code>RTC</code>的中断时间恰好为1s，可以据此设置中断时间。</p>
+</div>
+<div id="清rtc中断" class="section level3 hasAnchor">
+<h3><span class="header-section-number">9.2.4</span> 清RTC中断<a href="ch-rtc.html#清rtc中断" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用<code>RTC_ClearInt</code>来清除当前的<code>RTC</code> 中断状态，以备下一次使用。</p>
+<pre><code>void RTC_ClearInt(void);</code></pre>
 </div>
 </div>
-<div id="使用说明-2" class="section level2 hasAnchor">
-<h2><span class="header-section-number">10.2</span> 使用说明<a href="ch-sysctrl.html#使用说明-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="外设复位" class="section level3 hasAnchor">
-<h3><span class="header-section-number">10.2.1</span> 外设复位<a href="ch-sysctrl.html#外设复位" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>通过 <code>SYSCTRL_ResetBlock</code> 复位外设，通过’SYSCTRL_ReleaseBlock’释放复位。</p>
-<div class="sourceCode" id="cb59"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb59-1"><a href="ch-sysctrl.html#cb59-1"></a><span class="dt">void</span> SYSCTRL_ResetBlock(SYSCTRL_ResetItem item);</span>
-<span id="cb59-2"><a href="ch-sysctrl.html#cb59-2"></a><span class="dt">void</span> SYSCTRL_ReleaseBlock(SYSCTRL_ResetItem item);</span></code></pre></div>
-</div>
-<div id="时钟门控" class="section level3 hasAnchor">
-<h3><span class="header-section-number">10.2.2</span> 时钟门控<a href="ch-sysctrl.html#时钟门控" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>通过 <code>SYSCTRL_SetClkGateMulti</code> 设置门控（即关闭时钟），通过 <code>SYSCTRL_ClearClkGateMulti</code> 消除门控（即恢复时钟）。</p>
-<div class="sourceCode" id="cb60"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb60-1"><a href="ch-sysctrl.html#cb60-1"></a><span class="dt">void</span> SYSCTRL_SetClkGateMulti(SYSCTRL_ClkGateItem item);</span>
-<span id="cb60-2"><a href="ch-sysctrl.html#cb60-2"></a><span class="dt">void</span> SYSCTRL_ClearClkGateMulti(SYSCTRL_ClkGateItem item);</span></code></pre></div>
-<p><code>SYSCTRL_SetClkGateMulti</code> 和 <code>SYSCTRL_ClearClkGateMulti</code> 可以同时控制多个外设的门控。 <code>items</code> 参数里的各个比特与 <code>SYSCTRL_ClkGateItem</code> 里的各个外设一一对应。</p>
-<div class="sourceCode" id="cb61"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb61-1"><a href="ch-sysctrl.html#cb61-1"></a><span class="dt">void</span> SYSCTRL_SetClkGateMulti(<span class="dt">uint32_t</span> items);</span>
-<span id="cb61-2"><a href="ch-sysctrl.html#cb61-2"></a><span class="dt">void</span> SYSCTRL_ClearClkGateMulti(<span class="dt">uint32_t</span> items);</span></code></pre></div>
-</div>
-<div id="时钟配置" class="section level3 hasAnchor">
-<h3><span class="header-section-number">10.2.3</span> 时钟配置<a href="ch-sysctrl.html#时钟配置" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>举例如下。</p>
-<ol style="list-style-type: decimal">
-<li><p>开启I2C时钟</p>
-<p>使用 <code>SYSCTRL_SelectI2sClk</code> 为 I2C 配置时钟：</p>
-<div class="sourceCode" id="cb62"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb62-1"><a href="ch-sysctrl.html#cb62-1"></a>SYSCTRL_ClearClkGateMulti( (<span class="dv">1</span> &lt;&lt; SYSCTRL_ClkGate_APB_I2C0)</span>
-<span id="cb62-2"><a href="ch-sysctrl.html#cb62-2"></a>                          |(<span class="dv">1</span> &lt;&lt; SYSCTRL_ClkGate_APB_PinCtrl));</span></code></pre></div></li>
-<li><p>关闭定时器TMR0时钟</p>
-<p>使用 <code>SYSCTRL_GetClk</code> 可获得指定外设的时钟频率：</p>
-<div class="sourceCode" id="cb63"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb63-1"><a href="ch-sysctrl.html#cb63-1"></a>SYSCTRL_ClearClkGateMulti(<span class="dv">0</span></span>
-<span id="cb63-2"><a href="ch-sysctrl.html#cb63-2"></a>                        | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ClkGate_APB_TMR0));</span></code></pre></div></li>
-</ol>
+<div id="rtc中断使用流程" class="section level2 hasAnchor">
+<h2><span class="header-section-number">9.3</span> RTC中断使用流程<a href="ch-rtc.html#rtc中断使用流程" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ul>
+<li><p>首先，定义一个中断处理函数<code>rtc_timer_isr</code> (名字可以根据需要自己定义）。</p>
+<pre><code>uint32_t rtc_timer_isr(void *user_data)
+{
+    RTC_ClearInt();//清中断状态
+    RTC_SetNextIntOffset(32768 * 10);//设置中断计数值
+    //这里可以添加用户自己的代码
+    return 0;
+}</code></pre>
+<p>可以通过<code>user_data</code>给中断传递参数，这通常作为一个预留功能，不常用到。</p></li>
+<li><p>然后，通过<code>platform_set_irq_callback</code> 注册中断：</p>
+<pre><code>platform_set_irq_callback(PLATFORM_CB_IRQ_RTC, rtc_timer_isr, NULL);</code></pre></li>
+<li><p>接下来，设置中断时间并使能<code>RTC</code> ，时间到后，中断会触发。</p>
+<pre><code>RTC_SetNextIntOffset(32768 * 10);
+RTC_Enable(RTC_ENABLED);</code></pre></li>
+<li><p>这里注意，在使用<code>RTC</code>时，最好先通过<code>RTC_SetNextIntOffset</code>设置好计数值，再进行使能，这样RTC此次计数时间处于可控状态。</p></li>
+<li><p>在RTC计数过程中，随时都可以使用<code>RTC_SetNextIntOffset</code> 进行计数值的设置，设置完成后，新值会马上覆盖旧值，<code>RTC</code> 会按照新值开始进行计时。</p></li>
+</ul>
 
-</div>
+
 </div>
 </div>
             </section>
@@ -372,8 +356,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="ch-rtc.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="ch-timer.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="ch-pwm.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ch-sysctrl.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

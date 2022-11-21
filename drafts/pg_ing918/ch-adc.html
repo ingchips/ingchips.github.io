@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>10 系统控制（SYSCTRL） | ING918XX 系列芯片外设开发者手册</title>
+  <title>3 模数转换器（ADC） | ING918XX 系列芯片外设开发者手册</title>
   <meta name="description" content="ING918XX 系列芯片开发者手册." />
   <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="10 系统控制（SYSCTRL） | ING918XX 系列芯片外设开发者手册" />
+  <meta property="og:title" content="3 模数转换器（ADC） | ING918XX 系列芯片外设开发者手册" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="ING918XX 系列芯片开发者手册." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="10 系统控制（SYSCTRL） | ING918XX 系列芯片外设开发者手册" />
+  <meta name="twitter:title" content="3 模数转换器（ADC） | ING918XX 系列芯片外设开发者手册" />
   
   <meta name="twitter:description" content="ING918XX 系列芯片开发者手册." />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="ch-rtc.html"/>
-<link rel="next" href="ch-timer.html"/>
+<link rel="prev" href="ch-overview.html"/>
+<link rel="next" href="ch-eflash.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -290,81 +290,121 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="ch-sysctrl" class="section level1 hasAnchor">
-<h1><span class="header-section-number">10</span> 系统控制（SYSCTRL）<a href="ch-sysctrl.html#ch-sysctrl" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div id="功能概述-4" class="section level2 hasAnchor">
-<h2><span class="header-section-number">10.1</span> 功能概述<a href="ch-sysctrl.html#功能概述-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>SYSCTRL 负责管理、控制各种片上外设，主要功能有：</p>
+<div id="ch-adc" class="section level1 hasAnchor">
+<h1><span class="header-section-number">3</span> 模数转换器（ADC）<a href="ch-adc.html#ch-adc" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>ADC 特性：</p>
 <ul>
-<li>外设的复位</li>
-<li>外设的时钟管理，包括时钟源、频率设置、门控等</li>
-<li>其它功能</li>
+<li>最多有5个通道AIN0~AIN4</li>
+<li>10位分辨率</li>
+<li>输入范围0~3.6V</li>
+<li>支持采样率3/16MHz、3/32MHz、3/64MHz、3/128MHz</li>
+<li>支持单端输入转换模式</li>
+<li>支持环路转换模式，每个通道可以启用或禁用</li>
 </ul>
-<div id="外设标识" class="section level3 hasAnchor">
-<h3><span class="header-section-number">10.1.1</span> 外设标识<a href="ch-sysctrl.html#外设标识" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>SYSCTRL 为外设定义了几种不同的标识。最常见的几种标识为：</p>
-<p>1.SYSCTRL的时钟门控</p>
-<div class="sourceCode" id="cb57"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb57-1"><a href="ch-sysctrl.html#cb57-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb57-2"><a href="ch-sysctrl.html#cb57-2"></a>{</span>
-<span id="cb57-3"><a href="ch-sysctrl.html#cb57-3"></a>    SYSCTRL_ClkGate_APB_I2C0    = <span class="dv">4</span>,</span>
-<span id="cb57-4"><a href="ch-sysctrl.html#cb57-4"></a>    SYSCTRL_ClkGate_APB_SPI1    = <span class="dv">5</span>,</span>
-<span id="cb57-5"><a href="ch-sysctrl.html#cb57-5"></a>    <span class="co">// ...</span></span>
-<span id="cb57-6"><a href="ch-sysctrl.html#cb57-6"></a>    SYSCTRL_ClkGate_APB_I2C1    = <span class="dv">19</span></span>
-<span id="cb57-7"><a href="ch-sysctrl.html#cb57-7"></a>} SYSCTRL_ClkGateItem;</span></code></pre></div>
-<p>2.SYSCTRL的reset</p>
-<div class="sourceCode" id="cb58"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb58-1"><a href="ch-sysctrl.html#cb58-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb58-2"><a href="ch-sysctrl.html#cb58-2"></a>{</span>
-<span id="cb58-3"><a href="ch-sysctrl.html#cb58-3"></a>    SYSCTRL_Reset_AHB_DMA     = <span class="dv">0</span>,</span>
-<span id="cb58-4"><a href="ch-sysctrl.html#cb58-4"></a>    SYSCTRL_Reset_AHB_LLE     = <span class="dv">1</span>,</span>
-<span id="cb58-5"><a href="ch-sysctrl.html#cb58-5"></a>    <span class="co">// ...</span></span>
-<span id="cb58-6"><a href="ch-sysctrl.html#cb58-6"></a>    SYSCTRL_Reset_APH_TRNG    = <span class="dv">21</span></span>
-<span id="cb58-7"><a href="ch-sysctrl.html#cb58-7"></a>} SYSCTRL_ResetItem;</span></code></pre></div>
-<p>这些标识用于外设的复位、时钟门控等。</p>
+<div id="adc-工作模式" class="section level2 hasAnchor">
+<h2><span class="header-section-number">3.1</span> ADC 工作模式<a href="ch-adc.html#adc-工作模式" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>ADC 有两种工作模式：单次模式和循环模式。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="ch-adc.html#cb1-1"></a><span class="pp">#define ADC_MODE_SINGLE     1</span></span>
+<span id="cb1-2"><a href="ch-adc.html#cb1-2"></a><span class="pp">#define ADC_MODE_LOOP       0</span></span>
+<span id="cb1-3"><a href="ch-adc.html#cb1-3"></a><span class="dt">void</span> ADC_SetMode(<span class="dt">const</span> <span class="dt">uint8_t</span> mode);</span></code></pre></div>
+<div id="单次模式adc_mode_single" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.1.1</span> 单次模式：ADC_MODE_SINGLE<a href="ch-adc.html#单次模式adc_mode_single" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>单次模式只能使能一个通道，如果使能多个通道，只有第一个通道为有效通道，完成后ADC将停止，数据可用，知道重置ADC控制器。</p>
 </div>
-<div id="时钟树" class="section level3 hasAnchor">
-<h3><span class="header-section-number">10.1.2</span> 时钟树<a href="ch-sysctrl.html#时钟树" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<ol style="list-style-type: decimal">
-<li><p>32KiHz 时钟（<em>clk_32k</em>）</p>
-<p>32k 时钟有两个来源：内部 RC 32KHz，外部 32768Hz 晶体。</p></li>
-<li><p>PLL 输入的 24MHz 时钟（<em>clk_pll_in</em>）</p>
-<p>24MHz 时钟的主要来源：外部 48MHz 晶体。</p></li>
-<li><p>时钟分布图</p></li>
-</ol>
-<p><img src="images/time_structure.png" /></p>
+<div id="循环模式adc_mode_loop" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.1.2</span> 循环模式：ADC_MODE_LOOP<a href="ch-adc.html#循环模式adc_mode_loop" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>循环模式需要配置一个控制环路延迟：</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="ch-adc.html#cb2-1"></a><span class="dt">void</span> ADC_SetLoopDelay(<span class="dt">const</span> <span class="dt">uint32_t</span> delay);</span></code></pre></div>
+<p>一旦 ADC 任务开始，它将逐个从启用的通道中采样输入电压。完成一个循环后，循环延迟将启动停止 ADC，直到延迟时间结束，然后下一个循环将开始。数据每个循环都会更新。</p>
 </div>
 </div>
-<div id="使用说明-2" class="section level2 hasAnchor">
-<h2><span class="header-section-number">10.2</span> 使用说明<a href="ch-sysctrl.html#使用说明-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="外设复位" class="section level3 hasAnchor">
-<h3><span class="header-section-number">10.2.1</span> 外设复位<a href="ch-sysctrl.html#外设复位" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>通过 <code>SYSCTRL_ResetBlock</code> 复位外设，通过’SYSCTRL_ReleaseBlock’释放复位。</p>
-<div class="sourceCode" id="cb59"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb59-1"><a href="ch-sysctrl.html#cb59-1"></a><span class="dt">void</span> SYSCTRL_ResetBlock(SYSCTRL_ResetItem item);</span>
-<span id="cb59-2"><a href="ch-sysctrl.html#cb59-2"></a><span class="dt">void</span> SYSCTRL_ReleaseBlock(SYSCTRL_ResetItem item);</span></code></pre></div>
+<div id="adc-采样数率" class="section level2 hasAnchor">
+<h2><span class="header-section-number">3.2</span> ADC 采样数率<a href="ch-adc.html#adc-采样数率" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>ADC 支持四种采样率 3/16MHz、3/32MHz、3/64MHz、3/128MHz。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="ch-adc.html#cb3-1"></a><span class="pp">#define ADC_CLK_16      0</span></span>
+<span id="cb3-2"><a href="ch-adc.html#cb3-2"></a><span class="pp">#define ADC_CLK_32      1</span></span>
+<span id="cb3-3"><a href="ch-adc.html#cb3-3"></a><span class="pp">#define ADC_CLK_64      2</span></span>
+<span id="cb3-4"><a href="ch-adc.html#cb3-4"></a><span class="pp">#define ADC_CLK_128     3</span></span>
+<span id="cb3-5"><a href="ch-adc.html#cb3-5"></a><span class="pp">#define ADC_CLK_EN      0x4</span></span>
+<span id="cb3-6"><a href="ch-adc.html#cb3-6"></a><span class="co">/** </span><span class="an">\brief</span><span class="co"> Set ADC clock selection</span></span>
+<span id="cb3-7"><a href="ch-adc.html#cb3-7"></a><span class="co"> *  Note that: remeber to include ADC_CLK_EN.</span></span>
+<span id="cb3-8"><a href="ch-adc.html#cb3-8"></a><span class="co"> */</span></span>
+<span id="cb3-9"><a href="ch-adc.html#cb3-9"></a><span class="dt">void</span> ADC_SetClkSel(<span class="dt">const</span> <span class="dt">uint8_t</span> clk_sel);</span></code></pre></div>
 </div>
-<div id="时钟门控" class="section level3 hasAnchor">
-<h3><span class="header-section-number">10.2.2</span> 时钟门控<a href="ch-sysctrl.html#时钟门控" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>通过 <code>SYSCTRL_SetClkGateMulti</code> 设置门控（即关闭时钟），通过 <code>SYSCTRL_ClearClkGateMulti</code> 消除门控（即恢复时钟）。</p>
-<div class="sourceCode" id="cb60"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb60-1"><a href="ch-sysctrl.html#cb60-1"></a><span class="dt">void</span> SYSCTRL_SetClkGateMulti(SYSCTRL_ClkGateItem item);</span>
-<span id="cb60-2"><a href="ch-sysctrl.html#cb60-2"></a><span class="dt">void</span> SYSCTRL_ClearClkGateMulti(SYSCTRL_ClkGateItem item);</span></code></pre></div>
-<p><code>SYSCTRL_SetClkGateMulti</code> 和 <code>SYSCTRL_ClearClkGateMulti</code> 可以同时控制多个外设的门控。 <code>items</code> 参数里的各个比特与 <code>SYSCTRL_ClkGateItem</code> 里的各个外设一一对应。</p>
-<div class="sourceCode" id="cb61"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb61-1"><a href="ch-sysctrl.html#cb61-1"></a><span class="dt">void</span> SYSCTRL_SetClkGateMulti(<span class="dt">uint32_t</span> items);</span>
-<span id="cb61-2"><a href="ch-sysctrl.html#cb61-2"></a><span class="dt">void</span> SYSCTRL_ClearClkGateMulti(<span class="dt">uint32_t</span> items);</span></code></pre></div>
+<div id="adc-校准" class="section level2 hasAnchor">
+<h2><span class="header-section-number">3.3</span> ADC 校准<a href="ch-adc.html#adc-校准" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>如果ADC采样计算得到的结果和实际值偏差比较大，可以对ADC校准，使用校准后的值计算。</p>
+<div id="adc-校准预处理" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.3.1</span> ADC 校准预处理<a href="ch-adc.html#adc-校准预处理" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb4-1"><a href="ch-adc.html#cb4-1"></a><span class="kw">enum</span> adc_cali_method</span>
+<span id="cb4-2"><a href="ch-adc.html#cb4-2"></a>{</span>
+<span id="cb4-3"><a href="ch-adc.html#cb4-3"></a>    ADC_CALI_METHOD_1 = <span class="dv">1</span>,      <span class="co">// calibration is done in factory</span></span>
+<span id="cb4-4"><a href="ch-adc.html#cb4-4"></a>    ADC_CALI_METHOD_2,          <span class="co">// calibration is done in factory</span></span>
+<span id="cb4-5"><a href="ch-adc.html#cb4-5"></a>    ADC_CALI_METHOD_SELF        <span class="co">// self-calibration</span></span>
+<span id="cb4-6"><a href="ch-adc.html#cb4-6"></a>};</span>
+<span id="cb4-7"><a href="ch-adc.html#cb4-7"></a><span class="kw">enum</span> adc_cali_method adc_prepare_calibration(<span class="dt">void</span>);</span></code></pre></div>
+<p>在主程序内预处理一次即可，该函数会判断当前芯片是否经过校准，如果未经校准会自动校准并将校准后的数据保存到flash里；如果已经校准则跳过校准过程。</p>
 </div>
-<div id="时钟配置" class="section level3 hasAnchor">
-<h3><span class="header-section-number">10.2.3</span> 时钟配置<a href="ch-sysctrl.html#时钟配置" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>举例如下。</p>
-<ol style="list-style-type: decimal">
-<li><p>开启I2C时钟</p>
-<p>使用 <code>SYSCTRL_SelectI2sClk</code> 为 I2C 配置时钟：</p>
-<div class="sourceCode" id="cb62"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb62-1"><a href="ch-sysctrl.html#cb62-1"></a>SYSCTRL_ClearClkGateMulti( (<span class="dv">1</span> &lt;&lt; SYSCTRL_ClkGate_APB_I2C0)</span>
-<span id="cb62-2"><a href="ch-sysctrl.html#cb62-2"></a>                          |(<span class="dv">1</span> &lt;&lt; SYSCTRL_ClkGate_APB_PinCtrl));</span></code></pre></div></li>
-<li><p>关闭定时器TMR0时钟</p>
-<p>使用 <code>SYSCTRL_GetClk</code> 可获得指定外设的时钟频率：</p>
-<div class="sourceCode" id="cb63"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb63-1"><a href="ch-sysctrl.html#cb63-1"></a>SYSCTRL_ClearClkGateMulti(<span class="dv">0</span></span>
-<span id="cb63-2"><a href="ch-sysctrl.html#cb63-2"></a>                        | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ClkGate_APB_TMR0));</span></code></pre></div></li>
-</ol>
+<div id="adc-读取校准后的值" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.3.2</span> ADC 读取校准后的值<a href="ch-adc.html#adc-读取校准后的值" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="ch-adc.html#cb5-1"></a><span class="kw">enum</span> adc_sample_mode</span>
+<span id="cb5-2"><a href="ch-adc.html#cb5-2"></a>{</span>
+<span id="cb5-3"><a href="ch-adc.html#cb5-3"></a>    ADC_SAMPLE_MODE_SLOW,       <span class="co">// for ADC_CLK_128</span></span>
+<span id="cb5-4"><a href="ch-adc.html#cb5-4"></a>    ADC_SAMPLE_MODE_FAST,       <span class="co">// for ADC_CLK_16</span></span>
+<span id="cb5-5"><a href="ch-adc.html#cb5-5"></a>};</span>
+<span id="cb5-6"><a href="ch-adc.html#cb5-6"></a><span class="dt">uint16_t</span> adc_calibrate(<span class="kw">enum</span> adc_sample_mode mode, <span class="dt">uint8_t</span> channel_id,</span>
+<span id="cb5-7"><a href="ch-adc.html#cb5-7"></a>                       <span class="dt">uint16_t</span> value);</span></code></pre></div>
+<p>value是adc采样的原始值，该函数查表计算后，返回校准后的值。</p>
+</div>
+</div>
+<div id="adc-综合示例" class="section level2 hasAnchor">
+<h2><span class="header-section-number">3.4</span> ADC 综合示例<a href="ch-adc.html#adc-综合示例" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>读取ADC数据：</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb6-1"><a href="ch-adc.html#cb6-1"></a><span class="dt">uint16_t</span> read_adc(<span class="dt">uint8_t</span> channel)</span>
+<span id="cb6-2"><a href="ch-adc.html#cb6-2"></a>{</span>
+<span id="cb6-3"><a href="ch-adc.html#cb6-3"></a>    SYSCTRL_WaitForLDO();</span>
+<span id="cb6-4"><a href="ch-adc.html#cb6-4"></a></span>
+<span id="cb6-5"><a href="ch-adc.html#cb6-5"></a>    ADC_Reset();</span>
+<span id="cb6-6"><a href="ch-adc.html#cb6-6"></a>    ADC_PowerCtrl(<span class="dv">1</span>);</span>
+<span id="cb6-7"><a href="ch-adc.html#cb6-7"></a></span>
+<span id="cb6-8"><a href="ch-adc.html#cb6-8"></a>    ADC_SetClkSel(ADC_CLK_EN | ADC_CLK_128);</span>
+<span id="cb6-9"><a href="ch-adc.html#cb6-9"></a>    ADC_SetMode(ADC_MODE_LOOP);</span>
+<span id="cb6-10"><a href="ch-adc.html#cb6-10"></a>    ADC_EnableChannel(channel == <span class="dv">0</span> ? <span class="dv">1</span> : <span class="dv">0</span>, <span class="dv">1</span>);</span>
+<span id="cb6-11"><a href="ch-adc.html#cb6-11"></a>    ADC_EnableChannel(channel, <span class="dv">1</span>);</span>
+<span id="cb6-12"><a href="ch-adc.html#cb6-12"></a>    ADC_Enable(<span class="dv">1</span>);</span>
+<span id="cb6-13"><a href="ch-adc.html#cb6-13"></a></span>
+<span id="cb6-14"><a href="ch-adc.html#cb6-14"></a>    <span class="cf">while</span> (ADC_IsChannelDataValid(channel) == <span class="dv">0</span>) ;</span>
+<span id="cb6-15"><a href="ch-adc.html#cb6-15"></a>    <span class="dt">uint16_t</span> voltage = ADC_ReadChannelData(channel);</span>
+<span id="cb6-16"><a href="ch-adc.html#cb6-16"></a></span>
+<span id="cb6-17"><a href="ch-adc.html#cb6-17"></a>    ADC_ClearChannelDataValid(channel);</span>
+<span id="cb6-18"><a href="ch-adc.html#cb6-18"></a>    <span class="cf">while</span> (ADC_IsChannelDataValid(channel) == <span class="dv">0</span>) ;</span>
+<span id="cb6-19"><a href="ch-adc.html#cb6-19"></a>    voltage = ADC_ReadChannelData(channel);</span>
+<span id="cb6-20"><a href="ch-adc.html#cb6-20"></a></span>
+<span id="cb6-21"><a href="ch-adc.html#cb6-21"></a>    ADC_Enable(<span class="dv">0</span>);</span>
+<span id="cb6-22"><a href="ch-adc.html#cb6-22"></a>    ADC_PowerCtrl(<span class="dv">0</span>);</span>
+<span id="cb6-23"><a href="ch-adc.html#cb6-23"></a></span>
+<span id="cb6-24"><a href="ch-adc.html#cb6-24"></a>    <span class="cf">return</span> adc_calibrate(ADC_SAMPLE_MODE_SLOW, channel, voltage);</span>
+<span id="cb6-25"><a href="ch-adc.html#cb6-25"></a>}</span></code></pre></div>
+<p>主函数：</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb7-1"><a href="ch-adc.html#cb7-1"></a><span class="dt">int</span> app_main()</span>
+<span id="cb7-2"><a href="ch-adc.html#cb7-2"></a>{</span>
+<span id="cb7-3"><a href="ch-adc.html#cb7-3"></a></span>
+<span id="cb7-4"><a href="ch-adc.html#cb7-4"></a>    setup_peripherals();</span>
+<span id="cb7-5"><a href="ch-adc.html#cb7-5"></a></span>
+<span id="cb7-6"><a href="ch-adc.html#cb7-6"></a>    platform_set_evt_callback(PLATFORM_CB_EVT_PUTC,</span>
+<span id="cb7-7"><a href="ch-adc.html#cb7-7"></a>                              (f_platform_evt_cb)cb_putc, NULL);</span>
+<span id="cb7-8"><a href="ch-adc.html#cb7-8"></a></span>
+<span id="cb7-9"><a href="ch-adc.html#cb7-9"></a>    platform_set_evt_callback(PLATFORM_CB_EVT_PROFILE_INIT, setup_profile, NULL);</span>
+<span id="cb7-10"><a href="ch-adc.html#cb7-10"></a></span>
+<span id="cb7-11"><a href="ch-adc.html#cb7-11"></a>    platform_set_irq_callback(PLATFORM_CB_IRQ_TIMER1, timer_isr, NULL);</span>
+<span id="cb7-12"><a href="ch-adc.html#cb7-12"></a></span>
+<span id="cb7-13"><a href="ch-adc.html#cb7-13"></a>    adc_prepare_calibration();</span>
+<span id="cb7-14"><a href="ch-adc.html#cb7-14"></a></span>
+<span id="cb7-15"><a href="ch-adc.html#cb7-15"></a>    printf(<span class="st">&quot;U = %d</span><span class="sc">\n</span><span class="st">&quot;</span>, read_adc(ADC_CHANNEL));</span>
+<span id="cb7-16"><a href="ch-adc.html#cb7-16"></a></span>
+<span id="cb7-17"><a href="ch-adc.html#cb7-17"></a>    <span class="cf">return</span> <span class="dv">0</span>;</span>
+<span id="cb7-18"><a href="ch-adc.html#cb7-18"></a>}</span></code></pre></div>
 
-</div>
 </div>
 </div>
             </section>
@@ -372,8 +412,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="ch-rtc.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="ch-timer.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="ch-overview.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ch-eflash.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

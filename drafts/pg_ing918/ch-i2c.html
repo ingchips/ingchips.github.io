@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>10 系统控制（SYSCTRL） | ING918XX 系列芯片外设开发者手册</title>
+  <title>6 集成电路间总线（I2C） | ING918XX 系列芯片外设开发者手册</title>
   <meta name="description" content="ING918XX 系列芯片开发者手册." />
   <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="10 系统控制（SYSCTRL） | ING918XX 系列芯片外设开发者手册" />
+  <meta property="og:title" content="6 集成电路间总线（I2C） | ING918XX 系列芯片外设开发者手册" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="ING918XX 系列芯片开发者手册." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="10 系统控制（SYSCTRL） | ING918XX 系列芯片外设开发者手册" />
+  <meta name="twitter:title" content="6 集成电路间总线（I2C） | ING918XX 系列芯片外设开发者手册" />
   
   <meta name="twitter:description" content="ING918XX 系列芯片开发者手册." />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="ch-rtc.html"/>
-<link rel="next" href="ch-timer.html"/>
+<link rel="prev" href="ch-gpio.html"/>
+<link rel="next" href="ch-pinctrl.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -290,80 +290,166 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="ch-sysctrl" class="section level1 hasAnchor">
-<h1><span class="header-section-number">10</span> 系统控制（SYSCTRL）<a href="ch-sysctrl.html#ch-sysctrl" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div id="功能概述-4" class="section level2 hasAnchor">
-<h2><span class="header-section-number">10.1</span> 功能概述<a href="ch-sysctrl.html#功能概述-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>SYSCTRL 负责管理、控制各种片上外设，主要功能有：</p>
+<div id="ch-i2c" class="section level1 hasAnchor">
+<h1><span class="header-section-number">6</span> 集成电路间总线（I2C）<a href="ch-i2c.html#ch-i2c" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="功能概述-1" class="section level2 hasAnchor">
+<h2><span class="header-section-number">6.1</span> 功能概述<a href="ch-i2c.html#功能概述-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <ul>
-<li>外设的复位</li>
-<li>外设的时钟管理，包括时钟源、频率设置、门控等</li>
-<li>其它功能</li>
+<li>两个I2C模块</li>
+<li>支持Master/Slave模式</li>
+<li>支持7bit/10bit地址</li>
+<li>支持DMA和QUEUE模式</li>
 </ul>
-<div id="外设标识" class="section level3 hasAnchor">
-<h3><span class="header-section-number">10.1.1</span> 外设标识<a href="ch-sysctrl.html#外设标识" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>SYSCTRL 为外设定义了几种不同的标识。最常见的几种标识为：</p>
-<p>1.SYSCTRL的时钟门控</p>
-<div class="sourceCode" id="cb57"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb57-1"><a href="ch-sysctrl.html#cb57-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb57-2"><a href="ch-sysctrl.html#cb57-2"></a>{</span>
-<span id="cb57-3"><a href="ch-sysctrl.html#cb57-3"></a>    SYSCTRL_ClkGate_APB_I2C0    = <span class="dv">4</span>,</span>
-<span id="cb57-4"><a href="ch-sysctrl.html#cb57-4"></a>    SYSCTRL_ClkGate_APB_SPI1    = <span class="dv">5</span>,</span>
-<span id="cb57-5"><a href="ch-sysctrl.html#cb57-5"></a>    <span class="co">// ...</span></span>
-<span id="cb57-6"><a href="ch-sysctrl.html#cb57-6"></a>    SYSCTRL_ClkGate_APB_I2C1    = <span class="dv">19</span></span>
-<span id="cb57-7"><a href="ch-sysctrl.html#cb57-7"></a>} SYSCTRL_ClkGateItem;</span></code></pre></div>
-<p>2.SYSCTRL的reset</p>
-<div class="sourceCode" id="cb58"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb58-1"><a href="ch-sysctrl.html#cb58-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb58-2"><a href="ch-sysctrl.html#cb58-2"></a>{</span>
-<span id="cb58-3"><a href="ch-sysctrl.html#cb58-3"></a>    SYSCTRL_Reset_AHB_DMA     = <span class="dv">0</span>,</span>
-<span id="cb58-4"><a href="ch-sysctrl.html#cb58-4"></a>    SYSCTRL_Reset_AHB_LLE     = <span class="dv">1</span>,</span>
-<span id="cb58-5"><a href="ch-sysctrl.html#cb58-5"></a>    <span class="co">// ...</span></span>
-<span id="cb58-6"><a href="ch-sysctrl.html#cb58-6"></a>    SYSCTRL_Reset_APH_TRNG    = <span class="dv">21</span></span>
-<span id="cb58-7"><a href="ch-sysctrl.html#cb58-7"></a>} SYSCTRL_ResetItem;</span></code></pre></div>
-<p>这些标识用于外设的复位、时钟门控等。</p>
 </div>
-<div id="时钟树" class="section level3 hasAnchor">
-<h3><span class="header-section-number">10.1.2</span> 时钟树<a href="ch-sysctrl.html#时钟树" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<ol style="list-style-type: decimal">
-<li><p>32KiHz 时钟（<em>clk_32k</em>）</p>
-<p>32k 时钟有两个来源：内部 RC 32KHz，外部 32768Hz 晶体。</p></li>
-<li><p>PLL 输入的 24MHz 时钟（<em>clk_pll_in</em>）</p>
-<p>24MHz 时钟的主要来源：外部 48MHz 晶体。</p></li>
-<li><p>时钟分布图</p></li>
-</ol>
-<p><img src="images/time_structure.png" /></p>
+<div id="i2c使用说明" class="section level2 hasAnchor">
+<h2><span class="header-section-number">6.2</span> I2C使用说明<a href="ch-i2c.html#i2c使用说明" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>以下场景中均以I2C0为例，如果需要I2C1则可以根据情况修改</p>
 </div>
+<div id="使用方法" class="section level2 hasAnchor">
+<h2><span class="header-section-number">6.3</span> 使用方法<a href="ch-i2c.html#使用方法" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="master读些采用queue模式" class="section level3 hasAnchor">
+<h3><span class="header-section-number">6.3.1</span> Master读些，采用QUEUE模式<a href="ch-i2c.html#master读些采用queue模式" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb20"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb20-1"><a href="ch-i2c.html#cb20-1"></a><span class="pp">#define I2C_PORT        I2C_PORT_0</span></span>
+<span id="cb20-2"><a href="ch-i2c.html#cb20-2"></a><span class="pp">#define I2C_ADDR        0X76</span></span></code></pre></div>
+<div id="打开i2c时钟" class="section level4 hasAnchor">
+<h4><span class="header-section-number">6.3.1.1</span> 打开I2C时钟<a href="ch-i2c.html#打开i2c时钟" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb21"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb21-1"><a href="ch-i2c.html#cb21-1"></a>    SYSCTRL_ClearClkGateMulti( (<span class="dv">1</span> &lt;&lt; SYSCTRL_ClkGate_APB_I2C0)</span>
+<span id="cb21-2"><a href="ch-i2c.html#cb21-2"></a>                              |(<span class="dv">1</span> &lt;&lt; SYSCTRL_ClkGate_APB_PinCtrl));</span></code></pre></div>
 </div>
-<div id="使用说明-2" class="section level2 hasAnchor">
-<h2><span class="header-section-number">10.2</span> 使用说明<a href="ch-sysctrl.html#使用说明-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="外设复位" class="section level3 hasAnchor">
-<h3><span class="header-section-number">10.2.1</span> 外设复位<a href="ch-sysctrl.html#外设复位" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>通过 <code>SYSCTRL_ResetBlock</code> 复位外设，通过’SYSCTRL_ReleaseBlock’释放复位。</p>
-<div class="sourceCode" id="cb59"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb59-1"><a href="ch-sysctrl.html#cb59-1"></a><span class="dt">void</span> SYSCTRL_ResetBlock(SYSCTRL_ResetItem item);</span>
-<span id="cb59-2"><a href="ch-sysctrl.html#cb59-2"></a><span class="dt">void</span> SYSCTRL_ReleaseBlock(SYSCTRL_ResetItem item);</span></code></pre></div>
+<div id="配置i2c的io口" class="section level4 hasAnchor">
+<h4><span class="header-section-number">6.3.1.2</span> 配置I2C的IO口<a href="ch-i2c.html#配置i2c的io口" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb22"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb22-1"><a href="ch-i2c.html#cb22-1"></a>    PINCTRL_SetPadMux(<span class="dv">10</span>, IO_SOURCE_I2C0_SCL_O);</span>
+<span id="cb22-2"><a href="ch-i2c.html#cb22-2"></a>    PINCTRL_SetPadMux(<span class="dv">11</span>, IO_SOURCE_I2C0_SDO);</span>
+<span id="cb22-3"><a href="ch-i2c.html#cb22-3"></a>    PINCTRL_SelI2cSclIn(I2C_PORT, <span class="dv">10</span>);</span></code></pre></div>
 </div>
-<div id="时钟门控" class="section level3 hasAnchor">
-<h3><span class="header-section-number">10.2.2</span> 时钟门控<a href="ch-sysctrl.html#时钟门控" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>通过 <code>SYSCTRL_SetClkGateMulti</code> 设置门控（即关闭时钟），通过 <code>SYSCTRL_ClearClkGateMulti</code> 消除门控（即恢复时钟）。</p>
-<div class="sourceCode" id="cb60"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb60-1"><a href="ch-sysctrl.html#cb60-1"></a><span class="dt">void</span> SYSCTRL_SetClkGateMulti(SYSCTRL_ClkGateItem item);</span>
-<span id="cb60-2"><a href="ch-sysctrl.html#cb60-2"></a><span class="dt">void</span> SYSCTRL_ClearClkGateMulti(SYSCTRL_ClkGateItem item);</span></code></pre></div>
-<p><code>SYSCTRL_SetClkGateMulti</code> 和 <code>SYSCTRL_ClearClkGateMulti</code> 可以同时控制多个外设的门控。 <code>items</code> 参数里的各个比特与 <code>SYSCTRL_ClkGateItem</code> 里的各个外设一一对应。</p>
-<div class="sourceCode" id="cb61"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb61-1"><a href="ch-sysctrl.html#cb61-1"></a><span class="dt">void</span> SYSCTRL_SetClkGateMulti(<span class="dt">uint32_t</span> items);</span>
-<span id="cb61-2"><a href="ch-sysctrl.html#cb61-2"></a><span class="dt">void</span> SYSCTRL_ClearClkGateMulti(<span class="dt">uint32_t</span> items);</span></code></pre></div>
+<div id="i2c模块初始化" class="section level4 hasAnchor">
+<h4><span class="header-section-number">6.3.1.3</span> I2C模块初始化<a href="ch-i2c.html#i2c模块初始化" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb23"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb23-1"><a href="ch-i2c.html#cb23-1"></a>I2C_CTRL0_CLR(I2C_BASE(I2C_PORT), I2C_CTRL0_SFTRST | I2C_CTRL0_CLKGATE);</span></code></pre></div>
 </div>
-<div id="时钟配置" class="section level3 hasAnchor">
-<h3><span class="header-section-number">10.2.3</span> 时钟配置<a href="ch-sysctrl.html#时钟配置" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>举例如下。</p>
-<ol style="list-style-type: decimal">
-<li><p>开启I2C时钟</p>
-<p>使用 <code>SYSCTRL_SelectI2sClk</code> 为 I2C 配置时钟：</p>
-<div class="sourceCode" id="cb62"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb62-1"><a href="ch-sysctrl.html#cb62-1"></a>SYSCTRL_ClearClkGateMulti( (<span class="dv">1</span> &lt;&lt; SYSCTRL_ClkGate_APB_I2C0)</span>
-<span id="cb62-2"><a href="ch-sysctrl.html#cb62-2"></a>                          |(<span class="dv">1</span> &lt;&lt; SYSCTRL_ClkGate_APB_PinCtrl));</span></code></pre></div></li>
-<li><p>关闭定时器TMR0时钟</p>
-<p>使用 <code>SYSCTRL_GetClk</code> 可获得指定外设的时钟频率：</p>
-<div class="sourceCode" id="cb63"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb63-1"><a href="ch-sysctrl.html#cb63-1"></a>SYSCTRL_ClearClkGateMulti(<span class="dv">0</span></span>
-<span id="cb63-2"><a href="ch-sysctrl.html#cb63-2"></a>                        | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ClkGate_APB_TMR0));</span></code></pre></div></li>
-</ol>
+<div id="i2c写操作" class="section level4 hasAnchor">
+<h4><span class="header-section-number">6.3.1.4</span> I2C写操作<a href="ch-i2c.html#i2c写操作" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb24"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb24-1"><a href="ch-i2c.html#cb24-1"></a><span class="dt">int</span> i2c_do_write(<span class="dt">const</span> i2c_port_t port, <span class="dt">const</span> <span class="dt">uint32_t</span> nrm, <span class="dt">uint8_t</span> addr, <span class="dt">const</span> <span class="dt">uint8_t</span> *byte_data, <span class="dt">int16_t</span> length)</span>
+<span id="cb24-2"><a href="ch-i2c.html#cb24-2"></a>{</span>
+<span id="cb24-3"><a href="ch-i2c.html#cb24-3"></a>    <span class="dt">uint32_t</span> *p_data = (<span class="dt">uint32_t</span> *)(byte_data + <span class="dv">3</span>);</span>
+<span id="cb24-4"><a href="ch-i2c.html#cb24-4"></a>    <span class="dt">uint32_t</span> data = (addr &lt;&lt;  <span class="dv">1</span>) | <span class="dv">0</span>;     <span class="co">// control: write</span></span>
+<span id="cb24-5"><a href="ch-i2c.html#cb24-5"></a>    I2C_TypeDef *BASE = I2C_BASE(port);</span>
+<span id="cb24-6"><a href="ch-i2c.html#cb24-6"></a>    <span class="dt">int</span> timeout = I2C_HW_TIME_OUT;</span>
+<span id="cb24-7"><a href="ch-i2c.html#cb24-7"></a></span>
+<span id="cb24-8"><a href="ch-i2c.html#cb24-8"></a>    <span class="cf">if</span> (length &gt; <span class="dv">0</span>)</span>
+<span id="cb24-9"><a href="ch-i2c.html#cb24-9"></a>        data |= (byte_data[<span class="dv">0</span>] &lt;&lt;  <span class="dv">8</span>) | (byte_data[<span class="dv">1</span>] &lt;&lt; <span class="dv">16</span>) | (byte_data[<span class="dv">2</span>] &lt;&lt; <span class="dv">24</span>);</span>
+<span id="cb24-10"><a href="ch-i2c.html#cb24-10"></a></span>
+<span id="cb24-11"><a href="ch-i2c.html#cb24-11"></a>    I2C_CTRL0_CLR(BASE, I2C_CTRL0_SFTRST | I2C_CTRL0_CLKGATE);</span>
+<span id="cb24-12"><a href="ch-i2c.html#cb24-12"></a></span>
+<span id="cb24-13"><a href="ch-i2c.html#cb24-13"></a>    <span class="co">// ONLY SUPPORT PIO QUEUE MODE, SET HW_I2C_QUEUECTRL_PIO_QUEUE_MODE AT FRIST</span></span>
+<span id="cb24-14"><a href="ch-i2c.html#cb24-14"></a>    I2C_QUEUECTRL_SET(BASE, I2C_QUEUECTRL_PIO_QUEUE_MODE);</span>
+<span id="cb24-15"><a href="ch-i2c.html#cb24-15"></a></span>
+<span id="cb24-16"><a href="ch-i2c.html#cb24-16"></a>    <span class="co">// frist operation, do not need clear I2C_QUEUECTRL and I2C_QUEUECMD.</span></span>
+<span id="cb24-17"><a href="ch-i2c.html#cb24-17"></a>    BASE-&gt;I2C_QUEUECMD.NRM = nrm + <span class="dv">1</span> + length;</span>
+<span id="cb24-18"><a href="ch-i2c.html#cb24-18"></a></span>
+<span id="cb24-19"><a href="ch-i2c.html#cb24-19"></a>    I2C_QUEUECTRL_SET(BASE, I2C_QUEUECTRL_QUEUE_RUN);</span>
+<span id="cb24-20"><a href="ch-i2c.html#cb24-20"></a></span>
+<span id="cb24-21"><a href="ch-i2c.html#cb24-21"></a></span>
+<span id="cb24-22"><a href="ch-i2c.html#cb24-22"></a>    length += <span class="dv">1</span>;</span>
+<span id="cb24-23"><a href="ch-i2c.html#cb24-23"></a>    <span class="cf">while</span> (<span class="dv">1</span>)</span>
+<span id="cb24-24"><a href="ch-i2c.html#cb24-24"></a>    {</span>
+<span id="cb24-25"><a href="ch-i2c.html#cb24-25"></a>        while_with_timeout(I2C_QUEUESTAT_WR_QUEUE_FULL(BASE));</span>
+<span id="cb24-26"><a href="ch-i2c.html#cb24-26"></a>        BASE-&gt;I2C_DATA = data;</span>
+<span id="cb24-27"><a href="ch-i2c.html#cb24-27"></a>        length -= <span class="dv">4</span>;</span>
+<span id="cb24-28"><a href="ch-i2c.html#cb24-28"></a>        <span class="cf">if</span> (length &lt;= <span class="dv">0</span>)</span>
+<span id="cb24-29"><a href="ch-i2c.html#cb24-29"></a>            <span class="cf">break</span>;</span>
+<span id="cb24-30"><a href="ch-i2c.html#cb24-30"></a>        data = *p_data;</span>
+<span id="cb24-31"><a href="ch-i2c.html#cb24-31"></a>        p_data++;</span>
+<span id="cb24-32"><a href="ch-i2c.html#cb24-32"></a>    }</span>
+<span id="cb24-33"><a href="ch-i2c.html#cb24-33"></a></span>
+<span id="cb24-34"><a href="ch-i2c.html#cb24-34"></a>    <span class="co">// WAIT I2C_CTRL1_DATA_ENGINE_CMPLT_IRQ (software polling)</span></span>
+<span id="cb24-35"><a href="ch-i2c.html#cb24-35"></a>    while_with_timeout(GET_I2C_CTRL1_DATA_ENGINE_CMPLT_IRQ(BASE) == <span class="dv">0</span>);</span>
+<span id="cb24-36"><a href="ch-i2c.html#cb24-36"></a>    I2C_CTRL1_CLR(BASE, I2C_CTRL1_DATA_ENGINE_CMPLT_IRQ);</span>
+<span id="cb24-37"><a href="ch-i2c.html#cb24-37"></a></span>
+<span id="cb24-38"><a href="ch-i2c.html#cb24-38"></a>    <span class="co">// </span><span class="al">NOTE</span><span class="co"> : MUST SET I2C_QUEUECTRL_WR_CLEAR</span></span>
+<span id="cb24-39"><a href="ch-i2c.html#cb24-39"></a>    I2C_QUEUECTRL_SET(BASE, I2C_QUEUECTRL_WR_CLEAR);</span>
+<span id="cb24-40"><a href="ch-i2c.html#cb24-40"></a>    I2C_QUEUECTRL_CLR(BASE, I2C_QUEUECTRL_WR_CLEAR);</span>
+<span id="cb24-41"><a href="ch-i2c.html#cb24-41"></a></span>
+<span id="cb24-42"><a href="ch-i2c.html#cb24-42"></a>    <span class="cf">return</span> <span class="dv">0</span>;</span>
+<span id="cb24-43"><a href="ch-i2c.html#cb24-43"></a>}</span></code></pre></div>
+</div>
+<div id="i2c读操作" class="section level4 hasAnchor">
+<h4><span class="header-section-number">6.3.1.5</span> I2C读操作<a href="ch-i2c.html#i2c读操作" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb25"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb25-1"><a href="ch-i2c.html#cb25-1"></a><span class="dt">int</span> i2c_read(<span class="dt">const</span> i2c_port_t port, <span class="dt">uint8_t</span> addr,</span>
+<span id="cb25-2"><a href="ch-i2c.html#cb25-2"></a>              <span class="dt">const</span> <span class="dt">uint8_t</span> *write_data, <span class="dt">int16_t</span> write_len,</span>
+<span id="cb25-3"><a href="ch-i2c.html#cb25-3"></a>              <span class="dt">uint8_t</span> *read_data, <span class="dt">int16_t</span> read_length)</span>
+<span id="cb25-4"><a href="ch-i2c.html#cb25-4"></a>{</span>
+<span id="cb25-5"><a href="ch-i2c.html#cb25-5"></a>    I2C_TypeDef *BASE = I2C_BASE(port);</span>
+<span id="cb25-6"><a href="ch-i2c.html#cb25-6"></a>    <span class="dt">int</span> timeout = I2C_HW_TIME_OUT;</span>
+<span id="cb25-7"><a href="ch-i2c.html#cb25-7"></a></span>
+<span id="cb25-8"><a href="ch-i2c.html#cb25-8"></a>    <span class="cf">if</span> (write_len)</span>
+<span id="cb25-9"><a href="ch-i2c.html#cb25-9"></a>    {</span>
+<span id="cb25-10"><a href="ch-i2c.html#cb25-10"></a>        <span class="co">// STEP 1: send write command</span></span>
+<span id="cb25-11"><a href="ch-i2c.html#cb25-11"></a>        <span class="dt">int</span> r = i2c_do_write(port, I2C_QUEUECMD_PRE_SEND_START | I2C_QUEUECMD_MASTER_MODE | I2C_QUEUECMD_DIRECTION,</span>
+<span id="cb25-12"><a href="ch-i2c.html#cb25-12"></a>                     addr, write_data, write_len);</span>
+<span id="cb25-13"><a href="ch-i2c.html#cb25-13"></a>        <span class="cf">if</span> (r != <span class="dv">0</span>) <span class="cf">return</span> r;</span>
+<span id="cb25-14"><a href="ch-i2c.html#cb25-14"></a>    }</span>
+<span id="cb25-15"><a href="ch-i2c.html#cb25-15"></a>    <span class="cf">else</span></span>
+<span id="cb25-16"><a href="ch-i2c.html#cb25-16"></a>    {</span>
+<span id="cb25-17"><a href="ch-i2c.html#cb25-17"></a>        I2C_CTRL0_CLR(BASE, I2C_CTRL0_SFTRST | I2C_CTRL0_CLKGATE);</span>
+<span id="cb25-18"><a href="ch-i2c.html#cb25-18"></a></span>
+<span id="cb25-19"><a href="ch-i2c.html#cb25-19"></a>        <span class="co">// ONLY SUPPORT PIO QUEUE MODE, SET HW_I2C_QUEUECTRL_PIO_QUEUE_MODE AT FRIST</span></span>
+<span id="cb25-20"><a href="ch-i2c.html#cb25-20"></a>        I2C_QUEUECTRL_SET(BASE, I2C_QUEUECTRL_PIO_QUEUE_MODE);</span>
+<span id="cb25-21"><a href="ch-i2c.html#cb25-21"></a>    }</span>
+<span id="cb25-22"><a href="ch-i2c.html#cb25-22"></a></span>
+<span id="cb25-23"><a href="ch-i2c.html#cb25-23"></a>    <span class="co">// STEP 2 : transmit (control byte + Read command), need hold SCL (I2C_QUEUECMD_RETAIN_CLOCK)</span></span>
+<span id="cb25-24"><a href="ch-i2c.html#cb25-24"></a>    BASE-&gt;I2C_QUEUECMD.NRM = (I2C_QUEUECMD_RETAIN_CLOCK | I2C_QUEUECMD_PRE_SEND_START | I2C_QUEUECMD_MASTER_MODE | I2C_QUEUECMD_DIRECTION |</span>
+<span id="cb25-25"><a href="ch-i2c.html#cb25-25"></a>          <span class="dv">1</span>);</span>
+<span id="cb25-26"><a href="ch-i2c.html#cb25-26"></a></span>
+<span id="cb25-27"><a href="ch-i2c.html#cb25-27"></a>    I2C_QUEUECTRL_SET(BASE, I2C_QUEUECTRL_QUEUE_RUN);</span>
+<span id="cb25-28"><a href="ch-i2c.html#cb25-28"></a></span>
+<span id="cb25-29"><a href="ch-i2c.html#cb25-29"></a>    BASE-&gt;I2C_DATA = <span class="bn">0xA5</span><span class="bu">UL</span> &lt;&lt; <span class="dv">24</span> | <span class="bn">0x5A</span>   &lt;&lt; <span class="dv">16</span> |<span class="bn">0xAA</span>   &lt;&lt;  <span class="dv">8</span> | (addr &lt;&lt;  <span class="dv">1</span>) | <span class="dv">1</span>;</span>
+<span id="cb25-30"><a href="ch-i2c.html#cb25-30"></a></span>
+<span id="cb25-31"><a href="ch-i2c.html#cb25-31"></a>    while_with_timeout(GET_I2C_CTRL1_DATA_ENGINE_CMPLT_IRQ(BASE) == <span class="dv">0</span>);</span>
+<span id="cb25-32"><a href="ch-i2c.html#cb25-32"></a></span>
+<span id="cb25-33"><a href="ch-i2c.html#cb25-33"></a>    <span class="co">// CLEAR I2C_CTRL1_DATA_ENGINE_CMPLT_IRQ</span></span>
+<span id="cb25-34"><a href="ch-i2c.html#cb25-34"></a>    I2C_CTRL1_CLR(BASE, I2C_CTRL1_DATA_ENGINE_CMPLT_IRQ);</span>
+<span id="cb25-35"><a href="ch-i2c.html#cb25-35"></a></span>
+<span id="cb25-36"><a href="ch-i2c.html#cb25-36"></a>    <span class="co">// </span><span class="al">NOTE</span><span class="co"> : MUST SET I2C_QUEUECTRL_WR_CLEAR</span></span>
+<span id="cb25-37"><a href="ch-i2c.html#cb25-37"></a>    I2C_QUEUECTRL_SET(BASE, I2C_QUEUECTRL_WR_CLEAR);</span>
+<span id="cb25-38"><a href="ch-i2c.html#cb25-38"></a>    I2C_QUEUECTRL_CLR(BASE, I2C_QUEUECTRL_WR_CLEAR);</span>
+<span id="cb25-39"><a href="ch-i2c.html#cb25-39"></a></span>
+<span id="cb25-40"><a href="ch-i2c.html#cb25-40"></a></span>
+<span id="cb25-41"><a href="ch-i2c.html#cb25-41"></a>    <span class="co">//</span></span>
+<span id="cb25-42"><a href="ch-i2c.html#cb25-42"></a>    <span class="co">// STEP 3 : read data byte + (NO ACK) + STOP</span></span>
+<span id="cb25-43"><a href="ch-i2c.html#cb25-43"></a>    <span class="co">//</span></span>
+<span id="cb25-44"><a href="ch-i2c.html#cb25-44"></a></span>
+<span id="cb25-45"><a href="ch-i2c.html#cb25-45"></a>    BASE-&gt;I2C_QUEUECMD.NRM = (I2C_QUEUECMD_SEND_NAK_ON_LAST | I2C_QUEUECMD_POST_SEND_STOP | I2C_QUEUECMD_MASTER_MODE |</span>
+<span id="cb25-46"><a href="ch-i2c.html#cb25-46"></a>         <span class="co">/*I2C_QUEUECMD_XFER_COUNT*/</span></span>
+<span id="cb25-47"><a href="ch-i2c.html#cb25-47"></a>         read_length);</span>
+<span id="cb25-48"><a href="ch-i2c.html#cb25-48"></a></span>
+<span id="cb25-49"><a href="ch-i2c.html#cb25-49"></a>    I2C_QUEUECTRL_SET(BASE, I2C_QUEUECTRL_QUEUE_RUN);</span>
+<span id="cb25-50"><a href="ch-i2c.html#cb25-50"></a></span>
+<span id="cb25-51"><a href="ch-i2c.html#cb25-51"></a>    <span class="co">// Receive DATA use I2C_QUEUEDATA;</span></span>
+<span id="cb25-52"><a href="ch-i2c.html#cb25-52"></a>    <span class="cf">while</span> (read_length &gt; <span class="dv">0</span>)</span>
+<span id="cb25-53"><a href="ch-i2c.html#cb25-53"></a>    {</span>
+<span id="cb25-54"><a href="ch-i2c.html#cb25-54"></a>        <span class="co">// check whether rdFIFO is empty</span></span>
+<span id="cb25-55"><a href="ch-i2c.html#cb25-55"></a>        while_with_timeout(I2C_QUEUESTAT_RD_QUEUE_EMPTY(BASE));</span>
+<span id="cb25-56"><a href="ch-i2c.html#cb25-56"></a></span>
+<span id="cb25-57"><a href="ch-i2c.html#cb25-57"></a>        <span class="dt">int</span> len = write_bytes(read_data, BASE-&gt;I2C_QUEUEDATA, read_length);</span>
+<span id="cb25-58"><a href="ch-i2c.html#cb25-58"></a>        read_data += len;</span>
+<span id="cb25-59"><a href="ch-i2c.html#cb25-59"></a>        read_length -= len;</span>
+<span id="cb25-60"><a href="ch-i2c.html#cb25-60"></a>    }</span>
+<span id="cb25-61"><a href="ch-i2c.html#cb25-61"></a></span>
+<span id="cb25-62"><a href="ch-i2c.html#cb25-62"></a>    <span class="co">// WAIT I2C_CTRL1_DATA_ENGINE_CMPLT_IRQ (software polling)</span></span>
+<span id="cb25-63"><a href="ch-i2c.html#cb25-63"></a>    while_with_timeout(GET_I2C_CTRL1_DATA_ENGINE_CMPLT_IRQ(BASE) == <span class="dv">0</span>);</span>
+<span id="cb25-64"><a href="ch-i2c.html#cb25-64"></a></span>
+<span id="cb25-65"><a href="ch-i2c.html#cb25-65"></a>    <span class="co">// cLEAR I2C_CTRL1_DATA_ENGINE_CMPLT_IRQ</span></span>
+<span id="cb25-66"><a href="ch-i2c.html#cb25-66"></a>    I2C_CTRL1_CLR(BASE, I2C_CTRL1_DATA_ENGINE_CMPLT_IRQ);</span>
+<span id="cb25-67"><a href="ch-i2c.html#cb25-67"></a></span>
+<span id="cb25-68"><a href="ch-i2c.html#cb25-68"></a>    <span class="co">// </span><span class="al">NOTE</span><span class="co"> : CLEAR I2C_QUEUECTRL_RD_CLEAR</span></span>
+<span id="cb25-69"><a href="ch-i2c.html#cb25-69"></a>    I2C_QUEUECTRL_SET(BASE, I2C_QUEUECTRL_RD_CLEAR);</span>
+<span id="cb25-70"><a href="ch-i2c.html#cb25-70"></a>    I2C_QUEUECTRL_CLR(BASE, I2C_QUEUECTRL_RD_CLEAR);</span>
+<span id="cb25-71"><a href="ch-i2c.html#cb25-71"></a></span>
+<span id="cb25-72"><a href="ch-i2c.html#cb25-72"></a></span>
+<span id="cb25-73"><a href="ch-i2c.html#cb25-73"></a>    <span class="cf">return</span> <span class="dv">0</span>;</span>
+<span id="cb25-74"><a href="ch-i2c.html#cb25-74"></a>}</span></code></pre></div>
 
+</div>
 </div>
 </div>
 </div>
@@ -372,8 +458,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="ch-rtc.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="ch-timer.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="ch-gpio.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ch-pinctrl.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

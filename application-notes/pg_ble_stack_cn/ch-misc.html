@@ -737,13 +737,15 @@ Controller 版本号由 Controller 厂家自行指定。</p></li>
 <p><code>mt_foo</code> 的伪代码如下：</p>
 <div class="sourceCode" id="cb115"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb115-1"><a href="ch-misc.html#cb115-1"></a>type mt_foo(param)</span>
 <span id="cb115-2"><a href="ch-misc.html#cb115-2"></a>{</span>
-<span id="cb115-3"><a href="ch-misc.html#cb115-3"></a>  ctx-&gt;param = param;</span>
-<span id="cb115-4"><a href="ch-misc.html#cb115-4"></a>  ctx-&gt;_event = event_create();</span>
-<span id="cb115-5"><a href="ch-misc.html#cb115-5"></a>  btstack_push_user_runnable(&amp;ctx, <span class="dv">0</span>);</span>
-<span id="cb115-6"><a href="ch-misc.html#cb115-6"></a>  event_wait(ctx-&gt;_event);</span>
-<span id="cb115-7"><a href="ch-misc.html#cb115-7"></a>  event_free(ctx-&gt;_event);</span>
-<span id="cb115-8"><a href="ch-misc.html#cb115-8"></a>  <span class="cf">return</span> ctx-&gt;_ret;</span>
-<span id="cb115-9"><a href="ch-misc.html#cb115-9"></a>}</span></code></pre></div>
+<span id="cb115-3"><a href="ch-misc.html#cb115-3"></a>  <span class="cf">if</span> (in Host task)</span>
+<span id="cb115-4"><a href="ch-misc.html#cb115-4"></a>    <span class="cf">return</span> foo(param);</span>
+<span id="cb115-5"><a href="ch-misc.html#cb115-5"></a>  ctx-&gt;param = param;</span>
+<span id="cb115-6"><a href="ch-misc.html#cb115-6"></a>  ctx-&gt;_event = event_create();</span>
+<span id="cb115-7"><a href="ch-misc.html#cb115-7"></a>  btstack_push_user_runnable(&amp;ctx, <span class="dv">0</span>);</span>
+<span id="cb115-8"><a href="ch-misc.html#cb115-8"></a>  event_wait(ctx-&gt;_event);</span>
+<span id="cb115-9"><a href="ch-misc.html#cb115-9"></a>  event_free(ctx-&gt;_event);</span>
+<span id="cb115-10"><a href="ch-misc.html#cb115-10"></a>  <span class="cf">return</span> ctx-&gt;_ret;</span>
+<span id="cb115-11"><a href="ch-misc.html#cb115-11"></a>}</span></code></pre></div>
 <p>由于通用 OS 接口未提供释放的接口，所以这个模块实现了一个事件对象池以模拟事件的释放（伪代码里的 <code>event_free</code>）。</p>
 <p>用上述“阻塞”方式实现的线程安全 API，既可以获取实际的返回值，也可以避免复制内存数据。
 允许这样的用法：</p>

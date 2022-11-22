@@ -60,7 +60,7 @@ function flashInfo() {
         },
         {
             base: 0x02000000,
-            total_size: 2048 * 1024,
+            total_size: 512 * 1024,
             page_size: 4 * 1024,
             manual_reboot: false,
         }

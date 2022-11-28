@@ -53,12 +53,6 @@ function flashInfo() {
             manual_reboot: true,
         },
         {
-            base: 0x4000,
-            total_size: 256 * 1024,
-            page_size: 8 * 1024,
-            manual_reboot: true,
-        },
-        {
             base: 0x02000000,
             total_size: 512 * 1024,
             page_size: 4 * 1024,

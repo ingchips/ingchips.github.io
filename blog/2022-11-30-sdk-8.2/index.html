@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>SDK 8.2：支持 ING916XX 量产版 - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="总结 SDK 8.2 新功能。"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+
+      <div id="box">
+        <input id="in_search" type="search" name="search" placeholder="搜索：输入并回车">
+      </div>
+
+      <script>
+        let search_input = document.getElementById('in_search');
+        if (search_input) {
+          search_input.addEventListener("keypress", function(event) {
+          if (event.key === "Enter") {
+            window.open('https://www.bing.com/search?q=' + encodeURIComponent(search_input.value) + '%20site%3A' + window.location.hostname);
+            event.preventDefault();
+            }
+          });
+        }
+      </script>
+
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item has-children">
+
+              
+<a class="" href="/docs/sdk/apps/#web-apps">
+  
+  Web 工具
+  
+</a>
+
+              
+
+                <ul class="submenu">
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/callgraph">
+  
+  Callgraph (调用图)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index_cn.html">
+  
+  ING918/ING916 FOTA (空中升级)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/powerprofiler/">
+  
+  Online Power Profiler
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/air_trace/">
+  
+  Trace Logger
+  
+</a>
+
+  </li>
+  
+</ul>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <article class="post post-full">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <header class="post-header has-gradient outer">
+      
+      
+      <div class="inner-sm">
+        <div class="post-meta">
+          <time class="published" datetime="2022-11-30 00:00">November 30, 2022</time>
+        </div>
+        <h1 class="post-title">SDK 8.2：支持 ING916XX 量产版</h1>
+        
+        
+      </div>
+    </header>
+    <div class="inner-md outer">
+      <div class="post-content">
+        <h2 id="highlights">Highlights:</h2>
+
+<ul>
+  <li>开始支持 ING916XX 量产版（不再支持测试版芯片）
+    <ul>
+      <li>8.2.0 暂未包含 USB/QDEC/KeyScan 等 3 个外设的驱动</li>
+    </ul>
+  </li>
+  <li>新增《ING918XX 系列芯片外设开发者手册》</li>
+  <li>线程安全的 BLE API</li>
+  <li>RPC 系统</li>
+</ul>
+
+<div class="note">
+<strong>兼容性：</strong>
+对于不含有 CTE 的 Raw Package，本版本与旧版本<b>互不兼容</b>；对于包含 CTE 的情况，本版本与旧版本保持兼容。
+</div>
+
+<div class="note">
+<strong>局限性（已知问题）：</strong>
+<ul>
+<li>ING916XX 省电模式尚不稳定，只能正常工作若干秒</li>
+</ul>
+</div>
+
+<h2 id="1-软件包">1. 软件包</h2>
+
+<ul>
+  <li>
+    <p>[<strong>新增</strong>] API：platform_install_task_stack 等 <span style="background:yellow">(<strong>8.2.0</strong>)</span></p>
+
+    <p>通过 <code class="highlighter-rouge">platform_install_task_stack</code> 可以为协议栈内部的 Task 重新设置栈。例如，当 Host
+  的回调函数复杂、需要更多的栈空间时，可为 Host Task 配置更大的栈空间。</p>
+
+    <p><code class="highlighter-rouge">btstack_push_user_runnable</code> 与 <code class="highlighter-rouge">btstack_push_user_msg</code> 类似，也是用于解决 Host API
+  的多线程访问问题。两者的区别：后者是将一条消息发送到 Host 消息队列，再由开发者特供的回调处理这条消息；
+  而前者是直接将函数指针及参数发送到 Host 处理队列，再由 Host Task 调用这个函数。</p>
+
+    <p>以从其它线程使能广播为例。使用 <code class="highlighter-rouge">btstack_push_user_msg</code> 时：</p>
+
+    <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="cp">#define USER_MSG_START_ADV ....
+</span>  <span class="k">static</span> <span class="kt">void</span> <span class="nf">user_msg_handler</span><span class="p">(</span><span class="kt">uint32_t</span> <span class="n">msg_id</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">size</span><span class="p">)</span>
+  <span class="p">{</span>
+      <span class="k">switch</span> <span class="p">(</span><span class="n">msg_id</span><span class="p">)</span>
+      <span class="p">{</span>
+      <span class="k">case</span> <span class="n">USER_MSG_START_ADV</span><span class="p">:</span>
+          <span class="n">gap_set_ext_adv_enable</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">adv_sets_en</span><span class="p">)</span> <span class="o">/</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">adv_sets_en</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">adv_sets_en</span><span class="p">);</span>
+          <span class="k">break</span><span class="p">;</span>
+      <span class="c1">//...</span>
+      <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="nf">another_thread</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+  <span class="p">{</span>
+      <span class="c1">//...</span>
+      <span class="n">btstack_push_user_msg</span><span class="p">(</span><span class="n">USER_MSG_START_ADV</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+      <span class="c1">//...</span>
+  <span class="p">}</span>
+</code></pre></div>    </div>
+
+    <p>使用 <code class="highlighter-rouge">btstack_push_user_runnable</code> 代码或更简洁：</p>
+
+    <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">static</span> <span class="kt">void</span> <span class="nf">enable_adv</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">value</span><span class="p">)</span>
+  <span class="p">{</span>
+      <span class="n">gap_set_ext_adv_enable</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">adv_sets_en</span><span class="p">)</span> <span class="o">/</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">adv_sets_en</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">adv_sets_en</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="nf">another_thread</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+  <span class="p">{</span>
+      <span class="c1">//...</span>
+      <span class="n">btstack_push_user_runnable</span><span class="p">(</span><span class="n">enable_adv</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+      <span class="c1">//...</span>
+  <span class="p">}</span>
+</code></pre></div>    </div>
+
+    <p>借助 <code class="highlighter-rouge">platform_get_gen_os_driver</code> 可以获得通用 RTOS 接口。对于 NoOS 软件包，这个
+  API 返回的正是 App 提供给 platform 的通用 RTOS 接口。
+  使用这个 RTOS 接口的代码，不需要修改就可兼容不同的 RTOS。</p>
+
+    <p>借助 <code class="highlighter-rouge">platform_get_current_task</code> 可以判断当前所处的线程/任务。</p>
+
+    <p>多线程安全的 BLE API 使用了 <code class="highlighter-rouge">btstack_push_user_runnable</code>、<code class="highlighter-rouge">platform_get_gen_os_driver</code>
+  及 <code class="highlighter-rouge">platform_get_current_task</code>。</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] Raw Packet 接收回调慢的问题 <span style="background:yellow">(<strong>8.2.0</strong>)</span></p>
+
+    <p>旧版本接收不含有 CTE 的 Raw Package 时，从接收完毕到调用回调函数之间存在较大的延时。本版本已修正。
+  但是对于不含有 CTE 的 Raw Package，本版本与旧版本<strong>互不兼容</strong>。</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] <code class="highlighter-rouge">gap_update_connection_parameters</code> <span style="background:yellow">(<strong>8.2.0</strong>)</span></p>
+
+    <p>现在，主从角色都可以使用 <code class="highlighter-rouge">gap_update_connection_parameters</code>：对于主角色，
+  这个函数更新连接参数；对于从角色，这个函数请求主端更新连接参数。</p>
+  </li>
+</ul>
+
+<h2 id="2-外设驱动">2. 外设驱动</h2>
+
+<ul>
+  <li>
+    <p>[<strong>更新</strong>] ING916xx 量产版外设驱动 <span style="background:yellow">(<strong>8.2.0</strong>)</span></p>
+
+    <p>以下外设（或“虚拟”外设）驱动已更新：</p>
+
+    <ul>
+      <li>ADC</li>
+      <li>DMA</li>
+      <li>eFuse</li>
+      <li>GPIO</li>
+      <li>I2C</li>
+      <li>I2S</li>
+      <li>IR</li>
+      <li>PDM</li>
+      <li>PinCtrl</li>
+      <li>RTC</li>
+      <li>SysCtrl</li>
+      <li>Timer</li>
+    </ul>
+
+    <p>USB/QDEC/KeyScan 等 3 个外设的驱动将随后续版本发布。</p>
+  </li>
+</ul>
+
+<h2 id="3-库函数">3. 库函数</h2>
+
+<ul>
+  <li>
+    <p>[<strong>新增</strong>] <code class="highlighter-rouge">board.c</code>：包含所有开发板板载器件的驱动、辅助函数 <span style="background:yellow">(<strong>8.2.0</strong>)</span></p>
+
+    <p><code class="highlighter-rouge">board.c</code> 为不同的开发板提供了一套统一、简洁的接口。相关示例也相应更新。</p>
+  </li>
+  <li>
+    <p>[<strong>新增</strong>] <code class="highlighter-rouge">btstack_mt.c</code>：重新封装了一系列线程安全的 BLE API <span style="background:yellow">(<strong>8.2.0</strong>)</span></p>
+
+    <p>这个模块借助 <code class="highlighter-rouge">btstack_push_user_runnable</code> 等新 API 实现。
+  <em>UART GATT Console</em> 已使用这些 API 重写。</p>
+  </li>
+  <li>
+    <p>[<strong>新增</strong>] <code class="highlighter-rouge">btstack_sync.c</code>：封装了一系列同步的 BLE API <span style="background:yellow">(<strong>8.2.0</strong>)</span></p>
+
+    <p><code class="highlighter-rouge">btstack_sync.c</code> 封装了为 GATT 客户端、GAP 等模块同步的 BLE API。
+  原 <code class="highlighter-rouge">gatt_client_util.c</code> 模块包含的同步 API 也已转移到 <code class="highlighter-rouge">btstack_sync.c</code>。
+  <em>UART GATT Console</em> 演示了部分同步 API 的用法。</p>
+  </li>
+</ul>
+
+<h2 id="4-文档">4. 文档</h2>
+
+<ul>
+  <li>[<strong>新增</strong>] 《ING918XX 系列芯片外设开发者手册》 <span style="background:yellow">(<strong>8.2.0</strong>)</span></li>
+</ul>
+
+<h2 id="5-工具">5. 工具</h2>
+
+<ul>
+  <li>[<strong>修正</strong>] RF Test Tool Rx 命令发送错误 <span style="background:yellow">(<strong>8.2.0</strong>)</span></li>
+</ul>
+
+<h2 id="6-rpc-系统">6. RPC 系统</h2>
+
+<p>RPC 系统包含运行于芯片的 <a href="https://github.com/ingchips/ING918XX_SDK_SOURCE/tree/develop/examples/ble_rpc">BLE RPC 服务器</a>
+和运行于 PC 的
+<a href="https://github.com/ingchips/ING918XX_SDK_SOURCE/tree/develop/example_host/rpc_client">RPC 客户端</a>。
+这个客户端具有以下特点：</p>
+
+<ul>
+  <li>可以使用绝大部分 BLE API：这个程序看起来就像是运行于 BLE SoC;</li>
+  <li>可以使用上位机操作系统提供的所有 API：这是本地程序。</li>
+</ul>
+
+<p>开发者可以使用这种 RPC 客户端方式来：</p>
+
+<ul>
+  <li>开发原型；</li>
+  <li>开展自动化测试；</li>
+  <li>……</li>
+</ul>
+
+      </div><!-- .post-content -->
+    </div><!-- .inner-md -->
+  </article><!-- .post -->
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2021-2022. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

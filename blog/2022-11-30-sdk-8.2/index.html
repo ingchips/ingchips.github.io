@@ -220,12 +220,13 @@
 <ul>
   <li>开始支持 ING916XX 量产版（不再支持测试版芯片）
     <ul>
-      <li>8.2.0 暂未包含 USB/QDEC/KeyScan 等 3 个外设的驱动</li>
+      <li>8.2.1 暂未包含 QDEC/KeyScan 等 2 个外设的驱动</li>
     </ul>
   </li>
   <li>新增《ING918XX 系列芯片外设开发者手册》</li>
   <li>线程安全的 BLE API</li>
   <li>RPC 系统</li>
+  <li>Cube 工具</li>
 </ul>
 
 <div class="note">
@@ -241,7 +242,8 @@
 <div class="note">
 <strong>局限性（已知问题）：</strong>
 <ul>
-<li>ING916XX 省电模式尚不稳定，只能正常工作若干秒</li>
+<li>ING916XX 省电模式仍在持续开发、改进中，QUERY_DEEP_SLEEP_ALLOWED 回调目前只可返回0 或者
+PLATFORM_ALLOW_DEEP_SLEEP。</li>
 </ul>
 </div>
 
@@ -316,6 +318,22 @@
     <p>现在，主从角色都可以使用 <code class="highlighter-rouge">gap_update_connection_parameters</code>：对于主角色，
   这个函数更新连接参数；对于从角色，这个函数请求主端更新连接参数。</p>
   </li>
+  <li>
+    <p>[<strong>新增</strong>] 配置项：PLATFORM_CFG_24M_OSC_TUNE <span style="background:yellow">(<strong>8.2.1</strong>)</span></p>
+
+    <p>对于内置 24M 晶体振荡器调谐功能的芯片（ING916xx），此配置可配置调谐参数，微调频偏。</p>
+  </li>
+  <li>
+    <p>[<strong>新增</strong>] 信息项：PLATFOFM_INFO_IRQ_NUMBER + X <span style="background:yellow">(<strong>8.2.1</strong>)</span></p>
+
+    <p>通过这个信息项可以获取低层的中断编号。例如，获取 <code class="highlighter-rouge">PLATFORM_CB_IRQ_UART0</code> 对应的低层中断编号：</p>
+
+    <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">platform_read_info</span><span class="p">(</span><span class="err">信息项：</span><span class="n">PLATFOFM_INFO_IRQ_NUMBER</span> <span class="o">+</span> <span class="p">);</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] 改进 ING916xx 深睡眠模式的稳定性 <span style="background:yellow">(<strong>8.2.1</strong>)</span></p>
+  </li>
 </ul>
 
 <h2 id="2-外设驱动">2. 外设驱动</h2>
@@ -323,6 +341,9 @@
 <ul>
   <li>
     <p>[<strong>更新</strong>] ING916xx 量产版外设驱动 <span style="background:yellow">(<strong>8.2.0</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] ING916xx 增加 USB 驱动 <span style="background:yellow">(<strong>8.2.1</strong>)</span></p>
 
     <p>以下外设（或“虚拟”外设）驱动已更新：</p>
 
@@ -339,9 +360,10 @@
       <li>RTC</li>
       <li>SysCtrl</li>
       <li>Timer</li>
+      <li>USB</li>
     </ul>
 
-    <p>USB/QDEC/KeyScan 等 3 个外设的驱动将随后续版本发布。</p>
+    <p>QDEC/KeyScan 等 2 个外设的驱动将随后续版本发布。</p>
   </li>
 </ul>
 
@@ -382,6 +404,15 @@
   </li>
   <li>
     <p>[<strong>更新</strong>] Wizard 在线更新功能 <span style="background:yellow">(<strong>8.2.0</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] BQB RF Tool：增加 ING916xx 频偏调谐功能 <span style="background:yellow">(<strong>8.2.1</strong>)</span></p>
+
+    <p>配合<a href="/blog/2021-06-02-sdk-6/#简易频偏测量">简易频偏测试工具</a>，可以进行简单的频偏微调。
+  详见 BQB RF Test App 文档。</p>
+  </li>
+  <li>
+    <p>[<strong>新增</strong>] Cube 工具：用于生成外设初始化代码 <span style="background:yellow">(<strong>8.2.1</strong>)</span></p>
   </li>
 </ul>
 

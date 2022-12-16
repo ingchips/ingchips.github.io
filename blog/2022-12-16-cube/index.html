@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>SDK 新工具：Cube - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="SDK 新工具 Cube 可生成外设初始化代码，为软件、硬件工程师提供沟通的桥梁。"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+
+      <div id="box">
+        <input id="in_search" type="search" name="search" placeholder="搜索：输入并回车">
+      </div>
+
+      <script>
+        let search_input = document.getElementById('in_search');
+        if (search_input) {
+          search_input.addEventListener("keypress", function(event) {
+          if (event.key === "Enter") {
+            window.open('https://www.bing.com/search?q=' + encodeURIComponent(search_input.value) + '%20site%3A' + window.location.hostname);
+            event.preventDefault();
+            }
+          });
+        }
+      </script>
+
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item has-children">
+
+              
+<a class="" href="/docs/sdk/apps/#web-apps">
+  
+  Web 工具
+  
+</a>
+
+              
+
+                <ul class="submenu">
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/callgraph">
+  
+  Callgraph (调用图)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index_cn.html">
+  
+  ING918/ING916 FOTA (空中升级)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/powerprofiler/">
+  
+  Online Power Profiler
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/air_trace/">
+  
+  Trace Logger
+  
+</a>
+
+  </li>
+  
+</ul>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <article class="post post-full">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <header class="post-header has-gradient outer">
+      
+      
+      <div class="inner-sm">
+        <div class="post-meta">
+          <time class="published" datetime="2022-12-16 00:00">December 16, 2022</time>
+        </div>
+        <h1 class="post-title">SDK 新工具：Cube</h1>
+        
+        
+      </div>
+    </header>
+    <div class="inner-md outer">
+      <div class="post-content">
+        <p>SDK 新工具 Cube 是一个图形化的初始化代码生成器，可为各种芯片型号生成 C 代码。这是一个交互式工具，
+辅助开发者正确配置芯片。各种特性总结如下：</p>
+
+<ul>
+  <li>支持各种芯片型号</li>
+  <li>以最直观的方式完成外设和时钟树配置</li>
+  <li>丰富、易用的图形界面
+    <ul>
+      <li>启发式、交互式设计</li>
+      <li>无需文档，使用方法一目了然，</li>
+    </ul>
+  </li>
+  <li>自动检查，减少错误
+    <ul>
+      <li>管脚冲突</li>
+      <li>参数范围</li>
+    </ul>
+  </li>
+  <li>低调
+    <ul>
+      <li>生成的代码汇总于一个文件</li>
+      <li>由开发者决定是否使用它生成的代码</li>
+      <li>不会搞乱开发者的工程设置</li>
+    </ul>
+  </li>
+  <li>极快的运行速度
+    <ul>
+      <li>所有的检查都是实时进行</li>
+      <li>对于运行环境要求低</li>
+      <li>与其它基于 Eclipse 的工具相比，效率不可同日而语，</li>
+    </ul>
+  </li>
+</ul>
+
+<div class="note">
+<strong>注意：</strong>
+对 ING916xx 系列芯片的支持仍在开发中。
+</div>
+
+<p>在 Wizard 里右键单击一个项目，从快捷菜单中选择“Edit with Cube…”即可打开 Cube。
+Cube 生成的代码保存在项目里的 <code class="highlighter-rouge">/data/setup_soc.cgen</code> 文件内，Cube 本身的数据保存在
+ <code class="highlighter-rouge">/data/cube.dat</code> 文件内。</p>
+
+<p>要使用 Cube 生成的代码，只需 3 步：</p>
+
+<ol>
+  <li>
+    <p>在 <code class="highlighter-rouge">main.c</code> 里包含 <code class="highlighter-rouge">../data/setup_soc.cgen</code>；</p>
+
+    <p>这行代码需要在 <code class="highlighter-rouge">#include "ingsoc.h"</code> 之后。</p>
+  </li>
+  <li>
+    <p>在 <code class="highlighter-rouge">setup_peripheral</code> 函数里调用 <code class="highlighter-rouge">cube_setup_peripherals()</code></p>
+  </li>
+  <li>
+    <p>在 <code class="highlighter-rouge">app_main</code> 函数的开头调用  <code class="highlighter-rouge">cube_soc_init()</code></p>
+  </li>
+</ol>
+
+<p>这个工具对于硬件工程师也很有用。比如现在要用 ING91880C 设计一块天线阵，天线开关连哪个 IO 脚？
+打开 Cube，将型号选为 ING91880C，点击 Antenna，再点击菜单 Configure，弹出天线开关编辑窗口。
+点击 Enable All，可以用做天线开发的 IO 脚一目了然：</p>
+
+<p><img src="../img/cube_ant_pins.png" alt="" /></p>
+
+      </div><!-- .post-content -->
+    </div><!-- .inner-md -->
+  </article><!-- .post -->
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2021-2022. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

@@ -435,8 +435,7 @@ FIFO 深度为 4，即最多存储 4 个单元，共 <span class="math inline">\
 <span id="cb90-6"><a href="ch-pwm.html#cb90-6"></a>    ..._UPDOWN_WITH_DIED_ZONE         = ...,</span>
 <span id="cb90-7"><a href="ch-pwm.html#cb90-7"></a>    ..._SINGLE_WITHOUT_DIED_ZONE      = ...,</span>
 <span id="cb90-8"><a href="ch-pwm.html#cb90-8"></a>    ..._DMA                           = ...,</span>
-<span id="cb90-9"><a href="ch-pwm.html#cb90-9"></a>    ..._PCAP                          = ...,</span>
-<span id="cb90-10"><a href="ch-pwm.html#cb90-10"></a>} PWM_WorkMode_t;</span></code></pre></div>
+<span id="cb90-9"><a href="ch-pwm.html#cb90-9"></a>} PWM_WorkMode_t;</span></code></pre></div>
 <div id="最简单的模式up_without_died_zone" class="section level3 hasAnchor">
 <h3><span class="header-section-number">12.1.1</span> 最简单的模式：UP_WITHOUT_DIED_ZONE<a href="ch-pwm.html#最简单的模式up_without_died_zone" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>此模式需要配置两个门限：计数器回零门限 PERA_TH、高门限 HIGH_TH，HIGH_TH
@@ -657,24 +656,39 @@ FIFO：</p>
 <div class="sourceCode" id="cb107"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb107-1"><a href="ch-pwm.html#cb107-1"></a><span class="dt">void</span> PCAP_Enable(</span>
 <span id="cb107-2"><a href="ch-pwm.html#cb107-2"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> channel_index     <span class="co">// 通道号</span></span>
 <span id="cb107-3"><a href="ch-pwm.html#cb107-3"></a>);</span></code></pre></div></li>
+<li><p>使用 <code>PCAP_EnableEvents</code> 选择要检测的事件</p>
+<div class="sourceCode" id="cb108"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb108-1"><a href="ch-pwm.html#cb108-1"></a><span class="dt">void</span> PCAP_EnableEvents(</span>
+<span id="cb108-2"><a href="ch-pwm.html#cb108-2"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> channel_index,</span>
+<span id="cb108-3"><a href="ch-pwm.html#cb108-3"></a>    <span class="dt">uint8_t</span> events_on_0,</span>
+<span id="cb108-4"><a href="ch-pwm.html#cb108-4"></a>    <span class="dt">uint8_t</span> events_on_1);</span></code></pre></div>
+<p><code>events</code> 为下面两个事件的组合：</p>
+<div class="sourceCode" id="cb109"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb109-1"><a href="ch-pwm.html#cb109-1"></a><span class="kw">enum</span> PCAP_PULSE_EVENT</span>
+<span id="cb109-2"><a href="ch-pwm.html#cb109-2"></a>{</span>
+<span id="cb109-3"><a href="ch-pwm.html#cb109-3"></a>    PCAP_PULSE_RISING_EDGE  = <span class="bn">0x1</span>,</span>
+<span id="cb109-4"><a href="ch-pwm.html#cb109-4"></a>    PCAP_PULSE_FALLING_EDGE = <span class="bn">0x2</span>,</span>
+<span id="cb109-5"><a href="ch-pwm.html#cb109-5"></a>};</span></code></pre></div>
+<p>比如在通道 1 的 A 路输入上同时检测、上报上升沿和下降沿：</p>
+<div class="sourceCode" id="cb110"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb110-1"><a href="ch-pwm.html#cb110-1"></a>PCAP_EnableEvents(<span class="dv">1</span>,</span>
+<span id="cb110-2"><a href="ch-pwm.html#cb110-2"></a>    PCAP_PULSE_RISING_EDGE</span>
+<span id="cb110-3"><a href="ch-pwm.html#cb110-3"></a>    | PCAP_PULSE_FALLING_EDGE,</span>
+<span id="cb110-4"><a href="ch-pwm.html#cb110-4"></a>    ...);</span></code></pre></div></li>
 <li><p>打开整个模块的时钟（参考 <a href="ch-sysctrl.html#ch-sysctrl">SYSCTRL</a>）</p></li>
 <li><p>配置 DMA 传输</p>
-<p>配置 PCAP 的 DMA 传输同样也是使用 <code>PWM_DmaEnable</code>。
-当 PCAP 通道 FIFO 内存储的数据多于 <code>trig_cfg</code>，请求 DMA 传输数据。<code>trig_cfg</code> 的取值范围为 <span class="math inline">\(0..4\)</span>。</p>
-<div class="sourceCode" id="cb108"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb108-1"><a href="ch-pwm.html#cb108-1"></a><span class="dt">void</span> PWM_DmaEnable(</span>
-<span id="cb108-2"><a href="ch-pwm.html#cb108-2"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> channel_index, <span class="co">// 通道号</span></span>
-<span id="cb108-3"><a href="ch-pwm.html#cb108-3"></a>    <span class="dt">uint8_t</span> trig_cfg,            <span class="co">// DMA 请求触发门限</span></span>
-<span id="cb108-4"><a href="ch-pwm.html#cb108-4"></a>    <span class="dt">uint8_t</span> enable               <span class="co">// 使能</span></span>
-<span id="cb108-5"><a href="ch-pwm.html#cb108-5"></a>    );</span></code></pre></div></li>
+<p>当 PCAP 通道 FIFO 内存储的数据多于 <code>trig_cfg</code>，请求 DMA 传输数据。<code>trig_cfg</code> 的取值范围为 <span class="math inline">\(0..4\)</span>。</p>
+<div class="sourceCode" id="cb111"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb111-1"><a href="ch-pwm.html#cb111-1"></a><span class="dt">void</span> PCAP_DmaEnable(</span>
+<span id="cb111-2"><a href="ch-pwm.html#cb111-2"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> channel_index, <span class="co">// 通道号</span></span>
+<span id="cb111-3"><a href="ch-pwm.html#cb111-3"></a>    <span class="dt">uint8_t</span> trig_cfg,            <span class="co">// DMA 请求触发门限</span></span>
+<span id="cb111-4"><a href="ch-pwm.html#cb111-4"></a>    <span class="dt">uint8_t</span> enable               <span class="co">// 使能</span></span>
+<span id="cb111-5"><a href="ch-pwm.html#cb111-5"></a>    );</span></code></pre></div></li>
 <li><p>使能计数器</p>
-<div class="sourceCode" id="cb109"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb109-1"><a href="ch-pwm.html#cb109-1"></a><span class="dt">void</span> PCAP_CounterEnable(</span>
-<span id="cb109-2"><a href="ch-pwm.html#cb109-2"></a>    <span class="dt">uint8_t</span> enable              <span class="co">// 使能(1)/禁用(0)</span></span>
-<span id="cb109-3"><a href="ch-pwm.html#cb109-3"></a>    );</span></code></pre></div></li>
+<div class="sourceCode" id="cb112"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb112-1"><a href="ch-pwm.html#cb112-1"></a><span class="dt">void</span> PCAP_CounterEnable(</span>
+<span id="cb112-2"><a href="ch-pwm.html#cb112-2"></a>    <span class="dt">uint8_t</span> enable              <span class="co">// 使能(1)/禁用(0)</span></span>
+<span id="cb112-3"><a href="ch-pwm.html#cb112-3"></a>    );</span></code></pre></div></li>
 </ol>
 </div>
 <div id="读取计数器" class="section level3 hasAnchor">
 <h3><span class="header-section-number">12.4.2</span> 读取计数器<a href="ch-pwm.html#读取计数器" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb110"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb110-1"><a href="ch-pwm.html#cb110-1"></a><span class="dt">uint32_t</span> PCAP_ReadCounter(<span class="dt">void</span>);</span></code></pre></div>
+<div class="sourceCode" id="cb113"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb113-1"><a href="ch-pwm.html#cb113-1"></a><span class="dt">uint32_t</span> PCAP_ReadCounter(<span class="dt">void</span>);</span></code></pre></div>
 
 
 </div>

@@ -413,13 +413,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="设置工作模式" class="section level3 hasAnchor">
 <h3><span class="header-section-number">16.2.1</span> 设置工作模式<a href="ch-timer.html#设置工作模式" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>在使用 TIMER 之前，需要使用 <code>TMR_SetOpMode</code> 按需设置TIMER的工作模式。</p>
-<div class="sourceCode" id="cb185"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb185-1"><a href="ch-timer.html#cb185-1"></a><span class="dt">void</span> TMR_SetOpMode(</span>
-<span id="cb185-2"><a href="ch-timer.html#cb185-2"></a>  TMR_TypeDef *pTMR, </span>
-<span id="cb185-3"><a href="ch-timer.html#cb185-3"></a>  <span class="dt">uint8_t</span> ch_id, </span>
-<span id="cb185-4"><a href="ch-timer.html#cb185-4"></a>  <span class="dt">uint8_t</span> op_mode, </span>
-<span id="cb185-5"><a href="ch-timer.html#cb185-5"></a>  <span class="dt">uint8_t</span> clk_mode, </span>
-<span id="cb185-6"><a href="ch-timer.html#cb185-6"></a>  <span class="dt">uint8_t</span> pwm_park_value</span>
-<span id="cb185-7"><a href="ch-timer.html#cb185-7"></a>  );</span></code></pre></div>
+<div class="sourceCode" id="cb188"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb188-1"><a href="ch-timer.html#cb188-1"></a><span class="dt">void</span> TMR_SetOpMode(</span>
+<span id="cb188-2"><a href="ch-timer.html#cb188-2"></a>  TMR_TypeDef *pTMR, </span>
+<span id="cb188-3"><a href="ch-timer.html#cb188-3"></a>  <span class="dt">uint8_t</span> ch_id, </span>
+<span id="cb188-4"><a href="ch-timer.html#cb188-4"></a>  <span class="dt">uint8_t</span> op_mode, </span>
+<span id="cb188-5"><a href="ch-timer.html#cb188-5"></a>  <span class="dt">uint8_t</span> clk_mode, </span>
+<span id="cb188-6"><a href="ch-timer.html#cb188-6"></a>  <span class="dt">uint8_t</span> pwm_park_value</span>
+<span id="cb188-7"><a href="ch-timer.html#cb188-7"></a>  );</span></code></pre></div>
 <p>TIMER的工作模式有以下6种，分别三类：定时器、PWM、复用。
 * 定时器功能包括：32bit单定时器、16bit双定时器、8bit四定时器
 ```c
@@ -433,31 +433,31 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </code></pre>
 <ul>
 <li><p>定时器+PWM复用功能：8bit双计数器+16bit单定时器、 8bit双计数器+8bit双定时器</p>
-<div class="sourceCode" id="cb187"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb187-1"><a href="ch-timer.html#cb187-1"></a>  <span class="pp">#define TMR_CTL_OP_MODE_8BIT_PWM_16BIT_TIMER_x1   6           </span><span class="co">// MIXED: PWM with two 8bit counters + one 16bit timer</span></span>
-<span id="cb187-2"><a href="ch-timer.html#cb187-2"></a>  <span class="pp">#define TMR_CTL_OP_MODE_8BIT_PWM_8BIT_TIMER_x2    7           </span><span class="co">// MIXED: PWM with two 8bit counters + dual 8bit timer</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb190"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb190-1"><a href="ch-timer.html#cb190-1"></a>  <span class="pp">#define TMR_CTL_OP_MODE_8BIT_PWM_16BIT_TIMER_x1   6           </span><span class="co">// MIXED: PWM with two 8bit counters + one 16bit timer</span></span>
+<span id="cb190-2"><a href="ch-timer.html#cb190-2"></a>  <span class="pp">#define TMR_CTL_OP_MODE_8BIT_PWM_8BIT_TIMER_x2    7           </span><span class="co">// MIXED: PWM with two 8bit counters + dual 8bit timer</span></span></code></pre></div></li>
 <li><p>例如将TIMER1的通道0设置为<code>TMR_CTL_OP_MODE_32BIT_TIMER_x1</code>模式：</p>
-<div class="sourceCode" id="cb188"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb188-1"><a href="ch-timer.html#cb188-1"></a>  TMR_SetOpMode(APB_TMR1, <span class="dv">0</span>, TMR_CTL_OP_MODE_32BIT_TIMER_x1, TMR_CLK_MODE_APB, <span class="dv">0</span>);</span>
-<span id="cb188-2"><a href="ch-timer.html#cb188-2"></a>  TMR_SetReload(APB_TMR1, <span class="dv">0</span>, TMR_GetClk(APB_TMR1, <span class="dv">0</span>) / <span class="dv">10</span>);</span>
-<span id="cb188-3"><a href="ch-timer.html#cb188-3"></a>  TMR_Enable(APB_TMR1, <span class="dv">0</span>, <span class="bn">0xf</span>);</span>
-<span id="cb188-4"><a href="ch-timer.html#cb188-4"></a>  TMR_IntEnable(APB_TMR1, <span class="dv">0</span>, <span class="bn">0xf</span>);</span></code></pre></div></li>
+<div class="sourceCode" id="cb191"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb191-1"><a href="ch-timer.html#cb191-1"></a>  TMR_SetOpMode(APB_TMR1, <span class="dv">0</span>, TMR_CTL_OP_MODE_32BIT_TIMER_x1, TMR_CLK_MODE_APB, <span class="dv">0</span>);</span>
+<span id="cb191-2"><a href="ch-timer.html#cb191-2"></a>  TMR_SetReload(APB_TMR1, <span class="dv">0</span>, TMR_GetClk(APB_TMR1, <span class="dv">0</span>) / <span class="dv">10</span>);</span>
+<span id="cb191-3"><a href="ch-timer.html#cb191-3"></a>  TMR_Enable(APB_TMR1, <span class="dv">0</span>, <span class="bn">0xf</span>);</span>
+<span id="cb191-4"><a href="ch-timer.html#cb191-4"></a>  TMR_IntEnable(APB_TMR1, <span class="dv">0</span>, <span class="bn">0xf</span>);</span></code></pre></div></li>
 </ul>
 </div>
 <div id="时钟频率" class="section level3 hasAnchor">
 <h3><span class="header-section-number">16.2.2</span> 时钟频率<a href="ch-timer.html#时钟频率" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>使用 <code>TMR_GetClk</code> 获取TIMER某个通道的时钟频率。</p>
-<div class="sourceCode" id="cb189"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb189-1"><a href="ch-timer.html#cb189-1"></a><span class="dt">uint32_t</span> TMR_GetClk(</span>
-<span id="cb189-2"><a href="ch-timer.html#cb189-2"></a>  TMR_TypeDef *pTMR, </span>
-<span id="cb189-3"><a href="ch-timer.html#cb189-3"></a>  <span class="dt">uint8_t</span> ch_id</span>
-<span id="cb189-4"><a href="ch-timer.html#cb189-4"></a>  );</span></code></pre></div>
+<div class="sourceCode" id="cb192"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb192-1"><a href="ch-timer.html#cb192-1"></a><span class="dt">uint32_t</span> TMR_GetClk(</span>
+<span id="cb192-2"><a href="ch-timer.html#cb192-2"></a>  TMR_TypeDef *pTMR, </span>
+<span id="cb192-3"><a href="ch-timer.html#cb192-3"></a>  <span class="dt">uint8_t</span> ch_id</span>
+<span id="cb192-4"><a href="ch-timer.html#cb192-4"></a>  );</span></code></pre></div>
 </div>
 <div id="重载值" class="section level3 hasAnchor">
 <h3><span class="header-section-number">16.2.3</span> 重载值<a href="ch-timer.html#重载值" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>使用 <code>TMR_SetReload</code> 设置TIMER某个通道的重载值。</p>
-<div class="sourceCode" id="cb190"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb190-1"><a href="ch-timer.html#cb190-1"></a><span class="dt">void</span> TMR_SetReload(</span>
-<span id="cb190-2"><a href="ch-timer.html#cb190-2"></a>  TMR_TypeDef *pTMR, </span>
-<span id="cb190-3"><a href="ch-timer.html#cb190-3"></a>  <span class="dt">uint8_t</span> ch_id, </span>
-<span id="cb190-4"><a href="ch-timer.html#cb190-4"></a>  <span class="dt">uint32_t</span> value</span>
-<span id="cb190-5"><a href="ch-timer.html#cb190-5"></a>  );</span></code></pre></div>
+<div class="sourceCode" id="cb193"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb193-1"><a href="ch-timer.html#cb193-1"></a><span class="dt">void</span> TMR_SetReload(</span>
+<span id="cb193-2"><a href="ch-timer.html#cb193-2"></a>  TMR_TypeDef *pTMR, </span>
+<span id="cb193-3"><a href="ch-timer.html#cb193-3"></a>  <span class="dt">uint8_t</span> ch_id, </span>
+<span id="cb193-4"><a href="ch-timer.html#cb193-4"></a>  <span class="dt">uint32_t</span> value</span>
+<span id="cb193-5"><a href="ch-timer.html#cb193-5"></a>  );</span></code></pre></div>
 <p>在不同的TIMER模式中， <code>value</code> 的值分配如下表。
 Table: (#tab:ch0-abbreviations)</p>
 <table>
@@ -519,45 +519,45 @@ Table: (#tab:ch0-abbreviations)</p>
 <div id="使能" class="section level3 hasAnchor">
 <h3><span class="header-section-number">16.2.4</span> 使能<a href="ch-timer.html#使能" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>使用 <code>TMR_Enable</code> TIMER的某个通道。</p>
-<div class="sourceCode" id="cb191"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb191-1"><a href="ch-timer.html#cb191-1"></a><span class="dt">void</span> TMR_Enable(</span>
-<span id="cb191-2"><a href="ch-timer.html#cb191-2"></a>  TMR_TypeDef *pTMR, </span>
-<span id="cb191-3"><a href="ch-timer.html#cb191-3"></a>  <span class="dt">uint8_t</span> ch_id, </span>
-<span id="cb191-4"><a href="ch-timer.html#cb191-4"></a>  <span class="dt">uint8_t</span> mask</span>
-<span id="cb191-5"><a href="ch-timer.html#cb191-5"></a>  );</span></code></pre></div>
-</div>
-<div id="比较" class="section level3 hasAnchor">
-<h3><span class="header-section-number">16.2.5</span> 比较<a href="ch-timer.html#比较" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>TMR_GetCMP</code> 。</p>
-<div class="sourceCode" id="cb192"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb192-1"><a href="ch-timer.html#cb192-1"></a><span class="dt">uint32_t</span> TMR_GetCMP(</span>
-<span id="cb192-2"><a href="ch-timer.html#cb192-2"></a>  TMR_TypeDef *pTMR, </span>
-<span id="cb192-3"><a href="ch-timer.html#cb192-3"></a>  <span class="dt">uint8_t</span> ch_id</span>
-<span id="cb192-4"><a href="ch-timer.html#cb192-4"></a>  );</span></code></pre></div>
-</div>
-<div id="配置中断请求-2" class="section level3 hasAnchor">
-<h3><span class="header-section-number">16.2.6</span> 配置中断请求<a href="ch-timer.html#配置中断请求-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>TMR_IntEnable</code> 配置并使能TIMER中断。</p>
-<div class="sourceCode" id="cb193"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb193-1"><a href="ch-timer.html#cb193-1"></a><span class="dt">void</span> TMR_IntEnable(</span>
-<span id="cb193-2"><a href="ch-timer.html#cb193-2"></a>  TMR_TypeDef *pTMR, </span>
-<span id="cb193-3"><a href="ch-timer.html#cb193-3"></a>  <span class="dt">uint8_t</span> ch_id, </span>
-<span id="cb193-4"><a href="ch-timer.html#cb193-4"></a>  <span class="dt">uint8_t</span> mask</span>
-<span id="cb193-5"><a href="ch-timer.html#cb193-5"></a>  );</span></code></pre></div>
-</div>
-<div id="中断清除" class="section level3 hasAnchor">
-<h3><span class="header-section-number">16.2.7</span> 中断清除<a href="ch-timer.html#中断清除" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>TMR_IntClr</code> 清除某个TIMER的中断状态。</p>
-<div class="sourceCode" id="cb194"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb194-1"><a href="ch-timer.html#cb194-1"></a><span class="dt">void</span> TMR_IntClr(</span>
+<div class="sourceCode" id="cb194"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb194-1"><a href="ch-timer.html#cb194-1"></a><span class="dt">void</span> TMR_Enable(</span>
 <span id="cb194-2"><a href="ch-timer.html#cb194-2"></a>  TMR_TypeDef *pTMR, </span>
 <span id="cb194-3"><a href="ch-timer.html#cb194-3"></a>  <span class="dt">uint8_t</span> ch_id, </span>
 <span id="cb194-4"><a href="ch-timer.html#cb194-4"></a>  <span class="dt">uint8_t</span> mask</span>
 <span id="cb194-5"><a href="ch-timer.html#cb194-5"></a>  );</span></code></pre></div>
 </div>
-<div id="获取中断" class="section level3 hasAnchor">
-<h3><span class="header-section-number">16.2.8</span> 获取中断<a href="ch-timer.html#获取中断" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>TMR_IntHappened</code> 获取某个TIMER的中断状态。</p>
-<div class="sourceCode" id="cb195"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb195-1"><a href="ch-timer.html#cb195-1"></a><span class="dt">uint8_t</span> TMR_IntHappened(</span>
+<div id="比较" class="section level3 hasAnchor">
+<h3><span class="header-section-number">16.2.5</span> 比较<a href="ch-timer.html#比较" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>TMR_GetCMP</code> 。</p>
+<div class="sourceCode" id="cb195"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb195-1"><a href="ch-timer.html#cb195-1"></a><span class="dt">uint32_t</span> TMR_GetCMP(</span>
 <span id="cb195-2"><a href="ch-timer.html#cb195-2"></a>  TMR_TypeDef *pTMR, </span>
 <span id="cb195-3"><a href="ch-timer.html#cb195-3"></a>  <span class="dt">uint8_t</span> ch_id</span>
 <span id="cb195-4"><a href="ch-timer.html#cb195-4"></a>  );</span></code></pre></div>
+</div>
+<div id="配置中断请求-2" class="section level3 hasAnchor">
+<h3><span class="header-section-number">16.2.6</span> 配置中断请求<a href="ch-timer.html#配置中断请求-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>TMR_IntEnable</code> 配置并使能TIMER中断。</p>
+<div class="sourceCode" id="cb196"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb196-1"><a href="ch-timer.html#cb196-1"></a><span class="dt">void</span> TMR_IntEnable(</span>
+<span id="cb196-2"><a href="ch-timer.html#cb196-2"></a>  TMR_TypeDef *pTMR, </span>
+<span id="cb196-3"><a href="ch-timer.html#cb196-3"></a>  <span class="dt">uint8_t</span> ch_id, </span>
+<span id="cb196-4"><a href="ch-timer.html#cb196-4"></a>  <span class="dt">uint8_t</span> mask</span>
+<span id="cb196-5"><a href="ch-timer.html#cb196-5"></a>  );</span></code></pre></div>
+</div>
+<div id="中断清除" class="section level3 hasAnchor">
+<h3><span class="header-section-number">16.2.7</span> 中断清除<a href="ch-timer.html#中断清除" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>TMR_IntClr</code> 清除某个TIMER的中断状态。</p>
+<div class="sourceCode" id="cb197"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb197-1"><a href="ch-timer.html#cb197-1"></a><span class="dt">void</span> TMR_IntClr(</span>
+<span id="cb197-2"><a href="ch-timer.html#cb197-2"></a>  TMR_TypeDef *pTMR, </span>
+<span id="cb197-3"><a href="ch-timer.html#cb197-3"></a>  <span class="dt">uint8_t</span> ch_id, </span>
+<span id="cb197-4"><a href="ch-timer.html#cb197-4"></a>  <span class="dt">uint8_t</span> mask</span>
+<span id="cb197-5"><a href="ch-timer.html#cb197-5"></a>  );</span></code></pre></div>
+</div>
+<div id="获取中断" class="section level3 hasAnchor">
+<h3><span class="header-section-number">16.2.8</span> 获取中断<a href="ch-timer.html#获取中断" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>使用 <code>TMR_IntHappened</code> 获取某个TIMER的中断状态。</p>
+<div class="sourceCode" id="cb198"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb198-1"><a href="ch-timer.html#cb198-1"></a><span class="dt">uint8_t</span> TMR_IntHappened(</span>
+<span id="cb198-2"><a href="ch-timer.html#cb198-2"></a>  TMR_TypeDef *pTMR, </span>
+<span id="cb198-3"><a href="ch-timer.html#cb198-3"></a>  <span class="dt">uint8_t</span> ch_id</span>
+<span id="cb198-4"><a href="ch-timer.html#cb198-4"></a>  );</span></code></pre></div>
 
 </div>
 </div>

@@ -413,34 +413,34 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="配置看门狗" class="section level3 hasAnchor">
 <h3><span class="header-section-number">18.2.1</span> 配置看门狗<a href="ch-watchdog.html#配置看门狗" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>使用 <code>TMR_WatchDogEnable3</code> 配置并启用看门狗。</p>
-<div class="sourceCode" id="cb218"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb218-1"><a href="ch-watchdog.html#cb218-1"></a><span class="dt">void</span> TMR_WatchDogEnable3(</span>
-<span id="cb218-2"><a href="ch-watchdog.html#cb218-2"></a>  <span class="dt">uint32_t</span> int_timeout_ms, </span>
-<span id="cb218-3"><a href="ch-watchdog.html#cb218-3"></a>  <span class="dt">uint32_t</span> reset_timeout_ms, </span>
-<span id="cb218-4"><a href="ch-watchdog.html#cb218-4"></a>  <span class="dt">uint8_t</span> enable_int</span>
-<span id="cb218-5"><a href="ch-watchdog.html#cb218-5"></a>  );</span></code></pre></div>
+<div class="sourceCode" id="cb221"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb221-1"><a href="ch-watchdog.html#cb221-1"></a><span class="dt">void</span> TMR_WatchDogEnable3(</span>
+<span id="cb221-2"><a href="ch-watchdog.html#cb221-2"></a>  <span class="dt">uint32_t</span> int_timeout_ms, </span>
+<span id="cb221-3"><a href="ch-watchdog.html#cb221-3"></a>  <span class="dt">uint32_t</span> reset_timeout_ms, </span>
+<span id="cb221-4"><a href="ch-watchdog.html#cb221-4"></a>  <span class="dt">uint8_t</span> enable_int</span>
+<span id="cb221-5"><a href="ch-watchdog.html#cb221-5"></a>  );</span></code></pre></div>
 <p>为了ING916xx和ING918xx统一接口，定义宏 <code>TMR_WatchDogEnable</code> 代替 <code>TMR_WatchDogEnable3</code> 。</p>
-<div class="sourceCode" id="cb219"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb219-1"><a href="ch-watchdog.html#cb219-1"></a><span class="pp">#define TMR_WatchDogEnable(timeout) do { </span></span>
-<span id="cb219-2"><a href="ch-watchdog.html#cb219-2"></a>  <span class="dt">uint32_t</span> TMR_CLK_FREQ = OSC_CLK_FREQ; </span>
-<span id="cb219-3"><a href="ch-watchdog.html#cb219-3"></a>  <span class="dt">uint32_t</span> cnt = ((<span class="dt">uint64_t</span>)(timeout) * <span class="dv">1000</span> / OSC_CLK_FREQ); </span>
-<span id="cb219-4"><a href="ch-watchdog.html#cb219-4"></a>  TMR_WatchDogEnable3(cnt, cnt, <span class="dv">0</span>); </span>
-<span id="cb219-5"><a href="ch-watchdog.html#cb219-5"></a>  } <span class="cf">while</span> (<span class="dv">0</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb222"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb222-1"><a href="ch-watchdog.html#cb222-1"></a><span class="pp">#define TMR_WatchDogEnable(timeout) do { </span></span>
+<span id="cb222-2"><a href="ch-watchdog.html#cb222-2"></a>  <span class="dt">uint32_t</span> TMR_CLK_FREQ = OSC_CLK_FREQ; </span>
+<span id="cb222-3"><a href="ch-watchdog.html#cb222-3"></a>  <span class="dt">uint32_t</span> cnt = ((<span class="dt">uint64_t</span>)(timeout) * <span class="dv">1000</span> / OSC_CLK_FREQ); </span>
+<span id="cb222-4"><a href="ch-watchdog.html#cb222-4"></a>  TMR_WatchDogEnable3(cnt, cnt, <span class="dv">0</span>); </span>
+<span id="cb222-5"><a href="ch-watchdog.html#cb222-5"></a>  } <span class="cf">while</span> (<span class="dv">0</span>)</span></code></pre></div>
 <p>例如：</p>
 </div>
 <div id="重启看门狗" class="section level3 hasAnchor">
 <h3><span class="header-section-number">18.2.2</span> 重启看门狗<a href="ch-watchdog.html#重启看门狗" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>使用 <code>TMR_WatchDogRestart</code> 重启看门狗。</p>
-<div class="sourceCode" id="cb220"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb220-1"><a href="ch-watchdog.html#cb220-1"></a><span class="dt">void</span> TMR_WatchDogRestart(<span class="dt">void</span>);</span></code></pre></div>
+<div class="sourceCode" id="cb223"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb223-1"><a href="ch-watchdog.html#cb223-1"></a><span class="dt">void</span> TMR_WatchDogRestart(<span class="dt">void</span>);</span></code></pre></div>
 </div>
 <div id="清除中断-1" class="section level3 hasAnchor">
 <h3><span class="header-section-number">18.2.3</span> 清除中断<a href="ch-watchdog.html#清除中断-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>使用 <code>TMR_WatchDogClearInt</code> 清除看门狗的中断。</p>
-<div class="sourceCode" id="cb221"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb221-1"><a href="ch-watchdog.html#cb221-1"></a><span class="dt">void</span> TMR_WatchDogClearInt(<span class="dt">void</span>);</span></code></pre></div>
+<div class="sourceCode" id="cb224"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb224-1"><a href="ch-watchdog.html#cb224-1"></a><span class="dt">void</span> TMR_WatchDogClearInt(<span class="dt">void</span>);</span></code></pre></div>
 </div>
 <div id="禁用看门狗" class="section level3 hasAnchor">
 <h3><span class="header-section-number">18.2.4</span> 禁用看门狗<a href="ch-watchdog.html#禁用看门狗" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>在使用<code>TMR_WatchDogEnable</code> 启用或 <code>TMR_WatchDogRestart</code> 重启看门狗之后，
 需要使用 <code>TMR_WatchDogDisable</code> 对其禁用。</p>
-<div class="sourceCode" id="cb222"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb222-1"><a href="ch-watchdog.html#cb222-1"></a><span class="dt">void</span> TMR_WatchDogDisable(<span class="dt">void</span>);</span></code></pre></div>
+<div class="sourceCode" id="cb225"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb225-1"><a href="ch-watchdog.html#cb225-1"></a><span class="dt">void</span> TMR_WatchDogDisable(<span class="dt">void</span>);</span></code></pre></div>
 
 </div>
 </div>

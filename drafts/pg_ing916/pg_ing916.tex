@@ -806,7 +806,7 @@ Efuse是一种片内一次性可编程存储器，可以在断电后保持数据
 \section{功能概述}\label{ux529fux80fdux6982ux8ff0-1}}
 
 GPIO 模块常用于驱动 LED 或者其它指示器，控制片外设备，感知数字信号输入，检测信号边沿，
-或者从低功耗状态唤醒系统。ING916XX 系列芯片内部支持最多 36 个 GPIO，通过 \protect\hyperlink{ch-pinctrl}{PINCTRL}
+或者从低功耗状态唤醒系统。ING916XX 系列芯片内部支持最多 42 个 GPIO，通过 \protect\hyperlink{ch-pinctrl}{PINCTRL}
 可将 GPIO \(n\) 引出到芯片 IO 管脚 \(n\)。
 
 特性：
@@ -822,7 +822,7 @@ GPIO 模块常用于驱动 LED 或者其它指示器，控制片外设备，感�
   硬件去抖
 \end{itemize}
 
-在硬件上存在 \textbf{两个} GPIO 模块，每个模块包含 18 个 GPIO，相应地定义了两个 \texttt{SYSCTRL\_Item}：
+在硬件上存在 \textbf{两个} GPIO 模块，每个模块包含 21 个 GPIO，相应地定义了两个 \texttt{SYSCTRL\_Item}：
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3190,6 +3190,7 @@ PINCTRL 模块管理芯片所有 IO 管脚的功能，包括外设 IO 的映射�
 部分常用外设的输入、输出功能管脚可与 \(\{{0 .. 17, 21, 22, 31, 34, 35\}}\) 这 23 个常用 IO 之间任意连接（全映射），
 这部分常用外设功能管脚总结于表 \ref{tab:ch-pinctrl-common-set}。
 表 \ref{tab:ch-pinctrl-mapping} 列出了其它外设功能管脚支持映射到哪些 IO 管脚上。
+除此以外，所有 IO 管脚都可以配置为 GPIO 或者 DEBUG 模式。GPIO 模式的输入、输出方向由 \texttt{GIO\_SetDirection} 控制。
 
 \begin{longtable}[]{@{}ll@{}}
 \caption{\label{tab:ch-pinctrl-common-set} 支持与常用 IO 全映射的常用功能管脚}\tabularnewline
@@ -3212,7 +3213,12 @@ PINCTRL 模块管理芯片所有 IO 管脚的功能，包括外设 IO 的映射�
 \begin{minipage}[t]{0.09\columnwidth}\raggedright
 I2C\strut
 \end{minipage} & \begin{minipage}[t]{0.85\columnwidth}\raggedright
-I2C0\_SCL\_I, I2C0\_SCL\_O, I2C0\_SDA\_I, I2C0\_SDA\_O, I2C1\_SCL\_I, I2C1\_SCL\_O, I2C1\_SDA\_I, I2C1\_SDA\_O, I2S\_BCLK\_I, I2S\_BCLK\_O, I2S\_DIN, I2S\_DOUT, I2S\_LRCLK\_I, I2S\_LRCLK\_O\strut
+I2C0\_SCL\_I, I2C0\_SCL\_O, I2C0\_SDA\_I, I2C0\_SDA\_O, I2C1\_SCL\_I, I2C1\_SCL\_O, I2C1\_SDA\_I, I2C1\_SDA\_O\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.09\columnwidth}\raggedright
+I2S\strut
+\end{minipage} & \begin{minipage}[t]{0.85\columnwidth}\raggedright
+I2S\_BCLK\_I, I2S\_BCLK\_O, I2S\_DIN, I2S\_DOUT, I2S\_LRCLK\_I, I2S\_LRCLK\_O\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.09\columnwidth}\raggedright
 IR\strut
@@ -3222,7 +3228,7 @@ IR\_DATIN, IR\_DATOUT, IR\_WAKEUP\strut
 \begin{minipage}[t]{0.09\columnwidth}\raggedright
 PCAP\strut
 \end{minipage} & \begin{minipage}[t]{0.85\columnwidth}\raggedright
-P\_CAP\_IN0, P\_CAP\_IN1, P\_CAP\_IN2, P\_CAP\_IN3, P\_CAP\_IN4, P\_CAP\_IN5\strut
+PCAP0\_IN0, PCAP1\_IN1, PCAP2\_IN, PCAP3\_IN, PCAP4\_IN, PCAP5\_IN\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.09\columnwidth}\raggedright
 PDM\strut
@@ -3322,34 +3328,34 @@ ANT\_SW6 & 0, 3, 6, 9, 12, 15, 21, 34\tabularnewline
 ANT\_SW7 & 1, 4, 7, 10, 13, 16, 22, 35\tabularnewline
 PA\_RXEN & 11, 12, 13, 14, 15, 16, 17, 34, 35\tabularnewline
 PA\_TXEN & 4, 5, 6, 7, 8, 9, 10, 34, 35\tabularnewline
+TIMER0\_PWM\_0A & 0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35\tabularnewline
+TIMER0\_PWM\_0B & 1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34\tabularnewline
+TIMER0\_PWM\_1A & 0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35\tabularnewline
+TIMER0\_PWM\_1B & 1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34\tabularnewline
+TIMER1\_PWM\_0A & 0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35\tabularnewline
+TIMER1\_PWM\_0B & 1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34\tabularnewline
+TIMER1\_PWM\_1A & 0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35\tabularnewline
+TIMER1\_PWM\_1B & 1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34\tabularnewline
+TIMER2\_PWM\_0A & 0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35\tabularnewline
+TIMER2\_PWM\_0B & 1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34\tabularnewline
+TIMER2\_PWM\_1A & 0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35\tabularnewline
+TIMER2\_PWM\_1B & 1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34\tabularnewline
 PWM\_0A & 0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35\tabularnewline
 PWM\_0B & 1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34\tabularnewline
 PWM\_1A & 0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35\tabularnewline
 PWM\_1B & 1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34\tabularnewline
 PWM\_2A & 0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35\tabularnewline
 PWM\_2B & 1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34\tabularnewline
-PWM\_3A & 0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35\tabularnewline
-PWM\_3B & 1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34\tabularnewline
-PWM\_4A & 0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35\tabularnewline
-PWM\_4B & 1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34\tabularnewline
-PWM\_5A & 0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35\tabularnewline
-PWM\_5B & 1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34\tabularnewline
-PWM\_6A & 0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35\tabularnewline
-PWM\_6B & 1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34\tabularnewline
-PWM\_7A & 0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35\tabularnewline
-PWM\_7B & 1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34\tabularnewline
-PWM\_8A & 0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35\tabularnewline
-PWM\_8B & 1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34\tabularnewline
 QDEC\_EXT\_IN\_CLK & 3, 9\tabularnewline
-QDEC\_TIMER\_EXT\_IN\_A1 & 1, 7\tabularnewline
-QDEC\_TIMER\_EXT\_IN\_A2 & 2, 8\tabularnewline
-QDEC\_TIMER\_EXT\_IN\_B2 & 5, 11\tabularnewline
-QDEC\_TIMER\_EXT\_OUT\_A0 & 0, 6\tabularnewline
-QDEC\_TIMER\_EXT\_OUT\_A1 & 1, 7\tabularnewline
-QDEC\_TIMER\_EXT\_OUT\_A2 & 2, 8\tabularnewline
-QDEC\_TIMER\_EXT\_OUT\_B0 & 3, 9\tabularnewline
-QDEC\_TIMER\_EXT\_OUT\_B1 & 4, 10\tabularnewline
-QDEC\_TIMER\_EXT\_OUT\_B2 & 5, 11\tabularnewline
+QDEC\_TIMER\_EXT\_IN1\_A & 1, 7\tabularnewline
+QDEC\_TIMER\_EXT\_IN2\_A & 2, 8\tabularnewline
+QDEC\_TIMER\_EXT\_IN2\_B & 5, 11\tabularnewline
+QDEC\_TIMER\_EXT\_OUT0\_A & 0, 6\tabularnewline
+QDEC\_TIMER\_EXT\_OUT1\_A & 1, 7\tabularnewline
+QDEC\_TIMER\_EXT\_OUT2\_A & 2, 8\tabularnewline
+QDEC\_TIMER\_EXT\_OUT0\_B & 3, 9\tabularnewline
+QDEC\_TIMER\_EXT\_OUT1\_B & 4, 10\tabularnewline
+QDEC\_TIMER\_EXT\_OUT2\_B & 5, 11\tabularnewline
 SPI0\_CLK\_IN & 19\tabularnewline
 SPI0\_CLK\_OUT & 19\tabularnewline
 SPI0\_CSN\_IN & 18\tabularnewline
@@ -3382,26 +3388,30 @@ SPI2AHB\_SCLK & 15\tabularnewline
 
   通过 \texttt{PINCTRL\_SetPadMux} 将外设输出连接到 IO 管脚。
   注意按照表 \ref{tab:ch-pinctrl-common-set} 和 表 \ref{tab:ch-pinctrl-mapping}
-  确认硬件是否支持。对于不支持的配置，显然无法生效。
+  确认硬件是否支持。对于不支持的配置，显然无法生效，函数将返回非 0 值。
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\DataTypeTok{void}\NormalTok{ PINCTRL_SetPadMux(}
-  \DataTypeTok{const} \DataTypeTok{uint8_t}\NormalTok{ io_pin_index, }\CommentTok{// IO 序号 (0..35)}
+\DataTypeTok{int}\NormalTok{ PINCTRL_SetPadMux(}
+  \DataTypeTok{const} \DataTypeTok{uint8_t}\NormalTok{ io_pin_index, }\CommentTok{// IO 序号 (0 .. IO_PIN_NUMBER - 1)}
   \DataTypeTok{const}\NormalTok{ io_source_t source    }\CommentTok{// IO 源}
 \NormalTok{);}
 \end{Highlighting}
 \end{Shaded}
+
+  例如将 IO 管脚 10 配置为 GPIO 模式：
+
+  \texttt{PINCTRL\_SetPadMux(10,\ IO\_SOURCE\_GPIO);}
 \item
   将 IO 管脚连接到外设的输入
 
   对于有些外设的输入同样通过 \texttt{PINCTRL\_SetPadMux} 配置。对于另一些输入，
-  PINCTRL 为不同的外设分别提供了 API 用以配置输入。比如对于 UART 用于硬件流控的
-  RXD 和 CTS，需要通过 \texttt{PINCTRL\_SelUartIn} 配置 ：
+  PINCTRL 为不同的外设分别提供了 API 用以配置输入。比如 UART 的数据输入 RXD 和用于硬件流控的
+  CTS，需要通过 \texttt{PINCTRL\_SelUartIn} 配置 ：
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\DataTypeTok{void}\NormalTok{ PINCTRL_SelUartIn(}
+\DataTypeTok{int}\NormalTok{ PINCTRL_SelUartIn(}
 \NormalTok{  uart_port_t port,     }\CommentTok{// UART 序号}
   \DataTypeTok{uint8_t}\NormalTok{ io_pin_rxd,   }\CommentTok{// 连接到 RXD 输入的 IO 管脚}
   \DataTypeTok{uint8_t}\NormalTok{ io_pin_cts);  }\CommentTok{// 连接到 CTS 输入的 IO 管脚}
@@ -3409,6 +3419,31 @@ SPI2AHB\_SCLK & 15\tabularnewline
 \end{Shaded}
 
   对于不需要配置的输入，可在对应的参数上填入值 \texttt{IO\_NOT\_A\_PIN}。
+
+  表 \ref{tab:ch-pinctrl-sel-in} 罗列了为各外设提供的输入配置函数。
+
+  \begin{longtable}[]{@{}ll@{}}
+  \caption{\label{tab:ch-pinctrl-sel-in} 其它外设功能管脚的映射关系}\tabularnewline
+  \toprule
+  外设功能管脚 & 可连接到的 IO 管脚\tabularnewline
+  \midrule
+  \endfirsthead
+  \toprule
+  外设功能管脚 & 可连接到的 IO 管脚\tabularnewline
+  \midrule
+  \endhead
+  KeyScan & \texttt{PINCTRL\_SelKeyScanColIn}\tabularnewline
+  I2C & \texttt{PINCTRL\_SelI2cIn}\tabularnewline
+  I2S & \texttt{PINCTRL\_SelI2sIn}\tabularnewline
+  IR & \texttt{PINCTRL\_SelIrIn}\tabularnewline
+  PDM & \texttt{PINCTRL\_SelPdmIn}\tabularnewline
+  PCAP & \texttt{PINCTRL\_SelPCAPIn}\tabularnewline
+  QDEC & \texttt{PINCTRL\_SelQDECIn}\tabularnewline
+  SWD & \texttt{PINCTRL\_SelSwIn}\tabularnewline
+  SPI & \texttt{PINCTRL\_SelSpiIn}\tabularnewline
+  UART & \texttt{PINCTRL\_SelUartIn}\tabularnewline
+  \bottomrule
+  \end{longtable}
 \end{enumerate}
 
 \hypertarget{ux914dux7f6eux4e0bux62c9ux4e0bux62c9}{%
@@ -3434,7 +3469,7 @@ IO 管脚的上拉、下拉模式通过 \texttt{PINCTRL\_Pull} 配置：
 \begin{Highlighting}[]
 \DataTypeTok{void}\NormalTok{ PINCTRL_SetDriveStrength(}
   \DataTypeTok{const} \DataTypeTok{uint8_t}\NormalTok{ io_pin_index,}
-  \DataTypeTok{const}\NormalTok{ pinctrl_drive_strenght_t strenght);}
+  \DataTypeTok{const}\NormalTok{ pinctrl_drive_strength_t strength);}
 \end{Highlighting}
 \end{Shaded}
 
@@ -3714,7 +3749,6 @@ PWM 使用的时钟频率可配置，请参考 \protect\hyperlink{ch-sysctrl}{SY
 \NormalTok{    ..._UPDOWN_WITH_DIED_ZONE         = ...,}
 \NormalTok{    ..._SINGLE_WITHOUT_DIED_ZONE      = ...,}
 \NormalTok{    ..._DMA                           = ...,}
-\NormalTok{    ..._PCAP                          = ...,}
 \NormalTok{\} PWM_WorkMode_t;}
 \end{Highlighting}
 \end{Shaded}
@@ -4049,16 +4083,49 @@ FIFO：
 \end{Highlighting}
 \end{Shaded}
 \item
+  使用 \texttt{PCAP\_EnableEvents} 选择要检测的事件
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ PCAP_EnableEvents(}
+    \DataTypeTok{const} \DataTypeTok{uint8_t}\NormalTok{ channel_index,}
+    \DataTypeTok{uint8_t}\NormalTok{ events_on_0,}
+    \DataTypeTok{uint8_t}\NormalTok{ events_on_1);}
+\end{Highlighting}
+\end{Shaded}
+
+  \texttt{events} 为下面两个事件的组合：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{enum}\NormalTok{ PCAP_PULSE_EVENT}
+\NormalTok{\{}
+\NormalTok{    PCAP_PULSE_RISING_EDGE  = }\BaseNTok{0x1}\NormalTok{,}
+\NormalTok{    PCAP_PULSE_FALLING_EDGE = }\BaseNTok{0x2}\NormalTok{,}
+\NormalTok{\};}
+\end{Highlighting}
+\end{Shaded}
+
+  比如在通道 1 的 A 路输入上同时检测、上报上升沿和下降沿：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{PCAP_EnableEvents(}\DecValTok{1}\NormalTok{,}
+\NormalTok{    PCAP_PULSE_RISING_EDGE}
+\NormalTok{    | PCAP_PULSE_FALLING_EDGE,}
+\NormalTok{    ...);}
+\end{Highlighting}
+\end{Shaded}
+\item
   打开整个模块的时钟（参考 \protect\hyperlink{ch-sysctrl}{SYSCTRL}）
 \item
   配置 DMA 传输
 
-  配置 PCAP 的 DMA 传输同样也是使用 \texttt{PWM\_DmaEnable}。
   当 PCAP 通道 FIFO 内存储的数据多于 \texttt{trig\_cfg}，请求 DMA 传输数据。\texttt{trig\_cfg} 的取值范围为 \(0..4\)。
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\DataTypeTok{void}\NormalTok{ PWM_DmaEnable(}
+\DataTypeTok{void}\NormalTok{ PCAP_DmaEnable(}
     \DataTypeTok{const} \DataTypeTok{uint8_t}\NormalTok{ channel_index, }\CommentTok{// 通道号}
     \DataTypeTok{uint8_t}\NormalTok{ trig_cfg,            }\CommentTok{// DMA 请求触发门限}
     \DataTypeTok{uint8_t}\NormalTok{ enable               }\CommentTok{// 使能}

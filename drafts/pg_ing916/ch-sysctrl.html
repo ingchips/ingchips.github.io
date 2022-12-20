@@ -415,22 +415,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="外设标识" class="section level3 hasAnchor">
 <h3><span class="header-section-number">15.1.1</span> 外设标识<a href="ch-sysctrl.html#外设标识" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>SYSCTRL 为外设定义了几种不同的标识。最常见的一种标识为：</p>
-<div class="sourceCode" id="cb169"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb169-1"><a href="ch-sysctrl.html#cb169-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb169-2"><a href="ch-sysctrl.html#cb169-2"></a>{</span>
-<span id="cb169-3"><a href="ch-sysctrl.html#cb169-3"></a>    SYSCTRL_ITEM_APB_GPIO0     ,</span>
-<span id="cb169-4"><a href="ch-sysctrl.html#cb169-4"></a>    SYSCTRL_ITEM_APB_GPIO1     ,</span>
-<span id="cb169-5"><a href="ch-sysctrl.html#cb169-5"></a>    <span class="co">// ...</span></span>
-<span id="cb169-6"><a href="ch-sysctrl.html#cb169-6"></a>    SYSCTRL_ITEM_NUMBER,</span>
-<span id="cb169-7"><a href="ch-sysctrl.html#cb169-7"></a>} SYSCTRL_Item;</span></code></pre></div>
+<div class="sourceCode" id="cb172"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb172-1"><a href="ch-sysctrl.html#cb172-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
+<span id="cb172-2"><a href="ch-sysctrl.html#cb172-2"></a>{</span>
+<span id="cb172-3"><a href="ch-sysctrl.html#cb172-3"></a>    SYSCTRL_ITEM_APB_GPIO0     ,</span>
+<span id="cb172-4"><a href="ch-sysctrl.html#cb172-4"></a>    SYSCTRL_ITEM_APB_GPIO1     ,</span>
+<span id="cb172-5"><a href="ch-sysctrl.html#cb172-5"></a>    <span class="co">// ...</span></span>
+<span id="cb172-6"><a href="ch-sysctrl.html#cb172-6"></a>    SYSCTRL_ITEM_NUMBER,</span>
+<span id="cb172-7"><a href="ch-sysctrl.html#cb172-7"></a>} SYSCTRL_Item;</span></code></pre></div>
 <p>这种标识用于外设的复位、时钟门控等。<code>SYSCTRL_ResetItem</code> 和 <code>SYSCTRL_ClkGateItem</code> 是
 <code>SYSCTRL_Item</code> 的两个别名。</p>
 <p>下面这种标识用于 DMA 规划：</p>
-<div class="sourceCode" id="cb170"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb170-1"><a href="ch-sysctrl.html#cb170-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb170-2"><a href="ch-sysctrl.html#cb170-2"></a>{</span>
-<span id="cb170-3"><a href="ch-sysctrl.html#cb170-3"></a>    SYSCTRL_DMA_UART0_RX = <span class="dv">0</span>,</span>
-<span id="cb170-4"><a href="ch-sysctrl.html#cb170-4"></a>    SYSCTRL_DMA_UART1_RX = <span class="dv">1</span>,</span>
-<span id="cb170-5"><a href="ch-sysctrl.html#cb170-5"></a>    <span class="co">//...</span></span>
-<span id="cb170-6"><a href="ch-sysctrl.html#cb170-6"></a>} SYSCTRL_DMA;</span></code></pre></div>
+<div class="sourceCode" id="cb173"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb173-1"><a href="ch-sysctrl.html#cb173-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
+<span id="cb173-2"><a href="ch-sysctrl.html#cb173-2"></a>{</span>
+<span id="cb173-3"><a href="ch-sysctrl.html#cb173-3"></a>    SYSCTRL_DMA_UART0_RX = <span class="dv">0</span>,</span>
+<span id="cb173-4"><a href="ch-sysctrl.html#cb173-4"></a>    SYSCTRL_DMA_UART1_RX = <span class="dv">1</span>,</span>
+<span id="cb173-5"><a href="ch-sysctrl.html#cb173-5"></a>    <span class="co">//...</span></span>
+<span id="cb173-6"><a href="ch-sysctrl.html#cb173-6"></a>} SYSCTRL_DMA;</span></code></pre></div>
 </div>
 <div id="时钟树" class="section level3 hasAnchor">
 <h3><span class="header-section-number">15.1.2</span> 时钟树<a href="ch-sysctrl.html#时钟树" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -546,12 +546,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>一个外设可能具备一个以上的握手信号，需要注意区分。比如 UART0 有两个握手信号 UART0_RX 和
 UART0_TX，分别用于触发 DMA 发送请求（通过 DMA 传输接收到的数据）和读取请求（向 DMA 请
 求新的待发送数据）。外设握手信号定义在 <code>SYSCTRL_DMA</code> 内：</p>
-<div class="sourceCode" id="cb171"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb171-1"><a href="ch-sysctrl.html#cb171-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb171-2"><a href="ch-sysctrl.html#cb171-2"></a>{</span>
-<span id="cb171-3"><a href="ch-sysctrl.html#cb171-3"></a>    SYSCTRL_DMA_UART0_RX = <span class="dv">0</span>,</span>
-<span id="cb171-4"><a href="ch-sysctrl.html#cb171-4"></a>    SYSCTRL_DMA_UART1_RX = <span class="dv">1</span>,</span>
-<span id="cb171-5"><a href="ch-sysctrl.html#cb171-5"></a>    <span class="co">// ...</span></span>
-<span id="cb171-6"><a href="ch-sysctrl.html#cb171-6"></a>} SYSCTRL_DMA;</span></code></pre></div>
+<div class="sourceCode" id="cb174"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb174-1"><a href="ch-sysctrl.html#cb174-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
+<span id="cb174-2"><a href="ch-sysctrl.html#cb174-2"></a>{</span>
+<span id="cb174-3"><a href="ch-sysctrl.html#cb174-3"></a>    SYSCTRL_DMA_UART0_RX = <span class="dv">0</span>,</span>
+<span id="cb174-4"><a href="ch-sysctrl.html#cb174-4"></a>    SYSCTRL_DMA_UART1_RX = <span class="dv">1</span>,</span>
+<span id="cb174-5"><a href="ch-sysctrl.html#cb174-5"></a>    <span class="co">// ...</span></span>
+<span id="cb174-6"><a href="ch-sysctrl.html#cb174-6"></a>} SYSCTRL_DMA;</span></code></pre></div>
 </div>
 </div>
 <div id="使用说明-5" class="section level2 hasAnchor">
@@ -559,19 +559,19 @@ UART0_TX，分别用于触发 DMA 发送请求（通过 DMA 传输接收到的�
 <div id="外设复位" class="section level3 hasAnchor">
 <h3><span class="header-section-number">15.2.1</span> 外设复位<a href="ch-sysctrl.html#外设复位" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>通过 <code>SYSCTRL_ResetBlock</code> 复位外设，通过 <code>SYSCTRL_ReleaseBlock</code> 释放复位。</p>
-<div class="sourceCode" id="cb172"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb172-1"><a href="ch-sysctrl.html#cb172-1"></a><span class="dt">void</span> SYSCTRL_ResetBlock(SYSCTRL_ResetItem item);</span>
-<span id="cb172-2"><a href="ch-sysctrl.html#cb172-2"></a><span class="dt">void</span> SYSCTRL_ReleaseBlock(SYSCTRL_ResetItem item);</span></code></pre></div>
+<div class="sourceCode" id="cb175"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb175-1"><a href="ch-sysctrl.html#cb175-1"></a><span class="dt">void</span> SYSCTRL_ResetBlock(SYSCTRL_ResetItem item);</span>
+<span id="cb175-2"><a href="ch-sysctrl.html#cb175-2"></a><span class="dt">void</span> SYSCTRL_ReleaseBlock(SYSCTRL_ResetItem item);</span></code></pre></div>
 </div>
 <div id="时钟门控" class="section level3 hasAnchor">
 <h3><span class="header-section-number">15.2.2</span> 时钟门控<a href="ch-sysctrl.html#时钟门控" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>通过 <code>SYSCTRL_SetClkGate</code> 设置门控（即关闭时钟），通过 <code>SYSCTRL_ClearClkGate</code>
 消除门控（即恢复时钟）。</p>
-<div class="sourceCode" id="cb173"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb173-1"><a href="ch-sysctrl.html#cb173-1"></a><span class="dt">void</span> SYSCTRL_SetClkGate(SYSCTRL_ClkGateItem item);</span>
-<span id="cb173-2"><a href="ch-sysctrl.html#cb173-2"></a><span class="dt">void</span> SYSCTRL_ClearClkGate(SYSCTRL_ClkGateItem item);</span></code></pre></div>
+<div class="sourceCode" id="cb176"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb176-1"><a href="ch-sysctrl.html#cb176-1"></a><span class="dt">void</span> SYSCTRL_SetClkGate(SYSCTRL_ClkGateItem item);</span>
+<span id="cb176-2"><a href="ch-sysctrl.html#cb176-2"></a><span class="dt">void</span> SYSCTRL_ClearClkGate(SYSCTRL_ClkGateItem item);</span></code></pre></div>
 <p><code>SYSCTRL_SetClkGateMulti</code> 和 <code>SYSCTRL_ClearClkGateMulti</code> 可以同时控制多个外设的门控。
 <code>items</code> 参数里的各个比特与 <code>SYSCTRL_ClkGateItem</code> 里的各个外设一一对应。</p>
-<div class="sourceCode" id="cb174"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb174-1"><a href="ch-sysctrl.html#cb174-1"></a><span class="dt">void</span> SYSCTRL_SetClkGateMulti(<span class="dt">uint32_t</span> items);</span>
-<span id="cb174-2"><a href="ch-sysctrl.html#cb174-2"></a><span class="dt">void</span> SYSCTRL_ClearClkGateMulti(<span class="dt">uint32_t</span> items);</span></code></pre></div>
+<div class="sourceCode" id="cb177"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb177-1"><a href="ch-sysctrl.html#cb177-1"></a><span class="dt">void</span> SYSCTRL_SetClkGateMulti(<span class="dt">uint32_t</span> items);</span>
+<span id="cb177-2"><a href="ch-sysctrl.html#cb177-2"></a><span class="dt">void</span> SYSCTRL_ClearClkGateMulti(<span class="dt">uint32_t</span> items);</span></code></pre></div>
 </div>
 <div id="时钟配置" class="section level3 hasAnchor">
 <h3><span class="header-section-number">15.2.3</span> 时钟配置<a href="ch-sysctrl.html#时钟配置" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -579,49 +579,49 @@ UART0_TX，分别用于触发 DMA 发送请求（通过 DMA 传输接收到的�
 <ol style="list-style-type: decimal">
 <li><p><em>clk_pll</em> 与 <em>hclk</em></p>
 <p>使用 <code>SYSCTRL_ConfigPLLClk</code> 配置 <em>clk_pll</em>：</p>
-<div class="sourceCode" id="cb175"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb175-1"><a href="ch-sysctrl.html#cb175-1"></a><span class="dt">int</span> SYSCTRL_ConfigPLLClk(</span>
-<span id="cb175-2"><a href="ch-sysctrl.html#cb175-2"></a><span class="dt">uint32_t</span> div_pre,</span>
-<span id="cb175-3"><a href="ch-sysctrl.html#cb175-3"></a><span class="dt">uint32_t</span> loop,</span>
-<span id="cb175-4"><a href="ch-sysctrl.html#cb175-4"></a><span class="dt">uint32_t</span> div_output);</span></code></pre></div>
+<div class="sourceCode" id="cb178"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb178-1"><a href="ch-sysctrl.html#cb178-1"></a><span class="dt">int</span> SYSCTRL_ConfigPLLClk(</span>
+<span id="cb178-2"><a href="ch-sysctrl.html#cb178-2"></a><span class="dt">uint32_t</span> div_pre,</span>
+<span id="cb178-3"><a href="ch-sysctrl.html#cb178-3"></a><span class="dt">uint32_t</span> loop,</span>
+<span id="cb178-4"><a href="ch-sysctrl.html#cb178-4"></a><span class="dt">uint32_t</span> div_output);</span></code></pre></div>
 <p>例如，将 <em>hclk</em> 配置为 220MHz 并读取到变量：</p>
-<div class="sourceCode" id="cb176"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb176-1"><a href="ch-sysctrl.html#cb176-1"></a>SYSCTRL_ConfigPLLClk(<span class="dv">6</span>, <span class="dv">110</span>, <span class="dv">1</span>);</span>
-<span id="cb176-2"><a href="ch-sysctrl.html#cb176-2"></a>SYSCTRL_SelectHClk(SYSCTRL_CLK_PLL_DIV_1 + <span class="dv">1</span>);</span>
-<span id="cb176-3"><a href="ch-sysctrl.html#cb176-3"></a><span class="dt">uint32_t</span> SystemCoreClock = SYSCTRL_GetHClk();</span></code></pre></div></li>
+<div class="sourceCode" id="cb179"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb179-1"><a href="ch-sysctrl.html#cb179-1"></a>SYSCTRL_ConfigPLLClk(<span class="dv">6</span>, <span class="dv">110</span>, <span class="dv">1</span>);</span>
+<span id="cb179-2"><a href="ch-sysctrl.html#cb179-2"></a>SYSCTRL_SelectHClk(SYSCTRL_CLK_PLL_DIV_1 + <span class="dv">1</span>);</span>
+<span id="cb179-3"><a href="ch-sysctrl.html#cb179-3"></a><span class="dt">uint32_t</span> SystemCoreClock = SYSCTRL_GetHClk();</span></code></pre></div></li>
 <li><p>为硬件 I2S 配置时钟</p>
 <p>使用 <code>SYSCTRL_SelectI2sClk</code> 为 I2S 配置时钟：</p>
-<div class="sourceCode" id="cb177"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb177-1"><a href="ch-sysctrl.html#cb177-1"></a><span class="dt">void</span> SYSCTRL_SelectI2sClk(SYSCTRL_ClkMode mode);</span></code></pre></div>
+<div class="sourceCode" id="cb180"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb180-1"><a href="ch-sysctrl.html#cb180-1"></a><span class="dt">void</span> SYSCTRL_SelectI2sClk(SYSCTRL_ClkMode mode);</span></code></pre></div>
 <p><code>SYSCTRL_ClkMode</code> 的定为为：</p>
-<div class="sourceCode" id="cb178"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb178-1"><a href="ch-sysctrl.html#cb178-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb178-2"><a href="ch-sysctrl.html#cb178-2"></a>{</span>
-<span id="cb178-3"><a href="ch-sysctrl.html#cb178-3"></a>    SYSCTRL_CLK_OSC,            <span class="co">// 使用 sclk_slow</span></span>
-<span id="cb178-4"><a href="ch-sysctrl.html#cb178-4"></a>    SYSCTRL_CLK_HCLK,           <span class="co">// 使用 hclk</span></span>
-<span id="cb178-5"><a href="ch-sysctrl.html#cb178-5"></a>    SYSCTRL_CLK_ADC_DIV = ...,  <span class="co">// 使用 sclk_slow_adc_div</span></span>
-<span id="cb178-6"><a href="ch-sysctrl.html#cb178-6"></a>    SYSCTRL_CLK_PLL_DIV_1 = ...,<span class="co">// 对 sclk_fast 分频</span></span>
-<span id="cb178-7"><a href="ch-sysctrl.html#cb178-7"></a>} SYSCTRL_ClkMode;</span></code></pre></div>
+<div class="sourceCode" id="cb181"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb181-1"><a href="ch-sysctrl.html#cb181-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
+<span id="cb181-2"><a href="ch-sysctrl.html#cb181-2"></a>{</span>
+<span id="cb181-3"><a href="ch-sysctrl.html#cb181-3"></a>    SYSCTRL_CLK_OSC,            <span class="co">// 使用 sclk_slow</span></span>
+<span id="cb181-4"><a href="ch-sysctrl.html#cb181-4"></a>    SYSCTRL_CLK_HCLK,           <span class="co">// 使用 hclk</span></span>
+<span id="cb181-5"><a href="ch-sysctrl.html#cb181-5"></a>    SYSCTRL_CLK_ADC_DIV = ...,  <span class="co">// 使用 sclk_slow_adc_div</span></span>
+<span id="cb181-6"><a href="ch-sysctrl.html#cb181-6"></a>    SYSCTRL_CLK_PLL_DIV_1 = ...,<span class="co">// 对 sclk_fast 分频</span></span>
+<span id="cb181-7"><a href="ch-sysctrl.html#cb181-7"></a>} SYSCTRL_ClkMode;</span></code></pre></div>
 <p>根据表 <a href="ch-sysctrl.html#tab:ch-sysctrl-tab-clk">15.1</a> 可知，I2S 可使用 _slk_slow：</p>
-<div class="sourceCode" id="cb179"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb179-1"><a href="ch-sysctrl.html#cb179-1"></a>SYSCTRL_SelectI2sClk(SYSCTRL_CLK_OSC);</span></code></pre></div>
+<div class="sourceCode" id="cb182"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb182-1"><a href="ch-sysctrl.html#cb182-1"></a>SYSCTRL_SelectI2sClk(SYSCTRL_CLK_OSC);</span></code></pre></div>
 <p>或者独占一个分频器，对 <em>sclk_fast</em> 分频得到 <em>sclk_fast_i2s_div</em>，比如使用 <em>sclk_fast</em>
 的 5<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> 分频：</p>
-<div class="sourceCode" id="cb180"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb180-1"><a href="ch-sysctrl.html#cb180-1"></a>SYSCTRL_SelectI2sClk(SYSCTRL_CLK_PLL_DIV_1 + <span class="dv">4</span>);</span></code></pre></div></li>
+<div class="sourceCode" id="cb183"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb183-1"><a href="ch-sysctrl.html#cb183-1"></a>SYSCTRL_SelectI2sClk(SYSCTRL_CLK_PLL_DIV_1 + <span class="dv">4</span>);</span></code></pre></div></li>
 <li><p>读取时钟频率</p>
 <p>使用 <code>SYSCTRL_GetClk</code> 可获得指定外设的时钟频率：</p>
-<div class="sourceCode" id="cb181"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb181-1"><a href="ch-sysctrl.html#cb181-1"></a><span class="dt">uint32_t</span> SYSCTRL_GetClk(SYSCTRL_Item item);</span></code></pre></div>
+<div class="sourceCode" id="cb184"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb184-1"><a href="ch-sysctrl.html#cb184-1"></a><span class="dt">uint32_t</span> SYSCTRL_GetClk(SYSCTRL_Item item);</span></code></pre></div>
 <p>比如，</p>
-<div class="sourceCode" id="cb182"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb182-1"><a href="ch-sysctrl.html#cb182-1"></a><span class="co">// I2S 使用 PLL 的 5 分频</span></span>
-<span id="cb182-2"><a href="ch-sysctrl.html#cb182-2"></a>SYSCTRL_SelectI2sClk(SYSCTRL_CLK_PLL_DIV_1 + <span class="dv">4</span>);</span>
-<span id="cb182-3"><a href="ch-sysctrl.html#cb182-3"></a><span class="co">// freq = sclk_fast 的频率 / 5</span></span>
-<span id="cb182-4"><a href="ch-sysctrl.html#cb182-4"></a><span class="dt">uint32_t</span> freq = SYSCTRL_GetClk(SYSCTRL_ITEM_APB_I2S);</span></code></pre></div></li>
+<div class="sourceCode" id="cb185"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb185-1"><a href="ch-sysctrl.html#cb185-1"></a><span class="co">// I2S 使用 PLL 的 5 分频</span></span>
+<span id="cb185-2"><a href="ch-sysctrl.html#cb185-2"></a>SYSCTRL_SelectI2sClk(SYSCTRL_CLK_PLL_DIV_1 + <span class="dv">4</span>);</span>
+<span id="cb185-3"><a href="ch-sysctrl.html#cb185-3"></a><span class="co">// freq = sclk_fast 的频率 / 5</span></span>
+<span id="cb185-4"><a href="ch-sysctrl.html#cb185-4"></a><span class="dt">uint32_t</span> freq = SYSCTRL_GetClk(SYSCTRL_ITEM_APB_I2S);</span></code></pre></div></li>
 </ol>
 </div>
 <div id="dma-规划-1" class="section level3 hasAnchor">
 <h3><span class="header-section-number">15.2.4</span> DMA 规划<a href="ch-sysctrl.html#dma-规划-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>使用 <code>SYSCTRL_SelectUsedDmaItems</code> 配置要使用的 DMA 握手信号：</p>
-<div class="sourceCode" id="cb183"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb183-1"><a href="ch-sysctrl.html#cb183-1"></a><span class="dt">int</span> SYSCTRL_SelectUsedDmaItems(</span>
-<span id="cb183-2"><a href="ch-sysctrl.html#cb183-2"></a>  <span class="dt">uint32_t</span> items <span class="co">// 各比特与 SYSCTRL_DMA 一一对应</span></span>
-<span id="cb183-3"><a href="ch-sysctrl.html#cb183-3"></a>  );</span></code></pre></div>
+<div class="sourceCode" id="cb186"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb186-1"><a href="ch-sysctrl.html#cb186-1"></a><span class="dt">int</span> SYSCTRL_SelectUsedDmaItems(</span>
+<span id="cb186-2"><a href="ch-sysctrl.html#cb186-2"></a>  <span class="dt">uint32_t</span> items <span class="co">// 各比特与 SYSCTRL_DMA 一一对应</span></span>
+<span id="cb186-3"><a href="ch-sysctrl.html#cb186-3"></a>  );</span></code></pre></div>
 <p>使用 <code>SYSCTRL_GetDmaId</code> 可获取为某外设握手信号的 DMA 信号 ID，如果返回 -1，
 说明没有规划该外设握手信号<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>：</p>
-<div class="sourceCode" id="cb184"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb184-1"><a href="ch-sysctrl.html#cb184-1"></a><span class="dt">int</span> SYSCTRL_GetDmaId(SYSCTRL_DMA item);</span></code></pre></div>
+<div class="sourceCode" id="cb187"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb187-1"><a href="ch-sysctrl.html#cb187-1"></a><span class="dt">int</span> SYSCTRL_GetDmaId(SYSCTRL_DMA item);</span></code></pre></div>
 
 </div>
 </div>

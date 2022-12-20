@@ -413,13 +413,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="擦除并写入新数据" class="section level3 hasAnchor">
 <h3><span class="header-section-number">19.2.1</span> 擦除并写入新数据<a href="ch-eflash.html#擦除并写入新数据" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>通过 <code>program_flash</code> 擦除并写入一段数据。</p>
-<div class="sourceCode" id="cb223"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb223-1"><a href="ch-eflash.html#cb223-1"></a><span class="dt">int</span> program_flash(</span>
-<span id="cb223-2"><a href="ch-eflash.html#cb223-2"></a>    <span class="co">// 待写入的地址</span></span>
-<span id="cb223-3"><a href="ch-eflash.html#cb223-3"></a>    <span class="dt">const</span> <span class="dt">uint32_t</span> dest_addr,</span>
-<span id="cb223-4"><a href="ch-eflash.html#cb223-4"></a>    <span class="co">// 数据源的地址</span></span>
-<span id="cb223-5"><a href="ch-eflash.html#cb223-5"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> *buffer,</span>
-<span id="cb223-6"><a href="ch-eflash.html#cb223-6"></a>    <span class="co">// 数据长度（以字节为单位，必须是 4 的倍数）</span></span>
-<span id="cb223-7"><a href="ch-eflash.html#cb223-7"></a>    <span class="dt">uint32_t</span> size);</span></code></pre></div>
+<div class="sourceCode" id="cb226"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb226-1"><a href="ch-eflash.html#cb226-1"></a><span class="dt">int</span> program_flash(</span>
+<span id="cb226-2"><a href="ch-eflash.html#cb226-2"></a>    <span class="co">// 待写入的地址</span></span>
+<span id="cb226-3"><a href="ch-eflash.html#cb226-3"></a>    <span class="dt">const</span> <span class="dt">uint32_t</span> dest_addr,</span>
+<span id="cb226-4"><a href="ch-eflash.html#cb226-4"></a>    <span class="co">// 数据源的地址</span></span>
+<span id="cb226-5"><a href="ch-eflash.html#cb226-5"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> *buffer,</span>
+<span id="cb226-6"><a href="ch-eflash.html#cb226-6"></a>    <span class="co">// 数据长度（以字节为单位，必须是 4 的倍数）</span></span>
+<span id="cb226-7"><a href="ch-eflash.html#cb226-7"></a>    <span class="dt">uint32_t</span> size);</span></code></pre></div>
 <p><code>dest_addr</code> 为统一编址后的地址，而非 Flash 内部从 0 开始的地址。<code>dest_addr</code>
 必须对应于某个扇区的起始地址。数据源不可位于 Flash 内。</p>
 <p><code>program_flash</code> 将根据 <code>size</code> 自动擦除一个或多个扇区并写入数据。</p>
@@ -428,13 +428,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="不擦除直接写入数据" class="section level3 hasAnchor">
 <h3><span class="header-section-number">19.2.2</span> 不擦除直接写入数据<a href="ch-eflash.html#不擦除直接写入数据" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>通过 <code>write_flash</code> 不擦除直接写入数据。</p>
-<div class="sourceCode" id="cb224"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb224-1"><a href="ch-eflash.html#cb224-1"></a><span class="dt">int</span> write_flash(</span>
-<span id="cb224-2"><a href="ch-eflash.html#cb224-2"></a>    <span class="co">// 待写入的地址</span></span>
-<span id="cb224-3"><a href="ch-eflash.html#cb224-3"></a>    <span class="dt">const</span> <span class="dt">uint32_t</span> dest_addr,</span>
-<span id="cb224-4"><a href="ch-eflash.html#cb224-4"></a>    <span class="co">// 数据源的地址</span></span>
-<span id="cb224-5"><a href="ch-eflash.html#cb224-5"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> *buffer,</span>
-<span id="cb224-6"><a href="ch-eflash.html#cb224-6"></a>    <span class="co">// 数据长度（以字节为单位，必须是 4 的倍数）</span></span>
-<span id="cb224-7"><a href="ch-eflash.html#cb224-7"></a>    <span class="dt">uint32_t</span> size);</span></code></pre></div>
+<div class="sourceCode" id="cb227"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb227-1"><a href="ch-eflash.html#cb227-1"></a><span class="dt">int</span> write_flash(</span>
+<span id="cb227-2"><a href="ch-eflash.html#cb227-2"></a>    <span class="co">// 待写入的地址</span></span>
+<span id="cb227-3"><a href="ch-eflash.html#cb227-3"></a>    <span class="dt">const</span> <span class="dt">uint32_t</span> dest_addr,</span>
+<span id="cb227-4"><a href="ch-eflash.html#cb227-4"></a>    <span class="co">// 数据源的地址</span></span>
+<span id="cb227-5"><a href="ch-eflash.html#cb227-5"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> *buffer,</span>
+<span id="cb227-6"><a href="ch-eflash.html#cb227-6"></a>    <span class="co">// 数据长度（以字节为单位，必须是 4 的倍数）</span></span>
+<span id="cb227-7"><a href="ch-eflash.html#cb227-7"></a>    <span class="dt">uint32_t</span> size);</span></code></pre></div>
 <p><code>dest_addr</code> 为统一编址后的地址，必须 32bit 对齐。<code>write_data</code> 不擦除 Flash，而是直接写入。
 数据源不可位于 Flash 内。如果对应的 Flash 空间未被擦除，将无法写入。</p>
 <p>本函数如果成功，则返回 0，否则返回非 0。</p>
@@ -442,36 +442,36 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="单独擦除" class="section level3 hasAnchor">
 <h3><span class="header-section-number">19.2.3</span> 单独擦除<a href="ch-eflash.html#单独擦除" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>通过 <code>erase_flash_sector</code> 擦除一个指定的扇区。</p>
-<div class="sourceCode" id="cb225"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb225-1"><a href="ch-eflash.html#cb225-1"></a><span class="dt">int</span> erase_flash_sector(</span>
-<span id="cb225-2"><a href="ch-eflash.html#cb225-2"></a>    <span class="co">// 待擦除的地址</span></span>
-<span id="cb225-3"><a href="ch-eflash.html#cb225-3"></a>    <span class="dt">const</span> <span class="dt">uint32_t</span> addr);</span></code></pre></div>
+<div class="sourceCode" id="cb228"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb228-1"><a href="ch-eflash.html#cb228-1"></a><span class="dt">int</span> erase_flash_sector(</span>
+<span id="cb228-2"><a href="ch-eflash.html#cb228-2"></a>    <span class="co">// 待擦除的地址</span></span>
+<span id="cb228-3"><a href="ch-eflash.html#cb228-3"></a>    <span class="dt">const</span> <span class="dt">uint32_t</span> addr);</span></code></pre></div>
 <p><code>addr</code> 必须对应于某个扇区的起始地址。本函数如果成功，则返回 0，否则返回非 0。</p>
 </div>
 <div id="flash-数据升级" class="section level3 hasAnchor">
 <h3><span class="header-section-number">19.2.4</span> Flash 数据升级<a href="ch-eflash.html#flash-数据升级" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>通过 <code>flash_do_update</code> 可以升级 Flash 里的数据。这个函数可用于 FOTA 升级。</p>
-<div class="sourceCode" id="cb226"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb226-1"><a href="ch-eflash.html#cb226-1"></a><span class="dt">int</span> flash_do_update(</span>
-<span id="cb226-2"><a href="ch-eflash.html#cb226-2"></a>    <span class="co">// 数据块数目</span></span>
-<span id="cb226-3"><a href="ch-eflash.html#cb226-3"></a>    <span class="dt">const</span> <span class="dt">int</span> block_num,</span>
-<span id="cb226-4"><a href="ch-eflash.html#cb226-4"></a>    <span class="co">// 每个数据块的信息</span></span>
-<span id="cb226-5"><a href="ch-eflash.html#cb226-5"></a>    <span class="dt">const</span> fota_update_block_t *blocks,</span>
-<span id="cb226-6"><a href="ch-eflash.html#cb226-6"></a>    <span class="co">// 用于缓存一个扇区的内存</span></span>
-<span id="cb226-7"><a href="ch-eflash.html#cb226-7"></a>    <span class="dt">uint8_t</span> *ram_buffer);</span></code></pre></div>
+<div class="sourceCode" id="cb229"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb229-1"><a href="ch-eflash.html#cb229-1"></a><span class="dt">int</span> flash_do_update(</span>
+<span id="cb229-2"><a href="ch-eflash.html#cb229-2"></a>    <span class="co">// 数据块数目</span></span>
+<span id="cb229-3"><a href="ch-eflash.html#cb229-3"></a>    <span class="dt">const</span> <span class="dt">int</span> block_num,</span>
+<span id="cb229-4"><a href="ch-eflash.html#cb229-4"></a>    <span class="co">// 每个数据块的信息</span></span>
+<span id="cb229-5"><a href="ch-eflash.html#cb229-5"></a>    <span class="dt">const</span> fota_update_block_t *blocks,</span>
+<span id="cb229-6"><a href="ch-eflash.html#cb229-6"></a>    <span class="co">// 用于缓存一个扇区的内存</span></span>
+<span id="cb229-7"><a href="ch-eflash.html#cb229-7"></a>    <span class="dt">uint8_t</span> *ram_buffer);</span></code></pre></div>
 <p>每个数据块的定为为：</p>
-<div class="sourceCode" id="cb227"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb227-1"><a href="ch-eflash.html#cb227-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> fota_update_block</span>
-<span id="cb227-2"><a href="ch-eflash.html#cb227-2"></a>{</span>
-<span id="cb227-3"><a href="ch-eflash.html#cb227-3"></a>    <span class="dt">uint32_t</span> src;</span>
-<span id="cb227-4"><a href="ch-eflash.html#cb227-4"></a>    <span class="dt">uint32_t</span> dest;</span>
-<span id="cb227-5"><a href="ch-eflash.html#cb227-5"></a>    <span class="dt">uint32_t</span> size;</span>
-<span id="cb227-6"><a href="ch-eflash.html#cb227-6"></a>} fota_update_block_t;</span></code></pre></div>
+<div class="sourceCode" id="cb230"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb230-1"><a href="ch-eflash.html#cb230-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> fota_update_block</span>
+<span id="cb230-2"><a href="ch-eflash.html#cb230-2"></a>{</span>
+<span id="cb230-3"><a href="ch-eflash.html#cb230-3"></a>    <span class="dt">uint32_t</span> src;</span>
+<span id="cb230-4"><a href="ch-eflash.html#cb230-4"></a>    <span class="dt">uint32_t</span> dest;</span>
+<span id="cb230-5"><a href="ch-eflash.html#cb230-5"></a>    <span class="dt">uint32_t</span> size;</span>
+<span id="cb230-6"><a href="ch-eflash.html#cb230-6"></a>} fota_update_block_t;</span></code></pre></div>
 <p>这个函数的行为大致如下：</p>
-<div class="sourceCode" id="cb228"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb228-1"><a href="ch-eflash.html#cb228-1"></a>flash_do_update() {</span>
-<span id="cb228-2"><a href="ch-eflash.html#cb228-2"></a>    <span class="cf">for</span> (block in blocks) {</span>
-<span id="cb228-3"><a href="ch-eflash.html#cb228-3"></a>        flash_copy(block.dest,</span>
-<span id="cb228-4"><a href="ch-eflash.html#cb228-4"></a>                   block.src,</span>
-<span id="cb228-5"><a href="ch-eflash.html#cb228-5"></a>                   block.size);</span>
-<span id="cb228-6"><a href="ch-eflash.html#cb228-6"></a>    }</span>
-<span id="cb228-7"><a href="ch-eflash.html#cb228-7"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb231"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb231-1"><a href="ch-eflash.html#cb231-1"></a>flash_do_update() {</span>
+<span id="cb231-2"><a href="ch-eflash.html#cb231-2"></a>    <span class="cf">for</span> (block in blocks) {</span>
+<span id="cb231-3"><a href="ch-eflash.html#cb231-3"></a>        flash_copy(block.dest,</span>
+<span id="cb231-4"><a href="ch-eflash.html#cb231-4"></a>                   block.src,</span>
+<span id="cb231-5"><a href="ch-eflash.html#cb231-5"></a>                   block.size);</span>
+<span id="cb231-6"><a href="ch-eflash.html#cb231-6"></a>    }</span>
+<span id="cb231-7"><a href="ch-eflash.html#cb231-7"></a>}</span></code></pre></div>
 <p>如前所述，<code>program_flash</code> 的数据源不能位于 Flash，所以 <code>flash_copy</code> 需要把各扇区逐个读入
 <code>ram_buffer</code>，然后使用 <code>program_flash</code> 擦除、写入。</p>
 <p>这个函数如果成功，将自动重启系统，否则返回非 0。</p>

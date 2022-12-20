@@ -417,7 +417,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>鉴于片内外设丰富、IO 管脚多，进行管脚全映射并不现实，为此，PINCTRL 尽量保证灵活性的前提下做了一定取舍、优化。
 部分常用外设的输入、输出功能管脚可与 <span class="math inline">\(\{{0 .. 17, 21, 22, 31, 34, 35\}}\)</span> 这 23 个常用 IO 之间任意连接（全映射），
 这部分常用外设功能管脚总结于表 <a href="ch-pinctrl.html#tab:ch-pinctrl-common-set">10.1</a>。
-表 <a href="ch-pinctrl.html#tab:ch-pinctrl-mapping">10.2</a> 列出了其它外设功能管脚支持映射到哪些 IO 管脚上。</p>
+表 <a href="ch-pinctrl.html#tab:ch-pinctrl-mapping">10.2</a> 列出了其它外设功能管脚支持映射到哪些 IO 管脚上。
+除此以外，所有 IO 管脚都可以配置为 GPIO 或者 DEBUG 模式。GPIO 模式的输入、输出方向由 <code>GIO_SetDirection</code> 控制。</p>
 <table>
 <caption><span id="tab:ch-pinctrl-common-set">表 10.1: </span> 支持与常用 IO 全映射的常用功能管脚</caption>
 <colgroup>
@@ -433,41 +434,45 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <tbody>
 <tr class="odd">
 <td align="left">I2C</td>
-<td align="left">I2C0_SCL_I, I2C0_SCL_O, I2C0_SDA_I, I2C0_SDA_O, I2C1_SCL_I, I2C1_SCL_O, I2C1_SDA_I, I2C1_SDA_O, I2S_BCLK_I, I2S_BCLK_O, I2S_DIN, I2S_DOUT, I2S_LRCLK_I, I2S_LRCLK_O</td>
+<td align="left">I2C0_SCL_I, I2C0_SCL_O, I2C0_SDA_I, I2C0_SDA_O, I2C1_SCL_I, I2C1_SCL_O, I2C1_SDA_I, I2C1_SDA_O</td>
 </tr>
 <tr class="even">
+<td align="left">I2S</td>
+<td align="left">I2S_BCLK_I, I2S_BCLK_O, I2S_DIN, I2S_DOUT, I2S_LRCLK_I, I2S_LRCLK_O</td>
+</tr>
+<tr class="odd">
 <td align="left">IR</td>
 <td align="left">IR_DATIN, IR_DATOUT, IR_WAKEUP</td>
 </tr>
-<tr class="odd">
-<td align="left">PCAP</td>
-<td align="left">P_CAP_IN0, P_CAP_IN1, P_CAP_IN2, P_CAP_IN3, P_CAP_IN4, P_CAP_IN5</td>
-</tr>
 <tr class="even">
+<td align="left">PCAP</td>
+<td align="left">PCAP0_IN0, PCAP1_IN1, PCAP2_IN, PCAP3_IN, PCAP4_IN, PCAP5_IN</td>
+</tr>
+<tr class="odd">
 <td align="left">PDM</td>
 <td align="left">PDM_DMIC_IN, PDM_DMIC_MCLK</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">QDEC</td>
 <td align="left">QDEC_INDEX, QDEC_PHASEA, QDEC_PHASEB</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SPI0</td>
 <td align="left">SPI0_CLK_IN, SPI0_CLK_OUT, SPI0_CSN_IN, SPI0_CSN_OUT, SPI0_HOLD_IN, SPI0_HOLD_OUT, SPI0_MISO_IN, SPI0_MISO_OUT, SPI0_MOSI_IN, SPI0_MOSI_OUT, SPI0_WP_IN, SPI0_WP_OUT</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">SPI</td>
 <td align="left">SPI1_CLK_IN, SPI1_CLK_OUT, SPI1_CSN_IN, SPI1_CSN_OUT, SPI1_HOLD_IN, SPI1_HOLD_OUT, SPI1_MISO_IN, SPI1_MISO_OUT, SPI1_MOSI_IN, SPI1_MOSI_OUT, SPI1_WP_IN, SPI1_WP_OUT</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SWD</td>
 <td align="left">SWDO, SW_TCK, SW_TMS</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">UART0</td>
 <td align="left">UART0_CTS, UART0_RTS, UART0_RXD, UART0_TXD</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">UART1</td>
 <td align="left">UART1_CTS, UART1_RTS, UART1_RXD, UART1_TXD</td>
 </tr>
@@ -683,6 +688,54 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="left">4, 5, 6, 7, 8, 9, 10, 34, 35</td>
 </tr>
 <tr class="odd">
+<td align="left">TIMER0_PWM_0A</td>
+<td align="left">0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35</td>
+</tr>
+<tr class="even">
+<td align="left">TIMER0_PWM_0B</td>
+<td align="left">1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34</td>
+</tr>
+<tr class="odd">
+<td align="left">TIMER0_PWM_1A</td>
+<td align="left">0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35</td>
+</tr>
+<tr class="even">
+<td align="left">TIMER0_PWM_1B</td>
+<td align="left">1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34</td>
+</tr>
+<tr class="odd">
+<td align="left">TIMER1_PWM_0A</td>
+<td align="left">0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35</td>
+</tr>
+<tr class="even">
+<td align="left">TIMER1_PWM_0B</td>
+<td align="left">1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34</td>
+</tr>
+<tr class="odd">
+<td align="left">TIMER1_PWM_1A</td>
+<td align="left">0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35</td>
+</tr>
+<tr class="even">
+<td align="left">TIMER1_PWM_1B</td>
+<td align="left">1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34</td>
+</tr>
+<tr class="odd">
+<td align="left">TIMER2_PWM_0A</td>
+<td align="left">0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35</td>
+</tr>
+<tr class="even">
+<td align="left">TIMER2_PWM_0B</td>
+<td align="left">1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34</td>
+</tr>
+<tr class="odd">
+<td align="left">TIMER2_PWM_1A</td>
+<td align="left">0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35</td>
+</tr>
+<tr class="even">
+<td align="left">TIMER2_PWM_1B</td>
+<td align="left">1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34</td>
+</tr>
+<tr class="odd">
 <td align="left">PWM_0A</td>
 <td align="left">0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35</td>
 </tr>
@@ -707,91 +760,43 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="left">1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34</td>
 </tr>
 <tr class="odd">
-<td align="left">PWM_3A</td>
-<td align="left">0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35</td>
-</tr>
-<tr class="even">
-<td align="left">PWM_3B</td>
-<td align="left">1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34</td>
-</tr>
-<tr class="odd">
-<td align="left">PWM_4A</td>
-<td align="left">0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35</td>
-</tr>
-<tr class="even">
-<td align="left">PWM_4B</td>
-<td align="left">1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34</td>
-</tr>
-<tr class="odd">
-<td align="left">PWM_5A</td>
-<td align="left">0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35</td>
-</tr>
-<tr class="even">
-<td align="left">PWM_5B</td>
-<td align="left">1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34</td>
-</tr>
-<tr class="odd">
-<td align="left">PWM_6A</td>
-<td align="left">0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35</td>
-</tr>
-<tr class="even">
-<td align="left">PWM_6B</td>
-<td align="left">1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34</td>
-</tr>
-<tr class="odd">
-<td align="left">PWM_7A</td>
-<td align="left">0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35</td>
-</tr>
-<tr class="even">
-<td align="left">PWM_7B</td>
-<td align="left">1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34</td>
-</tr>
-<tr class="odd">
-<td align="left">PWM_8A</td>
-<td align="left">0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35</td>
-</tr>
-<tr class="even">
-<td align="left">PWM_8B</td>
-<td align="left">1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34</td>
-</tr>
-<tr class="odd">
 <td align="left">QDEC_EXT_IN_CLK</td>
 <td align="left">3, 9</td>
 </tr>
 <tr class="even">
-<td align="left">QDEC_TIMER_EXT_IN_A1</td>
+<td align="left">QDEC_TIMER_EXT_IN1_A</td>
 <td align="left">1, 7</td>
 </tr>
 <tr class="odd">
-<td align="left">QDEC_TIMER_EXT_IN_A2</td>
+<td align="left">QDEC_TIMER_EXT_IN2_A</td>
 <td align="left">2, 8</td>
 </tr>
 <tr class="even">
-<td align="left">QDEC_TIMER_EXT_IN_B2</td>
+<td align="left">QDEC_TIMER_EXT_IN2_B</td>
 <td align="left">5, 11</td>
 </tr>
 <tr class="odd">
-<td align="left">QDEC_TIMER_EXT_OUT_A0</td>
+<td align="left">QDEC_TIMER_EXT_OUT0_A</td>
 <td align="left">0, 6</td>
 </tr>
 <tr class="even">
-<td align="left">QDEC_TIMER_EXT_OUT_A1</td>
+<td align="left">QDEC_TIMER_EXT_OUT1_A</td>
 <td align="left">1, 7</td>
 </tr>
 <tr class="odd">
-<td align="left">QDEC_TIMER_EXT_OUT_A2</td>
+<td align="left">QDEC_TIMER_EXT_OUT2_A</td>
 <td align="left">2, 8</td>
 </tr>
 <tr class="even">
-<td align="left">QDEC_TIMER_EXT_OUT_B0</td>
+<td align="left">QDEC_TIMER_EXT_OUT0_B</td>
 <td align="left">3, 9</td>
 </tr>
 <tr class="odd">
-<td align="left">QDEC_TIMER_EXT_OUT_B1</td>
+<td align="left">QDEC_TIMER_EXT_OUT1_B</td>
 <td align="left">4, 10</td>
 </tr>
 <tr class="even">
-<td align="left">QDEC_TIMER_EXT_OUT_B2</td>
+<td align="left">QDEC_TIMER_EXT_OUT2_B</td>
 <td align="left">5, 11</td>
 </tr>
 <tr class="odd">
@@ -869,20 +874,74 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p>将外设输出连接到 IO 管脚</p>
 <p>通过 <code>PINCTRL_SetPadMux</code> 将外设输出连接到 IO 管脚。
 注意按照表 <a href="ch-pinctrl.html#tab:ch-pinctrl-common-set">10.1</a> 和 表 <a href="ch-pinctrl.html#tab:ch-pinctrl-mapping">10.2</a>
-确认硬件是否支持。对于不支持的配置，显然无法生效。</p>
-<div class="sourceCode" id="cb82"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb82-1"><a href="ch-pinctrl.html#cb82-1"></a><span class="dt">void</span> PINCTRL_SetPadMux(</span>
-<span id="cb82-2"><a href="ch-pinctrl.html#cb82-2"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> io_pin_index, <span class="co">// IO 序号 (0..35)</span></span>
+确认硬件是否支持。对于不支持的配置，显然无法生效，函数将返回非 0 值。</p>
+<div class="sourceCode" id="cb82"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb82-1"><a href="ch-pinctrl.html#cb82-1"></a><span class="dt">int</span> PINCTRL_SetPadMux(</span>
+<span id="cb82-2"><a href="ch-pinctrl.html#cb82-2"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> io_pin_index, <span class="co">// IO 序号 (0 .. IO_PIN_NUMBER - 1)</span></span>
 <span id="cb82-3"><a href="ch-pinctrl.html#cb82-3"></a>  <span class="dt">const</span> io_source_t source    <span class="co">// IO 源</span></span>
-<span id="cb82-4"><a href="ch-pinctrl.html#cb82-4"></a>);</span></code></pre></div></li>
+<span id="cb82-4"><a href="ch-pinctrl.html#cb82-4"></a>);</span></code></pre></div>
+<p>例如将 IO 管脚 10 配置为 GPIO 模式：</p>
+<p><code>PINCTRL_SetPadMux(10, IO_SOURCE_GPIO);</code></p></li>
 <li><p>将 IO 管脚连接到外设的输入</p>
 <p>对于有些外设的输入同样通过 <code>PINCTRL_SetPadMux</code> 配置。对于另一些输入，
-PINCTRL 为不同的外设分别提供了 API 用以配置输入。比如对于 UART 用于硬件流控的
-RXD 和 CTS，需要通过 <code>PINCTRL_SelUartIn</code> 配置 ：</p>
-<div class="sourceCode" id="cb83"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb83-1"><a href="ch-pinctrl.html#cb83-1"></a><span class="dt">void</span> PINCTRL_SelUartIn(</span>
+PINCTRL 为不同的外设分别提供了 API 用以配置输入。比如 UART 的数据输入 RXD 和用于硬件流控的
+CTS，需要通过 <code>PINCTRL_SelUartIn</code> 配置 ：</p>
+<div class="sourceCode" id="cb83"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb83-1"><a href="ch-pinctrl.html#cb83-1"></a><span class="dt">int</span> PINCTRL_SelUartIn(</span>
 <span id="cb83-2"><a href="ch-pinctrl.html#cb83-2"></a>  uart_port_t port,     <span class="co">// UART 序号</span></span>
 <span id="cb83-3"><a href="ch-pinctrl.html#cb83-3"></a>  <span class="dt">uint8_t</span> io_pin_rxd,   <span class="co">// 连接到 RXD 输入的 IO 管脚</span></span>
 <span id="cb83-4"><a href="ch-pinctrl.html#cb83-4"></a>  <span class="dt">uint8_t</span> io_pin_cts);  <span class="co">// 连接到 CTS 输入的 IO 管脚</span></span></code></pre></div>
-<p>对于不需要配置的输入，可在对应的参数上填入值 <code>IO_NOT_A_PIN</code>。</p></li>
+<p>对于不需要配置的输入，可在对应的参数上填入值 <code>IO_NOT_A_PIN</code>。</p>
+<p>表 <a href="ch-pinctrl.html#tab:ch-pinctrl-sel-in">10.3</a> 罗列了为各外设提供的输入配置函数。</p>
+<table>
+<caption><span id="tab:ch-pinctrl-sel-in">表 10.3: </span> 其它外设功能管脚的映射关系</caption>
+<thead>
+<tr class="header">
+<th align="left">外设功能管脚</th>
+<th align="left">可连接到的 IO 管脚</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">KeyScan</td>
+<td align="left"><code>PINCTRL_SelKeyScanColIn</code></td>
+</tr>
+<tr class="even">
+<td align="left">I2C</td>
+<td align="left"><code>PINCTRL_SelI2cIn</code></td>
+</tr>
+<tr class="odd">
+<td align="left">I2S</td>
+<td align="left"><code>PINCTRL_SelI2sIn</code></td>
+</tr>
+<tr class="even">
+<td align="left">IR</td>
+<td align="left"><code>PINCTRL_SelIrIn</code></td>
+</tr>
+<tr class="odd">
+<td align="left">PDM</td>
+<td align="left"><code>PINCTRL_SelPdmIn</code></td>
+</tr>
+<tr class="even">
+<td align="left">PCAP</td>
+<td align="left"><code>PINCTRL_SelPCAPIn</code></td>
+</tr>
+<tr class="odd">
+<td align="left">QDEC</td>
+<td align="left"><code>PINCTRL_SelQDECIn</code></td>
+</tr>
+<tr class="even">
+<td align="left">SWD</td>
+<td align="left"><code>PINCTRL_SelSwIn</code></td>
+</tr>
+<tr class="odd">
+<td align="left">SPI</td>
+<td align="left"><code>PINCTRL_SelSpiIn</code></td>
+</tr>
+<tr class="even">
+<td align="left">UART</td>
+<td align="left"><code>PINCTRL_SelUartIn</code></td>
+</tr>
+</tbody>
+</table></li>
 </ol>
 </div>
 <div id="配置下拉下拉" class="section level3 hasAnchor">
@@ -898,7 +957,7 @@ RXD 和 CTS，需要通过 <code>PINCTRL_SelUartIn</code> 配置 ：</p>
 <p>通过 <code>PINCTRL_SetDriveStrength</code> 配置 IO 管脚的驱动能力：</p>
 <div class="sourceCode" id="cb85"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb85-1"><a href="ch-pinctrl.html#cb85-1"></a><span class="dt">void</span> PINCTRL_SetDriveStrength(</span>
 <span id="cb85-2"><a href="ch-pinctrl.html#cb85-2"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> io_pin_index,</span>
-<span id="cb85-3"><a href="ch-pinctrl.html#cb85-3"></a>  <span class="dt">const</span> pinctrl_drive_strenght_t strenght);</span></code></pre></div>
+<span id="cb85-3"><a href="ch-pinctrl.html#cb85-3"></a>  <span class="dt">const</span> pinctrl_drive_strength_t strength);</span></code></pre></div>
 
 </div>
 </div>

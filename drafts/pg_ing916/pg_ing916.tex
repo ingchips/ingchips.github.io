@@ -384,6 +384,432 @@ USB & 通用串行总线（Universal Serial Bus）\tabularnewline
   ING916XX 系列芯片数据手册
 \end{enumerate}
 
+\hypertarget{ch-adc}{%
+\chapter{ADC简介}\label{ch-adc}}
+
+ADC全称Analog-to-Digital Converter，即模数转换器。
+
+其主要作用是通过PIN测量电压，并将采集到的电压模拟信号转换成数字信号。
+
+\hypertarget{ux529fux80fdux63cfux8ff0}{%
+\section{功能描述}\label{ux529fux80fdux63cfux8ff0}}
+
+\hypertarget{ux7279ux70b9}{%
+\subsection{特点}\label{ux7279ux70b9}}
+
+\begin{itemize}
+\item
+  最多12个单端输入通道或4个差分输入通道
+\item
+  14位分辨率
+\item
+  电压输入范围（0\textasciitilde3.6V）
+\item
+  支持APB总线
+\item
+  采样频率可编程
+\item
+  支持单一转换模式
+\item
+  支持回路转换模式，每个通道均可启用或禁用
+\end{itemize}
+
+\hypertarget{adcux6a21ux5f0f}{%
+\subsection{ADC模式}\label{adcux6a21ux5f0f}}
+
+\begin{itemize}
+\item
+  校准模式（calibration）：用于校准ADC采样精度。分为单端模式校准和差分模式校准，两种模式校准互相独立
+\item
+  转换模式（conversion）：用于正常工作状态下的模数转换
+\end{itemize}
+
+根据ADC输入模式完成对应的模式校准，之后在转换模式下进行正常模数转换。
+
+\hypertarget{adcux8f93ux5165ux6a21ux5f0f}{%
+\subsection{ADC输入模式}\label{adcux8f93ux5165ux6a21ux5f0f}}
+
+\begin{itemize}
+\item
+  单端输入（single end）：使用单个输入引脚，采用ADC内部的参考电压
+\item
+  差分输入（differential）：使用一组输入引脚分别作为参考电压
+\end{itemize}
+
+一般来说，差分输入有利于避免共模干扰的影响，结果相对准确。
+
+\hypertarget{adcux8f6cux6362ux6a21ux5f0f}{%
+\subsection{ADC转换模式}\label{adcux8f6cux6362ux6a21ux5f0f}}
+
+\begin{itemize}
+\item
+  单次转换（single）：单次转换在使能转换通道，采样和转换后，ADC将停止，数据将被拉入 \texttt{FIFO}
+\item
+  连续转换（continuous）：连续转换在逐个使能通道，采样并转换后，经过 \texttt{loop-delay} 时间后循环进行操作，ADC不会停止直到手动关闭
+\end{itemize}
+
+\hypertarget{adcux901aux9053}{%
+\subsection{ADC通道}\label{adcux901aux9053}}
+
+ADC共12个channel，即ch0-ch11。
+
+其中ch0-ch7是通用通道，ch8-ch11是内部通道，可以用来采集内部信号。
+
+具体通道的输入连接引脚如下：
+
+\begin{longtable}[]{@{}ll@{}}
+\caption{\label{tab:ch-ADC-input-connection} ADC输入连接引脚}\tabularnewline
+\toprule
+通道 & 连接引脚\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+通道 & 连接引脚\tabularnewline
+\midrule
+\endhead
+ch0 & GPIO7\tabularnewline
+ch1 & GPIO8\tabularnewline
+ch2 & GPIO9\tabularnewline
+ch3 & GPIO10\tabularnewline
+ch4 & GPIO11\tabularnewline
+ch5 & GPIO12\tabularnewline
+ch6 & GPIO13\tabularnewline
+ch7 & GPIO14\tabularnewline
+ch8 & diag\_hv\_soc\tabularnewline
+ch9 & VREF12\_ADC\_IN\tabularnewline
+ch10 & VCC\tabularnewline
+ch11 & V18\_FLASH\tabularnewline
+\bottomrule
+\end{longtable}
+
+ch0-ch7可以配置成为4对差分输入通道，配置后将对应差分的通道0-3。
+
+\textbf{注意：} 配置ADC输入模式为差分模式下则只有ch0-ch3以及ch8-ch11。
+
+\hypertarget{pga}{%
+\subsection{PGA}\label{pga}}
+
+ADC的PGA默认是开启的，目前使用时不支持关闭。
+
+ADC的PGA有8个增益值，其大小为 \texttt{2\^{}n(n=0-7)} ，但是目前增益值n=6,7暂不支持配置。
+
+对于PGA增益值配置，目前ch0-ch7可以配置的增益值为 \texttt{2\^{}n(n=0-5)}
+
+ch8-ch11增益值暂不支持配置，其增益值固定为2.
+
+\hypertarget{ux4f7fux7528ux65b9ux6cd5}{%
+\section{使用方法}\label{ux4f7fux7528ux65b9ux6cd5}}
+
+\hypertarget{ux65b9ux6cd5ux6982ux8ff0}{%
+\subsection{方法概述}\label{ux65b9ux6cd5ux6982ux8ff0}}
+
+方法概述为：时钟配置，ADC校准，ADC参数配置和中断（DMA中断）注册。
+
+\hypertarget{ux65f6ux949fux914dux7f6e}{%
+\subsubsection{时钟配置}\label{ux65f6ux949fux914dux7f6e}}
+
+当前ADC所用时钟源为 \texttt{clock\ slow} 经过分频得到的ADC工作时钟
+
+当前ADC工作时钟可以配置为1M、2M、4M和6M。高于6M的时钟暂不支持配置
+
+\textbf{注意：} 由于ADC工作时钟只可以取以上特定值，ADC时钟必须经过 \texttt{clock\ slow} 分频。故在同时使用和ADC同时钟源模块时，如IR，可能出现时钟配置冲突的现象。开发者在实际使用时需要格外注意，具体请参考916时钟树（图 \ref{fig:916-clk-tree-ADC}）。
+
+\begin{figure}
+
+{\centering \includegraphics[width=0.7\linewidth]{./img/ADC/916_clk_tree_ADC} 
+
+}
+
+\caption{916时钟树ADC模块部分截图}\label{fig:916-clk-tree-ADC}
+\end{figure}
+
+\hypertarget{adcux6821ux51c6}{%
+\subsubsection{ADC校准}\label{adcux6821ux51c6}}
+
+ADC校准包含精度校准和内部参考电压校准
+
+ADC精度校准接口：ADC\_Calibration
+
+内部参考电压校准接口：ADC\_VrefCalibration
+
+在进行ADC转换之前需要进行ADC精度校准，如果需要计算采集电压则需要进行内部参考电压校准
+
+ADC精度校准需要明确ADC输入模式（单端/差分），两种模式需要分别进行精度校准
+
+\hypertarget{adcux53c2ux6570ux914dux7f6e}{%
+\subsubsection{ADC参数配置}\label{adcux53c2ux6570ux914dux7f6e}}
+
+ADC参数配置接口：ADC\_ConvCfg
+
+涉及参数有：ADC转换模式、ADC输入模式、PGA增益值、PGA开关（目前不支持关闭）、采样通道、data触发中断数、data触发DMA搬运数和 \texttt{loop-delay}
+
+data触发中断数和data触发DMA搬运数决定了搬运ADC数据的方式。前者用触发中断的方式，后者用触发DMA搬运的方式
+
+对于中断/DMA搬运方式选择上，建议如下：
+
+\begin{itemize}
+\item
+  一般在小数据量情况下，如定时采集温度，建议采用触发中断并CPU读数的方式
+\item
+  一般大数据量采样，如模拟麦克风采样，建议采用DMA搬运方式或者乒乓搬运，可以大大提高数据搬运处理效率
+\end{itemize}
+
+\hypertarget{adcux6570ux636eux5904ux7406}{%
+\subsubsection{ADC数据处理}\label{adcux6570ux636eux5904ux7406}}
+
+ADC数据处理的推荐方法为：
+
+\textbf{1.} 调用ADC\_PopFifoData（或DMA搬运buff）读取FIFO中的ADC原始数据
+
+\textbf{2.} 调用ADC\_GetDataChannel得到原始数据中的数据所属通道（如需要）
+
+\textbf{3.} 调用ADC\_GetData得到原始数据中的ADC数据
+
+\textbf{4.} 调用ADC\_GetVol通过ADC数据计算得到其对应的电压值（如需要）
+
+也可以通过调用ADC\_ReadChannelData接口直接得到指定通道的ADC数据。但这样会丢弃其他通道数据，请谨慎使用。其可以作为辅助接口使用，非主要方式。
+
+\hypertarget{ux6ce8ux610fux70b9}{%
+\subsection{注意点}\label{ux6ce8ux610fux70b9}}
+
+\begin{itemize}
+\item
+  一般来说配置ADC时钟频率越高，其工作效率越好。较为推荐使用4M、6M工作时钟，性能稳定
+\item
+  ADC时钟选择需要根据实际设备采样率选择，如模拟mic，应参考mic操作手册来选择对应ADC时钟频率
+\item
+  差分输入电压需要控制范围为0\textasciitilde3.6V
+\item
+  如果需要计算采集电压建议周期性地进行参考电压校准
+\item
+  目前暂不支持用户自己输入参考电压值，只能用内部电压值作为参考电压
+\item
+  PGA增益值的选择需要结合实际设备，可以参考具体设备的使用手册或者测试电压范围计算得到。注意不能超过参考电压阈值
+\item
+  data触发中断数和data触发DMA搬运数应该一个为0，一个非0,。如果两值都非0则优先选择触发中断的方式
+\item
+  通过ADC数据计算得到的电压值会被限制在0到正参考电压之间
+\end{itemize}
+
+\hypertarget{ux7f16ux7a0bux6307ux5357}{%
+\section{编程指南}\label{ux7f16ux7a0bux6307ux5357}}
+
+\hypertarget{ux9a71ux52a8ux63a5ux53e3}{%
+\subsection{驱动接口}\label{ux9a71ux52a8ux63a5ux53e3}}
+
+此处列举几个较为常用的接口：
+
+\begin{itemize}
+\item
+  ADC\_ConvCfg：ADC转换标准配置接口
+\item
+  ADC\_Calibration：ADC校准标准配置接口
+\item
+  ADC\_VrefCalibration：内部参考电压校准接口
+\item
+  ADC\_Reset：ADC复位接口
+\item
+  ADC\_Start：ADC使能接口
+\item
+  ADC\_AdcClose：ADC关闭接口
+\item
+  ADC\_GetFifoEmpty：读取FIFO是否为空接口
+\item
+  ADC\_PopFifoData：读取FIFO原始数据接口
+\item
+  ADC\_GetDataChannel：读取原始数据中通道号接口
+\item
+  ADC\_GetData：读取原始数据中ADC数据接口
+\item
+  ADC\_ReadChannelData：读取特定通道ADC数据接口
+\item
+  ADC\_GetVol：读取ADC数据对应电压值接口
+\end{itemize}
+
+还有部分接口不推荐直接使用，在此不进行介绍，详见对应驱动程序头文件声明。
+
+\hypertarget{ux4ee3ux7801ux793aux4f8b}{%
+\subsection{代码示例}\label{ux4ee3ux7801ux793aux4f8b}}
+
+\hypertarget{ux89e6ux53d1ux4e2dux65adux642cux8fd0}{%
+\subsubsection{触发中断搬运}\label{ux89e6ux53d1ux4e2dux65adux642cux8fd0}}
+
+下面展示用ADC中断进行数据搬运的基本用法：
+
+以下ADC设置参数仅供参考，具体参数请结合实际需要进行配置。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\PreprocessorTok{#define ADC_CHANNEL    ADC_CH_0}
+
+\DataTypeTok{static} \DataTypeTok{uint32_t}\NormalTok{ ADC_cb_isr(}\DataTypeTok{void}\NormalTok{ *user_data)}
+\NormalTok{\{}
+    \DataTypeTok{uint32_t}\NormalTok{ data = ADC_PopFifoData();}
+\NormalTok{    SADC_channelId channel = ADC_GetDataChannel(data);}
+    \ControlFlowTok{if}\NormalTok{ (channel == ADC_CHANNEL) \{}
+        \DataTypeTok{uint16_t}\NormalTok{ sample = ADC_GetData(data);}
+        \CommentTok{// do something with 'sample'}
+\NormalTok{    \}}
+    \ControlFlowTok{return} \DecValTok{0}\NormalTok{;}
+\NormalTok{\}}
+
+\DataTypeTok{void}\NormalTok{ test(}\DataTypeTok{void}\NormalTok{)}
+\NormalTok{\{}
+\NormalTok{    SYSCTRL_ClearClkGate(SYSCTRL_ITEM_APB_ADC);}
+\NormalTok{    SYSCTRL_SetAdcClkDiv(}\DecValTok{4}\NormalTok{, }\DecValTok{1}\NormalTok{);}
+\NormalTok{    SYSCTRL_ReleaseBlock(SYSCTRL_ITEM_APB_ADC);}
+\NormalTok{    ADC_Calibration(SINGLE_END_MODE);}
+\NormalTok{    ADC_ConvCfg(SINGLE_MODE, PGA_GAIN_4, }\DecValTok{1}\NormalTok{, ADC_CHANNEL, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{, SINGLE_END_MODE, }\DecValTok{0}\NormalTok{);}
+\NormalTok{    platform_set_irq_callback(PLATFORM_CB_IRQ_ADC, ADC_cb_isr, }\DecValTok{0}\NormalTok{);}
+\NormalTok{    ADC_Start(}\DecValTok{1}\NormalTok{);}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+以上代码展示了配置ADC时钟，逻辑复位、ADC校准、ADC转换配置，并在触发的ADC中断程序里获取到最终的 \texttt{sample} 数值。
+
+当然，由于使用单一ADC通道，可以直接获取特定通道的ADC数据，代码如下：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{static} \DataTypeTok{uint32_t}\NormalTok{ ADC_cb_isr(}\DataTypeTok{void}\NormalTok{ *user_data)}
+\NormalTok{\{}
+    \DataTypeTok{uint16_t}\NormalTok{ sample = ADC_ReadChannelData(ADC_CHANNEL);}
+    \CommentTok{// do something with 'sample'}
+    \ControlFlowTok{return} \DecValTok{0}\NormalTok{;}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+在只有单个通道数据时或者只需要单一通道数据时可以采用以上方式，多通道采样有丢数据的风险。
+
+\hypertarget{ux8fdeux7eedux4e2dux65adux642cux8fd0}{%
+\subsubsection{连续中断搬运}\label{ux8fdeux7eedux4e2dux65adux642cux8fd0}}
+
+以上代码展示的是单次搬运情况，如果是多次搬运，建议采用以下两种读数方案：
+
+\textbf{1.} 读数并结合调用ADC\_GetFifoEmpty接口判断FIFO状态，读数直到FIFO为空为止
+
+\textbf{2.} 每次读取的数据量等于配置的data触发中断数
+
+方案1代码示例：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{static} \DataTypeTok{uint32_t}\NormalTok{ ADC_cb_isr(}\DataTypeTok{void}\NormalTok{ *user_data)}
+\NormalTok{\{}
+    \ControlFlowTok{while}\NormalTok{ (!ADC_GetFifoEmpty()) \{}
+        \DataTypeTok{uint16_t}\NormalTok{ sample = ADC_ReadChannelData(ADC_CHANNEL);}
+        \CommentTok{// do something with 'sample'}
+\NormalTok{    \}}
+    \ControlFlowTok{return} \DecValTok{0}\NormalTok{;}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+方案2代码示例：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\PreprocessorTok{#define INT_TRIGGER_NUM    8}
+\DataTypeTok{static} \DataTypeTok{uint32_t}\NormalTok{ ADC_cb_isr(}\DataTypeTok{void}\NormalTok{ *user_data)}
+\NormalTok{\{}
+    \DataTypeTok{uint8_t}\NormalTok{ i = }\DecValTok{0}\NormalTok{;}
+    \ControlFlowTok{while}\NormalTok{ (i < INT_TRIGGER_NUM) \{}
+        \DataTypeTok{uint16_t}\NormalTok{ sample = ADC_ReadChannelData(ADC_CHANNEL);}
+        \CommentTok{// do something with 'sample'}
+\NormalTok{        i++;}
+\NormalTok{    \}}
+    \ControlFlowTok{return} \DecValTok{0}\NormalTok{;}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+CPU资源方面，方案2节省了每次读数调用接口的开销，建议优选
+
+实际效果方面以上两种方案均可，开发者可以自行选用。
+
+\hypertarget{ux83b7ux53d6ux7535ux538bux503c}{%
+\subsubsection{获取电压值}\label{ux83b7ux53d6ux7535ux538bux503c}}
+
+获取电压值需要在上面例子中加入参考电压校准，并调用接口计算电压值，如下：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\PreprocessorTok{#define ADC_CHANNEL    ADC_CH_0}
+
+\DataTypeTok{static} \DataTypeTok{uint32_t}\NormalTok{ ADC_cb_isr(}\DataTypeTok{void}\NormalTok{ *user_data)}
+\NormalTok{\{}
+    \DataTypeTok{uint16_t}\NormalTok{ sample = ADC_ReadChannelData(ADC_CHANNEL);}
+    \DataTypeTok{float}\NormalTok{ voltage = ADC_GetVol(sample);}
+    \ControlFlowTok{return} \DecValTok{0}\NormalTok{;}
+\NormalTok{\}}
+
+\DataTypeTok{void}\NormalTok{ test(}\DataTypeTok{void}\NormalTok{)}
+\NormalTok{\{}
+\NormalTok{    SYSCTRL_ClearClkGate(SYSCTRL_ITEM_APB_ADC);}
+\NormalTok{    SYSCTRL_SetAdcClkDiv(}\DecValTok{4}\NormalTok{, }\DecValTok{1}\NormalTok{);}
+\NormalTok{    SYSCTRL_ReleaseBlock(SYSCTRL_ITEM_APB_ADC);}
+\NormalTok{    ADC_Calibration(SINGLE_END_MODE);}
+\NormalTok{    ADC_VrefCalibration();      }\CommentTok{// calibrate the referenced voltage}
+\NormalTok{    ADC_ConvCfg(SINGLE_MODE, PGA_GAIN_4, }\DecValTok{1}\NormalTok{, ADC_CHANNEL, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{, SINGLE_END_MODE, }\DecValTok{0}\NormalTok{);}
+\NormalTok{    platform_set_irq_callback(PLATFORM_CB_IRQ_ADC, ADC_cb_isr, }\DecValTok{0}\NormalTok{);}
+\NormalTok{    ADC_Start(}\DecValTok{1}\NormalTok{);}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+voltage即为最终计算得到的采样电压值。
+
+\hypertarget{adc-dmaux4e52ux4e53ux642cux8fd0}{%
+\subsubsection{ADC \& DMA乒乓搬运}\label{adc-dmaux4e52ux4e53ux642cux8fd0}}
+
+ADC结合DMA乒乓搬运数据的方式是一种推荐的标准用法，其优点主要是节省CPU资源，提高处理数据的效率。
+
+下面展示DMA乒乓搬运ADC数据并转换成电压的实例：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\PreprocessorTok{#include }\ImportTok{"pingpong.h"}
+\PreprocessorTok{#define ADC_CHANNEL    ADC_CH_0}
+\PreprocessorTok{#define DMA_CHANNEL    0}
+\DataTypeTok{static}\NormalTok{ DMA_PingPong_t PingPong;}
+
+\DataTypeTok{static} \DataTypeTok{uint32_t}\NormalTok{ DMA_cb_isr(}\DataTypeTok{void}\NormalTok{ *user_data)}
+\NormalTok{\{}
+    \DataTypeTok{uint32_t}\NormalTok{ state = DMA_GetChannelIntState(DMA_CHANNEL);}
+\NormalTok{    DMA_ClearChannelIntState(DMA_CHANNEL, state);}
+
+    \DataTypeTok{uint32_t}\NormalTok{ *buff = DMA_PingPongIntProc(&PingPong, DMA_CHANNEL);}
+    \DataTypeTok{uint32_t}\NormalTok{ tranSize = DMA_PingPongGetTransSize(&PingPong);}
+    \ControlFlowTok{for}\NormalTok{ (}\DataTypeTok{uint32_t}\NormalTok{ i = }\DecValTok{0}\NormalTok{; i < tranSize; ++i) \{}
+        \ControlFlowTok{if}\NormalTok{ (ADC_GetDataChannel(buff[i]) != ADC_CHANNEL) }\ControlFlowTok{continue}\NormalTok{;}
+        \DataTypeTok{uint16_t}\NormalTok{ sample = ADC_GetData(buff[i]);}
+        \DataTypeTok{float}\NormalTok{ voltage = ADC_GetVol(sample);}
+\NormalTok{    \}}
+    \ControlFlowTok{return} \DecValTok{0}\NormalTok{;}
+\NormalTok{\}}
+\DataTypeTok{void}\NormalTok{ test(}\DataTypeTok{void}\NormalTok{)}
+\NormalTok{\{}
+\NormalTok{    SYSCTRL_ClearClkGateMulti((}\DecValTok{1}\NormalTok{ << SYSCTRL_ITEM_APB_DMA));}
+
+\NormalTok{    SYSCTRL_ClearClkGate(SYSCTRL_ITEM_APB_ADC);}
+\NormalTok{    SYSCTRL_SetAdcClkDiv(}\DecValTok{4}\NormalTok{, }\DecValTok{1}\NormalTok{);}
+\NormalTok{    SYSCTRL_ReleaseBlock(SYSCTRL_ITEM_APB_ADC);}
+\NormalTok{    ADC_Calibration(DIFFERENTAIL_MODE);}
+\NormalTok{    ADC_VrefCalibration();}
+\NormalTok{    ADC_ConvCfg(CONTINUES_MODE, PGA_GAIN_4, }\DecValTok{1}\NormalTok{, ADC_CHANNEL, }\DecValTok{0}\NormalTok{, }\DecValTok{8}\NormalTok{, DIFFERENTAIL_MODE, }\DecValTok{6000}\NormalTok{);}
+
+\NormalTok{    SYSCTRL_SelectUsedDmaItems(}\DecValTok{1}\NormalTok{ << }\DecValTok{9}\NormalTok{);}
+\NormalTok{    DMA_PingPongSetup(&PingPong, SYSCTRL_DMA_ADC, }\DecValTok{80}\NormalTok{, }\DecValTok{8}\NormalTok{);}
+\NormalTok{    platform_set_irq_callback(PLATFORM_CB_IRQ_DMA, DMA_cb_isr, }\DecValTok{0}\NormalTok{);}
+\NormalTok{    DMA_PingPongEnable(&PingPong, DMA_CHANNEL);}
+    
+\NormalTok{    ADC_Start(}\DecValTok{1}\NormalTok{);}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
 \hypertarget{ch-dma}{%
 \chapter{DMA简介}\label{ch-dma}}
 
@@ -391,11 +817,11 @@ DMA全称direct memory access，即直接存储器访问。
 
 其主要作用是不占用CPU大量资源，在AMBA AHB总线上的设备之间以硬件方式高速有效地传输数据。
 
-\hypertarget{ux529fux80fdux63cfux8ff0}{%
-\section{功能描述}\label{ux529fux80fdux63cfux8ff0}}
+\hypertarget{ux529fux80fdux63cfux8ff0-1}{%
+\section{功能描述}\label{ux529fux80fdux63cfux8ff0-1}}
 
-\hypertarget{ux7279ux70b9}{%
-\subsection{特点}\label{ux7279ux70b9}}
+\hypertarget{ux7279ux70b9-1}{%
+\subsection{特点}\label{ux7279ux70b9-1}}
 
 \begin{itemize}
 \item
@@ -496,11 +922,11 @@ DMA传输要求传输两端的数据类型一致，支持数据类型有：
 
 覆盖所有常见数据类型。
 
-\hypertarget{ux4f7fux7528ux65b9ux6cd5}{%
-\section{使用方法}\label{ux4f7fux7528ux65b9ux6cd5}}
+\hypertarget{ux4f7fux7528ux65b9ux6cd5-1}{%
+\section{使用方法}\label{ux4f7fux7528ux65b9ux6cd5-1}}
 
-\hypertarget{ux65b9ux6cd5ux6982ux8ff0}{%
-\subsection{方法概述}\label{ux65b9ux6cd5ux6982ux8ff0}}
+\hypertarget{ux65b9ux6cd5ux6982ux8ff0-1}{%
+\subsection{方法概述}\label{ux65b9ux6cd5ux6982ux8ff0-1}}
 
 首先确认数据搬运需求是单次搬运还是成串搬运，搬运类型memory和peripheral的关系。
 
@@ -528,8 +954,8 @@ DMA传输要求传输两端的数据类型一致，支持数据类型有：
 
 \textbf{5.} 使能DMA通道开始搬运
 
-\hypertarget{ux6ce8ux610fux70b9}{%
-\subsection{注意点}\label{ux6ce8ux610fux70b9}}
+\hypertarget{ux6ce8ux610fux70b9-1}{%
+\subsection{注意点}\label{ux6ce8ux610fux70b9-1}}
 
 \begin{itemize}
 \item
@@ -548,11 +974,11 @@ DMA传输要求传输两端的数据类型一致，支持数据类型有：
   在DMA从外设搬运的情况下，正确的操作顺序是先配置并使能好DMA，再使能外设开始产生数据
 \end{itemize}
 
-\hypertarget{ux7f16ux7a0bux6307ux5357}{%
-\section{编程指南}\label{ux7f16ux7a0bux6307ux5357}}
+\hypertarget{ux7f16ux7a0bux6307ux5357-1}{%
+\section{编程指南}\label{ux7f16ux7a0bux6307ux5357-1}}
 
-\hypertarget{ux9a71ux52a8ux63a5ux53e3}{%
-\subsection{驱动接口}\label{ux9a71ux52a8ux63a5ux53e3}}
+\hypertarget{ux9a71ux52a8ux63a5ux53e3-1}{%
+\subsection{驱动接口}\label{ux9a71ux52a8ux63a5ux53e3-1}}
 
 \begin{itemize}
 \item
@@ -575,8 +1001,8 @@ DMA传输要求传输两端的数据类型一致，支持数据类型有：
   DMA\_AbortChannel：DMA通道终止接口
 \end{itemize}
 
-\hypertarget{ux4ee3ux7801ux793aux4f8b}{%
-\subsection{代码示例}\label{ux4ee3ux7801ux793aux4f8b}}
+\hypertarget{ux4ee3ux7801ux793aux4f8b-1}{%
+\subsection{代码示例}\label{ux4ee3ux7801ux793aux4f8b-1}}
 
 \hypertarget{ux5355ux6b21ux642cux8fd0-1}{%
 \subsubsection{单次搬运}\label{ux5355ux6b21ux642cux8fd0-1}}
@@ -662,52 +1088,84 @@ DMA乒乓搬运是一种DMA搬运的特殊用法，其主要应用场景是将�
 
 可实现``搬运''和``数据处理''分离，从而大大提高程序处理数据的效率。
 
+对于大量且连续的数据搬运，如音频，我们推荐选用DMA乒乓搬运的方式。
+
+\hypertarget{dmaux4e52ux4e53ux642cux8fd0ux63a5ux53e3}{%
+\paragraph{DMA乒乓搬运接口}\label{dmaux4e52ux4e53ux642cux8fd0ux63a5ux53e3}}
+
+在最新SDK中我们已将DMA乒乓搬运封装成标准接口，方便开发者调用，提高开发效率。
+
+使用时请添加 \texttt{pingpong.c}文件，并包含 \texttt{pingpong.h}文件。
+
+\begin{itemize}
+\item
+  DMA\_PingPongSetup：DMA乒乓搬运建立接口
+\item
+  DMA\_PingPongIntProc：DMA乒乓搬运标准中断处理接口
+\item
+  DMA\_PingPongGetTransSize：获取DMA乒乓搬运数据量接口
+\item
+  DMA\_PingPongEnable：DMA乒乓搬运使能接口
+\item
+  DMA\_PingPongDisable：DMA乒乓搬运去使能接口
+\end{itemize}
+
+\hypertarget{dmaux4e52ux4e53ux642cux8fd0ux793aux4f8b}{%
+\paragraph{DMA乒乓搬运示例}\label{dmaux4e52ux4e53ux642cux8fd0ux793aux4f8b}}
+
 下面将以最常见的DMA乒乓搬运I2s数据为例展示DMA乒乓搬运的用法。
 
 I2s的相关配置不在本文的介绍范围内，默认I2s已经配置好，DMA和I2s协商burstSize=8。
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\PreprocessorTok{#include }\ImportTok{"pingpong.h"}
 \PreprocessorTok{#define CHANNEL_ID  0}
-\DataTypeTok{uint32_t}\NormalTok{ pingpang_buff[}\DecValTok{2}\NormalTok{][}\DecValTok{80}\NormalTok{];}
-\NormalTok{DMA_Descriptor test[}\DecValTok{2}\NormalTok{] __attribute__((aligned (}\DecValTok{8}\NormalTok{)));}
-\DataTypeTok{uint8_t}\NormalTok{ pingpang = }\DecValTok{0}\NormalTok{;}
+\NormalTok{DMA_PingPong_t PingPong;}
+
 \DataTypeTok{static} \DataTypeTok{uint32_t}\NormalTok{ DMA_cb_isr(}\DataTypeTok{void}\NormalTok{ *user_data)}
 \NormalTok{\{}
     \DataTypeTok{uint32_t}\NormalTok{ state = DMA_GetChannelIntState(CHANNEL_ID);}
 \NormalTok{    DMA_ClearChannelIntState(CHANNEL_ID, state);}
-
-\NormalTok{    pingpang ^= }\DecValTok{1}\NormalTok{;}
-\NormalTok{    DMA_EnableChannel(CHANNEL_ID, &test[pingpang]);}
-    \DataTypeTok{uint32_t}\NormalTok{ *data = (pingpang) ? (pingpang_buff[}\DecValTok{0}\NormalTok{]) : (pingpang_buff[}\DecValTok{1}\NormalTok{]);}
-
-    \CommentTok{// do something to handle the data in 'data' buffer}
     
+    \CommentTok{// call 'DMA_PingPongIntProc' to get the pointer of data-buff.}
+    \DataTypeTok{uint32_t}\NormalTok{ *rr = DMA_PingPongIntProc(&PingPong, CHANNEL_ID);}
+    \DataTypeTok{uint32_t}\NormalTok{ i = }\DecValTok{0}\NormalTok{;}
+    \CommentTok{// call 'DMA_PingPongGetTransSize' to kwon how much data in data-buff.}
+    \DataTypeTok{uint32_t}\NormalTok{ transSize = DMA_PingPongGetTransSize(&PingPong);}
+    \ControlFlowTok{while}\NormalTok{ (i < transSize) \{}
+        \CommentTok{// do something with data 'rr[i]'}
+\NormalTok{        i++;}
+\NormalTok{    \}}
+
     \ControlFlowTok{return} \DecValTok{0}\NormalTok{;}
 \NormalTok{\}}
 
 \DataTypeTok{void}\NormalTok{ DMA_Test(}\DataTypeTok{void}\NormalTok{)}
 \NormalTok{\{}
-\NormalTok{    DMA_Reset();}
+    \CommentTok{// call 'DMA_PingPongSetup' to setup ping-pong DMA.}
+\NormalTok{    DMA_PingPongSetup(&PingPong, SYSCTRL_DMA_I2S_RX, }\DecValTok{100}\NormalTok{, }\DecValTok{8}\NormalTok{);}
 \NormalTok{    platform_set_irq_callback(PLATFORM_CB_IRQ_DMA, DMA_cb_isr, }\DecValTok{0}\NormalTok{);}
-\NormalTok{    test[}\DecValTok{0}\NormalTok{].Next = &test[}\DecValTok{1}\NormalTok{];}
-\NormalTok{    test[}\DecValTok{1}\NormalTok{].Next = &test[}\DecValTok{0}\NormalTok{];    }\CommentTok{// make a DMA link cycle}
-\NormalTok{    DMA_PreparePeripheral2RAM(&test[}\DecValTok{0}\NormalTok{],}
-\NormalTok{                              pingpang_buff[}\DecValTok{0}\NormalTok{], }
-\NormalTok{                              SYSCTRL_DMA_I2S_RX,}
-                              \DecValTok{80}\NormalTok{,}
-\NormalTok{                              DMA_ADDRESS_INC,}
-                              \DecValTok{0}\NormalTok{ | }\DecValTok{8}\NormalTok{ << }\DecValTok{24}\NormalTok{ | }\DecValTok{1}\NormalTok{ << }\DecValTok{28}\NormalTok{);}
-\NormalTok{    DMA_PreparePeripheral2RAM(&test[}\DecValTok{1}\NormalTok{],}
-\NormalTok{                              pingpang_buff[}\DecValTok{1}\NormalTok{], }
-\NormalTok{                              SYSCTRL_DMA_I2S_RX,}
-                              \DecValTok{80}\NormalTok{,}
-\NormalTok{                              DMA_ADDRESS_INC,}
-                              \DecValTok{0}\NormalTok{ | }\DecValTok{8}\NormalTok{ << }\DecValTok{24}\NormalTok{ | }\DecValTok{1}\NormalTok{ << }\DecValTok{28}\NormalTok{);}
-\NormalTok{    DMA_EnableChannel(CHANNEL_ID, &test[pingpang]);}
+    
+    \CommentTok{// call 'DMA_PingPongEnable' to start ping-pong DMA transmission.}
+\NormalTok{    DMA_PingPongEnable(&PingPong, CHANNEL_ID);}
 \NormalTok{    I2S_ClearRxFIFO(APB_I2S);}
 \NormalTok{    I2S_DMAEnable(APB_I2S, }\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{);}
 \NormalTok{    I2S_Enable(APB_I2S, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{);   }\CommentTok{// Enable I2s finally}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+停止DMA乒乓搬运可以调用以下接口：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ Stop(}\DataTypeTok{void}\NormalTok{)}
+\NormalTok{\{}
+    \CommentTok{// call 'DMA_PingPongEnable' to disable ping-pong DMA transmission.}
+\NormalTok{    DMA_PingPongDisable(&PingPong, CHANNEL_ID);}
+\NormalTok{    I2S_Enable(APB_I2S, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{);}
+\NormalTok{    I2S_DMAEnable(APB_I2S, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{);}
 \NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
@@ -1053,6 +1511,116 @@ GPIO 产生中断后，需要消除中断状态方可再次触发。用 \texttt{
 \hypertarget{i2cux4f7fux7528ux8bf4ux660e}{%
 \section{I2C使用说明}\label{i2cux4f7fux7528ux8bf4ux660e}}
 
+针对916系列，IIC master有两种使用方式可以选择：
+
+\begin{itemize}
+\item
+  方法1：以blocking的方式操作I2C（读写操作完成后API才会返回），针对I2C Master读取外设的场景。
+\item
+  方法2：使用I2C中断操作I2C，需要在中断中操作读写的数据。
+\end{itemize}
+
+IIC Slave 则需要使用方法2，以中断方式操作。
+
+\hypertarget{ux65b9ux6cd51blocking}{%
+\subsection{方法1（blocking）}\label{ux65b9ux6cd51blocking}}
+
+\begin{itemize}
+\item
+  参考：\texttt{\textbackslash{}ING\_SDK\textbackslash{}sdk\textbackslash{}src\textbackslash{}BSP\textbackslash{}iic.c}
+\item
+  包含API：
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{/**}
+\CommentTok{ * }\AnnotationTok{@brief}\CommentTok{ Init an I2C peripheral}
+\CommentTok{ *}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{port}\CommentTok{              I2C peripheral ID}
+\CommentTok{ */}
+\DataTypeTok{void}\NormalTok{ i2c_init(}\DataTypeTok{const}\NormalTok{ i2c_port_t port);}
+
+\CommentTok{/**}
+\CommentTok{ * }\AnnotationTok{@brief}\CommentTok{ Write data to an I2C slave}
+\CommentTok{ *}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{port}\CommentTok{              I2C peripheral ID}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{addr}\CommentTok{              address of the slave}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{byte_data}\CommentTok{         data to be written}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{length}\CommentTok{            data length}
+\CommentTok{ * }\AnnotationTok{@return}\CommentTok{                      0 if success else non-0 (e.g. time out)}
+\CommentTok{ */}
+\DataTypeTok{int}\NormalTok{ i2c_write(}\DataTypeTok{const}\NormalTok{ i2c_port_t port, }\DataTypeTok{uint8_t}\NormalTok{ addr, }\DataTypeTok{const} \DataTypeTok{uint8_t}\NormalTok{ *byte_data, }\DataTypeTok{int16_t}\NormalTok{ length);}
+
+\CommentTok{/**}
+\CommentTok{ * }\AnnotationTok{@brief}\CommentTok{ Read data from an I2C slave}
+\CommentTok{ *}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{port}\CommentTok{              I2C peripheral ID}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{addr}\CommentTok{              address of the slave}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{write_data}\CommentTok{        data to be written before reading}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{write_len}\CommentTok{         data length to be written before reading}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{byte_data}\CommentTok{         data to be read}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{length}\CommentTok{            data length to be read}
+\CommentTok{ * }\AnnotationTok{@return}\CommentTok{                      0 if success else non-0 (e.g. time out)}
+\CommentTok{ */}
+\DataTypeTok{int}\NormalTok{ i2c_read(}\DataTypeTok{const}\NormalTok{ i2c_port_t port, }\DataTypeTok{uint8_t}\NormalTok{ addr, }\DataTypeTok{const} \DataTypeTok{uint8_t}\NormalTok{ *write_data, }\DataTypeTok{int16_t}\NormalTok{ write_len, }
+              \DataTypeTok{uint8_t}\NormalTok{ *byte_data, }\DataTypeTok{int16_t}\NormalTok{ length);}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\item
+  使用方法：
+
+  \begin{itemize}
+  \tightlist
+  \item
+    初始化IIC模块
+  \end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{setup_peripherals_i2c_pin();}
+\NormalTok{i2c_init(I2C_PORT_0);}
+\end{Highlighting}
+\end{Shaded}
+
+  \texttt{setup\_peripherals\_i2c\_pin()}的使用请参考该文档中\texttt{配置pin}的描述(不需要配置IIC中断)。
+
+  \begin{itemize}
+  \tightlist
+  \item
+    写数据
+  \end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{i2c_write(I2C_PORT_0, ADDRESS, write_data, DATA_CNT);}
+\end{Highlighting}
+\end{Shaded}
+
+  当读操作完成后API才会返回，为了避免长时间等待ACK等意外情况，使用I2C\_HW\_TIME\_OUT来控制blocking的时间。
+
+  \begin{itemize}
+  \tightlist
+  \item
+    读数据
+  \end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{i2c_read(I2C_PORT_0, ADDRESS, write_data, DATA_CNT, read_data, DATA_CNT);}
+\end{Highlighting}
+\end{Shaded}
+
+  如果write\_data不为空，则会首先执行写操作，然后再执行读操作。
+\end{itemize}
+
+\hypertarget{ux65b9ux6cd52interrupt}{%
+\subsection{方法2（Interrupt）}\label{ux65b9ux6cd52interrupt}}
+
+IIC slave 以及 IIC Master方法2的使用请参考\texttt{场景5}。
+
 以下场景中均以I2C0为例，如果需要I2C1则可以根据情况修改
 
 \hypertarget{ux573aux666f1masterux8bfbslaveux4e0dux4f7fux7528dma}{%
@@ -1098,13 +1666,13 @@ GPIO 产生中断后，需要消除中断状态方可再次触发。用 \texttt{
 \NormalTok{                                | (}\DecValTok{1}\NormalTok{ << SYSCTRL_ITEM_APB_GPIO0));}
   \CommentTok{// 使用默认内部上拉，实际使用中建议使用外部上拉 - 响应速度更快，可以支持更高的时钟}
   \CommentTok{// 如果使用外部上拉，则不需要pull}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SCL_OUT,PINCTRL_PULL_UP);}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SDA_OUT,PINCTRL_PULL_UP);}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SCL_IN,PINCTRL_PULL_UP);}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SDA_IN,PINCTRL_PULL_UP);}
+\NormalTok{  PINCTRL_Pull(I2C_SCL,PINCTRL_PULL_UP);}
+\NormalTok{  PINCTRL_Pull(I2C_SDA,PINCTRL_PULL_UP);}
   
   \CommentTok{// 将GPIO映射成I2C引脚}
 \NormalTok{  PINCTRL_SelI2cIn(I2C_PORT_0,I2C_SCL,I2C_SDA);}
+\NormalTok{  PINCTRL_SetPadMux(I2C_SCL,IO_SOURCE_I2C0_SCL_OUT);}
+\NormalTok{  PINCTRL_SetPadMux(I2C_SDA,IO_SOURCE_I2C0_SDA_OUT);}
   
   \CommentTok{// 打开I2C中断}
 \NormalTok{  platform_set_irq_callback(PLATFORM_CB_IRQ_I2C0, peripherals_i2c_isr, NULL);}
@@ -1235,13 +1803,13 @@ GPIO 产生中断后，需要消除中断状态方可再次触发。用 \texttt{
 \NormalTok{                                | (}\DecValTok{1}\NormalTok{ << SYSCTRL_ITEM_APB_GPIO0));}
   \CommentTok{// 使用默认内部上拉，实际使用中建议使用外部上拉 - 响应速度更快，可以支持更高的时钟}
   \CommentTok{// 如果使用外部上拉，则不需要pull}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SCL_OUT,PINCTRL_PULL_UP);}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SDA_OUT,PINCTRL_PULL_UP);}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SCL_IN,PINCTRL_PULL_UP);}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SDA_IN,PINCTRL_PULL_UP);}
+\NormalTok{  PINCTRL_Pull(I2C_SCL,PINCTRL_PULL_UP);}
+\NormalTok{  PINCTRL_Pull(I2C_SDA,PINCTRL_PULL_UP);}
   
   \CommentTok{// 将GPIO映射成I2C引脚}
 \NormalTok{  PINCTRL_SelI2cIn(I2C_PORT_0,I2C_SCL,I2C_SDA);}
+\NormalTok{  PINCTRL_SetPadMux(I2C_SCL,IO_SOURCE_I2C0_SCL_OUT);}
+\NormalTok{  PINCTRL_SetPadMux(I2C_SDA,IO_SOURCE_I2C0_SDA_OUT);}
   
   \CommentTok{// 打开I2C中断}
 \NormalTok{  platform_set_irq_callback(PLATFORM_CB_IRQ_I2C0, peripherals_i2c_isr, NULL);}
@@ -1388,13 +1956,13 @@ GPIO 产生中断后，需要消除中断状态方可再次触发。用 \texttt{
 \NormalTok{                                | (}\DecValTok{1}\NormalTok{ << SYSCTRL_ITEM_APB_GPIO0));}
   \CommentTok{// 使用默认内部上拉，实际使用中建议使用外部上拉 - 响应速度更快，可以支持更高的时钟}
   \CommentTok{// 如果使用外部上拉，则不需要pull}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SCL_OUT,PINCTRL_PULL_UP);}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SDA_OUT,PINCTRL_PULL_UP);}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SCL_IN,PINCTRL_PULL_UP);}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SDA_IN,PINCTRL_PULL_UP);}
+\NormalTok{  PINCTRL_Pull(I2C_SCL,PINCTRL_PULL_UP);}
+\NormalTok{  PINCTRL_Pull(I2C_SDA,PINCTRL_PULL_UP);}
   
   \CommentTok{// 将GPIO映射成I2C引脚}
 \NormalTok{  PINCTRL_SelI2cIn(I2C_PORT_0,I2C_SCL,I2C_SDA);}
+\NormalTok{  PINCTRL_SetPadMux(I2C_SCL,IO_SOURCE_I2C0_SCL_OUT);}
+\NormalTok{  PINCTRL_SetPadMux(I2C_SDA,IO_SOURCE_I2C0_SDA_OUT);}
   
   \CommentTok{// 打开I2C中断}
 \NormalTok{  platform_set_irq_callback(PLATFORM_CB_IRQ_I2C0, peripherals_i2c_isr, NULL);}
@@ -1527,13 +2095,13 @@ GPIO 产生中断后，需要消除中断状态方可再次触发。用 \texttt{
 \NormalTok{                                | (}\DecValTok{1}\NormalTok{ << SYSCTRL_ITEM_APB_GPIO0));}
   \CommentTok{// 使用默认内部上拉，实际使用中建议使用外部上拉 - 响应速度更快，可以支持更高的时钟}
   \CommentTok{// 如果使用外部上拉，则不需要pull}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SCL_OUT,PINCTRL_PULL_UP);}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SDA_OUT,PINCTRL_PULL_UP);}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SCL_IN,PINCTRL_PULL_UP);}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SDA_IN,PINCTRL_PULL_UP);}
+\NormalTok{  PINCTRL_Pull(I2C_SCL,PINCTRL_PULL_UP);}
+\NormalTok{  PINCTRL_Pull(I2C_SDA,PINCTRL_PULL_UP);}
   
   \CommentTok{// 将GPIO映射成I2C引脚}
 \NormalTok{  PINCTRL_SelI2cIn(I2C_PORT_0,I2C_SCL,I2C_SDA);}
+\NormalTok{  PINCTRL_SetPadMux(I2C_SCL,IO_SOURCE_I2C0_SCL_OUT);}
+\NormalTok{  PINCTRL_SetPadMux(I2C_SDA,IO_SOURCE_I2C0_SDA_OUT);}
   
   \CommentTok{// 打开I2C中断}
 \NormalTok{  platform_set_irq_callback(PLATFORM_CB_IRQ_I2C0, peripherals_i2c_isr, NULL);}
@@ -1684,13 +2252,13 @@ GPIO 产生中断后，需要消除中断状态方可再次触发。用 \texttt{
 \NormalTok{                                | (}\DecValTok{1}\NormalTok{ << SYSCTRL_ITEM_APB_GPIO0));}
   \CommentTok{// 使用默认内部上拉，实际使用中建议使用外部上拉 - 响应速度更快，可以支持更高的时钟}
   \CommentTok{// 如果使用外部上拉，则不需要pull}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SCL_OUT,PINCTRL_PULL_UP);}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SDA_OUT,PINCTRL_PULL_UP);}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SCL_IN,PINCTRL_PULL_UP);}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SDA_IN,PINCTRL_PULL_UP);}
+\NormalTok{  PINCTRL_Pull(I2C_SCL,PINCTRL_PULL_UP);}
+\NormalTok{  PINCTRL_Pull(I2C_SDA,PINCTRL_PULL_UP);}
   
   \CommentTok{// 将GPIO映射成I2C引脚}
 \NormalTok{  PINCTRL_SelI2cIn(I2C_PORT_0,I2C_SCL,I2C_SDA);}
+\NormalTok{  PINCTRL_SetPadMux(I2C_SCL,IO_SOURCE_I2C0_SCL_OUT);}
+\NormalTok{  PINCTRL_SetPadMux(I2C_SDA,IO_SOURCE_I2C0_SDA_OUT);}
   
   \CommentTok{// 打开I2C中断}
 \NormalTok{  platform_set_irq_callback(PLATFORM_CB_IRQ_I2C0, peripherals_i2c_isr, NULL);}
@@ -1845,13 +2413,13 @@ GPIO 产生中断后，需要消除中断状态方可再次触发。用 \texttt{
 \NormalTok{                                | (}\DecValTok{1}\NormalTok{ << SYSCTRL_ITEM_APB_GPIO0));}
   \CommentTok{// 使用默认内部上拉，实际使用中建议使用外部上拉 - 响应速度更快，可以支持更高的时钟}
   \CommentTok{// 如果使用外部上拉，则不需要pull}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SCL_OUT,PINCTRL_PULL_UP);}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SDA_OUT,PINCTRL_PULL_UP);}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SCL_IN,PINCTRL_PULL_UP);}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SDA_IN,PINCTRL_PULL_UP);}
+\NormalTok{  PINCTRL_Pull(I2C_SCL,PINCTRL_PULL_UP);}
+\NormalTok{  PINCTRL_Pull(I2C_SDA,PINCTRL_PULL_UP);}
   
   \CommentTok{// 将GPIO映射成I2C引脚}
 \NormalTok{  PINCTRL_SelI2cIn(I2C_PORT_0,I2C_SCL,I2C_SDA);}
+\NormalTok{  PINCTRL_SetPadMux(I2C_SCL,IO_SOURCE_I2C0_SCL_OUT);}
+\NormalTok{  PINCTRL_SetPadMux(I2C_SDA,IO_SOURCE_I2C0_SDA_OUT);}
   
   \CommentTok{// 打开I2C中断}
 \NormalTok{  platform_set_irq_callback(PLATFORM_CB_IRQ_I2C0, peripherals_i2c_isr, NULL);}
@@ -2019,13 +2587,13 @@ GPIO 产生中断后，需要消除中断状态方可再次触发。用 \texttt{
 \NormalTok{                                | (}\DecValTok{1}\NormalTok{ << SYSCTRL_ITEM_APB_GPIO0));}
   \CommentTok{// 使用默认内部上拉，实际使用中建议使用外部上拉 - 响应速度更快，可以支持更高的时钟}
   \CommentTok{// 如果使用外部上拉，则不需要pull}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SCL_OUT,PINCTRL_PULL_UP);}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SDA_OUT,PINCTRL_PULL_UP);}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SCL_IN,PINCTRL_PULL_UP);}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SDA_IN,PINCTRL_PULL_UP);}
+\NormalTok{  PINCTRL_Pull(I2C_SCL,PINCTRL_PULL_UP);}
+\NormalTok{  PINCTRL_Pull(I2C_SDA,PINCTRL_PULL_UP);}
   
   \CommentTok{// 将GPIO映射成I2C引脚}
 \NormalTok{  PINCTRL_SelI2cIn(I2C_PORT_0,I2C_SCL,I2C_SDA);}
+\NormalTok{  PINCTRL_SetPadMux(I2C_SCL,IO_SOURCE_I2C0_SCL_OUT);}
+\NormalTok{  PINCTRL_SetPadMux(I2C_SDA,IO_SOURCE_I2C0_SDA_OUT);}
   
   \CommentTok{// 打开I2C中断}
 \NormalTok{  platform_set_irq_callback(PLATFORM_CB_IRQ_I2C0, peripherals_i2c_isr, NULL);}
@@ -2180,13 +2748,13 @@ GPIO 产生中断后，需要消除中断状态方可再次触发。用 \texttt{
 \NormalTok{                                | (}\DecValTok{1}\NormalTok{ << SYSCTRL_ITEM_APB_GPIO0));}
   \CommentTok{// 使用默认内部上拉，实际使用中建议使用外部上拉 - 响应速度更快，可以支持更高的时钟}
   \CommentTok{// 如果使用外部上拉，则不需要pull}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SCL_OUT,PINCTRL_PULL_UP);}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SDA_OUT,PINCTRL_PULL_UP);}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SCL_IN,PINCTRL_PULL_UP);}
-\NormalTok{  PINCTRL_Pull(IO_SOURCE_I2C0_SDA_IN,PINCTRL_PULL_UP);}
+\NormalTok{  PINCTRL_Pull(I2C_SCL,PINCTRL_PULL_UP);}
+\NormalTok{  PINCTRL_Pull(I2C_SDA,PINCTRL_PULL_UP);}
   
   \CommentTok{// 将GPIO映射成I2C引脚}
 \NormalTok{  PINCTRL_SelI2cIn(I2C_PORT_0,I2C_SCL,I2C_SDA);}
+\NormalTok{  PINCTRL_SetPadMux(I2C_SCL,IO_SOURCE_I2C0_SCL_OUT);}
+\NormalTok{  PINCTRL_SetPadMux(I2C_SDA,IO_SOURCE_I2C0_SDA_OUT);}
   
   \CommentTok{// 打开I2C中断}
 \NormalTok{  platform_set_irq_callback(PLATFORM_CB_IRQ_I2C0, peripherals_i2c_isr, NULL);}
@@ -2311,6 +2879,481 @@ GPIO 产生中断后，需要消除中断状态方可再次触发。用 \texttt{
   检查中断状态，在中断中设置DMA读取数据，I2C\_STATUS\_CMPL中断代表传输结束
 \end{itemize}
 
+\hypertarget{ux573aux666f5masterux5199slave-masterux8bfbslave}{%
+\section{场景5：Master写Slave + Master读Slave}\label{ux573aux666f5masterux5199slave-masterux8bfbslave}}
+
+其中I2C操作为，首先执行写操作然后再执行读操作，CPU操作读写，没有使用DMA。 配置之前需要决定使用的GPIO，请参考datasheet了解可以使用的GPIO
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\PreprocessorTok{#define I2C_SCL         GIO_GPIO_10}
+\PreprocessorTok{#define I2C_SDA         GIO_GPIO_11}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{i2c-masterux914dux7f6e-4}{%
+\subsection{I2C Master配置}\label{i2c-masterux914dux7f6e-4}}
+
+// 测试数据，每次传输8个字节（fifo深度是8字节），每个传输单元必须是1字节
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\PreprocessorTok{#define DATA_CNT (8)}
+\DataTypeTok{uint8_t}\NormalTok{ write_data[DATA_CNT] = \{}\DecValTok{0}\NormalTok{,\};}
+\DataTypeTok{uint8_t}\NormalTok{ write_data_cnt = }\DecValTok{0}\NormalTok{;}
+\DataTypeTok{uint8_t}\NormalTok{ read_data[DATA_CNT] = \{}\DecValTok{0}\NormalTok{,\};}
+\DataTypeTok{uint8_t}\NormalTok{ read_data_cnt = }\DecValTok{0}\NormalTok{;}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux914dux7f6epin-8}{%
+\subsubsection{配置Pin}\label{ux914dux7f6epin-8}}
+
+IO的配置请参考场景1。
+
+\hypertarget{ux521dux59cbux5316i2cux6a21ux5757-8}{%
+\subsubsection{初始化I2C模块}\label{ux521dux59cbux5316i2cux6a21ux5757-8}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\PreprocessorTok{#define ADDRESS (0x71)}
+\DataTypeTok{void}\NormalTok{ setup_peripherals_i2c_module(}\DataTypeTok{void}\NormalTok{)}
+\NormalTok{\{}
+  \CommentTok{// 配置为Master, 7bit地址}
+\NormalTok{  I2C_Config(APB_I2C0,I2C_ROLE_MASTER,I2C_ADDRESSING_MODE_07BIT,ADDRESS);}
+  \CommentTok{// 配置时钟，可选}
+\NormalTok{  I2C_ConfigClkFrequency(APB_I2C0,I2C_CLOCKFREQUENY_STANDARD);}
+  
+\NormalTok{  I2C_Enable(APB_I2C0,}\DecValTok{1}\NormalTok{);}
+  \CommentTok{// 打开传输结束中断和addr hit中断}
+  \CommentTok{// 对于master来说，如果有slave响应了地址，则会有I2C_INT_ADDR_HIT中断}
+\NormalTok{  I2C_IntEnable(APB_I2C0,(}\DecValTok{1}\NormalTok{<<I2C_INT_CMPL)|(}\DecValTok{1}\NormalTok{<<I2C_INT_ADDR_HIT));}
+
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{i2cux4e2dux65adux5b9eux73b0-4}{%
+\subsubsection{I2C中断实现}\label{i2cux4e2dux65adux5b9eux73b0-4}}
+
+首先定义一个变量，如果为1，代表是master的写操作，否则为master的读操作。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{uint8_t}\NormalTok{ master_write_flag = }\DecValTok{0}\NormalTok{;}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{static} \DataTypeTok{uint32_t}\NormalTok{ peripherals_i2c_isr(}\DataTypeTok{void}\NormalTok{ *user_data)}
+\NormalTok{\{}
+  \DataTypeTok{uint8_t}\NormalTok{ i;}
+  \DataTypeTok{uint32_t}\NormalTok{ status = I2C_GetIntState(APB_I2C0);}
+  
+  \CommentTok{// 传输结束中断，代表DATA_CNT个字节接收或者发射完成}
+  \ControlFlowTok{if}\NormalTok{(status & (}\DecValTok{1}\NormalTok{ << I2C_STATUS_CMPL))}
+\NormalTok{  \{}
+    \CommentTok{// master写DATA_CNT个字节成功}
+    \ControlFlowTok{if}\NormalTok{(master_write_flag)}
+\NormalTok{    \{}
+\NormalTok{      platform_printf(}\StringTok{"wr cmp %d}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{, I2C_CtrlGetDataCnt(APB_I2C0));}
+\NormalTok{      I2C_ClearIntState(APB_I2C0, (}\DecValTok{1}\NormalTok{ << I2C_STATUS_CMPL));}
+\NormalTok{    \}}
+    \ControlFlowTok{else}\CommentTok{// master读DATA_CNT个字节成功}
+\NormalTok{    \{}
+      \CommentTok{// 将剩余的fifo中的数据读出来}
+      \ControlFlowTok{for}\NormalTok{(; read_data_cnt < DATA_CNT; read_data_cnt++)}
+\NormalTok{      \{}
+\NormalTok{        read_data[read_data_cnt] = I2C_DataRead(APB_I2C0);}
+\NormalTok{      \}}
+
+\NormalTok{      I2C_ClearIntState(APB_I2C0, (}\DecValTok{1}\NormalTok{ << I2C_STATUS_CMPL));}
+      
+      \CommentTok{// debug trace}
+\NormalTok{      platform_printf(}\StringTok{"rd cmp %d "}\NormalTok{,read_data_cnt);}
+      \ControlFlowTok{for}\NormalTok{(i=}\DecValTok{0}\NormalTok{;i<DATA_CNT;i++)\{platform_printf(}\StringTok{" 0x%x -"}\NormalTok{, read_data[i]);\};}
+\NormalTok{      printf(}\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{);}
+      
+      \CommentTok{// prepare for next}
+\NormalTok{      read_data_cnt = }\DecValTok{0}\NormalTok{;}
+\NormalTok{    \}}
+\NormalTok{  \}}
+  
+  \CommentTok{// 有slave响应了master的地址}
+  \ControlFlowTok{if}\NormalTok{(status & (}\DecValTok{1}\NormalTok{ << I2C_STATUS_ADDRHIT))}
+\NormalTok{  \{}
+    \CommentTok{// 打开相应中断，主要是用来填写或者读取fifo}
+    \ControlFlowTok{if}\NormalTok{(master_write_flag)}
+\NormalTok{    \{}
+\NormalTok{      I2C_IntDisable(APB_I2C0,(}\DecValTok{1}\NormalTok{ << I2C_INT_FIFO_FULL));}
+\NormalTok{      I2C_IntEnable(APB_I2C0,(}\DecValTok{1}\NormalTok{<<I2C_INT_CMPL)|(}\DecValTok{1}\NormalTok{ << I2C_INT_FIFO_EMPTY));}
+\NormalTok{    \}}
+    \ControlFlowTok{else}
+\NormalTok{    \{}
+\NormalTok{      I2C_IntDisable(APB_I2C0,(}\DecValTok{1}\NormalTok{ << I2C_INT_FIFO_EMPTY));}
+\NormalTok{      I2C_IntEnable(APB_I2C0,(}\DecValTok{1}\NormalTok{<<I2C_INT_CMPL)|(}\DecValTok{1}\NormalTok{ << I2C_INT_FIFO_FULL));}
+\NormalTok{    \}}
+\NormalTok{    I2C_ClearIntState(APB_I2C0, (}\DecValTok{1}\NormalTok{ << I2C_STATUS_ADDRHIT));}
+\NormalTok{    platform_printf(}\StringTok{"addr hit}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{);}
+\NormalTok{  \}}
+  
+  \CommentTok{// 该中断在master_write_flag==1打开，代表fifo为空，需要填充待发送的数据}
+  \ControlFlowTok{if}\NormalTok{(status & (}\DecValTok{1}\NormalTok{ << I2C_STATUS_FIFO_EMPTY))}
+\NormalTok{  \{}
+    \ControlFlowTok{if}\NormalTok{(master_write_flag)}
+\NormalTok{    \{}
+      \CommentTok{// push data until fifo is full}
+      \ControlFlowTok{for}\NormalTok{(; write_data_cnt < DATA_CNT; write_data_cnt++)}
+\NormalTok{      \{}
+        \CommentTok{//platform_printf("ept: %d \textbackslash{}n",write_data_cnt);}
+        \ControlFlowTok{if}\NormalTok{(I2C_FifoFull(APB_I2C0))\{}\ControlFlowTok{break}\NormalTok{;\}}
+\NormalTok{        I2C_DataWrite(APB_I2C0,write_data[write_data_cnt]);}
+\NormalTok{      \}}
+      
+      \CommentTok{// if its the last, disable empty int}
+      \ControlFlowTok{if}\NormalTok{(write_data_cnt == DATA_CNT)}
+\NormalTok{      \{}
+\NormalTok{        I2C_IntDisable(APB_I2C0,(}\DecValTok{1}\NormalTok{ << I2C_INT_FIFO_EMPTY));}
+\NormalTok{      \}}
+      
+\NormalTok{    \}}
+\NormalTok{  \}}
+  
+  \CommentTok{// 该中断在master_write_flag==0打开，FIFO 满之后，触发中断，此时需要将所有数据都读出来}
+  \ControlFlowTok{if}\NormalTok{(status & (}\DecValTok{1}\NormalTok{ << I2C_STATUS_FIFO_FULL))}
+\NormalTok{  \{}
+    \ControlFlowTok{if}\NormalTok{(!master_write_flag)}
+\NormalTok{    \{}
+      \ControlFlowTok{for}\NormalTok{(; read_data_cnt < DATA_CNT; read_data_cnt++)}
+\NormalTok{      \{}
+        \ControlFlowTok{if}\NormalTok{(I2C_FifoEmpty(APB_I2C0))\{}\ControlFlowTok{break}\NormalTok{;\}}
+\NormalTok{        read_data[read_data_cnt] = I2C_DataRead(APB_I2C0);}
+\NormalTok{      \}}
+\NormalTok{      platform_printf(}\StringTok{"rd full %d }\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{, read_data_cnt);}
+\NormalTok{    \}}
+\NormalTok{  \}}
+  
+  \ControlFlowTok{return} \DecValTok{0}\NormalTok{;}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{i2c-masterux5199ux4f20ux8f93}{%
+\subsubsection{I2C master写传输}\label{i2c-masterux5199ux4f20ux8f93}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ peripheral_i2c_write_data(}\DataTypeTok{void}\NormalTok{)}
+\NormalTok{\{}
+\NormalTok{  master_write_flag = }\DecValTok{1}\NormalTok{;}
+  \CommentTok{// 设置方向，Master写}
+\NormalTok{  I2C_CtrlUpdateDirection(APB_I2C0,I2C_TRANSACTION_MASTER2SLAVE);}
+  \CommentTok{// 设置每次传输的大小}
+\NormalTok{  I2C_CtrlUpdateDataCnt(APB_I2C0, DATA_CNT);}
+  \CommentTok{// 触发传输}
+\NormalTok{  I2C_CommandWrite(APB_I2C0, I2C_COMMAND_ISSUE_DATA_TRANSACTION);}
+  
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{i2c-masterux8bfbux4f20ux8f93}{%
+\subsubsection{I2C master读传输}\label{i2c-masterux8bfbux4f20ux8f93}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ peripheral_i2c_read_data(}\DataTypeTok{void}\NormalTok{)}
+\NormalTok{\{}
+\NormalTok{  master_write_flag = }\DecValTok{0}\NormalTok{;}
+\NormalTok{  I2C_CtrlUpdateDirection(APB_I2C0,I2C_TRANSACTION_SLAVE2MASTER);}
+\NormalTok{  I2C_CtrlUpdateDataCnt(APB_I2C0, DATA_CNT);}
+\NormalTok{  I2C_CommandWrite(APB_I2C0, I2C_COMMAND_ISSUE_DATA_TRANSACTION);}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux4f7fux7528ux6d41ux7a0b-8}{%
+\subsubsection{使用流程}\label{ux4f7fux7528ux6d41ux7a0b-8}}
+
+\begin{itemize}
+\tightlist
+\item
+  设置GPIO，setup\_peripherals\_i2c\_pin()
+\item
+  初始化I2C，setup\_peripherals\_i2c\_module()
+\item
+  在需要时候触发I2C写数据，peripheral\_i2c\_write\_data()，I2C\_STATUS\_CMPL代表结束
+\item
+  当写结束后，可以触发I2C读取，peripheral\_i2c\_read\_data()，I2C\_STATUS\_CMPL代表结束
+\item
+  检查中断状态
+\end{itemize}
+
+\hypertarget{i2c-slaveux914dux7f6e-4}{%
+\subsection{I2C Slave配置}\label{i2c-slaveux914dux7f6e-4}}
+
+\hypertarget{ux914dux7f6epin-9}{%
+\subsubsection{配置Pin}\label{ux914dux7f6epin-9}}
+
+IO的配置请参考场景1。
+
+\hypertarget{ux521dux59cbux5316i2cux6a21ux5757-9}{%
+\subsubsection{初始化I2C模块}\label{ux521dux59cbux5316i2cux6a21ux5757-9}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\PreprocessorTok{#define ADDRESS (0x71)}
+\DataTypeTok{void}\NormalTok{ setup_peripherals_i2c_module(}\DataTypeTok{void}\NormalTok{)}
+\NormalTok{\{}
+  \CommentTok{// 配置为Slave, 7bit地址}
+\NormalTok{  I2C_Config(APB_I2C0,I2C_ROLE_SLAVE,I2C_ADDRESSING_MODE_07BIT,ADDRESS);}
+  
+\NormalTok{  I2C_Enable(APB_I2C0,}\DecValTok{1}\NormalTok{);}
+  \CommentTok{// 打开传输结束中断和地址触发中断}
+\NormalTok{  I2C_IntEnable(APB_I2C0,(}\DecValTok{1}\NormalTok{<<I2C_INT_ADDR_HIT)|(}\DecValTok{1}\NormalTok{<<I2C_INT_CMPL));}
+
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{i2cux4e2dux65adux5b9eux73b0ux4ee5ux53caux53d1ux9001ux6570ux636e-4}{%
+\subsubsection{I2C中断实现以及发送数据}\label{i2cux4e2dux65adux5b9eux73b0ux4ee5ux53caux53d1ux9001ux6570ux636e-4}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{static} \DataTypeTok{uint32_t}\NormalTok{ peripherals_i2c_isr(}\DataTypeTok{void}\NormalTok{ *user_data)}
+\NormalTok{\{}
+  \DataTypeTok{uint8_t}\NormalTok{ i;}
+  \DataTypeTok{static} \DataTypeTok{uint8_t}\NormalTok{ dir = }\DecValTok{2}\NormalTok{;}
+  \DataTypeTok{uint32_t}\NormalTok{ status = I2C_GetIntState(APB_I2C0);}
+
+  \CommentTok{// Slave 收到匹配的地址，触发中断}
+  \ControlFlowTok{if}\NormalTok{(status & (}\DecValTok{1}\NormalTok{ << I2C_STATUS_ADDRHIT))}
+\NormalTok{  \{}
+    \CommentTok{// 判断是读操作还是写操作}
+\NormalTok{    dir = I2C_GetTransactionDir(APB_I2C0);}
+    \ControlFlowTok{if}\NormalTok{(dir == I2C_TRANSACTION_MASTER2SLAVE)}
+\NormalTok{    \{}
+\NormalTok{        master_write_flag = }\DecValTok{1}\NormalTok{;}
+\NormalTok{        I2C_IntEnable(APB_I2C0,(}\DecValTok{1}\NormalTok{ << I2C_INT_FIFO_FULL));}
+\NormalTok{        platform_printf(}\StringTok{"addr wr 0x%x}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{, APB_I2C0->IntEn);}
+\NormalTok{    \}}
+    \ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{(dir == I2C_TRANSACTION_SLAVE2MASTER)}
+\NormalTok{    \{}
+\NormalTok{        master_write_flag = }\DecValTok{0}\NormalTok{;}
+\NormalTok{        I2C_IntEnable(APB_I2C0,(}\DecValTok{1}\NormalTok{ << I2C_INT_FIFO_EMPTY));}
+        
+        \CommentTok{//示例： slave 此时应将要发送的数据准备好}
+\NormalTok{        write_data_cnt = }\DecValTok{0}\NormalTok{;}
+\NormalTok{        memset(write_data, }\BaseNTok{0x44}\NormalTok{, }\KeywordTok{sizeof}\NormalTok{(write_data));}
+\NormalTok{        platform_printf(}\StringTok{"addr rd }\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{);}
+\NormalTok{    \}}
+
+\NormalTok{    I2C_ClearIntState(APB_I2C0, (}\DecValTok{1}\NormalTok{ << I2C_STATUS_ADDRHIT));}
+
+\NormalTok{  \}}
+  
+  \CommentTok{// 如果是读操作，则会触发empty中断，此时需要填写需要发送的数据，直到FIFO满}
+  \ControlFlowTok{if}\NormalTok{(status & (}\DecValTok{1}\NormalTok{ << I2C_STATUS_FIFO_EMPTY))}
+\NormalTok{  \{}
+    \CommentTok{// master read}
+    \ControlFlowTok{if}\NormalTok{(!master_write_flag)}
+\NormalTok{    \{}
+      \CommentTok{// push data until fifo is full}
+      \ControlFlowTok{for}\NormalTok{(; write_data_cnt < DATA_CNT; write_data_cnt++)}
+\NormalTok{      \{}
+        \ControlFlowTok{if}\NormalTok{(I2C_FifoFull(APB_I2C0))\{}\ControlFlowTok{break}\NormalTok{;\}}
+\NormalTok{        I2C_DataWrite(APB_I2C0,write_data[write_data_cnt]);}
+\NormalTok{      \}}
+\NormalTok{      platform_printf(}\StringTok{"rd empty %d }\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{, write_data_cnt);}
+\NormalTok{    \}}
+\NormalTok{  \}}
+  
+  \CommentTok{// 如果是写操作，FIFO满之后会触发该中断，slave应读取fifo数据}
+  \ControlFlowTok{if}\NormalTok{(status & (}\DecValTok{1}\NormalTok{ << I2C_STATUS_FIFO_FULL))}
+\NormalTok{  \{}
+    \CommentTok{// master write}
+    \ControlFlowTok{if}\NormalTok{(master_write_flag)}
+\NormalTok{    \{}
+      \ControlFlowTok{for}\NormalTok{(; read_data_cnt < DATA_CNT; read_data_cnt++)}
+\NormalTok{      \{}
+        \ControlFlowTok{if}\NormalTok{(I2C_FifoEmpty(APB_I2C0))\{}\ControlFlowTok{break}\NormalTok{;\}}
+\NormalTok{        read_data[read_data_cnt] = I2C_DataRead(APB_I2C0);}
+\NormalTok{      \}}
+\NormalTok{      platform_printf(}\StringTok{"wr full %d }\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{, read_data_cnt);}
+\NormalTok{    \}}
+\NormalTok{  \}}
+  
+  \CommentTok{// 传输结束，清理打开的中断}
+  \ControlFlowTok{if}\NormalTok{(status & (}\DecValTok{1}\NormalTok{ << I2C_STATUS_CMPL))}
+\NormalTok{  \{}
+    \CommentTok{// master write， 此时应读取fifo中剩余的数据}
+    \ControlFlowTok{if}\NormalTok{(master_write_flag)}
+\NormalTok{    \{}
+      \ControlFlowTok{for}\NormalTok{(;read_data_cnt < DATA_CNT; read_data_cnt++)}
+\NormalTok{      \{}
+\NormalTok{        read_data[read_data_cnt] = I2C_DataRead(APB_I2C0);}
+\NormalTok{      \}}
+      
+\NormalTok{      I2C_ClearIntState(APB_I2C0, (}\DecValTok{1}\NormalTok{ << I2C_STATUS_CMPL));}
+      
+      \CommentTok{// prepare for next}
+      \ControlFlowTok{if}\NormalTok{(dir == I2C_TRANSACTION_MASTER2SLAVE)}
+\NormalTok{      \{}
+\NormalTok{          I2C_IntDisable(APB_I2C0,(}\DecValTok{1}\NormalTok{ << I2C_INT_FIFO_FULL));}
+\NormalTok{      \}}
+      \ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{(dir == I2C_TRANSACTION_SLAVE2MASTER)}
+\NormalTok{      \{}
+\NormalTok{          I2C_IntDisable(APB_I2C0,(}\DecValTok{1}\NormalTok{ << I2C_INT_FIFO_EMPTY));}
+\NormalTok{      \}}
+      
+      \CommentTok{// debug trace}
+\NormalTok{      platform_printf(}\StringTok{"wr cmp %d "}\NormalTok{,read_data_cnt);}
+      \ControlFlowTok{for}\NormalTok{(i=}\DecValTok{0}\NormalTok{;i<DATA_CNT;i++)\{platform_printf(}\StringTok{" 0x%x -"}\NormalTok{, read_data[i]);\};}
+\NormalTok{      printf(}\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{);}
+      
+\NormalTok{      read_data_cnt = }\DecValTok{0}\NormalTok{;}
+\NormalTok{    \}}
+    \ControlFlowTok{else}\CommentTok{//master写操作，清理中断}
+\NormalTok{    \{}
+\NormalTok{      I2C_ClearIntState(APB_I2C0, (}\DecValTok{1}\NormalTok{ << I2C_STATUS_CMPL));}
+      
+      \CommentTok{// prepare for next}
+      \ControlFlowTok{if}\NormalTok{(dir == I2C_TRANSACTION_MASTER2SLAVE)}
+\NormalTok{      \{}
+\NormalTok{          I2C_IntDisable(APB_I2C0,(}\DecValTok{1}\NormalTok{ << I2C_INT_FIFO_FULL));}
+\NormalTok{      \}}
+      \ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{(dir == I2C_TRANSACTION_SLAVE2MASTER)}
+\NormalTok{      \{}
+\NormalTok{          I2C_IntDisable(APB_I2C0,(}\DecValTok{1}\NormalTok{ << I2C_INT_FIFO_EMPTY));}
+\NormalTok{      \}}
+      
+\NormalTok{      write_data_cnt = }\DecValTok{0}\NormalTok{;}
+\NormalTok{      platform_printf(}\StringTok{"rd cmp }\SpecialCharTok{\textbackslash{}n}\StringTok{ "}\NormalTok{);}
+\NormalTok{    \}}
+
+\NormalTok{  \}}
+
+  \ControlFlowTok{return} \DecValTok{0}\NormalTok{;}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux4f7fux7528ux6d41ux7a0b-9}{%
+\subsubsection{使用流程}\label{ux4f7fux7528ux6d41ux7a0b-9}}
+
+\begin{itemize}
+\tightlist
+\item
+  设置GPIO，setup\_peripherals\_i2c\_pin()
+\item
+  初始化I2C，setup\_peripherals\_i2c\_module()
+\item
+  检查中断状态，在中断中发送数据，I2C\_STATUS\_CMPL中断代表传输结束
+\item
+  如果是读操作，slave应该在master\_write\_flag=0之后准备好数据写到fifo
+\end{itemize}
+
+\hypertarget{i2c-ux65f6ux949fux914dux7f6e}{%
+\section{I2C 时钟配置}\label{i2c-ux65f6ux949fux914dux7f6e}}
+
+I2C时钟配置使用API：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{/**}
+\CommentTok{ * }\AnnotationTok{@brief}\CommentTok{ Set clk frequency for controller.}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{I2C_BASE}\CommentTok{              base address}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{option}\CommentTok{                see I2C_ClockFrequenyOptions}
+\CommentTok{ */}
+\DataTypeTok{void}\NormalTok{ I2C_ConfigClkFrequency(I2C_TypeDef *I2C_BASE, I2C_ClockFrequenyOptions option);}
+\end{Highlighting}
+\end{Shaded}
+
+其中option中定义了几个可选项
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{typedef} \KeywordTok{enum}
+\NormalTok{\{}
+\NormalTok{    I2C_CLOCKFREQUENY_NULL,}
+\NormalTok{    I2C_CLOCKFREQUENY_STANDARD,}\CommentTok{//up to 100kbit/s}
+\NormalTok{    I2C_CLOCKFREQUENY_FASTMODE,}\CommentTok{//up to 400kbit/s}
+\NormalTok{    I2C_CLOCKFREQUENY_FASTMODE_PLUS,}\CommentTok{//up to 1Mbit/s}
+\NormalTok{    I2C_CLOCKFREQUENY_MANUAL}
+\NormalTok{\} I2C_ClockFrequenyOptions;}
+\end{Highlighting}
+\end{Shaded}
+
+如果选择MANUAL,需要手动配置相关寄存器来生成需要的时钟
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{I2C_BASE->TPM : multiply factor, width }\DecValTok{5}\ErrorTok{bit}\NormalTok{, 所有setup中的时间参数都会被乘以（TPM+}\DecValTok{1}\NormalTok{）}
+\NormalTok{I2C_BASE->Setup: 使用I2C_ConfigSCLTiming()配置该寄存器}
+\NormalTok{  scl_hi：高电平持续时间，width }\DecValTok{9}\ErrorTok{bit}\NormalTok{，default }\BaseNTok{0x10} 
+\NormalTok{  scl_ratio: 低电平持续时间因子，width }\DecValTok{1}\ErrorTok{bit}\NormalTok{，default }\DecValTok{1}
+\NormalTok{  hddat：SCL拉低后SDA的保持时间，width }\DecValTok{5}\ErrorTok{bit}\NormalTok{，default }\DecValTok{5}
+\NormalTok{  sp: 可以被过滤的脉冲毛刺宽度，width }\DecValTok{3}\ErrorTok{bit}\NormalTok{，default }\DecValTok{1}
+\NormalTok{  sudat: 释放SCL之前的数据建立时间，width }\DecValTok{5}\ErrorTok{bit}\NormalTok{，default }\DecValTok{5}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  高电平持续时间计算： \texttt{SCL\ high\ period\ =\ (2\ *\ pclk)\ +\ (2\ +\ sp\ +\ scl\_hi)\ *\ pclk\ *\ (TPM\ +\ 1)} 其中pclk为I2C模块的系统时钟，默认为24M
+\end{itemize}
+
+如果\texttt{sp\ =\ 1,\ pclk\ =\ 42ns,\ TPM\ =\ 3,\ scl\_hi\ =\ 150} :
+
+\texttt{SCL\ high\ period\ =\ (2\ *\ 42)\ +\ (2\ +\ 1\ +\ 150)\ *\ 42\ *\ (3\ +\ 1)\ =\ 25788ns}
+
+\begin{itemize}
+\tightlist
+\item
+  低电平持续时间计算： \texttt{SCL\ low\ period\ =\ (2\ *\ pclk)\ +\ (2\ +\ sp\ +\ scl\_hi\ *\ (scl\_ratio+1))\ *\ pclk\ *\ (TPM\ +\ 1)}
+\end{itemize}
+
+如果\texttt{sp\ =\ 1,\ pclk\ =\ 42ns,\ TPM\ =\ 3,\ scl\_hi\ =\ 150,\ scl\_ratio\ =\ 0} :
+
+\texttt{SCL\ low\ period\ =\ (2\ *\ 42)\ +\ (2\ +\ 1\ +\ 150\ *\ 1)\ *\ 42\ *\ (3\ +\ 1)\ =\ 25788ns}
+
+\begin{itemize}
+\tightlist
+\item
+  毛刺抑制宽度： \texttt{spike\ suppression\ width\ =\ sp\ *\ pclk\ *\ (TPM\ +\ 1)}
+\end{itemize}
+
+如果\texttt{sp\ =\ 1,\ pclk\ =\ 42ns,\ TPM\ =\ 3}:
+
+\texttt{spike\ suppression\ width\ =\ 1\ *\ 42\ *\ (3\ +\ 1)\ =\ 168ns}
+
+\begin{itemize}
+\tightlist
+\item
+  SCL之前的数据建立时间：\texttt{setup\ time\ =\ (2\ *\ pclk)\ +\ (2\ +\ sp\ +\ sudat)\ *\ pclk\ *\ (TPM\ +\ 1)}
+\end{itemize}
+
+如果\texttt{sp\ =\ 1,\ pclk\ =\ 42ns,\ TPM\ =\ 3,\ sudat\ =\ 5}:
+
+\texttt{setup\ time\ =\ (2\ *\ 42)\ +\ (2\ +\ 1\ +\ 5)\ *\ 42\ *\ (3\ +\ 1)\ =\ 1428ns}
+
+协议对SCL之前的数据建立时间要求为：
+
+\texttt{standard\ mode:\ 最小250ns\ -\ fast\ mode:\ 最小100ns\ -\ fast\ mode\ plus:\ 最小50ns}
+
+\begin{itemize}
+\tightlist
+\item
+  SCL拉低后SDA的保持时间 \texttt{hold\ time\ =\ (2\ *\ pclk)\ +\ (2\ +\ sp\ +\ hddat)\ *\ pclk\ *\ (TPM\ +\ 1)}
+\end{itemize}
+
+如果\texttt{sp\ =\ 1,\ pclk\ =\ 42ns,\ TPM\ =\ 3,\ hddat\ =\ 5}: \texttt{hold\ time\ =\ (2\ *\ 42)\ +\ (2\ +\ 1\ +\ 5)\ *\ 42\ *\ (3\ +\ 1)\ =\ 1428ns}
+
+协议对SCL拉低后SDA的保持时间要求为： \texttt{standard\ mode:\ 最小300ns\ -\ fast\ mode:\ 最小300ns\ -\ fast\ mode\ plus:\ 最小0ns}
+
 \hypertarget{ch-I2s}{%
 \chapter{I2s简介}\label{ch-I2s}}
 
@@ -2318,11 +3361,11 @@ I2S（inter-IC sound）总线是数字音频专用总线。它有四个引脚，
 
 另外，通过ING91682A的MCLK输出，它可用于给外部 DAC/ADC 芯片提供时钟（可选）。
 
-\hypertarget{ux529fux80fdux63cfux8ff0-1}{%
-\section{功能描述}\label{ux529fux80fdux63cfux8ff0-1}}
+\hypertarget{ux529fux80fdux63cfux8ff0-2}{%
+\section{功能描述}\label{ux529fux80fdux63cfux8ff0-2}}
 
-\hypertarget{ux7279ux70b9-1}{%
-\subsection{特点}\label{ux7279ux70b9-1}}
+\hypertarget{ux7279ux70b9-2}{%
+\subsection{特点}\label{ux7279ux70b9-2}}
 
 \begin{itemize}
 \item
@@ -2421,11 +3464,11 @@ clk通过时钟源分频得到必定是整数，b\_div也同样是整数，通�
   音频数据位宽大于16bit时，每32bit存储一个音频数据，低地址存储左声道数据，高地址存储右声道数据。
 \end{itemize}
 
-\hypertarget{ux4f7fux7528ux65b9ux6cd5-1}{%
-\section{使用方法}\label{ux4f7fux7528ux65b9ux6cd5-1}}
+\hypertarget{ux4f7fux7528ux65b9ux6cd5-2}{%
+\section{使用方法}\label{ux4f7fux7528ux65b9ux6cd5-2}}
 
-\hypertarget{ux65b9ux6cd5ux6982ux8ff0-1}{%
-\subsection{方法概述}\label{ux65b9ux6cd5ux6982ux8ff0-1}}
+\hypertarget{ux65b9ux6cd5ux6982ux8ff0-2}{%
+\subsection{方法概述}\label{ux65b9ux6cd5ux6982ux8ff0-2}}
 
 I2s使用方法总结为：时钟配置，I2s配置（包括采样率）和数据处理。
 
@@ -2476,8 +3519,8 @@ I2S控制器操作流程图如下：
 
 如果需要用到DMA搬运则需要在使能I2s之前配置DMA并使能。
 
-\hypertarget{ux6ce8ux610fux70b9-1}{%
-\subsection{注意点}\label{ux6ce8ux610fux70b9-1}}
+\hypertarget{ux6ce8ux610fux70b9-2}{%
+\subsection{注意点}\label{ux6ce8ux610fux70b9-2}}
 
 \begin{itemize}
 \item
@@ -2492,11 +3535,11 @@ I2S控制器操作流程图如下：
   建议采用DMA乒乓搬运的方式来传输I2s数据
 \end{itemize}
 
-\hypertarget{ux7f16ux7a0bux6307ux5357-1}{%
-\section{编程指南}\label{ux7f16ux7a0bux6307ux5357-1}}
+\hypertarget{ux7f16ux7a0bux6307ux5357-2}{%
+\section{编程指南}\label{ux7f16ux7a0bux6307ux5357-2}}
 
-\hypertarget{ux9a71ux52a8ux63a5ux53e3-1}{%
-\subsection{驱动接口}\label{ux9a71ux52a8ux63a5ux53e3-1}}
+\hypertarget{ux9a71ux52a8ux63a5ux53e3-2}{%
+\subsection{驱动接口}\label{ux9a71ux52a8ux63a5ux53e3-2}}
 
 \begin{itemize}
 \item
@@ -2521,8 +3564,8 @@ I2S控制器操作流程图如下：
   I2S\_DataFromPDM：I2s获取PDM数据接口
 \end{itemize}
 
-\hypertarget{ux4ee3ux7801ux793aux4f8b-1}{%
-\subsection{代码示例}\label{ux4ee3ux7801ux793aux4f8b-1}}
+\hypertarget{ux4ee3ux7801ux793aux4f8b-2}{%
+\subsection{代码示例}\label{ux4ee3ux7801ux793aux4f8b-2}}
 
 下面将通过实际代码展示I2s的基本配置及使用代码。
 
@@ -2656,8 +3699,8 @@ I2s使能分3种情况：I2s发送、I2s接收、使用DMA搬运
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{i2s-ux4e52ux4e53dma}{%
-\subsubsection{I2s \& 乒乓DMA}\label{i2s-ux4e52ux4e53dma}}
+\hypertarget{i2s-dmaux4e52ux4e53ux642cux8fd0}{%
+\subsubsection{I2s \& DMA乒乓搬运}\label{i2s-dmaux4e52ux4e53ux642cux8fd0}}
 
 下面以经典的DMA乒乓搬运I2s接收数据为例展示I2s实际使用方法。
 
@@ -2665,46 +3708,27 @@ I2s使能分3种情况：I2s发送、I2s接收、使用DMA搬运
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\PreprocessorTok{#include }\ImportTok{"pingpong.h"}
 \PreprocessorTok{#define I2S_PIN_BCLK        28}
 \PreprocessorTok{#define I2S_PIN_IN          29}
 \PreprocessorTok{#define I2S_PIN_LRCLK       30}
 \PreprocessorTok{#define CHANNEL_ID  0}
-\DataTypeTok{uint32_t}\NormalTok{ pingpang_buff[}\DecValTok{2}\NormalTok{][}\DecValTok{80}\NormalTok{];}
-\NormalTok{DMA_Descriptor test[}\DecValTok{2}\NormalTok{] __attribute__((aligned (}\DecValTok{8}\NormalTok{)));}
-\DataTypeTok{uint8_t}\NormalTok{ pingpang = }\DecValTok{0}\NormalTok{;}
+\NormalTok{DMA_PingPong_t PingPong;}
+
 \DataTypeTok{static} \DataTypeTok{uint32_t}\NormalTok{ DMA_cb_isr(}\DataTypeTok{void}\NormalTok{ *user_data)}
-\NormalTok{\{ }
-      \DataTypeTok{uint32_t}\NormalTok{ state = DMA_GetChannelIntState(CHANNEL_ID);}
-\NormalTok{      DMA_ClearChannelIntState(CHANNEL_ID, state);}
-
-\NormalTok{      pingpang ^= }\DecValTok{1}\NormalTok{;}
-\NormalTok{    DMA_EnableChannel(CHANNEL_ID, &test[pingpang]);}
-    \DataTypeTok{uint32_t}\NormalTok{ *data = (pingpang) ? (pingpang_buff[}\DecValTok{0}\NormalTok{]) : (pingpang_buff[}\DecValTok{1}\NormalTok{]);}
-
-    \CommentTok{// do something with data-buffer's data}
-    
-    \ControlFlowTok{return} \DecValTok{0}\NormalTok{;}
-\NormalTok{\}}
-
-\DataTypeTok{void}\NormalTok{ DMA_SetUpPingPang(}\DataTypeTok{void}\NormalTok{)}
 \NormalTok{\{}
-\NormalTok{    DMA_Reset();}
-\NormalTok{    platform_set_irq_callback(PLATFORM_CB_IRQ_DMA, DMA_cb_isr, }\DecValTok{0}\NormalTok{);  }
-\NormalTok{    test[}\DecValTok{0}\NormalTok{].Next = &test[}\DecValTok{1}\NormalTok{];}
-\NormalTok{    test[}\DecValTok{1}\NormalTok{].Next = &test[}\DecValTok{0}\NormalTok{];    }\CommentTok{// make a DMA link cycle}
-\NormalTok{    DMA_PreparePeripheral2RAM(&test[}\DecValTok{0}\NormalTok{], }
-\NormalTok{                              pingpang_buff[}\DecValTok{0}\NormalTok{], }
-\NormalTok{                              SYSCTRL_DMA_I2S_RX, }
-                              \DecValTok{80}\NormalTok{, }
-\NormalTok{                              DMA_ADDRESS_INC, }
-                              \DecValTok{0}\NormalTok{ | }\DecValTok{8}\NormalTok{ << }\DecValTok{24}\NormalTok{ | }\DecValTok{1}\NormalTok{ << }\DecValTok{28}\NormalTok{);}
-\NormalTok{    DMA_PreparePeripheral2RAM(&test[}\DecValTok{1}\NormalTok{], }
-\NormalTok{                              pingpang_buff[}\DecValTok{1}\NormalTok{], }
-\NormalTok{                              SYSCTRL_DMA_I2S_RX, }
-                              \DecValTok{80}\NormalTok{, }
-\NormalTok{                              DMA_ADDRESS_INC, }
-                              \DecValTok{0}\NormalTok{ | }\DecValTok{8}\NormalTok{ << }\DecValTok{24}\NormalTok{ | }\DecValTok{1}\NormalTok{ << }\DecValTok{28}\NormalTok{);}
-\NormalTok{    DMA_EnableChannel(CHANNEL_ID, &test[pingpang]);}
+    \DataTypeTok{uint32_t}\NormalTok{ state = DMA_GetChannelIntState(CHANNEL_ID);}
+\NormalTok{    DMA_ClearChannelIntState(CHANNEL_ID, state);}
+
+    \DataTypeTok{uint32_t}\NormalTok{ *rr = DMA_PingPongIntProc(&PingPong, CHANNEL_ID);}
+    \DataTypeTok{uint32_t}\NormalTok{ i = }\DecValTok{0}\NormalTok{;}
+    \DataTypeTok{uint32_t}\NormalTok{ transSize = DMA_PingPongGetTransSize(&PingPong);}
+    \ControlFlowTok{while}\NormalTok{ (i < transSize) \{}
+        \CommentTok{// do something with data 'rr[i]'}
+\NormalTok{        i++;}
+\NormalTok{    \}}
+
+    \ControlFlowTok{return} \DecValTok{0}\NormalTok{;}
 \NormalTok{\}}
 \DataTypeTok{void}\NormalTok{ I2sSetup(}\DataTypeTok{void}\NormalTok{)}
 \NormalTok{\{}
@@ -2723,10 +3747,12 @@ I2s使能分3种情况：I2s发送、I2s接收、使用DMA搬运
 \NormalTok{    I2S_DMAEnable(APB_I2S, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{);    }
 \NormalTok{    I2S_Config(APB_I2S, I2S_ROLE_MASTER, I2S_MODE_STANDARD, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{24}\NormalTok{);}
 
-    \CommentTok{// setup pingpang DMA}
-\NormalTok{    DMA_SetUpPingPang();}
+    \CommentTok{// setup DMA}
+\NormalTok{    DMA_PingPongSetup(&PingPong, SYSCTRL_DMA_I2S_RX, }\DecValTok{100}\NormalTok{, }\DecValTok{8}\NormalTok{);}
+\NormalTok{    platform_set_irq_callback(PLATFORM_CB_IRQ_DMA, DMA_cb_isr, }\DecValTok{0}\NormalTok{);}
     
     \CommentTok{// start working}
+\NormalTok{    DMA_PingPongEnable(&PingPong, CHANNEL_ID);}
 \NormalTok{    I2S_ClearRxFIFO(APB_I2S);}
 \NormalTok{    I2S_DMAEnable(APB_I2S, }\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{);    }
 \NormalTok{    I2S_Enable(APB_I2S, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{);}
@@ -2734,7 +3760,7 @@ I2s使能分3种情况：I2s发送、I2s接收、使用DMA搬运
 \end{Highlighting}
 \end{Shaded}
 
-DMA的具体用法请参见本手册DMA一节。
+DMA（乒乓搬运）的具体用法请参见本手册DMA一节。
 
 更加系统化的I2s代码请参考SDK中voice\_remote\_ctrl例程。
 
@@ -2836,22 +3862,25 @@ DMA的具体用法请参见本手册DMA一节。
 \hypertarget{ux7ea2ux5916ux53d1ux5c04ux63a5ux6536}{%
 \subsection{红外发射接收}\label{ux7ea2ux5916ux53d1ux5c04ux63a5ux6536}}
 
-\hypertarget{ux914dux7f6epin-8}{%
-\subsubsection{配置pin}\label{ux914dux7f6epin-8}}
+\hypertarget{ux914dux7f6epin-10}{%
+\subsubsection{配置pin}\label{ux914dux7f6epin-10}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\PreprocessorTok{#define IR_PIN GIO_GPIO_17}
+\PreprocessorTok{#define IR_DOUT GIO_GPIO_10}
+\PreprocessorTok{#define IR_DIN  GIO_GPIO_11}
+
 \DataTypeTok{void}\NormalTok{ setup_peripherals_ir_module(}\DataTypeTok{void}\NormalTok{)}
 \NormalTok{\{}
     \CommentTok{// 打开时钟}
     \CommentTok{// 大于等于GPIO 18则使用SYSCTRL_ClkGate_APB_GPIO1， 否则是SYSCTRL_ClkGate_APB_GPIO0}
 \NormalTok{    SYSCTRL_ClearClkGateMulti(   (}\DecValTok{1}\NormalTok{ << SYSCTRL_ClkGate_APB_GPIO0)}
 \NormalTok{                                | (}\DecValTok{1}\NormalTok{ << SYSCTRL_ClkGate_APB_GPIO1)}
-\NormalTok{                                | (}\DecValTok{1}\NormalTok{ << SYSCTRL_ITEM_APB_IR)}
+\NormalTok{                                | (}\DecValTok{1}\NormalTok{ << SYSCTRL_ClkGate_APB_IR)}
 \NormalTok{                                | (}\DecValTok{1}\NormalTok{ << SYSCTRL_ClkGate_APB_PinCtrl));}
                                 
-\NormalTok{    PINCTRL_SetPadMux(IR_PIN,IO_SOURCE_IR_DATA_OUT);}
+\NormalTok{    PINCTRL_SelIrIn(IR_DIN);}
+\NormalTok{    PINCTRL_SetPadMux(IR_DOUT,IO_SOURCE_IR_DATA_OUT);}
 \NormalTok{    platform_set_irq_callback(PLATFORM_CB_IRQ_IR_INT, IRQHandler_IR_INT, NULL);}
 \NormalTok{\}}
 \end{Highlighting}
@@ -2862,7 +3891,7 @@ DMA的具体用法请参见本手册DMA一节。
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\DataTypeTok{static} \DataTypeTok{void}\NormalTok{ user_ir_device_init(IR_IrMode_e mode,IR_TxRxMode_e tx_rx_mode,GIO_Index_t irpin)}
+\DataTypeTok{static} \DataTypeTok{void}\NormalTok{ user_ir_device_init(IR_IrMode_e mode,IR_TxRxMode_e tx_rx_mode)}
 \NormalTok{\{}
 \NormalTok{    IR_CtrlSetIrMode(APB_IR,mode);}
 \NormalTok{    IR_CtrlSetTxRxMode(APB_IR,tx_rx_mode);}
@@ -2882,11 +3911,9 @@ DMA的具体用法请参见本手册DMA一节。
 \NormalTok{        IR_CtrlIrSetBitTime1(APB_IR,t_ir_type_param_table[mode].param_tx.btimer1);}
 \NormalTok{        IR_CtrlIrSetBitTime2(APB_IR,t_ir_type_param_table[mode].param_tx.btimer2);    }
 \NormalTok{        IR_CtrlIrSetIrBitCycle(APB_IR,t_ir_type_param_table[mode].param_tx.bit_cycle);        }
-\NormalTok{        PINCTRL_SetPadMux(irpin,IO_SOURCE_IR_DATA_OUT);}
 \NormalTok{    \}}
     \ControlFlowTok{else}\NormalTok{\{}
 \NormalTok{        IR_CtrlSetIrEndDetectEn(APB_IR);}\CommentTok{//end code detect en}
-\NormalTok{        IR_CtrlSetIrIntVerifyEn(APB_IR);}
 \NormalTok{        IR_CtrlIrUsercodeVerify(APB_IR);}
 \NormalTok{        IR_CtrlIrDatacodeVerify(APB_IR);}
 \NormalTok{        IR_TimeSetIrTime1(APB_IR,t_ir_type_param_table[mode].param_rx.timer1);}
@@ -2897,15 +3924,14 @@ DMA的具体用法请参见本手册DMA一节。
 \NormalTok{        IR_CtrlIrSetBitTime1(APB_IR,t_ir_type_param_table[mode].param_rx.btimer1);}
 \NormalTok{        IR_CtrlIrSetBitTime2(APB_IR,t_ir_type_param_table[mode].param_rx.btimer2);    }
 \NormalTok{        IR_CtrlIrSetIrBitCycle(APB_IR,t_ir_type_param_table[mode].param_rx.bit_cycle);   }
-\NormalTok{        PINCTRL_SetPadMux(irpin,IO_SOURCE_IR_DATA_IN);}
 \NormalTok{    \}}
 \NormalTok{    IR_CtrlEnable(APB_IR);}
 \NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{ir-ux4e2dux65ad}{%
-\subsubsection{IR 中断}\label{ir-ux4e2dux65ad}}
+\hypertarget{ir-ux4e2dux65adux4ee5ux53cairux63a5ux6536}{%
+\subsubsection{IR 中断(以及IR接收)}\label{ir-ux4e2dux65adux4ee5ux53cairux63a5ux6536}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2915,6 +3941,40 @@ DMA的具体用法请参见本手册DMA一节。
 \NormalTok{        ;}\CommentTok{//platform_printf("int ir send ok\textbackslash{}n");}
     \ControlFlowTok{if}\NormalTok{(IR_FsmGetIrTxRepeat(APB_IR))}
 \NormalTok{        ;}\CommentTok{//platform_printf("int ir repeat ok\textbackslash{}n");}
+    \ControlFlowTok{if}\NormalTok{(IR_FsmGetIrReceivedOk(APB_IR))}
+\NormalTok{    \{}
+        \DataTypeTok{uint32_t}\NormalTok{ value = IR_RxCodeGetIrRxUsercode(APB_IR) <<}\DecValTok{16}\NormalTok{ | IR_RxCodeGetIrRxDatacode(APB_IR);}
+\NormalTok{        platform_printf(}\StringTok{"Received:0x%x}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{,value);}
+\NormalTok{    \}}
+    
+    \ControlFlowTok{if}\NormalTok{(IR_FsmGetIrRepeat(APB_IR))}
+\NormalTok{        ;}
+\NormalTok{    IR_FsmClearIrInt(APB_IR);}
+    \ControlFlowTok{return} \DecValTok{0}\NormalTok{;}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ir-ux53d1ux5c04}{%
+\subsubsection{IR 发射}\label{ir-ux53d1ux5c04}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{static} \DataTypeTok{int}\NormalTok{ ir_transmit_fun(}\DataTypeTok{uint16_t}\NormalTok{ addr,}\DataTypeTok{uint16_t}\NormalTok{ data) }\CommentTok{//ir hard transmit data}
+\NormalTok{\{}
+\NormalTok{    IR_TxCodeSetIrTxUsercode(APB_IR,addr);}
+\NormalTok{    IR_TxCodeSetIrTxDatacode(APB_IR,data);}
+\NormalTok{    IR_CleanIrTxRepeatMode(APB_IR);}\CommentTok{//must clearn the repeat mode reg}
+\NormalTok{    IR_TxConfigTxStart(APB_IR);}
+    \CommentTok{//while(!IR_FsmGetIrTransmitOk(APB_IR));}
+    \ControlFlowTok{return} \DecValTok{0}\NormalTok{;}
+\NormalTok{\}}
+
+\DataTypeTok{static} \DataTypeTok{int}\NormalTok{ ir_transmit_repeat(}\DataTypeTok{void}\NormalTok{) }\CommentTok{//ir hard transmit repeat}
+\NormalTok{\{}
+\NormalTok{    IR_CtrlIrTxRepeatMode(APB_IR);   }
+\NormalTok{    IR_TxConfigTxStart(APB_IR);}
+ \CommentTok{//   while(!IR_FsmGetIrTransmitOk(APB_IR)); }
     \ControlFlowTok{return} \DecValTok{0}\NormalTok{;}
 \NormalTok{\}}
 \end{Highlighting}
@@ -2929,11 +3989,11 @@ PDM全称pulse density modulation，即脉冲密度调制。
 
 PDM模块处理来自外部音频前端(如数字麦克风)的脉冲密度调制信号的输入。该模块生成PDM时钟，支持双通道数据输入。
 
-\hypertarget{ux529fux80fdux63cfux8ff0-2}{%
-\section{功能描述}\label{ux529fux80fdux63cfux8ff0-2}}
+\hypertarget{ux529fux80fdux63cfux8ff0-3}{%
+\section{功能描述}\label{ux529fux80fdux63cfux8ff0-3}}
 
-\hypertarget{ux7279ux70b9-2}{%
-\subsection{特点}\label{ux7279ux70b9-2}}
+\hypertarget{ux7279ux70b9-3}{%
+\subsection{特点}\label{ux7279ux70b9-3}}
 
 \begin{itemize}
 \item
@@ -2966,11 +4026,11 @@ PDM和PCM同为用数字信号表示模拟信号的音频数据调制方法，�
   PDM只需要2根信号线，即时钟线和数据线；PCM需要4根线
 \end{itemize}
 
-\hypertarget{ux4f7fux7528ux65b9ux6cd5-2}{%
-\section{使用方法}\label{ux4f7fux7528ux65b9ux6cd5-2}}
+\hypertarget{ux4f7fux7528ux65b9ux6cd5-3}{%
+\section{使用方法}\label{ux4f7fux7528ux65b9ux6cd5-3}}
 
-\hypertarget{ux65b9ux6cd5ux6982ux8ff0-2}{%
-\subsection{方法概述}\label{ux65b9ux6cd5ux6982ux8ff0-2}}
+\hypertarget{ux65b9ux6cd5ux6982ux8ff0-3}{%
+\subsection{方法概述}\label{ux65b9ux6cd5ux6982ux8ff0-3}}
 
 PDM使用方法分为PDM结合I2s使用和PDM数据直接DMA搬运两种。
 
@@ -3010,8 +4070,8 @@ PDM数据DMA搬运：
 
 其中I2s和DMA相关配置不在本节介绍内容范围内，可参考本手册对应章节。
 
-\hypertarget{ux6ce8ux610fux70b9-2}{%
-\subsection{注意点}\label{ux6ce8ux610fux70b9-2}}
+\hypertarget{ux6ce8ux610fux70b9-3}{%
+\subsection{注意点}\label{ux6ce8ux610fux70b9-3}}
 
 \begin{itemize}
 \item
@@ -3028,11 +4088,11 @@ PDM数据DMA搬运：
   建议采用DMA乒乓搬运的方式
 \end{itemize}
 
-\hypertarget{ux7f16ux7a0bux6307ux5357-2}{%
-\section{编程指南}\label{ux7f16ux7a0bux6307ux5357-2}}
+\hypertarget{ux7f16ux7a0bux6307ux5357-3}{%
+\section{编程指南}\label{ux7f16ux7a0bux6307ux5357-3}}
 
-\hypertarget{ux9a71ux52a8ux63a5ux53e3-2}{%
-\subsection{驱动接口}\label{ux9a71ux52a8ux63a5ux53e3-2}}
+\hypertarget{ux9a71ux52a8ux63a5ux53e3-3}{%
+\subsection{驱动接口}\label{ux9a71ux52a8ux63a5ux53e3-3}}
 
 \begin{itemize}
 \item
@@ -3043,8 +4103,8 @@ PDM数据DMA搬运：
   PDM\_DmaEnable：PDM使能DMA接口
 \end{itemize}
 
-\hypertarget{ux4ee3ux7801ux793aux4f8b-2}{%
-\subsection{代码示例}\label{ux4ee3ux7801ux793aux4f8b-2}}
+\hypertarget{ux4ee3ux7801ux793aux4f8b-3}{%
+\subsection{代码示例}\label{ux4ee3ux7801ux793aux4f8b-3}}
 
 下面以PDM结合I2s使用和PDM数据直接DMA搬运两种方式来展示PDM的具体使用方法。
 
@@ -3480,11 +4540,11 @@ PTE全称Peripheral trigger engine，即外设触发引擎。
 
 其主要作用是使外围设备可以通过其他外围设备或事件独立于CPU进行自主交互。PTE允许外围设备之间可以精确触发。
 
-\hypertarget{ux529fux80fdux63cfux8ff0-3}{%
-\section{功能描述}\label{ux529fux80fdux63cfux8ff0-3}}
+\hypertarget{ux529fux80fdux63cfux8ff0-4}{%
+\section{功能描述}\label{ux529fux80fdux63cfux8ff0-4}}
 
-\hypertarget{ux7279ux70b9-3}{%
-\subsection{特点}\label{ux7279ux70b9-3}}
+\hypertarget{ux7279ux70b9-4}{%
+\subsection{特点}\label{ux7279ux70b9-4}}
 
 \begin{itemize}
 \item
@@ -3518,11 +4578,11 @@ src外设通过pte\_in\_mask配置，dst外设通过pte\_out\_mask配置。在SO
 
 当DFF为高时PTE中断将挂起。在清除PTE中断之前，src外设中断必须被清除，否则另一个启动脉冲将发送到dst外设，这可能会产生未知的错误。
 
-\hypertarget{ux4f7fux7528ux65b9ux6cd5-3}{%
-\section{使用方法}\label{ux4f7fux7528ux65b9ux6cd5-3}}
+\hypertarget{ux4f7fux7528ux65b9ux6cd5-4}{%
+\section{使用方法}\label{ux4f7fux7528ux65b9ux6cd5-4}}
 
-\hypertarget{ux65b9ux6cd5ux6982ux8ff0-3}{%
-\subsection{方法概述}\label{ux65b9ux6cd5ux6982ux8ff0-3}}
+\hypertarget{ux65b9ux6cd5ux6982ux8ff0-4}{%
+\subsection{方法概述}\label{ux65b9ux6cd5ux6982ux8ff0-4}}
 
 PTE使用方法总结为：建议不使用PTE中断，在dst外设中断里清PTE中断（或关闭PTE通道）。
 
@@ -3536,8 +4596,8 @@ PTE使用方法总结为：建议不使用PTE中断，在dst外设中断里清PT
 
 \textbf{5.} 在被触发外设中断中清PTE中断（如定义），如果只触发一次则直接关闭PTE通道
 
-\hypertarget{ux6ce8ux610fux70b9-3}{%
-\subsection{注意点}\label{ux6ce8ux610fux70b9-3}}
+\hypertarget{ux6ce8ux610fux70b9-4}{%
+\subsection{注意点}\label{ux6ce8ux610fux70b9-4}}
 
 \begin{itemize}
 \item
@@ -3550,8 +4610,8 @@ PTE使用方法总结为：建议不使用PTE中断，在dst外设中断里清PT
   使用PTE中断会更多占用CPU资源并增加触发过程操作复杂度、增加出错风险，中断处理程序完全可以在src和dst中断中完成，所以强烈建议不要使用PTE中断
 \end{itemize}
 
-\hypertarget{ux7f16ux7a0bux6307ux5357-3}{%
-\section{编程指南}\label{ux7f16ux7a0bux6307ux5357-3}}
+\hypertarget{ux7f16ux7a0bux6307ux5357-4}{%
+\section{编程指南}\label{ux7f16ux7a0bux6307ux5357-4}}
 
 \hypertarget{srcdstux5916ux8bbe}{%
 \subsection{src\&dst外设}\label{srcdstux5916ux8bbe}}
@@ -3622,8 +4682,8 @@ dst外设定义在SYSCTRL\_PTE\_DST\_EN中：
 
 通过PTE连接的src外设和dst外设需要在已注册枚举中选取。
 
-\hypertarget{ux9a71ux52a8ux63a5ux53e3-3}{%
-\subsection{驱动接口}\label{ux9a71ux52a8ux63a5ux53e3-3}}
+\hypertarget{ux9a71ux52a8ux63a5ux53e3-4}{%
+\subsection{驱动接口}\label{ux9a71ux52a8ux63a5ux53e3-4}}
 
 \begin{itemize}
 \item
@@ -3640,8 +4700,8 @@ dst外设定义在SYSCTRL\_PTE\_DST\_EN中：
   PTE\_OutPeripheralEndProcess：dst外设中断标准PTE结束接口
 \end{itemize}
 
-\hypertarget{ux4ee3ux7801ux793aux4f8b-3}{%
-\subsection{代码示例}\label{ux4ee3ux7801ux793aux4f8b-3}}
+\hypertarget{ux4ee3ux7801ux793aux4f8b-4}{%
+\subsection{代码示例}\label{ux4ee3ux7801ux793aux4f8b-4}}
 
 下面以Timer0通过PTE通道0触发Timer1为例展示PTE的具体使用方法。
 
@@ -4156,8 +5216,8 @@ FIFO：
 \hypertarget{ch-rtc}{%
 \chapter{实时时钟（RTC）}\label{ch-rtc}}
 
-\hypertarget{ux529fux80fdux63cfux8ff0-4}{%
-\section{功能描述}\label{ux529fux80fdux63cfux8ff0-4}}
+\hypertarget{ux529fux80fdux63cfux8ff0-5}{%
+\section{功能描述}\label{ux529fux80fdux63cfux8ff0-5}}
 
 实时时钟是一个独立的定时器。RTC模块拥有一组连续计数的计数器，在相应的软件配置下，
 可提供时钟日历的功能。修改计数器的值可以重新设置系统当前的时间和日期。
@@ -4338,7 +5398,7 @@ FIFO：
 \item
   支持SPI主\&从模式
 \item
-  支持Quad SPI，可以执行代码
+  支持Quad SPI，可以从外挂Flash执行代码
 \item
   独立的RX\&TX FIFO，深度为8个word
 \item
@@ -4472,8 +5532,8 @@ FIFO：
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{ux4f7fux7528ux6d41ux7a0b-8}{%
-\subsubsection{使用流程}\label{ux4f7fux7528ux6d41ux7a0b-8}}
+\hypertarget{ux4f7fux7528ux6d41ux7a0b-10}{%
+\subsubsection{使用流程}\label{ux4f7fux7528ux6d41ux7a0b-10}}
 
 \begin{itemize}
 \tightlist
@@ -4579,8 +5639,8 @@ FIFO：
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{ux4f7fux7528ux6d41ux7a0b-9}{%
-\subsubsection{使用流程}\label{ux4f7fux7528ux6d41ux7a0b-9}}
+\hypertarget{ux4f7fux7528ux6d41ux7a0b-11}{%
+\subsubsection{使用流程}\label{ux4f7fux7528ux6d41ux7a0b-11}}
 
 \begin{itemize}
 \tightlist
@@ -4760,8 +5820,8 @@ FIFO：
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{ux4f7fux7528ux6d41ux7a0b-10}{%
-\subsubsection{使用流程}\label{ux4f7fux7528ux6d41ux7a0b-10}}
+\hypertarget{ux4f7fux7528ux6d41ux7a0b-12}{%
+\subsubsection{使用流程}\label{ux4f7fux7528ux6d41ux7a0b-12}}
 
 \begin{itemize}
 \tightlist
@@ -4916,8 +5976,8 @@ FIFO：
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{ux4f7fux7528ux6d41ux7a0b-11}{%
-\subsubsection{使用流程}\label{ux4f7fux7528ux6d41ux7a0b-11}}
+\hypertarget{ux4f7fux7528ux6d41ux7a0b-13}{%
+\subsubsection{使用流程}\label{ux4f7fux7528ux6d41ux7a0b-13}}
 
 \begin{itemize}
 \tightlist
@@ -5065,8 +6125,8 @@ FIFO：
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{ux4f7fux7528ux6d41ux7a0b-12}{%
-\subsubsection{使用流程}\label{ux4f7fux7528ux6d41ux7a0b-12}}
+\hypertarget{ux4f7fux7528ux6d41ux7a0b-14}{%
+\subsubsection{使用流程}\label{ux4f7fux7528ux6d41ux7a0b-14}}
 
 \begin{itemize}
 \tightlist
@@ -5183,8 +6243,8 @@ FIFO：
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{ux4f7fux7528ux6d41ux7a0b-13}{%
-\subsubsection{使用流程}\label{ux4f7fux7528ux6d41ux7a0b-13}}
+\hypertarget{ux4f7fux7528ux6d41ux7a0b-15}{%
+\subsubsection{使用流程}\label{ux4f7fux7528ux6d41ux7a0b-15}}
 
 \begin{itemize}
 \tightlist
@@ -5403,8 +6463,8 @@ FIFO：
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{ux4f7fux7528ux6d41ux7a0b-14}{%
-\subsubsection{使用流程}\label{ux4f7fux7528ux6d41ux7a0b-14}}
+\hypertarget{ux4f7fux7528ux6d41ux7a0b-16}{%
+\subsubsection{使用流程}\label{ux4f7fux7528ux6d41ux7a0b-16}}
 
 \begin{itemize}
 \tightlist
@@ -5590,8 +6650,8 @@ FIFO：
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{ux4f7fux7528ux6d41ux7a0b-15}{%
-\subsubsection{使用流程}\label{ux4f7fux7528ux6d41ux7a0b-15}}
+\hypertarget{ux4f7fux7528ux6d41ux7a0b-17}{%
+\subsubsection{使用流程}\label{ux4f7fux7528ux6d41ux7a0b-17}}
 
 \begin{itemize}
 \tightlist
@@ -5608,6 +6668,119 @@ FIFO：
 \item
   观察SPI中断，中断触发代表当前接收结束
 \end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{spiux4f7fux7528ux5176ux4ed6ux914dux7f6e}{%
+\section{SPI使用其他配置}\label{spiux4f7fux7528ux5176ux4ed6ux914dux7f6e}}
+
+\hypertarget{spi-clockux914dux7f6e}{%
+\subsection{SPI clock配置}\label{spi-clockux914dux7f6e}}
+
+\hypertarget{ux9ed8ux8ba4ux914dux7f6e}{%
+\subsubsection{默认配置}\label{ux9ed8ux8ba4ux914dux7f6e}}
+
+对于默认配置，spi时钟的配置通过 ``pParam.eSclkDiv'' 来实现，计算公式为： ``spi interface clock / (2 * (eSclkDiv + 1))''，其中默认配置下，spi interface clock 为24M，因此可以得到不同时钟下的eSclkDiv：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\PreprocessorTok{#define SPI_INTERFACETIMINGSCLKDIV_DEFAULT_6M    (1)}
+\PreprocessorTok{#define SPI_INTERFACETIMINGSCLKDIV_DEFAULT_4M    (2)}
+\PreprocessorTok{#define SPI_INTERFACETIMINGSCLKDIV_DEFAULT_3M    (3)}
+\PreprocessorTok{#define SPI_INTERFACETIMINGSCLKDIV_DEFAULT_2M4   (4)}
+\PreprocessorTok{#define SPI_INTERFACETIMINGSCLKDIV_DEFAULT_2M    (5)}
+\end{Highlighting}
+\end{Shaded}
+
+详细请参考``peripheral\_ssp.h''
+
+\hypertarget{hclkux914dux7f6e}{%
+\subsubsection{HCLK配置}\label{hclkux914dux7f6e}}
+
+对于更高的时钟，则需要在配置``pParam.eSclkDiv''之前打开HCLK配置，打开方式如下：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{    SYSCTRL_SelectHClk(SYSCTRL_CLK_PLL_DIV_1+}\DecValTok{3}\NormalTok{);}
+\NormalTok{    SYSCTRL_SelectSpiClk(SPI_PORT_1,SYSCTRL_CLK_HCLK);}
+\end{Highlighting}
+\end{Shaded}
+
+其中PLL为384M，``SYSCTRL\_CLK\_PLL\_DIV\_1+3''代表4分频（推荐配置），可以将spi interface clock 提高到384M/4 = 96M。在此基础上通过计算公式``spi interface clock / (2 * (eSclkDiv + 1))'' 得到不同时钟下的eSclkDiv：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\PreprocessorTok{#define SPI_INTERFACETIMINGSCLKDIV_HCLK_24M    (1)}
+\PreprocessorTok{#define SPI_INTERFACETIMINGSCLKDIV_HCLK_12M    (3)}
+\end{Highlighting}
+\end{Shaded}
+
+详细请参考``peripheral\_ssp.h'' 其中spi interface clock的大小可以在配置后，通过``SYSCTRL\_GetClk()''来获取
+
+ATTENTION : 此处的API使用均以SPI1（SPI\_PORT\_1）为例，具体使用请根据需要调整
+
+\hypertarget{qspi-ux4f7fux7528}{%
+\subsection{QSPI 使用}\label{qspi-ux4f7fux7528}}
+
+QSPI的使用需要在以上的配置的基础上，做一些额外修改 \#\#\#\# pin 配置 QSPI用到了CLK,CS,MOSI,MISO,HOLD,WP,主从都需要配置为输入输出
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{    PINCTRL_SelSpiIn(SPI_PORT_1, SPI_MIC_CLK, SPI_MIC_CS, SPI_MIC_HOLD, SPI_MIC_WP, SPI_MIC_MISO, SPI_MIC_MOSI);}
+\NormalTok{    PINCTRL_SetPadMux(SPI_MIC_CLK, IO_SOURCE_SPI1_CLK_OUT);}
+\NormalTok{    PINCTRL_SetPadMux(SPI_MIC_CS, IO_SOURCE_SPI1_CSN_OUT);}
+\NormalTok{    PINCTRL_SetPadMux(SPI_MIC_MOSI, IO_SOURCE_SPI1_MOSI_OUT);}
+\NormalTok{    PINCTRL_SetPadMux(SPI_MIC_MISO, IO_SOURCE_SPI1_MISO_OUT);}
+\NormalTok{    PINCTRL_SetPadMux(SPI_MIC_WP, IO_SOURCE_SPI1_WP_OUT);}
+\NormalTok{    PINCTRL_SetPadMux(SPI_MIC_HOLD, IO_SOURCE_SPI1_HOLD_OUT);}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{pparam-ux914dux7f6e}{%
+\subsubsection{pParam 配置}\label{pparam-ux914dux7f6e}}
+
+QSPI的部分pParam参数需要修改为如下，同时Addr和Cmd需要打开
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{    pParam.eQuadMode = SPI_DUALQUAD_QUAD_IO_MODE;}
+\NormalTok{    pParam.SlaveDataOnly = SPI_SLVDATAONLY_DISABLE;}
+\NormalTok{    pParam.eAddrEn = SPI_ADDREN_ENABLE;}
+\NormalTok{    pParam.eCmdEn = SPI_CMDEN_ENABLE;}
+\end{Highlighting}
+\end{Shaded}
+
+此外，主还需要切换读写Mode（读和写顺序执行，比如首先利用四线完成写操作，然后再读）
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{    pParam.eReadWriteMode = SPI_TRANSMODE_WRITE_READ;}
+\end{Highlighting}
+\end{Shaded}
+
+或者（在Write和Read之间添加dummy（默认为8个clk cycle））
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{    pParam.eReadWriteMode = SPI_TRANSMODE_WRITE_DUMMY_READ;}
+\end{Highlighting}
+\end{Shaded}
+
+从则添加
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{    pParam.eReadWriteMode = SPI_TRANSMODE_READ_WRITE;}
+\end{Highlighting}
+\end{Shaded}
+
+或者（在Read和Write之间添加dummy（默认为8个clk cycle））
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{    pParam.eReadWriteMode = SPI_TRANSMODE_READ_DUMMY_WRITE;}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -5834,8 +7007,8 @@ UART0\_TX，分别用于触发 DMA 发送请求（通过 DMA 传输接收到的�
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{ux65f6ux949fux914dux7f6e}{%
-\subsection{时钟配置}\label{ux65f6ux949fux914dux7f6e}}
+\hypertarget{ux65f6ux949fux914dux7f6e-1}{%
+\subsection{时钟配置}\label{ux65f6ux949fux914dux7f6e-1}}
 
 举例如下。
 
@@ -6496,17 +7669,760 @@ DMA向CPU发出总线请求，CPU将总线交给DMA之后，由DMA控制数据�
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{ch-watchdog}{%
-\chapter{看门狗（WATCHDOG）}\label{ch-watchdog}}
+\hypertarget{universal-serial-bus-deviceusb}{%
+\chapter{Universal serial bus device（USB）}\label{universal-serial-bus-deviceusb}}
 
 \hypertarget{ux529fux80fdux6982ux8ff0-7}{%
 \section{功能概述}\label{ux529fux80fdux6982ux8ff0-7}}
 
-看门狗就是定期的查看芯片内部情况，一旦发生错误就向芯片内部发出重启信号。
-看门狗指令在程序的中断中拥有最高的优先级。防止程序跑飞，同时也能防止程序在线运行时出现死循环
+\begin{itemize}
+\tightlist
+\item
+  支持full-speed (12 Mbps) device模式
+\item
+  集成PHY Transceiver，内置上拉，软件可控
+\item
+  Endpoints:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Endpoints 0: control endpoint
+  \item
+    Endpoints 1-5: 可以配置为in/out，以及control/isochronous/bulk/interrupt
+  \end{itemize}
+\item
+  支持UBS suspend, resume, remote-wakeup
+\item
+  内置DMA方便数据传输
+\end{itemize}
 
 \hypertarget{ux4f7fux7528ux8bf4ux660e-8}{%
 \section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-8}}
+
+\hypertarget{usbux8f6fux4ef6ux7ed3ux6784}{%
+\subsection{USB软件结构}\label{usbux8f6fux4ef6ux7ed3ux6784}}
+
+\begin{itemize}
+\tightlist
+\item
+  driver layer，USB的底层处理，不建议用户修改。
+
+  \begin{itemize}
+  \tightlist
+  \item
+    处理了大部分和应用场景无关的流程，提供了USB\_IrqHandler，调用event handler。
+  \item
+    位置：\texttt{\textbackslash{}ING\textbackslash{}\_SDK\textbackslash{}sdk\textbackslash{}src\textbackslash{}FWlib\textbackslash{}peripheral\textbackslash{}\_usb.c}
+  \end{itemize}
+\item
+  bsp layer，处理场景相关的流程，需要用户提供event handler，并实现control和transfer相关处理。
+
+  \begin{itemize}
+  \tightlist
+  \item
+    位置：\texttt{\textbackslash{}ING\textbackslash{}\_SDK\textbackslash{}sdk\textbackslash{}src\textbackslash{}BSP\textbackslash{}bsp\textbackslash{}\_usb\_xxx.c}
+  \end{itemize}
+\end{itemize}
+
+\hypertarget{usb-device-ux72b6ux6001}{%
+\subsection{USB Device 状态}\label{usb-device-ux72b6ux6001}}
+
+\begin{itemize}
+\tightlist
+\item
+  USB的使用首先需要配置USB CLK，USB IO以及PHY，并且初始化USB模块，此时USB为``NONE''状态，等待USB的reset中断（USB\_IrqHandler）。
+\item
+  reset中断的触发代表USB cable已经连接，而且host已经检测到了device，在reset中断中，USB模块完成相关的USB初始化。并继续等待中断。
+\item
+  enumeration中断的触发代表device可以开始接收SOF以及control传输，device需要配置并打开endpoint 0，进入``DEFAULT''状态。
+\item
+  out中断的触发代表收到了host的get descriptor，用户需要准备好相应的descriptor，并配置相关的in endpoint。
+\item
+  out中断中的set address request会将device的状态切换为``ADDRESS''。
+\item
+  out中断中的set configuration会将device的状态切换为``CONFIGURED''。此时device可以开始在配置的endpoint上传输数据。
+\item
+  bus上的idle会自动触发suspend中断（用户需要在初始化中使能suspend中断），此时切换为``SUSPEND''状态。
+\item
+  idle之后任何bus上的活动将会触发resume中断（用户需要在初始化中使能resume中断）,用户也可以选择使用remote wakeup主动唤醒。
+\item
+  唤醒之后的usb将重新进入``CONFIGURED''状态，每1m（full-speed）将会收到1个SOF中断（用户需要在初始化中使能sof中断）。
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{typedef} \KeywordTok{enum}
+\NormalTok{\{}
+\NormalTok{  USB_DEVICE_NONE,}
+  \CommentTok{/* A USB device may be attached or detached from the USB */}
+\NormalTok{  USB_DEVICE_ATTACHED,}
+  \CommentTok{/*USB devices may obtain power from an external source  */}
+\NormalTok{  USB_DEVICE_POWERED,}
+  \CommentTok{/*  After the device has been powered, and reset is done */}
+\NormalTok{  USB_DEVICE_DEFAULT,}
+  \CommentTok{/*  All USB devices use the default address when initially powered or after the device has been reset. Each}
+\CommentTok{      USB device is assigned a unique address by the host after attachment or after reset. */}
+\NormalTok{  USB_DEVICE_ADDRESS,}
+  \CommentTok{/* Before a USB device function may be used, the device must be configured. */}
+\NormalTok{  USB_DEVICE_CONFIGURED,}
+  \CommentTok{/* In order to conserve power, USB devices automatically enter the Suspended state when the device has}
+\CommentTok{     observed no bus traffic for a specified period */}
+\NormalTok{  USB_DEVICE_SUSPENDED,}
+\NormalTok{  USB_DEVICE_TEST_RESET_DONE}
+\NormalTok{\}USB_DEVICE_STATE_E;}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux8bbeux7f6e-io}{%
+\subsection{设置 IO}\label{ux8bbeux7f6e-io}}
+
+对于Ing91682,USB的DP/DM固定在GPIO16/17,IO初始化细节请参考\texttt{ING\_SDK\textbackslash{}sdk\textbackslash{}src\textbackslash{}BSP\textbackslash{}bsp\textbackslash{}\_usb.c}中的\texttt{bsp\_usb\_init()}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{// }\AlertTok{ATTENTION}\CommentTok{ ! FIXED IO FOR USB on 916 series}
+\PreprocessorTok{#define USB_PIN_DP GIO_GPIO_16}
+\PreprocessorTok{#define USB_PIN_DM GIO_GPIO_17}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux8bbeux7f6e-phy}{%
+\subsection{设置 PHY}\label{ux8bbeux7f6e-phy}}
+
+使用\texttt{SYSCTRL\_USBPhyConfig()}初始化PHY, 细节请参考\texttt{ING\_SDK\textbackslash{}sdk\textbackslash{}src\textbackslash{}BSP\textbackslash{}bsp\textbackslash{}\_usb.c}中的\texttt{bsp\_usb\_init()}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{/**}
+\CommentTok{ * }\AnnotationTok{@brief}\CommentTok{ Config USB PHY functionality}
+\CommentTok{ *}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{enable}\CommentTok{            Enable(1)/Disable(0) usb phy module}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{pull_sel}\CommentTok{          DP pull up(0x1)/DM pull up(0x2)/DP&DM pull down(0x3)}
+\CommentTok{ */}
+\DataTypeTok{void}\NormalTok{ SYSCTRL_USBPhyConfig(}\DataTypeTok{uint8_t}\NormalTok{ enable, }\DataTypeTok{uint8_t}\NormalTok{ pull_sel);}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{usb-ux6a21ux5757ux521dux59cbux5316}{%
+\subsection{USB 模块初始化}\label{usb-ux6a21ux5757ux521dux59cbux5316}}
+
+细节请参考\texttt{ING\_SDK\textbackslash{}sdk\textbackslash{}src\textbackslash{}BSP\textbackslash{}bsp\textbackslash{}\_usb.c}中的\texttt{bsp\_usb\_init()}。
+
+\begin{itemize}
+\tightlist
+\item
+  USB模块首选需要打开USB中断并配置相应接口，其中USB\_IrqHandler由driver提供不需要用户修改。
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{  platform_set_irq_callback(PLATFORM_CB_IRQ_USB, USB_IrqHandler, NULL);}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  其次需要初始化USB模块以及相关状态信息，入参结构体中用户需要提供event handler，其余为可选项
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{/**}
+\CommentTok{ * }\AnnotationTok{@brief}\CommentTok{ interface API. initilize usb module and related variables, must be called before any usb usage }
+\CommentTok{ *}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{device}\CommentTok{ callback function with structure USB_INIT_CONFIG_T. }
+\CommentTok{ *            When this function has been called your device is ready to be enumerated by the USB host.}
+\CommentTok{ * }\AnnotationTok{@param[out]}\CommentTok{ }\CommentVarTok{null}\CommentTok{. }
+\CommentTok{ */}
+\KeywordTok{extern}\NormalTok{ USB_ERROR_TYPE_E USB_InitConfig(USB_INIT_CONFIG_T *config);}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{event-handler}{%
+\subsection{event handler}\label{event-handler}}
+
+USB的用户层调用通过event handler来实现， 细节请参考\texttt{ING\_SDK\textbackslash{}sdk\textbackslash{}src\textbackslash{}BSP\textbackslash{}bsp\textbackslash{}\_usb.c}中的\texttt{bsp\_usb\_event\_handler()}。
+
+event handler需要包含对以下event事件的处理：
+
+\begin{itemize}
+\item
+  USB\_EVENT\_EP0\_SETUP
+
+  \begin{itemize}
+  \tightlist
+  \item
+    该event包含EPO(control endpoint)上的所有request，包括读取/设置 descriptor，设置address，set/clear feature等request，按照USB协议，device需要支持所有协议中的标准request。
+  \item
+    descriptor需要按照协议格式准备，并且放置在4bytes对齐的全局地址，并通过USB\_SendData()发送给host，在整个过程中，该全局地址和数据需要保持。（4bytes对齐是内部DMA搬运的要求，否则可能出现错误）。
+  \item
+    对于没有data stage的request，event handler中不需要使用USB\_SendData()/USB\_RecvData()'。
+  \item
+    对于不支持的request，需要设置status为：
+  \end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{status = USB_ERROR_REQUEST_NOT_SUPPORT;}
+\end{Highlighting}
+\end{Shaded}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    根据返回的status，driver判断当前request是否支持，否则按照协议发送stall给host。
+  \item
+    对于包含data stage的out传输，driver将继续接收数据，数据将在USB\_EVENT\_EP\_DATA\_TRANSFER的ep0通知用户。
+  \item
+    setup/data/status stage的切换将在driver内进行。
+  \end{itemize}
+\item
+  USB\_EVENT\_EP\_DATA\_TRANSFER
+
+  数据相关的处理，接收和发射数据。
+
+  \begin{itemize}
+  \tightlist
+  \item
+    参数包含ep number
+  \end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{uint8_t}\NormalTok{  ep;}
+\end{Highlighting}
+\end{Shaded}
+
+  以及数据处理类型，分别代表发送和接收transfer的结束。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{typedef} \KeywordTok{enum}
+\NormalTok{\{}
+    \CommentTok{/// Event send when a receive transfert is finish}
+\NormalTok{    USB_CALLBACK_TYPE_RECEIVE_END,}
+    \CommentTok{/// Event send when a transmit transfert is finish}
+\NormalTok{    USB_CALLBACK_TYPE_TRANSMIT_END}
+\NormalTok{\} USB_CALLBACK_EP_TYPE_T;}
+\end{Highlighting}
+\end{Shaded}
+\item
+  USB\_EVENT\_DEVICE\_RESET
+
+  USB reset 中断的event，代表枚举的开始。
+\item
+  USB\_EVENT\_DEVICE\_SOF
+
+  SOF中断，每1m（full-speed）将会收到1个SOF中断（用户需要在初始化中使能sof中断）。
+\item
+  USB\_EVENT\_DEVICE\_SUSPEND
+
+  bus 进入idle状态后触发suspend，此时总线上没有USB活动。driver会关闭phy clock。
+\item
+  USB\_EVENT\_DEVICE\_RESUME
+
+  bus 上的任何USB活动将会触发wakeup中断。resume后driver打开phy clock，USB恢复到正常状态。
+\end{itemize}
+
+\hypertarget{usb_event_ep0_setupux7684ux5b9eux73b0}{%
+\subsubsection{USB\_EVENT\_EP0\_SETUP的实现}\label{usb_event_ep0_setupux7684ux5b9eux73b0}}
+
+control以及枚举相关的流程实现需要通过USB\_EVENT\_EP0\_SETUP event来进行。
+
+\begin{itemize}
+\item
+  默认的control endpoint是ep0, 所有request都会触发该event
+\item
+  如果场景不支持某个request，则需要设置status == USB\_ERROR\_REQUEST\_NOT\_SUPPORT。driver会据此发送stall。
+\item
+  如果场景需要处理某个request，则需要将status设置为非USB\_ERROR\_REQUEST\_NOT\_SUPPORT状态。
+\item
+  用户需要将所有descriptor保存在4bytes对齐的全局地址。以device descriptor为例
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{case}\NormalTok{ USB_REQUEST_DEVICE_DESCRIPTOR_DEVICE:}
+\NormalTok{\{}
+\NormalTok{  size = }\KeywordTok{sizeof}\NormalTok{(USB_DEVICE_DESCRIPTOR_REAL_T);}
+\NormalTok{  size = (setup->wLength < size) ? (setup->wLength) : size;}
+
+\NormalTok{  status |= USB_SendData(}\DecValTok{0}\NormalTok{, (}\DataTypeTok{void}\NormalTok{*)&DeviceDescriptor, size, }\DecValTok{0}\NormalTok{);}
+\NormalTok{\}}
+\ControlFlowTok{break}\NormalTok{;}
+\end{Highlighting}
+\end{Shaded}
+
+  首先判断size，确保数据没有超出request要求，然后使用USB\_SendData发送in transfer数据。其中DeviceDescriptor为device descriptor地址。
+\item
+  set address request需要配置device地址，因此在driver layer实现。
+\end{itemize}
+
+\hypertarget{suspend-ux7684ux5904ux7406}{%
+\subsubsection{SUSPEND 的处理}\label{suspend-ux7684ux5904ux7406}}
+
+SUSPEND状态下可以根据需求进行power saving，默认配置只关闭了phy clock，其余的USB power/clock处理需要根据场景在应用层中的low power mode中来实现。
+
+\hypertarget{remote-wakeup}{%
+\subsubsection{remote wakeup}\label{remote-wakeup}}
+
+进入suspend的device可以选择主动唤醒，唤醒通过bsp\_usb\_device\_remote\_wakeup()连续发送10ms的resume signal来实现。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ bsp_usb_device_remote_wakeup(}\DataTypeTok{void}\NormalTok{)}
+\NormalTok{\{}
+\NormalTok{  USB_DeviceSetRemoteWakeupBit(U_TRUE);}
+\NormalTok{  platform_set_timer(internal_bsp_usb_device_remote_wakeup_stop,}\DecValTok{16}\NormalTok{);}\CommentTok{// setup timer for 10ms, then disable resume signal}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux5e38ux7528driver-api}{%
+\subsection{常用driver API}\label{ux5e38ux7528driver-api}}
+
+\hypertarget{send-usb-data}{%
+\subsubsection{send usb data}\label{send-usb-data}}
+
+使用该API发送USB数据（包括setup data和应用数据），但需要在set config（打开endpoint）之后使用。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{/**}
+\CommentTok{ * }\AnnotationTok{@brief}\CommentTok{ interface API. send usb device data packet.}
+\CommentTok{ *}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{ep}\CommentTok{, endpoint number, the highest bit represent direction, use USB_EP_DIRECTION_IN/OUT}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{buffer}\CommentTok{, global buffer to hold data of the packet, it must be a DWORD-aligned address. }
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{size}\CommentTok{. it should be a value smaller than 512*mps(eg, for EP0, mps is 64byte, maximum packet number is 512, MPS is 64).}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{flag}\CommentTok{. null}
+\CommentTok{ * }\AnnotationTok{@param[out]}\CommentTok{ }\CommentVarTok{return}\CommentTok{ U_TRUE if successful, otherwise U_FALSE. }
+\CommentTok{ */}
+\KeywordTok{extern}\NormalTok{ USB_ERROR_TYPE_E USB_SendData(}\DataTypeTok{uint8_t}\NormalTok{ ep, }\DataTypeTok{void}\NormalTok{* buffer, }\DataTypeTok{uint16_t}\NormalTok{ size, }\DataTypeTok{uint32_t}\NormalTok{ flag);}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{receive-usb-data}{%
+\subsubsection{receive usb data}\label{receive-usb-data}}
+
+使用该API接收USB数据（包括setup data和应用数据），但需要在set config（打开endpoint）之后使用。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{/**}
+\CommentTok{ * }\AnnotationTok{@brief}\CommentTok{ interface API. receive usb device data packet.}
+\CommentTok{ *}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{ep}\CommentTok{, endpoint number, the highest bit represent direction, use USB_EP_DIRECTION_IN/OUT}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{buffer}\CommentTok{, global buffer to hold data of the packet, it must be a DWORD-aligned address. }
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{size}\CommentTok{. For OUT transfers, the Transfer Size field in the endpoint Transfer Size register must be a multiple}
+\CommentTok{ *            of the maximum packet size of the endpoint(eg, EP0 is 64byte), adjusted to the DWORD boundary}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{flag}\CommentTok{. null}
+\CommentTok{ * }\AnnotationTok{@param[out]}\CommentTok{ }\CommentVarTok{return}\CommentTok{ U_TRUE if successful, otherwise U_FALSE. }
+\CommentTok{ */}
+\KeywordTok{extern}\NormalTok{ USB_ERROR_TYPE_E USB_RecvData(}\DataTypeTok{uint8_t}\NormalTok{ ep, }\DataTypeTok{void}\NormalTok{* buffer, }\DataTypeTok{uint16_t}\NormalTok{ size, }\DataTypeTok{uint32_t}\NormalTok{ flag);}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{enabledisable-ep}{%
+\subsubsection{enable/disable ep}\label{enabledisable-ep}}
+
+正常处理中不需要使用该API，特殊情况下可以根据需求打开关闭某个特定的endpoint
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{/**}
+\CommentTok{ * }\AnnotationTok{@brief}\CommentTok{ interface APIs. use this pair for enable/disable certain ep.}
+\CommentTok{ *}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{ep}\CommentTok{ number with USB_EP_DIRECTION_IN/OUT. }
+\CommentTok{ * }\AnnotationTok{@param[out]}\CommentTok{ }\CommentVarTok{null}\CommentTok{ }
+\CommentTok{ */}
+\KeywordTok{extern} \DataTypeTok{void}\NormalTok{ USB_EnableEp(}\DataTypeTok{uint8_t}\NormalTok{ ep, USB_EP_TYPE_T type);}
+\KeywordTok{extern} \DataTypeTok{void}\NormalTok{ USB_DisableEp(}\DataTypeTok{uint8_t}\NormalTok{ ep);}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{usb-close}{%
+\subsubsection{usb close}\label{usb-close}}
+
+USB的disable请使用bsp layer中的bsp\_usb\_disable()
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{/**}
+\CommentTok{ * }\AnnotationTok{@brief}\CommentTok{ interface API. shutdown usb module and reset all status data.}
+\CommentTok{ *}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{null}\CommentTok{. }
+\CommentTok{ * }\AnnotationTok{@param[out]}\CommentTok{ }\CommentVarTok{null}\CommentTok{. }
+\CommentTok{ */}
+\KeywordTok{extern} \DataTypeTok{void}\NormalTok{ USB_Close(}\DataTypeTok{void}\NormalTok{);}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{usb-stall}{%
+\subsubsection{usb stall}\label{usb-stall}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{/**}
+\CommentTok{ * }\AnnotationTok{@brief}\CommentTok{ interface API. set ep stall pid for current transfer}
+\CommentTok{ *}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{ep}\CommentTok{ num with direction. }
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{U_TRUE:}\CommentTok{ stall, U_FALSE: set back to normal }
+\CommentTok{ * }\AnnotationTok{@param[out]}\CommentTok{ }\CommentVarTok{null}\CommentTok{. }
+\CommentTok{ */}
+\KeywordTok{extern} \DataTypeTok{void}\NormalTok{ USB_SetStallEp(}\DataTypeTok{uint8_t}\NormalTok{ ep, }\DataTypeTok{uint8_t}\NormalTok{ stall);}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{usb-in-endpoint-nak}{%
+\subsubsection{usb In endpoint NAK}\label{usb-in-endpoint-nak}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{/**}
+\CommentTok{ * }\AnnotationTok{@brief}\CommentTok{ interface API. use this api to set NAK on a specific IN ep}
+\CommentTok{ *}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{U_TRUE:}\CommentTok{ enable NAK on required IN ep. U_FALSE: stop NAK}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{ep:}\CommentTok{ ep number with USB_EP_DIRECTION_IN/OUT. }
+\CommentTok{ * }\AnnotationTok{@param[out]}\CommentTok{ }\CommentVarTok{null}\CommentTok{. }
+\CommentTok{ */}
+\KeywordTok{extern} \DataTypeTok{void}\NormalTok{ USB_SetInEndpointNak(}\DataTypeTok{uint8_t}\NormalTok{ ep, }\DataTypeTok{uint8_t}\NormalTok{ enable);}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{example-0-winusb}{%
+\subsection{example 0: WINUSB}\label{example-0-winusb}}
+
+WinUSB 是适用于 USB 设备的通用驱动程序，随附在自 Windows Vista 起的所有 Windows 版本中。 对于某些通用串行总线 (USB) 设备（例如只有单个应用程序访问的设备），可以将 WinUSB (Winusb.sys) 安装在 设备的内核模式堆栈中作为 USB 设备的函数驱动程序而不是实现驱动程序。如果已将设备定义为 WinUSB 设备 ，Windows会自动加载Winusb.sys。
+
+\begin{itemize}
+\tightlist
+\item
+  参考：\texttt{\textbackslash{}ING\textbackslash{}\_SDK\textbackslash{}sdk\textbackslash{}src\textbackslash{}BSP\textbackslash{}bsp\_usb.c}
+\end{itemize}
+
+首先调用\texttt{bsp\_usb\_init()}初始化USB模块,之后的USB活动则全部在\texttt{bsp\_usb\_event\_handler()}中处理。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\PreprocessorTok{#define FEATURE_WCID_SUPPORT}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  device需要在enumeration阶段提供WCID标识和相关descriptor。示例中的descriptor实现如下：
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\PreprocessorTok{#define USB_WCID_DESCRIPTOR_INDEX_4 \textbackslash{}}
+\PreprocessorTok{\{ \textbackslash{}}
+
+\PreprocessorTok{#define USB_WCID_DESCRIPTOR_INDEX_5 \textbackslash{}}
+\PreprocessorTok{\{ \textbackslash{}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  通过修改\texttt{USB\_STRING\_PRODUCT}来改变产品名称iproduct
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\PreprocessorTok{#define USB_STRING_PRODUCT \{16,0x3,'w',0,'i',0,'n',0,'-',0,'d',0,'e',0,'v',0\}}
+\end{Highlighting}
+\end{Shaded}
+
+第一个值是整个数组的长度，第二个值不变，之后是16bit unicode字符串 （每个符号占用两个字节），该示例中iproduct为'win-dev'。
+
+\begin{itemize}
+\tightlist
+\item
+  该示例中打开了两个bulk endpoint，endpoint 1 为input，endpoint 2为output,最大包长为64：
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\PreprocessorTok{#define USB_EP_1_DESCRIPTOR \textbackslash{}}
+\PreprocessorTok{\{ \textbackslash{}}
+\PreprocessorTok{  .size = sizeof(USB_EP_DESCRIPTOR_REAL_T), \textbackslash{}}
+\PreprocessorTok{  .type = 5, \textbackslash{}}
+\PreprocessorTok{  .ep = USB_EP_DIRECTION_IN(EP_IN), \textbackslash{}}
+\PreprocessorTok{  .attributes = USB_EP_TYPE_BULK, \textbackslash{}}
+\PreprocessorTok{  .mps = EP_X_MPS_BYTES, \textbackslash{}}
+\PreprocessorTok{  .interval = 0 \textbackslash{}}
+\PreprocessorTok{\}}
+
+\PreprocessorTok{#define USB_EP_2_DESCRIPTOR \textbackslash{}}
+\PreprocessorTok{\{ \textbackslash{}}
+\PreprocessorTok{  .size = sizeof(USB_EP_DESCRIPTOR_REAL_T), \textbackslash{}}
+\PreprocessorTok{  .type = 5, \textbackslash{}}
+\PreprocessorTok{  .ep = USB_EP_DIRECTION_OUT(EP_OUT), \textbackslash{}}
+\PreprocessorTok{  .attributes = USB_EP_TYPE_BULK, \textbackslash{}}
+\PreprocessorTok{  .mps = EP_X_MPS_BYTES, \textbackslash{}}
+\PreprocessorTok{  .interval = 0 \textbackslash{}}
+\PreprocessorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\item
+  在set configuration(USB\_REQUEST\_DEVICE\_SET\_CONFIGURATION)之后，In/out endpoint 可以使用，通过\texttt{USB\_RecvData()}配置out endpoint接收host发送的数据。 在收到host的数据后（USB\_CALLBACK\_TYPE\_RECEIVE\_END），通过\texttt{USB\_SendData()}将数据 发送给host（通过in endpoint）。
+\item
+  在WIN10及以上的系统上，该设备会自动加载winusb.sys并枚举成WinUsb Device, 设备名称为``win-dev''。 \includegraphics{img/USB/usb_win_dev.PNG}
+\item
+  通过ing\_usb.exe可以对该设备进行一些简单数据测试(ing\_usb.exe VID:PID -w(write command) 2(transfer type(2==bulk)) 以及需要传输的数据（默认包长度为endpoint的mps），数据会通过out endpoint发送给USB Device并通过in endpoint回环并打印出来)：\includegraphics{img/USB/usb_ing_usb_exe.PNG}
+\item
+  使用ing\_usb.exe可以读取in endpoint的数据（(ing\_usb.exe VID:PID -r(read command) 2(transfer type(2==bulk))）, 但是bsp layer中需要做相应的修改（使用in endpoint发送数据给host）。
+\end{itemize}
+
+\hypertarget{example-1-hid-composite}{%
+\subsection{example 1: HID composite}\label{example-1-hid-composite}}
+
+该示例实现了一个mouse + keyboard的复合设备， 使用了两个独立的interface，每个interface包含一个In Endpoint。
+
+\begin{itemize}
+\tightlist
+\item
+  参考：\texttt{\textbackslash{}ING\_SDK\textbackslash{}sdk\textbackslash{}src\textbackslash{}BSP\textbackslash{}bsp\_usb\_hid.c}
+\end{itemize}
+
+首先调用\texttt{bsp\_usb\_init()}初始化USB模块, 之后的USB活动则全部在\texttt{bsp\_usb\_event\_handler()}中处理，report的发送参考\texttt{report\ data\ 发送}。
+
+\hypertarget{ux6807ux51c6ux63cfux8ff0ux7b26}{%
+\subsubsection{标准描述符}\label{ux6807ux51c6ux63cfux8ff0ux7b26}}
+
+其标准描述符结构如下，configuration descriptor之后分别是interface descriptor, hid descriptor, endpoint descriptor。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{typedef} \KeywordTok{struct}\NormalTok{ __attribute__((packed))}
+\NormalTok{\{}
+\NormalTok{  USB_CONFIG_DESCRIPTOR_REAL_T config;}
+\NormalTok{  USB_INTERFACE_DESCRIPTOR_REAL_T interface_kb;}
+\NormalTok{  BSP_USB_HID_DESCRIPTOR_T hid_kb;}
+\NormalTok{  USB_EP_DESCRIPTOR_REAL_T ep_kb[bNUM_EP_KB];}
+\NormalTok{  USB_INTERFACE_DESCRIPTOR_REAL_T interface_mo;}
+\NormalTok{  BSP_USB_HID_DESCRIPTOR_T hid_mo;}
+\NormalTok{  USB_EP_DESCRIPTOR_REAL_T ep_mo[bNUM_EP_MO];}
+\NormalTok{\}BSP_USB_DESC_STRUCTURE_T;}
+\end{Highlighting}
+\end{Shaded}
+
+上述描述符的示例在路径\texttt{\textbackslash{}ING\_SDK\textbackslash{}sdk\textbackslash{}src\textbackslash{}BSP\textbackslash{}bsp\_usb\_hid.h}，以keyboard interface为例：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\PreprocessorTok{#define USB_INTERFACE_DESCRIPTOR_KB \textbackslash{}}
+\PreprocessorTok{\{ \textbackslash{}}
+\PreprocessorTok{  .size = sizeof(USB_INTERFACE_DESCRIPTOR_REAL_T), \textbackslash{}}
+\PreprocessorTok{  .type = 4, \textbackslash{}}
+\PreprocessorTok{  .interfaceIndex = 0x00, \textbackslash{}}
+\PreprocessorTok{  .alternateSetting = 0x00, \textbackslash{}}
+\PreprocessorTok{  .nbEp = bNUM_EP_KB,  \textbackslash{}}
+\PreprocessorTok{  .usbClass = 0x03, \textbackslash{}}
+\PreprocessorTok{  /* 0: no subclass, 1: boot interface */ \textbackslash{}}
+\PreprocessorTok{  .usbSubClass = 0x00, \textbackslash{}}
+\PreprocessorTok{  /* 0: none, 1: keyboard, 2: mouse */ \textbackslash{}}
+\PreprocessorTok{  .usbProto = 0x00, \textbackslash{}}
+\PreprocessorTok{  .iDescription = 0x00 \textbackslash{}}
+\PreprocessorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+其中可能需要根据场景修改的变量使用宏定义，其他则使用常量。请注意：该实现中没有打开boot function。
+
+\hypertarget{ux62a5ux544aux63cfux8ff0ux7b26}{%
+\subsubsection{报告描述符}\label{ux62a5ux544aux63cfux8ff0ux7b26}}
+
+报告描述符的示例在路径\texttt{\textbackslash{}ING\_SDK\textbackslash{}sdk\textbackslash{}src\textbackslash{}BSP\textbackslash{}bsp\_usb\_hid.h}
+
+\begin{itemize}
+\tightlist
+\item
+  keyboard的report描述符为：
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\PreprocessorTok{#define USB_HID_KB_REPORT_DESCRIPTOR \{  \textbackslash{}}
+\PreprocessorTok{    0x05, 0x01, /* USAGE_PAGE (Generic Desktop)                       */  \textbackslash{}}
+\PreprocessorTok{    0x09, 0x06, /* USAGE (Keyboard)                                   */  \textbackslash{}}
+\PreprocessorTok{    0xa1, 0x01, /* COLLECTION (Application)                           */  \textbackslash{}}
+\PreprocessorTok{    0x05, 0x07, /*   USAGE_PAGE (Keyboard)                            */  \textbackslash{}}
+\PreprocessorTok{    ...\textbackslash{}ING_SDK\textbackslash{}sdk\textbackslash{}src\textbackslash{}BSP\textbackslash{}bsp_usb_hid.h}
+\end{Highlighting}
+\end{Shaded}
+
+keyboard report descriptor包含8bit modifier input，8bit reserve, 5bit led output, 3bit reserve, 6bytes key usage id 。report本地结构为：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\PreprocessorTok{#define KEY_TABLE_LEN (6)}
+\KeywordTok{typedef} \KeywordTok{struct}\NormalTok{ __attribute__((packed))}
+\NormalTok{\{}
+  \DataTypeTok{uint8_t}\NormalTok{ modifier;}
+  \DataTypeTok{uint8_t}\NormalTok{ reserved;}
+  \DataTypeTok{uint8_t}\NormalTok{ key_table[KEY_TABLE_LEN];}
+\NormalTok{\}BSP_KEYB_REPORT_s;}
+\end{Highlighting}
+\end{Shaded}
+
+report中的usage id data的实现分别在以下enum中：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{BSP_KEYB_KEYB_USAGE_ID_e}
+\NormalTok{BSP_KEYB_KEYB_MODIFIER_e}
+\NormalTok{BSP_KEYB_KEYB_LED_e}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  mouse的report描述符为：
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\PreprocessorTok{#define USB_HID_MOUSE_REPORT_DESCRIPTOR_SIZE (50)}
+\PreprocessorTok{#define USB_HID_MOUSE_REPORT_DESCRIPTOR \{ \textbackslash{}}
+\PreprocessorTok{    0x05, 0x01, /* USAGE_PAGE (Generic Desktop)       */   \textbackslash{}}
+\PreprocessorTok{    0x09, 0x02, /* USAGE (Mouse)                      */   \textbackslash{}}
+\PreprocessorTok{    0xa1, 0x01, /* COLLECTION (Application)           */   \textbackslash{}}
+\PreprocessorTok{    ...\textbackslash{}ING_SDK\textbackslash{}sdk\textbackslash{}src\textbackslash{}BSP\textbackslash{}bsp_usb_hid.h}
+\end{Highlighting}
+\end{Shaded}
+
+report包含一个3bit button(button 1 \textasciitilde{} button 3), 5bit reserve, 8bit x value, 8bit y value 结构为：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{typedef} \KeywordTok{struct}\NormalTok{ __attribute__((packed))}
+\NormalTok{\{}
+  \DataTypeTok{uint8_t}\NormalTok{ button;}\CommentTok{/* 1 ~ 3 */}
+  \DataTypeTok{int8_t}\NormalTok{ pos_x;}\CommentTok{/* -127 ~ 127 */}
+  \DataTypeTok{int8_t}\NormalTok{ pos_y;}\CommentTok{/* -127 ~ 127 */}
+\NormalTok{\}BSP_MOUSE_REPORT_s;}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{standardclass-request}{%
+\subsubsection{standard/class request}\label{standardclass-request}}
+
+ep0的request处理在event：USB\_EVENT\_EP0\_SETUP。 HID Class相关的处理在interface destination下：USB\_REQUEST\_DESTINATION\_INTERFACE。
+
+以其中keyboard report 描述符的获取为例：
+
+\begin{itemize}
+\tightlist
+\item
+  setup-\textgreater wIndex代表了interface num，其中0为keyboard interface（参考BSP\_USB\_DESC\_STRUCTURE\_T）
+\item
+  使用USB\_SendData发送report数据
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{case}\NormalTok{ USB_REQUEST_DEVICE_GET_DESCRIPTOR:}
+\NormalTok{\{}
+  \ControlFlowTok{switch}\NormalTok{(((setup->wValue)>>}\DecValTok{8}\NormalTok{)&}\BaseNTok{0xFF}\NormalTok{)}
+\NormalTok{  \{}
+    \ControlFlowTok{case}\NormalTok{ USB_REQUEST_HID_CLASS_DESCRIPTOR_REPORT:}
+\NormalTok{    \{}
+      \ControlFlowTok{switch}\NormalTok{(setup->wIndex)}
+\NormalTok{      \{}
+        \ControlFlowTok{case} \DecValTok{0}\NormalTok{:}
+\NormalTok{        \{}
+\NormalTok{          size = }\KeywordTok{sizeof}\NormalTok{(ReportKeybDescriptor);}
+\NormalTok{          size = (setup->wLength < size) ? (setup->wLength) : size;}
+
+\NormalTok{          status |= USB_SendData(}\DecValTok{0}\NormalTok{, (}\DataTypeTok{void}\NormalTok{*)&ReportKeybDescriptor, size, }\DecValTok{0}\NormalTok{);}
+\NormalTok{          KeybReport.pending = U_FALSE;}
+\NormalTok{        \}}\ControlFlowTok{break}\NormalTok{;}
+\NormalTok{        ...\textbackslash{}ING_SDK\textbackslash{}sdk\textbackslash{}src\textbackslash{}BSP\textbackslash{}bsp_usb_hid.c}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{report-data-ux53d1ux9001}{%
+\subsubsection{report data 发送}\label{report-data-ux53d1ux9001}}
+
+\begin{itemize}
+\tightlist
+\item
+  keyboard key的发送,入参为一个键值以及其是否处于按下的状态，如果该键按下，则将其添加到report中并发送出去。
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{/**}
+\CommentTok{ * }\AnnotationTok{@brief}\CommentTok{ interface API. send keyboard key report}
+\CommentTok{ *}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{key:}\CommentTok{ value comes from BSP_KEYB_KEYB_USAGE_ID_e}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{press:}\CommentTok{ 1: pressed, 0: released}
+\CommentTok{ * }\AnnotationTok{@param[out]}\CommentTok{ }\CommentVarTok{null}\CommentTok{. }
+\CommentTok{ */}
+\KeywordTok{extern} \DataTypeTok{void}\NormalTok{ bsp_usb_handle_hid_keyb_key_report(}\DataTypeTok{uint8_t}\NormalTok{ key, }\DataTypeTok{uint8_t}\NormalTok{ press);}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  keyboard modifier的发送，与key类似，区别是modifier是bitmap data。
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{extern} \DataTypeTok{void}\NormalTok{ bsp_usb_handle_hid_keyb_key_report(}\DataTypeTok{uint8_t}\NormalTok{ key, }\DataTypeTok{uint8_t}\NormalTok{ press);}
+\CommentTok{/**}
+\CommentTok{ * }\AnnotationTok{@brief}\CommentTok{ interface API. send keyboard modifier report}
+\CommentTok{ *}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{modifier:}\CommentTok{ value comes from BSP_KEYB_KEYB_MODIFIER_e}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{press:}\CommentTok{ 1: pressed, 0: released}
+\CommentTok{ * }\AnnotationTok{@param[out]}\CommentTok{ }\CommentVarTok{null}\CommentTok{. }
+\CommentTok{ */}
+\KeywordTok{extern} \DataTypeTok{void}\NormalTok{ bsp_usb_handle_hid_keyb_modifier_report(BSP_KEYB_KEYB_MODIFIER_e modifier, }\DataTypeTok{uint8_t}\NormalTok{ press);}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\item
+  keyboard led的获取，该示例中没有out endpoint，因此led report可能是用ep0的set report得到， 参考：USB\_REQUEST\_HID\_CLASS\_REQUEST\_SET\_REPORT。
+\item
+  mouse report的发送,入参分别为x,y的相对值和button的组合（按下为1，释放为0）。
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{/**}
+\CommentTok{ * }\AnnotationTok{@brief}\CommentTok{ interface API. send mouse report}
+\CommentTok{ *}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{x:}\CommentTok{ 8bit int x axis value, relative,}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{y:}\CommentTok{ 8bit int y axis value, relative,}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{btn:}\CommentTok{ 8bit value, button 1 to 3,}
+\CommentTok{ * }\AnnotationTok{@param[out]}\CommentTok{ }\CommentVarTok{null}\CommentTok{. }
+\CommentTok{ */}
+\KeywordTok{extern} \DataTypeTok{void}\NormalTok{ bsp_usb_handle_hid_mouse_report(}\DataTypeTok{int8_t}\NormalTok{ x, }\DataTypeTok{int8_t}\NormalTok{ y, }\DataTypeTok{uint8_t}\NormalTok{ btn);}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ch-watchdog}{%
+\chapter{看门狗（WATCHDOG）}\label{ch-watchdog}}
+
+\hypertarget{ux529fux80fdux6982ux8ff0-8}{%
+\section{功能概述}\label{ux529fux80fdux6982ux8ff0-8}}
+
+看门狗就是定期的查看芯片内部情况，一旦发生错误就向芯片内部发出重启信号。
+看门狗指令在程序的中断中拥有最高的优先级。防止程序跑飞，同时也能防止程序在线运行时出现死循环
+
+\hypertarget{ux4f7fux7528ux8bf4ux660e-9}{%
+\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-9}}
 
 \hypertarget{ux914dux7f6eux770bux95e8ux72d7}{%
 \subsection{配置看门狗}\label{ux914dux7f6eux770bux95e8ux72d7}}
@@ -6574,14 +8490,14 @@ DMA向CPU发出总线请求，CPU将总线交给DMA之后，由DMA控制数据�
 \hypertarget{ch-eflash}{%
 \chapter{内置 Flash（EFlash）}\label{ch-eflash}}
 
-\hypertarget{ux529fux80fdux6982ux8ff0-8}{%
-\section{功能概述}\label{ux529fux80fdux6982ux8ff0-8}}
+\hypertarget{ux529fux80fdux6982ux8ff0-9}{%
+\section{功能概述}\label{ux529fux80fdux6982ux8ff0-9}}
 
 芯片内置一定容量的 Flash，可编程擦写。擦除时以扇区（sector）为单位进行，
 写入时以 32bit 为单位。
 
-\hypertarget{ux4f7fux7528ux8bf4ux660e-9}{%
-\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-9}}
+\hypertarget{ux4f7fux7528ux8bf4ux660e-10}{%
+\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-10}}
 
 \hypertarget{ux64e6ux9664ux5e76ux5199ux5165ux65b0ux6570ux636e}{%
 \subsection{擦除并写入新数据}\label{ux64e6ux9664ux5e76ux5199ux5165ux65b0ux6570ux636e}}

@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>20 看门狗（WATCHDOG） | ING916XX 系列芯片外设开发者手册</title>
+  <title>3 ADC简介 | ING916XX 系列芯片外设开发者手册</title>
   <meta name="description" content="ING916XX 系列芯片开发者手册." />
   <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="20 看门狗（WATCHDOG） | ING916XX 系列芯片外设开发者手册" />
+  <meta property="og:title" content="3 ADC简介 | ING916XX 系列芯片外设开发者手册" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="ING916XX 系列芯片开发者手册." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="20 看门狗（WATCHDOG） | ING916XX 系列芯片外设开发者手册" />
+  <meta name="twitter:title" content="3 ADC简介 | ING916XX 系列芯片外设开发者手册" />
   
   <meta name="twitter:description" content="ING916XX 系列芯片开发者手册." />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="universal-serial-bus-deviceusb.html"/>
-<link rel="next" href="ch-eflash.html"/>
+<link rel="prev" href="ch-overview.html"/>
+<link rel="next" href="ch-dma.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -445,47 +445,340 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="ch-watchdog" class="section level1 hasAnchor">
-<h1><span class="header-section-number">20</span> 看门狗（WATCHDOG）<a href="ch-watchdog.html#ch-watchdog" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div id="功能概述-8" class="section level2 hasAnchor">
-<h2><span class="header-section-number">20.1</span> 功能概述<a href="ch-watchdog.html#功能概述-8" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>看门狗就是定期的查看芯片内部情况，一旦发生错误就向芯片内部发出重启信号。
-看门狗指令在程序的中断中拥有最高的优先级。防止程序跑飞，同时也能防止程序在线运行时出现死循环</p>
+<div id="ch-adc" class="section level1 hasAnchor">
+<h1><span class="header-section-number">3</span> ADC简介<a href="ch-adc.html#ch-adc" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>ADC全称Analog-to-Digital Converter，即模数转换器。</p>
+<p>其主要作用是通过PIN测量电压，并将采集到的电压模拟信号转换成数字信号。</p>
+<div id="功能描述" class="section level2 hasAnchor">
+<h2><span class="header-section-number">3.1</span> 功能描述<a href="ch-adc.html#功能描述" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="特点" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.1.1</span> 特点<a href="ch-adc.html#特点" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>最多12个单端输入通道或4个差分输入通道</p></li>
+<li><p>14位分辨率</p></li>
+<li><p>电压输入范围（0~3.6V）</p></li>
+<li><p>支持APB总线</p></li>
+<li><p>采样频率可编程</p></li>
+<li><p>支持单一转换模式</p></li>
+<li><p>支持回路转换模式，每个通道均可启用或禁用</p></li>
+</ul>
 </div>
-<div id="使用说明-9" class="section level2 hasAnchor">
-<h2><span class="header-section-number">20.2</span> 使用说明<a href="ch-watchdog.html#使用说明-9" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="配置看门狗" class="section level3 hasAnchor">
-<h3><span class="header-section-number">20.2.1</span> 配置看门狗<a href="ch-watchdog.html#配置看门狗" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>TMR_WatchDogEnable3</code> 配置并启用看门狗。</p>
-<div class="sourceCode" id="cb285"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb285-1"><a href="ch-watchdog.html#cb285-1"></a><span class="dt">void</span> TMR_WatchDogEnable3(</span>
-<span id="cb285-2"><a href="ch-watchdog.html#cb285-2"></a>  <span class="dt">uint32_t</span> int_timeout_ms, </span>
-<span id="cb285-3"><a href="ch-watchdog.html#cb285-3"></a>  <span class="dt">uint32_t</span> reset_timeout_ms, </span>
-<span id="cb285-4"><a href="ch-watchdog.html#cb285-4"></a>  <span class="dt">uint8_t</span> enable_int</span>
-<span id="cb285-5"><a href="ch-watchdog.html#cb285-5"></a>  );</span></code></pre></div>
-<p>为了ING916xx和ING918xx统一接口，定义宏 <code>TMR_WatchDogEnable</code> 代替 <code>TMR_WatchDogEnable3</code> 。</p>
-<div class="sourceCode" id="cb286"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb286-1"><a href="ch-watchdog.html#cb286-1"></a><span class="pp">#define TMR_WatchDogEnable(timeout) do { </span></span>
-<span id="cb286-2"><a href="ch-watchdog.html#cb286-2"></a>  <span class="dt">uint32_t</span> TMR_CLK_FREQ = OSC_CLK_FREQ; </span>
-<span id="cb286-3"><a href="ch-watchdog.html#cb286-3"></a>  <span class="dt">uint32_t</span> cnt = ((<span class="dt">uint64_t</span>)(timeout) * <span class="dv">1000</span> / OSC_CLK_FREQ); </span>
-<span id="cb286-4"><a href="ch-watchdog.html#cb286-4"></a>  TMR_WatchDogEnable3(cnt, cnt, <span class="dv">0</span>); </span>
-<span id="cb286-5"><a href="ch-watchdog.html#cb286-5"></a>  } <span class="cf">while</span> (<span class="dv">0</span>)</span></code></pre></div>
-<p>例如：</p>
+<div id="adc模式" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.1.2</span> ADC模式<a href="ch-adc.html#adc模式" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>校准模式（calibration）：用于校准ADC采样精度。分为单端模式校准和差分模式校准，两种模式校准互相独立</p></li>
+<li><p>转换模式（conversion）：用于正常工作状态下的模数转换</p></li>
+</ul>
+<p>根据ADC输入模式完成对应的模式校准，之后在转换模式下进行正常模数转换。</p>
 </div>
-<div id="重启看门狗" class="section level3 hasAnchor">
-<h3><span class="header-section-number">20.2.2</span> 重启看门狗<a href="ch-watchdog.html#重启看门狗" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>TMR_WatchDogRestart</code> 重启看门狗。</p>
-<div class="sourceCode" id="cb287"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb287-1"><a href="ch-watchdog.html#cb287-1"></a><span class="dt">void</span> TMR_WatchDogRestart(<span class="dt">void</span>);</span></code></pre></div>
+<div id="adc输入模式" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.1.3</span> ADC输入模式<a href="ch-adc.html#adc输入模式" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>单端输入（single end）：使用单个输入引脚，采用ADC内部的参考电压</p></li>
+<li><p>差分输入（differential）：使用一组输入引脚分别作为参考电压</p></li>
+</ul>
+<p>一般来说，差分输入有利于避免共模干扰的影响，结果相对准确。</p>
 </div>
-<div id="清除中断-1" class="section level3 hasAnchor">
-<h3><span class="header-section-number">20.2.3</span> 清除中断<a href="ch-watchdog.html#清除中断-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>TMR_WatchDogClearInt</code> 清除看门狗的中断。</p>
-<div class="sourceCode" id="cb288"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb288-1"><a href="ch-watchdog.html#cb288-1"></a><span class="dt">void</span> TMR_WatchDogClearInt(<span class="dt">void</span>);</span></code></pre></div>
+<div id="adc转换模式" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.1.4</span> ADC转换模式<a href="ch-adc.html#adc转换模式" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>单次转换（single）：单次转换在使能转换通道，采样和转换后，ADC将停止，数据将被拉入 <code>FIFO</code></p></li>
+<li><p>连续转换（continuous）：连续转换在逐个使能通道，采样并转换后，经过 <code>loop-delay</code> 时间后循环进行操作，ADC不会停止直到手动关闭</p></li>
+</ul>
 </div>
-<div id="禁用看门狗" class="section level3 hasAnchor">
-<h3><span class="header-section-number">20.2.4</span> 禁用看门狗<a href="ch-watchdog.html#禁用看门狗" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>在使用<code>TMR_WatchDogEnable</code> 启用或 <code>TMR_WatchDogRestart</code> 重启看门狗之后，
-需要使用 <code>TMR_WatchDogDisable</code> 对其禁用。</p>
-<div class="sourceCode" id="cb289"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb289-1"><a href="ch-watchdog.html#cb289-1"></a><span class="dt">void</span> TMR_WatchDogDisable(<span class="dt">void</span>);</span></code></pre></div>
+<div id="adc通道" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.1.5</span> ADC通道<a href="ch-adc.html#adc通道" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>ADC共12个channel，即ch0-ch11。</p>
+<p>其中ch0-ch7是通用通道，ch8-ch11是内部通道，可以用来采集内部信号。</p>
+<p>具体通道的输入连接引脚如下：</p>
+<table>
+<caption><span id="tab:ch-ADC-input-connection">表 3.1: </span> ADC输入连接引脚</caption>
+<thead>
+<tr class="header">
+<th align="left">通道</th>
+<th align="left">连接引脚</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">ch0</td>
+<td align="left">GPIO7</td>
+</tr>
+<tr class="even">
+<td align="left">ch1</td>
+<td align="left">GPIO8</td>
+</tr>
+<tr class="odd">
+<td align="left">ch2</td>
+<td align="left">GPIO9</td>
+</tr>
+<tr class="even">
+<td align="left">ch3</td>
+<td align="left">GPIO10</td>
+</tr>
+<tr class="odd">
+<td align="left">ch4</td>
+<td align="left">GPIO11</td>
+</tr>
+<tr class="even">
+<td align="left">ch5</td>
+<td align="left">GPIO12</td>
+</tr>
+<tr class="odd">
+<td align="left">ch6</td>
+<td align="left">GPIO13</td>
+</tr>
+<tr class="even">
+<td align="left">ch7</td>
+<td align="left">GPIO14</td>
+</tr>
+<tr class="odd">
+<td align="left">ch8</td>
+<td align="left">diag_hv_soc</td>
+</tr>
+<tr class="even">
+<td align="left">ch9</td>
+<td align="left">VREF12_ADC_IN</td>
+</tr>
+<tr class="odd">
+<td align="left">ch10</td>
+<td align="left">VCC</td>
+</tr>
+<tr class="even">
+<td align="left">ch11</td>
+<td align="left">V18_FLASH</td>
+</tr>
+</tbody>
+</table>
+<p>ch0-ch7可以配置成为4对差分输入通道，配置后将对应差分的通道0-3。</p>
+<p><strong>注意：</strong> 配置ADC输入模式为差分模式下则只有ch0-ch3以及ch8-ch11。</p>
+</div>
+<div id="pga" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.1.6</span> PGA<a href="ch-adc.html#pga" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>ADC的PGA默认是开启的，目前使用时不支持关闭。</p>
+<p>ADC的PGA有8个增益值，其大小为 <code>2^n(n=0-7)</code> ，但是目前增益值n=6,7暂不支持配置。</p>
+<p>对于PGA增益值配置，目前ch0-ch7可以配置的增益值为 <code>2^n(n=0-5)</code></p>
+<p>ch8-ch11增益值暂不支持配置，其增益值固定为2.</p>
+</div>
+</div>
+<div id="使用方法" class="section level2 hasAnchor">
+<h2><span class="header-section-number">3.2</span> 使用方法<a href="ch-adc.html#使用方法" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="方法概述" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.2.1</span> 方法概述<a href="ch-adc.html#方法概述" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>方法概述为：时钟配置，ADC校准，ADC参数配置和中断（DMA中断）注册。</p>
+<div id="时钟配置" class="section level4 hasAnchor">
+<h4><span class="header-section-number">3.2.1.1</span> 时钟配置<a href="ch-adc.html#时钟配置" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>当前ADC所用时钟源为 <code>clock slow</code> 经过分频得到的ADC工作时钟</p>
+<p>当前ADC工作时钟可以配置为1M、2M、4M和6M。高于6M的时钟暂不支持配置</p>
+<p><strong>注意：</strong> 由于ADC工作时钟只可以取以上特定值，ADC时钟必须经过 <code>clock slow</code> 分频。故在同时使用和ADC同时钟源模块时，如IR，可能出现时钟配置冲突的现象。开发者在实际使用时需要格外注意，具体请参考916时钟树（图 <a href="ch-adc.html#fig:916-clk-tree-ADC">3.1</a>）。</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:916-clk-tree-ADC"></span>
+<img src="img/ADC/916_clk_tree_ADC.png" alt="916时钟树ADC模块部分截图" width="70%" />
+<p class="caption">
+图 3.1: 916时钟树ADC模块部分截图
+</p>
+</div>
+</div>
+<div id="adc校准" class="section level4 hasAnchor">
+<h4><span class="header-section-number">3.2.1.2</span> ADC校准<a href="ch-adc.html#adc校准" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>ADC校准包含精度校准和内部参考电压校准</p>
+<p>ADC精度校准接口：ADC_Calibration</p>
+<p>内部参考电压校准接口：ADC_VrefCalibration</p>
+<p>在进行ADC转换之前需要进行ADC精度校准，如果需要计算采集电压则需要进行内部参考电压校准</p>
+<p>ADC精度校准需要明确ADC输入模式（单端/差分），两种模式需要分别进行精度校准</p>
+</div>
+<div id="adc参数配置" class="section level4 hasAnchor">
+<h4><span class="header-section-number">3.2.1.3</span> ADC参数配置<a href="ch-adc.html#adc参数配置" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>ADC参数配置接口：ADC_ConvCfg</p>
+<p>涉及参数有：ADC转换模式、ADC输入模式、PGA增益值、PGA开关（目前不支持关闭）、采样通道、data触发中断数、data触发DMA搬运数和 <code>loop-delay</code></p>
+<p>data触发中断数和data触发DMA搬运数决定了搬运ADC数据的方式。前者用触发中断的方式，后者用触发DMA搬运的方式</p>
+<p>对于中断/DMA搬运方式选择上，建议如下：</p>
+<ul>
+<li><p>一般在小数据量情况下，如定时采集温度，建议采用触发中断并CPU读数的方式</p></li>
+<li><p>一般大数据量采样，如模拟麦克风采样，建议采用DMA搬运方式或者乒乓搬运，可以大大提高数据搬运处理效率</p></li>
+</ul>
+</div>
+<div id="adc数据处理" class="section level4 hasAnchor">
+<h4><span class="header-section-number">3.2.1.4</span> ADC数据处理<a href="ch-adc.html#adc数据处理" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>ADC数据处理的推荐方法为：</p>
+<p><strong>1.</strong> 调用ADC_PopFifoData（或DMA搬运buff）读取FIFO中的ADC原始数据</p>
+<p><strong>2.</strong> 调用ADC_GetDataChannel得到原始数据中的数据所属通道（如需要）</p>
+<p><strong>3.</strong> 调用ADC_GetData得到原始数据中的ADC数据</p>
+<p><strong>4.</strong> 调用ADC_GetVol通过ADC数据计算得到其对应的电压值（如需要）</p>
+<p>也可以通过调用ADC_ReadChannelData接口直接得到指定通道的ADC数据。但这样会丢弃其他通道数据，请谨慎使用。其可以作为辅助接口使用，非主要方式。</p>
+</div>
+</div>
+<div id="注意点" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.2.2</span> 注意点<a href="ch-adc.html#注意点" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>一般来说配置ADC时钟频率越高，其工作效率越好。较为推荐使用4M、6M工作时钟，性能稳定</p></li>
+<li><p>ADC时钟选择需要根据实际设备采样率选择，如模拟mic，应参考mic操作手册来选择对应ADC时钟频率</p></li>
+<li><p>差分输入电压需要控制范围为0~3.6V</p></li>
+<li><p>如果需要计算采集电压建议周期性地进行参考电压校准</p></li>
+<li><p>目前暂不支持用户自己输入参考电压值，只能用内部电压值作为参考电压</p></li>
+<li><p>PGA增益值的选择需要结合实际设备，可以参考具体设备的使用手册或者测试电压范围计算得到。注意不能超过参考电压阈值</p></li>
+<li><p>data触发中断数和data触发DMA搬运数应该一个为0，一个非0,。如果两值都非0则优先选择触发中断的方式</p></li>
+<li><p>通过ADC数据计算得到的电压值会被限制在0到正参考电压之间</p></li>
+</ul>
+</div>
+</div>
+<div id="编程指南" class="section level2 hasAnchor">
+<h2><span class="header-section-number">3.3</span> 编程指南<a href="ch-adc.html#编程指南" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="驱动接口" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.3.1</span> 驱动接口<a href="ch-adc.html#驱动接口" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>此处列举几个较为常用的接口：</p>
+<ul>
+<li><p>ADC_ConvCfg：ADC转换标准配置接口</p></li>
+<li><p>ADC_Calibration：ADC校准标准配置接口</p></li>
+<li><p>ADC_VrefCalibration：内部参考电压校准接口</p></li>
+<li><p>ADC_Reset：ADC复位接口</p></li>
+<li><p>ADC_Start：ADC使能接口</p></li>
+<li><p>ADC_AdcClose：ADC关闭接口</p></li>
+<li><p>ADC_GetFifoEmpty：读取FIFO是否为空接口</p></li>
+<li><p>ADC_PopFifoData：读取FIFO原始数据接口</p></li>
+<li><p>ADC_GetDataChannel：读取原始数据中通道号接口</p></li>
+<li><p>ADC_GetData：读取原始数据中ADC数据接口</p></li>
+<li><p>ADC_ReadChannelData：读取特定通道ADC数据接口</p></li>
+<li><p>ADC_GetVol：读取ADC数据对应电压值接口</p></li>
+</ul>
+<p>还有部分接口不推荐直接使用，在此不进行介绍，详见对应驱动程序头文件声明。</p>
+</div>
+<div id="代码示例" class="section level3 hasAnchor">
+<h3><span class="header-section-number">3.3.2</span> 代码示例<a href="ch-adc.html#代码示例" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="触发中断搬运" class="section level4 hasAnchor">
+<h4><span class="header-section-number">3.3.2.1</span> 触发中断搬运<a href="ch-adc.html#触发中断搬运" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>下面展示用ADC中断进行数据搬运的基本用法：</p>
+<p>以下ADC设置参数仅供参考，具体参数请结合实际需要进行配置。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="ch-adc.html#cb1-1"></a><span class="pp">#define ADC_CHANNEL    ADC_CH_0</span></span>
+<span id="cb1-2"><a href="ch-adc.html#cb1-2"></a></span>
+<span id="cb1-3"><a href="ch-adc.html#cb1-3"></a><span class="dt">static</span> <span class="dt">uint32_t</span> ADC_cb_isr(<span class="dt">void</span> *user_data)</span>
+<span id="cb1-4"><a href="ch-adc.html#cb1-4"></a>{</span>
+<span id="cb1-5"><a href="ch-adc.html#cb1-5"></a>    <span class="dt">uint32_t</span> data = ADC_PopFifoData();</span>
+<span id="cb1-6"><a href="ch-adc.html#cb1-6"></a>    SADC_channelId channel = ADC_GetDataChannel(data);</span>
+<span id="cb1-7"><a href="ch-adc.html#cb1-7"></a>    <span class="cf">if</span> (channel == ADC_CHANNEL) {</span>
+<span id="cb1-8"><a href="ch-adc.html#cb1-8"></a>        <span class="dt">uint16_t</span> sample = ADC_GetData(data);</span>
+<span id="cb1-9"><a href="ch-adc.html#cb1-9"></a>        <span class="co">// do something with &#39;sample&#39;</span></span>
+<span id="cb1-10"><a href="ch-adc.html#cb1-10"></a>    }</span>
+<span id="cb1-11"><a href="ch-adc.html#cb1-11"></a>    <span class="cf">return</span> <span class="dv">0</span>;</span>
+<span id="cb1-12"><a href="ch-adc.html#cb1-12"></a>}</span>
+<span id="cb1-13"><a href="ch-adc.html#cb1-13"></a></span>
+<span id="cb1-14"><a href="ch-adc.html#cb1-14"></a><span class="dt">void</span> test(<span class="dt">void</span>)</span>
+<span id="cb1-15"><a href="ch-adc.html#cb1-15"></a>{</span>
+<span id="cb1-16"><a href="ch-adc.html#cb1-16"></a>    SYSCTRL_ClearClkGate(SYSCTRL_ITEM_APB_ADC);</span>
+<span id="cb1-17"><a href="ch-adc.html#cb1-17"></a>    SYSCTRL_SetAdcClkDiv(<span class="dv">4</span>, <span class="dv">1</span>);</span>
+<span id="cb1-18"><a href="ch-adc.html#cb1-18"></a>    SYSCTRL_ReleaseBlock(SYSCTRL_ITEM_APB_ADC);</span>
+<span id="cb1-19"><a href="ch-adc.html#cb1-19"></a>    ADC_Calibration(SINGLE_END_MODE);</span>
+<span id="cb1-20"><a href="ch-adc.html#cb1-20"></a>    ADC_ConvCfg(SINGLE_MODE, PGA_GAIN_4, <span class="dv">1</span>, ADC_CHANNEL, <span class="dv">1</span>, <span class="dv">0</span>, SINGLE_END_MODE, <span class="dv">0</span>);</span>
+<span id="cb1-21"><a href="ch-adc.html#cb1-21"></a>    platform_set_irq_callback(PLATFORM_CB_IRQ_ADC, ADC_cb_isr, <span class="dv">0</span>);</span>
+<span id="cb1-22"><a href="ch-adc.html#cb1-22"></a>    ADC_Start(<span class="dv">1</span>);</span>
+<span id="cb1-23"><a href="ch-adc.html#cb1-23"></a>}</span></code></pre></div>
+<p>以上代码展示了配置ADC时钟，逻辑复位、ADC校准、ADC转换配置，并在触发的ADC中断程序里获取到最终的 <code>sample</code> 数值。</p>
+<p>当然，由于使用单一ADC通道，可以直接获取特定通道的ADC数据，代码如下：</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="ch-adc.html#cb2-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> ADC_cb_isr(<span class="dt">void</span> *user_data)</span>
+<span id="cb2-2"><a href="ch-adc.html#cb2-2"></a>{</span>
+<span id="cb2-3"><a href="ch-adc.html#cb2-3"></a>    <span class="dt">uint16_t</span> sample = ADC_ReadChannelData(ADC_CHANNEL);</span>
+<span id="cb2-4"><a href="ch-adc.html#cb2-4"></a>    <span class="co">// do something with &#39;sample&#39;</span></span>
+<span id="cb2-5"><a href="ch-adc.html#cb2-5"></a>    <span class="cf">return</span> <span class="dv">0</span>;</span>
+<span id="cb2-6"><a href="ch-adc.html#cb2-6"></a>}</span></code></pre></div>
+<p>在只有单个通道数据时或者只需要单一通道数据时可以采用以上方式，多通道采样有丢数据的风险。</p>
+</div>
+<div id="连续中断搬运" class="section level4 hasAnchor">
+<h4><span class="header-section-number">3.3.2.2</span> 连续中断搬运<a href="ch-adc.html#连续中断搬运" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>以上代码展示的是单次搬运情况，如果是多次搬运，建议采用以下两种读数方案：</p>
+<p><strong>1.</strong> 读数并结合调用ADC_GetFifoEmpty接口判断FIFO状态，读数直到FIFO为空为止</p>
+<p><strong>2.</strong> 每次读取的数据量等于配置的data触发中断数</p>
+<p>方案1代码示例：</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="ch-adc.html#cb3-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> ADC_cb_isr(<span class="dt">void</span> *user_data)</span>
+<span id="cb3-2"><a href="ch-adc.html#cb3-2"></a>{</span>
+<span id="cb3-3"><a href="ch-adc.html#cb3-3"></a>    <span class="cf">while</span> (!ADC_GetFifoEmpty()) {</span>
+<span id="cb3-4"><a href="ch-adc.html#cb3-4"></a>        <span class="dt">uint16_t</span> sample = ADC_ReadChannelData(ADC_CHANNEL);</span>
+<span id="cb3-5"><a href="ch-adc.html#cb3-5"></a>        <span class="co">// do something with &#39;sample&#39;</span></span>
+<span id="cb3-6"><a href="ch-adc.html#cb3-6"></a>    }</span>
+<span id="cb3-7"><a href="ch-adc.html#cb3-7"></a>    <span class="cf">return</span> <span class="dv">0</span>;</span>
+<span id="cb3-8"><a href="ch-adc.html#cb3-8"></a>}</span></code></pre></div>
+<p>方案2代码示例：</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb4-1"><a href="ch-adc.html#cb4-1"></a><span class="pp">#define INT_TRIGGER_NUM    8</span></span>
+<span id="cb4-2"><a href="ch-adc.html#cb4-2"></a><span class="dt">static</span> <span class="dt">uint32_t</span> ADC_cb_isr(<span class="dt">void</span> *user_data)</span>
+<span id="cb4-3"><a href="ch-adc.html#cb4-3"></a>{</span>
+<span id="cb4-4"><a href="ch-adc.html#cb4-4"></a>    <span class="dt">uint8_t</span> i = <span class="dv">0</span>;</span>
+<span id="cb4-5"><a href="ch-adc.html#cb4-5"></a>    <span class="cf">while</span> (i &lt; INT_TRIGGER_NUM) {</span>
+<span id="cb4-6"><a href="ch-adc.html#cb4-6"></a>        <span class="dt">uint16_t</span> sample = ADC_ReadChannelData(ADC_CHANNEL);</span>
+<span id="cb4-7"><a href="ch-adc.html#cb4-7"></a>        <span class="co">// do something with &#39;sample&#39;</span></span>
+<span id="cb4-8"><a href="ch-adc.html#cb4-8"></a>        i++;</span>
+<span id="cb4-9"><a href="ch-adc.html#cb4-9"></a>    }</span>
+<span id="cb4-10"><a href="ch-adc.html#cb4-10"></a>    <span class="cf">return</span> <span class="dv">0</span>;</span>
+<span id="cb4-11"><a href="ch-adc.html#cb4-11"></a>}</span></code></pre></div>
+<p>CPU资源方面，方案2节省了每次读数调用接口的开销，建议优选</p>
+<p>实际效果方面以上两种方案均可，开发者可以自行选用。</p>
+</div>
+<div id="获取电压值" class="section level4 hasAnchor">
+<h4><span class="header-section-number">3.3.2.3</span> 获取电压值<a href="ch-adc.html#获取电压值" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>获取电压值需要在上面例子中加入参考电压校准，并调用接口计算电压值，如下：</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="ch-adc.html#cb5-1"></a><span class="pp">#define ADC_CHANNEL    ADC_CH_0</span></span>
+<span id="cb5-2"><a href="ch-adc.html#cb5-2"></a></span>
+<span id="cb5-3"><a href="ch-adc.html#cb5-3"></a><span class="dt">static</span> <span class="dt">uint32_t</span> ADC_cb_isr(<span class="dt">void</span> *user_data)</span>
+<span id="cb5-4"><a href="ch-adc.html#cb5-4"></a>{</span>
+<span id="cb5-5"><a href="ch-adc.html#cb5-5"></a>    <span class="dt">uint16_t</span> sample = ADC_ReadChannelData(ADC_CHANNEL);</span>
+<span id="cb5-6"><a href="ch-adc.html#cb5-6"></a>    <span class="dt">float</span> voltage = ADC_GetVol(sample);</span>
+<span id="cb5-7"><a href="ch-adc.html#cb5-7"></a>    <span class="cf">return</span> <span class="dv">0</span>;</span>
+<span id="cb5-8"><a href="ch-adc.html#cb5-8"></a>}</span>
+<span id="cb5-9"><a href="ch-adc.html#cb5-9"></a></span>
+<span id="cb5-10"><a href="ch-adc.html#cb5-10"></a><span class="dt">void</span> test(<span class="dt">void</span>)</span>
+<span id="cb5-11"><a href="ch-adc.html#cb5-11"></a>{</span>
+<span id="cb5-12"><a href="ch-adc.html#cb5-12"></a>    SYSCTRL_ClearClkGate(SYSCTRL_ITEM_APB_ADC);</span>
+<span id="cb5-13"><a href="ch-adc.html#cb5-13"></a>    SYSCTRL_SetAdcClkDiv(<span class="dv">4</span>, <span class="dv">1</span>);</span>
+<span id="cb5-14"><a href="ch-adc.html#cb5-14"></a>    SYSCTRL_ReleaseBlock(SYSCTRL_ITEM_APB_ADC);</span>
+<span id="cb5-15"><a href="ch-adc.html#cb5-15"></a>    ADC_Calibration(SINGLE_END_MODE);</span>
+<span id="cb5-16"><a href="ch-adc.html#cb5-16"></a>    ADC_VrefCalibration();      <span class="co">// calibrate the referenced voltage</span></span>
+<span id="cb5-17"><a href="ch-adc.html#cb5-17"></a>    ADC_ConvCfg(SINGLE_MODE, PGA_GAIN_4, <span class="dv">1</span>, ADC_CHANNEL, <span class="dv">1</span>, <span class="dv">0</span>, SINGLE_END_MODE, <span class="dv">0</span>);</span>
+<span id="cb5-18"><a href="ch-adc.html#cb5-18"></a>    platform_set_irq_callback(PLATFORM_CB_IRQ_ADC, ADC_cb_isr, <span class="dv">0</span>);</span>
+<span id="cb5-19"><a href="ch-adc.html#cb5-19"></a>    ADC_Start(<span class="dv">1</span>);</span>
+<span id="cb5-20"><a href="ch-adc.html#cb5-20"></a>}</span></code></pre></div>
+<p>voltage即为最终计算得到的采样电压值。</p>
+</div>
+<div id="adc-dma乒乓搬运" class="section level4 hasAnchor">
+<h4><span class="header-section-number">3.3.2.4</span> ADC &amp; DMA乒乓搬运<a href="ch-adc.html#adc-dma乒乓搬运" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>ADC结合DMA乒乓搬运数据的方式是一种推荐的标准用法，其优点主要是节省CPU资源，提高处理数据的效率。</p>
+<p>下面展示DMA乒乓搬运ADC数据并转换成电压的实例：</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb6-1"><a href="ch-adc.html#cb6-1"></a><span class="pp">#include </span><span class="im">&quot;pingpong.h&quot;</span></span>
+<span id="cb6-2"><a href="ch-adc.html#cb6-2"></a><span class="pp">#define ADC_CHANNEL    ADC_CH_0</span></span>
+<span id="cb6-3"><a href="ch-adc.html#cb6-3"></a><span class="pp">#define DMA_CHANNEL    0</span></span>
+<span id="cb6-4"><a href="ch-adc.html#cb6-4"></a><span class="dt">static</span> DMA_PingPong_t PingPong;</span>
+<span id="cb6-5"><a href="ch-adc.html#cb6-5"></a></span>
+<span id="cb6-6"><a href="ch-adc.html#cb6-6"></a><span class="dt">static</span> <span class="dt">uint32_t</span> DMA_cb_isr(<span class="dt">void</span> *user_data)</span>
+<span id="cb6-7"><a href="ch-adc.html#cb6-7"></a>{</span>
+<span id="cb6-8"><a href="ch-adc.html#cb6-8"></a>    <span class="dt">uint32_t</span> state = DMA_GetChannelIntState(DMA_CHANNEL);</span>
+<span id="cb6-9"><a href="ch-adc.html#cb6-9"></a>    DMA_ClearChannelIntState(DMA_CHANNEL, state);</span>
+<span id="cb6-10"><a href="ch-adc.html#cb6-10"></a></span>
+<span id="cb6-11"><a href="ch-adc.html#cb6-11"></a>    <span class="dt">uint32_t</span> *buff = DMA_PingPongIntProc(&amp;PingPong, DMA_CHANNEL);</span>
+<span id="cb6-12"><a href="ch-adc.html#cb6-12"></a>    <span class="dt">uint32_t</span> tranSize = DMA_PingPongGetTransSize(&amp;PingPong);</span>
+<span id="cb6-13"><a href="ch-adc.html#cb6-13"></a>    <span class="cf">for</span> (<span class="dt">uint32_t</span> i = <span class="dv">0</span>; i &lt; tranSize; ++i) {</span>
+<span id="cb6-14"><a href="ch-adc.html#cb6-14"></a>        <span class="cf">if</span> (ADC_GetDataChannel(buff[i]) != ADC_CHANNEL) <span class="cf">continue</span>;</span>
+<span id="cb6-15"><a href="ch-adc.html#cb6-15"></a>        <span class="dt">uint16_t</span> sample = ADC_GetData(buff[i]);</span>
+<span id="cb6-16"><a href="ch-adc.html#cb6-16"></a>        <span class="dt">float</span> voltage = ADC_GetVol(sample);</span>
+<span id="cb6-17"><a href="ch-adc.html#cb6-17"></a>    }</span>
+<span id="cb6-18"><a href="ch-adc.html#cb6-18"></a>    <span class="cf">return</span> <span class="dv">0</span>;</span>
+<span id="cb6-19"><a href="ch-adc.html#cb6-19"></a>}</span>
+<span id="cb6-20"><a href="ch-adc.html#cb6-20"></a><span class="dt">void</span> test(<span class="dt">void</span>)</span>
+<span id="cb6-21"><a href="ch-adc.html#cb6-21"></a>{</span>
+<span id="cb6-22"><a href="ch-adc.html#cb6-22"></a>    SYSCTRL_ClearClkGateMulti((<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_DMA));</span>
+<span id="cb6-23"><a href="ch-adc.html#cb6-23"></a></span>
+<span id="cb6-24"><a href="ch-adc.html#cb6-24"></a>    SYSCTRL_ClearClkGate(SYSCTRL_ITEM_APB_ADC);</span>
+<span id="cb6-25"><a href="ch-adc.html#cb6-25"></a>    SYSCTRL_SetAdcClkDiv(<span class="dv">4</span>, <span class="dv">1</span>);</span>
+<span id="cb6-26"><a href="ch-adc.html#cb6-26"></a>    SYSCTRL_ReleaseBlock(SYSCTRL_ITEM_APB_ADC);</span>
+<span id="cb6-27"><a href="ch-adc.html#cb6-27"></a>    ADC_Calibration(DIFFERENTAIL_MODE);</span>
+<span id="cb6-28"><a href="ch-adc.html#cb6-28"></a>    ADC_VrefCalibration();</span>
+<span id="cb6-29"><a href="ch-adc.html#cb6-29"></a>    ADC_ConvCfg(CONTINUES_MODE, PGA_GAIN_4, <span class="dv">1</span>, ADC_CHANNEL, <span class="dv">0</span>, <span class="dv">8</span>, DIFFERENTAIL_MODE, <span class="dv">6000</span>);</span>
+<span id="cb6-30"><a href="ch-adc.html#cb6-30"></a></span>
+<span id="cb6-31"><a href="ch-adc.html#cb6-31"></a>    SYSCTRL_SelectUsedDmaItems(<span class="dv">1</span> &lt;&lt; <span class="dv">9</span>);</span>
+<span id="cb6-32"><a href="ch-adc.html#cb6-32"></a>    DMA_PingPongSetup(&amp;PingPong, SYSCTRL_DMA_ADC, <span class="dv">80</span>, <span class="dv">8</span>);</span>
+<span id="cb6-33"><a href="ch-adc.html#cb6-33"></a>    platform_set_irq_callback(PLATFORM_CB_IRQ_DMA, DMA_cb_isr, <span class="dv">0</span>);</span>
+<span id="cb6-34"><a href="ch-adc.html#cb6-34"></a>    DMA_PingPongEnable(&amp;PingPong, DMA_CHANNEL);</span>
+<span id="cb6-35"><a href="ch-adc.html#cb6-35"></a>    </span>
+<span id="cb6-36"><a href="ch-adc.html#cb6-36"></a>    ADC_Start(<span class="dv">1</span>);</span>
+<span id="cb6-37"><a href="ch-adc.html#cb6-37"></a>}</span></code></pre></div>
 
+
+</div>
 </div>
 </div>
 </div>
@@ -494,8 +787,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="universal-serial-bus-deviceusb.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="ch-eflash.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="ch-overview.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ch-dma.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

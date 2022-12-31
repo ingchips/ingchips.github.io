@@ -220,13 +220,14 @@
 <ul>
   <li>开始支持 ING916XX 量产版（不再支持测试版芯片）
     <ul>
-      <li>8.2.1 暂未包含 QDEC/KeyScan 等 2 个外设的驱动</li>
+      <li>8.2.2 暂未包含 KeyScan/Comparator 等 2 个外设的驱动</li>
+      <li>新增 USB 示例</li>
     </ul>
   </li>
   <li>新增《ING918XX 系列芯片外设开发者手册》</li>
   <li>线程安全的 BLE API</li>
   <li>RPC 系统</li>
-  <li>Cube 工具</li>
+  <li>Cube 工具（持续开发中）</li>
 </ul>
 
 <div class="note">
@@ -235,17 +236,28 @@
 </div>
 
 <div class="important">
-<strong>注意:</strong>
-<br />如需调试 ING916xx，务必将复位方式设为 VECTRESET（不同的调试器可能使用不同的名词，J-Link 里称为 Core）。
-</div>
-
-<div class="note">
-<strong>局限性（已知问题）：</strong>
+<strong>已知问题（局限性）:</strong>
 <ul>
-<li>ING916XX 省电模式仍在持续开发、改进中，QUERY_DEEP_SLEEP_ALLOWED 回调目前只可返回0 或者
-PLATFORM_ALLOW_DEEP_SLEEP。</li>
-</ul>
-</div>
+<li>调试 ING916xx，复位方式不能选择 SYSRESETREQ，可以选择 VECTRESET（不同的调试器可能使用不同的名词，J-Link 里称为 Core）。
+    <ul>
+        <li>复位整个 SoC 的临时措施：对于 JLink，将
+        <a href="https://github.com/ingchips/doc_release/releases/download/v1.0/JlinkSettings.JLinkScript">自定义脚本</a>放到工程目录，并在进入调试模式后再次点击 IDE 里的 “复位” 按钮。</li>
+    </ul>
+</li>
+<li>ING916XX 省电模式仍在持续开发、改进中，QUERY_DEEP_SLEEP_ALLOWED 回调目前只可返回 0 或者
+PLATFORM_ALLOW_DEEP_SLEEP。
+</li>
+<li>ING916XX 通信性能正在持续优化中，目前存在吞吐率低、小连接间隔时连接易断开等问题。
+    <ul>
+        <li>临时措施：在 app_main 里添加 platform_config(PLATFORM_CFG_32K_CLK_ACC, 500)</li>
+    </ul>
+</li>
+<li>Cube 只能在 Windows 10 或更高版本中运行
+    <ul>
+        <li>临时措施：对于使用 Windows 7 的情况，用 SDK 目录下的 ingCube_gl3.exe 替换 ingCube.exe</li>
+    </ul>
+</li>
+</ul></div>
 
 <h2 id="1-软件包">1. 软件包</h2>
 
@@ -334,6 +346,40 @@ PLATFORM_ALLOW_DEEP_SLEEP。</li>
   <li>
     <p>[<strong>修正</strong>] 改进 ING916xx 深睡眠模式的稳定性 <span style="background:yellow">(<strong>8.2.1</strong>)</span></p>
   </li>
+  <li>
+    <p>[<strong>更新</strong>] <code class="highlighter-rouge">_ON_DEEP_SLEEP_WAKEUP</code> 回调增加了 Reason 参数 <span style="background:yellow">(<strong>8.2.2</strong>)</span></p>
+
+    <p>传入回调函数的 <code class="highlighter-rouge">void *data</code> 参数是从 <code class="highlighter-rouge">platform_wakeup_call_reason_t</code> 类型转换而来。正常从睡眠中醒来时，
+  传入的 reason 为 <code class="highlighter-rouge">PLATFORM_WAKEUP_REASON_NORMAL</code>；如果睡眠过程中止（即芯片实际未进入睡眠），
+  那么传入的 reason 为 <code class="highlighter-rouge">PLATFORM_WAKEUP_REASON_ABORTED</code>。</p>
+
+    <p>旧版本的行为：只有正常从睡眠中醒来（对应 <code class="highlighter-rouge">PLATFORM_WAKEUP_REASON_ABORTED</code>）时才调用这个回调。</p>
+
+    <p>新版本考虑到与旧版本的兼容性，定义了一个配置项 <code class="highlighter-rouge">PLATFORM_CFG_ALWAYS_CALL_WAKEUP</code>：当配置为 0 时，
+  维持旧版本行为；当配置为 1 时，才会以 <code class="highlighter-rouge">PLATFORM_WAKEUP_REASON_ABORTED</code> 为 reason 调用事件回调。</p>
+
+    <p>对于 ING918xx 的软件包，配置项 <code class="highlighter-rouge">PLATFORM_CFG_ALWAYS_CALL_WAKEUP</code> 默认为 0，已有的回调函数不需要修改。
+  对于 ING916xx 的软件包，配置项 <code class="highlighter-rouge">PLATFORM_CFG_ALWAYS_CALL_WAKEUP</code> 默认为 1，回调函数的流程建议为：</p>
+
+    <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kt">uint32_t</span> <span class="nf">on_deep_sleep_wakeup</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">user_data</span><span class="p">)</span>
+  <span class="p">{</span>
+      <span class="n">platform_wakeup_call_reason_t</span> <span class="n">reason</span> <span class="o">=</span> <span class="p">(</span><span class="n">platform_wakeup_call_reason_t</span><span class="p">)(</span><span class="kt">uintptr_t</span><span class="p">)(</span><span class="n">data</span><span class="p">);</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">PLATFORM_WAKEUP_REASON_ABORTED</span> <span class="o">==</span> <span class="n">reason</span><span class="p">)</span>
+      <span class="p">{</span>
+          <span class="c1">// 睡眠中止时，不需要重新配置外设。</span>
+          <span class="c1">// 如果使用了 GPIO 的低功耗保持功能，可以借此机会解除</span>
+          <span class="c1">// GIO_EnableRetentionGroupA(0)</span>
+          <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+      <span class="p">}</span>
+
+      <span class="n">setup_peripherals</span><span class="p">();</span>
+      <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="p">}</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] ING916xx 软件包未开启 AES <span style="background:yellow">(<strong>8.2.2</strong>)</span></p>
+  </li>
 </ul>
 
 <h2 id="2-外设驱动">2. 外设驱动</h2>
@@ -343,7 +389,7 @@ PLATFORM_ALLOW_DEEP_SLEEP。</li>
     <p>[<strong>更新</strong>] ING916xx 量产版外设驱动 <span style="background:yellow">(<strong>8.2.0</strong>)</span></p>
   </li>
   <li>
-    <p>[<strong>更新</strong>] ING916xx 增加 USB 驱动 <span style="background:yellow">(<strong>8.2.1</strong>)</span></p>
+    <p>[<strong>更新</strong>] ING916xx 增加 USB 驱动 <span style="background:yellow">(<strong>8.2.2</strong>)</span></p>
 
     <p>以下外设（或“虚拟”外设）驱动已更新：</p>
 
@@ -361,9 +407,10 @@ PLATFORM_ALLOW_DEEP_SLEEP。</li>
       <li>SysCtrl</li>
       <li>Timer</li>
       <li>USB</li>
+      <li>QDEC</li>
     </ul>
 
-    <p>QDEC/KeyScan 等 2 个外设的驱动将随后续版本发布。</p>
+    <p>KeyScan/Comparator 等 2 个外设的驱动将随后续版本发布。</p>
   </li>
 </ul>
 
@@ -388,15 +435,43 @@ PLATFORM_ALLOW_DEEP_SLEEP。</li>
   原 <code class="highlighter-rouge">gatt_client_util.c</code> 模块包含的同步 API 也已转移到 <code class="highlighter-rouge">btstack_sync.c</code>。
   <em>UART GATT Console</em> 演示了部分同步 API 的用法。</p>
   </li>
+  <li>
+    <p>[<strong>新增</strong>] ING916xx: USB HID 模块 <span style="background:yellow">(<strong>8.2.2</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] ING916xx: <em>eflash.c</em> 模块里的 ``write_flash()` <span style="background:yellow">(<strong>8.2.2</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] <em>board.c</em>: 现已支持 DB682AC1A 开发板 <span style="background:yellow">(<strong>8.2.2</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] ING918xx: <em>power_ctrl.lib</em> 改善稳定性 <span style="background:yellow">(<strong>8.2.2</strong>)</span></p>
+  </li>
 </ul>
 
-<h2 id="4-文档">4. 文档</h2>
+<h2 id="4-示例">4. 示例</h2>
+
+<ul>
+  <li>
+    <p>[<strong>更新</strong>] <em>IO Over BLE</em>: 增加 ING916xx USB 透传功能 <span style="background:yellow">(<strong>8.2.2</strong>)</span></p>
+
+    <p>详情参阅示例的说明文档。<code class="highlighter-rouge">ing_usb</code> 测试工具可在 SDK/tools 目录下找到。</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] 若干示例以适配 ING916xx <span style="background:yellow">(<strong>8.2.2</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] <em>Voice Remote Control</em>: 增加 ING916xx ADC 输入功能（持续改进中） <span style="background:yellow">(<strong>8.2.2</strong>)</span></p>
+  </li>
+</ul>
+
+<h2 id="5-文档">5. 文档</h2>
 
 <ul>
   <li>[<strong>新增</strong>] 《ING918XX 系列芯片外设开发者手册》 <span style="background:yellow">(<strong>8.2.0</strong>)</span></li>
 </ul>
 
-<h2 id="5-工具">5. 工具</h2>
+<h2 id="6-工具">6. 工具</h2>
 
 <ul>
   <li>
@@ -414,9 +489,17 @@ PLATFORM_ALLOW_DEEP_SLEEP。</li>
   <li>
     <p>[<strong>新增</strong>] Cube 工具：用于生成外设初始化代码 <span style="background:yellow">(<strong>8.2.1</strong>)</span></p>
   </li>
+  <li>
+    <p>[<strong>更新</strong>] Cube 工具：开始为 ING916xx 生成代码（持续改进中） <span style="background:yellow">(<strong>8.2.2</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>新增</strong>] USB 测试工具 <em>ing_usb.exe</em> <span style="background:yellow">(<strong>8.2.2</strong>)</span></p>
+
+    <p>详见 <a href="/application-notes/pg_ing916_cn/">ING916xx 外设开发者手册</a>。</p>
+  </li>
 </ul>
 
-<h2 id="6-rpc-系统">6. RPC 系统</h2>
+<h2 id="7-rpc-系统">7. RPC 系统</h2>
 
 <p>RPC 系统包含运行于芯片的 <a href="https://github.com/ingchips/ING918XX_SDK_SOURCE/tree/master/examples/ble_rpc">BLE RPC 服务器</a>
 和运行于 PC 的

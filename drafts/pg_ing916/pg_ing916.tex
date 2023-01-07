@@ -500,6 +500,29 @@ ch8-ch11增益值暂不支持配置，其增益值固定为2.
 \hypertarget{ux4f7fux7528ux65b9ux6cd5}{%
 \section{使用方法}\label{ux4f7fux7528ux65b9ux6cd5}}
 
+\hypertarget{ux8f93ux5165ux7535ux538bux8303ux56f4}{%
+\subsection{输入电压范围}\label{ux8f93ux5165ux7535ux538bux8303ux56f4}}
+
+不同ADC输入模式下的输入电压要求如下：
+
+\begin{itemize}
+\item
+  单端模式：VIN ∈ {[}VREFP/2-VREFP/PGA\_GAIN, VREFP/2+VREFP/PGA\_GAIN{]}
+\item
+  差分模式：VINP-VINN ∈ {[}-VREFP/PGA\_GAIN, VREFP/PGA\_GAIN{]}，且VINP， VINN\textgreater=0
+\end{itemize}
+
+其中PGA\_GAIN是PGA的增益值
+
+\textbf{注意：} 请务必保证输入电压满足以上的范围要求，过大、过小的输入电压可能会使ADC不能正常工作甚至造成损坏芯片的严重后果。
+
+\hypertarget{ux91c7ux6837ux7387}{%
+\subsection{采样率}\label{ux91c7ux6837ux7387}}
+
+采样率和时钟、loop-delay大小有关，其计算关系如下：
+
+SAMPLERATE=ADC\_CLK/(loop-delay+16)
+
 \hypertarget{ux65b9ux6cd5ux6982ux8ff0}{%
 \subsection{方法概述}\label{ux65b9ux6cd5ux6982ux8ff0}}
 
@@ -641,6 +664,7 @@ ADC数据处理的推荐方法为：
 \begin{Shaded}
 \begin{Highlighting}[]
 \PreprocessorTok{#define ADC_CHANNEL    ADC_CH_0}
+\PreprocessorTok{#define ADC_CLK_MHZ    6}
 
 \DataTypeTok{static} \DataTypeTok{uint32_t}\NormalTok{ ADC_cb_isr(}\DataTypeTok{void}\NormalTok{ *user_data)}
 \NormalTok{\{}
@@ -656,7 +680,7 @@ ADC数据处理的推荐方法为：
 \DataTypeTok{void}\NormalTok{ test(}\DataTypeTok{void}\NormalTok{)}
 \NormalTok{\{}
 \NormalTok{    SYSCTRL_ClearClkGate(SYSCTRL_ITEM_APB_ADC);}
-\NormalTok{    SYSCTRL_SetAdcClkDiv(}\DecValTok{4}\NormalTok{, }\DecValTok{1}\NormalTok{);}
+\NormalTok{    SYSCTRL_SetAdcClkDiv(}\DecValTok{24}\NormalTok{ / ADC_CLK_MHZ);}
 \NormalTok{    SYSCTRL_ReleaseBlock(SYSCTRL_ITEM_APB_ADC);}
 \NormalTok{    ADC_Calibration(SINGLE_END_MODE);}
 \NormalTok{    ADC_ConvCfg(SINGLE_MODE, PGA_GAIN_4, }\DecValTok{1}\NormalTok{, ADC_CHANNEL, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{, SINGLE_END_MODE, }\DecValTok{0}\NormalTok{);}
@@ -737,6 +761,7 @@ CPU资源方面，方案2节省了每次读数调用接口的开销，建议优�
 \begin{Shaded}
 \begin{Highlighting}[]
 \PreprocessorTok{#define ADC_CHANNEL    ADC_CH_0}
+\PreprocessorTok{#define ADC_CLK_MHZ    6}
 
 \DataTypeTok{static} \DataTypeTok{uint32_t}\NormalTok{ ADC_cb_isr(}\DataTypeTok{void}\NormalTok{ *user_data)}
 \NormalTok{\{}
@@ -748,7 +773,7 @@ CPU资源方面，方案2节省了每次读数调用接口的开销，建议优�
 \DataTypeTok{void}\NormalTok{ test(}\DataTypeTok{void}\NormalTok{)}
 \NormalTok{\{}
 \NormalTok{    SYSCTRL_ClearClkGate(SYSCTRL_ITEM_APB_ADC);}
-\NormalTok{    SYSCTRL_SetAdcClkDiv(}\DecValTok{4}\NormalTok{, }\DecValTok{1}\NormalTok{);}
+\NormalTok{    SYSCTRL_SetAdcClkDiv(}\DecValTok{24}\NormalTok{ / ADC_CLK_MHZ);}
 \NormalTok{    SYSCTRL_ReleaseBlock(SYSCTRL_ITEM_APB_ADC);}
 \NormalTok{    ADC_Calibration(SINGLE_END_MODE);}
 \NormalTok{    ADC_VrefCalibration();      }\CommentTok{// calibrate the referenced voltage}
@@ -773,6 +798,7 @@ ADC结合DMA乒乓搬运数据的方式是一种推荐的标准用法，其优�
 \PreprocessorTok{#include }\ImportTok{"pingpong.h"}
 \PreprocessorTok{#define ADC_CHANNEL    ADC_CH_0}
 \PreprocessorTok{#define DMA_CHANNEL    0}
+\PreprocessorTok{#define ADC_CLK_MHZ    6}
 \DataTypeTok{static}\NormalTok{ DMA_PingPong_t PingPong;}
 
 \DataTypeTok{static} \DataTypeTok{uint32_t}\NormalTok{ DMA_cb_isr(}\DataTypeTok{void}\NormalTok{ *user_data)}
@@ -794,7 +820,7 @@ ADC结合DMA乒乓搬运数据的方式是一种推荐的标准用法，其优�
 \NormalTok{    SYSCTRL_ClearClkGateMulti((}\DecValTok{1}\NormalTok{ << SYSCTRL_ITEM_APB_DMA));}
 
 \NormalTok{    SYSCTRL_ClearClkGate(SYSCTRL_ITEM_APB_ADC);}
-\NormalTok{    SYSCTRL_SetAdcClkDiv(}\DecValTok{4}\NormalTok{, }\DecValTok{1}\NormalTok{);}
+\NormalTok{    SYSCTRL_SetAdcClkDiv(}\DecValTok{24}\NormalTok{ / ADC_CLK_MHZ);}
 \NormalTok{    SYSCTRL_ReleaseBlock(SYSCTRL_ITEM_APB_ADC);}
 \NormalTok{    ADC_Calibration(DIFFERENTAIL_MODE);}
 \NormalTok{    ADC_VrefCalibration();}
@@ -1359,13 +1385,52 @@ GPIO 模块常用于驱动 LED 或者其它指示器，控制片外设备，感�
 \hypertarget{ux8bbeux7f6eux8f93ux51fa}{%
 \subsection{设置输出}\label{ux8bbeux7f6eux8f93ux51fa}}
 
-使用 \texttt{GIO\_WriteValue} 设置某个 GPIO 输出的电平信号，例如使 GPIO 0 输出高电平（1）：
+\begin{itemize}
+\item
+  设置单个输出
+
+  使用 \texttt{GIO\_WriteValue} 设置某个 GPIO 输出的电平信号，例如使 GPIO 0 输出高电平（1）：
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{GIO_WriteValue(GIO_GPIO_0, }\DecValTok{1}\NormalTok{);}
 \end{Highlighting}
 \end{Shaded}
+\item
+  同时设置所有输出
+
+  通过 \texttt{GIO\_WriteAll} 可同时设置所有 GPIO 输出的电平信号：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ GIO_WriteAll(}\DataTypeTok{const} \DataTypeTok{uint64_t}\NormalTok{ value);}
+\end{Highlighting}
+\end{Shaded}
+\item
+  将若干输出置为高电平
+
+  通过 \texttt{GIO\_SetBits} 可同时将若干 GPIO 输出置为高电平：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ GIO_SetBits(}\DataTypeTok{const} \DataTypeTok{uint64_t}\NormalTok{ index_mask);}
+\end{Highlighting}
+\end{Shaded}
+
+  比如要将 GPIO 0、5 置为高电平，那么 \texttt{index\_mask} 为 \texttt{(1\ \textless{}\textless{}\ 0)\ \textbar{}\ (1\ \textless{}\textless{}\ 5)}。
+\item
+  将若干输出置为低电平
+
+  通过 \texttt{GIO\_ClearBits} 可同时将若干 GPIO 输出置为低电平：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ GIO_ClearBits(}\DataTypeTok{const} \DataTypeTok{uint64_t}\NormalTok{ index_mask);}
+\end{Highlighting}
+\end{Shaded}
+
+  \texttt{index\_mask} 的使用与 \texttt{GIO\_SetBits} 相同。
+\end{itemize}
 
 \hypertarget{ux914dux7f6eux4e2dux65adux8bf7ux6c42}{%
 \subsection{配置中断请求}\label{ux914dux7f6eux4e2dux65adux8bf7ux6c42}}
@@ -1490,6 +1555,123 @@ GPIO 产生中断后，需要消除中断状态方可再次触发。用 \texttt{
 \NormalTok{GIO_DebounceEn(GIO_GPIO_0, }\DecValTok{1}\NormalTok{);}
 \end{Highlighting}
 \end{Shaded}
+
+\hypertarget{ux4f4eux529fux8017ux4fddux6301ux72b6ux6001}{%
+\subsection{低功耗保持状态}\label{ux4f4eux529fux8017ux4fddux6301ux72b6ux6001}}
+
+所有 GPIO 可以在芯片进入低功耗状态后保持状态。根据功能的不同，存在两种类型的 GPIO，表 \ref{tab:ch-gpio-type-a}
+列举了所有的 A 型 GPIO，其它 GPIO 为 B 型。
+
+\begin{longtable}[]{@{}l@{}}
+\caption{\label{tab:ch-gpio-type-a} A 型 GPIO}\tabularnewline
+\toprule
+GPIO\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+GPIO\tabularnewline
+\midrule
+\endhead
+0\tabularnewline
+5\tabularnewline
+6\tabularnewline
+21\tabularnewline
+22\tabularnewline
+23\tabularnewline
+36\tabularnewline
+37\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{itemize}
+\item
+  对于 A 型 GPIO
+
+  使用 \texttt{GIO\_EnableRetentionGroupA} 使能或禁用 A 型 GPIO 的低功耗状态保持功能。
+  使能状态保持功能时，IOMUX 与之相关的所有配置都被锁存，即使处于各种低功耗状态下。使能后，
+  对这些 GPIO 的配置再做修改无法生效。只有禁用保持功能后，才会生效。
+  使能后，低功耗状态下这些 GPIO 不掉电。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ GIO_EnableRetentionGroupA(}\DataTypeTok{uint8_t}\NormalTok{ enable);}
+\end{Highlighting}
+\end{Shaded}
+\item
+  对于 B 型 GPIO
+
+  使用 \texttt{GIO\_EnableRetentionGroupB} 使能或禁用 B 型 GPIO 的低功耗状态保持功能。
+  使能状态保持功能时，与之相关的配置（以及输出值 ------ 对于 IO 方向为输出的 GPIO）都被锁存，即使处于各种低功耗状态下。
+  使能后，对这些 GPIO 的配置再做修改无法生效。只有禁用保持功能后，才会生效。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ GIO_EnableRetentionGroupB(}\DataTypeTok{uint8_t}\NormalTok{ enable);}
+\end{Highlighting}
+\end{Shaded}
+
+  使用 \texttt{GIO\_EnableHighZGroupB} 使能或禁用 B 型 GPIO 的低功耗高阻功能。使能该功能后，
+  IO 方向为输出的 B 型 GPIO 处于高阻状态，对这些 GPIO 的配置再做修改无法生效。只有禁用保持功能后，才会生效。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ GIO_EnableHighZGroupB(}\DataTypeTok{uint8_t}\NormalTok{ enable);}
+\end{Highlighting}
+\end{Shaded}
+\end{itemize}
+
+\begin{rmdnote}
+这些功能只支持对所有 GPIO 同时使能或禁用，不能对单个 GPIO 分别控制。
+\end{rmdnote}
+
+\hypertarget{ux7761ux7720ux5524ux9192ux6e90}{%
+\subsection{睡眠唤醒源}\label{ux7761ux7720ux5524ux9192ux6e90}}
+
+一部分 GPIO 支持作为低功耗状态的唤醒源：出现指定的电平信号时，将系统从低功耗状态下唤醒。
+对于深度睡眠（DEEP Sleep），这些 GPIO （\(\{0..17, 21..25, 29..37\}\)）可作为唤醒源，其中包含所有的 A 型 GPIO 和部分 B 型 GPIO。
+对于更深度的睡眠（DEEPER Sleep），所有的 A 型 GPIO 可作为唤醒源。
+
+\begin{itemize}
+\item
+  深度睡眠唤醒源
+
+  使用 \texttt{GIO\_EnableDeepSleepWakeupSource} 使能（或停用）某个 GPIO 的唤醒功能。
+  其中，\texttt{io\_index} 应该为支持该功能的 GPIO 的编号；\texttt{level} 为触发电平，1 为高电平唤醒，0 为低电平唤醒；
+  触发电平与上下拉应该相互配合：
+  高电平唤醒时，使用下拉；低电平唤醒时，使用上拉。
+  对于 A 型 GPIO，忽略 \texttt{pull} 参数，其上下拉由 \texttt{PINCTRL\_Pull} 控制。
+
+  对于 B 型 GPIO，这里的上下拉配置仅用于低功耗状态。对于这种 GPIO，
+  建议正常状态时的上下拉与这里的配置保持一致，以免由于配置切换产生``毛刺''。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{int}\NormalTok{ GIO_EnableDeepSleepWakeupSource(}
+\NormalTok{  GIO_Index_t io_index,     }\CommentTok{// GPIO 编号}
+  \DataTypeTok{uint8_t}\NormalTok{ enable,           }\CommentTok{// 使能(1)/禁用(0)}
+  \DataTypeTok{uint8_t}\NormalTok{ level,            }\CommentTok{// 触发唤醒的电平}
+\NormalTok{  pinctrl_pull_mode_t pull  }\CommentTok{// 上下拉配置}
+\NormalTok{);}
+\end{Highlighting}
+\end{Shaded}
+
+  任意一个唤醒源检测到唤醒电平就会将系统从低功耗状态唤醒。
+\item
+  更深度睡眠唤醒源
+
+  使用 \texttt{GIO\_EnableDeeperSleepWakeupSourceGroupA} 使能（或停用）A 型 GPIO 的更深度睡眠唤醒功能。
+  其中，\texttt{level} 为触发电平，1 为高电平唤醒，0 为低电平唤醒
+  使能后，所有 IO 方向为输入的 A 型 GPIO 都将作为唤醒源。任意一个唤醒源检测到唤醒电平就会将系统从低功耗状态唤醒。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ GIO_EnableDeeperSleepWakeupSourceGroupA(}
+  \DataTypeTok{uint8_t}\NormalTok{ enable,           }\CommentTok{// 使能(1)/禁用(0)}
+  \DataTypeTok{uint8_t}\NormalTok{ level             }\CommentTok{// 触发唤醒的电平}
+\NormalTok{);}
+\end{Highlighting}
+\end{Shaded}
+\end{itemize}
 
 \hypertarget{i2cux529fux80fdux6982ux8ff0}{%
 \chapter{I2C功能概述}\label{i2cux529fux80fdux6982ux8ff0}}
@@ -3574,9 +3756,9 @@ I2S控制器操作流程图如下：
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\PreprocessorTok{#define I2S_PIN_BCLK        28}
-\PreprocessorTok{#define I2S_PIN_IN          29}
-\PreprocessorTok{#define I2S_PIN_LRCLK       30}
+\PreprocessorTok{#define I2S_PIN_BCLK        21}
+\PreprocessorTok{#define I2S_PIN_IN          22}
+\PreprocessorTok{#define I2S_PIN_LRCLK       35}
 \DataTypeTok{void}\NormalTok{ I2sSetup(}\DataTypeTok{void}\NormalTok{)}
 \NormalTok{\{}
     \CommentTok{// pinctrl & GPIO mux}
@@ -3709,9 +3891,9 @@ I2s使能分3种情况：I2s发送、I2s接收、使用DMA搬运
 \begin{Shaded}
 \begin{Highlighting}[]
 \PreprocessorTok{#include }\ImportTok{"pingpong.h"}
-\PreprocessorTok{#define I2S_PIN_BCLK        28}
-\PreprocessorTok{#define I2S_PIN_IN          29}
-\PreprocessorTok{#define I2S_PIN_LRCLK       30}
+\PreprocessorTok{#define I2S_PIN_BCLK        21}
+\PreprocessorTok{#define I2S_PIN_IN          22}
+\PreprocessorTok{#define I2S_PIN_LRCLK       35}
 \PreprocessorTok{#define CHANNEL_ID  0}
 \NormalTok{DMA_PingPong_t PingPong;}
 
@@ -4232,7 +4414,7 @@ PDM数据DMA搬运：
 PINCTRL 模块管理芯片所有 IO 管脚的功能，包括外设 IO 的映射，上拉、下拉选择，输入模式控制，
 输出驱动能力设置等。
 
-每个 IO 管脚都可以配置为数字或模拟模式，当配置为数字模式时，特性如下：
+每个 IO 管脚都可以配置为数字或\protect\hyperlink{pinctrl-config-analog}{模拟模式}，当配置为数字模式时，特性如下：
 
 \begin{itemize}
 \tightlist
@@ -4251,6 +4433,7 @@ PINCTRL 模块管理芯片所有 IO 管脚的功能，包括外设 IO 的映射�
 这部分常用外设功能管脚总结于表 \ref{tab:ch-pinctrl-common-set}。
 表 \ref{tab:ch-pinctrl-mapping} 列出了其它外设功能管脚支持映射到哪些 IO 管脚上。
 除此以外，所有 IO 管脚都可以配置为 GPIO 或者 DEBUG 模式。GPIO 模式的输入、输出方向由 \texttt{GIO\_SetDirection} 控制。
+DEBUG 模式为保留功能，具体功能暂不开放。
 
 \begin{longtable}[]{@{}ll@{}}
 \caption{\label{tab:ch-pinctrl-common-set} 支持与常用 IO 全映射的常用功能管脚}\tabularnewline
@@ -4483,13 +4666,13 @@ SPI2AHB\_SCLK & 15\tabularnewline
   表 \ref{tab:ch-pinctrl-sel-in} 罗列了为各外设提供的输入配置函数。
 
   \begin{longtable}[]{@{}ll@{}}
-  \caption{\label{tab:ch-pinctrl-sel-in} 其它外设功能管脚的映射关系}\tabularnewline
+  \caption{\label{tab:ch-pinctrl-sel-in} 各外设的输入配置函数}\tabularnewline
   \toprule
-  外设功能管脚 & 可连接到的 IO 管脚\tabularnewline
+  外设 & 配置函数\tabularnewline
   \midrule
   \endfirsthead
   \toprule
-  外设功能管脚 & 可连接到的 IO 管脚\tabularnewline
+  外设 & 配置函数\tabularnewline
   \midrule
   \endhead
   KeyScan & \texttt{PINCTRL\_SelKeyScanColIn}\tabularnewline
@@ -4502,12 +4685,13 @@ SPI2AHB\_SCLK & 15\tabularnewline
   SWD & \texttt{PINCTRL\_SelSwIn}\tabularnewline
   SPI & \texttt{PINCTRL\_SelSpiIn}\tabularnewline
   UART & \texttt{PINCTRL\_SelUartIn}\tabularnewline
+  USB & \texttt{PINCTRL\_SelUSB}\tabularnewline
   \bottomrule
   \end{longtable}
 \end{enumerate}
 
-\hypertarget{ux914dux7f6eux4e0bux62c9ux4e0bux62c9}{%
-\subsection{配置下拉、下拉}\label{ux914dux7f6eux4e0bux62c9ux4e0bux62c9}}
+\hypertarget{ux914dux7f6eux4e0aux62c9ux4e0bux62c9}{%
+\subsection{配置上拉、下拉}\label{ux914dux7f6eux4e0aux62c9ux4e0bux62c9}}
 
 IO 管脚的上拉、下拉模式通过 \texttt{PINCTRL\_Pull} 配置：
 
@@ -4519,6 +4703,29 @@ IO 管脚的上拉、下拉模式通过 \texttt{PINCTRL\_Pull} 配置：
 \NormalTok{  );}
 \end{Highlighting}
 \end{Shaded}
+
+表 \ref{tab:ch-pinctrl-pull-default} 列出了各管脚默认的上下拉配置。
+
+\begin{longtable}[]{@{}ll@{}}
+\caption{\label{tab:ch-pinctrl-pull-default} 管脚上下拉默认配置}\tabularnewline
+\toprule
+管脚 & 默认配置\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+管脚 & 默认配置\tabularnewline
+\midrule
+\endhead
+1 & 上拉\tabularnewline
+2 & 上拉\tabularnewline
+3 & 上拉\tabularnewline
+4 & 上拉\tabularnewline
+15 & 下拉\tabularnewline
+16 & 下拉\tabularnewline
+17 & 下拉\tabularnewline
+其它 & 禁用上下拉\tabularnewline
+\bottomrule
+\end{longtable}
 
 \hypertarget{ux914dux7f6eux9a71ux52a8ux80fdux529b}{%
 \subsection{配置驱动能力}\label{ux914dux7f6eux9a71ux52a8ux80fdux529b}}
@@ -4532,6 +4739,102 @@ IO 管脚的上拉、下拉模式通过 \texttt{PINCTRL\_Pull} 配置：
   \DataTypeTok{const}\NormalTok{ pinctrl_drive_strength_t strength);}
 \end{Highlighting}
 \end{Shaded}
+
+默认驱动能力共分 4 档，分别为 \(2mA\)、\(4mA\)、\(8mA\)、\(12mA\)。除了 IO1 驱动能力默认为 \(12mA\) 之外，
+其它管脚驱动能力默认 \(8mA\)。
+
+\hypertarget{ux914dux7f6eux5929ux7ebfux5207ux6362ux63a7ux5236ux7ba1ux811a}{%
+\subsection{配置天线切换控制管脚}\label{ux914dux7f6eux5929ux7ebfux5207ux6362ux63a7ux5236ux7ba1ux811a}}
+
+支持最多 8 个管脚用于天线切换控制，相应地，天线切换模板（switching pattern）内每个数字包含 8 个比特，
+取值范围为 \(0..255\)。这 8 个比特可依次通过 \texttt{IO\_SOURCE\_ANT\_SW0}、\ldots\ldots、\texttt{IO\_SOURCE\_ANT\_SW7} 选择。
+例如，查表 \ref{tab:ch-pinctrl-mapping} 可知管脚 0 能够映射为 ANT\_SW0，即比特 0。
+通过下面这行代码就可将管脚 0 映射为 ANT\_SW0：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{PINCTRL_SetPadMux(}\DecValTok{0}\NormalTok{, IO_SOURCE_ANT_SW0);}
+\end{Highlighting}
+\end{Shaded}
+
+通过函数 \texttt{PINCTRL\_EnableAntSelPins} 可批量配置用于天线切换控制的管脚：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{int}\NormalTok{ PINCTRL_EnableAntSelPins(}
+  \DataTypeTok{int}\NormalTok{ count,                }\CommentTok{// 数目}
+  \DataTypeTok{const} \DataTypeTok{uint8_t}\NormalTok{ *io_pins);  }\CommentTok{// 管脚数组}
+\end{Highlighting}
+\end{Shaded}
+
+管脚数组 \texttt{io\_pins} 里的第 n 个元素代表第 n 个比特所要映射的管脚。如果不需要为某个比特配置管脚，则在 \texttt{io\_pins}
+的对应位置填入 \texttt{IO\_NOT\_A\_PIN}。比如，只选用第 0、第 2 等两个比特用作控制，分别映射到管脚 0 和 5：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{const} \DataTypeTok{uint8_t}\NormalTok{ io_pins[] = \{}\DecValTok{0}\NormalTok{, IO_NOT_A_PIN, }\DecValTok{5}\NormalTok{\};}
+\NormalTok{PINCTRL_EnableAntSelPins(}\KeywordTok{sizeof}\NormalTok{(io_pins), io_pins);}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{pinctrl-config-analog}{%
+\subsection{配置模拟模式}\label{pinctrl-config-analog}}
+
+通过以下 3 步可将一个管脚配置为模拟模式：
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  配置为 GPIO 模式；
+\item
+  禁用上下拉；
+\item
+  将 GPIO 配置为高阻态。
+\end{enumerate}
+
+函数 \texttt{PINCTRL\_EnableAnalog} 封装了以上步骤：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ PINCTRL_EnableAnalog(}\DataTypeTok{const} \DataTypeTok{uint8_t}\NormalTok{ io_index);}
+\end{Highlighting}
+\end{Shaded}
+
+模拟模式适用于以下几种外设。
+
+\begin{itemize}
+\item
+  USB
+
+  函数 \texttt{PINCTRL\_SelUSB()} 内部封装了 \texttt{PINCTRL\_EnableAnalog}，开发者不需要再为
+  USB 管脚调用该函数配置模拟模式。
+\item
+  ADC
+
+  开发者需要调用该函数使能某管脚的 ADC 输入功能。支持 ADC 输入功能的管脚如表 \ref{tab:ch-pinctrl-adc} 所示。
+
+  \begin{longtable}[]{@{}lll@{}}
+  \caption{\label{tab:ch-pinctrl-adc} 支持 ADC 输入的管脚}\tabularnewline
+  \toprule
+  管脚 & 单端模式 & 差分模式\tabularnewline
+  \midrule
+  \endfirsthead
+  \toprule
+  管脚 & 单端模式 & 差分模式\tabularnewline
+  \midrule
+  \endhead
+  7 & AIN 0 & AIN 0 P\tabularnewline
+  8 & AIN 1 & AIN 0 N\tabularnewline
+  9 & AIN 2 & AIN 1 P\tabularnewline
+  10 & AIN 3 & AIN 1 N\tabularnewline
+  11 & AIN 4 & AIN 2 P\tabularnewline
+  12 & AIN 5 & AIN 2 N\tabularnewline
+  13 & AIN 6 & AIN 3 P\tabularnewline
+  14 & AIN 7 & AIN 3 N\tabularnewline
+  \bottomrule
+  \end{longtable}
+\end{itemize}
 
 \hypertarget{pteux7b80ux4ecb}{%
 \chapter{PTE简介}\label{pteux7b80ux4ecb}}
@@ -5213,11 +5516,240 @@ FIFO：
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{ch-rtc}{%
-\chapter{实时时钟（RTC）}\label{ch-rtc}}
+\hypertarget{ch-qdec}{%
+\chapter{QDEC简介}\label{ch-qdec}}
+
+QDEC全称Quadrature Decoder，即正交解码器。
+
+其作用是用来解码来自旋转编码器的脉冲序列，以提供外部设备运动的步长和方向。
 
 \hypertarget{ux529fux80fdux63cfux8ff0-5}{%
 \section{功能描述}\label{ux529fux80fdux63cfux8ff0-5}}
+
+\hypertarget{ux7279ux70b9-5}{%
+\subsection{特点}\label{ux7279ux70b9-5}}
+
+\begin{itemize}
+\item
+  可配置时钟
+\item
+  支持过滤器
+\item
+  支持APB总线
+\item
+  支持DMA
+\end{itemize}
+
+\hypertarget{ux6b63ux8f6cux548cux53cdux8f6c}{%
+\subsection{正转和反转}\label{ux6b63ux8f6cux548cux53cdux8f6c}}
+
+QDEC是通过采集到phase\_a、phase\_b相邻两次的数值变化来判断外设的运动方向。
+
+顺时针采集数据如图所示：
+
+\begin{figure}
+
+{\centering \includegraphics[width=0.7\linewidth]{./img/QDEC/916_QDEC_clockwise} 
+
+}
+
+\caption{QDEC顺时针采集数据}\label{fig:916-qdec-clockwise}
+\end{figure}
+
+逆时针采集数据如图所示：
+
+\begin{figure}
+
+{\centering \includegraphics[width=0.7\linewidth]{./img/QDEC/916_QDEC_anticlockwise} 
+
+}
+
+\caption{QDEC逆时针采集数据}\label{fig:916-qdec-anticlockwise}
+\end{figure}
+
+在QDEC数据上，如果引脚配置和连接正确，顺时针转动则采集到的数据逐渐增大，逆时针则数据逐渐减小。
+
+\hypertarget{ux4f7fux7528ux65b9ux6cd5-5}{%
+\section{使用方法}\label{ux4f7fux7528ux65b9ux6cd5-5}}
+
+\hypertarget{ux65b9ux6cd5ux6982ux8ff0-5}{%
+\subsection{方法概述}\label{ux65b9ux6cd5ux6982ux8ff0-5}}
+
+方法概述为：GPIO选配，时钟配置，QDEC参数配置以及数据处理。
+
+\hypertarget{gpioux9009ux62e9}{%
+\subsubsection{GPIO选择}\label{gpioux9009ux62e9}}
+
+驱动接口：PINCTRL\_SelQDECIn
+
+QDEC的GPIO选择，请参考《ING91682X\_BLE5.3\_芯片数据手册》中的``IO引脚控制器Pin Controller''一节
+
+对phase\_a、phase\_b选定要配置的GPIO口，并调用PINCTRL\_SelQDECIn接口进行配置。
+
+\hypertarget{ux65f6ux949fux914dux7f6e-1}{%
+\subsubsection{时钟配置}\label{ux65f6ux949fux914dux7f6e-1}}
+
+驱动接口：SYSCTRL\_SelectQDECClk
+
+当前QDEC可以选择使用的时钟源为HCLK时钟或者sclk\_slow时钟
+
+对所选用的时钟源还需要进行一次分频，分频系数范围为1-1023，默认值为2
+
+这里需要特别注意的是： \textbf{请务必配置pclk时钟频率不大于qdec时钟源频率}
+
+\textbf{注意：} 如果配置pclk频率大于qdec时钟源频率，会出现qdec参数配置失败从而不能正常工作的现象。
+
+为了方便开发者使用，可以直接调用下面提供的接口来配置pclk时钟符合上述要求：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{static} \DataTypeTok{void}\NormalTok{ QDEC_PclkCfg(}\DataTypeTok{void}\NormalTok{)}
+\NormalTok{\{}
+    \DataTypeTok{uint32_t}\NormalTok{ hclk = SYSCTRL_GetHClk();}
+    \DataTypeTok{uint32_t}\NormalTok{ qdecClk = SYSCTRL_GetClk(SYSCTRL_ITEM_APB_QDEC);}
+    \DataTypeTok{uint8_t}\NormalTok{ div = hclk / qdecClk;}
+    \ControlFlowTok{if}\NormalTok{ (hclk % qdecClk)}
+\NormalTok{        div++;}
+    \ControlFlowTok{if}\NormalTok{ (!(div >> }\DecValTok{4}\NormalTok{))}
+\NormalTok{        SYSCTRL_SetPClkDiv(div);}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+开发者可以将以上代码拷贝到程序里，在配置qdec之前调用即可。
+
+\hypertarget{qdecux53c2ux6570ux914dux7f6e}{%
+\subsubsection{QDEC参数配置}\label{qdecux53c2ux6570ux914dux7f6e}}
+
+驱动接口：QDEC\_EnableQdecDiv、QDEC\_QdecCfg
+
+共有3个参数需要配置：qdec\_clk\_div、filter和miss
+
+其含义分别如下：
+
+\begin{itemize}
+\item
+  \textbf{qdec\_clk\_div：}用于控制qdec结果上报频率。即多少个时钟周期上报一次采样结果
+\item
+  \textbf{filter：}用于过滤\textbf{filter×时钟周期}时长以内的毛刺
+\item
+  \textbf{miss：}用于控制qdec可以自动补偿的最大miss结果数。例如由于滚轮转动过快，导致两次采样中变换了不止一个结果，则此时会自动补偿最多miss个结果。
+\end{itemize}
+
+\textbf{注意：} 对于miss值的配置需要格外注意，miss值的设置主要考虑到可能由于转动速度过快导致有数据丢失的情况，但此补偿机制容易受设备信号质量影响。对于信号质量较差的设备，如毛刺较多，则不建议加入miss，否则可能出现\textbf{``采样数据跳变''}和\textbf{``换向迟钝''}的问题。对于此类设备，此处建议采用较大工作时钟，不加入miss进行采样。测试证明此种方式也可以有较为出色的采样效果。
+
+对于miss值配置此处建议先加入较小的miss值（如miss=1）测试效果，如果有数据跳变或者换向迟钝则采用较大工作时钟（如HCLK时钟），不加miss进行采样。
+
+开发者如果在调试qdec过程中出现数据跳变和换向迟钝的问题，建议进行以下几方面尝试：
+
+\textbf{1.} 如选用sclk\_slow作为时钟源，检查是否有配置pclk频率小于qdec工作频率
+
+\textbf{2.} 改用较小工作时钟
+
+\textbf{3.} 采样较小的miss值（如miss=1）和较大的filter值
+
+\textbf{4.} 采用较大工作时钟（如HCLK时钟），不加miss进行采样
+
+如果偶尔有较小的数据跳变，如5以内，则属于正常情况。
+
+\hypertarget{ux6ce8ux610fux70b9-5}{%
+\subsection{注意点}\label{ux6ce8ux610fux70b9-5}}
+
+\begin{itemize}
+\item
+  phase\_a、phase\_b引脚配置注意区分正反，交换引脚则得到相反的转向
+\item
+  配置pclk时钟可能会影响其他外设，请参考916时钟树进行正确配置
+\item
+  qdec采样快慢和时钟正相关，和qdec\_clk\_div大小无关，qdec\_clk\_div只控制对结果的上报频率
+\item
+  qdec上报结果会同时触发qdec中断或者DMA\_REQ，qdec\_clk\_div设置过低会占用较多CPU资源
+\item
+  filter建议选择较大值，受毛刺影响较小，稳定性较好
+\end{itemize}
+
+\hypertarget{ux7f16ux7a0bux6307ux5357-5}{%
+\section{编程指南}\label{ux7f16ux7a0bux6307ux5357-5}}
+
+\hypertarget{ux9a71ux52a8ux63a5ux53e3-5}{%
+\subsection{驱动接口}\label{ux9a71ux52a8ux63a5ux53e3-5}}
+
+\begin{itemize}
+\item
+  QDEC\_QdecCfg：qdec标准配置接口
+\item
+  QDEC\_EnableQdecDiv：qdec\_clk\_div设置使能接口
+\item
+  QDEC\_ChannelEnable：qdec通道使能接口
+\item
+  QDEC\_GetData：qdec获取数据接口
+\item
+  QDEC\_GetDirection：qdec获取转向接口
+\item
+  QDEC\_Reset：qdec复位接口
+\end{itemize}
+
+\hypertarget{ux4ee3ux7801ux793aux4f8b-5}{%
+\subsection{代码示例}\label{ux4ee3ux7801ux793aux4f8b-5}}
+
+下面一段代码展示了qdec全部配置并循环读数：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{static} \DataTypeTok{void}\NormalTok{ QDEC_PclkCfg(}\DataTypeTok{void}\NormalTok{)}
+\NormalTok{\{}
+    \DataTypeTok{uint32_t}\NormalTok{ hclk = SYSCTRL_GetHClk();}
+    \DataTypeTok{uint32_t}\NormalTok{ qdecClk = SYSCTRL_GetClk(SYSCTRL_ITEM_APB_QDEC);}
+    \DataTypeTok{uint8_t}\NormalTok{ div = hclk / qdecClk;}
+    \ControlFlowTok{if}\NormalTok{ (hclk % qdecClk)}
+\NormalTok{        div++;}
+    \ControlFlowTok{if}\NormalTok{ (!(div >> }\DecValTok{4}\NormalTok{))}
+\NormalTok{        SYSCTRL_SetPClkDiv(div);}
+\NormalTok{\}}
+\DataTypeTok{void}\NormalTok{ test(}\DataTypeTok{void}\NormalTok{)}
+\NormalTok{\{}
+    \CommentTok{// setup qdec}
+\NormalTok{    SYSCTRL_ClearClkGate(SYSCTRL_ITEM_APB_PinCtrl |}
+\NormalTok{                         SYSCTRL_ITEM_APB_QDEC);}
+\NormalTok{    QDEC_PclkCfg();    }\CommentTok{// set pclk not bigger than sclk_slow}
+\NormalTok{    PINCTRL_SelQDECIn(}\DecValTok{16}\NormalTok{, }\DecValTok{17}\NormalTok{);    }\CommentTok{// set GPIO16=phase_a, GPIO17=phase_b}
+\NormalTok{    SYSCTRL_ReleaseBlock(SYSCTRL_ITEM_APB_PinCtrl |}
+\NormalTok{                         SYSCTRL_ITEM_APB_QDEC);}
+
+\NormalTok{    SYSCTRL_SelectQDECClk(SYSCTRL_CLK_SLOW, }\DecValTok{100}\NormalTok{);}
+\NormalTok{    QDEC_EnableQdecDiv(QDEC_DIV_1024);}
+\NormalTok{    QDEC_QdecCfg(}\DecValTok{50}\NormalTok{, }\DecValTok{1}\NormalTok{);}
+\NormalTok{    QDEC_ChannelEnable(}\DecValTok{1}\NormalTok{);}
+
+    \CommentTok{// print qdec data and direction when rotate the mouse wheel manually}
+    \DataTypeTok{uint16_t}\NormalTok{ preData = }\DecValTok{0}\NormalTok{;}
+    \DataTypeTok{uint16_t}\NormalTok{ data = }\DecValTok{0}\NormalTok{;}
+    \DataTypeTok{uint8_t}\NormalTok{ dir;}
+    \ControlFlowTok{while}\NormalTok{(}\DecValTok{1}\NormalTok{) \{}
+\NormalTok{        data = QDEC_GetData();}
+\NormalTok{        dir = QDEC_GetDirection();}
+        \ControlFlowTok{if}\NormalTok{ (data != preData) \{}
+            \ControlFlowTok{if}\NormalTok{ (dir) \{}
+\NormalTok{                printf(}\StringTok{"data: %d, %s}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{, data, }\StringTok{"anticlockwise"}\NormalTok{);}
+\NormalTok{            \} }\ControlFlowTok{else}\NormalTok{ \{}
+\NormalTok{                printf(}\StringTok{"data: %d, %s}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{, data, }\StringTok{"clockwise"}\NormalTok{);}
+\NormalTok{            \}}
+\NormalTok{        \}}
+\NormalTok{        preData = data;}
+\NormalTok{    \}}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+当手动转动鼠标滚轮时，会打印出收到的qdec数据和转向。
+
+qdec的详细使用请参考HID mouse例程。
+
+\hypertarget{ch-rtc}{%
+\chapter{实时时钟（RTC）}\label{ch-rtc}}
+
+\hypertarget{ux529fux80fdux63cfux8ff0-6}{%
+\section{功能描述}\label{ux529fux80fdux63cfux8ff0-6}}
 
 实时时钟是一个独立的定时器。RTC模块拥有一组连续计数的计数器，在相应的软件配置下，
 可提供时钟日历的功能。修改计数器的值可以重新设置系统当前的时间和日期。
@@ -6840,34 +7372,59 @@ SYSCTRL 为外设定义了几种不同的标识。最常见的一种标识为：
 \hypertarget{ux65f6ux949fux6811}{%
 \subsection{时钟树}\label{ux65f6ux949fux6811}}
 
+从源头看，共有 4 个时钟源：
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  内部 32KiHz RC 时钟；
+\item
+  外部 32768Hz 晶体；
+\item
+  内部高速 RC 时钟（8M/16M/24M/32M/48M/64MHz 可调）；
+\item
+  外部 24MHz 晶体。
+\end{enumerate}
+
+从 4 个时钟源出发，得到两组时钟：
+
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \item
   32KiHz 时钟（\emph{clk\_32k}）
 
-  32k 时钟有两个来源：内部 RC 电路，外部 32768Hz 晶体。
+  32k 时钟有两个来源：内部 32KiHz RC 电路，外部 32768Hz 晶体。
 \item
-  PLL 输入的 24MHz 时钟（\emph{clk\_pll\_in}）
+  慢时钟
 
-  24MHz 时钟有两个来源：内部 RC 电路，外部 24MHz 晶体。
+  慢时钟有两个来源：内部高速 RC 时钟，外部 24MHz 晶体。
+
+  BLE 子系统中射频相关的部分固定使用外部 24MHz 晶体提供的时钟。
+\end{enumerate}
+
+之后，
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
 \item
   PLL 输出（\emph{clk\_pll}）
 
   \emph{clk\_pll} 的频率 \(f_{pll}\) 可配置，受 \(loop\)、\(div_{pre}\) 和 \(div_{output}\) 等 3 个参数控制：
 
-  \[f_{vco}=\frac{f_{osc}\times loop}{div_{pre}}\]
+  \[f_{vco}=\frac{f_{in}\times loop}{div_{pre}}\]
 
   \[f_{pll}=\frac{f_{vco}}{div_{output}}\]
 
-  这里，\(f_{osc}\) 即 \emph{clk\_pll\_in} 的频率。要求 \(f_{vco} \in [60,600]MHz\)， \(f_{osc}/div_{pre} \in [2,24]MHz\)。
+  这里，\(f_{in}\) 即慢时钟。要求 \(f_{vco} \in [60,600]MHz\)， \(f_{in}/div_{pre} \in [2,24]MHz\)。
 \item
   \emph{sclk\_fast} 与 \emph{sclk\_slow}
 
-  \emph{clk\_pll} 经过门控后的时钟称为 \emph{sclk\_fast}，24MHz 时钟 \emph{clk\_pll\_in} 经过门控后称为 \emph{sclk\_slow}。
+  \emph{clk\_pll} 经过门控后的时钟称为 \emph{sclk\_fast}，慢时钟经过门控后称为 \emph{sclk\_slow}。
 \item
   \emph{hclk}
 
-  \emph{sclk\_fast} 经过分频后得到 \emph{hclk}。下列外设（包括 MCU）固定使用这个时钟\footnote{每个外设可单独对 \emph{hclk} 门控。}：
+  \emph{sclk\_fast} 经过分频后得到 \emph{hclk}。下列外设（包括 CPU）固定使用这个时钟\footnote{每个外设可单独对 \emph{hclk} 门控。}：
 
   \begin{itemize}
   \tightlist
@@ -6912,17 +7469,17 @@ SYSCTRL 为外设定义了几种不同的标识。最常见的一种标识为：
   \item
     \emph{sclk\_fast\_i2s\_div}：专供 I2S 选择使用
   \item
-    \emph{sclk\_fast\_qspi\_div}：专供 QSPI 选择使用
+    \emph{sclk\_fast\_qspi\_div}：专供 SPI0 选择使用
   \item
     \emph{sclk\_fast\_flash\_div}：专供片内 Flash 选择使用
   \item
-    \emph{sclk\_fast\_usb\_div}：专供 USB 选择使用
+    \emph{sclk\_fast\_usb\_div}：专供 USB 使用
   \end{itemize}
 \end{enumerate}
 
 各硬件外设可配置的时钟源汇总如表 \ref{tab:ch-sysctrl-tab-clk}。
 
-\begin{longtable}[]{@{}ll@{}}
+\begin{longtable}[]{@{}cl@{}}
 \caption{\label{tab:ch-sysctrl-tab-clk} 各硬件外设的时钟源}\tabularnewline
 \toprule
 外设 & 时钟源\tabularnewline
@@ -6937,14 +7494,14 @@ TMR0、TMR1、TMR2 & 独立配置 \emph{sclk\_slow\_timer\_div} 或者 \emph{clk
 WDT & \emph{clk\_32k}\tabularnewline
 PWM & \emph{sclk\_slow\_pwm\_div} 或者 \emph{clk\_32k}\tabularnewline
 PDM & \emph{sclk\_slow\_pdm\_div}\tabularnewline
-QDEC & 对 \emph{hclk} 或者 \emph{sclk\_slow} 分频\tabularnewline
+QDEC & 对 \emph{hclk} 或者 \emph{sclk\_slow}\tabularnewline
 KeyScan & \emph{sclk\_slow\_ks\_div} 或者 \emph{clk\_32k}\tabularnewline
 IR、ADC、EFUSE & 独立配置 \emph{sclk\_slow\_adc\_div} 或者 \emph{sclk\_slow}\tabularnewline
 DMA & \emph{hclk}\tabularnewline
 SPI0 & \emph{sclk\_fast\_qspi\_div} 或者 \emph{sclk\_slow}\tabularnewline
 I2S & \emph{sclk\_fast\_i2s\_div} 或者 \emph{sclk\_slow}\tabularnewline
 UART0、UART1、SPI1 & 独立配置 \emph{hclk} 或者 \emph{sclk\_slow}\tabularnewline
-I2C0、I2C1 & \emph{sclk\_slow}\tabularnewline
+I2C0、I2C1 & \emph{pclk}\tabularnewline
 \bottomrule
 \end{longtable}
 
@@ -7007,8 +7564,8 @@ UART0\_TX，分别用于触发 DMA 发送请求（通过 DMA 传输接收到的�
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{ux65f6ux949fux914dux7f6e-1}{%
-\subsection{时钟配置}\label{ux65f6ux949fux914dux7f6e-1}}
+\hypertarget{ux65f6ux949fux914dux7f6e-2}{%
+\subsection{时钟配置}\label{ux65f6ux949fux914dux7f6e-2}}
 
 举例如下。
 
@@ -7028,7 +7585,7 @@ UART0\_TX，分别用于触发 DMA 发送请求（通过 DMA 传输接收到的�
 \end{Highlighting}
 \end{Shaded}
 
-  例如，将 \emph{hclk} 配置为 220MHz 并读取到变量：
+  例如，假设慢时钟配置为 24MHz，下面的代码将 \emph{hclk} 配置为 220MHz 并读取到变量：
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -7054,10 +7611,12 @@ UART0\_TX，分别用于触发 DMA 发送请求（通过 DMA 传输接收到的�
 \begin{Highlighting}[]
 \KeywordTok{typedef} \KeywordTok{enum}
 \NormalTok{\{}
-\NormalTok{    SYSCTRL_CLK_OSC,            }\CommentTok{// 使用 sclk_slow}
-\NormalTok{    SYSCTRL_CLK_HCLK,           }\CommentTok{// 使用 hclk}
-\NormalTok{    SYSCTRL_CLK_ADC_DIV = ...,  }\CommentTok{// 使用 sclk_slow_adc_div}
-\NormalTok{    SYSCTRL_CLK_PLL_DIV_1 = ...,}\CommentTok{// 对 sclk_fast 分频}
+\NormalTok{    SYSCTRL_CLK_SLOW,             }\CommentTok{// 使用 sclk_slow}
+\NormalTok{    SYSCTRL_CLK_32k = ...,        }\CommentTok{// 使用 32KiHz 时钟}
+\NormalTok{    SYSCTRL_CLK_HCLK,             }\CommentTok{// 使用 hclk}
+\NormalTok{    SYSCTRL_CLK_ADC_DIV = ...,    }\CommentTok{// 使用 sclk_slow_adc_div}
+\NormalTok{    SYSCTRL_CLK_PLL_DIV_1 = ...,  }\CommentTok{// 对 sclk_fast 分频}
+\NormalTok{    SYSCTRL_CLK_SLOW_DIV_1 = ..., }\CommentTok{// 对 sclk_slow 分配}
 \NormalTok{\} SYSCTRL_ClkMode;}
 \end{Highlighting}
 \end{Shaded}
@@ -7066,7 +7625,7 @@ UART0\_TX，分别用于触发 DMA 发送请求（通过 DMA 传输接收到的�
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{SYSCTRL_SelectI2sClk(SYSCTRL_CLK_OSC);}
+\NormalTok{SYSCTRL_SelectI2sClk(SYSCTRL_CLK_SLOW);}
 \end{Highlighting}
 \end{Shaded}
 
@@ -7099,7 +7658,78 @@ UART0\_TX，分别用于触发 DMA 发送请求（通过 DMA 传输接收到的�
 \DataTypeTok{uint32_t}\NormalTok{ freq = SYSCTRL_GetClk(SYSCTRL_ITEM_APB_I2S);}
 \end{Highlighting}
 \end{Shaded}
+\item
+  降低频率以节省功耗
+
+  降低系统各时钟的频率可以显著降低动态功耗。相关函数有：
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{SYSCTRL\_SelectHClk}：选择 \emph{hclk}
+  \item
+    \texttt{SYSCTRL\_SelectFlashClk}：选择内部 Flash 时钟
+  \item
+    \texttt{SYSCTRL\_SelectSlowClk}：选择慢时钟
+  \item
+    \texttt{SYSCTRL\_EnablePLL}：开关 PLL
+  \end{itemize}
+\item
+  配置用于慢时钟的高速 RC 时钟
+
+  通过 \texttt{SYSCTRL\_EnableSlowRC} 可以使能并配置内部高速 RC 时钟的频率模式：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ SYSCTRL_EnableSlowRC(}
+    \DataTypeTok{uint8_t}\NormalTok{ enable,             }\CommentTok{// 使能或禁用}
+\NormalTok{    SYSCTRL_SlowRCClkMode mode  }\CommentTok{// 频率模式}
+\NormalTok{);}
+\end{Highlighting}
+\end{Shaded}
+
+  频率模式为：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{typedef} \KeywordTok{enum}
+\NormalTok{\{}
+\NormalTok{    SYSCTRL_SLOW_RC_8M = ...,}
+\NormalTok{    SYSCTRL_SLOW_RC_16M = ...,}
+\NormalTok{    SYSCTRL_SLOW_RC_24M = ...,}
+\NormalTok{    SYSCTRL_SLOW_RC_32M = ...,}
+\NormalTok{    SYSCTRL_SLOW_RC_48M = ...,}
+\NormalTok{    SYSCTRL_SLOW_RC_64M = ...,}
+\NormalTok{\} SYSCTRL_SlowRCClkMode;}
+\end{Highlighting}
+\end{Shaded}
+
+  由于内部（芯片之间）、外部环境（温度）存在微小差异或变化，所以这个 RC 时钟的频率或存在一定误差，
+  需要通过进行调谐以尽量接近标称值。通过 \texttt{SYSCTRL\_AutoTuneSlowRC} 可进行自动调谐\footnote{以 24MHz 晶体为参考。}：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{uint32_t}\NormalTok{ SYSCTRL_AutoTuneSlowRC(}\DataTypeTok{void}\NormalTok{);}
+\end{Highlighting}
+\end{Shaded}
+
+  这个函数返回的数据为调谐参数。如果认为有必要\footnote{比如认为 \texttt{SYSCTRL\_AutoTuneSlowRC} 耗时过长。}，可以把此参数储存起来，后续系统重启后，
+  通过 \texttt{SYSCTRL\_TuneSlowRC} 直接写入参数调谐频率。
 \end{enumerate}
+
+\begin{rmdnote}
+\textbf{温馨提示}：
+
+\begin{itemize}
+\tightlist
+\item
+  关闭 PLL 时，务必先将 CPU、Flash 时钟切换至慢时钟；
+\item
+  修改慢时钟配置时，需要保证 PLL 的输出、CPU 时钟等在支持的频率内；
+\item
+  推荐使用 SDK 提供的工具生成时钟配置代码，规避错误配置。
+\end{itemize}
+\end{rmdnote}
 
 \hypertarget{dma-ux89c4ux5212-1}{%
 \subsection{DMA 规划}\label{dma-ux89c4ux5212-1}}
@@ -7692,7 +8322,7 @@ DMA向CPU发出总线请求，CPU将总线交给DMA之后，由DMA控制数据�
     Endpoints 1-5: 可以配置为in/out，以及control/isochronous/bulk/interrupt
   \end{itemize}
 \item
-  支持UBS suspend, resume, remote-wakeup
+  支持USB suspend, resume, remote-wakeup
 \item
   内置DMA方便数据传输
 \end{itemize}

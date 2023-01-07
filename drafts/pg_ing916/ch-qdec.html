@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>9 IR 红外 | ING916XX 系列芯片外设开发者手册</title>
+  <title>14 QDEC简介 | ING916XX 系列芯片外设开发者手册</title>
   <meta name="description" content="ING916XX 系列芯片开发者手册." />
   <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="9 IR 红外 | ING916XX 系列芯片外设开发者手册" />
+  <meta property="og:title" content="14 QDEC简介 | ING916XX 系列芯片外设开发者手册" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="ING916XX 系列芯片开发者手册." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="9 IR 红外 | ING916XX 系列芯片外设开发者手册" />
+  <meta name="twitter:title" content="14 QDEC简介 | ING916XX 系列芯片外设开发者手册" />
   
   <meta name="twitter:description" content="ING916XX 系列芯片开发者手册." />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="ch-I2s.html"/>
-<link rel="next" href="ch-PDM.html"/>
+<link rel="prev" href="ch-pwm.html"/>
+<link rel="next" href="ch-rtc.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -465,193 +465,164 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="ir-红外" class="section level1 hasAnchor">
-<h1><span class="header-section-number">9</span> IR 红外<a href="ir-红外.html#ir-红外" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div id="功能概述-2" class="section level2 hasAnchor">
-<h2><span class="header-section-number">9.1</span> 功能概述<a href="ir-红外.html#功能概述-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="ch-qdec" class="section level1 hasAnchor">
+<h1><span class="header-section-number">14</span> QDEC简介<a href="ch-qdec.html#ch-qdec" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>QDEC全称Quadrature Decoder，即正交解码器。</p>
+<p>其作用是用来解码来自旋转编码器的脉冲序列，以提供外部设备运动的步长和方向。</p>
+<div id="功能描述-5" class="section level2 hasAnchor">
+<h2><span class="header-section-number">14.1</span> 功能描述<a href="ch-qdec.html#功能描述-5" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="特点-5" class="section level3 hasAnchor">
+<h3><span class="header-section-number">14.1.1</span> 特点<a href="ch-qdec.html#特点-5" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <ul>
-<li>支持红外发射&amp;接收</li>
-<li>时序可调整，支持多种编码</li>
+<li><p>可配置时钟</p></li>
+<li><p>支持过滤器</p></li>
+<li><p>支持APB总线</p></li>
+<li><p>支持DMA</p></li>
 </ul>
 </div>
-<div id="使用说明-2" class="section level2 hasAnchor">
-<h2><span class="header-section-number">9.2</span> 使用说明<a href="ir-红外.html#使用说明-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="参数不同编码的时间参数" class="section level3 hasAnchor">
-<h3><span class="header-section-number">9.2.1</span> 参数(不同编码的时间参数)<a href="ir-红外.html#参数不同编码的时间参数" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb107"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb107-1"><a href="ir-红外.html#cb107-1"></a><span class="co">//32KHz 调制时钟</span></span>
-<span id="cb107-2"><a href="ir-红外.html#cb107-2"></a><span class="pp">#define FCLK            32000</span></span>
-<span id="cb107-3"><a href="ir-红外.html#cb107-3"></a></span>
-<span id="cb107-4"><a href="ir-红外.html#cb107-4"></a><span class="co">//NEC 载波频率38KHz</span></span>
-<span id="cb107-5"><a href="ir-红外.html#cb107-5"></a><span class="pp">#define NEC_WAVE_FREQ   38000</span></span>
-<span id="cb107-6"><a href="ir-红外.html#cb107-6"></a></span>
-<span id="cb107-7"><a href="ir-红外.html#cb107-7"></a><span class="co">// RC5 载波频率36KHz</span></span>
-<span id="cb107-8"><a href="ir-红外.html#cb107-8"></a><span class="pp">#define RC5_WAVE_FREQ   36000</span></span>
-<span id="cb107-9"><a href="ir-红外.html#cb107-9"></a></span>
-<span id="cb107-10"><a href="ir-红外.html#cb107-10"></a><span class="co">// 计算载波频率发生器数据，由此产生如38KHz NEC的载波，NEC与TC9012通用38KHz载波</span></span>
-<span id="cb107-11"><a href="ir-红外.html#cb107-11"></a><span class="pp">#define IR_WAVE_NEC_TC9012_FREQ (OSC_CLK_FREQ/NEC_WAVE_FREQ)    </span></span>
-<span id="cb107-12"><a href="ir-红外.html#cb107-12"></a><span class="pp">#define IR_WAVE_RC5_FREQ (OSC_CLK_FREQ/RC5_WAVE_FREQ)  </span></span>
-<span id="cb107-13"><a href="ir-红外.html#cb107-13"></a></span>
-<span id="cb107-14"><a href="ir-红外.html#cb107-14"></a><span class="co">//通过FCLK产生各种协议每bit位调制周期最小单位，如NEC协议中，560us为最小调制周期，NEC：bit 0：560us载波+560us不载波，bit 1：560 us载波+560*3 us不载波</span></span>
-<span id="cb107-15"><a href="ir-红外.html#cb107-15"></a><span class="pp">#define NEC_UINT    (FCLK*560/1000000+1)</span></span>
-<span id="cb107-16"><a href="ir-红外.html#cb107-16"></a><span class="pp">#define TC9012_UINT (FCLK*260/1000000+1)</span></span>
-<span id="cb107-17"><a href="ir-红外.html#cb107-17"></a><span class="pp">#define RC5_UINT    (FCLK*889/1000000+1)</span></span>
-<span id="cb107-18"><a href="ir-红外.html#cb107-18"></a></span>
-<span id="cb107-19"><a href="ir-红外.html#cb107-19"></a><span class="co">//不必要的参数</span></span>
-<span id="cb107-20"><a href="ir-红外.html#cb107-20"></a><span class="pp">#define INESSENTIAL     0</span></span>
-<span id="cb107-21"><a href="ir-红外.html#cb107-21"></a></span>
-<span id="cb107-22"><a href="ir-红外.html#cb107-22"></a><span class="kw">typedef</span> <span class="kw">struct</span></span>
-<span id="cb107-23"><a href="ir-红外.html#cb107-23"></a>{</span>
-<span id="cb107-24"><a href="ir-红外.html#cb107-24"></a>    <span class="dt">uint16_t</span> timer1;<span class="co">//发送模式下，表示引导码低电平时间：如NEC为16*UNIT = 9ms，接收模式下与timer2组成检测引导码低电平窗口</span></span>
-<span id="cb107-25"><a href="ir-红外.html#cb107-25"></a>    <span class="dt">uint16_t</span> timer2;<span class="co">//发送模式下，表示重复码低电平时间：如NEC为4*UNIT = 2.25ms，接收模式下与timer1组成检测引导码低窗口</span></span>
-<span id="cb107-26"><a href="ir-红外.html#cb107-26"></a>    <span class="dt">uint16_t</span> timer3;<span class="co">//发送模式下，表示引导码高电平时间：如NEC为8*UNIT = 4.5ms，接收模式下与timer4组成检测引导码高电平+低电平窗口</span></span>
-<span id="cb107-27"><a href="ir-红外.html#cb107-27"></a>    <span class="dt">uint16_t</span> timer4;<span class="co">//发送模式下，表示重复码高电平时间：如NEC为UNIT = 560us，接收模式下与timer3组成检测引导码高电平+低电平窗口</span></span>
-<span id="cb107-28"><a href="ir-红外.html#cb107-28"></a>    <span class="dt">uint16_t</span> timer5;<span class="co">//接收时接收超时定时器，发射不必关注</span></span>
-<span id="cb107-29"><a href="ir-红外.html#cb107-29"></a>    <span class="dt">uint16_t</span> btimer1;<span class="co">//逻辑 0 的bit时长：如NEC = 2*UINT = 1.12ms.</span></span>
-<span id="cb107-30"><a href="ir-红外.html#cb107-30"></a>    <span class="dt">uint16_t</span> btimer2;<span class="co">//逻辑 1 的bit时长：如NEC = 4*UINT = 2.25ms.</span></span>
-<span id="cb107-31"><a href="ir-红外.html#cb107-31"></a>    <span class="dt">uint16_t</span> bit_cycle;<span class="co">//发射模式下：bit调制周期最小单位，如NEC为560us，接收模式下为bit检测超时时间</span></span>
-<span id="cb107-32"><a href="ir-红外.html#cb107-32"></a>    <span class="dt">uint16_t</span> carry_low;<span class="co">//载波低电平时长，与carry_high组合形成占空比可调的载波波形，如NEC为38KHz 30%占空比载波则carry_low = 2/3*载波周期，carry_high = 1/3*载波周期</span></span>
-<span id="cb107-33"><a href="ir-红外.html#cb107-33"></a>    <span class="dt">uint16_t</span> carry_high;<span class="co">//载波高电平时长，与carry_low组合形成占空比可调的载波波形，如NEC为38KHz 30%占空比载波则carry_low = 2/3*载波周期，carry_high = 1/3*载波周期</span></span>
-<span id="cb107-34"><a href="ir-红外.html#cb107-34"></a>}Ir_mode_param_t;</span>
-<span id="cb107-35"><a href="ir-红外.html#cb107-35"></a></span>
-<span id="cb107-36"><a href="ir-红外.html#cb107-36"></a><span class="co">//由于发送和接收初始化不同参数 定义结构体表示接收发送初始化参数。</span></span>
-<span id="cb107-37"><a href="ir-红外.html#cb107-37"></a><span class="kw">typedef</span> <span class="kw">struct</span>{</span>
-<span id="cb107-38"><a href="ir-红外.html#cb107-38"></a>    Ir_mode_param_t param_tx;</span>
-<span id="cb107-39"><a href="ir-红外.html#cb107-39"></a>    Ir_mode_param_t param_rx;</span>
-<span id="cb107-40"><a href="ir-红外.html#cb107-40"></a>}Ir_type_param_t;</span>
-<span id="cb107-41"><a href="ir-红外.html#cb107-41"></a></span>
-<span id="cb107-42"><a href="ir-红外.html#cb107-42"></a><span class="co">//定义初始化数据，初始化函数体根据不同协议自动从此表适配参数</span></span>
-<span id="cb107-43"><a href="ir-红外.html#cb107-43"></a><span class="dt">const</span> <span class="dt">static</span> Ir_type_param_t t_ir_type_param_table[] = </span>
-<span id="cb107-44"><a href="ir-红外.html#cb107-44"></a>{</span>
-<span id="cb107-45"><a href="ir-红外.html#cb107-45"></a>    {<span class="co">//NEC param</span></span>
-<span id="cb107-46"><a href="ir-红外.html#cb107-46"></a>        {  <span class="co">//TX</span></span>
-<span id="cb107-47"><a href="ir-红外.html#cb107-47"></a>            <span class="dv">16</span>*NEC_UINT-<span class="dv">1</span>,<span class="dv">4</span>*NEC_UINT-<span class="dv">1</span>,<span class="dv">8</span>*NEC_UINT-<span class="dv">1</span>,<span class="dv">1</span>*NEC_UINT-<span class="dv">1</span>,INESSENTIAL,</span>
-<span id="cb107-48"><a href="ir-红外.html#cb107-48"></a>            <span class="dv">2</span>*NEC_UINT-<span class="dv">1</span>, <span class="dv">4</span>*NEC_UINT-<span class="dv">1</span>,<span class="dv">1</span>*NEC_UINT-<span class="dv">1</span>,IR_WAVE_NEC_TC9012_FREQ*<span class="dv">2</span>/<span class="dv">3</span>,IR_WAVE_NEC_TC9012_FREQ*<span class="dv">1</span>/<span class="dv">3</span>},</span>
-<span id="cb107-49"><a href="ir-红外.html#cb107-49"></a>        {   <span class="co">//RX</span></span>
-<span id="cb107-50"><a href="ir-红外.html#cb107-50"></a>            <span class="dv">14</span>*NEC_UINT-<span class="dv">1</span>,<span class="dv">18</span>*NEC_UINT-<span class="dv">1</span>,<span class="dv">22</span>*NEC_UINT-<span class="dv">1</span>,<span class="dv">26</span>*NEC_UINT-<span class="dv">1</span>,<span class="bn">0xfff</span>,</span>
-<span id="cb107-51"><a href="ir-红外.html#cb107-51"></a>            INESSENTIAL,<span class="dv">2</span>*NEC_UINT-<span class="dv">1</span>,<span class="bn">0x7f</span>,INESSENTIAL,INESSENTIAL},    </span>
-<span id="cb107-52"><a href="ir-红外.html#cb107-52"></a>    },</span>
-<span id="cb107-53"><a href="ir-红外.html#cb107-53"></a>    {<span class="co">//TC9012 param</span></span>
-<span id="cb107-54"><a href="ir-红外.html#cb107-54"></a>        {   <span class="co">//TX</span></span>
-<span id="cb107-55"><a href="ir-红外.html#cb107-55"></a>            <span class="dv">16</span>*TC9012_UINT-<span class="dv">1</span>,<span class="dv">8</span>*TC9012_UINT-<span class="dv">1</span>,<span class="dv">16</span>*TC9012_UINT-<span class="dv">1</span>,<span class="dv">2</span>*TC9012_UINT-<span class="dv">1</span>,INESSENTIAL,</span>
-<span id="cb107-56"><a href="ir-红外.html#cb107-56"></a>            <span class="dv">4</span>*TC9012_UINT-<span class="dv">1</span>,<span class="dv">6</span>*TC9012_UINT-<span class="dv">1</span>,<span class="dv">2</span>*TC9012_UINT-<span class="dv">1</span>,IR_WAVE_NEC_TC9012_FREQ*<span class="dv">2</span>/<span class="dv">3</span>,IR_WAVE_NEC_TC9012_FREQ*<span class="dv">1</span>/<span class="dv">3</span>},</span>
-<span id="cb107-57"><a href="ir-红外.html#cb107-57"></a>        {    <span class="co">//RX</span></span>
-<span id="cb107-58"><a href="ir-红外.html#cb107-58"></a>            <span class="dv">28</span>*TC9012_UINT-<span class="dv">1</span>,<span class="dv">36</span>*TC9012_UINT-<span class="dv">1</span>,<span class="dv">44</span>*TC9012_UINT-<span class="dv">1</span>,<span class="dv">32</span>*TC9012_UINT-<span class="dv">1</span>,<span class="bn">0xfff</span>,INESSENTIAL,</span>
-<span id="cb107-59"><a href="ir-红外.html#cb107-59"></a>            <span class="dv">4</span>*TC9012_UINT-<span class="dv">1</span>,<span class="bn">0x7f</span>,INESSENTIAL,INESSENTIAL},    </span>
-<span id="cb107-60"><a href="ir-红外.html#cb107-60"></a>    },    </span>
-<span id="cb107-61"><a href="ir-红外.html#cb107-61"></a>    {<span class="co">//RC5 param</span></span>
-<span id="cb107-62"><a href="ir-红外.html#cb107-62"></a>        {   <span class="co">//TX</span></span>
-<span id="cb107-63"><a href="ir-红外.html#cb107-63"></a>            <span class="dv">2</span>*RC5_UINT-<span class="dv">1</span>,<span class="dv">2</span>*RC5_UINT-<span class="dv">1</span>,INESSENTIAL,INESSENTIAL,INESSENTIAL,<span class="dv">2</span>*RC5_UINT-<span class="dv">1</span>,</span>
-<span id="cb107-64"><a href="ir-红外.html#cb107-64"></a>            INESSENTIAL,<span class="dv">1</span>*RC5_UINT,IR_WAVE_RC5_FREQ*<span class="dv">2</span>/<span class="dv">3</span>,IR_WAVE_RC5_FREQ*<span class="dv">1</span>/<span class="dv">3</span>},</span>
-<span id="cb107-65"><a href="ir-红外.html#cb107-65"></a>        </span>
-<span id="cb107-66"><a href="ir-红外.html#cb107-66"></a>        {   <span class="co">//RX</span></span>
-<span id="cb107-67"><a href="ir-红外.html#cb107-67"></a>            <span class="dv">1</span>*RC5_UINT-<span class="dv">2</span>,<span class="dv">1</span>*RC5_UINT,<span class="dv">3</span>*RC5_UINT-<span class="dv">1</span>,<span class="dv">5</span>*RC5_UINT-<span class="dv">1</span>,INESSENTIAL,<span class="dv">1</span>*RC5_UINT-<span class="dv">3</span>,</span>
-<span id="cb107-68"><a href="ir-红外.html#cb107-68"></a>            <span class="dv">1</span>*RC5_UINT-<span class="dv">1</span>,<span class="dv">2</span>*RC5_UINT-<span class="dv">1</span>,INESSENTIAL,INESSENTIAL},    </span>
-<span id="cb107-69"><a href="ir-红外.html#cb107-69"></a>    }</span>
-<span id="cb107-70"><a href="ir-红外.html#cb107-70"></a>};</span></code></pre></div>
+<div id="正转和反转" class="section level3 hasAnchor">
+<h3><span class="header-section-number">14.1.2</span> 正转和反转<a href="ch-qdec.html#正转和反转" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>QDEC是通过采集到phase_a、phase_b相邻两次的数值变化来判断外设的运动方向。</p>
+顺时针采集数据如图所示：
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:916-qdec-clockwise"></span>
+<img src="img/QDEC/916_QDEC_clockwise.png" alt="QDEC顺时针采集数据" width="70%" />
+<p class="caption">
+图 14.1: QDEC顺时针采集数据
+</p>
 </div>
-<div id="红外发射接收" class="section level3 hasAnchor">
-<h3><span class="header-section-number">9.2.2</span> 红外发射接收<a href="ir-红外.html#红外发射接收" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div id="配置pin-10" class="section level4 hasAnchor">
-<h4><span class="header-section-number">9.2.2.1</span> 配置pin<a href="ir-红外.html#配置pin-10" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb108"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb108-1"><a href="ir-红外.html#cb108-1"></a><span class="pp">#define IR_DOUT GIO_GPIO_10</span></span>
-<span id="cb108-2"><a href="ir-红外.html#cb108-2"></a><span class="pp">#define IR_DIN  GIO_GPIO_11</span></span>
-<span id="cb108-3"><a href="ir-红外.html#cb108-3"></a></span>
-<span id="cb108-4"><a href="ir-红外.html#cb108-4"></a><span class="dt">void</span> setup_peripherals_ir_module(<span class="dt">void</span>)</span>
-<span id="cb108-5"><a href="ir-红外.html#cb108-5"></a>{</span>
-<span id="cb108-6"><a href="ir-红外.html#cb108-6"></a>    <span class="co">// 打开时钟</span></span>
-<span id="cb108-7"><a href="ir-红外.html#cb108-7"></a>    <span class="co">// 大于等于GPIO 18则使用SYSCTRL_ClkGate_APB_GPIO1， 否则是SYSCTRL_ClkGate_APB_GPIO0</span></span>
-<span id="cb108-8"><a href="ir-红外.html#cb108-8"></a>    SYSCTRL_ClearClkGateMulti(   (<span class="dv">1</span> &lt;&lt; SYSCTRL_ClkGate_APB_GPIO0)</span>
-<span id="cb108-9"><a href="ir-红外.html#cb108-9"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ClkGate_APB_GPIO1)</span>
-<span id="cb108-10"><a href="ir-红外.html#cb108-10"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ClkGate_APB_IR)</span>
-<span id="cb108-11"><a href="ir-红外.html#cb108-11"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ClkGate_APB_PinCtrl));</span>
-<span id="cb108-12"><a href="ir-红外.html#cb108-12"></a>                                </span>
-<span id="cb108-13"><a href="ir-红外.html#cb108-13"></a>    PINCTRL_SelIrIn(IR_DIN);</span>
-<span id="cb108-14"><a href="ir-红外.html#cb108-14"></a>    PINCTRL_SetPadMux(IR_DOUT,IO_SOURCE_IR_DATA_OUT);</span>
-<span id="cb108-15"><a href="ir-红外.html#cb108-15"></a>    platform_set_irq_callback(PLATFORM_CB_IRQ_IR_INT, IRQHandler_IR_INT, NULL);</span>
-<span id="cb108-16"><a href="ir-红外.html#cb108-16"></a>}</span></code></pre></div>
+逆时针采集数据如图所示：
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:916-qdec-anticlockwise"></span>
+<img src="img/QDEC/916_QDEC_anticlockwise.png" alt="QDEC逆时针采集数据" width="70%" />
+<p class="caption">
+图 14.2: QDEC逆时针采集数据
+</p>
 </div>
-<div id="配置模块" class="section level4 hasAnchor">
-<h4><span class="header-section-number">9.2.2.2</span> 配置模块<a href="ir-红外.html#配置模块" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb109"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb109-1"><a href="ir-红外.html#cb109-1"></a><span class="dt">static</span> <span class="dt">void</span> user_ir_device_init(IR_IrMode_e mode,IR_TxRxMode_e tx_rx_mode)</span>
-<span id="cb109-2"><a href="ir-红外.html#cb109-2"></a>{</span>
-<span id="cb109-3"><a href="ir-红外.html#cb109-3"></a>    IR_CtrlSetIrMode(APB_IR,mode);</span>
-<span id="cb109-4"><a href="ir-红外.html#cb109-4"></a>    IR_CtrlSetTxRxMode(APB_IR,tx_rx_mode);</span>
-<span id="cb109-5"><a href="ir-红外.html#cb109-5"></a>    IR_CtrlSetIrIntEn(APB_IR);</span>
-<span id="cb109-6"><a href="ir-红外.html#cb109-6"></a>    </span>
-<span id="cb109-7"><a href="ir-红外.html#cb109-7"></a>    <span class="cf">if</span>(IR_TXRX_MODE_TX_MODE == tx_rx_mode)</span>
-<span id="cb109-8"><a href="ir-红外.html#cb109-8"></a>    {</span>
-<span id="cb109-9"><a href="ir-红外.html#cb109-9"></a>        IR_TxConfigIrTxPol(APB_IR);</span>
-<span id="cb109-10"><a href="ir-红外.html#cb109-10"></a>        IR_TxConfigCarrierCntClr(APB_IR);</span>
-<span id="cb109-11"><a href="ir-红外.html#cb109-11"></a>        IR_TxConfigIrIntEn(APB_IR);</span>
-<span id="cb109-12"><a href="ir-红外.html#cb109-12"></a>        IR_CarryConfigSetIrCarryLow(APB_IR,t_ir_type_param_table[mode].param_tx.carry_low);   <span class="co">//30% pwm</span></span>
-<span id="cb109-13"><a href="ir-红外.html#cb109-13"></a>        IR_CarryConfigSetIrCarryHigh(APB_IR,t_ir_type_param_table[mode].param_tx.carry_high);</span>
-<span id="cb109-14"><a href="ir-红外.html#cb109-14"></a>        IR_TimeSetIrTime1(APB_IR,t_ir_type_param_table[mode].param_tx.timer1);</span>
-<span id="cb109-15"><a href="ir-红外.html#cb109-15"></a>        IR_TimeSetIrTime2(APB_IR,t_ir_type_param_table[mode].param_tx.timer2);</span>
-<span id="cb109-16"><a href="ir-红外.html#cb109-16"></a>        IR_TimeSetIrTime3(APB_IR,t_ir_type_param_table[mode].param_tx.timer3 );</span>
-<span id="cb109-17"><a href="ir-红外.html#cb109-17"></a>        IR_TimeSetIrTime4(APB_IR,t_ir_type_param_table[mode].param_tx.timer4); </span>
-<span id="cb109-18"><a href="ir-红外.html#cb109-18"></a>        IR_CtrlIrSetBitTime1(APB_IR,t_ir_type_param_table[mode].param_tx.btimer1);</span>
-<span id="cb109-19"><a href="ir-红外.html#cb109-19"></a>        IR_CtrlIrSetBitTime2(APB_IR,t_ir_type_param_table[mode].param_tx.btimer2);    </span>
-<span id="cb109-20"><a href="ir-红外.html#cb109-20"></a>        IR_CtrlIrSetIrBitCycle(APB_IR,t_ir_type_param_table[mode].param_tx.bit_cycle);        </span>
-<span id="cb109-21"><a href="ir-红外.html#cb109-21"></a>    }</span>
-<span id="cb109-22"><a href="ir-红外.html#cb109-22"></a>    <span class="cf">else</span>{</span>
-<span id="cb109-23"><a href="ir-红外.html#cb109-23"></a>        IR_CtrlSetIrEndDetectEn(APB_IR);<span class="co">//end code detect en</span></span>
-<span id="cb109-24"><a href="ir-红外.html#cb109-24"></a>        IR_CtrlIrUsercodeVerify(APB_IR);</span>
-<span id="cb109-25"><a href="ir-红外.html#cb109-25"></a>        IR_CtrlIrDatacodeVerify(APB_IR);</span>
-<span id="cb109-26"><a href="ir-红外.html#cb109-26"></a>        IR_TimeSetIrTime1(APB_IR,t_ir_type_param_table[mode].param_rx.timer1);</span>
-<span id="cb109-27"><a href="ir-红外.html#cb109-27"></a>        IR_TimeSetIrTime2(APB_IR,t_ir_type_param_table[mode].param_rx.timer2);</span>
-<span id="cb109-28"><a href="ir-红外.html#cb109-28"></a>        IR_TimeSetIrTime3(APB_IR,t_ir_type_param_table[mode].param_rx.timer3);</span>
-<span id="cb109-29"><a href="ir-红外.html#cb109-29"></a>        IR_TimeSetIrTime4(APB_IR,t_ir_type_param_table[mode].param_rx.timer4); </span>
-<span id="cb109-30"><a href="ir-红外.html#cb109-30"></a>        IR_TimeSetIrTime5(APB_IR,t_ir_type_param_table[mode].param_rx.timer5); </span>
-<span id="cb109-31"><a href="ir-红外.html#cb109-31"></a>        IR_CtrlIrSetBitTime1(APB_IR,t_ir_type_param_table[mode].param_rx.btimer1);</span>
-<span id="cb109-32"><a href="ir-红外.html#cb109-32"></a>        IR_CtrlIrSetBitTime2(APB_IR,t_ir_type_param_table[mode].param_rx.btimer2);    </span>
-<span id="cb109-33"><a href="ir-红外.html#cb109-33"></a>        IR_CtrlIrSetIrBitCycle(APB_IR,t_ir_type_param_table[mode].param_rx.bit_cycle);   </span>
-<span id="cb109-34"><a href="ir-红外.html#cb109-34"></a>    }</span>
-<span id="cb109-35"><a href="ir-红外.html#cb109-35"></a>    IR_CtrlEnable(APB_IR);</span>
-<span id="cb109-36"><a href="ir-红外.html#cb109-36"></a>}</span></code></pre></div>
+<p>在QDEC数据上，如果引脚配置和连接正确，顺时针转动则采集到的数据逐渐增大，逆时针则数据逐渐减小。</p>
 </div>
-<div id="ir-中断以及ir接收" class="section level4 hasAnchor">
-<h4><span class="header-section-number">9.2.2.3</span> IR 中断(以及IR接收)<a href="ir-红外.html#ir-中断以及ir接收" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb110"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb110-1"><a href="ir-红外.html#cb110-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> IRQHandler_IR_INT(<span class="dt">void</span> *user_data)</span>
-<span id="cb110-2"><a href="ir-红外.html#cb110-2"></a>{</span>
-<span id="cb110-3"><a href="ir-红外.html#cb110-3"></a>    <span class="cf">if</span>(IR_FsmGetIrTransmitOk(APB_IR))</span>
-<span id="cb110-4"><a href="ir-红外.html#cb110-4"></a>        ;<span class="co">//platform_printf(&quot;int ir send ok\n&quot;);</span></span>
-<span id="cb110-5"><a href="ir-红外.html#cb110-5"></a>    <span class="cf">if</span>(IR_FsmGetIrTxRepeat(APB_IR))</span>
-<span id="cb110-6"><a href="ir-红外.html#cb110-6"></a>        ;<span class="co">//platform_printf(&quot;int ir repeat ok\n&quot;);</span></span>
-<span id="cb110-7"><a href="ir-红外.html#cb110-7"></a>    <span class="cf">if</span>(IR_FsmGetIrReceivedOk(APB_IR))</span>
-<span id="cb110-8"><a href="ir-红外.html#cb110-8"></a>    {</span>
-<span id="cb110-9"><a href="ir-红外.html#cb110-9"></a>        <span class="dt">uint32_t</span> value = IR_RxCodeGetIrRxUsercode(APB_IR) &lt;&lt;<span class="dv">16</span> | IR_RxCodeGetIrRxDatacode(APB_IR);</span>
-<span id="cb110-10"><a href="ir-红外.html#cb110-10"></a>        platform_printf(<span class="st">&quot;Received:0x%x</span><span class="sc">\n</span><span class="st">&quot;</span>,value);</span>
-<span id="cb110-11"><a href="ir-红外.html#cb110-11"></a>    }</span>
-<span id="cb110-12"><a href="ir-红外.html#cb110-12"></a>    </span>
-<span id="cb110-13"><a href="ir-红外.html#cb110-13"></a>    <span class="cf">if</span>(IR_FsmGetIrRepeat(APB_IR))</span>
-<span id="cb110-14"><a href="ir-红外.html#cb110-14"></a>        ;</span>
-<span id="cb110-15"><a href="ir-红外.html#cb110-15"></a>    IR_FsmClearIrInt(APB_IR);</span>
-<span id="cb110-16"><a href="ir-红外.html#cb110-16"></a>    <span class="cf">return</span> <span class="dv">0</span>;</span>
-<span id="cb110-17"><a href="ir-红外.html#cb110-17"></a>}</span></code></pre></div>
 </div>
-<div id="ir-发射" class="section level4 hasAnchor">
-<h4><span class="header-section-number">9.2.2.4</span> IR 发射<a href="ir-红外.html#ir-发射" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb111"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb111-1"><a href="ir-红外.html#cb111-1"></a><span class="dt">static</span> <span class="dt">int</span> ir_transmit_fun(<span class="dt">uint16_t</span> addr,<span class="dt">uint16_t</span> data) <span class="co">//ir hard transmit data</span></span>
-<span id="cb111-2"><a href="ir-红外.html#cb111-2"></a>{</span>
-<span id="cb111-3"><a href="ir-红外.html#cb111-3"></a>    IR_TxCodeSetIrTxUsercode(APB_IR,addr);</span>
-<span id="cb111-4"><a href="ir-红外.html#cb111-4"></a>    IR_TxCodeSetIrTxDatacode(APB_IR,data);</span>
-<span id="cb111-5"><a href="ir-红外.html#cb111-5"></a>    IR_CleanIrTxRepeatMode(APB_IR);<span class="co">//must clearn the repeat mode reg</span></span>
-<span id="cb111-6"><a href="ir-红外.html#cb111-6"></a>    IR_TxConfigTxStart(APB_IR);</span>
-<span id="cb111-7"><a href="ir-红外.html#cb111-7"></a>    <span class="co">//while(!IR_FsmGetIrTransmitOk(APB_IR));</span></span>
-<span id="cb111-8"><a href="ir-红外.html#cb111-8"></a>    <span class="cf">return</span> <span class="dv">0</span>;</span>
-<span id="cb111-9"><a href="ir-红外.html#cb111-9"></a>}</span>
-<span id="cb111-10"><a href="ir-红外.html#cb111-10"></a></span>
-<span id="cb111-11"><a href="ir-红外.html#cb111-11"></a><span class="dt">static</span> <span class="dt">int</span> ir_transmit_repeat(<span class="dt">void</span>) <span class="co">//ir hard transmit repeat</span></span>
-<span id="cb111-12"><a href="ir-红外.html#cb111-12"></a>{</span>
-<span id="cb111-13"><a href="ir-红外.html#cb111-13"></a>    IR_CtrlIrTxRepeatMode(APB_IR);   </span>
-<span id="cb111-14"><a href="ir-红外.html#cb111-14"></a>    IR_TxConfigTxStart(APB_IR);</span>
-<span id="cb111-15"><a href="ir-红外.html#cb111-15"></a> <span class="co">//   while(!IR_FsmGetIrTransmitOk(APB_IR)); </span></span>
-<span id="cb111-16"><a href="ir-红外.html#cb111-16"></a>    <span class="cf">return</span> <span class="dv">0</span>;</span>
-<span id="cb111-17"><a href="ir-红外.html#cb111-17"></a>}</span></code></pre></div>
-<hr />
+<div id="使用方法-5" class="section level2 hasAnchor">
+<h2><span class="header-section-number">14.2</span> 使用方法<a href="ch-qdec.html#使用方法-5" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="方法概述-5" class="section level3 hasAnchor">
+<h3><span class="header-section-number">14.2.1</span> 方法概述<a href="ch-qdec.html#方法概述-5" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>方法概述为：GPIO选配，时钟配置，QDEC参数配置以及数据处理。</p>
+<div id="gpio选择" class="section level4 hasAnchor">
+<h4><span class="header-section-number">14.2.1.1</span> GPIO选择<a href="ch-qdec.html#gpio选择" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>驱动接口：PINCTRL_SelQDECIn</p>
+<p>QDEC的GPIO选择，请参考《ING91682X_BLE5.3_芯片数据手册》中的“IO引脚控制器Pin Controller”一节</p>
+<p>对phase_a、phase_b选定要配置的GPIO口，并调用PINCTRL_SelQDECIn接口进行配置。</p>
+</div>
+<div id="时钟配置-1" class="section level4 hasAnchor">
+<h4><span class="header-section-number">14.2.1.2</span> 时钟配置<a href="ch-qdec.html#时钟配置-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>驱动接口：SYSCTRL_SelectQDECClk</p>
+<p>当前QDEC可以选择使用的时钟源为HCLK时钟或者sclk_slow时钟</p>
+<p>对所选用的时钟源还需要进行一次分频，分频系数范围为1-1023，默认值为2</p>
+<p>这里需要特别注意的是： <strong>请务必配置pclk时钟频率不大于qdec时钟源频率</strong></p>
+<p><strong>注意：</strong> 如果配置pclk频率大于qdec时钟源频率，会出现qdec参数配置失败从而不能正常工作的现象。</p>
+<p>为了方便开发者使用，可以直接调用下面提供的接口来配置pclk时钟符合上述要求：</p>
+<div class="sourceCode" id="cb150"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb150-1"><a href="ch-qdec.html#cb150-1"></a><span class="dt">static</span> <span class="dt">void</span> QDEC_PclkCfg(<span class="dt">void</span>)</span>
+<span id="cb150-2"><a href="ch-qdec.html#cb150-2"></a>{</span>
+<span id="cb150-3"><a href="ch-qdec.html#cb150-3"></a>    <span class="dt">uint32_t</span> hclk = SYSCTRL_GetHClk();</span>
+<span id="cb150-4"><a href="ch-qdec.html#cb150-4"></a>    <span class="dt">uint32_t</span> qdecClk = SYSCTRL_GetClk(SYSCTRL_ITEM_APB_QDEC);</span>
+<span id="cb150-5"><a href="ch-qdec.html#cb150-5"></a>    <span class="dt">uint8_t</span> div = hclk / qdecClk;</span>
+<span id="cb150-6"><a href="ch-qdec.html#cb150-6"></a>    <span class="cf">if</span> (hclk % qdecClk)</span>
+<span id="cb150-7"><a href="ch-qdec.html#cb150-7"></a>        div++;</span>
+<span id="cb150-8"><a href="ch-qdec.html#cb150-8"></a>    <span class="cf">if</span> (!(div &gt;&gt; <span class="dv">4</span>))</span>
+<span id="cb150-9"><a href="ch-qdec.html#cb150-9"></a>        SYSCTRL_SetPClkDiv(div);</span>
+<span id="cb150-10"><a href="ch-qdec.html#cb150-10"></a>}</span></code></pre></div>
+<p>开发者可以将以上代码拷贝到程序里，在配置qdec之前调用即可。</p>
+</div>
+<div id="qdec参数配置" class="section level4 hasAnchor">
+<h4><span class="header-section-number">14.2.1.3</span> QDEC参数配置<a href="ch-qdec.html#qdec参数配置" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>驱动接口：QDEC_EnableQdecDiv、QDEC_QdecCfg</p>
+<p>共有3个参数需要配置：qdec_clk_div、filter和miss</p>
+<p>其含义分别如下：</p>
+<ul>
+<li><p><strong>qdec_clk_div：</strong>用于控制qdec结果上报频率。即多少个时钟周期上报一次采样结果</p></li>
+<li><p><strong>filter：</strong>用于过滤<strong>filter×时钟周期</strong>时长以内的毛刺</p></li>
+<li><p><strong>miss：</strong>用于控制qdec可以自动补偿的最大miss结果数。例如由于滚轮转动过快，导致两次采样中变换了不止一个结果，则此时会自动补偿最多miss个结果。</p></li>
+</ul>
+<p><strong>注意：</strong> 对于miss值的配置需要格外注意，miss值的设置主要考虑到可能由于转动速度过快导致有数据丢失的情况，但此补偿机制容易受设备信号质量影响。对于信号质量较差的设备，如毛刺较多，则不建议加入miss，否则可能出现<strong>“采样数据跳变”</strong>和<strong>“换向迟钝”</strong>的问题。对于此类设备，此处建议采用较大工作时钟，不加入miss进行采样。测试证明此种方式也可以有较为出色的采样效果。</p>
+<p>对于miss值配置此处建议先加入较小的miss值（如miss=1）测试效果，如果有数据跳变或者换向迟钝则采用较大工作时钟（如HCLK时钟），不加miss进行采样。</p>
+<p>开发者如果在调试qdec过程中出现数据跳变和换向迟钝的问题，建议进行以下几方面尝试：</p>
+<p><strong>1.</strong> 如选用sclk_slow作为时钟源，检查是否有配置pclk频率小于qdec工作频率</p>
+<p><strong>2.</strong> 改用较小工作时钟</p>
+<p><strong>3.</strong> 采样较小的miss值（如miss=1）和较大的filter值</p>
+<p><strong>4.</strong> 采用较大工作时钟（如HCLK时钟），不加miss进行采样</p>
+<p>如果偶尔有较小的数据跳变，如5以内，则属于正常情况。</p>
+</div>
+</div>
+<div id="注意点-5" class="section level3 hasAnchor">
+<h3><span class="header-section-number">14.2.2</span> 注意点<a href="ch-qdec.html#注意点-5" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>phase_a、phase_b引脚配置注意区分正反，交换引脚则得到相反的转向</p></li>
+<li><p>配置pclk时钟可能会影响其他外设，请参考916时钟树进行正确配置</p></li>
+<li><p>qdec采样快慢和时钟正相关，和qdec_clk_div大小无关，qdec_clk_div只控制对结果的上报频率</p></li>
+<li><p>qdec上报结果会同时触发qdec中断或者DMA_REQ，qdec_clk_div设置过低会占用较多CPU资源</p></li>
+<li><p>filter建议选择较大值，受毛刺影响较小，稳定性较好</p></li>
+</ul>
+</div>
+</div>
+<div id="编程指南-5" class="section level2 hasAnchor">
+<h2><span class="header-section-number">14.3</span> 编程指南<a href="ch-qdec.html#编程指南-5" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="驱动接口-5" class="section level3 hasAnchor">
+<h3><span class="header-section-number">14.3.1</span> 驱动接口<a href="ch-qdec.html#驱动接口-5" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>QDEC_QdecCfg：qdec标准配置接口</p></li>
+<li><p>QDEC_EnableQdecDiv：qdec_clk_div设置使能接口</p></li>
+<li><p>QDEC_ChannelEnable：qdec通道使能接口</p></li>
+<li><p>QDEC_GetData：qdec获取数据接口</p></li>
+<li><p>QDEC_GetDirection：qdec获取转向接口</p></li>
+<li><p>QDEC_Reset：qdec复位接口</p></li>
+</ul>
+</div>
+<div id="代码示例-5" class="section level3 hasAnchor">
+<h3><span class="header-section-number">14.3.2</span> 代码示例<a href="ch-qdec.html#代码示例-5" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>下面一段代码展示了qdec全部配置并循环读数：</p>
+<div class="sourceCode" id="cb151"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb151-1"><a href="ch-qdec.html#cb151-1"></a><span class="dt">static</span> <span class="dt">void</span> QDEC_PclkCfg(<span class="dt">void</span>)</span>
+<span id="cb151-2"><a href="ch-qdec.html#cb151-2"></a>{</span>
+<span id="cb151-3"><a href="ch-qdec.html#cb151-3"></a>    <span class="dt">uint32_t</span> hclk = SYSCTRL_GetHClk();</span>
+<span id="cb151-4"><a href="ch-qdec.html#cb151-4"></a>    <span class="dt">uint32_t</span> qdecClk = SYSCTRL_GetClk(SYSCTRL_ITEM_APB_QDEC);</span>
+<span id="cb151-5"><a href="ch-qdec.html#cb151-5"></a>    <span class="dt">uint8_t</span> div = hclk / qdecClk;</span>
+<span id="cb151-6"><a href="ch-qdec.html#cb151-6"></a>    <span class="cf">if</span> (hclk % qdecClk)</span>
+<span id="cb151-7"><a href="ch-qdec.html#cb151-7"></a>        div++;</span>
+<span id="cb151-8"><a href="ch-qdec.html#cb151-8"></a>    <span class="cf">if</span> (!(div &gt;&gt; <span class="dv">4</span>))</span>
+<span id="cb151-9"><a href="ch-qdec.html#cb151-9"></a>        SYSCTRL_SetPClkDiv(div);</span>
+<span id="cb151-10"><a href="ch-qdec.html#cb151-10"></a>}</span>
+<span id="cb151-11"><a href="ch-qdec.html#cb151-11"></a><span class="dt">void</span> test(<span class="dt">void</span>)</span>
+<span id="cb151-12"><a href="ch-qdec.html#cb151-12"></a>{</span>
+<span id="cb151-13"><a href="ch-qdec.html#cb151-13"></a>    <span class="co">// setup qdec</span></span>
+<span id="cb151-14"><a href="ch-qdec.html#cb151-14"></a>    SYSCTRL_ClearClkGate(SYSCTRL_ITEM_APB_PinCtrl |</span>
+<span id="cb151-15"><a href="ch-qdec.html#cb151-15"></a>                         SYSCTRL_ITEM_APB_QDEC);</span>
+<span id="cb151-16"><a href="ch-qdec.html#cb151-16"></a>    QDEC_PclkCfg();    <span class="co">// set pclk not bigger than sclk_slow</span></span>
+<span id="cb151-17"><a href="ch-qdec.html#cb151-17"></a>    PINCTRL_SelQDECIn(<span class="dv">16</span>, <span class="dv">17</span>);    <span class="co">// set GPIO16=phase_a, GPIO17=phase_b</span></span>
+<span id="cb151-18"><a href="ch-qdec.html#cb151-18"></a>    SYSCTRL_ReleaseBlock(SYSCTRL_ITEM_APB_PinCtrl |</span>
+<span id="cb151-19"><a href="ch-qdec.html#cb151-19"></a>                         SYSCTRL_ITEM_APB_QDEC);</span>
+<span id="cb151-20"><a href="ch-qdec.html#cb151-20"></a></span>
+<span id="cb151-21"><a href="ch-qdec.html#cb151-21"></a>    SYSCTRL_SelectQDECClk(SYSCTRL_CLK_SLOW, <span class="dv">100</span>);</span>
+<span id="cb151-22"><a href="ch-qdec.html#cb151-22"></a>    QDEC_EnableQdecDiv(QDEC_DIV_1024);</span>
+<span id="cb151-23"><a href="ch-qdec.html#cb151-23"></a>    QDEC_QdecCfg(<span class="dv">50</span>, <span class="dv">1</span>);</span>
+<span id="cb151-24"><a href="ch-qdec.html#cb151-24"></a>    QDEC_ChannelEnable(<span class="dv">1</span>);</span>
+<span id="cb151-25"><a href="ch-qdec.html#cb151-25"></a></span>
+<span id="cb151-26"><a href="ch-qdec.html#cb151-26"></a>    <span class="co">// print qdec data and direction when rotate the mouse wheel manually</span></span>
+<span id="cb151-27"><a href="ch-qdec.html#cb151-27"></a>    <span class="dt">uint16_t</span> preData = <span class="dv">0</span>;</span>
+<span id="cb151-28"><a href="ch-qdec.html#cb151-28"></a>    <span class="dt">uint16_t</span> data = <span class="dv">0</span>;</span>
+<span id="cb151-29"><a href="ch-qdec.html#cb151-29"></a>    <span class="dt">uint8_t</span> dir;</span>
+<span id="cb151-30"><a href="ch-qdec.html#cb151-30"></a>    <span class="cf">while</span>(<span class="dv">1</span>) {</span>
+<span id="cb151-31"><a href="ch-qdec.html#cb151-31"></a>        data = QDEC_GetData();</span>
+<span id="cb151-32"><a href="ch-qdec.html#cb151-32"></a>        dir = QDEC_GetDirection();</span>
+<span id="cb151-33"><a href="ch-qdec.html#cb151-33"></a>        <span class="cf">if</span> (data != preData) {</span>
+<span id="cb151-34"><a href="ch-qdec.html#cb151-34"></a>            <span class="cf">if</span> (dir) {</span>
+<span id="cb151-35"><a href="ch-qdec.html#cb151-35"></a>                printf(<span class="st">&quot;data: %d, %s</span><span class="sc">\n</span><span class="st">&quot;</span>, data, <span class="st">&quot;anticlockwise&quot;</span>);</span>
+<span id="cb151-36"><a href="ch-qdec.html#cb151-36"></a>            } <span class="cf">else</span> {</span>
+<span id="cb151-37"><a href="ch-qdec.html#cb151-37"></a>                printf(<span class="st">&quot;data: %d, %s</span><span class="sc">\n</span><span class="st">&quot;</span>, data, <span class="st">&quot;clockwise&quot;</span>);</span>
+<span id="cb151-38"><a href="ch-qdec.html#cb151-38"></a>            }</span>
+<span id="cb151-39"><a href="ch-qdec.html#cb151-39"></a>        }</span>
+<span id="cb151-40"><a href="ch-qdec.html#cb151-40"></a>        preData = data;</span>
+<span id="cb151-41"><a href="ch-qdec.html#cb151-41"></a>    }</span>
+<span id="cb151-42"><a href="ch-qdec.html#cb151-42"></a>}</span></code></pre></div>
+<p>当手动转动鼠标滚轮时，会打印出收到的qdec数据和转向。</p>
+<p>qdec的详细使用请参考HID mouse例程。</p>
 
-
-</div>
 </div>
 </div>
 </div>
@@ -660,8 +631,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="ch-I2s.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="ch-PDM.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="ch-pwm.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ch-rtc.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

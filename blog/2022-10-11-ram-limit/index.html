@@ -342,6 +342,97 @@
 <p>C++ 标准运算符 <code class="highlighter-rouge">new</code> 的情况比较复杂。对于 Keil，无论是否使用 MicroLIB，当 <code class="highlighter-rouge">new</code> 需要分配内存时，
 也会调用 <code class="highlighter-rouge">malloc</code>，关于 <code class="highlighter-rouge">malloc/free</code> 的说明同样适用；对于其它编译器，请查阅相关文档。</p>
 
+<h2 id="关于移植">关于移植</h2>
+
+<p>假设有一段代码需要移植到 ING918XX，其中使用了大量全局变量，例如：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">large</span>
+<span class="p">{</span>
+    <span class="kt">uint8_t</span> <span class="n">data</span><span class="p">[</span><span class="mi">35000</span><span class="p">];</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">large</span> <span class="n">large_data</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+
+<span class="kt">void</span> <span class="nf">foo</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">large_data</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>首先根据 <code class="highlighter-rouge">struct large</code> 占用的空间判断，RTOS 的堆无法提供如此巨大的空间，必选使用链路层的堆。</p>
+
+<h3 id="方法-1用宏代替变量">方法 1：用宏代替变量</h3>
+
+<p>在 <code class="highlighter-rouge">setup_profile</code> 内为 <code class="highlighter-rouge">large_data</code> 分配内存。之后，可以正常调用 <code class="highlighter-rouge">foo</code> 等使用 <code class="highlighter-rouge">large_data</code> 的函数。</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="k">struct</span> <span class="n">large</span> <span class="o">*</span><span class="n">p_large_data</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="cp">#define large_data (*p_large_data)
+</span>
+<span class="kt">uint32_t</span> <span class="nf">setup_profile</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">user_data</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">p_large_data</span> <span class="o">=</span> <span class="n">ll_malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">large</span><span class="p">));</span>
+    <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">large_data</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">large</span><span class="p">));</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="方法-2用引用代替变量">方法 2：用引用代替变量</h3>
+
+<p>对于使用 C++ 的情况，也可以用引用代替变量：</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 注意：这里编译器可能输出关于“空引用”的警告</span>
+<span class="k">struct</span> <span class="nc">large</span> <span class="o">&amp;</span><span class="n">large_data</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="k">struct</span> <span class="nc">large</span> <span class="o">*</span><span class="p">)(</span><span class="nb">nullptr</span><span class="p">);</span>
+
+<span class="kt">uint32_t</span> <span class="nf">setup_profile</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">user_data</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">large_data</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="k">struct</span> <span class="nc">large</span> <span class="o">*</span><span class="p">)</span><span class="n">ll_malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="nc">large</span><span class="p">));</span>
+    <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">large_data</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="nc">large</span><span class="p">));</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="方法-3一定要用工具自动分配">方法 3：“一定要用工具自动分配”</h3>
+
+<p><img src="../img/large_pigeon.png" alt="large-pigeon" /></p>
+
+<ol>
+  <li>
+    <p>获取堆内存指针</p>
+
+    <p>屏蔽 <code class="highlighter-rouge">large_data</code> 的定义，在 <code class="highlighter-rouge">setup_profile</code> 获取堆内存指针：</p>
+
+    <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="kt">uint32_t</span> <span class="nf">setup_profile</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">user_data</span><span class="p">)</span>
+ <span class="p">{</span>
+     <span class="n">printf</span><span class="p">(</span><span class="s">"%p</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">ll_malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">large</span><span class="p">)));</span>
+     <span class="c1">// ...</span>
+ <span class="p">}</span>
+</code></pre></div>    </div>
+
+    <p>运行程序，假设打印出的指针为 0x400a5004。</p>
+  </li>
+  <li>
+    <p>修改项目，增加一块 RAM：起始地址为 0x400a5004，大小为 35000</p>
+  </li>
+  <li>
+    <p>将代码还原，正常定义全局变量；</p>
+  </li>
+  <li>
+    <p>再次修改 <code class="highlighter-rouge">setup_profile</code>：</p>
+
+    <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="kt">uint32_t</span> <span class="nf">setup_profile</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">user_data</span><span class="p">)</span>
+ <span class="p">{</span>
+     <span class="k">if</span> <span class="p">(</span><span class="n">ll_malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">large</span><span class="p">))</span> <span class="o">!=</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="mh">0x400a5004</span><span class="p">)</span>
+         <span class="n">platform_raise_assertion</span><span class="p">(</span><span class="n">__FILE_NAME__</span><span class="p">,</span> <span class="n">__LINE__</span><span class="p">);</span>
+     <span class="c1">// ...</span>
+ <span class="p">}</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>升级 SDK 时，如果发现上面的代码触发了 ASSERTION，则重复以上步骤，更新 RAM 地址。</p>
+  </li>
+</ol>
+
       </div><!-- .post-content -->
     </div><!-- .inner-md -->
   </article><!-- .post -->

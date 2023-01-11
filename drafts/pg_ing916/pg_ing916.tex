@@ -1660,7 +1660,7 @@ GPIO\tabularnewline
   更深度睡眠唤醒源
 
   使用 \texttt{GIO\_EnableDeeperSleepWakeupSourceGroupA} 使能（或停用）A 型 GPIO 的更深度睡眠唤醒功能。
-  其中，\texttt{level} 为触发电平，1 为高电平唤醒，0 为低电平唤醒
+  其中，\texttt{level} 为触发电平，1 为高电平唤醒，0 为低电平唤醒。
   使能后，所有 IO 方向为输入的 A 型 GPIO 都将作为唤醒源。任意一个唤醒源检测到唤醒电平就会将系统从低功耗状态唤醒。
 
 \begin{Shaded}
@@ -4164,6 +4164,322 @@ DMA（乒乓搬运）的具体用法请参见本手册DMA一节。
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\hypertarget{ch-keyscan}{%
+\chapter{硬件键盘扫描控制器（KEYSCAN）}\label{ch-keyscan}}
+
+\hypertarget{ux529fux80fdux6982ux8ff0-3}{%
+\section{功能概述}\label{ux529fux80fdux6982ux8ff0-3}}
+
+特性：
+
+\begin{itemize}
+\tightlist
+\item
+  可配置矩阵，最大支持16行\emph{15列或者15行}16列的键盘矩阵。
+\item
+  每个单独的行或者列可以设置启用或者禁用。
+\item
+  可配置时钟。
+\item
+  支持输入硬件去抖动，去抖时间可配置。
+\item
+  支持配置扫描间隔和释放时间，支持多按键同时按下。
+\item
+  支持中断和DMA。
+\end{itemize}
+
+\hypertarget{ux4f7fux7528ux8bf4ux660e-3}{%
+\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-3}}
+
+以4行*4列的键盘矩阵为例：
+
+\includegraphics{img/KeyScan/keyscan.jpg}
+
+\hypertarget{ux952eux76d8ux77e9ux9635ux7684ux8f6fux4ef6ux63cfux8ff0}{%
+\subsection{键盘矩阵的软件描述}\label{ux952eux76d8ux77e9ux9635ux7684ux8f6fux4ef6ux63cfux8ff0}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{typedef} \KeywordTok{struct}\NormalTok{ \{}
+\NormalTok{    KEYSCAN_InColIndex_t in_col;}
+\NormalTok{    GIO_Index_t gpio;}
+\NormalTok{\} KEYSCAN_InColList;}
+
+\KeywordTok{typedef} \KeywordTok{struct}\NormalTok{ \{}
+\NormalTok{    KEYSCAN_OutRowIndex_t out_row;}
+\NormalTok{    GIO_Index_t gpio;}
+\NormalTok{\} KEYSCAN_OutRowList;}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{KEYSCAN_OutRowList key_out_row[] = \{}
+\NormalTok{    \{KEY_OUT_ROW_6, GIO_GPIO_32\}, }\CommentTok{// 第1行}
+\NormalTok{    \{KEY_OUT_ROW_7, GIO_GPIO_33\}, }\CommentTok{// 第2行}
+\NormalTok{    \{KEY_OUT_ROW_5, GIO_GPIO_31\}, }\CommentTok{// 第3行}
+\NormalTok{    \{KEY_OUT_ROW_0, GIO_GPIO_23\}, }\CommentTok{// 第4行}
+\NormalTok{\};}
+\PreprocessorTok{#define key_out_row_num (sizeof(key_out_row) / sizeof(key_out_row[0]))}
+
+\NormalTok{KEYSCAN_InColList key_in_col[] = \{}
+\NormalTok{    \{KEY_IN_COL_11, GIO_GPIO_11\}, }\CommentTok{// 第1列}
+\NormalTok{    \{KEY_IN_COL_12, GIO_GPIO_12\}, }\CommentTok{// 第2列}
+\NormalTok{    \{KEY_IN_COL_13, GIO_GPIO_13\}, }\CommentTok{// 第3列}
+\NormalTok{    \{KEY_IN_COL_14, GIO_GPIO_14\}, }\CommentTok{// 第4列}
+\NormalTok{\};}
+\PreprocessorTok{#define key_in_col_num (sizeof(key_in_col) / sizeof(key_in_col[0]))}
+\end{Highlighting}
+\end{Shaded}
+
+第1行按键接到了GPIO32，映射到KEYSCAN模块的ROW6。
+
+第1列按键接到了GPIO11，映射到KEYSCAN模块的COL11。
+
+以此类推4行4列的键盘阵列。
+
+注意：KEYSCAN的ROW和COL不是随意映射到GPIO，映射关系参考管脚管理（PINCTRL）说明文档。
+
+\hypertarget{keyscanux6a21ux5757ux521dux59cbux5316}{%
+\subsection{KEYSCAN模块初始化}\label{keyscanux6a21ux5757ux521dux59cbux5316}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{typedef} \KeywordTok{struct}\NormalTok{ \{}
+\NormalTok{    KEYSCAN_InColList *col;}
+    \DataTypeTok{int}\NormalTok{ col_num;}
+
+\NormalTok{    KEYSCAN_OutRowList *row;}
+    \DataTypeTok{int}\NormalTok{ row_num;}
+
+\NormalTok{    KEYSCAN_Ctx *ctx;}
+    \DataTypeTok{uint8_t}\NormalTok{ fifo_num_trig_int;}
+    \DataTypeTok{uint8_t}\NormalTok{ dma_num_trig_int;}
+    \DataTypeTok{uint8_t}\NormalTok{ dma_en;}
+    \DataTypeTok{uint8_t}\NormalTok{ int_trig_en;}
+    \DataTypeTok{uint16_t}\NormalTok{ release_time;}
+    \DataTypeTok{uint16_t}\NormalTok{ scan_interval;}
+    \DataTypeTok{uint8_t}\NormalTok{ debounce_counter;}
+\NormalTok{\} KEYSCAN_SetStateStruct;}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{/**}
+\CommentTok{ * }\AnnotationTok{@brief}\CommentTok{ Initialize keyscan module}
+\CommentTok{ *}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{keyscan_set}\CommentTok{       Initial parameter struct}
+\CommentTok{ */}
+\DataTypeTok{void}\NormalTok{ KEYSCAN_Initialize(KEYSCAN_SetStateStruct* keyscan_set);}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux83b7ux53d6ux626bux63cfux5230ux7684ux6309ux952e}{%
+\subsection{获取扫描到的按键}\label{ux83b7ux53d6ux626bux63cfux5230ux7684ux6309ux952e}}
+
+KEYSCAN模块使能扫描后会按照行和列的配置开始扫描。模块有FIFO缓存扫描数据。每次扫描循环结束，FIFO中压入1个0x400标志完成一次扫描。
+
+可以配置FIFO中数据个数触发中断或者DMA触发中断：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{void}\NormalTok{ KEYSCAN_SetFifoNumTrigInt(}\DataTypeTok{uint32_t}\NormalTok{ trig_num);}
+\DataTypeTok{void}\NormalTok{ KEYSCAN_SetDmaNumTrigInt(}\DataTypeTok{uint32_t}\NormalTok{ trig_num);}
+\end{Highlighting}
+\end{Shaded}
+
+获取FIFO是否为空的状态和数据：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{/**}
+\CommentTok{ * }\AnnotationTok{@brief}\CommentTok{ Check keyscan FIFO empty or not}
+\CommentTok{ *}
+\CommentTok{ * }\AnnotationTok{@return}\CommentTok{ 0: FIFO have data; 1: empty}
+\CommentTok{ */}
+\DataTypeTok{uint8_t}\NormalTok{ KEYSCAN_GetIntStateFifoEmptyRaw(}\DataTypeTok{void}\NormalTok{);}
+
+\CommentTok{/**}
+\CommentTok{ * }\AnnotationTok{@brief}\CommentTok{ GET keyscan FIFO data}
+\CommentTok{ *}
+\CommentTok{ * }\AnnotationTok{@return}\CommentTok{ 0~4 bits: col; 5~9 bits: row; 10 bit: scan cycle end flag}
+\CommentTok{ */}
+\DataTypeTok{uint16_t}\NormalTok{ KEYSCAN_GetKeyData(}\DataTypeTok{void}\NormalTok{);}
+\end{Highlighting}
+\end{Shaded}
+
+按键FIFO原始数据的0\textasciitilde4位是按下按键所在的KEYSCAN模块中的col，5\textasciitilde9位是row，注意这个值并不是键盘矩阵中的行和列，可以用下面接口将原始数据解析为键盘矩阵中的行和列：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{/**}
+\CommentTok{ * }\AnnotationTok{@brief}\CommentTok{ Transfer keyscan FIFO raw data to keyboard array row and col}
+\CommentTok{ *}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{keyscan_set}\CommentTok{       Initial parameter struct}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{key_data}\CommentTok{          keyscan FIFO raw data}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{row}\CommentTok{               pressed key's row in keyboard array}
+\CommentTok{ * }\AnnotationTok{@param[in]}\CommentTok{ }\CommentVarTok{col}\CommentTok{               pressed key's col in keyboard array}
+\CommentTok{ * }\AnnotationTok{@return}\CommentTok{                      0: scan cycle end data;}
+\CommentTok{ *        1: find key pressed, *row and *col are key position in keyboard array}
+\CommentTok{ */}
+\DataTypeTok{uint8_t}\NormalTok{ KEYSCAN_KeyDataToRowColIdx(KEYSCAN_SetStateStruct* keyscan_set, }\DataTypeTok{uint32_t}\NormalTok{ key_data, }\DataTypeTok{uint8_t}\NormalTok{ *row, }\DataTypeTok{uint8_t}\NormalTok{ *col);}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux5e94ux7528ux4e3eux4f8b}{%
+\section{应用举例：}\label{ux5e94ux7528ux4e3eux4f8b}}
+
+\hypertarget{ux521dux59cbux5316keyscanux6a21ux5757}{%
+\subsection{初始化KEYSCAN模块}\label{ux521dux59cbux5316keyscanux6a21ux5757}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{KEYSCAN_OutRowList key_out_row[] = \{}
+\NormalTok{    \{KEY_OUT_ROW_6, GIO_GPIO_32\},}
+\NormalTok{    \{KEY_OUT_ROW_7, GIO_GPIO_33\},}
+\NormalTok{    \{KEY_OUT_ROW_5, GIO_GPIO_31\},}
+\NormalTok{    \{KEY_OUT_ROW_0, GIO_GPIO_23\},}
+\NormalTok{\};}
+\PreprocessorTok{#define key_out_row_num (sizeof(key_out_row) / sizeof(key_out_row[0]))}
+
+\NormalTok{KEYSCAN_InColList key_in_col[] = \{}
+\NormalTok{    \{KEY_IN_COL_11, GIO_GPIO_11\},}
+\NormalTok{    \{KEY_IN_COL_12, GIO_GPIO_12\},}
+\NormalTok{    \{KEY_IN_COL_13, GIO_GPIO_13\},}
+\NormalTok{    \{KEY_IN_COL_14, GIO_GPIO_14\},}
+\NormalTok{\};}
+\PreprocessorTok{#define key_in_col_num (sizeof(key_in_col) / sizeof(key_in_col[0]))}
+
+\DataTypeTok{static}\NormalTok{ KEYSCAN_SetStateStruct keyscan_set = \{}\DecValTok{0}\NormalTok{\};}
+\DataTypeTok{static}\NormalTok{ KEYSCAN_Ctx key_ctx = \{}\DecValTok{0}\NormalTok{\};}
+\DataTypeTok{static} \DataTypeTok{uint32_t}\NormalTok{ keyscan_cb_isr(}\DataTypeTok{void}\NormalTok{ *user_data);}
+\DataTypeTok{static} \DataTypeTok{void}\NormalTok{ setup_peripherals_keyscan()}
+\NormalTok{\{}
+
+\NormalTok{    SYSCTRL_ClearClkGateMulti(}\DecValTok{1}\NormalTok{ << SYSCTRL_ITEM_APB_KeyScan);}
+\NormalTok{    SYSCTRL_ClearClkGateMulti(}\DecValTok{1}\NormalTok{ << SYSCTRL_ITEM_APB_SysCtrl);}
+\NormalTok{    SYSCTRL_ClearClkGateMulti(}\DecValTok{1}\NormalTok{ << SYSCTRL_ITEM_APB_PinCtrl);}
+
+\NormalTok{    keyscan_set.col = key_in_col;}
+\NormalTok{    keyscan_set.col_num = key_in_col_num;}
+\NormalTok{    keyscan_set.row = key_out_row;}
+\NormalTok{    keyscan_set.row_num = key_out_row_num;}
+\NormalTok{    keyscan_set.ctx = &key_ctx;}
+\NormalTok{    keyscan_set.fifo_num_trig_int = }\DecValTok{1}\NormalTok{;}
+\NormalTok{    keyscan_set.release_time = }\DecValTok{110}\NormalTok{;}
+\NormalTok{    keyscan_set.scan_interval = }\BaseNTok{0xFFFF}\NormalTok{;}
+\NormalTok{    keyscan_set.debounce_counter = }\DecValTok{50}\NormalTok{;}
+\NormalTok{    keyscan_set.dma_num_trig_int = }\BaseNTok{0x10}\NormalTok{;}
+\NormalTok{    keyscan_set.dma_en = }\DecValTok{0}\NormalTok{;}
+\NormalTok{    keyscan_set.int_trig_en = }\DecValTok{1}\NormalTok{;}
+\NormalTok{    KEYSCAN_Initialize(&keyscan_set);}
+
+\NormalTok{    platform_set_irq_callback(PLATFORM_CB_IRQ_KEYSCAN, keyscan_cb_isr, }\DecValTok{0}\NormalTok{);}
+
+    \ControlFlowTok{return}\NormalTok{;}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux4e2dux65adux6570ux636eux5904ux7406}{%
+\subsection{中断数据处理}\label{ux4e2dux65adux6570ux636eux5904ux7406}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DataTypeTok{static} \DataTypeTok{uint8_t}\NormalTok{ key_state_buf[}\DecValTok{2}\NormalTok{][key_out_row_num][key_in_col_num] = \{}\DecValTok{0}\NormalTok{\};}
+\DataTypeTok{static} \DataTypeTok{uint8_t}\NormalTok{ key_state_last_index = }\DecValTok{0}\NormalTok{;}
+\DataTypeTok{static} \DataTypeTok{uint8_t}\NormalTok{ key_state_now_index = }\DecValTok{1}\NormalTok{;}
+\DataTypeTok{static} \DataTypeTok{void}\NormalTok{ printf_key_state(}\DataTypeTok{void}\NormalTok{)}
+\NormalTok{\{}
+    \DataTypeTok{int}\NormalTok{ row, col;}
+    \ControlFlowTok{for}\NormalTok{ (row = }\DecValTok{0}\NormalTok{; row < key_out_row_num; row++) \{}
+        \ControlFlowTok{for}\NormalTok{ (col = }\DecValTok{0}\NormalTok{; col < key_in_col_num; col++) \{}
+            \ControlFlowTok{if}\NormalTok{ (key_state_buf[key_state_now_index][row][col] !=}
+\NormalTok{                key_state_buf[key_state_last_index][row][col]) \{}
+\NormalTok{                printf(}\StringTok{"row%u col%u %s}\SpecialCharTok{\textbackslash{}r\textbackslash{}n}\StringTok{"}\NormalTok{,}
+\NormalTok{                row + }\DecValTok{1}\NormalTok{, col + }\DecValTok{1}\NormalTok{,}
+\NormalTok{                key_state_buf[key_state_now_index][row][col] == }\DecValTok{0}\NormalTok{ ?}
+                \StringTok{"release"}\NormalTok{ : }\StringTok{"press"}\NormalTok{);}
+\NormalTok{            \}}
+\NormalTok{        \}}
+\NormalTok{    \}}
+
+    \ControlFlowTok{if}\NormalTok{ (key_state_now_index == }\DecValTok{0}\NormalTok{) \{}
+\NormalTok{        key_state_now_index = }\DecValTok{1}\NormalTok{;}
+\NormalTok{        key_state_last_index = }\DecValTok{0}\NormalTok{;}
+\NormalTok{    \} }\ControlFlowTok{else}\NormalTok{ \{}
+\NormalTok{        key_state_now_index = }\DecValTok{0}\NormalTok{;}
+\NormalTok{        key_state_last_index = }\DecValTok{1}\NormalTok{;}
+\NormalTok{    \}}
+
+    \ControlFlowTok{for}\NormalTok{ (row = }\DecValTok{0}\NormalTok{; row < key_out_row_num; row++) \{}
+        \ControlFlowTok{for}\NormalTok{ (col = }\DecValTok{0}\NormalTok{; col < key_in_col_num; col++) \{}
+\NormalTok{            key_state_buf[key_state_now_index][row][col] = }\DecValTok{0}\NormalTok{;}
+\NormalTok{        \}}
+\NormalTok{    \}}
+
+    \ControlFlowTok{return}\NormalTok{;}
+\NormalTok{\}}
+\DataTypeTok{static} \DataTypeTok{void}\NormalTok{ key_state_clear(}\DataTypeTok{void}\NormalTok{)}
+\NormalTok{\{}
+    \DataTypeTok{int}\NormalTok{ row, col;}
+    \ControlFlowTok{for}\NormalTok{ (row = }\DecValTok{0}\NormalTok{; row < key_out_row_num; row++) \{}
+        \ControlFlowTok{for}\NormalTok{ (col = }\DecValTok{0}\NormalTok{; col < key_in_col_num; col++) \{}
+\NormalTok{            key_state_buf[}\DecValTok{0}\NormalTok{][row][col] = }\DecValTok{0}\NormalTok{;}
+\NormalTok{            key_state_buf[}\DecValTok{1}\NormalTok{][row][col] = }\DecValTok{0}\NormalTok{;}
+\NormalTok{        \}}
+\NormalTok{    \}}
+\NormalTok{\}}
+\DataTypeTok{static} \DataTypeTok{uint32_t}\NormalTok{ keyscan_cb_isr(}\DataTypeTok{void}\NormalTok{ *user_data)}
+\NormalTok{\{}
+    \DataTypeTok{uint32_t}\NormalTok{ key_data;}
+    \DataTypeTok{uint8_t}\NormalTok{ key_scan_row;}
+    \DataTypeTok{uint8_t}\NormalTok{ key_scan_col;}
+    \DataTypeTok{uint8_t}\NormalTok{ row = }\DecValTok{0}\NormalTok{;}
+    \DataTypeTok{uint8_t}\NormalTok{ col = }\DecValTok{0}\NormalTok{;}
+    \DataTypeTok{static} \DataTypeTok{uint8_t}\NormalTok{ have_key_pressed = }\DecValTok{0}\NormalTok{;}
+    \DataTypeTok{static} \DataTypeTok{uint8_t}\NormalTok{ no_key_pressed_cnt = }\DecValTok{0}\NormalTok{;}
+
+    \ControlFlowTok{while}\NormalTok{ (KEYSCAN_GetIntStateFifoEmptyRaw() == }\DecValTok{0}\NormalTok{) \{}
+\NormalTok{        key_data = KEYSCAN_GetKeyData();}
+        \ControlFlowTok{if}\NormalTok{ (KEYSCAN_KeyDataToRowColIdx(&keyscan_set, key_data, &row, &col)) \{}
+\NormalTok{            key_state_buf[key_state_now_index][row - }\DecValTok{1}\NormalTok{][col - }\DecValTok{1}\NormalTok{] = }\DecValTok{1}\NormalTok{;}
+\NormalTok{            have_key_pressed = }\DecValTok{1}\NormalTok{;}
+\NormalTok{        \} }\ControlFlowTok{else}\NormalTok{ \{}
+            \ControlFlowTok{if}\NormalTok{ (have_key_pressed == }\DecValTok{1}\NormalTok{) \{}
+\NormalTok{                have_key_pressed = }\DecValTok{0}\NormalTok{;}
+\NormalTok{                no_key_pressed_cnt = }\DecValTok{0}\NormalTok{;}
+\NormalTok{            \} }\ControlFlowTok{else}\NormalTok{ \{}
+\NormalTok{            \}}
+
+            \ControlFlowTok{switch}\NormalTok{ (no_key_pressed_cnt) \{}
+            \ControlFlowTok{case} \DecValTok{0}\NormalTok{: }\CommentTok{// have key pressed}
+\NormalTok{                no_key_pressed_cnt++;}
+\NormalTok{                printf_key_state();}
+                \ControlFlowTok{break}\NormalTok{;}
+            \ControlFlowTok{case} \DecValTok{1}\NormalTok{: }\CommentTok{// all key released}
+\NormalTok{                no_key_pressed_cnt++;}
+\NormalTok{                printf_key_state();}
+\NormalTok{                key_state_clear();}
+                \ControlFlowTok{break}\NormalTok{;}
+            \ControlFlowTok{case} \DecValTok{2}\NormalTok{:}
+                \ControlFlowTok{break}\NormalTok{;}
+            \ControlFlowTok{default}\NormalTok{:}
+                \ControlFlowTok{break}\NormalTok{;}
+\NormalTok{            \}}
+\NormalTok{        \}}
+\NormalTok{    \}}
+    \ControlFlowTok{return} \DecValTok{0}\NormalTok{;}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux6548ux679c}{%
+\subsection{效果}\label{ux6548ux679c}}
+
+\includegraphics{img/KeyScan/keyscanlog.JPG}
+
 \hypertarget{ch-PDM}{%
 \chapter{PDM简介}\label{ch-PDM}}
 
@@ -4352,7 +4668,7 @@ PDM数据DMA搬运：
 \begin{Highlighting}[]
 \PreprocessorTok{#define PDM_PIN_MCLK        28}
 \PreprocessorTok{#define PDM_PIN_IN          29}
-\PreprocessorTok{#define CHANNEL_ID  0}
+\PreprocessorTok{#define CHANNEL_ID          0}
 \DataTypeTok{uint32_t}\NormalTok{ buff[}\DecValTok{80}\NormalTok{];}
 \NormalTok{DMA_Descriptor test __attribute__((aligned (}\DecValTok{8}\NormalTok{)));}
 \DataTypeTok{static} \DataTypeTok{uint32_t}\NormalTok{ DMA_cb_isr(}\DataTypeTok{void}\NormalTok{ *user_data)}
@@ -4367,8 +4683,8 @@ PDM数据DMA搬运：
 
 \DataTypeTok{void}\NormalTok{ DMA_SetUp(}\DataTypeTok{void}\NormalTok{)}
 \NormalTok{\{}
-\NormalTok{    DMA_Reset();}
-\NormalTok{    platform_set_irq_callback(PLATFORM_CB_IRQ_DMA, DMA_cb_isr, }\DecValTok{0}\NormalTok{);  }
+\NormalTok{    DMA_Reset(}\DecValTok{1}\NormalTok{);}
+\NormalTok{    platform_set_irq_callback(PLATFORM_CB_IRQ_DMA, DMA_cb_isr, }\DecValTok{0}\NormalTok{);}
 \NormalTok{    test.Next = NULL;}
 \NormalTok{    DMA_PreparePeripheral2RAM(&test, }
 \NormalTok{                              buff, }
@@ -4386,7 +4702,7 @@ PDM数据DMA搬运：
 \NormalTok{    PINCTRL_SelPdmIn(PDM_PIN_IN);}
 
     \CommentTok{// PDM clock configuration, 3M}
-\NormalTok{    SYSCTRL_SetAdcClkDiv(}\DecValTok{8}\NormalTok{, }\DecValTok{1}\NormalTok{);}
+\NormalTok{    SYSCTRL_SetAdcClkDiv(}\DecValTok{8}\NormalTok{);}
 \NormalTok{    SYSCTRL_SelectTypeAClk(SYSCTRL_ITEM_APB_PDM, SYSCTRL_CLK_ADC_DIV);}
     
     \CommentTok{// PDM register configuration}
@@ -4408,8 +4724,8 @@ PDM数据DMA搬运：
 \hypertarget{ch-pinctrl}{%
 \chapter{管脚管理（PINCTRL）}\label{ch-pinctrl}}
 
-\hypertarget{ux529fux80fdux6982ux8ff0-3}{%
-\section{功能概述}\label{ux529fux80fdux6982ux8ff0-3}}
+\hypertarget{ux529fux80fdux6982ux8ff0-4}{%
+\section{功能概述}\label{ux529fux80fdux6982ux8ff0-4}}
 
 PINCTRL 模块管理芯片所有 IO 管脚的功能，包括外设 IO 的映射，上拉、下拉选择，输入模式控制，
 输出驱动能力设置等。
@@ -4618,8 +4934,8 @@ SPI2AHB\_SCLK & 15\tabularnewline
 \bottomrule
 \end{longtable}
 
-\hypertarget{ux4f7fux7528ux8bf4ux660e-3}{%
-\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-3}}
+\hypertarget{ux4f7fux7528ux8bf4ux660e-4}{%
+\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-4}}
 
 \hypertarget{ux4e3aux5916ux8bbeux914dux7f6e-io-ux7ba1ux811a}{%
 \subsection{为外设配置 IO 管脚}\label{ux4e3aux5916ux8bbeux914dux7f6e-io-ux7ba1ux811a}}
@@ -5605,10 +5921,12 @@ QDEC的GPIO选择，请参考《ING91682X\_BLE5.3\_芯片数据手册》中的``
 \begin{Highlighting}[]
 \DataTypeTok{static} \DataTypeTok{void}\NormalTok{ QDEC_PclkCfg(}\DataTypeTok{void}\NormalTok{)}
 \NormalTok{\{}
+    \ControlFlowTok{if}\NormalTok{ ((APB_SYSCTRL->QdecCfg >> }\DecValTok{15}\NormalTok{) & }\DecValTok{1}\NormalTok{)}
+        \ControlFlowTok{return}\NormalTok{;}
     \DataTypeTok{uint32_t}\NormalTok{ hclk = SYSCTRL_GetHClk();}
-    \DataTypeTok{uint32_t}\NormalTok{ qdecClk = SYSCTRL_GetClk(SYSCTRL_ITEM_APB_QDEC);}
-    \DataTypeTok{uint8_t}\NormalTok{ div = hclk / qdecClk;}
-    \ControlFlowTok{if}\NormalTok{ (hclk % qdecClk)}
+    \DataTypeTok{uint32_t}\NormalTok{ slowClk = SYSCTRL_GetSlowClk();}
+    \DataTypeTok{uint8_t}\NormalTok{ div = hclk / slowClk;}
+    \ControlFlowTok{if}\NormalTok{ (hclk % slowClk)}
 \NormalTok{        div++;}
     \ControlFlowTok{if}\NormalTok{ (!(div >> }\DecValTok{4}\NormalTok{))}
 \NormalTok{        SYSCTRL_SetPClkDiv(div);}
@@ -5646,7 +5964,7 @@ QDEC的GPIO选择，请参考《ING91682X\_BLE5.3\_芯片数据手册》中的``
 
 \textbf{2.} 改用较小工作时钟
 
-\textbf{3.} 采样较小的miss值（如miss=1）和较大的filter值
+\textbf{3.} 采用较小的miss值（如miss=1）和较大的filter值
 
 \textbf{4.} 采用较大工作时钟（如HCLK时钟），不加miss进行采样
 
@@ -5698,10 +6016,12 @@ QDEC的GPIO选择，请参考《ING91682X\_BLE5.3\_芯片数据手册》中的``
 \begin{Highlighting}[]
 \DataTypeTok{static} \DataTypeTok{void}\NormalTok{ QDEC_PclkCfg(}\DataTypeTok{void}\NormalTok{)}
 \NormalTok{\{}
+    \ControlFlowTok{if}\NormalTok{ ((APB_SYSCTRL->QdecCfg >> }\DecValTok{15}\NormalTok{) & }\DecValTok{1}\NormalTok{)}
+        \ControlFlowTok{return}\NormalTok{;}
     \DataTypeTok{uint32_t}\NormalTok{ hclk = SYSCTRL_GetHClk();}
-    \DataTypeTok{uint32_t}\NormalTok{ qdecClk = SYSCTRL_GetClk(SYSCTRL_ITEM_APB_QDEC);}
-    \DataTypeTok{uint8_t}\NormalTok{ div = hclk / qdecClk;}
-    \ControlFlowTok{if}\NormalTok{ (hclk % qdecClk)}
+    \DataTypeTok{uint32_t}\NormalTok{ slowClk = SYSCTRL_GetSlowClk();}
+    \DataTypeTok{uint8_t}\NormalTok{ div = hclk / slowClk;}
+    \ControlFlowTok{if}\NormalTok{ (hclk % slowClk)}
 \NormalTok{        div++;}
     \ControlFlowTok{if}\NormalTok{ (!(div >> }\DecValTok{4}\NormalTok{))}
 \NormalTok{        SYSCTRL_SetPClkDiv(div);}
@@ -5711,12 +6031,12 @@ QDEC的GPIO选择，请参考《ING91682X\_BLE5.3\_芯片数据手册》中的``
     \CommentTok{// setup qdec}
 \NormalTok{    SYSCTRL_ClearClkGate(SYSCTRL_ITEM_APB_PinCtrl |}
 \NormalTok{                         SYSCTRL_ITEM_APB_QDEC);}
-\NormalTok{    QDEC_PclkCfg();    }\CommentTok{// set pclk not bigger than sclk_slow}
-\NormalTok{    PINCTRL_SelQDECIn(}\DecValTok{16}\NormalTok{, }\DecValTok{17}\NormalTok{);    }\CommentTok{// set GPIO16=phase_a, GPIO17=phase_b}
 \NormalTok{    SYSCTRL_ReleaseBlock(SYSCTRL_ITEM_APB_PinCtrl |}
 \NormalTok{                         SYSCTRL_ITEM_APB_QDEC);}
+\NormalTok{    PINCTRL_SelQDECIn(}\DecValTok{16}\NormalTok{, }\DecValTok{17}\NormalTok{);    }\CommentTok{// set GPIO16=phase_a, GPIO17=phase_b}
 
 \NormalTok{    SYSCTRL_SelectQDECClk(SYSCTRL_CLK_SLOW, }\DecValTok{100}\NormalTok{);}
+\NormalTok{    QDEC_PclkCfg();    }\CommentTok{// set pclk not bigger than sclk_slow}
 \NormalTok{    QDEC_EnableQdecDiv(QDEC_DIV_1024);}
 \NormalTok{    QDEC_QdecCfg(}\DecValTok{50}\NormalTok{, }\DecValTok{1}\NormalTok{);}
 \NormalTok{    QDEC_ChannelEnable(}\DecValTok{1}\NormalTok{);}
@@ -5754,8 +6074,8 @@ qdec的详细使用请参考HID mouse例程。
 实时时钟是一个独立的定时器。RTC模块拥有一组连续计数的计数器，在相应的软件配置下，
 可提供时钟日历的功能。修改计数器的值可以重新设置系统当前的时间和日期。
 
-\hypertarget{ux4f7fux7528ux8bf4ux660e-4}{%
-\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-4}}
+\hypertarget{ux4f7fux7528ux8bf4ux660e-5}{%
+\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-5}}
 
 \hypertarget{rtcux4f7fux80fd}{%
 \subsection{RTC使能}\label{rtcux4f7fux80fd}}
@@ -7319,8 +7639,8 @@ QSPI的部分pParam参数需要修改为如下，同时Addr和Cmd需要打开
 \hypertarget{ch-sysctrl}{%
 \chapter{系统控制（SYSCTRL）}\label{ch-sysctrl}}
 
-\hypertarget{ux529fux80fdux6982ux8ff0-4}{%
-\section{功能概述}\label{ux529fux80fdux6982ux8ff0-4}}
+\hypertarget{ux529fux80fdux6982ux8ff0-5}{%
+\section{功能概述}\label{ux529fux80fdux6982ux8ff0-5}}
 
 SYSCTRL 负责管理、控制各种片上外设，主要功能有：
 
@@ -7526,8 +7846,8 @@ UART0\_TX，分别用于触发 DMA 发送请求（通过 DMA 传输接收到的�
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{ux4f7fux7528ux8bf4ux660e-5}{%
-\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-5}}
+\hypertarget{ux4f7fux7528ux8bf4ux660e-6}{%
+\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-6}}
 
 \hypertarget{ux5916ux8bbeux590dux4f4d}{%
 \subsection{外设复位}\label{ux5916ux8bbeux590dux4f4d}}
@@ -7756,14 +8076,14 @@ UART0\_TX，分别用于触发 DMA 发送请求（通过 DMA 传输接收到的�
 \hypertarget{ch-timer}{%
 \chapter{定时器（TIMER）}\label{ch-timer}}
 
-\hypertarget{ux529fux80fdux6982ux8ff0-5}{%
-\section{功能概述}\label{ux529fux80fdux6982ux8ff0-5}}
+\hypertarget{ux529fux80fdux6982ux8ff0-6}{%
+\section{功能概述}\label{ux529fux80fdux6982ux8ff0-6}}
 
 定时器（TIMER）是由两个寄存器组成的，其中一个寄存器用来确定计数器的工作形式和功能，
 另外一个计时器是用来控制单片机的启动和停止的，同时也设置了一个
 
-\hypertarget{ux4f7fux7528ux8bf4ux660e-6}{%
-\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-6}}
+\hypertarget{ux4f7fux7528ux8bf4ux660e-7}{%
+\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-7}}
 
 \hypertarget{ux8bbeux7f6eux5de5ux4f5cux6a21ux5f0f}{%
 \subsection{设置工作模式}\label{ux8bbeux7f6eux5de5ux4f5cux6a21ux5f0f}}
@@ -7941,8 +8261,8 @@ TMR\_CTL\_OP\_MODE\_8BIT\_PWM\_8BIT\_TIMER\_x2 & Timer 0 & Timer 1 & PWM low per
 \hypertarget{ch-uart}{%
 \chapter{通用异步收发传输器（UART）}\label{ch-uart}}
 
-\hypertarget{ux529fux80fdux6982ux8ff0-6}{%
-\section{功能概述}\label{ux529fux80fdux6982ux8ff0-6}}
+\hypertarget{ux529fux80fdux6982ux8ff0-7}{%
+\section{功能概述}\label{ux529fux80fdux6982ux8ff0-7}}
 
 UART负责处理数据总线和串行口之间的串/并、并/串转换，并规定了相应的帧格式，通信双方只要采用相同的帧格式和波特率，
 就能在未共享时钟信号的情况下，仅用两根信号线（RX和TX）完成通信过程。
@@ -7963,8 +8283,8 @@ UART负责处理数据总线和串行口之间的串/并、并/串转换，并�
   输出传输时，从低位到高位传输。
 \end{itemize}
 
-\hypertarget{ux4f7fux7528ux8bf4ux660e-7}{%
-\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-7}}
+\hypertarget{ux4f7fux7528ux8bf4ux660e-8}{%
+\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-8}}
 
 \hypertarget{ux8bbeux7f6eux6ce2ux7279ux7387}{%
 \subsection{设置波特率}\label{ux8bbeux7f6eux6ce2ux7279ux7387}}
@@ -8302,8 +8622,8 @@ DMA向CPU发出总线请求，CPU将总线交给DMA之后，由DMA控制数据�
 \hypertarget{universal-serial-bus-deviceusb}{%
 \chapter{Universal serial bus device（USB）}\label{universal-serial-bus-deviceusb}}
 
-\hypertarget{ux529fux80fdux6982ux8ff0-7}{%
-\section{功能概述}\label{ux529fux80fdux6982ux8ff0-7}}
+\hypertarget{ux529fux80fdux6982ux8ff0-8}{%
+\section{功能概述}\label{ux529fux80fdux6982ux8ff0-8}}
 
 \begin{itemize}
 \tightlist
@@ -8327,8 +8647,8 @@ DMA向CPU发出总线请求，CPU将总线交给DMA之后，由DMA控制数据�
   内置DMA方便数据传输
 \end{itemize}
 
-\hypertarget{ux4f7fux7528ux8bf4ux660e-8}{%
-\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-8}}
+\hypertarget{ux4f7fux7528ux8bf4ux660e-9}{%
+\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-9}}
 
 \hypertarget{usbux8f6fux4ef6ux7ed3ux6784}{%
 \subsection{USB软件结构}\label{usbux8f6fux4ef6ux7ed3ux6784}}
@@ -9045,14 +9365,14 @@ ep0的request处理在event：USB\_EVENT\_EP0\_SETUP。 HID Class相关的处理
 \hypertarget{ch-watchdog}{%
 \chapter{看门狗（WATCHDOG）}\label{ch-watchdog}}
 
-\hypertarget{ux529fux80fdux6982ux8ff0-8}{%
-\section{功能概述}\label{ux529fux80fdux6982ux8ff0-8}}
+\hypertarget{ux529fux80fdux6982ux8ff0-9}{%
+\section{功能概述}\label{ux529fux80fdux6982ux8ff0-9}}
 
 看门狗就是定期的查看芯片内部情况，一旦发生错误就向芯片内部发出重启信号。
 看门狗指令在程序的中断中拥有最高的优先级。防止程序跑飞，同时也能防止程序在线运行时出现死循环
 
-\hypertarget{ux4f7fux7528ux8bf4ux660e-9}{%
-\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-9}}
+\hypertarget{ux4f7fux7528ux8bf4ux660e-10}{%
+\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-10}}
 
 \hypertarget{ux914dux7f6eux770bux95e8ux72d7}{%
 \subsection{配置看门狗}\label{ux914dux7f6eux770bux95e8ux72d7}}
@@ -9120,14 +9440,14 @@ ep0的request处理在event：USB\_EVENT\_EP0\_SETUP。 HID Class相关的处理
 \hypertarget{ch-eflash}{%
 \chapter{内置 Flash（EFlash）}\label{ch-eflash}}
 
-\hypertarget{ux529fux80fdux6982ux8ff0-9}{%
-\section{功能概述}\label{ux529fux80fdux6982ux8ff0-9}}
+\hypertarget{ux529fux80fdux6982ux8ff0-10}{%
+\section{功能概述}\label{ux529fux80fdux6982ux8ff0-10}}
 
 芯片内置一定容量的 Flash，可编程擦写。擦除时以扇区（sector）为单位进行，
 写入时以 32bit 为单位。
 
-\hypertarget{ux4f7fux7528ux8bf4ux660e-10}{%
-\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-10}}
+\hypertarget{ux4f7fux7528ux8bf4ux660e-11}{%
+\section{使用说明}\label{ux4f7fux7528ux8bf4ux660e-11}}
 
 \hypertarget{ux64e6ux9664ux5e76ux5199ux5165ux65b0ux6570ux636e}{%
 \subsection{擦除并写入新数据}\label{ux64e6ux9664ux5e76ux5199ux5165ux65b0ux6570ux636e}}

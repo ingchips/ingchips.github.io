@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>12 管脚管理（PINCTRL） | ING916XX 系列芯片外设开发者手册</title>
+  <title>10 硬件键盘扫描控制器（KEYSCAN） | ING916XX 系列芯片外设开发者手册</title>
   <meta name="description" content="ING916XX 系列芯片开发者手册." />
   <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="12 管脚管理（PINCTRL） | ING916XX 系列芯片外设开发者手册" />
+  <meta property="og:title" content="10 硬件键盘扫描控制器（KEYSCAN） | ING916XX 系列芯片外设开发者手册" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="ING916XX 系列芯片开发者手册." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="12 管脚管理（PINCTRL） | ING916XX 系列芯片外设开发者手册" />
+  <meta name="twitter:title" content="10 硬件键盘扫描控制器（KEYSCAN） | ING916XX 系列芯片外设开发者手册" />
   
   <meta name="twitter:description" content="ING916XX 系列芯片开发者手册." />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="ch-PDM.html"/>
-<link rel="next" href="pte简介.html"/>
+<link rel="prev" href="ir-红外.html"/>
+<link rel="next" href="ch-PDM.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -478,701 +478,254 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="ch-pinctrl" class="section level1 hasAnchor">
-<h1><span class="header-section-number">12</span> 管脚管理（PINCTRL）<a href="ch-pinctrl.html#ch-pinctrl" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div id="功能概述-4" class="section level2 hasAnchor">
-<h2><span class="header-section-number">12.1</span> 功能概述<a href="ch-pinctrl.html#功能概述-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>PINCTRL 模块管理芯片所有 IO 管脚的功能，包括外设 IO 的映射，上拉、下拉选择，输入模式控制，
-输出驱动能力设置等。</p>
-<p>每个 IO 管脚都可以配置为数字或<a href="ch-pinctrl.html#pinctrl-config-analog">模拟模式</a>，当配置为数字模式时，特性如下：</p>
+<div id="ch-keyscan" class="section level1 hasAnchor">
+<h1><span class="header-section-number">10</span> 硬件键盘扫描控制器（KEYSCAN）<a href="ch-keyscan.html#ch-keyscan" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="功能概述-3" class="section level2 hasAnchor">
+<h2><span class="header-section-number">10.1</span> 功能概述<a href="ch-keyscan.html#功能概述-3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>特性：</p>
 <ul>
-<li>每个 IO 管脚可以映射多种不同功能的外设</li>
-<li>每个 IO 管脚都支持上拉或下拉</li>
-<li>每个 IO 管脚都支持施密特触发输入方式</li>
-<li>每个 IO 管脚支持四种输出驱动能力</li>
+<li>可配置矩阵，最大支持16行<em>15列或者15行</em>16列的键盘矩阵。</li>
+<li>每个单独的行或者列可以设置启用或者禁用。</li>
+<li>可配置时钟。</li>
+<li>支持输入硬件去抖动，去抖时间可配置。</li>
+<li>支持配置扫描间隔和释放时间，支持多按键同时按下。</li>
+<li>支持中断和DMA。</li>
 </ul>
-<p>鉴于片内外设丰富、IO 管脚多，进行管脚全映射并不现实，为此，PINCTRL 尽量保证灵活性的前提下做了一定取舍、优化。
-部分常用外设的输入、输出功能管脚可与 <span class="math inline">\(\{{0 .. 17, 21, 22, 31, 34, 35\}}\)</span> 这 23 个常用 IO 之间任意连接（全映射），
-这部分常用外设功能管脚总结于表 <a href="ch-pinctrl.html#tab:ch-pinctrl-common-set">12.1</a>。
-表 <a href="ch-pinctrl.html#tab:ch-pinctrl-mapping">12.2</a> 列出了其它外设功能管脚支持映射到哪些 IO 管脚上。
-除此以外，所有 IO 管脚都可以配置为 GPIO 或者 DEBUG 模式。GPIO 模式的输入、输出方向由 <code>GIO_SetDirection</code> 控制。
-DEBUG 模式为保留功能，具体功能暂不开放。</p>
-<table>
-<caption><span id="tab:ch-pinctrl-common-set">表 12.1: </span> 支持与常用 IO 全映射的常用功能管脚</caption>
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="left">外设</th>
-<th align="left">功能管脚</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">I2C</td>
-<td align="left">I2C0_SCL_I, I2C0_SCL_O, I2C0_SDA_I, I2C0_SDA_O, I2C1_SCL_I, I2C1_SCL_O, I2C1_SDA_I, I2C1_SDA_O</td>
-</tr>
-<tr class="even">
-<td align="left">I2S</td>
-<td align="left">I2S_BCLK_I, I2S_BCLK_O, I2S_DIN, I2S_DOUT, I2S_LRCLK_I, I2S_LRCLK_O</td>
-</tr>
-<tr class="odd">
-<td align="left">IR</td>
-<td align="left">IR_DATIN, IR_DATOUT, IR_WAKEUP</td>
-</tr>
-<tr class="even">
-<td align="left">PCAP</td>
-<td align="left">PCAP0_IN, PCAP1_IN, PCAP2_IN, PCAP3_IN, PCAP4_IN, PCAP5_IN</td>
-</tr>
-<tr class="odd">
-<td align="left">PDM</td>
-<td align="left">PDM_DMIC_IN, PDM_DMIC_MCLK</td>
-</tr>
-<tr class="even">
-<td align="left">QDEC</td>
-<td align="left">QDEC_INDEX, QDEC_PHASEA, QDEC_PHASEB</td>
-</tr>
-<tr class="odd">
-<td align="left">SPI0</td>
-<td align="left">SPI0_CLK_IN, SPI0_CLK_OUT, SPI0_CSN_IN, SPI0_CSN_OUT, SPI0_HOLD_IN, SPI0_HOLD_OUT, SPI0_MISO_IN, SPI0_MISO_OUT, SPI0_MOSI_IN, SPI0_MOSI_OUT, SPI0_WP_IN, SPI0_WP_OUT</td>
-</tr>
-<tr class="even">
-<td align="left">SPI</td>
-<td align="left">SPI1_CLK_IN, SPI1_CLK_OUT, SPI1_CSN_IN, SPI1_CSN_OUT, SPI1_HOLD_IN, SPI1_HOLD_OUT, SPI1_MISO_IN, SPI1_MISO_OUT, SPI1_MOSI_IN, SPI1_MOSI_OUT, SPI1_WP_IN, SPI1_WP_OUT</td>
-</tr>
-<tr class="odd">
-<td align="left">SWD</td>
-<td align="left">SWDO, SW_TCK, SW_TMS</td>
-</tr>
-<tr class="even">
-<td align="left">UART0</td>
-<td align="left">UART0_CTS, UART0_RTS, UART0_RXD, UART0_TXD</td>
-</tr>
-<tr class="odd">
-<td align="left">UART1</td>
-<td align="left">UART1_CTS, UART1_RTS, UART1_RXD, UART1_TXD</td>
-</tr>
-</tbody>
-</table>
-<table>
-<caption><span id="tab:ch-pinctrl-mapping">表 12.2: </span> 其它外设功能管脚的映射关系</caption>
-<thead>
-<tr class="header">
-<th align="left">外设功能管脚</th>
-<th align="left">可连接到的 IO 管脚</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">KEY_IN_COL_0</td>
-<td align="left">0, 23</td>
-</tr>
-<tr class="even">
-<td align="left">KEY_IN_COL_1</td>
-<td align="left">1, 24</td>
-</tr>
-<tr class="odd">
-<td align="left">KEY_IN_COL_2</td>
-<td align="left">2, 25</td>
-</tr>
-<tr class="even">
-<td align="left">KEY_IN_COL_3</td>
-<td align="left">3, 29</td>
-</tr>
-<tr class="odd">
-<td align="left">KEY_IN_COL_4</td>
-<td align="left">4, 30</td>
-</tr>
-<tr class="even">
-<td align="left">KEY_IN_COL_5</td>
-<td align="left">5, 31</td>
-</tr>
-<tr class="odd">
-<td align="left">KEY_IN_COL_6</td>
-<td align="left">6, 32</td>
-</tr>
-<tr class="even">
-<td align="left">KEY_IN_COL_7</td>
-<td align="left">7, 33</td>
-</tr>
-<tr class="odd">
-<td align="left">KEY_IN_COL_8</td>
-<td align="left">8, 34</td>
-</tr>
-<tr class="even">
-<td align="left">KEY_IN_COL_9</td>
-<td align="left">9, 35</td>
-</tr>
-<tr class="odd">
-<td align="left">KEY_IN_COL_10</td>
-<td align="left">10, 36</td>
-</tr>
-<tr class="even">
-<td align="left">KEY_IN_COL_11</td>
-<td align="left">11, 37</td>
-</tr>
-<tr class="odd">
-<td align="left">KEY_IN_COL_12</td>
-<td align="left">12, 38</td>
-</tr>
-<tr class="even">
-<td align="left">KEY_IN_COL_13</td>
-<td align="left">13, 39</td>
-</tr>
-<tr class="odd">
-<td align="left">KEY_IN_COL_14</td>
-<td align="left">14, 40</td>
-</tr>
-<tr class="even">
-<td align="left">KEY_IN_COL_15</td>
-<td align="left">15, 41</td>
-</tr>
-<tr class="odd">
-<td align="left">KEY_IN_COL_16</td>
-<td align="left">16</td>
-</tr>
-<tr class="even">
-<td align="left">KEY_IN_COL_17</td>
-<td align="left">17</td>
-</tr>
-<tr class="odd">
-<td align="left">KEY_IN_COL_18</td>
-<td align="left">21</td>
-</tr>
-<tr class="even">
-<td align="left">KEY_IN_COL_19</td>
-<td align="left">22</td>
-</tr>
-<tr class="odd">
-<td align="left">KEY_OUT_ROW_0</td>
-<td align="left">0, 23</td>
-</tr>
-<tr class="even">
-<td align="left">KEY_OUT_ROW_1</td>
-<td align="left">1, 24</td>
-</tr>
-<tr class="odd">
-<td align="left">KEY_OUT_ROW_2</td>
-<td align="left">2, 25</td>
-</tr>
-<tr class="even">
-<td align="left">KEY_OUT_ROW_3</td>
-<td align="left">3, 29</td>
-</tr>
-<tr class="odd">
-<td align="left">KEY_OUT_ROW_4</td>
-<td align="left">4, 30</td>
-</tr>
-<tr class="even">
-<td align="left">KEY_OUT_ROW_5</td>
-<td align="left">5, 31</td>
-</tr>
-<tr class="odd">
-<td align="left">KEY_OUT_ROW_6</td>
-<td align="left">6, 32</td>
-</tr>
-<tr class="even">
-<td align="left">KEY_OUT_ROW_7</td>
-<td align="left">7, 33</td>
-</tr>
-<tr class="odd">
-<td align="left">KEY_OUT_ROW_8</td>
-<td align="left">8, 34</td>
-</tr>
-<tr class="even">
-<td align="left">KEY_OUT_ROW_9</td>
-<td align="left">9, 35</td>
-</tr>
-<tr class="odd">
-<td align="left">KEY_OUT_ROW_10</td>
-<td align="left">10, 36</td>
-</tr>
-<tr class="even">
-<td align="left">KEY_OUT_ROW_11</td>
-<td align="left">11, 37</td>
-</tr>
-<tr class="odd">
-<td align="left">KEY_OUT_ROW_12</td>
-<td align="left">12, 38</td>
-</tr>
-<tr class="even">
-<td align="left">KEY_OUT_ROW_13</td>
-<td align="left">13, 39</td>
-</tr>
-<tr class="odd">
-<td align="left">KEY_OUT_ROW_14</td>
-<td align="left">14, 40</td>
-</tr>
-<tr class="even">
-<td align="left">KEY_OUT_ROW_15</td>
-<td align="left">15, 41</td>
-</tr>
-<tr class="odd">
-<td align="left">KEY_OUT_ROW_16</td>
-<td align="left">16</td>
-</tr>
-<tr class="even">
-<td align="left">KEY_OUT_ROW_17</td>
-<td align="left">17</td>
-</tr>
-<tr class="odd">
-<td align="left">KEY_OUT_ROW_18</td>
-<td align="left">21</td>
-</tr>
-<tr class="even">
-<td align="left">KEY_OUT_ROW_19</td>
-<td align="left">22</td>
-</tr>
-<tr class="odd">
-<td align="left">ANT_SW0</td>
-<td align="left">0, 3, 6, 9, 12, 15, 21, 34</td>
-</tr>
-<tr class="even">
-<td align="left">ANT_SW1</td>
-<td align="left">1, 4, 7, 10, 13, 16, 22, 35</td>
-</tr>
-<tr class="odd">
-<td align="left">ANT_SW2</td>
-<td align="left">2, 5, 8, 11, 14, 17, 31</td>
-</tr>
-<tr class="even">
-<td align="left">ANT_SW3</td>
-<td align="left">0, 3, 6, 9, 12, 15, 21, 34</td>
-</tr>
-<tr class="odd">
-<td align="left">ANT_SW4</td>
-<td align="left">1, 4, 7, 10, 13, 16, 22, 35</td>
-</tr>
-<tr class="even">
-<td align="left">ANT_SW5</td>
-<td align="left">2, 5, 8, 11, 14, 17, 31</td>
-</tr>
-<tr class="odd">
-<td align="left">ANT_SW6</td>
-<td align="left">0, 3, 6, 9, 12, 15, 21, 34</td>
-</tr>
-<tr class="even">
-<td align="left">ANT_SW7</td>
-<td align="left">1, 4, 7, 10, 13, 16, 22, 35</td>
-</tr>
-<tr class="odd">
-<td align="left">PA_RXEN</td>
-<td align="left">11, 12, 13, 14, 15, 16, 17, 34, 35</td>
-</tr>
-<tr class="even">
-<td align="left">PA_TXEN</td>
-<td align="left">4, 5, 6, 7, 8, 9, 10, 34, 35</td>
-</tr>
-<tr class="odd">
-<td align="left">TIMER0_PWM_0A</td>
-<td align="left">0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35</td>
-</tr>
-<tr class="even">
-<td align="left">TIMER0_PWM_0B</td>
-<td align="left">1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34</td>
-</tr>
-<tr class="odd">
-<td align="left">TIMER0_PWM_1A</td>
-<td align="left">0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35</td>
-</tr>
-<tr class="even">
-<td align="left">TIMER0_PWM_1B</td>
-<td align="left">1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34</td>
-</tr>
-<tr class="odd">
-<td align="left">TIMER1_PWM_0A</td>
-<td align="left">0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35</td>
-</tr>
-<tr class="even">
-<td align="left">TIMER1_PWM_0B</td>
-<td align="left">1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34</td>
-</tr>
-<tr class="odd">
-<td align="left">TIMER1_PWM_1A</td>
-<td align="left">0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35</td>
-</tr>
-<tr class="even">
-<td align="left">TIMER1_PWM_1B</td>
-<td align="left">1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34</td>
-</tr>
-<tr class="odd">
-<td align="left">TIMER2_PWM_0A</td>
-<td align="left">0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35</td>
-</tr>
-<tr class="even">
-<td align="left">TIMER2_PWM_0B</td>
-<td align="left">1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34</td>
-</tr>
-<tr class="odd">
-<td align="left">TIMER2_PWM_1A</td>
-<td align="left">0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35</td>
-</tr>
-<tr class="even">
-<td align="left">TIMER2_PWM_1B</td>
-<td align="left">1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34</td>
-</tr>
-<tr class="odd">
-<td align="left">PWM_0A</td>
-<td align="left">0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35</td>
-</tr>
-<tr class="even">
-<td align="left">PWM_0B</td>
-<td align="left">1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34</td>
-</tr>
-<tr class="odd">
-<td align="left">PWM_1A</td>
-<td align="left">0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35</td>
-</tr>
-<tr class="even">
-<td align="left">PWM_1B</td>
-<td align="left">1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34</td>
-</tr>
-<tr class="odd">
-<td align="left">PWM_2A</td>
-<td align="left">0, 2, 4, 6, 8, 10, 12, 14, 16, 21, 31, 35</td>
-</tr>
-<tr class="even">
-<td align="left">PWM_2B</td>
-<td align="left">1, 3, 5, 7, 9, 11, 13, 15, 17, 22, 34</td>
-</tr>
-<tr class="odd">
-<td align="left">QDEC_EXT_IN_CLK</td>
-<td align="left">3, 9</td>
-</tr>
-<tr class="even">
-<td align="left">QDEC_TIMER_EXT_IN1_A</td>
-<td align="left">1, 7</td>
-</tr>
-<tr class="odd">
-<td align="left">QDEC_TIMER_EXT_IN2_A</td>
-<td align="left">2, 8</td>
-</tr>
-<tr class="even">
-<td align="left">QDEC_TIMER_EXT_IN2_B</td>
-<td align="left">5, 11</td>
-</tr>
-<tr class="odd">
-<td align="left">QDEC_TIMER_EXT_OUT0_A</td>
-<td align="left">0, 6</td>
-</tr>
-<tr class="even">
-<td align="left">QDEC_TIMER_EXT_OUT1_A</td>
-<td align="left">1, 7</td>
-</tr>
-<tr class="odd">
-<td align="left">QDEC_TIMER_EXT_OUT2_A</td>
-<td align="left">2, 8</td>
-</tr>
-<tr class="even">
-<td align="left">QDEC_TIMER_EXT_OUT0_B</td>
-<td align="left">3, 9</td>
-</tr>
-<tr class="odd">
-<td align="left">QDEC_TIMER_EXT_OUT1_B</td>
-<td align="left">4, 10</td>
-</tr>
-<tr class="even">
-<td align="left">QDEC_TIMER_EXT_OUT2_B</td>
-<td align="left">5, 11</td>
-</tr>
-<tr class="odd">
-<td align="left">SPI0_CLK_IN</td>
-<td align="left">19</td>
-</tr>
-<tr class="even">
-<td align="left">SPI0_CLK_OUT</td>
-<td align="left">19</td>
-</tr>
-<tr class="odd">
-<td align="left">SPI0_CSN_IN</td>
-<td align="left">18</td>
-</tr>
-<tr class="even">
-<td align="left">SPI0_CSN_OUT</td>
-<td align="left">18</td>
-</tr>
-<tr class="odd">
-<td align="left">SPI0_HOLD_IN</td>
-<td align="left">20</td>
-</tr>
-<tr class="even">
-<td align="left">SPI0_HOLD_OUT</td>
-<td align="left">20</td>
-</tr>
-<tr class="odd">
-<td align="left">SPI0_MISO_IN</td>
-<td align="left">27</td>
-</tr>
-<tr class="even">
-<td align="left">SPI0_MISO_OUT</td>
-<td align="left">27</td>
-</tr>
-<tr class="odd">
-<td align="left">SPI0_MOSI_IN</td>
-<td align="left">28</td>
-</tr>
-<tr class="even">
-<td align="left">SPI0_MOSI_OUT</td>
-<td align="left">28</td>
-</tr>
-<tr class="odd">
-<td align="left">SPI0_WP_IN</td>
-<td align="left">26</td>
-</tr>
-<tr class="even">
-<td align="left">SPI0_WP_OUT</td>
-<td align="left">26</td>
-</tr>
-<tr class="odd">
-<td align="left">SPI2AHB_CS</td>
-<td align="left">16</td>
-</tr>
-<tr class="even">
-<td align="left">SPI2AHB_DI</td>
-<td align="left">17</td>
-</tr>
-<tr class="odd">
-<td align="left">SPI2AHB_DO</td>
-<td align="left">17</td>
-</tr>
-<tr class="even">
-<td align="left">SPI2AHB_SCLK</td>
-<td align="left">15</td>
-</tr>
-</tbody>
-</table>
 </div>
-<div id="使用说明-4" class="section level2 hasAnchor">
-<h2><span class="header-section-number">12.2</span> 使用说明<a href="ch-pinctrl.html#使用说明-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="为外设配置-io-管脚" class="section level3 hasAnchor">
-<h3><span class="header-section-number">12.2.1</span> 为外设配置 IO 管脚<a href="ch-pinctrl.html#为外设配置-io-管脚" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<ol style="list-style-type: decimal">
-<li><p>将外设输出连接到 IO 管脚</p>
-<p>通过 <code>PINCTRL_SetPadMux</code> 将外设输出连接到 IO 管脚。
-注意按照表 <a href="ch-pinctrl.html#tab:ch-pinctrl-common-set">12.1</a> 和 表 <a href="ch-pinctrl.html#tab:ch-pinctrl-mapping">12.2</a>
-确认硬件是否支持。对于不支持的配置，显然无法生效，函数将返回非 0 值。</p>
-<div class="sourceCode" id="cb123"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb123-1"><a href="ch-pinctrl.html#cb123-1"></a><span class="dt">int</span> PINCTRL_SetPadMux(</span>
-<span id="cb123-2"><a href="ch-pinctrl.html#cb123-2"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> io_pin_index, <span class="co">// IO 序号 (0 .. IO_PIN_NUMBER - 1)</span></span>
-<span id="cb123-3"><a href="ch-pinctrl.html#cb123-3"></a>  <span class="dt">const</span> io_source_t source    <span class="co">// IO 源</span></span>
-<span id="cb123-4"><a href="ch-pinctrl.html#cb123-4"></a>);</span></code></pre></div>
-<p>例如将 IO 管脚 10 配置为 GPIO 模式：</p>
-<p><code>PINCTRL_SetPadMux(10, IO_SOURCE_GPIO);</code></p></li>
-<li><p>将 IO 管脚连接到外设的输入</p>
-<p>对于有些外设的输入同样通过 <code>PINCTRL_SetPadMux</code> 配置。对于另一些输入，
-PINCTRL 为不同的外设分别提供了 API 用以配置输入。比如 UART 的数据输入 RXD 和用于硬件流控的
-CTS，需要通过 <code>PINCTRL_SelUartIn</code> 配置 ：</p>
-<div class="sourceCode" id="cb124"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb124-1"><a href="ch-pinctrl.html#cb124-1"></a><span class="dt">int</span> PINCTRL_SelUartIn(</span>
-<span id="cb124-2"><a href="ch-pinctrl.html#cb124-2"></a>  uart_port_t port,     <span class="co">// UART 序号</span></span>
-<span id="cb124-3"><a href="ch-pinctrl.html#cb124-3"></a>  <span class="dt">uint8_t</span> io_pin_rxd,   <span class="co">// 连接到 RXD 输入的 IO 管脚</span></span>
-<span id="cb124-4"><a href="ch-pinctrl.html#cb124-4"></a>  <span class="dt">uint8_t</span> io_pin_cts);  <span class="co">// 连接到 CTS 输入的 IO 管脚</span></span></code></pre></div>
-<p>对于不需要配置的输入，可在对应的参数上填入值 <code>IO_NOT_A_PIN</code>。</p>
-<p>表 <a href="ch-pinctrl.html#tab:ch-pinctrl-sel-in">12.3</a> 罗列了为各外设提供的输入配置函数。</p>
-<table>
-<caption><span id="tab:ch-pinctrl-sel-in">表 12.3: </span> 各外设的输入配置函数</caption>
-<thead>
-<tr class="header">
-<th align="left">外设</th>
-<th align="left">配置函数</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">KeyScan</td>
-<td align="left"><code>PINCTRL_SelKeyScanColIn</code></td>
-</tr>
-<tr class="even">
-<td align="left">I2C</td>
-<td align="left"><code>PINCTRL_SelI2cIn</code></td>
-</tr>
-<tr class="odd">
-<td align="left">I2S</td>
-<td align="left"><code>PINCTRL_SelI2sIn</code></td>
-</tr>
-<tr class="even">
-<td align="left">IR</td>
-<td align="left"><code>PINCTRL_SelIrIn</code></td>
-</tr>
-<tr class="odd">
-<td align="left">PDM</td>
-<td align="left"><code>PINCTRL_SelPdmIn</code></td>
-</tr>
-<tr class="even">
-<td align="left">PCAP</td>
-<td align="left"><code>PINCTRL_SelPCAPIn</code></td>
-</tr>
-<tr class="odd">
-<td align="left">QDEC</td>
-<td align="left"><code>PINCTRL_SelQDECIn</code></td>
-</tr>
-<tr class="even">
-<td align="left">SWD</td>
-<td align="left"><code>PINCTRL_SelSwIn</code></td>
-</tr>
-<tr class="odd">
-<td align="left">SPI</td>
-<td align="left"><code>PINCTRL_SelSpiIn</code></td>
-</tr>
-<tr class="even">
-<td align="left">UART</td>
-<td align="left"><code>PINCTRL_SelUartIn</code></td>
-</tr>
-<tr class="odd">
-<td align="left">USB</td>
-<td align="left"><code>PINCTRL_SelUSB</code></td>
-</tr>
-</tbody>
-</table></li>
-</ol>
+<div id="使用说明-3" class="section level2 hasAnchor">
+<h2><span class="header-section-number">10.2</span> 使用说明<a href="ch-keyscan.html#使用说明-3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>以4行*4列的键盘矩阵为例：</p>
+<p><img src="img/KeyScan/keyscan.jpg" /></p>
+<div id="键盘矩阵的软件描述" class="section level3 hasAnchor">
+<h3><span class="header-section-number">10.2.1</span> 键盘矩阵的软件描述<a href="ch-keyscan.html#键盘矩阵的软件描述" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb112"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb112-1"><a href="ch-keyscan.html#cb112-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> {</span>
+<span id="cb112-2"><a href="ch-keyscan.html#cb112-2"></a>    KEYSCAN_InColIndex_t in_col;</span>
+<span id="cb112-3"><a href="ch-keyscan.html#cb112-3"></a>    GIO_Index_t gpio;</span>
+<span id="cb112-4"><a href="ch-keyscan.html#cb112-4"></a>} KEYSCAN_InColList;</span>
+<span id="cb112-5"><a href="ch-keyscan.html#cb112-5"></a></span>
+<span id="cb112-6"><a href="ch-keyscan.html#cb112-6"></a><span class="kw">typedef</span> <span class="kw">struct</span> {</span>
+<span id="cb112-7"><a href="ch-keyscan.html#cb112-7"></a>    KEYSCAN_OutRowIndex_t out_row;</span>
+<span id="cb112-8"><a href="ch-keyscan.html#cb112-8"></a>    GIO_Index_t gpio;</span>
+<span id="cb112-9"><a href="ch-keyscan.html#cb112-9"></a>} KEYSCAN_OutRowList;</span></code></pre></div>
+<div class="sourceCode" id="cb113"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb113-1"><a href="ch-keyscan.html#cb113-1"></a>KEYSCAN_OutRowList key_out_row[] = {</span>
+<span id="cb113-2"><a href="ch-keyscan.html#cb113-2"></a>    {KEY_OUT_ROW_6, GIO_GPIO_32}, <span class="co">// 第1行</span></span>
+<span id="cb113-3"><a href="ch-keyscan.html#cb113-3"></a>    {KEY_OUT_ROW_7, GIO_GPIO_33}, <span class="co">// 第2行</span></span>
+<span id="cb113-4"><a href="ch-keyscan.html#cb113-4"></a>    {KEY_OUT_ROW_5, GIO_GPIO_31}, <span class="co">// 第3行</span></span>
+<span id="cb113-5"><a href="ch-keyscan.html#cb113-5"></a>    {KEY_OUT_ROW_0, GIO_GPIO_23}, <span class="co">// 第4行</span></span>
+<span id="cb113-6"><a href="ch-keyscan.html#cb113-6"></a>};</span>
+<span id="cb113-7"><a href="ch-keyscan.html#cb113-7"></a><span class="pp">#define key_out_row_num (sizeof(key_out_row) / sizeof(key_out_row[0]))</span></span>
+<span id="cb113-8"><a href="ch-keyscan.html#cb113-8"></a></span>
+<span id="cb113-9"><a href="ch-keyscan.html#cb113-9"></a>KEYSCAN_InColList key_in_col[] = {</span>
+<span id="cb113-10"><a href="ch-keyscan.html#cb113-10"></a>    {KEY_IN_COL_11, GIO_GPIO_11}, <span class="co">// 第1列</span></span>
+<span id="cb113-11"><a href="ch-keyscan.html#cb113-11"></a>    {KEY_IN_COL_12, GIO_GPIO_12}, <span class="co">// 第2列</span></span>
+<span id="cb113-12"><a href="ch-keyscan.html#cb113-12"></a>    {KEY_IN_COL_13, GIO_GPIO_13}, <span class="co">// 第3列</span></span>
+<span id="cb113-13"><a href="ch-keyscan.html#cb113-13"></a>    {KEY_IN_COL_14, GIO_GPIO_14}, <span class="co">// 第4列</span></span>
+<span id="cb113-14"><a href="ch-keyscan.html#cb113-14"></a>};</span>
+<span id="cb113-15"><a href="ch-keyscan.html#cb113-15"></a><span class="pp">#define key_in_col_num (sizeof(key_in_col) / sizeof(key_in_col[0]))</span></span></code></pre></div>
+<p>第1行按键接到了GPIO32，映射到KEYSCAN模块的ROW6。</p>
+<p>第1列按键接到了GPIO11，映射到KEYSCAN模块的COL11。</p>
+<p>以此类推4行4列的键盘阵列。</p>
+<p>注意：KEYSCAN的ROW和COL不是随意映射到GPIO，映射关系参考管脚管理（PINCTRL）说明文档。</p>
 </div>
-<div id="配置上拉下拉" class="section level3 hasAnchor">
-<h3><span class="header-section-number">12.2.2</span> 配置上拉、下拉<a href="ch-pinctrl.html#配置上拉下拉" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>IO 管脚的上拉、下拉模式通过 <code>PINCTRL_Pull</code> 配置：</p>
-<div class="sourceCode" id="cb125"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb125-1"><a href="ch-pinctrl.html#cb125-1"></a><span class="dt">void</span> PINCTRL_Pull(</span>
-<span id="cb125-2"><a href="ch-pinctrl.html#cb125-2"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> io_pin_index,     <span class="co">// IO 管脚序号</span></span>
-<span id="cb125-3"><a href="ch-pinctrl.html#cb125-3"></a>  <span class="dt">const</span> pinctrl_pull_mode_t mode  <span class="co">// 模式</span></span>
-<span id="cb125-4"><a href="ch-pinctrl.html#cb125-4"></a>  );</span></code></pre></div>
-<p>表 <a href="ch-pinctrl.html#tab:ch-pinctrl-pull-default">12.4</a> 列出了各管脚默认的上下拉配置。</p>
-<table>
-<caption><span id="tab:ch-pinctrl-pull-default">表 12.4: </span> 管脚上下拉默认配置</caption>
-<thead>
-<tr class="header">
-<th align="left">管脚</th>
-<th align="left">默认配置</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">1</td>
-<td align="left">上拉</td>
-</tr>
-<tr class="even">
-<td align="left">2</td>
-<td align="left">上拉</td>
-</tr>
-<tr class="odd">
-<td align="left">3</td>
-<td align="left">上拉</td>
-</tr>
-<tr class="even">
-<td align="left">4</td>
-<td align="left">上拉</td>
-</tr>
-<tr class="odd">
-<td align="left">15</td>
-<td align="left">下拉</td>
-</tr>
-<tr class="even">
-<td align="left">16</td>
-<td align="left">下拉</td>
-</tr>
-<tr class="odd">
-<td align="left">17</td>
-<td align="left">下拉</td>
-</tr>
-<tr class="even">
-<td align="left">其它</td>
-<td align="left">禁用上下拉</td>
-</tr>
-</tbody>
-</table>
+<div id="keyscan模块初始化" class="section level3 hasAnchor">
+<h3><span class="header-section-number">10.2.2</span> KEYSCAN模块初始化<a href="ch-keyscan.html#keyscan模块初始化" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb114"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb114-1"><a href="ch-keyscan.html#cb114-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> {</span>
+<span id="cb114-2"><a href="ch-keyscan.html#cb114-2"></a>    KEYSCAN_InColList *col;</span>
+<span id="cb114-3"><a href="ch-keyscan.html#cb114-3"></a>    <span class="dt">int</span> col_num;</span>
+<span id="cb114-4"><a href="ch-keyscan.html#cb114-4"></a></span>
+<span id="cb114-5"><a href="ch-keyscan.html#cb114-5"></a>    KEYSCAN_OutRowList *row;</span>
+<span id="cb114-6"><a href="ch-keyscan.html#cb114-6"></a>    <span class="dt">int</span> row_num;</span>
+<span id="cb114-7"><a href="ch-keyscan.html#cb114-7"></a></span>
+<span id="cb114-8"><a href="ch-keyscan.html#cb114-8"></a>    KEYSCAN_Ctx *ctx;</span>
+<span id="cb114-9"><a href="ch-keyscan.html#cb114-9"></a>    <span class="dt">uint8_t</span> fifo_num_trig_int;</span>
+<span id="cb114-10"><a href="ch-keyscan.html#cb114-10"></a>    <span class="dt">uint8_t</span> dma_num_trig_int;</span>
+<span id="cb114-11"><a href="ch-keyscan.html#cb114-11"></a>    <span class="dt">uint8_t</span> dma_en;</span>
+<span id="cb114-12"><a href="ch-keyscan.html#cb114-12"></a>    <span class="dt">uint8_t</span> int_trig_en;</span>
+<span id="cb114-13"><a href="ch-keyscan.html#cb114-13"></a>    <span class="dt">uint16_t</span> release_time;</span>
+<span id="cb114-14"><a href="ch-keyscan.html#cb114-14"></a>    <span class="dt">uint16_t</span> scan_interval;</span>
+<span id="cb114-15"><a href="ch-keyscan.html#cb114-15"></a>    <span class="dt">uint8_t</span> debounce_counter;</span>
+<span id="cb114-16"><a href="ch-keyscan.html#cb114-16"></a>} KEYSCAN_SetStateStruct;</span></code></pre></div>
+<div class="sourceCode" id="cb115"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb115-1"><a href="ch-keyscan.html#cb115-1"></a><span class="co">/**</span></span>
+<span id="cb115-2"><a href="ch-keyscan.html#cb115-2"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> Initialize keyscan module</span></span>
+<span id="cb115-3"><a href="ch-keyscan.html#cb115-3"></a><span class="co"> *</span></span>
+<span id="cb115-4"><a href="ch-keyscan.html#cb115-4"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">keyscan_set</span><span class="co">       Initial parameter struct</span></span>
+<span id="cb115-5"><a href="ch-keyscan.html#cb115-5"></a><span class="co"> */</span></span>
+<span id="cb115-6"><a href="ch-keyscan.html#cb115-6"></a><span class="dt">void</span> KEYSCAN_Initialize(KEYSCAN_SetStateStruct* keyscan_set);</span></code></pre></div>
 </div>
-<div id="配置驱动能力" class="section level3 hasAnchor">
-<h3><span class="header-section-number">12.2.3</span> 配置驱动能力<a href="ch-pinctrl.html#配置驱动能力" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>通过 <code>PINCTRL_SetDriveStrength</code> 配置 IO 管脚的驱动能力：</p>
-<div class="sourceCode" id="cb126"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb126-1"><a href="ch-pinctrl.html#cb126-1"></a><span class="dt">void</span> PINCTRL_SetDriveStrength(</span>
-<span id="cb126-2"><a href="ch-pinctrl.html#cb126-2"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> io_pin_index,</span>
-<span id="cb126-3"><a href="ch-pinctrl.html#cb126-3"></a>  <span class="dt">const</span> pinctrl_drive_strength_t strength);</span></code></pre></div>
-<p>默认驱动能力共分 4 档，分别为 <span class="math inline">\(2mA\)</span>、<span class="math inline">\(4mA\)</span>、<span class="math inline">\(8mA\)</span>、<span class="math inline">\(12mA\)</span>。除了 IO1 驱动能力默认为 <span class="math inline">\(12mA\)</span> 之外，
-其它管脚驱动能力默认 <span class="math inline">\(8mA\)</span>。</p>
+<div id="获取扫描到的按键" class="section level3 hasAnchor">
+<h3><span class="header-section-number">10.2.3</span> 获取扫描到的按键<a href="ch-keyscan.html#获取扫描到的按键" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>KEYSCAN模块使能扫描后会按照行和列的配置开始扫描。模块有FIFO缓存扫描数据。每次扫描循环结束，FIFO中压入1个0x400标志完成一次扫描。</p>
+<p>可以配置FIFO中数据个数触发中断或者DMA触发中断：</p>
+<div class="sourceCode" id="cb116"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb116-1"><a href="ch-keyscan.html#cb116-1"></a><span class="dt">void</span> KEYSCAN_SetFifoNumTrigInt(<span class="dt">uint32_t</span> trig_num);</span>
+<span id="cb116-2"><a href="ch-keyscan.html#cb116-2"></a><span class="dt">void</span> KEYSCAN_SetDmaNumTrigInt(<span class="dt">uint32_t</span> trig_num);</span></code></pre></div>
+<p>获取FIFO是否为空的状态和数据：</p>
+<div class="sourceCode" id="cb117"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb117-1"><a href="ch-keyscan.html#cb117-1"></a><span class="co">/**</span></span>
+<span id="cb117-2"><a href="ch-keyscan.html#cb117-2"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> Check keyscan FIFO empty or not</span></span>
+<span id="cb117-3"><a href="ch-keyscan.html#cb117-3"></a><span class="co"> *</span></span>
+<span id="cb117-4"><a href="ch-keyscan.html#cb117-4"></a><span class="co"> * </span><span class="an">@return</span><span class="co"> 0: FIFO have data; 1: empty</span></span>
+<span id="cb117-5"><a href="ch-keyscan.html#cb117-5"></a><span class="co"> */</span></span>
+<span id="cb117-6"><a href="ch-keyscan.html#cb117-6"></a><span class="dt">uint8_t</span> KEYSCAN_GetIntStateFifoEmptyRaw(<span class="dt">void</span>);</span>
+<span id="cb117-7"><a href="ch-keyscan.html#cb117-7"></a></span>
+<span id="cb117-8"><a href="ch-keyscan.html#cb117-8"></a><span class="co">/**</span></span>
+<span id="cb117-9"><a href="ch-keyscan.html#cb117-9"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> GET keyscan FIFO data</span></span>
+<span id="cb117-10"><a href="ch-keyscan.html#cb117-10"></a><span class="co"> *</span></span>
+<span id="cb117-11"><a href="ch-keyscan.html#cb117-11"></a><span class="co"> * </span><span class="an">@return</span><span class="co"> 0~4 bits: col; 5~9 bits: row; 10 bit: scan cycle end flag</span></span>
+<span id="cb117-12"><a href="ch-keyscan.html#cb117-12"></a><span class="co"> */</span></span>
+<span id="cb117-13"><a href="ch-keyscan.html#cb117-13"></a><span class="dt">uint16_t</span> KEYSCAN_GetKeyData(<span class="dt">void</span>);</span></code></pre></div>
+<p>按键FIFO原始数据的0~4位是按下按键所在的KEYSCAN模块中的col，5~9位是row，注意这个值并不是键盘矩阵中的行和列，可以用下面接口将原始数据解析为键盘矩阵中的行和列：</p>
+<div class="sourceCode" id="cb118"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb118-1"><a href="ch-keyscan.html#cb118-1"></a><span class="co">/**</span></span>
+<span id="cb118-2"><a href="ch-keyscan.html#cb118-2"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> Transfer keyscan FIFO raw data to keyboard array row and col</span></span>
+<span id="cb118-3"><a href="ch-keyscan.html#cb118-3"></a><span class="co"> *</span></span>
+<span id="cb118-4"><a href="ch-keyscan.html#cb118-4"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">keyscan_set</span><span class="co">       Initial parameter struct</span></span>
+<span id="cb118-5"><a href="ch-keyscan.html#cb118-5"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">key_data</span><span class="co">          keyscan FIFO raw data</span></span>
+<span id="cb118-6"><a href="ch-keyscan.html#cb118-6"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">row</span><span class="co">               pressed key&#39;s row in keyboard array</span></span>
+<span id="cb118-7"><a href="ch-keyscan.html#cb118-7"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">col</span><span class="co">               pressed key&#39;s col in keyboard array</span></span>
+<span id="cb118-8"><a href="ch-keyscan.html#cb118-8"></a><span class="co"> * </span><span class="an">@return</span><span class="co">                      0: scan cycle end data;</span></span>
+<span id="cb118-9"><a href="ch-keyscan.html#cb118-9"></a><span class="co"> *        1: find key pressed, *row and *col are key position in keyboard array</span></span>
+<span id="cb118-10"><a href="ch-keyscan.html#cb118-10"></a><span class="co"> */</span></span>
+<span id="cb118-11"><a href="ch-keyscan.html#cb118-11"></a><span class="dt">uint8_t</span> KEYSCAN_KeyDataToRowColIdx(KEYSCAN_SetStateStruct* keyscan_set, <span class="dt">uint32_t</span> key_data, <span class="dt">uint8_t</span> *row, <span class="dt">uint8_t</span> *col);</span></code></pre></div>
 </div>
-<div id="配置天线切换控制管脚" class="section level3 hasAnchor">
-<h3><span class="header-section-number">12.2.4</span> 配置天线切换控制管脚<a href="ch-pinctrl.html#配置天线切换控制管脚" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>支持最多 8 个管脚用于天线切换控制，相应地，天线切换模板（switching pattern）内每个数字包含 8 个比特，
-取值范围为 <span class="math inline">\(0..255\)</span>。这 8 个比特可依次通过 <code>IO_SOURCE_ANT_SW0</code>、……、<code>IO_SOURCE_ANT_SW7</code> 选择。
-例如，查表 <a href="ch-pinctrl.html#tab:ch-pinctrl-mapping">12.2</a> 可知管脚 0 能够映射为 ANT_SW0，即比特 0。
-通过下面这行代码就可将管脚 0 映射为 ANT_SW0：</p>
-<div class="sourceCode" id="cb127"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb127-1"><a href="ch-pinctrl.html#cb127-1"></a>PINCTRL_SetPadMux(<span class="dv">0</span>, IO_SOURCE_ANT_SW0);</span></code></pre></div>
-<p>通过函数 <code>PINCTRL_EnableAntSelPins</code> 可批量配置用于天线切换控制的管脚：</p>
-<div class="sourceCode" id="cb128"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb128-1"><a href="ch-pinctrl.html#cb128-1"></a><span class="dt">int</span> PINCTRL_EnableAntSelPins(</span>
-<span id="cb128-2"><a href="ch-pinctrl.html#cb128-2"></a>  <span class="dt">int</span> count,                <span class="co">// 数目</span></span>
-<span id="cb128-3"><a href="ch-pinctrl.html#cb128-3"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> *io_pins);  <span class="co">// 管脚数组</span></span></code></pre></div>
-<p>管脚数组 <code>io_pins</code> 里的第 n 个元素代表第 n 个比特所要映射的管脚。如果不需要为某个比特配置管脚，则在 <code>io_pins</code>
-的对应位置填入 <code>IO_NOT_A_PIN</code>。比如，只选用第 0、第 2 等两个比特用作控制，分别映射到管脚 0 和 5：</p>
-<div class="sourceCode" id="cb129"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb129-1"><a href="ch-pinctrl.html#cb129-1"></a><span class="dt">const</span> <span class="dt">uint8_t</span> io_pins[] = {<span class="dv">0</span>, IO_NOT_A_PIN, <span class="dv">5</span>};</span>
-<span id="cb129-2"><a href="ch-pinctrl.html#cb129-2"></a>PINCTRL_EnableAntSelPins(<span class="kw">sizeof</span>(io_pins), io_pins);</span></code></pre></div>
 </div>
-<div id="pinctrl-config-analog" class="section level3 hasAnchor">
-<h3><span class="header-section-number">12.2.5</span> 配置模拟模式<a href="ch-pinctrl.html#pinctrl-config-analog" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>通过以下 3 步可将一个管脚配置为模拟模式：</p>
-<ol style="list-style-type: decimal">
-<li>配置为 GPIO 模式；</li>
-<li>禁用上下拉；</li>
-<li>将 GPIO 配置为高阻态。</li>
-</ol>
-<p>函数 <code>PINCTRL_EnableAnalog</code> 封装了以上步骤：</p>
-<div class="sourceCode" id="cb130"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb130-1"><a href="ch-pinctrl.html#cb130-1"></a><span class="dt">void</span> PINCTRL_EnableAnalog(<span class="dt">const</span> <span class="dt">uint8_t</span> io_index);</span></code></pre></div>
-<p>模拟模式适用于以下几种外设。</p>
-<ul>
-<li><p>USB</p>
-<p>函数 <code>PINCTRL_SelUSB()</code> 内部封装了 <code>PINCTRL_EnableAnalog</code>，开发者不需要再为
-USB 管脚调用该函数配置模拟模式。</p></li>
-<li><p>ADC</p>
-<p>开发者需要调用该函数使能某管脚的 ADC 输入功能。支持 ADC 输入功能的管脚如表 <a href="ch-pinctrl.html#tab:ch-pinctrl-adc">12.5</a> 所示。</p>
-<table>
-<caption><span id="tab:ch-pinctrl-adc">表 12.5: </span> 支持 ADC 输入的管脚</caption>
-<thead>
-<tr class="header">
-<th align="left">管脚</th>
-<th align="left">单端模式</th>
-<th align="left">差分模式</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">7</td>
-<td align="left">AIN 0</td>
-<td align="left">AIN 0 P</td>
-</tr>
-<tr class="even">
-<td align="left">8</td>
-<td align="left">AIN 1</td>
-<td align="left">AIN 0 N</td>
-</tr>
-<tr class="odd">
-<td align="left">9</td>
-<td align="left">AIN 2</td>
-<td align="left">AIN 1 P</td>
-</tr>
-<tr class="even">
-<td align="left">10</td>
-<td align="left">AIN 3</td>
-<td align="left">AIN 1 N</td>
-</tr>
-<tr class="odd">
-<td align="left">11</td>
-<td align="left">AIN 4</td>
-<td align="left">AIN 2 P</td>
-</tr>
-<tr class="even">
-<td align="left">12</td>
-<td align="left">AIN 5</td>
-<td align="left">AIN 2 N</td>
-</tr>
-<tr class="odd">
-<td align="left">13</td>
-<td align="left">AIN 6</td>
-<td align="left">AIN 3 P</td>
-</tr>
-<tr class="even">
-<td align="left">14</td>
-<td align="left">AIN 7</td>
-<td align="left">AIN 3 N</td>
-</tr>
-</tbody>
-</table></li>
-</ul>
+<div id="应用举例" class="section level2 hasAnchor">
+<h2><span class="header-section-number">10.3</span> 应用举例：<a href="ch-keyscan.html#应用举例" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="初始化keyscan模块" class="section level3 hasAnchor">
+<h3><span class="header-section-number">10.3.1</span> 初始化KEYSCAN模块<a href="ch-keyscan.html#初始化keyscan模块" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb119"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb119-1"><a href="ch-keyscan.html#cb119-1"></a>KEYSCAN_OutRowList key_out_row[] = {</span>
+<span id="cb119-2"><a href="ch-keyscan.html#cb119-2"></a>    {KEY_OUT_ROW_6, GIO_GPIO_32},</span>
+<span id="cb119-3"><a href="ch-keyscan.html#cb119-3"></a>    {KEY_OUT_ROW_7, GIO_GPIO_33},</span>
+<span id="cb119-4"><a href="ch-keyscan.html#cb119-4"></a>    {KEY_OUT_ROW_5, GIO_GPIO_31},</span>
+<span id="cb119-5"><a href="ch-keyscan.html#cb119-5"></a>    {KEY_OUT_ROW_0, GIO_GPIO_23},</span>
+<span id="cb119-6"><a href="ch-keyscan.html#cb119-6"></a>};</span>
+<span id="cb119-7"><a href="ch-keyscan.html#cb119-7"></a><span class="pp">#define key_out_row_num (sizeof(key_out_row) / sizeof(key_out_row[0]))</span></span>
+<span id="cb119-8"><a href="ch-keyscan.html#cb119-8"></a></span>
+<span id="cb119-9"><a href="ch-keyscan.html#cb119-9"></a>KEYSCAN_InColList key_in_col[] = {</span>
+<span id="cb119-10"><a href="ch-keyscan.html#cb119-10"></a>    {KEY_IN_COL_11, GIO_GPIO_11},</span>
+<span id="cb119-11"><a href="ch-keyscan.html#cb119-11"></a>    {KEY_IN_COL_12, GIO_GPIO_12},</span>
+<span id="cb119-12"><a href="ch-keyscan.html#cb119-12"></a>    {KEY_IN_COL_13, GIO_GPIO_13},</span>
+<span id="cb119-13"><a href="ch-keyscan.html#cb119-13"></a>    {KEY_IN_COL_14, GIO_GPIO_14},</span>
+<span id="cb119-14"><a href="ch-keyscan.html#cb119-14"></a>};</span>
+<span id="cb119-15"><a href="ch-keyscan.html#cb119-15"></a><span class="pp">#define key_in_col_num (sizeof(key_in_col) / sizeof(key_in_col[0]))</span></span>
+<span id="cb119-16"><a href="ch-keyscan.html#cb119-16"></a></span>
+<span id="cb119-17"><a href="ch-keyscan.html#cb119-17"></a><span class="dt">static</span> KEYSCAN_SetStateStruct keyscan_set = {<span class="dv">0</span>};</span>
+<span id="cb119-18"><a href="ch-keyscan.html#cb119-18"></a><span class="dt">static</span> KEYSCAN_Ctx key_ctx = {<span class="dv">0</span>};</span>
+<span id="cb119-19"><a href="ch-keyscan.html#cb119-19"></a><span class="dt">static</span> <span class="dt">uint32_t</span> keyscan_cb_isr(<span class="dt">void</span> *user_data);</span>
+<span id="cb119-20"><a href="ch-keyscan.html#cb119-20"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_keyscan()</span>
+<span id="cb119-21"><a href="ch-keyscan.html#cb119-21"></a>{</span>
+<span id="cb119-22"><a href="ch-keyscan.html#cb119-22"></a></span>
+<span id="cb119-23"><a href="ch-keyscan.html#cb119-23"></a>    SYSCTRL_ClearClkGateMulti(<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_KeyScan);</span>
+<span id="cb119-24"><a href="ch-keyscan.html#cb119-24"></a>    SYSCTRL_ClearClkGateMulti(<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_SysCtrl);</span>
+<span id="cb119-25"><a href="ch-keyscan.html#cb119-25"></a>    SYSCTRL_ClearClkGateMulti(<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_PinCtrl);</span>
+<span id="cb119-26"><a href="ch-keyscan.html#cb119-26"></a></span>
+<span id="cb119-27"><a href="ch-keyscan.html#cb119-27"></a>    keyscan_set.col = key_in_col;</span>
+<span id="cb119-28"><a href="ch-keyscan.html#cb119-28"></a>    keyscan_set.col_num = key_in_col_num;</span>
+<span id="cb119-29"><a href="ch-keyscan.html#cb119-29"></a>    keyscan_set.row = key_out_row;</span>
+<span id="cb119-30"><a href="ch-keyscan.html#cb119-30"></a>    keyscan_set.row_num = key_out_row_num;</span>
+<span id="cb119-31"><a href="ch-keyscan.html#cb119-31"></a>    keyscan_set.ctx = &amp;key_ctx;</span>
+<span id="cb119-32"><a href="ch-keyscan.html#cb119-32"></a>    keyscan_set.fifo_num_trig_int = <span class="dv">1</span>;</span>
+<span id="cb119-33"><a href="ch-keyscan.html#cb119-33"></a>    keyscan_set.release_time = <span class="dv">110</span>;</span>
+<span id="cb119-34"><a href="ch-keyscan.html#cb119-34"></a>    keyscan_set.scan_interval = <span class="bn">0xFFFF</span>;</span>
+<span id="cb119-35"><a href="ch-keyscan.html#cb119-35"></a>    keyscan_set.debounce_counter = <span class="dv">50</span>;</span>
+<span id="cb119-36"><a href="ch-keyscan.html#cb119-36"></a>    keyscan_set.dma_num_trig_int = <span class="bn">0x10</span>;</span>
+<span id="cb119-37"><a href="ch-keyscan.html#cb119-37"></a>    keyscan_set.dma_en = <span class="dv">0</span>;</span>
+<span id="cb119-38"><a href="ch-keyscan.html#cb119-38"></a>    keyscan_set.int_trig_en = <span class="dv">1</span>;</span>
+<span id="cb119-39"><a href="ch-keyscan.html#cb119-39"></a>    KEYSCAN_Initialize(&amp;keyscan_set);</span>
+<span id="cb119-40"><a href="ch-keyscan.html#cb119-40"></a></span>
+<span id="cb119-41"><a href="ch-keyscan.html#cb119-41"></a>    platform_set_irq_callback(PLATFORM_CB_IRQ_KEYSCAN, keyscan_cb_isr, <span class="dv">0</span>);</span>
+<span id="cb119-42"><a href="ch-keyscan.html#cb119-42"></a></span>
+<span id="cb119-43"><a href="ch-keyscan.html#cb119-43"></a>    <span class="cf">return</span>;</span>
+<span id="cb119-44"><a href="ch-keyscan.html#cb119-44"></a>}</span></code></pre></div>
+</div>
+<div id="中断数据处理" class="section level3 hasAnchor">
+<h3><span class="header-section-number">10.3.2</span> 中断数据处理<a href="ch-keyscan.html#中断数据处理" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb120"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb120-1"><a href="ch-keyscan.html#cb120-1"></a><span class="dt">static</span> <span class="dt">uint8_t</span> key_state_buf[<span class="dv">2</span>][key_out_row_num][key_in_col_num] = {<span class="dv">0</span>};</span>
+<span id="cb120-2"><a href="ch-keyscan.html#cb120-2"></a><span class="dt">static</span> <span class="dt">uint8_t</span> key_state_last_index = <span class="dv">0</span>;</span>
+<span id="cb120-3"><a href="ch-keyscan.html#cb120-3"></a><span class="dt">static</span> <span class="dt">uint8_t</span> key_state_now_index = <span class="dv">1</span>;</span>
+<span id="cb120-4"><a href="ch-keyscan.html#cb120-4"></a><span class="dt">static</span> <span class="dt">void</span> printf_key_state(<span class="dt">void</span>)</span>
+<span id="cb120-5"><a href="ch-keyscan.html#cb120-5"></a>{</span>
+<span id="cb120-6"><a href="ch-keyscan.html#cb120-6"></a>    <span class="dt">int</span> row, col;</span>
+<span id="cb120-7"><a href="ch-keyscan.html#cb120-7"></a>    <span class="cf">for</span> (row = <span class="dv">0</span>; row &lt; key_out_row_num; row++) {</span>
+<span id="cb120-8"><a href="ch-keyscan.html#cb120-8"></a>        <span class="cf">for</span> (col = <span class="dv">0</span>; col &lt; key_in_col_num; col++) {</span>
+<span id="cb120-9"><a href="ch-keyscan.html#cb120-9"></a>            <span class="cf">if</span> (key_state_buf[key_state_now_index][row][col] !=</span>
+<span id="cb120-10"><a href="ch-keyscan.html#cb120-10"></a>                key_state_buf[key_state_last_index][row][col]) {</span>
+<span id="cb120-11"><a href="ch-keyscan.html#cb120-11"></a>                printf(<span class="st">&quot;row%u col%u %s</span><span class="sc">\r\n</span><span class="st">&quot;</span>,</span>
+<span id="cb120-12"><a href="ch-keyscan.html#cb120-12"></a>                row + <span class="dv">1</span>, col + <span class="dv">1</span>,</span>
+<span id="cb120-13"><a href="ch-keyscan.html#cb120-13"></a>                key_state_buf[key_state_now_index][row][col] == <span class="dv">0</span> ?</span>
+<span id="cb120-14"><a href="ch-keyscan.html#cb120-14"></a>                <span class="st">&quot;release&quot;</span> : <span class="st">&quot;press&quot;</span>);</span>
+<span id="cb120-15"><a href="ch-keyscan.html#cb120-15"></a>            }</span>
+<span id="cb120-16"><a href="ch-keyscan.html#cb120-16"></a>        }</span>
+<span id="cb120-17"><a href="ch-keyscan.html#cb120-17"></a>    }</span>
+<span id="cb120-18"><a href="ch-keyscan.html#cb120-18"></a></span>
+<span id="cb120-19"><a href="ch-keyscan.html#cb120-19"></a>    <span class="cf">if</span> (key_state_now_index == <span class="dv">0</span>) {</span>
+<span id="cb120-20"><a href="ch-keyscan.html#cb120-20"></a>        key_state_now_index = <span class="dv">1</span>;</span>
+<span id="cb120-21"><a href="ch-keyscan.html#cb120-21"></a>        key_state_last_index = <span class="dv">0</span>;</span>
+<span id="cb120-22"><a href="ch-keyscan.html#cb120-22"></a>    } <span class="cf">else</span> {</span>
+<span id="cb120-23"><a href="ch-keyscan.html#cb120-23"></a>        key_state_now_index = <span class="dv">0</span>;</span>
+<span id="cb120-24"><a href="ch-keyscan.html#cb120-24"></a>        key_state_last_index = <span class="dv">1</span>;</span>
+<span id="cb120-25"><a href="ch-keyscan.html#cb120-25"></a>    }</span>
+<span id="cb120-26"><a href="ch-keyscan.html#cb120-26"></a></span>
+<span id="cb120-27"><a href="ch-keyscan.html#cb120-27"></a>    <span class="cf">for</span> (row = <span class="dv">0</span>; row &lt; key_out_row_num; row++) {</span>
+<span id="cb120-28"><a href="ch-keyscan.html#cb120-28"></a>        <span class="cf">for</span> (col = <span class="dv">0</span>; col &lt; key_in_col_num; col++) {</span>
+<span id="cb120-29"><a href="ch-keyscan.html#cb120-29"></a>            key_state_buf[key_state_now_index][row][col] = <span class="dv">0</span>;</span>
+<span id="cb120-30"><a href="ch-keyscan.html#cb120-30"></a>        }</span>
+<span id="cb120-31"><a href="ch-keyscan.html#cb120-31"></a>    }</span>
+<span id="cb120-32"><a href="ch-keyscan.html#cb120-32"></a></span>
+<span id="cb120-33"><a href="ch-keyscan.html#cb120-33"></a>    <span class="cf">return</span>;</span>
+<span id="cb120-34"><a href="ch-keyscan.html#cb120-34"></a>}</span>
+<span id="cb120-35"><a href="ch-keyscan.html#cb120-35"></a><span class="dt">static</span> <span class="dt">void</span> key_state_clear(<span class="dt">void</span>)</span>
+<span id="cb120-36"><a href="ch-keyscan.html#cb120-36"></a>{</span>
+<span id="cb120-37"><a href="ch-keyscan.html#cb120-37"></a>    <span class="dt">int</span> row, col;</span>
+<span id="cb120-38"><a href="ch-keyscan.html#cb120-38"></a>    <span class="cf">for</span> (row = <span class="dv">0</span>; row &lt; key_out_row_num; row++) {</span>
+<span id="cb120-39"><a href="ch-keyscan.html#cb120-39"></a>        <span class="cf">for</span> (col = <span class="dv">0</span>; col &lt; key_in_col_num; col++) {</span>
+<span id="cb120-40"><a href="ch-keyscan.html#cb120-40"></a>            key_state_buf[<span class="dv">0</span>][row][col] = <span class="dv">0</span>;</span>
+<span id="cb120-41"><a href="ch-keyscan.html#cb120-41"></a>            key_state_buf[<span class="dv">1</span>][row][col] = <span class="dv">0</span>;</span>
+<span id="cb120-42"><a href="ch-keyscan.html#cb120-42"></a>        }</span>
+<span id="cb120-43"><a href="ch-keyscan.html#cb120-43"></a>    }</span>
+<span id="cb120-44"><a href="ch-keyscan.html#cb120-44"></a>}</span>
+<span id="cb120-45"><a href="ch-keyscan.html#cb120-45"></a><span class="dt">static</span> <span class="dt">uint32_t</span> keyscan_cb_isr(<span class="dt">void</span> *user_data)</span>
+<span id="cb120-46"><a href="ch-keyscan.html#cb120-46"></a>{</span>
+<span id="cb120-47"><a href="ch-keyscan.html#cb120-47"></a>    <span class="dt">uint32_t</span> key_data;</span>
+<span id="cb120-48"><a href="ch-keyscan.html#cb120-48"></a>    <span class="dt">uint8_t</span> key_scan_row;</span>
+<span id="cb120-49"><a href="ch-keyscan.html#cb120-49"></a>    <span class="dt">uint8_t</span> key_scan_col;</span>
+<span id="cb120-50"><a href="ch-keyscan.html#cb120-50"></a>    <span class="dt">uint8_t</span> row = <span class="dv">0</span>;</span>
+<span id="cb120-51"><a href="ch-keyscan.html#cb120-51"></a>    <span class="dt">uint8_t</span> col = <span class="dv">0</span>;</span>
+<span id="cb120-52"><a href="ch-keyscan.html#cb120-52"></a>    <span class="dt">static</span> <span class="dt">uint8_t</span> have_key_pressed = <span class="dv">0</span>;</span>
+<span id="cb120-53"><a href="ch-keyscan.html#cb120-53"></a>    <span class="dt">static</span> <span class="dt">uint8_t</span> no_key_pressed_cnt = <span class="dv">0</span>;</span>
+<span id="cb120-54"><a href="ch-keyscan.html#cb120-54"></a></span>
+<span id="cb120-55"><a href="ch-keyscan.html#cb120-55"></a>    <span class="cf">while</span> (KEYSCAN_GetIntStateFifoEmptyRaw() == <span class="dv">0</span>) {</span>
+<span id="cb120-56"><a href="ch-keyscan.html#cb120-56"></a>        key_data = KEYSCAN_GetKeyData();</span>
+<span id="cb120-57"><a href="ch-keyscan.html#cb120-57"></a>        <span class="cf">if</span> (KEYSCAN_KeyDataToRowColIdx(&amp;keyscan_set, key_data, &amp;row, &amp;col)) {</span>
+<span id="cb120-58"><a href="ch-keyscan.html#cb120-58"></a>            key_state_buf[key_state_now_index][row - <span class="dv">1</span>][col - <span class="dv">1</span>] = <span class="dv">1</span>;</span>
+<span id="cb120-59"><a href="ch-keyscan.html#cb120-59"></a>            have_key_pressed = <span class="dv">1</span>;</span>
+<span id="cb120-60"><a href="ch-keyscan.html#cb120-60"></a>        } <span class="cf">else</span> {</span>
+<span id="cb120-61"><a href="ch-keyscan.html#cb120-61"></a>            <span class="cf">if</span> (have_key_pressed == <span class="dv">1</span>) {</span>
+<span id="cb120-62"><a href="ch-keyscan.html#cb120-62"></a>                have_key_pressed = <span class="dv">0</span>;</span>
+<span id="cb120-63"><a href="ch-keyscan.html#cb120-63"></a>                no_key_pressed_cnt = <span class="dv">0</span>;</span>
+<span id="cb120-64"><a href="ch-keyscan.html#cb120-64"></a>            } <span class="cf">else</span> {</span>
+<span id="cb120-65"><a href="ch-keyscan.html#cb120-65"></a>            }</span>
+<span id="cb120-66"><a href="ch-keyscan.html#cb120-66"></a></span>
+<span id="cb120-67"><a href="ch-keyscan.html#cb120-67"></a>            <span class="cf">switch</span> (no_key_pressed_cnt) {</span>
+<span id="cb120-68"><a href="ch-keyscan.html#cb120-68"></a>            <span class="cf">case</span> <span class="dv">0</span>: <span class="co">// have key pressed</span></span>
+<span id="cb120-69"><a href="ch-keyscan.html#cb120-69"></a>                no_key_pressed_cnt++;</span>
+<span id="cb120-70"><a href="ch-keyscan.html#cb120-70"></a>                printf_key_state();</span>
+<span id="cb120-71"><a href="ch-keyscan.html#cb120-71"></a>                <span class="cf">break</span>;</span>
+<span id="cb120-72"><a href="ch-keyscan.html#cb120-72"></a>            <span class="cf">case</span> <span class="dv">1</span>: <span class="co">// all key released</span></span>
+<span id="cb120-73"><a href="ch-keyscan.html#cb120-73"></a>                no_key_pressed_cnt++;</span>
+<span id="cb120-74"><a href="ch-keyscan.html#cb120-74"></a>                printf_key_state();</span>
+<span id="cb120-75"><a href="ch-keyscan.html#cb120-75"></a>                key_state_clear();</span>
+<span id="cb120-76"><a href="ch-keyscan.html#cb120-76"></a>                <span class="cf">break</span>;</span>
+<span id="cb120-77"><a href="ch-keyscan.html#cb120-77"></a>            <span class="cf">case</span> <span class="dv">2</span>:</span>
+<span id="cb120-78"><a href="ch-keyscan.html#cb120-78"></a>                <span class="cf">break</span>;</span>
+<span id="cb120-79"><a href="ch-keyscan.html#cb120-79"></a>            <span class="cf">default</span>:</span>
+<span id="cb120-80"><a href="ch-keyscan.html#cb120-80"></a>                <span class="cf">break</span>;</span>
+<span id="cb120-81"><a href="ch-keyscan.html#cb120-81"></a>            }</span>
+<span id="cb120-82"><a href="ch-keyscan.html#cb120-82"></a>        }</span>
+<span id="cb120-83"><a href="ch-keyscan.html#cb120-83"></a>    }</span>
+<span id="cb120-84"><a href="ch-keyscan.html#cb120-84"></a>    <span class="cf">return</span> <span class="dv">0</span>;</span>
+<span id="cb120-85"><a href="ch-keyscan.html#cb120-85"></a>}</span></code></pre></div>
+</div>
+<div id="效果" class="section level3 hasAnchor">
+<h3><span class="header-section-number">10.3.3</span> 效果<a href="ch-keyscan.html#效果" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><img src="img/KeyScan/keyscanlog.JPG" /></p>
 
 </div>
 </div>
@@ -1182,8 +735,8 @@ USB 管脚调用该函数配置模拟模式。</p></li>
           </div>
         </div>
       </div>
-<a href="ch-PDM.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="pte简介.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="ir-红外.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ch-PDM.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

@@ -215,8 +215,18 @@
     </header>
     <div class="inner-md outer">
       <div class="post-content">
-        <p>SDK 新工具 Cube 是一个图形化的初始化代码生成器，可为各种芯片型号生成 C 代码。这是一个交互式工具，
-辅助开发者正确配置芯片。各种特性总结如下：</p>
+        <ul id="markdown-toc">
+  <li><a href="#关键特性" id="markdown-toc-关键特性">关键特性</a></li>
+  <li><a href="#使用场景-1-硬件工程师设计天线阵" id="markdown-toc-使用场景-1-硬件工程师设计天线阵">使用场景 1. 硬件工程师设计天线阵</a></li>
+  <li><a href="#使用场景-2-硬件工程师设计-led-指示灯" id="markdown-toc-使用场景-2-硬件工程师设计-led-指示灯">使用场景 2. 硬件工程师设计 LED 指示灯</a></li>
+  <li><a href="#使用场景-3-软件工程师实现-led-灯的-pwm-控制" id="markdown-toc-使用场景-3-软件工程师实现-led-灯的-pwm-控制">使用场景 3. 软件工程师实现 LED 灯的 PWM 控制</a></li>
+</ul>
+
+<p>SDK 新工具 Cube 是一个图形化的初始化代码生成器，可为各种芯片型号生成 C 代码。</p>
+
+<h2 id="关键特性">关键特性</h2>
+
+<p>这是一个交互式工具，辅助开发者正确配置芯片。各种特性总结如下：</p>
 
 <ul>
   <li>支持各种芯片型号</li>
@@ -244,19 +254,20 @@
     <ul>
       <li>所有的检查都是实时进行</li>
       <li>对于运行环境要求低</li>
-      <li>与其它基于 Eclipse 的工具相比，效率不可同日而语，</li>
+      <li>与其它基于 Eclipse 的工具相比，效率不可同日而语</li>
+    </ul>
+  </li>
+  <li>生成的代码更高效
+    <ul>
+      <li>对于某些外设直接输出“计算”后的代码</li>
+      <li>比调用驱动程序代码更短、速度更快</li>
     </ul>
   </li>
 </ul>
 
-<div class="note">
-<strong>注意：</strong>
-对 ING916xx 系列芯片的支持仍在开发中。
-</div>
-
 <p>在 Wizard 里右键单击一个项目，从快捷菜单中选择“Edit with Cube…”即可打开 Cube。
 Cube 生成的代码保存在项目里的 <code class="highlighter-rouge">/data/setup_soc.cgen</code> 文件内，Cube 本身的数据保存在
- <code class="highlighter-rouge">/data/cube.dat</code> 文件内。</p>
+ <code class="highlighter-rouge">/data/cube_SERIES.dat</code> 文件内，这里 <em>SERIES</em> 为芯片系列。</p>
 
 <p>要使用 Cube 生成的代码，只需 3 步：</p>
 
@@ -274,11 +285,56 @@ Cube 生成的代码保存在项目里的 <code class="highlighter-rouge">/data/
   </li>
 </ol>
 
-<p>这个工具对于硬件工程师也很有用。比如现在要用 ING91880C 设计一块天线阵，天线开关连哪个 IO 脚？
-打开 Cube，将型号选为 ING91880C，点击 Antenna，再点击菜单 Configure，弹出天线开关编辑窗口。
+<p>下面通过几个具体的场景介绍 Cube 的使用。</p>
+
+<h2 id="使用场景-1-硬件工程师设计天线阵">使用场景 1. 硬件工程师设计天线阵</h2>
+
+<p>比如现在要用 ING91880C 设计一块天线阵，天线开关连哪个 IO 脚？
+新建一个 ING9188xx 的工程，打开 Cube，将型号选为 ING91880C，点击 Antenna，再点击菜单 Configure，弹出天线开关编辑窗口。
 点击 Enable All，可以用做天线开发的 IO 脚一目了然：</p>
 
 <p><img src="../img/cube_ant_pins.png" alt="" /></p>
+
+<h2 id="使用场景-2-硬件工程师设计-led-指示灯">使用场景 2. 硬件工程师设计 LED 指示灯</h2>
+
+<p>比如现在要用 ING91680A 设计一个产品，其中用到 LED 指示灯，打算使用 PWM 控制闪烁。可以使用哪个 IO 脚？
+新建一个 ING9168xx 的工程，打开 Cube，将型号选为 ING91680A，点击 Antenna，再点击菜单 Configure，弹出 PWM 编辑窗口。
+马上就可以直观检查哪些管脚可用做 PWM 输出：</p>
+
+<p><img src="../img/cube_pwm_pins.png" alt="" /></p>
+
+<p>假设硬件工程师选定使用 IO 16 控制 LED 灯，通知软件工程师。</p>
+
+<h2 id="使用场景-3-软件工程师实现-led-灯的-pwm-控制">使用场景 3. 软件工程师实现 LED 灯的 PWM 控制</h2>
+
+<p>软件工程师继续使用 Cube 编辑 PWM。假设软件工程师要使 LED 的初始状态为 1 秒闪烁一次，占用比 50%。
+在 Easy 标签下，分别输入频率 1Hz，占空比 50%，—— 输入数据时回车生效。
+这时，从验证窗口内马上可以看到存在两处错误：PWM 的 PERA、HIGH 两个数据都超出范围了，
+它们最多支持 20 个比特，即最大为 0xfffff。</p>
+
+<p><img src="../img/cube_error_pwm.png" alt="" /></p>
+
+<p>由于 PWM 分频比例有限，如果降低 PWM 的工作频率，就能获得更低频的输出。切换到时钟树页面，我们发现 PWM 有两种时钟可选：
+一为从 Slow Clk 分频，一为使用 CLK 32k。可以直接使用 CLK 32k。</p>
+
+<p><img src="../img/cube_pwm_clock.png" alt="" /></p>
+
+<p>回到 PWM 编译窗口 Channel 0 的 Easy 标签，修改频率为其它值、回车，再修改回 1Hz，这时，验证窗口提示一切正常：</p>
+
+<p><img src="../img/cube_pwm_ok.png" alt="" /></p>
+
+<p>编译下载程序，连接必要的硬件，即可看到 LED 灯在按要求闪烁。</p>
+
+<p>打开 setup_soc.cgen 文件，可看到最末尾几行的内容为：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// dump PINCTRL registers</span>
+<span class="n">APB_PINCTRL</span><span class="o">-&gt;</span><span class="n">OUT_CTRL</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x00001522</span><span class="p">;</span> <span class="c1">// 0x00001547</span>
+</code></pre></div></div>
+
+<p>这是 Cube 对 <code class="highlighter-rouge">PINCTRL_SetPadMux(16, IO_SOURCE_PWM0_A)</code> 做了“计算”后得出的结果，
+显然比在芯片里执行 <code class="highlighter-rouge">PINCTRL_SetPadMux(16, IO_SOURCE_PWM0_A)</code> 效率更高。
+这对于 ING916XX 系列为重要。因为 PINCTRL 配置需要查一张<a href="https://github.com/ingchips/ING918XX_SDK_SOURCE/blob/07ffc140a28b86dfeda95cc9ea1f560e2b5adeae/src/FWlib/peripheral_pinctrl.c#L265">复杂的表格</a>，每次睡眠醒来都需要重新配置，
+所以使用 Cube 既可以减小程序体积，对于降低功耗也有一定好处。</p>
 
       </div><!-- .post-content -->
     </div><!-- .inner-md -->

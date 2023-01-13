@@ -315,11 +315,11 @@ Cube 生成的代码保存在项目里的 <code class="highlighter-rouge">/data/
 <p><img src="../img/cube_error_pwm.png" alt="" /></p>
 
 <p>由于 PWM 分频比例有限，如果降低 PWM 的工作频率，就能获得更低频的输出。切换到时钟树页面，我们发现 PWM 有两种时钟可选：
-一为从 Slow Clk 分频，一为使用 CLK 32k。可以直接使用 CLK 32k。</p>
+一为从 Slow Clk 分频，一为使用 CLK 32k。让我们直接使用 CLK 32k。</p>
 
 <p><img src="../img/cube_pwm_clock.png" alt="" /></p>
 
-<p>回到 PWM 编译窗口 Channel 0 的 Easy 标签，修改频率为其它值、回车，再修改回 1Hz，这时，验证窗口提示一切正常：</p>
+<p>回到 PWM 编辑窗口 Channel 0 的 Easy 标签，这时，验证窗口提示一切正常：</p>
 
 <p><img src="../img/cube_pwm_ok.png" alt="" /></p>
 
@@ -333,7 +333,7 @@ Cube 生成的代码保存在项目里的 <code class="highlighter-rouge">/data/
 
 <p>这是 Cube 对 <code class="highlighter-rouge">PINCTRL_SetPadMux(16, IO_SOURCE_PWM0_A)</code> 做了“计算”后得出的结果，
 显然比在芯片里执行 <code class="highlighter-rouge">PINCTRL_SetPadMux(16, IO_SOURCE_PWM0_A)</code> 效率更高。
-这对于 ING916XX 系列为重要。因为 PINCTRL 配置需要查一张<a href="https://github.com/ingchips/ING918XX_SDK_SOURCE/blob/07ffc140a28b86dfeda95cc9ea1f560e2b5adeae/src/FWlib/peripheral_pinctrl.c#L265">复杂的表格</a>，每次睡眠醒来都需要重新配置，
+这对于 ING916XX 系列为重要：因为 PINCTRL 配置需要查一张<a href="https://github.com/ingchips/ING918XX_SDK_SOURCE/blob/07ffc140a28b86dfeda95cc9ea1f560e2b5adeae/src/FWlib/peripheral_pinctrl.c#L265">复杂的表格</a>，每次睡眠醒来都需要重新配置，
 所以使用 Cube 既可以减小程序体积，对于降低功耗也有一定好处。</p>
 
       </div><!-- .post-content -->

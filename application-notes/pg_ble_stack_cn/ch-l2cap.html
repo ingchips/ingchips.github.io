@@ -228,6 +228,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="9.1" data-path="ch-l2cap.html"><a href="ch-l2cap.html#概览-5"><i class="fa fa-check"></i><b>9.1</b> 概览</a></li>
 <li class="chapter" data-level="9.2" data-path="ch-l2cap.html"><a href="ch-l2cap.html#使用说明-5"><i class="fa fa-check"></i><b>9.2</b> 使用说明</a><ul>
 <li class="chapter" data-level="9.2.1" data-path="ch-l2cap.html"><a href="ch-l2cap.html#从端请求更新连接参数"><i class="fa fa-check"></i><b>9.2.1</b> 从端请求更新连接参数</a></li>
+<li class="chapter" data-level="9.2.2" data-path="ch-l2cap.html"><a href="ch-l2cap.html#基于信用点的连接"><i class="fa fa-check"></i><b>9.2.2</b> 基于信用点的连接</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="10" data-path="ch-sm.html"><a href="ch-sm.html"><i class="fa fa-check"></i><b>10</b> 安全管理</a><ul>
@@ -284,10 +285,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="概览-5" class="section level2 hasAnchor">
 <h2><span class="header-section-number">9.1</span> 概览<a href="ch-l2cap.html#概览-5" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>BLE L2CAP 负责高层协议复用，分包、组包，以及 QoS 信息的传输。</p>
+<p>L2CAP 定义了基于信用点的连接。两个设备之间可以建立多个基于信用点的连接，不同连接用 SPSM<a href="#fn26" class="footnote-ref" id="fnref26"><sup>26</sup></a> 区分。
+SPSM 长度为 16 比特，<code>0x0001</code>~<code>0x007f</code> 为规范保留，<code>0x0080</code>~<code>0x00ff</code> 可自由使用：</p>
+<ul>
+<li>对于服务端，SPSM 可以取固定值或根据 GATT Profile 动态设置；</li>
+<li>对于客户端，应在每次建立连接后借助 GATT 发现服务端的 SPSM。</li>
+</ul>
+<p>所谓信用点，指的是接收方允许对方在该连接上发送的 K 帧数目。对方每发送一个 K 帧就消耗一个信用点，
+当信用点为 <span class="math inline">\(0\)</span> 时停止发送。接收方可以根据需要给对方补充信用点。
+每个传输单元称为一个 SDU。一个 SDU 可能被切分为多个 K 帧，所以发送一个 SDU
+可能会消耗多个信用点。</p>
 </div>
 <div id="使用说明-5" class="section level2 hasAnchor">
 <h2><span class="header-section-number">9.2</span> 使用说明<a href="ch-l2cap.html#使用说明-5" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>目前，只有一种情况可能用到 L2CAP API。</p>
 <div id="从端请求更新连接参数" class="section level3 hasAnchor">
 <h3><span class="header-section-number">9.2.1</span> 从端请求更新连接参数<a href="ch-l2cap.html#从端请求更新连接参数" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>从角色调用 <code>l2cap_request_connection_parameter_update</code> 可向主端请求更新连接参数：</p>
@@ -303,9 +313,96 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb67-10"><a href="ch-l2cap.html#cb67-10"></a>  <span class="co">// 请求的超时时间（单位 10ms）</span></span>
 <span id="cb67-11"><a href="ch-l2cap.html#cb67-11"></a>  <span class="dt">uint16_t</span> supervision_timeout);</span></code></pre></div>
 <p>事件 <code>HCI_SUBEVENT_LE_CONNECTION_UPDATE_COMPLETE</code> 标志着参数更新完成。</p>
+</div>
+<div id="基于信用点的连接" class="section level3 hasAnchor">
+<h3><span class="header-section-number">9.2.2</span> 基于信用点的连接<a href="ch-l2cap.html#基于信用点的连接" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ol style="list-style-type: decimal">
+<li><p>注册 SPSM 及回调</p>
+<p>调用 <code>l2cap_register_service</code> 注册 SPSM 及对应的回调函数：</p>
+<div class="sourceCode" id="cb68"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb68-1"><a href="ch-l2cap.html#cb68-1"></a><span class="dt">uint8_t</span> l2cap_register_service(</span>
+<span id="cb68-2"><a href="ch-l2cap.html#cb68-2"></a>  btstack_packet_handler_t packet_handler,</span>
+<span id="cb68-3"><a href="ch-l2cap.html#cb68-3"></a>  <span class="dt">uint16_t</span> psm,  <span class="co">// SPSM</span></span>
+<span id="cb68-4"><a href="ch-l2cap.html#cb68-4"></a>  <span class="dt">uint16_t</span> mtu,  <span class="co">// MTU 可填 0</span></span>
+<span id="cb68-5"><a href="ch-l2cap.html#cb68-5"></a>  gap_security_level_t security_level</span>
+<span id="cb68-6"><a href="ch-l2cap.html#cb68-6"></a>  );</span></code></pre></div>
+<p>这里的 <code>MTU</code> 最小为 23，可直接填 0，表示采用协议栈所支持的最大 MTU。无论是服务端还是客户端，
+都需要完成这个注册流程。</p>
+<p>这个回调函数将收到以下事件：</p>
+<ul>
+<li><p>L2CAP_EVENT_CHANNEL_OPENED：连接已打开</p>
+<p>事件参数详见 <code>l2cap_event_channel_opened_t</code>。</p></li>
+<li><p>L2CAP_EVENT_CHANNEL_CLOSED：连接已关闭</p>
+<p>事件参数详见 <code>l2cap_event_channel_closed_t</code>。</p></li>
+<li><p>L2CAP_EVENT_COMPLETED_SDU_PACKET：收到完整 SDU<a href="#fn27" class="footnote-ref" id="fnref27"><sup>27</sup></a></p>
+<p>事件参数详见 <code>l2cap_event_complete_sdu_t</code>；</p></li>
+<li><p>L2CAP_EVENT_FRAGMENT_SDU_PACKET：收到 SDU 片断<a href="#fn28" class="footnote-ref" id="fnref28"><sup>28</sup></a></p>
+<p>事件参数详见 l2cap_event_fragment_sdu_t。</p></li>
+</ul></li>
+<li><p>建立连接</p>
+<p>BLE 连接建立后，并发现服务端的 SPSM 后，客户端就可以调用 <code>l2cap_create_le_credit_based_connection_request</code>
+发起基于信用点的连接：</p>
+<div class="sourceCode" id="cb69"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb69-1"><a href="ch-l2cap.html#cb69-1"></a><span class="dt">uint8_t</span> l2cap_create_le_credit_based_connection_request(</span>
+<span id="cb69-2"><a href="ch-l2cap.html#cb69-2"></a>  <span class="dt">uint16_t</span> credits,   <span class="co">// 赋于对端的初始信用点</span></span>
+<span id="cb69-3"><a href="ch-l2cap.html#cb69-3"></a>  <span class="dt">uint16_t</span> psm,       <span class="co">// SPSM</span></span>
+<span id="cb69-4"><a href="ch-l2cap.html#cb69-4"></a>  <span class="dt">uint16_t</span> handle,    <span class="co">// 连接句加柄</span></span>
+<span id="cb69-5"><a href="ch-l2cap.html#cb69-5"></a>  <span class="dt">uint16_t</span> *local_cid <span class="co">// 本基于信用点的连接的 ID</span></span>
+<span id="cb69-6"><a href="ch-l2cap.html#cb69-6"></a>);</span></code></pre></div></li>
+<li><p>发送数据</p>
+<p>连接打开后调用 <code>l2cap_credit_based_send</code> 发送数据：</p>
+<div class="sourceCode" id="cb70"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb70-1"><a href="ch-l2cap.html#cb70-1"></a><span class="dt">int</span> l2cap_credit_based_send(</span>
+<span id="cb70-2"><a href="ch-l2cap.html#cb70-2"></a>  <span class="dt">uint16_t</span> local_cid,   <span class="co">// 基于信用点的连接的 ID</span></span>
+<span id="cb70-3"><a href="ch-l2cap.html#cb70-3"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> *data,  <span class="co">// SDU 数据</span></span>
+<span id="cb70-4"><a href="ch-l2cap.html#cb70-4"></a>  <span class="dt">uint16_t</span> len          <span class="co">// SDU 总长度</span></span>
+<span id="cb70-5"><a href="ch-l2cap.html#cb70-5"></a>);</span></code></pre></div>
+<p>这个函数如果出错，将返回负数错误码：</p>
+<ul>
+<li><code>-BTSTACK_LE_CHANNEL_NOT_EXIST：连接不存在</code></li>
+</ul>
+<p>否则这个函数会返回发送出去<a href="#fn29" class="footnote-ref" id="fnref29"><sup>29</sup></a>的数据的长度。当整个 SDU 都已发送时，
+返回值与 <code>len</code> 参数相同，否则小于 <code>len</code> 参数<a href="#fn30" class="footnote-ref" id="fnref30"><sup>30</sup></a>。
+这时，需要等待有可用的信用点或者链路层队列出现空余时：如果返回值为 0，则再次调用
+<code>l2cap_credit_based_send</code> 重新发送；否则调用 <code>l2cap_credit_based_send_continue</code>
+继续发送剩余数据：</p>
+<div class="sourceCode" id="cb71"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb71-1"><a href="ch-l2cap.html#cb71-1"></a><span class="dt">int</span> l2cap_credit_based_send_continue(</span>
+<span id="cb71-2"><a href="ch-l2cap.html#cb71-2"></a>  <span class="dt">uint16_t</span> local_cid,   <span class="co">// 基于信用点的连接的 ID</span></span>
+<span id="cb71-3"><a href="ch-l2cap.html#cb71-3"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> *data,  <span class="co">// SDU 剩余数据</span></span>
+<span id="cb71-4"><a href="ch-l2cap.html#cb71-4"></a>  <span class="dt">uint16_t</span> len          <span class="co">// SDU 剩余长度</span></span>
+<span id="cb71-5"><a href="ch-l2cap.html#cb71-5"></a>);</span></code></pre></div>
+<div class="rmdcaution">
+<p>
+在完整发送一个 SDU 前不可调用 <code>l2cap_credit_based_send</code> 发送新的 SDU。
+</p>
+</div></li>
+<li><p>为对端补充信用点</p>
+<p>调用 <code>l2cap_le_send_flow_control_credit</code> 即可为对端补充信用点：</p>
+<div class="sourceCode" id="cb72"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb72-1"><a href="ch-l2cap.html#cb72-1"></a><span class="dt">uint8_t</span> l2cap_le_send_flow_control_credit(</span>
+<span id="cb72-2"><a href="ch-l2cap.html#cb72-2"></a>  <span class="dt">uint16_t</span> local_cid,   <span class="co">// 基于信用点的连接的 ID</span></span>
+<span id="cb72-3"><a href="ch-l2cap.html#cb72-3"></a>  <span class="dt">uint16_t</span> credits      <span class="co">// 要补充的点数</span></span>
+<span id="cb72-4"><a href="ch-l2cap.html#cb72-4"></a>);</span></code></pre></div></li>
+<li><p>查询信用点数</p>
+<p>调用 <code>l2cap_get_le_credit_based_connection_credits</code> 查询当前的信用点情况：</p>
+<div class="sourceCode" id="cb73"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb73-1"><a href="ch-l2cap.html#cb73-1"></a><span class="dt">uint8_t</span> l2cap_get_le_credit_based_connection_credits(</span>
+<span id="cb73-2"><a href="ch-l2cap.html#cb73-2"></a>  <span class="dt">uint16_t</span> local_cid,     <span class="co">// 基于信用点的连接的 ID</span></span>
+<span id="cb73-3"><a href="ch-l2cap.html#cb73-3"></a>  <span class="dt">uint32_t</span> *peer_credits,</span>
+<span id="cb73-4"><a href="ch-l2cap.html#cb73-4"></a>  <span class="dt">uint32_t</span> *local_credits</span>
+<span id="cb73-5"><a href="ch-l2cap.html#cb73-5"></a>);</span></code></pre></div>
+<p><code>local_credits</code> 表示对方还能允许本方在该连接上发送多少 K 帧；<code>peer_credits</code>
+表示对方的 <code>local_credits</code>。</p></li>
+</ol>
 
 </div>
 </div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="26">
+<li id="fn26"><p>5.1 及更低版本里称为 LE_PSM<a href="ch-l2cap.html#fnref26" class="footnote-back">↩︎</a></p></li>
+<li id="fn27"><p>整个 SDU 只占用一个 K 帧<a href="ch-l2cap.html#fnref27" class="footnote-back">↩︎</a></p></li>
+<li id="fn28"><p>整个 SDU 占用多个 K 帧
+这个事件对应其中一个 K 帧<a href="ch-l2cap.html#fnref28" class="footnote-back">↩︎</a></p></li>
+<li id="fn29"><p>指进入链路层发送队列。<a href="ch-l2cap.html#fnref29" class="footnote-back">↩︎</a></p></li>
+<li id="fn30"><p>当信用点用完或者链路层队列已满时，会出现此情况<a href="ch-l2cap.html#fnref30" class="footnote-back">↩︎</a></p></li>
+</ol>
 </div>
             </section>
 

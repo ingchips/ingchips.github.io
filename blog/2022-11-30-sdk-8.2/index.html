@@ -229,16 +229,12 @@
 <h2 id="highlights">Highlights:</h2>
 
 <ul>
-  <li>开始支持 ING916XX 量产版（不再支持测试版芯片）
-    <ul>
-      <li>8.2.2 暂未包含 KeyScan/Comparator 等 2 个外设的驱动</li>
-      <li>新增 USB 示例</li>
-    </ul>
-  </li>
+  <li>开始支持 ING916XX 量产版（不再支持测试版芯片）</li>
   <li>新增《ING918XX 系列芯片外设开发者手册》</li>
   <li>线程安全的 BLE API</li>
   <li>RPC 系统</li>
-  <li>Cube 工具（持续开发中）</li>
+  <li>新版 SIG Mesh 库</li>
+  <li><a href="../2022-12-16-cube">Cube 工具</a>（持续开发中）</li>
 </ul>
 
 <div class="note">
@@ -257,16 +253,6 @@
 </li>
 <li>ING916XX 省电模式仍在持续开发、改进中，QUERY_DEEP_SLEEP_ALLOWED 回调目前只可返回 0 或者
 PLATFORM_ALLOW_DEEP_SLEEP。
-</li>
-<li>ING916XX 通信性能正在持续优化中，目前存在吞吐率低、小连接间隔时连接易断开等问题。
-    <ul>
-        <li>临时措施：在 app_main 里添加 platform_config(PLATFORM_CFG_32K_CLK_ACC, 500)</li>
-    </ul>
-</li>
-<li>Cube 只能在 Windows 10 或更高版本中运行
-    <ul>
-        <li>临时措施：对于使用 Windows 7 的情况，用 SDK 目录下的 ingCube_gl3.exe 替换 ingCube.exe</li>
-    </ul>
 </li>
 </ul></div>
 
@@ -391,7 +377,33 @@ PLATFORM_ALLOW_DEEP_SLEEP。
   <li>
     <p>[<strong>修正</strong>] ING916xx 软件包未开启 AES <span style="background:yellow">(<strong>8.2.2</strong>)</span></p>
   </li>
+  <li>
+    <p>[<strong>修正</strong>] ING916xx BLE 通信性能问题 <span style="background:yellow">(<strong>8.2.3</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] ING916xx 接收扩展广播时上报的地址错误 <span style="background:yellow">(<strong>8.2.3</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] ING916xx <code class="highlighter-rouge">platform_reset</code> 可能导致死循环 <span style="background:yellow">(<strong>8.2.3</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] Raw package bare more 与 BLE 的共存 <span style="background:yellow">(<strong>8.2.3</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] L2CAP 模块：开发基于信用点的连接 API <span style="background:yellow">(<strong>8.2.3</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] FreeRTOS FromISR 调用违例时提供明确的提示信息 <span style="background:yellow">(<strong>8.2.3</strong>)</span></p>
+  </li>
 </ul>
+
+<p>使用 FreeRTOS 是一个常见的错误是在中断服务程序内调用了“普通”版本的 API，而非专门用于中断服务程序的
+“…FromISR”。现在，当出现这个问题时，软件包的 ASSERTION 回调将给出明确的提示信息：</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>ASSERTION] @ USE FromISR:0
+</code></pre></div></div>
+
+<p>行末的“:0”没有具体含义。</p>
 
 <h2 id="2-外设驱动">2. 外设驱动</h2>
 
@@ -401,27 +413,54 @@ PLATFORM_ALLOW_DEEP_SLEEP。
   </li>
   <li>
     <p>[<strong>更新</strong>] ING916xx 增加 USB 驱动 <span style="background:yellow">(<strong>8.2.2</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] ING916xx 增加 KeyScan/Comparator 驱动 <span style="background:yellow">(<strong>8.2.3</strong>)</span></p>
 
-    <p>以下外设（或“虚拟”外设）驱动已更新：</p>
+    <p>ING916xx 所有外设（或“虚拟”外设）驱动都已更新：</p>
 
-    <ul>
-      <li>ADC</li>
-      <li>DMA</li>
-      <li>eFuse</li>
-      <li>GPIO</li>
-      <li>I2C</li>
-      <li>I2S</li>
-      <li>IR</li>
-      <li>PDM</li>
-      <li>PinCtrl</li>
-      <li>RTC</li>
-      <li>SysCtrl</li>
-      <li>Timer</li>
-      <li>USB</li>
-      <li>QDEC</li>
-    </ul>
-
-    <p>KeyScan/Comparator 等 2 个外设的驱动将随后续版本发布。</p>
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align: center">名称</th>
+          <th style="text-align: center">名称</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align: center">ADC</td>
+          <td style="text-align: center">I2S</td>
+        </tr>
+        <tr>
+          <td style="text-align: center">Comparator</td>
+          <td style="text-align: center">IR</td>
+        </tr>
+        <tr>
+          <td style="text-align: center">DMA</td>
+          <td style="text-align: center">PDM</td>
+        </tr>
+        <tr>
+          <td style="text-align: center">eFuse</td>
+          <td style="text-align: center">PinCtrl</td>
+        </tr>
+        <tr>
+          <td style="text-align: center">KeyScan</td>
+          <td style="text-align: center">RTC</td>
+        </tr>
+        <tr>
+          <td style="text-align: center">GPIO</td>
+          <td style="text-align: center">SysCtrl</td>
+        </tr>
+        <tr>
+          <td style="text-align: center">I2C</td>
+          <td style="text-align: center">Timer</td>
+        </tr>
+        <tr>
+          <td style="text-align: center">USB</td>
+          <td style="text-align: center">QDEC</td>
+        </tr>
+      </tbody>
+    </table>
   </li>
 </ul>
 
@@ -458,7 +497,12 @@ PLATFORM_ALLOW_DEEP_SLEEP。
   <li>
     <p>[<strong>更新</strong>] ING918xx: <em>power_ctrl.lib</em> 改善稳定性 <span style="background:yellow">(<strong>8.2.2</strong>)</span></p>
   </li>
+  <li>
+    <p>[<strong>更新</strong>] 新版 SIG Mesh 库 （持续改进中）<span style="background:yellow">(<strong>8.2.3</strong>)</span></p>
+  </li>
 </ul>
+
+<p>切换为新版 SIG Mesh 库，模型定义与原来（基于 NimBLE Mesh）方式类似，占用资源少，性能更好。具体使用方法可参阅 <em>Mesh Light</em> 示例。</p>
 
 <h2 id="4-示例">4. 示例</h2>
 
@@ -473,6 +517,12 @@ PLATFORM_ALLOW_DEEP_SLEEP。
   </li>
   <li>
     <p>[<strong>更新</strong>] <em>Voice Remote Control</em>: 增加 ING916xx ADC 输入功能（持续改进中） <span style="background:yellow">(<strong>8.2.2</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] <em>Peripheral Console</em>: 增加 ING916xx RC 时钟演示 <span style="background:yellow">(<strong>8.2.3</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] <em>L2CAP PSM</em>: 演示基于信用点的连接 <span style="background:yellow">(<strong>8.2.3</strong>)</span></p>
   </li>
 </ul>
 

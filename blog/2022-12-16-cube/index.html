@@ -220,6 +220,7 @@
   <li><a href="#使用场景-1-硬件工程师设计天线阵" id="markdown-toc-使用场景-1-硬件工程师设计天线阵">使用场景 1. 硬件工程师设计天线阵</a></li>
   <li><a href="#使用场景-2-硬件工程师设计-led-指示灯" id="markdown-toc-使用场景-2-硬件工程师设计-led-指示灯">使用场景 2. 硬件工程师设计 LED 指示灯</a></li>
   <li><a href="#使用场景-3-软件工程师实现-led-灯的-pwm-控制" id="markdown-toc-使用场景-3-软件工程师实现-led-灯的-pwm-控制">使用场景 3. 软件工程师实现 LED 灯的 PWM 控制</a></li>
+  <li><a href="#使用场景-4-软件工程师借助-timer-实现-led-灯的-pwm-控制" id="markdown-toc-使用场景-4-软件工程师借助-timer-实现-led-灯的-pwm-控制">使用场景 4. 软件工程师借助 TIMER 实现 LED 灯的 PWM 控制</a></li>
 </ul>
 
 <p>SDK 新工具 Cube 是一个图形化的初始化代码生成器，可为各种芯片型号生成 C 代码。</p>
@@ -298,7 +299,7 @@ Cube 生成的代码保存在项目里的 <code class="highlighter-rouge">/data/
 <h2 id="使用场景-2-硬件工程师设计-led-指示灯">使用场景 2. 硬件工程师设计 LED 指示灯</h2>
 
 <p>比如现在要用 ING91680A 设计一个产品，其中用到 LED 指示灯，打算使用 PWM 控制闪烁。可以使用哪个 IO 脚？
-新建一个 ING9168xx 的工程，打开 Cube，将型号选为 ING91680A，点击 Antenna，再点击菜单 Configure，弹出 PWM 编辑窗口。
+新建一个 ING9168xx 的工程，打开 Cube，将型号选为 ING91680A，点击 PWM，再点击菜单 Configure，弹出 PWM 编辑窗口。
 马上就可以直观检查哪些管脚可用做 PWM 输出：</p>
 
 <p><img src="../img/cube_pwm_pins.png" alt="" /></p>
@@ -335,6 +336,19 @@ Cube 生成的代码保存在项目里的 <code class="highlighter-rouge">/data/
 显然比在芯片里执行 <code class="highlighter-rouge">PINCTRL_SetPadMux(16, IO_SOURCE_PWM0_A)</code> 效率更高。
 这对于 ING916XX 系列为重要：因为 PINCTRL 配置需要查一张<a href="https://github.com/ingchips/ING918XX_SDK_SOURCE/blob/07ffc140a28b86dfeda95cc9ea1f560e2b5adeae/src/FWlib/peripheral_pinctrl.c#L265">复杂的表格</a>，每次睡眠醒来都需要重新配置，
 所以使用 Cube 既可以减小程序体积，对于降低功耗也有一定好处。</p>
+
+<h2 id="使用场景-4-软件工程师借助-timer-实现-led-灯的-pwm-控制">使用场景 4. 软件工程师借助 TIMER 实现 LED 灯的 PWM 控制</h2>
+
+<p>由于某些原因，PWM 模块另有它用，软件工程师决定改用硬件定时器输出 PWM 波形控制 LED 灯。
+查阅 PinCtrl 模块的文档可知，<strong>万幸</strong>，IO 16 可用于硬件定时器 PWM 波形的 A 路输出。</p>
+
+<p>选用 TIMER2 的 Channel 0 输出 PWM 信号，从编辑窗口发现计数器长度仅用 16 比特，切换到时钟树窗口，
+将 TIMER2 的时钟切换为 32k。这样，两个计数数各配为 16000 就可以输出 1 秒为周期，占空比 50% 的 PWM 波形了：</p>
+
+<p><img src="../img/cube_timer2.png" alt="" /></p>
+
+<p>这个编辑窗口还出现了一个“陌生”的 “Park Value”，将鼠标移动到 “?” 上可以了解其功能。
+编译下载程序，即可看到 LED 灯在按要求闪烁。</p>
 
       </div><!-- .post-content -->
     </div><!-- .inner-md -->

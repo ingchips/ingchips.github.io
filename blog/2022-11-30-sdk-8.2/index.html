@@ -230,7 +230,8 @@
 
 <ul>
   <li>开始支持 ING916XX 量产版（不再支持测试版芯片）</li>
-  <li>新增《ING918XX 系列芯片外设开发者手册》</li>
+  <li>新增《<a href="/application-notes/pg_ing918_cn/index.html">ING918XX 系列芯片外设开发者手册</a>》</li>
+  <li>新增《<a href="/application-notes/pg_ing916_cn/index.html">ING916XX 系列芯片外设开发者手册</a>》</li>
   <li>线程安全的 BLE API</li>
   <li>RPC 系统</li>
   <li>新版 SIG Mesh 库</li>
@@ -245,7 +246,7 @@
 <div class="important">
 <strong>已知问题（局限性）:</strong>
 <ul>
-<li>调试 ING916xx，复位方式不能选择 SYSRESETREQ，可以选择 VECTRESET（不同的调试器可能使用不同的名词，J-Link 里称为 Core）。
+<li>调试 ING916xx 时，复位方式不能选择 SYSRESETREQ，应该选择 VECTRESET（不同的调试器可能使用不同的名词，J-Link 里称为 Core）。
     <ul>
         <li>复位整个 SoC 的临时措施：对于 JLink，将
         <a href="https://github.com/ingchips/doc_release/releases/download/v1.0/JlinkSettings.JLinkScript">自定义脚本</a>放到工程目录，并在进入调试模式后再次点击 IDE 里的 “复位” 按钮。</li>
@@ -253,6 +254,8 @@
 </li>
 <li>ING916XX 省电模式仍在持续开发、改进中，QUERY_DEEP_SLEEP_ALLOWED 回调目前只可返回 0 或者
 PLATFORM_ALLOW_DEEP_SLEEP。
+</li>
+<li>ING916XX 使用内部 RC 为主时钟时，如果要使用省电模式，则 RC 频率暂时只能配置为 24MHz。
 </li>
 </ul></div>
 
@@ -394,16 +397,26 @@ PLATFORM_ALLOW_DEEP_SLEEP。
   </li>
   <li>
     <p>[<strong>更新</strong>] FreeRTOS FromISR 调用违例时提供明确的提示信息 <span style="background:yellow">(<strong>8.2.3</strong>)</span></p>
+
+    <p>使用 FreeRTOS 是一个常见的错误是在中断服务程序内调用了“普通”版本的 API，而非专门用于中断服务程序的
+  “…FromISR”。现在，当出现这个问题时，软件包的 ASSERTION 回调将给出明确的提示信息：</p>
+
+    <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="o">[</span>ASSERTION] @ USE FromISR:0
+</code></pre></div>    </div>
+
+    <p>行末的“:0”没有具体含义。</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] SM 存在 2 个或更多可解析地址时的地址解析问题 <span style="background:yellow">(<strong>8.2.4</strong>)</span></p>
+
+    <p>旧版本当已配对设备中包含 2 个或以上使用了可解析地址时的设备时，SM 无法正确解析地址。</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] ING916xx 射频性能优化 <span style="background:yellow">(<strong>8.2.4</strong>)</span></p>
+
+    <p>发射功率与标称值更接近，RSSI 测量值更准确（误差 $\pm 1.5dB$）。</p>
   </li>
 </ul>
-
-<p>使用 FreeRTOS 是一个常见的错误是在中断服务程序内调用了“普通”版本的 API，而非专门用于中断服务程序的
-“…FromISR”。现在，当出现这个问题时，软件包的 ASSERTION 回调将给出明确的提示信息：</p>
-
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>ASSERTION] @ USE FromISR:0
-</code></pre></div></div>
-
-<p>行末的“:0”没有具体含义。</p>
 
 <h2 id="2-外设驱动">2. 外设驱动</h2>
 
@@ -499,10 +512,10 @@ PLATFORM_ALLOW_DEEP_SLEEP。
   </li>
   <li>
     <p>[<strong>更新</strong>] 新版 SIG Mesh 库 （持续改进中）<span style="background:yellow">(<strong>8.2.3</strong>)</span></p>
+
+    <p>切换为新版 SIG Mesh 库，模型定义与原来（基于 NimBLE Mesh）方式类似，占用资源少，性能更好。具体使用方法可参阅 <em>Mesh Light</em> 示例。</p>
   </li>
 </ul>
-
-<p>切换为新版 SIG Mesh 库，模型定义与原来（基于 NimBLE Mesh）方式类似，占用资源少，性能更好。具体使用方法可参阅 <em>Mesh Light</em> 示例。</p>
 
 <h2 id="4-示例">4. 示例</h2>
 
@@ -523,6 +536,9 @@ PLATFORM_ALLOW_DEEP_SLEEP。
   </li>
   <li>
     <p>[<strong>更新</strong>] <em>L2CAP PSM</em>: 演示基于信用点的连接 <span style="background:yellow">(<strong>8.2.3</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] <em>HID Mouse</em>: 使用 QDEC 实现鼠标滚轮 <span style="background:yellow">(<strong>8.2.4</strong>)</span></p>
   </li>
 </ul>
 
@@ -557,6 +573,9 @@ PLATFORM_ALLOW_DEEP_SLEEP。
     <p>[<strong>新增</strong>] USB 测试工具 <em>ing_usb.exe</em> <span style="background:yellow">(<strong>8.2.2</strong>)</span></p>
 
     <p>详见 <a href="/application-notes/pg_ing916_cn/">ING916xx 外设开发者手册</a>。</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] Cube 工具：增加外设帮助菜单 <span style="background:yellow">(<strong>8.2.4</strong>)</span></p>
   </li>
 </ul>
 

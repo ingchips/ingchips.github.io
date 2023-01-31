@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>9 L2CAP | 低功耗蓝牙开发者手册</title>
   <meta name="description" content="9 L2CAP | 低功耗蓝牙开发者手册." />
-  <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.32 and GitBook 2.6.7" />
 
   <meta property="og:title" content="9 L2CAP | 低功耗蓝牙开发者手册" />
   <meta property="og:type" content="book" />
@@ -48,25 +48,24 @@
 
 
 
-<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
 <link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
 <link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
 <style type="text/css">
-code.sourceCode > span { display: inline-block; line-height: 1.25; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-code.sourceCode > span:empty { height: 1.2em; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -86,13 +85,13 @@ pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-le
 div.sourceCode
   {   }
 @media screen {
-code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -105,7 +104,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -137,11 +136,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> 版本历史</a></li>
-<li class="chapter" data-level="2" data-path="ch-intro.html"><a href="ch-intro.html"><i class="fa fa-check"></i><b>2</b> 简介</a><ul>
+<li class="chapter" data-level="2" data-path="ch-intro.html"><a href="ch-intro.html"><i class="fa fa-check"></i><b>2</b> 简介</a>
+<ul>
 <li class="chapter" data-level="2.1" data-path="ch-intro.html"><a href="ch-intro.html#缩略语及术语"><i class="fa fa-check"></i><b>2.1</b> 缩略语及术语</a></li>
 <li class="chapter" data-level="2.2" data-path="ch-intro.html"><a href="ch-intro.html#参考文档"><i class="fa fa-check"></i><b>2.2</b> 参考文档</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="ch-overview.html"><a href="ch-overview.html"><i class="fa fa-check"></i><b>3</b> 概览</a><ul>
+<li class="chapter" data-level="3" data-path="ch-overview.html"><a href="ch-overview.html"><i class="fa fa-check"></i><b>3</b> 概览</a>
+<ul>
 <li class="chapter" data-level="3.1" data-path="ch-overview.html"><a href="ch-overview.html#基本原则"><i class="fa fa-check"></i><b>3.1</b> 基本原则</a></li>
 <li class="chapter" data-level="3.2" data-path="ch-overview.html"><a href="ch-overview.html#协议栈架构"><i class="fa fa-check"></i><b>3.2</b> 协议栈架构</a></li>
 <li class="chapter" data-level="3.3" data-path="ch-overview.html"><a href="ch-overview.html#通信模型"><i class="fa fa-check"></i><b>3.3</b> 通信模型</a></li>
@@ -153,17 +154,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.9" data-path="ch-overview.html"><a href="ch-overview.html#白名单"><i class="fa fa-check"></i><b>3.9</b> 白名单</a></li>
 <li class="chapter" data-level="3.10" data-path="ch-overview.html"><a href="ch-overview.html#异步特性"><i class="fa fa-check"></i><b>3.10</b> 异步特性</a></li>
 <li class="chapter" data-level="3.11" data-path="ch-overview.html"><a href="ch-overview.html#线程安全性"><i class="fa fa-check"></i><b>3.11</b> 线程安全性</a></li>
-<li class="chapter" data-level="3.12" data-path="ch-overview.html"><a href="ch-overview.html#ble-设备地址"><i class="fa fa-check"></i><b>3.12</b> BLE 设备地址</a></li>
+<li class="chapter" data-level="3.12" data-path="ch-overview.html"><a href="ch-overview.html#ble-设备地址-ch-overview-ble-addr"><i class="fa fa-check"></i><b>3.12</b> BLE 设备地址 {ch-overview-ble-addr}</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="ch-adv.html"><a href="ch-adv.html"><i class="fa fa-check"></i><b>4</b> GAP - 广播</a><ul>
-<li class="chapter" data-level="4.1" data-path="ch-adv.html"><a href="ch-adv.html#概览"><i class="fa fa-check"></i><b>4.1</b> 概览</a><ul>
+<li class="chapter" data-level="4" data-path="ch-adv.html"><a href="ch-adv.html"><i class="fa fa-check"></i><b>4</b> GAP - 广播</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="ch-adv.html"><a href="ch-adv.html#概览"><i class="fa fa-check"></i><b>4.1</b> 概览</a>
+<ul>
 <li class="chapter" data-level="4.1.1" data-path="ch-adv.html"><a href="ch-adv.html#类型"><i class="fa fa-check"></i><b>4.1.1</b> 类型</a></li>
 <li class="chapter" data-level="4.1.2" data-path="ch-adv.html"><a href="ch-adv.html#ch1-adv-filter"><i class="fa fa-check"></i><b>4.1.2</b> 过滤策略</a></li>
 <li class="chapter" data-level="4.1.3" data-path="ch-adv.html"><a href="ch-adv.html#phy"><i class="fa fa-check"></i><b>4.1.3</b> PHY</a></li>
 <li class="chapter" data-level="4.1.4" data-path="ch-adv.html"><a href="ch-adv.html#广播集"><i class="fa fa-check"></i><b>4.1.4</b> 广播集</a></li>
 <li class="chapter" data-level="4.1.5" data-path="ch-adv.html"><a href="ch-adv.html#相关事件"><i class="fa fa-check"></i><b>4.1.5</b> 相关事件</a></li>
 </ul></li>
-<li class="chapter" data-level="4.2" data-path="ch-adv.html"><a href="ch-adv.html#使用说明"><i class="fa fa-check"></i><b>4.2</b> 使用说明</a><ul>
+<li class="chapter" data-level="4.2" data-path="ch-adv.html"><a href="ch-adv.html#使用说明"><i class="fa fa-check"></i><b>4.2</b> 使用说明</a>
+<ul>
 <li class="chapter" data-level="4.2.1" data-path="ch-adv.html"><a href="ch-adv.html#配置广播"><i class="fa fa-check"></i><b>4.2.1</b> 配置广播</a></li>
 <li class="chapter" data-level="4.2.2" data-path="ch-adv.html"><a href="ch-adv.html#ch1-adv-data-edit"><i class="fa fa-check"></i><b>4.2.2</b> 广播数据</a></li>
 <li class="chapter" data-level="4.2.3" data-path="ch-adv.html"><a href="ch-adv.html#配置周期广播"><i class="fa fa-check"></i><b>4.2.3</b> 配置周期广播</a></li>
@@ -172,23 +176,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.2.6" data-path="ch-adv.html"><a href="ch-adv.html#为周期广播添加-cte"><i class="fa fa-check"></i><b>4.2.6</b> 为周期广播添加 CTE</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="ch-scan.html"><a href="ch-scan.html"><i class="fa fa-check"></i><b>5</b> GAP - 扫描</a><ul>
-<li class="chapter" data-level="5.1" data-path="ch-scan.html"><a href="ch-scan.html#概览-1"><i class="fa fa-check"></i><b>5.1</b> 概览</a><ul>
+<li class="chapter" data-level="5" data-path="ch-scan.html"><a href="ch-scan.html"><i class="fa fa-check"></i><b>5</b> GAP - 扫描</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="ch-scan.html"><a href="ch-scan.html#概览-1"><i class="fa fa-check"></i><b>5.1</b> 概览</a>
+<ul>
 <li class="chapter" data-level="5.1.1" data-path="ch-scan.html"><a href="ch-scan.html#间隔与窗口"><i class="fa fa-check"></i><b>5.1.1</b> 间隔与窗口</a></li>
 <li class="chapter" data-level="5.1.2" data-path="ch-scan.html"><a href="ch-scan.html#过滤策略"><i class="fa fa-check"></i><b>5.1.2</b> 过滤策略</a></li>
 <li class="chapter" data-level="5.1.3" data-path="ch-scan.html"><a href="ch-scan.html#主动与被动"><i class="fa fa-check"></i><b>5.1.3</b> 主动与被动</a></li>
 <li class="chapter" data-level="5.1.4" data-path="ch-scan.html"><a href="ch-scan.html#phy-1"><i class="fa fa-check"></i><b>5.1.4</b> PHY</a></li>
 </ul></li>
-<li class="chapter" data-level="5.2" data-path="ch-scan.html"><a href="ch-scan.html#使用说明-1"><i class="fa fa-check"></i><b>5.2</b> 使用说明</a><ul>
+<li class="chapter" data-level="5.2" data-path="ch-scan.html"><a href="ch-scan.html#使用说明-1"><i class="fa fa-check"></i><b>5.2</b> 使用说明</a>
+<ul>
 <li class="chapter" data-level="5.2.1" data-path="ch-scan.html"><a href="ch-scan.html#配置参数"><i class="fa fa-check"></i><b>5.2.1</b> 配置参数</a></li>
 <li class="chapter" data-level="5.2.2" data-path="ch-scan.html"><a href="ch-scan.html#起停扫描"><i class="fa fa-check"></i><b>5.2.2</b> 起停扫描</a></li>
 <li class="chapter" data-level="5.2.3" data-path="ch-scan.html"><a href="ch-scan.html#处理数据"><i class="fa fa-check"></i><b>5.2.3</b> 处理数据</a></li>
 <li class="chapter" data-level="5.2.4" data-path="ch-scan.html"><a href="ch-scan.html#与周期广播同步"><i class="fa fa-check"></i><b>5.2.4</b> 与周期广播同步</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="ch-conn.html"><a href="ch-conn.html"><i class="fa fa-check"></i><b>6</b> GAP - 连接</a><ul>
+<li class="chapter" data-level="6" data-path="ch-conn.html"><a href="ch-conn.html"><i class="fa fa-check"></i><b>6</b> GAP - 连接</a>
+<ul>
 <li class="chapter" data-level="6.1" data-path="ch-conn.html"><a href="ch-conn.html#概览-2"><i class="fa fa-check"></i><b>6.1</b> 概览</a></li>
-<li class="chapter" data-level="6.2" data-path="ch-conn.html"><a href="ch-conn.html#使用说明-2"><i class="fa fa-check"></i><b>6.2</b> 使用说明</a><ul>
+<li class="chapter" data-level="6.2" data-path="ch-conn.html"><a href="ch-conn.html#使用说明-2"><i class="fa fa-check"></i><b>6.2</b> 使用说明</a>
+<ul>
 <li class="chapter" data-level="6.2.1" data-path="ch-conn.html"><a href="ch-conn.html#建立连接"><i class="fa fa-check"></i><b>6.2.1</b> 建立连接</a></li>
 <li class="chapter" data-level="6.2.2" data-path="ch-conn.html"><a href="ch-conn.html#取消连接"><i class="fa fa-check"></i><b>6.2.2</b> 取消连接</a></li>
 <li class="chapter" data-level="6.2.3" data-path="ch-conn.html"><a href="ch-conn.html#获取对端版本"><i class="fa fa-check"></i><b>6.2.3</b> 获取对端版本</a></li>
@@ -200,9 +209,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6.2.9" data-path="ch-conn.html"><a href="ch-conn.html#功率控制"><i class="fa fa-check"></i><b>6.2.9</b> 功率控制</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="ch-gatt-server.html"><a href="ch-gatt-server.html"><i class="fa fa-check"></i><b>7</b> GATT - 服务器</a><ul>
+<li class="chapter" data-level="7" data-path="ch-gatt-server.html"><a href="ch-gatt-server.html"><i class="fa fa-check"></i><b>7</b> GATT - 服务器</a>
+<ul>
 <li class="chapter" data-level="7.1" data-path="ch-gatt-server.html"><a href="ch-gatt-server.html#概览-3"><i class="fa fa-check"></i><b>7.1</b> 概览</a></li>
-<li class="chapter" data-level="7.2" data-path="ch-gatt-server.html"><a href="ch-gatt-server.html#使用说明-3"><i class="fa fa-check"></i><b>7.2</b> 使用说明</a><ul>
+<li class="chapter" data-level="7.2" data-path="ch-gatt-server.html"><a href="ch-gatt-server.html#使用说明-3"><i class="fa fa-check"></i><b>7.2</b> 使用说明</a>
+<ul>
 <li class="chapter" data-level="7.2.1" data-path="ch-gatt-server.html"><a href="ch-gatt-server.html#profile-数据"><i class="fa fa-check"></i><b>7.2.1</b> Profile 数据</a></li>
 <li class="chapter" data-level="7.2.2" data-path="ch-gatt-server.html"><a href="ch-gatt-server.html#实现读回调"><i class="fa fa-check"></i><b>7.2.2</b> 实现读回调</a></li>
 <li class="chapter" data-level="7.2.3" data-path="ch-gatt-server.html"><a href="ch-gatt-server.html#实现写回调"><i class="fa fa-check"></i><b>7.2.3</b> 实现写回调</a></li>
@@ -212,11 +223,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.2.7" data-path="ch-gatt-server.html"><a href="ch-gatt-server.html#att_mtu"><i class="fa fa-check"></i><b>7.2.7</b> ATT_MTU</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="8" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html"><i class="fa fa-check"></i><b>8</b> GATT - 客户端</a><ul>
-<li class="chapter" data-level="8.1" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#概览-4"><i class="fa fa-check"></i><b>8.1</b> 概览</a><ul>
+<li class="chapter" data-level="8" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html"><i class="fa fa-check"></i><b>8</b> GATT - 客户端</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#概览-4"><i class="fa fa-check"></i><b>8.1</b> 概览</a>
+<ul>
 <li class="chapter" data-level="8.1.1" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#句柄范围"><i class="fa fa-check"></i><b>8.1.1</b> 句柄范围</a></li>
 </ul></li>
-<li class="chapter" data-level="8.2" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#使用说明-4"><i class="fa fa-check"></i><b>8.2</b> 使用说明</a><ul>
+<li class="chapter" data-level="8.2" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#使用说明-4"><i class="fa fa-check"></i><b>8.2</b> 使用说明</a>
+<ul>
 <li class="chapter" data-level="8.2.1" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#创建客户端"><i class="fa fa-check"></i><b>8.2.1</b> 创建客户端</a></li>
 <li class="chapter" data-level="8.2.2" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#发现服务"><i class="fa fa-check"></i><b>8.2.2</b> 发现服务</a></li>
 <li class="chapter" data-level="8.2.3" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#读取特征"><i class="fa fa-check"></i><b>8.2.3</b> 读取特征</a></li>
@@ -224,36 +238,45 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="8.2.5" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#订阅特征"><i class="fa fa-check"></i><b>8.2.5</b> 订阅特征</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="9" data-path="ch-l2cap.html"><a href="ch-l2cap.html"><i class="fa fa-check"></i><b>9</b> L2CAP</a><ul>
+<li class="chapter" data-level="9" data-path="ch-l2cap.html"><a href="ch-l2cap.html"><i class="fa fa-check"></i><b>9</b> L2CAP</a>
+<ul>
 <li class="chapter" data-level="9.1" data-path="ch-l2cap.html"><a href="ch-l2cap.html#概览-5"><i class="fa fa-check"></i><b>9.1</b> 概览</a></li>
-<li class="chapter" data-level="9.2" data-path="ch-l2cap.html"><a href="ch-l2cap.html#使用说明-5"><i class="fa fa-check"></i><b>9.2</b> 使用说明</a><ul>
+<li class="chapter" data-level="9.2" data-path="ch-l2cap.html"><a href="ch-l2cap.html#使用说明-5"><i class="fa fa-check"></i><b>9.2</b> 使用说明</a>
+<ul>
 <li class="chapter" data-level="9.2.1" data-path="ch-l2cap.html"><a href="ch-l2cap.html#从端请求更新连接参数"><i class="fa fa-check"></i><b>9.2.1</b> 从端请求更新连接参数</a></li>
 <li class="chapter" data-level="9.2.2" data-path="ch-l2cap.html"><a href="ch-l2cap.html#基于信用点的连接"><i class="fa fa-check"></i><b>9.2.2</b> 基于信用点的连接</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="ch-sm.html"><a href="ch-sm.html"><i class="fa fa-check"></i><b>10</b> 安全管理</a><ul>
+<li class="chapter" data-level="10" data-path="ch-sm.html"><a href="ch-sm.html"><i class="fa fa-check"></i><b>10</b> 安全管理</a>
+<ul>
 <li class="chapter" data-level="10.1" data-path="ch-sm.html"><a href="ch-sm.html#概览-6"><i class="fa fa-check"></i><b>10.1</b> 概览</a></li>
-<li class="chapter" data-level="10.2" data-path="ch-sm.html"><a href="ch-sm.html#使用说明-6"><i class="fa fa-check"></i><b>10.2</b> 使用说明</a><ul>
+<li class="chapter" data-level="10.2" data-path="ch-sm.html"><a href="ch-sm.html#使用说明-6"><i class="fa fa-check"></i><b>10.2</b> 使用说明</a>
+<ul>
 <li class="chapter" data-level="10.2.1" data-path="ch-sm.html"><a href="ch-sm.html#初始化"><i class="fa fa-check"></i><b>10.2.1</b> 初始化</a></li>
 <li class="chapter" data-level="10.2.2" data-path="ch-sm.html"><a href="ch-sm.html#使用私有随机地址"><i class="fa fa-check"></i><b>10.2.2</b> 使用私有随机地址</a></li>
 <li class="chapter" data-level="10.2.3" data-path="ch-sm.html"><a href="ch-sm.html#sm-事件回调"><i class="fa fa-check"></i><b>10.2.3</b> SM 事件回调</a></li>
 <li class="chapter" data-level="10.2.4" data-path="ch-sm.html"><a href="ch-sm.html#每个连接的个性化设置"><i class="fa fa-check"></i><b>10.2.4</b> 每个连接的个性化设置</a></li>
+<li class="chapter" data-level="10.2.5" data-path="ch-sm.html"><a href="ch-sm.html#地址解析查找"><i class="fa fa-check"></i><b>10.2.5</b> 地址解析、查找</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="11" data-path="ch-misc.html"><a href="ch-misc.html"><i class="fa fa-check"></i><b>11</b> 杂项</a><ul>
-<li class="chapter" data-level="11.1" data-path="ch-misc.html"><a href="ch-misc.html#接收-cte"><i class="fa fa-check"></i><b>11.1</b> 接收 CTE</a><ul>
+<li class="chapter" data-level="11" data-path="ch-misc.html"><a href="ch-misc.html"><i class="fa fa-check"></i><b>11</b> 杂项</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="ch-misc.html"><a href="ch-misc.html#接收-cte"><i class="fa fa-check"></i><b>11.1</b> 接收 CTE</a>
+<ul>
 <li class="chapter" data-level="11.1.1" data-path="ch-misc.html"><a href="ch-misc.html#基于连接的-cte-接收和发送"><i class="fa fa-check"></i><b>11.1.1</b> 基于连接的 CTE 接收和发送</a></li>
 <li class="chapter" data-level="11.1.2" data-path="ch-misc.html"><a href="ch-misc.html#misc-cte-periodic-adv"><i class="fa fa-check"></i><b>11.1.2</b> 基于周期广播的 CTE 接收和发送</a></li>
 <li class="chapter" data-level="11.1.3" data-path="ch-misc.html"><a href="ch-misc.html#基于私有方式-1-的-cte-接收和发送"><i class="fa fa-check"></i><b>11.1.3</b> 基于私有方式 #1 的 CTE 接收和发送</a></li>
 <li class="chapter" data-level="11.1.4" data-path="ch-misc.html"><a href="ch-misc.html#基于私有方式-2-的-cte-接收和发送"><i class="fa fa-check"></i><b>11.1.4</b> 基于私有方式 #2 的 CTE 接收和发送</a></li>
 </ul></li>
-<li class="chapter" data-level="11.2" data-path="ch-misc.html"><a href="ch-misc.html#兼容性"><i class="fa fa-check"></i><b>11.2</b> 兼容性</a><ul>
+<li class="chapter" data-level="11.2" data-path="ch-misc.html"><a href="ch-misc.html#兼容性"><i class="fa fa-check"></i><b>11.2</b> 兼容性</a>
+<ul>
 <li class="chapter" data-level="11.2.1" data-path="ch-misc.html"><a href="ch-misc.html#data-length-与-mtu"><i class="fa fa-check"></i><b>11.2.1</b> Data Length 与 MTU</a></li>
 </ul></li>
 <li class="chapter" data-level="11.3" data-path="ch-misc.html"><a href="ch-misc.html#api-返回值"><i class="fa fa-check"></i><b>11.3</b> API 返回值</a></li>
 <li class="chapter" data-level="11.4" data-path="ch-misc.html"><a href="ch-misc.html#键值存储"><i class="fa fa-check"></i><b>11.4</b> 键值存储</a></li>
 <li class="chapter" data-level="11.5" data-path="ch-misc.html"><a href="ch-misc.html#ch98-le-dev-db"><i class="fa fa-check"></i><b>11.5</b> 设备数据库</a></li>
-<li class="chapter" data-level="11.6" data-path="ch-misc.html"><a href="ch-misc.html#ch-misc-synced-api"><i class="fa fa-check"></i><b>11.6</b> 同步版 API</a><ul>
+<li class="chapter" data-level="11.6" data-path="ch-misc.html"><a href="ch-misc.html#ch-misc-synced-api"><i class="fa fa-check"></i><b>11.6</b> 同步版 API</a>
+<ul>
 <li class="chapter" data-level="11.6.1" data-path="ch-misc.html"><a href="ch-misc.html#gap-同步-api"><i class="fa fa-check"></i><b>11.6.1</b> GAP 同步 API</a></li>
 <li class="chapter" data-level="11.6.2" data-path="ch-misc.html"><a href="ch-misc.html#gatt-客户端同步-api"><i class="fa fa-check"></i><b>11.6.2</b> GATT 客户端同步 API</a></li>
 </ul></li>
@@ -280,9 +303,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="ch-l2cap" class="section level1 hasAnchor">
+<div id="ch-l2cap" class="section level1 hasAnchor" number="9">
 <h1><span class="header-section-number">9</span> L2CAP<a href="ch-l2cap.html#ch-l2cap" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div id="概览-5" class="section level2 hasAnchor">
+<div id="概览-5" class="section level2 hasAnchor" number="9.1">
 <h2><span class="header-section-number">9.1</span> 概览<a href="ch-l2cap.html#概览-5" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>BLE L2CAP 负责高层协议复用，分包、组包，以及 QoS 信息的传输。</p>
 <p>L2CAP 定义了基于信用点的连接。两个设备之间可以建立多个基于信用点的连接，不同连接用 SPSM<a href="#fn26" class="footnote-ref" id="fnref26"><sup>26</sup></a> 区分。
@@ -294,37 +317,37 @@ SPSM 长度为 16 比特，<code>0x0001</code>~<code>0x007f</code> 为规范保�
 <p>所谓信用点，指的是接收方允许对方在该连接上发送的 K 帧数目。对方每发送一个 K 帧就消耗一个信用点，
 当信用点为 <span class="math inline">\(0\)</span> 时停止发送。接收方可以根据需要给对方补充信用点。
 每个传输单元称为一个 SDU。一个 SDU 可能被切分为多个 K 帧，所以发送一个 SDU
-可能会消耗多个信用点。</p>
+可能会消耗多个信用点。通过信用点可控制双方向的流量。</p>
 </div>
-<div id="使用说明-5" class="section level2 hasAnchor">
+<div id="使用说明-5" class="section level2 hasAnchor" number="9.2">
 <h2><span class="header-section-number">9.2</span> 使用说明<a href="ch-l2cap.html#使用说明-5" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="从端请求更新连接参数" class="section level3 hasAnchor">
+<div id="从端请求更新连接参数" class="section level3 hasAnchor" number="9.2.1">
 <h3><span class="header-section-number">9.2.1</span> 从端请求更新连接参数<a href="ch-l2cap.html#从端请求更新连接参数" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>从角色调用 <code>l2cap_request_connection_parameter_update</code> 可向主端请求更新连接参数：</p>
-<div class="sourceCode" id="cb67"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb67-1"><a href="ch-l2cap.html#cb67-1"></a><span class="dt">int</span> l2cap_request_connection_parameter_update(</span>
-<span id="cb67-2"><a href="ch-l2cap.html#cb67-2"></a>  <span class="co">// 连接句柄</span></span>
-<span id="cb67-3"><a href="ch-l2cap.html#cb67-3"></a>  hci_con_handle_t con_handle,</span>
-<span id="cb67-4"><a href="ch-l2cap.html#cb67-4"></a>  <span class="co">// 请求的最小连接间隔（单位 1.25ms）</span></span>
-<span id="cb67-5"><a href="ch-l2cap.html#cb67-5"></a>  <span class="dt">uint16_t</span> conn_interval_min,</span>
-<span id="cb67-6"><a href="ch-l2cap.html#cb67-6"></a>  <span class="co">// 请求的最大连接间隔（单位 1.25ms）</span></span>
-<span id="cb67-7"><a href="ch-l2cap.html#cb67-7"></a>  <span class="dt">uint16_t</span> conn_interval_max,</span>
-<span id="cb67-8"><a href="ch-l2cap.html#cb67-8"></a>  <span class="co">// 请求的从机延迟</span></span>
-<span id="cb67-9"><a href="ch-l2cap.html#cb67-9"></a>  <span class="dt">uint16_t</span> conn_latency,</span>
-<span id="cb67-10"><a href="ch-l2cap.html#cb67-10"></a>  <span class="co">// 请求的超时时间（单位 10ms）</span></span>
-<span id="cb67-11"><a href="ch-l2cap.html#cb67-11"></a>  <span class="dt">uint16_t</span> supervision_timeout);</span></code></pre></div>
+<div class="sourceCode" id="cb67"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb67-1"><a href="ch-l2cap.html#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> l2cap_request_connection_parameter_update<span class="op">(</span></span>
+<span id="cb67-2"><a href="ch-l2cap.html#cb67-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 连接句柄</span></span>
+<span id="cb67-3"><a href="ch-l2cap.html#cb67-3" aria-hidden="true" tabindex="-1"></a>  hci_con_handle_t con_handle<span class="op">,</span></span>
+<span id="cb67-4"><a href="ch-l2cap.html#cb67-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 请求的最小连接间隔（单位 1.25ms）</span></span>
+<span id="cb67-5"><a href="ch-l2cap.html#cb67-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> conn_interval_min<span class="op">,</span></span>
+<span id="cb67-6"><a href="ch-l2cap.html#cb67-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 请求的最大连接间隔（单位 1.25ms）</span></span>
+<span id="cb67-7"><a href="ch-l2cap.html#cb67-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> conn_interval_max<span class="op">,</span></span>
+<span id="cb67-8"><a href="ch-l2cap.html#cb67-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 请求的从机延迟</span></span>
+<span id="cb67-9"><a href="ch-l2cap.html#cb67-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> conn_latency<span class="op">,</span></span>
+<span id="cb67-10"><a href="ch-l2cap.html#cb67-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 请求的超时时间（单位 10ms）</span></span>
+<span id="cb67-11"><a href="ch-l2cap.html#cb67-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> supervision_timeout<span class="op">);</span></span></code></pre></div>
 <p>事件 <code>HCI_SUBEVENT_LE_CONNECTION_UPDATE_COMPLETE</code> 标志着参数更新完成。</p>
 </div>
-<div id="基于信用点的连接" class="section level3 hasAnchor">
+<div id="基于信用点的连接" class="section level3 hasAnchor" number="9.2.2">
 <h3><span class="header-section-number">9.2.2</span> 基于信用点的连接<a href="ch-l2cap.html#基于信用点的连接" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <ol style="list-style-type: decimal">
 <li><p>注册 SPSM 及回调</p>
 <p>调用 <code>l2cap_register_service</code> 注册 SPSM 及对应的回调函数：</p>
-<div class="sourceCode" id="cb68"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb68-1"><a href="ch-l2cap.html#cb68-1"></a><span class="dt">uint8_t</span> l2cap_register_service(</span>
-<span id="cb68-2"><a href="ch-l2cap.html#cb68-2"></a>  btstack_packet_handler_t packet_handler,</span>
-<span id="cb68-3"><a href="ch-l2cap.html#cb68-3"></a>  <span class="dt">uint16_t</span> psm,  <span class="co">// SPSM</span></span>
-<span id="cb68-4"><a href="ch-l2cap.html#cb68-4"></a>  <span class="dt">uint16_t</span> mtu,  <span class="co">// MTU 可填 0</span></span>
-<span id="cb68-5"><a href="ch-l2cap.html#cb68-5"></a>  gap_security_level_t security_level</span>
-<span id="cb68-6"><a href="ch-l2cap.html#cb68-6"></a>  );</span></code></pre></div>
+<div class="sourceCode" id="cb68"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb68-1"><a href="ch-l2cap.html#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> l2cap_register_service<span class="op">(</span></span>
+<span id="cb68-2"><a href="ch-l2cap.html#cb68-2" aria-hidden="true" tabindex="-1"></a>  btstack_packet_handler_t packet_handler<span class="op">,</span></span>
+<span id="cb68-3"><a href="ch-l2cap.html#cb68-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> psm<span class="op">,</span>  <span class="co">// SPSM</span></span>
+<span id="cb68-4"><a href="ch-l2cap.html#cb68-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> mtu<span class="op">,</span>  <span class="co">// MTU 可填 0</span></span>
+<span id="cb68-5"><a href="ch-l2cap.html#cb68-5" aria-hidden="true" tabindex="-1"></a>  gap_security_level_t security_level</span>
+<span id="cb68-6"><a href="ch-l2cap.html#cb68-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">);</span></span></code></pre></div>
 <p>这里的 <code>MTU</code> 最小为 23，可直接填 0，表示采用协议栈所支持的最大 MTU。无论是服务端还是客户端，
 都需要完成这个注册流程。</p>
 <p>这个回调函数将收到以下事件：</p>
@@ -334,26 +357,25 @@ SPSM 长度为 16 比特，<code>0x0001</code>~<code>0x007f</code> 为规范保�
 <li><p>L2CAP_EVENT_CHANNEL_CLOSED：连接已关闭</p>
 <p>事件参数详见 <code>l2cap_event_channel_closed_t</code>。</p></li>
 <li><p>L2CAP_EVENT_COMPLETED_SDU_PACKET：收到完整 SDU<a href="#fn27" class="footnote-ref" id="fnref27"><sup>27</sup></a></p>
-<p>事件参数详见 <code>l2cap_event_complete_sdu_t</code>；</p></li>
+<p>事件参数详见 <code>l2cap_event_complete_sdu_t</code>。</p></li>
 <li><p>L2CAP_EVENT_FRAGMENT_SDU_PACKET：收到 SDU 片断<a href="#fn28" class="footnote-ref" id="fnref28"><sup>28</sup></a></p>
 <p>事件参数详见 l2cap_event_fragment_sdu_t。</p></li>
 </ul></li>
 <li><p>建立连接</p>
-<p>BLE 连接建立后，并发现服务端的 SPSM 后，客户端就可以调用 <code>l2cap_create_le_credit_based_connection_request</code>
-发起基于信用点的连接：</p>
-<div class="sourceCode" id="cb69"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb69-1"><a href="ch-l2cap.html#cb69-1"></a><span class="dt">uint8_t</span> l2cap_create_le_credit_based_connection_request(</span>
-<span id="cb69-2"><a href="ch-l2cap.html#cb69-2"></a>  <span class="dt">uint16_t</span> credits,   <span class="co">// 赋于对端的初始信用点</span></span>
-<span id="cb69-3"><a href="ch-l2cap.html#cb69-3"></a>  <span class="dt">uint16_t</span> psm,       <span class="co">// SPSM</span></span>
-<span id="cb69-4"><a href="ch-l2cap.html#cb69-4"></a>  <span class="dt">uint16_t</span> handle,    <span class="co">// 连接句加柄</span></span>
-<span id="cb69-5"><a href="ch-l2cap.html#cb69-5"></a>  <span class="dt">uint16_t</span> *local_cid <span class="co">// 本基于信用点的连接的 ID</span></span>
-<span id="cb69-6"><a href="ch-l2cap.html#cb69-6"></a>);</span></code></pre></div></li>
+<p>BLE 连接建立并发现服务端的 SPSM 后，客户端就可以调用这个函数发起基于信用点的连接：</p>
+<div class="sourceCode" id="cb69"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb69-1"><a href="ch-l2cap.html#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> l2cap_create_le_credit_based_connection_request<span class="op">(</span></span>
+<span id="cb69-2"><a href="ch-l2cap.html#cb69-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> credits<span class="op">,</span>   <span class="co">// 赋于对端的初始信用点</span></span>
+<span id="cb69-3"><a href="ch-l2cap.html#cb69-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> psm<span class="op">,</span>       <span class="co">// SPSM</span></span>
+<span id="cb69-4"><a href="ch-l2cap.html#cb69-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> handle<span class="op">,</span>    <span class="co">// 连接句加柄</span></span>
+<span id="cb69-5"><a href="ch-l2cap.html#cb69-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> <span class="op">*</span>local_cid <span class="co">// 本基于信用点的连接的 ID</span></span>
+<span id="cb69-6"><a href="ch-l2cap.html#cb69-6" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div></li>
 <li><p>发送数据</p>
 <p>连接打开后调用 <code>l2cap_credit_based_send</code> 发送数据：</p>
-<div class="sourceCode" id="cb70"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb70-1"><a href="ch-l2cap.html#cb70-1"></a><span class="dt">int</span> l2cap_credit_based_send(</span>
-<span id="cb70-2"><a href="ch-l2cap.html#cb70-2"></a>  <span class="dt">uint16_t</span> local_cid,   <span class="co">// 基于信用点的连接的 ID</span></span>
-<span id="cb70-3"><a href="ch-l2cap.html#cb70-3"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> *data,  <span class="co">// SDU 数据</span></span>
-<span id="cb70-4"><a href="ch-l2cap.html#cb70-4"></a>  <span class="dt">uint16_t</span> len          <span class="co">// SDU 总长度</span></span>
-<span id="cb70-5"><a href="ch-l2cap.html#cb70-5"></a>);</span></code></pre></div>
+<div class="sourceCode" id="cb70"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb70-1"><a href="ch-l2cap.html#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> l2cap_credit_based_send<span class="op">(</span></span>
+<span id="cb70-2"><a href="ch-l2cap.html#cb70-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> local_cid<span class="op">,</span>   <span class="co">// 基于信用点的连接的 ID</span></span>
+<span id="cb70-3"><a href="ch-l2cap.html#cb70-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>data<span class="op">,</span>  <span class="co">// SDU 数据</span></span>
+<span id="cb70-4"><a href="ch-l2cap.html#cb70-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> len          <span class="co">// SDU 总长度</span></span>
+<span id="cb70-5"><a href="ch-l2cap.html#cb70-5" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
 <p>这个函数如果出错，将返回负数错误码：</p>
 <ul>
 <li><code>-BTSTACK_LE_CHANNEL_NOT_EXIST：连接不存在</code></li>
@@ -363,29 +385,30 @@ SPSM 长度为 16 比特，<code>0x0001</code>~<code>0x007f</code> 为规范保�
 这时，需要等待有可用的信用点或者链路层队列出现空余时：如果返回值为 0，则再次调用
 <code>l2cap_credit_based_send</code> 重新发送；否则调用 <code>l2cap_credit_based_send_continue</code>
 继续发送剩余数据：</p>
-<div class="sourceCode" id="cb71"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb71-1"><a href="ch-l2cap.html#cb71-1"></a><span class="dt">int</span> l2cap_credit_based_send_continue(</span>
-<span id="cb71-2"><a href="ch-l2cap.html#cb71-2"></a>  <span class="dt">uint16_t</span> local_cid,   <span class="co">// 基于信用点的连接的 ID</span></span>
-<span id="cb71-3"><a href="ch-l2cap.html#cb71-3"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> *data,  <span class="co">// SDU 剩余数据</span></span>
-<span id="cb71-4"><a href="ch-l2cap.html#cb71-4"></a>  <span class="dt">uint16_t</span> len          <span class="co">// SDU 剩余长度</span></span>
-<span id="cb71-5"><a href="ch-l2cap.html#cb71-5"></a>);</span></code></pre></div>
+<div class="sourceCode" id="cb71"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb71-1"><a href="ch-l2cap.html#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> l2cap_credit_based_send_continue<span class="op">(</span></span>
+<span id="cb71-2"><a href="ch-l2cap.html#cb71-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> local_cid<span class="op">,</span>   <span class="co">// 基于信用点的连接的 ID</span></span>
+<span id="cb71-3"><a href="ch-l2cap.html#cb71-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>data<span class="op">,</span>  <span class="co">// SDU 剩余数据</span></span>
+<span id="cb71-4"><a href="ch-l2cap.html#cb71-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> len          <span class="co">// SDU 剩余长度</span></span>
+<span id="cb71-5"><a href="ch-l2cap.html#cb71-5" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
 <div class="rmdcaution">
 <p>
-在完整发送一个 SDU 前不可调用 <code>l2cap_credit_based_send</code> 发送新的 SDU。
+在完整发送一个 SDU 前不可调用 <code>l2cap_credit_based_send</code>
+发送新的 SDU。
 </p>
 </div></li>
 <li><p>为对端补充信用点</p>
 <p>调用 <code>l2cap_le_send_flow_control_credit</code> 即可为对端补充信用点：</p>
-<div class="sourceCode" id="cb72"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb72-1"><a href="ch-l2cap.html#cb72-1"></a><span class="dt">uint8_t</span> l2cap_le_send_flow_control_credit(</span>
-<span id="cb72-2"><a href="ch-l2cap.html#cb72-2"></a>  <span class="dt">uint16_t</span> local_cid,   <span class="co">// 基于信用点的连接的 ID</span></span>
-<span id="cb72-3"><a href="ch-l2cap.html#cb72-3"></a>  <span class="dt">uint16_t</span> credits      <span class="co">// 要补充的点数</span></span>
-<span id="cb72-4"><a href="ch-l2cap.html#cb72-4"></a>);</span></code></pre></div></li>
+<div class="sourceCode" id="cb72"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb72-1"><a href="ch-l2cap.html#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> l2cap_le_send_flow_control_credit<span class="op">(</span></span>
+<span id="cb72-2"><a href="ch-l2cap.html#cb72-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> local_cid<span class="op">,</span>   <span class="co">// 基于信用点的连接的 ID</span></span>
+<span id="cb72-3"><a href="ch-l2cap.html#cb72-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> credits      <span class="co">// 要补充的点数</span></span>
+<span id="cb72-4"><a href="ch-l2cap.html#cb72-4" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div></li>
 <li><p>查询信用点数</p>
 <p>调用 <code>l2cap_get_le_credit_based_connection_credits</code> 查询当前的信用点情况：</p>
-<div class="sourceCode" id="cb73"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb73-1"><a href="ch-l2cap.html#cb73-1"></a><span class="dt">uint8_t</span> l2cap_get_le_credit_based_connection_credits(</span>
-<span id="cb73-2"><a href="ch-l2cap.html#cb73-2"></a>  <span class="dt">uint16_t</span> local_cid,     <span class="co">// 基于信用点的连接的 ID</span></span>
-<span id="cb73-3"><a href="ch-l2cap.html#cb73-3"></a>  <span class="dt">uint32_t</span> *peer_credits,</span>
-<span id="cb73-4"><a href="ch-l2cap.html#cb73-4"></a>  <span class="dt">uint32_t</span> *local_credits</span>
-<span id="cb73-5"><a href="ch-l2cap.html#cb73-5"></a>);</span></code></pre></div>
+<div class="sourceCode" id="cb73"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb73-1"><a href="ch-l2cap.html#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> l2cap_get_le_credit_based_connection_credits<span class="op">(</span></span>
+<span id="cb73-2"><a href="ch-l2cap.html#cb73-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> local_cid<span class="op">,</span>     <span class="co">// 基于信用点的连接的 ID</span></span>
+<span id="cb73-3"><a href="ch-l2cap.html#cb73-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> <span class="op">*</span>peer_credits<span class="op">,</span></span>
+<span id="cb73-4"><a href="ch-l2cap.html#cb73-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> <span class="op">*</span>local_credits</span>
+<span id="cb73-5"><a href="ch-l2cap.html#cb73-5" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
 <p><code>local_credits</code> 表示对方还能允许本方在该连接上发送多少 K 帧；<code>peer_credits</code>
 表示对方的 <code>local_credits</code>。</p></li>
 </ol>

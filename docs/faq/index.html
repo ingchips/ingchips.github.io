@@ -677,6 +677,36 @@
 
 <hr />
 
+<h2 id="7-wizard-里如何为自定义服务的特征添加字段fields">7. Wizard 里如何为自定义服务的特征添加字段（Fields）？</h2>
+
+<p>蓝牙 SIG 定义的特征带有字段，Profile Editor 能够显示这些字段。实际上，Profile Editor
+仅是<strong>显示</strong>而已，没有其它功能。所以，对于自定义的特征，目前没有提供编辑字段的工具。</p>
+
+<p>如果开发者需要使用这种字段显示功能，那么可通过编辑 JSON 文件手工添加字段：关闭 Wizard，打开
+SDK/wizard/cfg/user_characteristics.json，找到要修改的特征，修改 Value，例如：</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+ <span class="dl">"</span><span class="s2">com.ingchips.characteristic.test</span><span class="dl">"</span><span class="p">:</span> <span class="p">{</span>
+  <span class="dl">"</span><span class="s2">value</span><span class="dl">"</span><span class="p">:</span> <span class="p">[{</span>
+    <span class="dl">"</span><span class="s2">name</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Hello</span><span class="dl">"</span><span class="p">,</span>
+    <span class="dl">"</span><span class="s2">format</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">abc</span><span class="dl">"</span>
+   <span class="p">},{</span>
+    <span class="dl">"</span><span class="s2">name</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">World</span><span class="dl">"</span><span class="p">,</span>
+    <span class="dl">"</span><span class="s2">format</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">def</span><span class="dl">"</span>
+   <span class="p">}],</span>
+  <span class="dl">"</span><span class="s2">mandatory</span><span class="dl">"</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">uuid</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">........</span><span class="dl">"</span>
+ <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>上面就为 <em>test</em> 特性添加了两个字段，第一个是类型为 <em>abc</em> 的 “Hello”，第二个是类型为 <em>def</em> 的 “World”。
+再次打开 Profile Editor 可看到新添加的字段：</p>
+
+<p><img src="./img/char_values.png" alt="" /></p>
+
+<hr />
+
               
               
               

@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>16 QDEC简介 | ING916XX 系列芯片外设开发者手册</title>
+  <title>10 红外(IR) | ING916XX 系列芯片外设开发者手册</title>
   <meta name="description" content="ING916XX 系列芯片开发者手册." />
   <meta name="generator" content="bookdown 0.32 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="16 QDEC简介 | ING916XX 系列芯片外设开发者手册" />
+  <meta property="og:title" content="10 红外(IR) | ING916XX 系列芯片外设开发者手册" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="ING916XX 系列芯片开发者手册." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="16 QDEC简介 | ING916XX 系列芯片外设开发者手册" />
+  <meta name="twitter:title" content="10 红外(IR) | ING916XX 系列芯片外设开发者手册" />
   
   <meta name="twitter:description" content="ING916XX 系列芯片开发者手册." />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="ch-pwm.html"/>
-<link rel="next" href="ch-rtc.html"/>
+<link rel="prev" href="ch-I2s.html"/>
+<link rel="next" href="ch-keyscan.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -567,168 +567,192 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="ch-qdec" class="section level1 hasAnchor" number="16">
-<h1><span class="header-section-number">16</span> QDEC简介<a href="ch-qdec.html#ch-qdec" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p>QDEC全称Quadrature Decoder，即正交解码器。</p>
-<p>其作用是用来解码来自旋转编码器的脉冲序列，以提供外部设备运动的步长和方向。</p>
-<div id="功能描述-5" class="section level2 hasAnchor" number="16.1">
-<h2><span class="header-section-number">16.1</span> 功能描述<a href="ch-qdec.html#功能描述-5" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="特点-5" class="section level3 hasAnchor" number="16.1.1">
-<h3><span class="header-section-number">16.1.1</span> 特点<a href="ch-qdec.html#特点-5" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="ch-ir" class="section level1 hasAnchor" number="10">
+<h1><span class="header-section-number">10</span> 红外(IR)<a href="ch-ir.html#ch-ir" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="功能概述-3" class="section level2 hasAnchor" number="10.1">
+<h2><span class="header-section-number">10.1</span> 功能概述<a href="ch-ir.html#功能概述-3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <ul>
-<li><p>可配置时钟</p></li>
-<li><p>支持过滤器</p></li>
-<li><p>支持APB总线</p></li>
-<li><p>支持DMA</p></li>
+<li>支持红外发射&amp;接收</li>
+<li>时序可调整，支持多种编码</li>
 </ul>
 </div>
-<div id="正转和反转" class="section level3 hasAnchor" number="16.1.2">
-<h3><span class="header-section-number">16.1.2</span> 正转和反转<a href="ch-qdec.html#正转和反转" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>QDEC是通过采集到phase_a、phase_b相邻两次的数值变化来判断外设的运动方向。</p>
-顺时针采集数据如图所示：
-<div class="figure" style="text-align: center"><span style="display:block;" id="fig:916-qdec-clockwise"></span>
-<img src="img/QDEC/916_QDEC_clockwise.png" alt="QDEC顺时针采集数据" width="70%" />
-<p class="caption">
-图 16.1: QDEC顺时针采集数据
-</p>
+<div id="使用说明-3" class="section level2 hasAnchor" number="10.2">
+<h2><span class="header-section-number">10.2</span> 使用说明<a href="ch-ir.html#使用说明-3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="参数不同编码的时间参数" class="section level3 hasAnchor" number="10.2.1">
+<h3><span class="header-section-number">10.2.1</span> 参数(不同编码的时间参数)<a href="ch-ir.html#参数不同编码的时间参数" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb113"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb113-1"><a href="ch-ir.html#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="co">//32KHz 调制时钟</span></span>
+<span id="cb113-2"><a href="ch-ir.html#cb113-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#define FCLK            32000</span></span>
+<span id="cb113-3"><a href="ch-ir.html#cb113-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb113-4"><a href="ch-ir.html#cb113-4" aria-hidden="true" tabindex="-1"></a><span class="co">//NEC 载波频率38KHz</span></span>
+<span id="cb113-5"><a href="ch-ir.html#cb113-5" aria-hidden="true" tabindex="-1"></a><span class="pp">#define NEC_WAVE_FREQ   38000</span></span>
+<span id="cb113-6"><a href="ch-ir.html#cb113-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb113-7"><a href="ch-ir.html#cb113-7" aria-hidden="true" tabindex="-1"></a><span class="co">// RC5 载波频率36KHz</span></span>
+<span id="cb113-8"><a href="ch-ir.html#cb113-8" aria-hidden="true" tabindex="-1"></a><span class="pp">#define RC5_WAVE_FREQ   36000</span></span>
+<span id="cb113-9"><a href="ch-ir.html#cb113-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb113-10"><a href="ch-ir.html#cb113-10" aria-hidden="true" tabindex="-1"></a><span class="co">// 计算载波频率发生器数据，由此产生如38KHz NEC的载波，NEC与TC9012通用38KHz载波</span></span>
+<span id="cb113-11"><a href="ch-ir.html#cb113-11" aria-hidden="true" tabindex="-1"></a><span class="pp">#define IR_WAVE_NEC_TC9012_FREQ (OSC_CLK_FREQ/NEC_WAVE_FREQ)    </span></span>
+<span id="cb113-12"><a href="ch-ir.html#cb113-12" aria-hidden="true" tabindex="-1"></a><span class="pp">#define IR_WAVE_RC5_FREQ (OSC_CLK_FREQ/RC5_WAVE_FREQ)  </span></span>
+<span id="cb113-13"><a href="ch-ir.html#cb113-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb113-14"><a href="ch-ir.html#cb113-14" aria-hidden="true" tabindex="-1"></a><span class="co">//通过FCLK产生各种协议每bit位调制周期最小单位，如NEC协议中，560us为最小调制周期，NEC：bit 0：560us载波+560us不载波，bit 1：560 us载波+560*3 us不载波</span></span>
+<span id="cb113-15"><a href="ch-ir.html#cb113-15" aria-hidden="true" tabindex="-1"></a><span class="pp">#define NEC_UINT    (FCLK*560/1000000+1)</span></span>
+<span id="cb113-16"><a href="ch-ir.html#cb113-16" aria-hidden="true" tabindex="-1"></a><span class="pp">#define TC9012_UINT (FCLK*260/1000000+1)</span></span>
+<span id="cb113-17"><a href="ch-ir.html#cb113-17" aria-hidden="true" tabindex="-1"></a><span class="pp">#define RC5_UINT    (FCLK*889/1000000+1)</span></span>
+<span id="cb113-18"><a href="ch-ir.html#cb113-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb113-19"><a href="ch-ir.html#cb113-19" aria-hidden="true" tabindex="-1"></a><span class="co">//不必要的参数</span></span>
+<span id="cb113-20"><a href="ch-ir.html#cb113-20" aria-hidden="true" tabindex="-1"></a><span class="pp">#define INESSENTIAL     0</span></span>
+<span id="cb113-21"><a href="ch-ir.html#cb113-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb113-22"><a href="ch-ir.html#cb113-22" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span></span>
+<span id="cb113-23"><a href="ch-ir.html#cb113-23" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb113-24"><a href="ch-ir.html#cb113-24" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> timer1<span class="op">;</span><span class="co">//发送模式下，表示引导码低电平时间：如NEC为16*UNIT = 9ms，接收模式下与timer2组成检测引导码低电平窗口</span></span>
+<span id="cb113-25"><a href="ch-ir.html#cb113-25" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> timer2<span class="op">;</span><span class="co">//发送模式下，表示重复码低电平时间：如NEC为4*UNIT = 2.25ms，接收模式下与timer1组成检测引导码低窗口</span></span>
+<span id="cb113-26"><a href="ch-ir.html#cb113-26" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> timer3<span class="op">;</span><span class="co">//发送模式下，表示引导码高电平时间：如NEC为8*UNIT = 4.5ms，接收模式下与timer4组成检测引导码高电平+低电平窗口</span></span>
+<span id="cb113-27"><a href="ch-ir.html#cb113-27" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> timer4<span class="op">;</span><span class="co">//发送模式下，表示重复码高电平时间：如NEC为UNIT = 560us，接收模式下与timer3组成检测引导码高电平+低电平窗口</span></span>
+<span id="cb113-28"><a href="ch-ir.html#cb113-28" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> timer5<span class="op">;</span><span class="co">//接收时接收超时定时器，发射不必关注</span></span>
+<span id="cb113-29"><a href="ch-ir.html#cb113-29" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> btimer1<span class="op">;</span><span class="co">//逻辑 0 的bit时长：如NEC = 2*UINT = 1.12ms.</span></span>
+<span id="cb113-30"><a href="ch-ir.html#cb113-30" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> btimer2<span class="op">;</span><span class="co">//逻辑 1 的bit时长：如NEC = 4*UINT = 2.25ms.</span></span>
+<span id="cb113-31"><a href="ch-ir.html#cb113-31" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> bit_cycle<span class="op">;</span><span class="co">//发射模式下：bit调制周期最小单位，如NEC为560us，接收模式下为bit检测超时时间</span></span>
+<span id="cb113-32"><a href="ch-ir.html#cb113-32" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> carry_low<span class="op">;</span><span class="co">//载波低电平时长，与carry_high组合形成占空比可调的载波波形，如NEC为38KHz 30%占空比载波则carry_low = 2/3*载波周期，carry_high = 1/3*载波周期</span></span>
+<span id="cb113-33"><a href="ch-ir.html#cb113-33" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> carry_high<span class="op">;</span><span class="co">//载波高电平时长，与carry_low组合形成占空比可调的载波波形，如NEC为38KHz 30%占空比载波则carry_low = 2/3*载波周期，carry_high = 1/3*载波周期</span></span>
+<span id="cb113-34"><a href="ch-ir.html#cb113-34" aria-hidden="true" tabindex="-1"></a><span class="op">}</span>Ir_mode_param_t<span class="op">;</span></span>
+<span id="cb113-35"><a href="ch-ir.html#cb113-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb113-36"><a href="ch-ir.html#cb113-36" aria-hidden="true" tabindex="-1"></a><span class="co">//由于发送和接收初始化不同参数 定义结构体表示接收发送初始化参数。</span></span>
+<span id="cb113-37"><a href="ch-ir.html#cb113-37" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span><span class="op">{</span></span>
+<span id="cb113-38"><a href="ch-ir.html#cb113-38" aria-hidden="true" tabindex="-1"></a>    Ir_mode_param_t param_tx<span class="op">;</span></span>
+<span id="cb113-39"><a href="ch-ir.html#cb113-39" aria-hidden="true" tabindex="-1"></a>    Ir_mode_param_t param_rx<span class="op">;</span></span>
+<span id="cb113-40"><a href="ch-ir.html#cb113-40" aria-hidden="true" tabindex="-1"></a><span class="op">}</span>Ir_type_param_t<span class="op">;</span></span>
+<span id="cb113-41"><a href="ch-ir.html#cb113-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb113-42"><a href="ch-ir.html#cb113-42" aria-hidden="true" tabindex="-1"></a><span class="co">//定义初始化数据，初始化函数体根据不同协议自动从此表适配参数</span></span>
+<span id="cb113-43"><a href="ch-ir.html#cb113-43" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> <span class="dt">static</span> Ir_type_param_t t_ir_type_param_table<span class="op">[]</span> <span class="op">=</span> </span>
+<span id="cb113-44"><a href="ch-ir.html#cb113-44" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb113-45"><a href="ch-ir.html#cb113-45" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span><span class="co">//NEC param</span></span>
+<span id="cb113-46"><a href="ch-ir.html#cb113-46" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span>  <span class="co">//TX</span></span>
+<span id="cb113-47"><a href="ch-ir.html#cb113-47" aria-hidden="true" tabindex="-1"></a>            <span class="dv">16</span><span class="op">*</span>NEC_UINT<span class="op">-</span><span class="dv">1</span><span class="op">,</span><span class="dv">4</span><span class="op">*</span>NEC_UINT<span class="op">-</span><span class="dv">1</span><span class="op">,</span><span class="dv">8</span><span class="op">*</span>NEC_UINT<span class="op">-</span><span class="dv">1</span><span class="op">,</span><span class="dv">1</span><span class="op">*</span>NEC_UINT<span class="op">-</span><span class="dv">1</span><span class="op">,</span>INESSENTIAL<span class="op">,</span></span>
+<span id="cb113-48"><a href="ch-ir.html#cb113-48" aria-hidden="true" tabindex="-1"></a>            <span class="dv">2</span><span class="op">*</span>NEC_UINT<span class="op">-</span><span class="dv">1</span><span class="op">,</span> <span class="dv">4</span><span class="op">*</span>NEC_UINT<span class="op">-</span><span class="dv">1</span><span class="op">,</span><span class="dv">1</span><span class="op">*</span>NEC_UINT<span class="op">-</span><span class="dv">1</span><span class="op">,</span>IR_WAVE_NEC_TC9012_FREQ<span class="op">*</span><span class="dv">2</span><span class="op">/</span><span class="dv">3</span><span class="op">,</span>IR_WAVE_NEC_TC9012_FREQ<span class="op">*</span><span class="dv">1</span><span class="op">/</span><span class="dv">3</span><span class="op">},</span></span>
+<span id="cb113-49"><a href="ch-ir.html#cb113-49" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span>   <span class="co">//RX</span></span>
+<span id="cb113-50"><a href="ch-ir.html#cb113-50" aria-hidden="true" tabindex="-1"></a>            <span class="dv">14</span><span class="op">*</span>NEC_UINT<span class="op">-</span><span class="dv">1</span><span class="op">,</span><span class="dv">18</span><span class="op">*</span>NEC_UINT<span class="op">-</span><span class="dv">1</span><span class="op">,</span><span class="dv">22</span><span class="op">*</span>NEC_UINT<span class="op">-</span><span class="dv">1</span><span class="op">,</span><span class="dv">26</span><span class="op">*</span>NEC_UINT<span class="op">-</span><span class="dv">1</span><span class="op">,</span><span class="bn">0xfff</span><span class="op">,</span></span>
+<span id="cb113-51"><a href="ch-ir.html#cb113-51" aria-hidden="true" tabindex="-1"></a>            INESSENTIAL<span class="op">,</span><span class="dv">2</span><span class="op">*</span>NEC_UINT<span class="op">-</span><span class="dv">1</span><span class="op">,</span><span class="bn">0x7f</span><span class="op">,</span>INESSENTIAL<span class="op">,</span>INESSENTIAL<span class="op">},</span>    </span>
+<span id="cb113-52"><a href="ch-ir.html#cb113-52" aria-hidden="true" tabindex="-1"></a>    <span class="op">},</span></span>
+<span id="cb113-53"><a href="ch-ir.html#cb113-53" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span><span class="co">//TC9012 param</span></span>
+<span id="cb113-54"><a href="ch-ir.html#cb113-54" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span>   <span class="co">//TX</span></span>
+<span id="cb113-55"><a href="ch-ir.html#cb113-55" aria-hidden="true" tabindex="-1"></a>            <span class="dv">16</span><span class="op">*</span>TC9012_UINT<span class="op">-</span><span class="dv">1</span><span class="op">,</span><span class="dv">8</span><span class="op">*</span>TC9012_UINT<span class="op">-</span><span class="dv">1</span><span class="op">,</span><span class="dv">16</span><span class="op">*</span>TC9012_UINT<span class="op">-</span><span class="dv">1</span><span class="op">,</span><span class="dv">2</span><span class="op">*</span>TC9012_UINT<span class="op">-</span><span class="dv">1</span><span class="op">,</span>INESSENTIAL<span class="op">,</span></span>
+<span id="cb113-56"><a href="ch-ir.html#cb113-56" aria-hidden="true" tabindex="-1"></a>            <span class="dv">4</span><span class="op">*</span>TC9012_UINT<span class="op">-</span><span class="dv">1</span><span class="op">,</span><span class="dv">6</span><span class="op">*</span>TC9012_UINT<span class="op">-</span><span class="dv">1</span><span class="op">,</span><span class="dv">2</span><span class="op">*</span>TC9012_UINT<span class="op">-</span><span class="dv">1</span><span class="op">,</span>IR_WAVE_NEC_TC9012_FREQ<span class="op">*</span><span class="dv">2</span><span class="op">/</span><span class="dv">3</span><span class="op">,</span>IR_WAVE_NEC_TC9012_FREQ<span class="op">*</span><span class="dv">1</span><span class="op">/</span><span class="dv">3</span><span class="op">},</span></span>
+<span id="cb113-57"><a href="ch-ir.html#cb113-57" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span>    <span class="co">//RX</span></span>
+<span id="cb113-58"><a href="ch-ir.html#cb113-58" aria-hidden="true" tabindex="-1"></a>            <span class="dv">28</span><span class="op">*</span>TC9012_UINT<span class="op">-</span><span class="dv">1</span><span class="op">,</span><span class="dv">36</span><span class="op">*</span>TC9012_UINT<span class="op">-</span><span class="dv">1</span><span class="op">,</span><span class="dv">44</span><span class="op">*</span>TC9012_UINT<span class="op">-</span><span class="dv">1</span><span class="op">,</span><span class="dv">32</span><span class="op">*</span>TC9012_UINT<span class="op">-</span><span class="dv">1</span><span class="op">,</span><span class="bn">0xfff</span><span class="op">,</span>INESSENTIAL<span class="op">,</span></span>
+<span id="cb113-59"><a href="ch-ir.html#cb113-59" aria-hidden="true" tabindex="-1"></a>            <span class="dv">4</span><span class="op">*</span>TC9012_UINT<span class="op">-</span><span class="dv">1</span><span class="op">,</span><span class="bn">0x7f</span><span class="op">,</span>INESSENTIAL<span class="op">,</span>INESSENTIAL<span class="op">},</span>    </span>
+<span id="cb113-60"><a href="ch-ir.html#cb113-60" aria-hidden="true" tabindex="-1"></a>    <span class="op">},</span>    </span>
+<span id="cb113-61"><a href="ch-ir.html#cb113-61" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span><span class="co">//RC5 param</span></span>
+<span id="cb113-62"><a href="ch-ir.html#cb113-62" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span>   <span class="co">//TX</span></span>
+<span id="cb113-63"><a href="ch-ir.html#cb113-63" aria-hidden="true" tabindex="-1"></a>            <span class="dv">2</span><span class="op">*</span>RC5_UINT<span class="op">-</span><span class="dv">1</span><span class="op">,</span><span class="dv">2</span><span class="op">*</span>RC5_UINT<span class="op">-</span><span class="dv">1</span><span class="op">,</span>INESSENTIAL<span class="op">,</span>INESSENTIAL<span class="op">,</span>INESSENTIAL<span class="op">,</span><span class="dv">2</span><span class="op">*</span>RC5_UINT<span class="op">-</span><span class="dv">1</span><span class="op">,</span></span>
+<span id="cb113-64"><a href="ch-ir.html#cb113-64" aria-hidden="true" tabindex="-1"></a>            INESSENTIAL<span class="op">,</span><span class="dv">1</span><span class="op">*</span>RC5_UINT<span class="op">,</span>IR_WAVE_RC5_FREQ<span class="op">*</span><span class="dv">2</span><span class="op">/</span><span class="dv">3</span><span class="op">,</span>IR_WAVE_RC5_FREQ<span class="op">*</span><span class="dv">1</span><span class="op">/</span><span class="dv">3</span><span class="op">},</span></span>
+<span id="cb113-65"><a href="ch-ir.html#cb113-65" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb113-66"><a href="ch-ir.html#cb113-66" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span>   <span class="co">//RX</span></span>
+<span id="cb113-67"><a href="ch-ir.html#cb113-67" aria-hidden="true" tabindex="-1"></a>            <span class="dv">1</span><span class="op">*</span>RC5_UINT<span class="op">-</span><span class="dv">2</span><span class="op">,</span><span class="dv">1</span><span class="op">*</span>RC5_UINT<span class="op">,</span><span class="dv">3</span><span class="op">*</span>RC5_UINT<span class="op">-</span><span class="dv">1</span><span class="op">,</span><span class="dv">5</span><span class="op">*</span>RC5_UINT<span class="op">-</span><span class="dv">1</span><span class="op">,</span>INESSENTIAL<span class="op">,</span><span class="dv">1</span><span class="op">*</span>RC5_UINT<span class="op">-</span><span class="dv">3</span><span class="op">,</span></span>
+<span id="cb113-68"><a href="ch-ir.html#cb113-68" aria-hidden="true" tabindex="-1"></a>            <span class="dv">1</span><span class="op">*</span>RC5_UINT<span class="op">-</span><span class="dv">1</span><span class="op">,</span><span class="dv">2</span><span class="op">*</span>RC5_UINT<span class="op">-</span><span class="dv">1</span><span class="op">,</span>INESSENTIAL<span class="op">,</span>INESSENTIAL<span class="op">},</span>    </span>
+<span id="cb113-69"><a href="ch-ir.html#cb113-69" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb113-70"><a href="ch-ir.html#cb113-70" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div>
 </div>
-逆时针采集数据如图所示：
-<div class="figure" style="text-align: center"><span style="display:block;" id="fig:916-qdec-anticlockwise"></span>
-<img src="img/QDEC/916_QDEC_anticlockwise.png" alt="QDEC逆时针采集数据" width="70%" />
-<p class="caption">
-图 16.2: QDEC逆时针采集数据
-</p>
+<div id="红外发射接收" class="section level3 hasAnchor" number="10.2.2">
+<h3><span class="header-section-number">10.2.2</span> 红外发射接收<a href="ch-ir.html#红外发射接收" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="配置pin-10" class="section level4 hasAnchor" number="10.2.2.1">
+<h4><span class="header-section-number">10.2.2.1</span> 配置pin<a href="ch-ir.html#配置pin-10" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb114"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb114-1"><a href="ch-ir.html#cb114-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define IR_DOUT GIO_GPIO_10</span></span>
+<span id="cb114-2"><a href="ch-ir.html#cb114-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#define IR_DIN  GIO_GPIO_11</span></span>
+<span id="cb114-3"><a href="ch-ir.html#cb114-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb114-4"><a href="ch-ir.html#cb114-4" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> setup_peripherals_ir_module<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb114-5"><a href="ch-ir.html#cb114-5" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb114-6"><a href="ch-ir.html#cb114-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 打开时钟</span></span>
+<span id="cb114-7"><a href="ch-ir.html#cb114-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 大于等于GPIO 18则使用SYSCTRL_ClkGate_APB_GPIO1， 否则是SYSCTRL_ClkGate_APB_GPIO0</span></span>
+<span id="cb114-8"><a href="ch-ir.html#cb114-8" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGateMulti<span class="op">(</span>   <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ClkGate_APB_GPIO0<span class="op">)</span></span>
+<span id="cb114-9"><a href="ch-ir.html#cb114-9" aria-hidden="true" tabindex="-1"></a>                                <span class="op">|</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ClkGate_APB_GPIO1<span class="op">)</span></span>
+<span id="cb114-10"><a href="ch-ir.html#cb114-10" aria-hidden="true" tabindex="-1"></a>                                <span class="op">|</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ClkGate_APB_IR<span class="op">)</span></span>
+<span id="cb114-11"><a href="ch-ir.html#cb114-11" aria-hidden="true" tabindex="-1"></a>                                <span class="op">|</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ClkGate_APB_PinCtrl<span class="op">));</span></span>
+<span id="cb114-12"><a href="ch-ir.html#cb114-12" aria-hidden="true" tabindex="-1"></a>                                </span>
+<span id="cb114-13"><a href="ch-ir.html#cb114-13" aria-hidden="true" tabindex="-1"></a>    PINCTRL_SelIrIn<span class="op">(</span>IR_DIN<span class="op">);</span></span>
+<span id="cb114-14"><a href="ch-ir.html#cb114-14" aria-hidden="true" tabindex="-1"></a>    PINCTRL_SetPadMux<span class="op">(</span>IR_DOUT<span class="op">,</span>IO_SOURCE_IR_DATA_OUT<span class="op">);</span></span>
+<span id="cb114-15"><a href="ch-ir.html#cb114-15" aria-hidden="true" tabindex="-1"></a>    platform_set_irq_callback<span class="op">(</span>PLATFORM_CB_IRQ_IR_INT<span class="op">,</span> IRQHandler_IR_INT<span class="op">,</span> NULL<span class="op">);</span></span>
+<span id="cb114-16"><a href="ch-ir.html#cb114-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </div>
-<p>在QDEC数据上，如果引脚配置和连接正确，顺时针转动则采集到的数据逐渐增大，逆时针则数据逐渐减小。</p>
+<div id="配置模块" class="section level4 hasAnchor" number="10.2.2.2">
+<h4><span class="header-section-number">10.2.2.2</span> 配置模块<a href="ch-ir.html#配置模块" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb115"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb115-1"><a href="ch-ir.html#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> user_ir_device_init<span class="op">(</span>IR_IrMode_e mode<span class="op">,</span>IR_TxRxMode_e tx_rx_mode<span class="op">)</span></span>
+<span id="cb115-2"><a href="ch-ir.html#cb115-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb115-3"><a href="ch-ir.html#cb115-3" aria-hidden="true" tabindex="-1"></a>    IR_CtrlSetIrMode<span class="op">(</span>APB_IR<span class="op">,</span>mode<span class="op">);</span></span>
+<span id="cb115-4"><a href="ch-ir.html#cb115-4" aria-hidden="true" tabindex="-1"></a>    IR_CtrlSetTxRxMode<span class="op">(</span>APB_IR<span class="op">,</span>tx_rx_mode<span class="op">);</span></span>
+<span id="cb115-5"><a href="ch-ir.html#cb115-5" aria-hidden="true" tabindex="-1"></a>    IR_CtrlSetIrIntEn<span class="op">(</span>APB_IR<span class="op">);</span></span>
+<span id="cb115-6"><a href="ch-ir.html#cb115-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb115-7"><a href="ch-ir.html#cb115-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>IR_TXRX_MODE_TX_MODE <span class="op">==</span> tx_rx_mode<span class="op">)</span></span>
+<span id="cb115-8"><a href="ch-ir.html#cb115-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb115-9"><a href="ch-ir.html#cb115-9" aria-hidden="true" tabindex="-1"></a>        IR_TxConfigIrTxPol<span class="op">(</span>APB_IR<span class="op">);</span></span>
+<span id="cb115-10"><a href="ch-ir.html#cb115-10" aria-hidden="true" tabindex="-1"></a>        IR_TxConfigCarrierCntClr<span class="op">(</span>APB_IR<span class="op">);</span></span>
+<span id="cb115-11"><a href="ch-ir.html#cb115-11" aria-hidden="true" tabindex="-1"></a>        IR_TxConfigIrIntEn<span class="op">(</span>APB_IR<span class="op">);</span></span>
+<span id="cb115-12"><a href="ch-ir.html#cb115-12" aria-hidden="true" tabindex="-1"></a>        IR_CarryConfigSetIrCarryLow<span class="op">(</span>APB_IR<span class="op">,</span>t_ir_type_param_table<span class="op">[</span>mode<span class="op">].</span>param_tx<span class="op">.</span>carry_low<span class="op">);</span>   <span class="co">//30% pwm</span></span>
+<span id="cb115-13"><a href="ch-ir.html#cb115-13" aria-hidden="true" tabindex="-1"></a>        IR_CarryConfigSetIrCarryHigh<span class="op">(</span>APB_IR<span class="op">,</span>t_ir_type_param_table<span class="op">[</span>mode<span class="op">].</span>param_tx<span class="op">.</span>carry_high<span class="op">);</span></span>
+<span id="cb115-14"><a href="ch-ir.html#cb115-14" aria-hidden="true" tabindex="-1"></a>        IR_TimeSetIrTime1<span class="op">(</span>APB_IR<span class="op">,</span>t_ir_type_param_table<span class="op">[</span>mode<span class="op">].</span>param_tx<span class="op">.</span>timer1<span class="op">);</span></span>
+<span id="cb115-15"><a href="ch-ir.html#cb115-15" aria-hidden="true" tabindex="-1"></a>        IR_TimeSetIrTime2<span class="op">(</span>APB_IR<span class="op">,</span>t_ir_type_param_table<span class="op">[</span>mode<span class="op">].</span>param_tx<span class="op">.</span>timer2<span class="op">);</span></span>
+<span id="cb115-16"><a href="ch-ir.html#cb115-16" aria-hidden="true" tabindex="-1"></a>        IR_TimeSetIrTime3<span class="op">(</span>APB_IR<span class="op">,</span>t_ir_type_param_table<span class="op">[</span>mode<span class="op">].</span>param_tx<span class="op">.</span>timer3 <span class="op">);</span></span>
+<span id="cb115-17"><a href="ch-ir.html#cb115-17" aria-hidden="true" tabindex="-1"></a>        IR_TimeSetIrTime4<span class="op">(</span>APB_IR<span class="op">,</span>t_ir_type_param_table<span class="op">[</span>mode<span class="op">].</span>param_tx<span class="op">.</span>timer4<span class="op">);</span> </span>
+<span id="cb115-18"><a href="ch-ir.html#cb115-18" aria-hidden="true" tabindex="-1"></a>        IR_CtrlIrSetBitTime1<span class="op">(</span>APB_IR<span class="op">,</span>t_ir_type_param_table<span class="op">[</span>mode<span class="op">].</span>param_tx<span class="op">.</span>btimer1<span class="op">);</span></span>
+<span id="cb115-19"><a href="ch-ir.html#cb115-19" aria-hidden="true" tabindex="-1"></a>        IR_CtrlIrSetBitTime2<span class="op">(</span>APB_IR<span class="op">,</span>t_ir_type_param_table<span class="op">[</span>mode<span class="op">].</span>param_tx<span class="op">.</span>btimer2<span class="op">);</span>    </span>
+<span id="cb115-20"><a href="ch-ir.html#cb115-20" aria-hidden="true" tabindex="-1"></a>        IR_CtrlIrSetIrBitCycle<span class="op">(</span>APB_IR<span class="op">,</span>t_ir_type_param_table<span class="op">[</span>mode<span class="op">].</span>param_tx<span class="op">.</span>bit_cycle<span class="op">);</span>        </span>
+<span id="cb115-21"><a href="ch-ir.html#cb115-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb115-22"><a href="ch-ir.html#cb115-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span><span class="op">{</span></span>
+<span id="cb115-23"><a href="ch-ir.html#cb115-23" aria-hidden="true" tabindex="-1"></a>        IR_CtrlSetIrEndDetectEn<span class="op">(</span>APB_IR<span class="op">);</span><span class="co">//end code detect en</span></span>
+<span id="cb115-24"><a href="ch-ir.html#cb115-24" aria-hidden="true" tabindex="-1"></a>        IR_CtrlIrUsercodeVerify<span class="op">(</span>APB_IR<span class="op">);</span></span>
+<span id="cb115-25"><a href="ch-ir.html#cb115-25" aria-hidden="true" tabindex="-1"></a>        IR_CtrlIrDatacodeVerify<span class="op">(</span>APB_IR<span class="op">);</span></span>
+<span id="cb115-26"><a href="ch-ir.html#cb115-26" aria-hidden="true" tabindex="-1"></a>        IR_TimeSetIrTime1<span class="op">(</span>APB_IR<span class="op">,</span>t_ir_type_param_table<span class="op">[</span>mode<span class="op">].</span>param_rx<span class="op">.</span>timer1<span class="op">);</span></span>
+<span id="cb115-27"><a href="ch-ir.html#cb115-27" aria-hidden="true" tabindex="-1"></a>        IR_TimeSetIrTime2<span class="op">(</span>APB_IR<span class="op">,</span>t_ir_type_param_table<span class="op">[</span>mode<span class="op">].</span>param_rx<span class="op">.</span>timer2<span class="op">);</span></span>
+<span id="cb115-28"><a href="ch-ir.html#cb115-28" aria-hidden="true" tabindex="-1"></a>        IR_TimeSetIrTime3<span class="op">(</span>APB_IR<span class="op">,</span>t_ir_type_param_table<span class="op">[</span>mode<span class="op">].</span>param_rx<span class="op">.</span>timer3<span class="op">);</span></span>
+<span id="cb115-29"><a href="ch-ir.html#cb115-29" aria-hidden="true" tabindex="-1"></a>        IR_TimeSetIrTime4<span class="op">(</span>APB_IR<span class="op">,</span>t_ir_type_param_table<span class="op">[</span>mode<span class="op">].</span>param_rx<span class="op">.</span>timer4<span class="op">);</span> </span>
+<span id="cb115-30"><a href="ch-ir.html#cb115-30" aria-hidden="true" tabindex="-1"></a>        IR_TimeSetIrTime5<span class="op">(</span>APB_IR<span class="op">,</span>t_ir_type_param_table<span class="op">[</span>mode<span class="op">].</span>param_rx<span class="op">.</span>timer5<span class="op">);</span> </span>
+<span id="cb115-31"><a href="ch-ir.html#cb115-31" aria-hidden="true" tabindex="-1"></a>        IR_CtrlIrSetBitTime1<span class="op">(</span>APB_IR<span class="op">,</span>t_ir_type_param_table<span class="op">[</span>mode<span class="op">].</span>param_rx<span class="op">.</span>btimer1<span class="op">);</span></span>
+<span id="cb115-32"><a href="ch-ir.html#cb115-32" aria-hidden="true" tabindex="-1"></a>        IR_CtrlIrSetBitTime2<span class="op">(</span>APB_IR<span class="op">,</span>t_ir_type_param_table<span class="op">[</span>mode<span class="op">].</span>param_rx<span class="op">.</span>btimer2<span class="op">);</span>    </span>
+<span id="cb115-33"><a href="ch-ir.html#cb115-33" aria-hidden="true" tabindex="-1"></a>        IR_CtrlIrSetIrBitCycle<span class="op">(</span>APB_IR<span class="op">,</span>t_ir_type_param_table<span class="op">[</span>mode<span class="op">].</span>param_rx<span class="op">.</span>bit_cycle<span class="op">);</span>   </span>
+<span id="cb115-34"><a href="ch-ir.html#cb115-34" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb115-35"><a href="ch-ir.html#cb115-35" aria-hidden="true" tabindex="-1"></a>    IR_CtrlEnable<span class="op">(</span>APB_IR<span class="op">);</span></span>
+<span id="cb115-36"><a href="ch-ir.html#cb115-36" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </div>
+<div id="ir-中断以及ir接收" class="section level4 hasAnchor" number="10.2.2.3">
+<h4><span class="header-section-number">10.2.2.3</span> IR 中断(以及IR接收)<a href="ch-ir.html#ir-中断以及ir接收" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb116"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb116-1"><a href="ch-ir.html#cb116-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> IRQHandler_IR_INT<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
+<span id="cb116-2"><a href="ch-ir.html#cb116-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb116-3"><a href="ch-ir.html#cb116-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>IR_FsmGetIrTransmitOk<span class="op">(</span>APB_IR<span class="op">))</span></span>
+<span id="cb116-4"><a href="ch-ir.html#cb116-4" aria-hidden="true" tabindex="-1"></a>        <span class="op">;</span><span class="co">//platform_printf(&quot;int ir send ok\n&quot;);</span></span>
+<span id="cb116-5"><a href="ch-ir.html#cb116-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>IR_FsmGetIrTxRepeat<span class="op">(</span>APB_IR<span class="op">))</span></span>
+<span id="cb116-6"><a href="ch-ir.html#cb116-6" aria-hidden="true" tabindex="-1"></a>        <span class="op">;</span><span class="co">//platform_printf(&quot;int ir repeat ok\n&quot;);</span></span>
+<span id="cb116-7"><a href="ch-ir.html#cb116-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>IR_FsmGetIrReceivedOk<span class="op">(</span>APB_IR<span class="op">))</span></span>
+<span id="cb116-8"><a href="ch-ir.html#cb116-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb116-9"><a href="ch-ir.html#cb116-9" aria-hidden="true" tabindex="-1"></a>        <span class="dt">uint32_t</span> value <span class="op">=</span> IR_RxCodeGetIrRxUsercode<span class="op">(</span>APB_IR<span class="op">)</span> <span class="op">&lt;&lt;</span><span class="dv">16</span> <span class="op">|</span> IR_RxCodeGetIrRxDatacode<span class="op">(</span>APB_IR<span class="op">);</span></span>
+<span id="cb116-10"><a href="ch-ir.html#cb116-10" aria-hidden="true" tabindex="-1"></a>        platform_printf<span class="op">(</span><span class="st">&quot;Received:0x%x</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span>value<span class="op">);</span></span>
+<span id="cb116-11"><a href="ch-ir.html#cb116-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb116-12"><a href="ch-ir.html#cb116-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb116-13"><a href="ch-ir.html#cb116-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>IR_FsmGetIrRepeat<span class="op">(</span>APB_IR<span class="op">))</span></span>
+<span id="cb116-14"><a href="ch-ir.html#cb116-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">;</span></span>
+<span id="cb116-15"><a href="ch-ir.html#cb116-15" aria-hidden="true" tabindex="-1"></a>    IR_FsmClearIrInt<span class="op">(</span>APB_IR<span class="op">);</span></span>
+<span id="cb116-16"><a href="ch-ir.html#cb116-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb116-17"><a href="ch-ir.html#cb116-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </div>
-<div id="使用方法-5" class="section level2 hasAnchor" number="16.2">
-<h2><span class="header-section-number">16.2</span> 使用方法<a href="ch-qdec.html#使用方法-5" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="方法概述-4" class="section level3 hasAnchor" number="16.2.1">
-<h3><span class="header-section-number">16.2.1</span> 方法概述<a href="ch-qdec.html#方法概述-4" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>方法概述为：GPIO选配，时钟配置，QDEC参数配置以及数据处理。</p>
-<div id="gpio选择" class="section level4 hasAnchor" number="16.2.1.1">
-<h4><span class="header-section-number">16.2.1.1</span> GPIO选择<a href="ch-qdec.html#gpio选择" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p>驱动接口：PINCTRL_SelQDECIn</p>
-<p>QDEC的GPIO选择，请参考《ING91682X_BLE5.3_芯片数据手册》中的“IO引脚控制器Pin Controller”一节</p>
-<p>对phase_a、phase_b选定要配置的GPIO口，并调用PINCTRL_SelQDECIn接口进行配置。</p>
-</div>
-<div id="时钟配置-1" class="section level4 hasAnchor" number="16.2.1.2">
-<h4><span class="header-section-number">16.2.1.2</span> 时钟配置<a href="ch-qdec.html#时钟配置-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p>驱动接口：SYSCTRL_SelectQDECClk</p>
-<p>当前QDEC可以选择使用的时钟源为HCLK时钟或者sclk_slow时钟</p>
-<p>对所选用的时钟源还需要进行一次分频，分频系数范围为1-1023，默认值为2</p>
-<p>这里需要特别注意的是： <strong>请务必配置pclk时钟频率不大于qdec时钟源频率</strong></p>
-<p><strong>注意：</strong> 如果配置pclk频率大于qdec时钟源频率，会出现qdec参数配置失败从而不能正常工作的现象。</p>
-<p>为了方便开发者使用，可以直接调用下面提供的接口来配置pclk时钟符合上述要求：</p>
-<div class="sourceCode" id="cb165"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb165-1"><a href="ch-qdec.html#cb165-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> QDEC_PclkCfg<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
-<span id="cb165-2"><a href="ch-qdec.html#cb165-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb165-3"><a href="ch-qdec.html#cb165-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">((</span>APB_SYSCTRL<span class="op">-&gt;</span>QdecCfg <span class="op">&gt;&gt;</span> <span class="dv">15</span><span class="op">)</span> <span class="op">&amp;</span> <span class="dv">1</span><span class="op">)</span></span>
-<span id="cb165-4"><a href="ch-qdec.html#cb165-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span><span class="op">;</span></span>
-<span id="cb165-5"><a href="ch-qdec.html#cb165-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> hclk <span class="op">=</span> SYSCTRL_GetHClk<span class="op">();</span></span>
-<span id="cb165-6"><a href="ch-qdec.html#cb165-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> slowClk <span class="op">=</span> SYSCTRL_GetSlowClk<span class="op">();</span></span>
-<span id="cb165-7"><a href="ch-qdec.html#cb165-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> div <span class="op">=</span> hclk <span class="op">/</span> slowClk<span class="op">;</span></span>
-<span id="cb165-8"><a href="ch-qdec.html#cb165-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>hclk <span class="op">%</span> slowClk<span class="op">)</span></span>
-<span id="cb165-9"><a href="ch-qdec.html#cb165-9" aria-hidden="true" tabindex="-1"></a>        div<span class="op">++;</span></span>
-<span id="cb165-10"><a href="ch-qdec.html#cb165-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(!(</span>div <span class="op">&gt;&gt;</span> <span class="dv">4</span><span class="op">))</span></span>
-<span id="cb165-11"><a href="ch-qdec.html#cb165-11" aria-hidden="true" tabindex="-1"></a>        SYSCTRL_SetPClkDiv<span class="op">(</span>div<span class="op">);</span></span>
-<span id="cb165-12"><a href="ch-qdec.html#cb165-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>开发者可以将以上代码拷贝到程序里，在配置qdec之前调用即可。</p>
-</div>
-<div id="qdec参数配置" class="section level4 hasAnchor" number="16.2.1.3">
-<h4><span class="header-section-number">16.2.1.3</span> QDEC参数配置<a href="ch-qdec.html#qdec参数配置" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p>驱动接口：QDEC_EnableQdecDiv、QDEC_QdecCfg</p>
-<p>共有3个参数需要配置：qdec_clk_div、filter和miss</p>
-<p>其含义分别如下：</p>
-<ul>
-<li><p><strong>qdec_clk_div：</strong>用于控制qdec结果上报频率。即多少个时钟周期上报一次采样结果</p></li>
-<li><p><strong>filter：</strong>用于过滤<strong>filter×时钟周期</strong>时长以内的毛刺</p></li>
-<li><p><strong>miss：</strong>用于控制qdec可以自动补偿的最大miss结果数。例如由于滚轮转动过快，导致两次采样中变换了不止一个结果，则此时会自动补偿最多miss个结果。</p></li>
-</ul>
-<p><strong>注意：</strong> 对于miss值的配置需要格外注意，miss值的设置主要考虑到可能由于转动速度过快导致有数据丢失的情况，但此补偿机制容易受设备信号质量影响。对于信号质量较差的设备，如毛刺较多，则不建议加入miss，否则可能出现<strong>“采样数据跳变”</strong>和<strong>“换向迟钝”</strong>的问题。对于此类设备，此处建议采用较大工作时钟，不加入miss进行采样。测试证明此种方式也可以有较为出色的采样效果。</p>
-<p>对于miss值配置此处建议先加入较小的miss值（如miss=1）测试效果，如果有数据跳变或者换向迟钝则采用较大工作时钟（如HCLK时钟），不加miss进行采样。</p>
-<p>开发者如果在调试qdec过程中出现数据跳变和换向迟钝的问题，建议进行以下几方面尝试：</p>
-<p><strong>1.</strong> 如选用sclk_slow作为时钟源，检查是否有配置pclk频率小于qdec工作频率</p>
-<p><strong>2.</strong> 改用较小工作时钟</p>
-<p><strong>3.</strong> 采用较小的miss值（如miss=1）和较大的filter值</p>
-<p><strong>4.</strong> 采用较大工作时钟（如HCLK时钟），不加miss进行采样</p>
-<p>如果偶尔有较小的数据跳变，如5以内，则属于正常情况。</p>
-</div>
-</div>
-<div id="注意点-5" class="section level3 hasAnchor" number="16.2.2">
-<h3><span class="header-section-number">16.2.2</span> 注意点<a href="ch-qdec.html#注意点-5" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<ul>
-<li><p>phase_a、phase_b引脚配置注意区分正反，交换引脚则得到相反的转向</p></li>
-<li><p>配置pclk时钟可能会影响其他外设，请参考916时钟树进行正确配置</p></li>
-<li><p>qdec采样快慢和时钟正相关，和qdec_clk_div大小无关，qdec_clk_div只控制对结果的上报频率</p></li>
-<li><p>qdec上报结果会同时触发qdec中断或者DMA_REQ，qdec_clk_div设置过低会占用较多CPU资源</p></li>
-<li><p>filter建议选择较大值，受毛刺影响较小，稳定性较好</p></li>
-</ul>
-</div>
-</div>
-<div id="编程指南-5" class="section level2 hasAnchor" number="16.3">
-<h2><span class="header-section-number">16.3</span> 编程指南<a href="ch-qdec.html#编程指南-5" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="驱动接口-5" class="section level3 hasAnchor" number="16.3.1">
-<h3><span class="header-section-number">16.3.1</span> 驱动接口<a href="ch-qdec.html#驱动接口-5" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<ul>
-<li><p>QDEC_QdecCfg：qdec标准配置接口</p></li>
-<li><p>QDEC_EnableQdecDiv：qdec_clk_div设置使能接口</p></li>
-<li><p>QDEC_ChannelEnable：qdec通道使能接口</p></li>
-<li><p>QDEC_GetData：qdec获取数据接口</p></li>
-<li><p>QDEC_GetDirection：qdec获取转向接口</p></li>
-<li><p>QDEC_Reset：qdec复位接口</p></li>
-</ul>
-</div>
-<div id="代码示例-5" class="section level3 hasAnchor" number="16.3.2">
-<h3><span class="header-section-number">16.3.2</span> 代码示例<a href="ch-qdec.html#代码示例-5" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>下面一段代码展示了qdec全部配置并循环读数：</p>
-<div class="sourceCode" id="cb166"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb166-1"><a href="ch-qdec.html#cb166-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> QDEC_PclkCfg<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
-<span id="cb166-2"><a href="ch-qdec.html#cb166-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb166-3"><a href="ch-qdec.html#cb166-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">((</span>APB_SYSCTRL<span class="op">-&gt;</span>QdecCfg <span class="op">&gt;&gt;</span> <span class="dv">15</span><span class="op">)</span> <span class="op">&amp;</span> <span class="dv">1</span><span class="op">)</span></span>
-<span id="cb166-4"><a href="ch-qdec.html#cb166-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span><span class="op">;</span></span>
-<span id="cb166-5"><a href="ch-qdec.html#cb166-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> hclk <span class="op">=</span> SYSCTRL_GetHClk<span class="op">();</span></span>
-<span id="cb166-6"><a href="ch-qdec.html#cb166-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> slowClk <span class="op">=</span> SYSCTRL_GetSlowClk<span class="op">();</span></span>
-<span id="cb166-7"><a href="ch-qdec.html#cb166-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> div <span class="op">=</span> hclk <span class="op">/</span> slowClk<span class="op">;</span></span>
-<span id="cb166-8"><a href="ch-qdec.html#cb166-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>hclk <span class="op">%</span> slowClk<span class="op">)</span></span>
-<span id="cb166-9"><a href="ch-qdec.html#cb166-9" aria-hidden="true" tabindex="-1"></a>        div<span class="op">++;</span></span>
-<span id="cb166-10"><a href="ch-qdec.html#cb166-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(!(</span>div <span class="op">&gt;&gt;</span> <span class="dv">4</span><span class="op">))</span></span>
-<span id="cb166-11"><a href="ch-qdec.html#cb166-11" aria-hidden="true" tabindex="-1"></a>        SYSCTRL_SetPClkDiv<span class="op">(</span>div<span class="op">);</span></span>
-<span id="cb166-12"><a href="ch-qdec.html#cb166-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb166-13"><a href="ch-qdec.html#cb166-13" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> test<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
-<span id="cb166-14"><a href="ch-qdec.html#cb166-14" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb166-15"><a href="ch-qdec.html#cb166-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">// setup qdec</span></span>
-<span id="cb166-16"><a href="ch-qdec.html#cb166-16" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGate<span class="op">(</span>SYSCTRL_ITEM_APB_PinCtrl <span class="op">|</span></span>
-<span id="cb166-17"><a href="ch-qdec.html#cb166-17" aria-hidden="true" tabindex="-1"></a>                         SYSCTRL_ITEM_APB_QDEC<span class="op">);</span></span>
-<span id="cb166-18"><a href="ch-qdec.html#cb166-18" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ReleaseBlock<span class="op">(</span>SYSCTRL_ITEM_APB_PinCtrl <span class="op">|</span></span>
-<span id="cb166-19"><a href="ch-qdec.html#cb166-19" aria-hidden="true" tabindex="-1"></a>                         SYSCTRL_ITEM_APB_QDEC<span class="op">);</span></span>
-<span id="cb166-20"><a href="ch-qdec.html#cb166-20" aria-hidden="true" tabindex="-1"></a>    PINCTRL_SelQDECIn<span class="op">(</span><span class="dv">16</span><span class="op">,</span> <span class="dv">17</span><span class="op">);</span>    <span class="co">// set GPIO16=phase_a, GPIO17=phase_b</span></span>
-<span id="cb166-21"><a href="ch-qdec.html#cb166-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb166-22"><a href="ch-qdec.html#cb166-22" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_SelectQDECClk<span class="op">(</span>SYSCTRL_CLK_SLOW<span class="op">,</span> <span class="dv">100</span><span class="op">);</span></span>
-<span id="cb166-23"><a href="ch-qdec.html#cb166-23" aria-hidden="true" tabindex="-1"></a>    QDEC_PclkCfg<span class="op">();</span>    <span class="co">// set pclk not bigger than sclk_slow</span></span>
-<span id="cb166-24"><a href="ch-qdec.html#cb166-24" aria-hidden="true" tabindex="-1"></a>    QDEC_EnableQdecDiv<span class="op">(</span>QDEC_DIV_1024<span class="op">);</span></span>
-<span id="cb166-25"><a href="ch-qdec.html#cb166-25" aria-hidden="true" tabindex="-1"></a>    QDEC_QdecCfg<span class="op">(</span><span class="dv">50</span><span class="op">,</span> <span class="dv">1</span><span class="op">);</span></span>
-<span id="cb166-26"><a href="ch-qdec.html#cb166-26" aria-hidden="true" tabindex="-1"></a>    QDEC_ChannelEnable<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
-<span id="cb166-27"><a href="ch-qdec.html#cb166-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb166-28"><a href="ch-qdec.html#cb166-28" aria-hidden="true" tabindex="-1"></a>    <span class="co">// print qdec data and direction when rotate the mouse wheel manually</span></span>
-<span id="cb166-29"><a href="ch-qdec.html#cb166-29" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> preData <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb166-30"><a href="ch-qdec.html#cb166-30" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> data <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb166-31"><a href="ch-qdec.html#cb166-31" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> dir<span class="op">;</span></span>
-<span id="cb166-32"><a href="ch-qdec.html#cb166-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span><span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb166-33"><a href="ch-qdec.html#cb166-33" aria-hidden="true" tabindex="-1"></a>        data <span class="op">=</span> QDEC_GetData<span class="op">();</span></span>
-<span id="cb166-34"><a href="ch-qdec.html#cb166-34" aria-hidden="true" tabindex="-1"></a>        dir <span class="op">=</span> QDEC_GetDirection<span class="op">();</span></span>
-<span id="cb166-35"><a href="ch-qdec.html#cb166-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>data <span class="op">!=</span> preData<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb166-36"><a href="ch-qdec.html#cb166-36" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>dir<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb166-37"><a href="ch-qdec.html#cb166-37" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;data: %d, %s</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> data<span class="op">,</span> <span class="st">&quot;anticlockwise&quot;</span><span class="op">);</span></span>
-<span id="cb166-38"><a href="ch-qdec.html#cb166-38" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
-<span id="cb166-39"><a href="ch-qdec.html#cb166-39" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;data: %d, %s</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> data<span class="op">,</span> <span class="st">&quot;clockwise&quot;</span><span class="op">);</span></span>
-<span id="cb166-40"><a href="ch-qdec.html#cb166-40" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
-<span id="cb166-41"><a href="ch-qdec.html#cb166-41" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb166-42"><a href="ch-qdec.html#cb166-42" aria-hidden="true" tabindex="-1"></a>        preData <span class="op">=</span> data<span class="op">;</span></span>
-<span id="cb166-43"><a href="ch-qdec.html#cb166-43" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb166-44"><a href="ch-qdec.html#cb166-44" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>当手动转动鼠标滚轮时，会打印出收到的qdec数据和转向。</p>
-<p>qdec的详细使用请参考HID mouse例程。</p>
+<div id="ir-发射" class="section level4 hasAnchor" number="10.2.2.4">
+<h4><span class="header-section-number">10.2.2.4</span> IR 发射<a href="ch-ir.html#ir-发射" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb117"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb117-1"><a href="ch-ir.html#cb117-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">int</span> ir_transmit_fun<span class="op">(</span><span class="dt">uint16_t</span> addr<span class="op">,</span><span class="dt">uint16_t</span> data<span class="op">)</span> <span class="co">//ir hard transmit data</span></span>
+<span id="cb117-2"><a href="ch-ir.html#cb117-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb117-3"><a href="ch-ir.html#cb117-3" aria-hidden="true" tabindex="-1"></a>    IR_TxCodeSetIrTxUsercode<span class="op">(</span>APB_IR<span class="op">,</span>addr<span class="op">);</span></span>
+<span id="cb117-4"><a href="ch-ir.html#cb117-4" aria-hidden="true" tabindex="-1"></a>    IR_TxCodeSetIrTxDatacode<span class="op">(</span>APB_IR<span class="op">,</span>data<span class="op">);</span></span>
+<span id="cb117-5"><a href="ch-ir.html#cb117-5" aria-hidden="true" tabindex="-1"></a>    IR_CleanIrTxRepeatMode<span class="op">(</span>APB_IR<span class="op">);</span><span class="co">//must clearn the repeat mode reg</span></span>
+<span id="cb117-6"><a href="ch-ir.html#cb117-6" aria-hidden="true" tabindex="-1"></a>    IR_TxConfigTxStart<span class="op">(</span>APB_IR<span class="op">);</span></span>
+<span id="cb117-7"><a href="ch-ir.html#cb117-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">//while(!IR_FsmGetIrTransmitOk(APB_IR));</span></span>
+<span id="cb117-8"><a href="ch-ir.html#cb117-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb117-9"><a href="ch-ir.html#cb117-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb117-10"><a href="ch-ir.html#cb117-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb117-11"><a href="ch-ir.html#cb117-11" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">int</span> ir_transmit_repeat<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="co">//ir hard transmit repeat</span></span>
+<span id="cb117-12"><a href="ch-ir.html#cb117-12" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb117-13"><a href="ch-ir.html#cb117-13" aria-hidden="true" tabindex="-1"></a>    IR_CtrlIrTxRepeatMode<span class="op">(</span>APB_IR<span class="op">);</span>   </span>
+<span id="cb117-14"><a href="ch-ir.html#cb117-14" aria-hidden="true" tabindex="-1"></a>    IR_TxConfigTxStart<span class="op">(</span>APB_IR<span class="op">);</span></span>
+<span id="cb117-15"><a href="ch-ir.html#cb117-15" aria-hidden="true" tabindex="-1"></a> <span class="co">//   while(!IR_FsmGetIrTransmitOk(APB_IR)); </span></span>
+<span id="cb117-16"><a href="ch-ir.html#cb117-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb117-17"><a href="ch-ir.html#cb117-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<hr />
 
+</div>
 </div>
 </div>
 </div>
@@ -737,8 +761,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="ch-pwm.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="ch-rtc.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="ch-I2s.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ch-keyscan.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

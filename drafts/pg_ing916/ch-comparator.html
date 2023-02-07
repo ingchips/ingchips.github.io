@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>16 QDEC简介 | ING916XX 系列芯片外设开发者手册</title>
+  <title>4 模拟比较器（COMPARATOR） | ING916XX 系列芯片外设开发者手册</title>
   <meta name="description" content="ING916XX 系列芯片开发者手册." />
   <meta name="generator" content="bookdown 0.32 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="16 QDEC简介 | ING916XX 系列芯片外设开发者手册" />
+  <meta property="og:title" content="4 模拟比较器（COMPARATOR） | ING916XX 系列芯片外设开发者手册" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="ING916XX 系列芯片开发者手册." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="16 QDEC简介 | ING916XX 系列芯片外设开发者手册" />
+  <meta name="twitter:title" content="4 模拟比较器（COMPARATOR） | ING916XX 系列芯片外设开发者手册" />
   
   <meta name="twitter:description" content="ING916XX 系列芯片开发者手册." />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="ch-pwm.html"/>
-<link rel="next" href="ch-rtc.html"/>
+<link rel="prev" href="ch-adc.html"/>
+<link rel="next" href="ch-dma.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -567,167 +567,157 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="ch-qdec" class="section level1 hasAnchor" number="16">
-<h1><span class="header-section-number">16</span> QDEC简介<a href="ch-qdec.html#ch-qdec" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p>QDEC全称Quadrature Decoder，即正交解码器。</p>
-<p>其作用是用来解码来自旋转编码器的脉冲序列，以提供外部设备运动的步长和方向。</p>
-<div id="功能描述-5" class="section level2 hasAnchor" number="16.1">
-<h2><span class="header-section-number">16.1</span> 功能描述<a href="ch-qdec.html#功能描述-5" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="特点-5" class="section level3 hasAnchor" number="16.1.1">
-<h3><span class="header-section-number">16.1.1</span> 特点<a href="ch-qdec.html#特点-5" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="ch-comparator" class="section level1 hasAnchor" number="4">
+<h1><span class="header-section-number">4</span> 模拟比较器（COMPARATOR）<a href="ch-comparator.html#ch-comparator" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="功能概述" class="section level2 hasAnchor" number="4.1">
+<h2><span class="header-section-number">4.1</span> 功能概述<a href="ch-comparator.html#功能概述" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>模拟比较器根据比较两个输入电压的结果以获得高电平或低电平输出。</p>
+<p>特性：</p>
 <ul>
-<li><p>可配置时钟</p></li>
-<li><p>支持过滤器</p></li>
-<li><p>支持APB总线</p></li>
-<li><p>支持DMA</p></li>
+<li>支持轨到轨输入。</li>
+<li>4种功耗模式：超低功耗模式、低功耗模式、中等功耗模式、高功耗模式。</li>
+<li>精确处理低至20mV电压。</li>
+<li>支持8通道VINP和6通道VINN，VINN其中一个通道来自内部参考电压。</li>
+<li>VINN支持16级阶梯。</li>
 </ul>
 </div>
-<div id="正转和反转" class="section level3 hasAnchor" number="16.1.2">
-<h3><span class="header-section-number">16.1.2</span> 正转和反转<a href="ch-qdec.html#正转和反转" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>QDEC是通过采集到phase_a、phase_b相邻两次的数值变化来判断外设的运动方向。</p>
-顺时针采集数据如图所示：
-<div class="figure" style="text-align: center"><span style="display:block;" id="fig:916-qdec-clockwise"></span>
-<img src="img/QDEC/916_QDEC_clockwise.png" alt="QDEC顺时针采集数据" width="70%" />
-<p class="caption">
-图 16.1: QDEC顺时针采集数据
-</p>
+<div id="使用说明" class="section level2 hasAnchor" number="4.2">
+<h2><span class="header-section-number">4.2</span> 使用说明<a href="ch-comparator.html#使用说明" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><img src="img/Comparator/CMP.JPG" /></p>
+<div id="模拟比较器模块初始化" class="section level3 hasAnchor" number="4.2.1">
+<h3><span class="header-section-number">4.2.1</span> 模拟比较器模块初始化<a href="ch-comparator.html#模拟比较器模块初始化" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb7-1"><a href="ch-comparator.html#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb7-2"><a href="ch-comparator.html#cb7-2" aria-hidden="true" tabindex="-1"></a>    COMPARATOR_Vinp_t v_in_p<span class="op">;</span></span>
+<span id="cb7-3"><a href="ch-comparator.html#cb7-3" aria-hidden="true" tabindex="-1"></a>    COMPARATOR_Vinn_t v_in_n<span class="op">;</span></span>
+<span id="cb7-4"><a href="ch-comparator.html#cb7-4" aria-hidden="true" tabindex="-1"></a>    COMPARATOR_Enable_t en<span class="op">;</span></span>
+<span id="cb7-5"><a href="ch-comparator.html#cb7-5" aria-hidden="true" tabindex="-1"></a>    COMPARATOR_HysteresisValtage_t hysteresis<span class="op">;</span></span>
+<span id="cb7-6"><a href="ch-comparator.html#cb7-6" aria-hidden="true" tabindex="-1"></a>    COMPARATOR_VinnDivision_t vinn_division<span class="op">;</span></span>
+<span id="cb7-7"><a href="ch-comparator.html#cb7-7" aria-hidden="true" tabindex="-1"></a>    COMPARATOR_WorkMode_t work_mode<span class="op">;</span></span>
+<span id="cb7-8"><a href="ch-comparator.html#cb7-8" aria-hidden="true" tabindex="-1"></a>    COMPARATOR_OutputPolarity_t output_polarity<span class="op">;</span></span>
+<span id="cb7-9"><a href="ch-comparator.html#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> COMPARATOR_SetStateStruct<span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb8-1"><a href="ch-comparator.html#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb8-2"><a href="ch-comparator.html#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> Initialize comparator module</span></span>
+<span id="cb8-3"><a href="ch-comparator.html#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
+<span id="cb8-4"><a href="ch-comparator.html#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">cmp_set</span><span class="co">           Initial parameter struct</span></span>
+<span id="cb8-5"><a href="ch-comparator.html#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb8-6"><a href="ch-comparator.html#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> COMPARATOR_Initialize<span class="op">(</span><span class="dt">const</span> COMPARATOR_SetStateStruct<span class="op">*</span> cmp_set<span class="op">);</span></span></code></pre></div>
 </div>
-逆时针采集数据如图所示：
-<div class="figure" style="text-align: center"><span style="display:block;" id="fig:916-qdec-anticlockwise"></span>
-<img src="img/QDEC/916_QDEC_anticlockwise.png" alt="QDEC逆时针采集数据" width="70%" />
-<p class="caption">
-图 16.2: QDEC逆时针采集数据
-</p>
+<div id="获取模拟比较器结果" class="section level3 hasAnchor" number="4.2.2">
+<h3><span class="header-section-number">4.2.2</span> 获取模拟比较器结果<a href="ch-comparator.html#获取模拟比较器结果" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>模拟比较器模块输出结果的极性可以配置。</p>
+<p>如果output_polarity配置为0，如果VINP电压高于VINN，比较器返回的结果是1；如果VINP电压低于VINN，比较器返回的结果是0。</p>
+<p>如果output_polarity配置为1，如果VINP电压高于VINN，比较器返回的结果是0；如果VINP电压低于VINN，比较器返回的结果是1。</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb9-1"><a href="ch-comparator.html#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb9-2"><a href="ch-comparator.html#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> Get comparator result</span></span>
+<span id="cb9-3"><a href="ch-comparator.html#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
+<span id="cb9-4"><a href="ch-comparator.html#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@return</span><span class="co">                      comparator result</span></span>
+<span id="cb9-5"><a href="ch-comparator.html#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb9-6"><a href="ch-comparator.html#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> COMPARATOR_GetComparatorResult<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
 </div>
-<p>在QDEC数据上，如果引脚配置和连接正确，顺时针转动则采集到的数据逐渐增大，逆时针则数据逐渐减小。</p>
+<div id="设置模拟比较器触发中断" class="section level3 hasAnchor" number="4.2.3">
+<h3><span class="header-section-number">4.2.3</span> 设置模拟比较器触发中断<a href="ch-comparator.html#设置模拟比较器触发中断" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>模拟比较器模块有2个中断源，输出结果的上升沿中断和输出结果的下降沿中断，中断标志需要手动清除。</p>
+<p>如果使能了模拟比较器模块的上升沿中断，当输出结果从0变为1时，会触发POSEDGE中断。</p>
+<p>如果使能了模拟比较器模块的下降沿中断，当输出结果从1变为0时，会触发NEGEDGE中断。</p>
+<p>上升沿或者下降沿触发中断可以单独配置，也可配成双沿触发。</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb10-1"><a href="ch-comparator.html#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
+<span id="cb10-2"><a href="ch-comparator.html#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb10-3"><a href="ch-comparator.html#cb10-3" aria-hidden="true" tabindex="-1"></a>    COMPARATOR_DISABLE_INT_MODE          <span class="op">=</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb10-4"><a href="ch-comparator.html#cb10-4" aria-hidden="true" tabindex="-1"></a>    COMPARATOR_NEGEDGE_INT_MODE             <span class="op">,</span></span>
+<span id="cb10-5"><a href="ch-comparator.html#cb10-5" aria-hidden="true" tabindex="-1"></a>    COMPARATOR_POSEDGE_INT_MODE             <span class="op">,</span></span>
+<span id="cb10-6"><a href="ch-comparator.html#cb10-6" aria-hidden="true" tabindex="-1"></a>    COMPARATOR_POSEDGE_AND_NEGEDGE_INT_MODE <span class="op">,</span></span>
+<span id="cb10-7"><a href="ch-comparator.html#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> COMPARATOR_INTERRUPT_MODE_t<span class="op">;</span></span>
+<span id="cb10-8"><a href="ch-comparator.html#cb10-8" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb10-9"><a href="ch-comparator.html#cb10-9" aria-hidden="true" tabindex="-1"></a> <span class="co">/**</span></span>
+<span id="cb10-10"><a href="ch-comparator.html#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> Set comparator as interrupt source</span></span>
+<span id="cb10-11"><a href="ch-comparator.html#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
+<span id="cb10-12"><a href="ch-comparator.html#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">int_mode</span><span class="co">          COMPARATOR_INTERRUPT_MODE_t</span></span>
+<span id="cb10-13"><a href="ch-comparator.html#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@return</span><span class="co">                      0:OK, other:error</span></span>
+<span id="cb10-14"><a href="ch-comparator.html#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb10-15"><a href="ch-comparator.html#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> COMPARATOR_SetInterrupt<span class="op">(</span>COMPARATOR_INTERRUPT_MODE_t int_mode<span class="op">);</span></span>
+<span id="cb10-16"><a href="ch-comparator.html#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="ch-comparator.html#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb10-18"><a href="ch-comparator.html#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> Get comparator interrupt status and clear interrupt flag</span></span>
+<span id="cb10-19"><a href="ch-comparator.html#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
+<span id="cb10-20"><a href="ch-comparator.html#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@return</span><span class="co">                      interrupt status</span></span>
+<span id="cb10-21"><a href="ch-comparator.html#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb10-22"><a href="ch-comparator.html#cb10-22" aria-hidden="true" tabindex="-1"></a>COMPARATOR_INTERRUPT_MODE_t COMPARATOR_GetIntStatusAndClear<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
 </div>
-</div>
-<div id="使用方法-5" class="section level2 hasAnchor" number="16.2">
-<h2><span class="header-section-number">16.2</span> 使用方法<a href="ch-qdec.html#使用方法-5" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="方法概述-4" class="section level3 hasAnchor" number="16.2.1">
-<h3><span class="header-section-number">16.2.1</span> 方法概述<a href="ch-qdec.html#方法概述-4" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>方法概述为：GPIO选配，时钟配置，QDEC参数配置以及数据处理。</p>
-<div id="gpio选择" class="section level4 hasAnchor" number="16.2.1.1">
-<h4><span class="header-section-number">16.2.1.1</span> GPIO选择<a href="ch-qdec.html#gpio选择" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p>驱动接口：PINCTRL_SelQDECIn</p>
-<p>QDEC的GPIO选择，请参考《ING91682X_BLE5.3_芯片数据手册》中的“IO引脚控制器Pin Controller”一节</p>
-<p>对phase_a、phase_b选定要配置的GPIO口，并调用PINCTRL_SelQDECIn接口进行配置。</p>
-</div>
-<div id="时钟配置-1" class="section level4 hasAnchor" number="16.2.1.2">
-<h4><span class="header-section-number">16.2.1.2</span> 时钟配置<a href="ch-qdec.html#时钟配置-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p>驱动接口：SYSCTRL_SelectQDECClk</p>
-<p>当前QDEC可以选择使用的时钟源为HCLK时钟或者sclk_slow时钟</p>
-<p>对所选用的时钟源还需要进行一次分频，分频系数范围为1-1023，默认值为2</p>
-<p>这里需要特别注意的是： <strong>请务必配置pclk时钟频率不大于qdec时钟源频率</strong></p>
-<p><strong>注意：</strong> 如果配置pclk频率大于qdec时钟源频率，会出现qdec参数配置失败从而不能正常工作的现象。</p>
-<p>为了方便开发者使用，可以直接调用下面提供的接口来配置pclk时钟符合上述要求：</p>
-<div class="sourceCode" id="cb165"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb165-1"><a href="ch-qdec.html#cb165-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> QDEC_PclkCfg<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
-<span id="cb165-2"><a href="ch-qdec.html#cb165-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb165-3"><a href="ch-qdec.html#cb165-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">((</span>APB_SYSCTRL<span class="op">-&gt;</span>QdecCfg <span class="op">&gt;&gt;</span> <span class="dv">15</span><span class="op">)</span> <span class="op">&amp;</span> <span class="dv">1</span><span class="op">)</span></span>
-<span id="cb165-4"><a href="ch-qdec.html#cb165-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span><span class="op">;</span></span>
-<span id="cb165-5"><a href="ch-qdec.html#cb165-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> hclk <span class="op">=</span> SYSCTRL_GetHClk<span class="op">();</span></span>
-<span id="cb165-6"><a href="ch-qdec.html#cb165-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> slowClk <span class="op">=</span> SYSCTRL_GetSlowClk<span class="op">();</span></span>
-<span id="cb165-7"><a href="ch-qdec.html#cb165-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> div <span class="op">=</span> hclk <span class="op">/</span> slowClk<span class="op">;</span></span>
-<span id="cb165-8"><a href="ch-qdec.html#cb165-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>hclk <span class="op">%</span> slowClk<span class="op">)</span></span>
-<span id="cb165-9"><a href="ch-qdec.html#cb165-9" aria-hidden="true" tabindex="-1"></a>        div<span class="op">++;</span></span>
-<span id="cb165-10"><a href="ch-qdec.html#cb165-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(!(</span>div <span class="op">&gt;&gt;</span> <span class="dv">4</span><span class="op">))</span></span>
-<span id="cb165-11"><a href="ch-qdec.html#cb165-11" aria-hidden="true" tabindex="-1"></a>        SYSCTRL_SetPClkDiv<span class="op">(</span>div<span class="op">);</span></span>
-<span id="cb165-12"><a href="ch-qdec.html#cb165-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>开发者可以将以上代码拷贝到程序里，在配置qdec之前调用即可。</p>
-</div>
-<div id="qdec参数配置" class="section level4 hasAnchor" number="16.2.1.3">
-<h4><span class="header-section-number">16.2.1.3</span> QDEC参数配置<a href="ch-qdec.html#qdec参数配置" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p>驱动接口：QDEC_EnableQdecDiv、QDEC_QdecCfg</p>
-<p>共有3个参数需要配置：qdec_clk_div、filter和miss</p>
-<p>其含义分别如下：</p>
-<ul>
-<li><p><strong>qdec_clk_div：</strong>用于控制qdec结果上报频率。即多少个时钟周期上报一次采样结果</p></li>
-<li><p><strong>filter：</strong>用于过滤<strong>filter×时钟周期</strong>时长以内的毛刺</p></li>
-<li><p><strong>miss：</strong>用于控制qdec可以自动补偿的最大miss结果数。例如由于滚轮转动过快，导致两次采样中变换了不止一个结果，则此时会自动补偿最多miss个结果。</p></li>
-</ul>
-<p><strong>注意：</strong> 对于miss值的配置需要格外注意，miss值的设置主要考虑到可能由于转动速度过快导致有数据丢失的情况，但此补偿机制容易受设备信号质量影响。对于信号质量较差的设备，如毛刺较多，则不建议加入miss，否则可能出现<strong>“采样数据跳变”</strong>和<strong>“换向迟钝”</strong>的问题。对于此类设备，此处建议采用较大工作时钟，不加入miss进行采样。测试证明此种方式也可以有较为出色的采样效果。</p>
-<p>对于miss值配置此处建议先加入较小的miss值（如miss=1）测试效果，如果有数据跳变或者换向迟钝则采用较大工作时钟（如HCLK时钟），不加miss进行采样。</p>
-<p>开发者如果在调试qdec过程中出现数据跳变和换向迟钝的问题，建议进行以下几方面尝试：</p>
-<p><strong>1.</strong> 如选用sclk_slow作为时钟源，检查是否有配置pclk频率小于qdec工作频率</p>
-<p><strong>2.</strong> 改用较小工作时钟</p>
-<p><strong>3.</strong> 采用较小的miss值（如miss=1）和较大的filter值</p>
-<p><strong>4.</strong> 采用较大工作时钟（如HCLK时钟），不加miss进行采样</p>
-<p>如果偶尔有较小的数据跳变，如5以内，则属于正常情况。</p>
-</div>
-</div>
-<div id="注意点-5" class="section level3 hasAnchor" number="16.2.2">
-<h3><span class="header-section-number">16.2.2</span> 注意点<a href="ch-qdec.html#注意点-5" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<ul>
-<li><p>phase_a、phase_b引脚配置注意区分正反，交换引脚则得到相反的转向</p></li>
-<li><p>配置pclk时钟可能会影响其他外设，请参考916时钟树进行正确配置</p></li>
-<li><p>qdec采样快慢和时钟正相关，和qdec_clk_div大小无关，qdec_clk_div只控制对结果的上报频率</p></li>
-<li><p>qdec上报结果会同时触发qdec中断或者DMA_REQ，qdec_clk_div设置过低会占用较多CPU资源</p></li>
-<li><p>filter建议选择较大值，受毛刺影响较小，稳定性较好</p></li>
-</ul>
+<div id="设置模拟比较器睡眠唤醒" class="section level3 hasAnchor" number="4.2.4">
+<h3><span class="header-section-number">4.2.4</span> 设置模拟比较器睡眠唤醒<a href="ch-comparator.html#设置模拟比较器睡眠唤醒" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>模拟比较器模块可以作为唤醒源唤醒睡眠中的芯片。</p>
+<p>根据模拟比较器模块输出结果的电平状态，可以配置成高电平或者低电平唤醒芯片；也可配置成边沿唤醒，上升沿、下降沿、双沿唤醒均可。</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb11-1"><a href="ch-comparator.html#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
+<span id="cb11-2"><a href="ch-comparator.html#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb11-3"><a href="ch-comparator.html#cb11-3" aria-hidden="true" tabindex="-1"></a>    COMPARATOR_HIGH_LEVEL_WAKEUP <span class="op">=</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb11-4"><a href="ch-comparator.html#cb11-4" aria-hidden="true" tabindex="-1"></a>    COMPARATOR_LOW_LEVEL_WAKEUP     <span class="op">,</span></span>
+<span id="cb11-5"><a href="ch-comparator.html#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> COMPARATOR_LEVEL_WAKEUP_t<span class="op">;</span></span>
+<span id="cb11-6"><a href="ch-comparator.html#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="ch-comparator.html#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
+<span id="cb11-8"><a href="ch-comparator.html#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb11-9"><a href="ch-comparator.html#cb11-9" aria-hidden="true" tabindex="-1"></a>    COMPARATOR_LEVEL_WAKEUP_MODE            <span class="op">=</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb11-10"><a href="ch-comparator.html#cb11-10" aria-hidden="true" tabindex="-1"></a>    COMPARATOR_POSEDGE_WAKEUP_MODE             <span class="op">,</span></span>
+<span id="cb11-11"><a href="ch-comparator.html#cb11-11" aria-hidden="true" tabindex="-1"></a>    COMPARATOR_NEGEDGE_WAKEUP_MODE             <span class="op">,</span></span>
+<span id="cb11-12"><a href="ch-comparator.html#cb11-12" aria-hidden="true" tabindex="-1"></a>    COMPARATOR_POSEDGE_AND_NEGEDGE_WAKEUP_MODE <span class="op">,</span></span>
+<span id="cb11-13"><a href="ch-comparator.html#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> COMPARATOR_WAKEUP_MODE_t<span class="op">;</span></span>
+<span id="cb11-14"><a href="ch-comparator.html#cb11-14" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb11-15"><a href="ch-comparator.html#cb11-15" aria-hidden="true" tabindex="-1"></a> <span class="co">/**</span></span>
+<span id="cb11-16"><a href="ch-comparator.html#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> Set comparator as wakeup source from DEEP SLEEP mode</span></span>
+<span id="cb11-17"><a href="ch-comparator.html#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
+<span id="cb11-18"><a href="ch-comparator.html#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">enable</span><span class="co">            0:disable, 1:enable</span></span>
+<span id="cb11-19"><a href="ch-comparator.html#cb11-19" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">level</span><span class="co">             COMPARATOR_LEVEL_WAKEUP_t</span></span>
+<span id="cb11-20"><a href="ch-comparator.html#cb11-20" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">wakeup_mode</span><span class="co">       COMPARATOR_WAKEUP_MODE_t</span></span>
+<span id="cb11-21"><a href="ch-comparator.html#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@return</span><span class="co">                      0:OK, other:error</span></span>
+<span id="cb11-22"><a href="ch-comparator.html#cb11-22" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb11-23"><a href="ch-comparator.html#cb11-23" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> COMPARATOR_SetDeepSleepWakeupSource<span class="op">(</span><span class="dt">uint8_t</span> enable<span class="op">,</span></span>
+<span id="cb11-24"><a href="ch-comparator.html#cb11-24" aria-hidden="true" tabindex="-1"></a>                                        COMPARATOR_LEVEL_WAKEUP_t level<span class="op">,</span></span>
+<span id="cb11-25"><a href="ch-comparator.html#cb11-25" aria-hidden="true" tabindex="-1"></a>                                        COMPARATOR_WAKEUP_MODE_t wakeup_mode<span class="op">);</span></span></code></pre></div>
 </div>
 </div>
-<div id="编程指南-5" class="section level2 hasAnchor" number="16.3">
-<h2><span class="header-section-number">16.3</span> 编程指南<a href="ch-qdec.html#编程指南-5" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="驱动接口-5" class="section level3 hasAnchor" number="16.3.1">
-<h3><span class="header-section-number">16.3.1</span> 驱动接口<a href="ch-qdec.html#驱动接口-5" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<ul>
-<li><p>QDEC_QdecCfg：qdec标准配置接口</p></li>
-<li><p>QDEC_EnableQdecDiv：qdec_clk_div设置使能接口</p></li>
-<li><p>QDEC_ChannelEnable：qdec通道使能接口</p></li>
-<li><p>QDEC_GetData：qdec获取数据接口</p></li>
-<li><p>QDEC_GetDirection：qdec获取转向接口</p></li>
-<li><p>QDEC_Reset：qdec复位接口</p></li>
-</ul>
-</div>
-<div id="代码示例-5" class="section level3 hasAnchor" number="16.3.2">
-<h3><span class="header-section-number">16.3.2</span> 代码示例<a href="ch-qdec.html#代码示例-5" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>下面一段代码展示了qdec全部配置并循环读数：</p>
-<div class="sourceCode" id="cb166"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb166-1"><a href="ch-qdec.html#cb166-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> QDEC_PclkCfg<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
-<span id="cb166-2"><a href="ch-qdec.html#cb166-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb166-3"><a href="ch-qdec.html#cb166-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">((</span>APB_SYSCTRL<span class="op">-&gt;</span>QdecCfg <span class="op">&gt;&gt;</span> <span class="dv">15</span><span class="op">)</span> <span class="op">&amp;</span> <span class="dv">1</span><span class="op">)</span></span>
-<span id="cb166-4"><a href="ch-qdec.html#cb166-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span><span class="op">;</span></span>
-<span id="cb166-5"><a href="ch-qdec.html#cb166-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> hclk <span class="op">=</span> SYSCTRL_GetHClk<span class="op">();</span></span>
-<span id="cb166-6"><a href="ch-qdec.html#cb166-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> slowClk <span class="op">=</span> SYSCTRL_GetSlowClk<span class="op">();</span></span>
-<span id="cb166-7"><a href="ch-qdec.html#cb166-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> div <span class="op">=</span> hclk <span class="op">/</span> slowClk<span class="op">;</span></span>
-<span id="cb166-8"><a href="ch-qdec.html#cb166-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>hclk <span class="op">%</span> slowClk<span class="op">)</span></span>
-<span id="cb166-9"><a href="ch-qdec.html#cb166-9" aria-hidden="true" tabindex="-1"></a>        div<span class="op">++;</span></span>
-<span id="cb166-10"><a href="ch-qdec.html#cb166-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(!(</span>div <span class="op">&gt;&gt;</span> <span class="dv">4</span><span class="op">))</span></span>
-<span id="cb166-11"><a href="ch-qdec.html#cb166-11" aria-hidden="true" tabindex="-1"></a>        SYSCTRL_SetPClkDiv<span class="op">(</span>div<span class="op">);</span></span>
-<span id="cb166-12"><a href="ch-qdec.html#cb166-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb166-13"><a href="ch-qdec.html#cb166-13" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> test<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
-<span id="cb166-14"><a href="ch-qdec.html#cb166-14" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb166-15"><a href="ch-qdec.html#cb166-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">// setup qdec</span></span>
-<span id="cb166-16"><a href="ch-qdec.html#cb166-16" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGate<span class="op">(</span>SYSCTRL_ITEM_APB_PinCtrl <span class="op">|</span></span>
-<span id="cb166-17"><a href="ch-qdec.html#cb166-17" aria-hidden="true" tabindex="-1"></a>                         SYSCTRL_ITEM_APB_QDEC<span class="op">);</span></span>
-<span id="cb166-18"><a href="ch-qdec.html#cb166-18" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ReleaseBlock<span class="op">(</span>SYSCTRL_ITEM_APB_PinCtrl <span class="op">|</span></span>
-<span id="cb166-19"><a href="ch-qdec.html#cb166-19" aria-hidden="true" tabindex="-1"></a>                         SYSCTRL_ITEM_APB_QDEC<span class="op">);</span></span>
-<span id="cb166-20"><a href="ch-qdec.html#cb166-20" aria-hidden="true" tabindex="-1"></a>    PINCTRL_SelQDECIn<span class="op">(</span><span class="dv">16</span><span class="op">,</span> <span class="dv">17</span><span class="op">);</span>    <span class="co">// set GPIO16=phase_a, GPIO17=phase_b</span></span>
-<span id="cb166-21"><a href="ch-qdec.html#cb166-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb166-22"><a href="ch-qdec.html#cb166-22" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_SelectQDECClk<span class="op">(</span>SYSCTRL_CLK_SLOW<span class="op">,</span> <span class="dv">100</span><span class="op">);</span></span>
-<span id="cb166-23"><a href="ch-qdec.html#cb166-23" aria-hidden="true" tabindex="-1"></a>    QDEC_PclkCfg<span class="op">();</span>    <span class="co">// set pclk not bigger than sclk_slow</span></span>
-<span id="cb166-24"><a href="ch-qdec.html#cb166-24" aria-hidden="true" tabindex="-1"></a>    QDEC_EnableQdecDiv<span class="op">(</span>QDEC_DIV_1024<span class="op">);</span></span>
-<span id="cb166-25"><a href="ch-qdec.html#cb166-25" aria-hidden="true" tabindex="-1"></a>    QDEC_QdecCfg<span class="op">(</span><span class="dv">50</span><span class="op">,</span> <span class="dv">1</span><span class="op">);</span></span>
-<span id="cb166-26"><a href="ch-qdec.html#cb166-26" aria-hidden="true" tabindex="-1"></a>    QDEC_ChannelEnable<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
-<span id="cb166-27"><a href="ch-qdec.html#cb166-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb166-28"><a href="ch-qdec.html#cb166-28" aria-hidden="true" tabindex="-1"></a>    <span class="co">// print qdec data and direction when rotate the mouse wheel manually</span></span>
-<span id="cb166-29"><a href="ch-qdec.html#cb166-29" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> preData <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb166-30"><a href="ch-qdec.html#cb166-30" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> data <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb166-31"><a href="ch-qdec.html#cb166-31" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> dir<span class="op">;</span></span>
-<span id="cb166-32"><a href="ch-qdec.html#cb166-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span><span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb166-33"><a href="ch-qdec.html#cb166-33" aria-hidden="true" tabindex="-1"></a>        data <span class="op">=</span> QDEC_GetData<span class="op">();</span></span>
-<span id="cb166-34"><a href="ch-qdec.html#cb166-34" aria-hidden="true" tabindex="-1"></a>        dir <span class="op">=</span> QDEC_GetDirection<span class="op">();</span></span>
-<span id="cb166-35"><a href="ch-qdec.html#cb166-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>data <span class="op">!=</span> preData<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb166-36"><a href="ch-qdec.html#cb166-36" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>dir<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb166-37"><a href="ch-qdec.html#cb166-37" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;data: %d, %s</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> data<span class="op">,</span> <span class="st">&quot;anticlockwise&quot;</span><span class="op">);</span></span>
-<span id="cb166-38"><a href="ch-qdec.html#cb166-38" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
-<span id="cb166-39"><a href="ch-qdec.html#cb166-39" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;data: %d, %s</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> data<span class="op">,</span> <span class="st">&quot;clockwise&quot;</span><span class="op">);</span></span>
-<span id="cb166-40"><a href="ch-qdec.html#cb166-40" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
-<span id="cb166-41"><a href="ch-qdec.html#cb166-41" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb166-42"><a href="ch-qdec.html#cb166-42" aria-hidden="true" tabindex="-1"></a>        preData <span class="op">=</span> data<span class="op">;</span></span>
-<span id="cb166-43"><a href="ch-qdec.html#cb166-43" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb166-44"><a href="ch-qdec.html#cb166-44" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>当手动转动鼠标滚轮时，会打印出收到的qdec数据和转向。</p>
-<p>qdec的详细使用请参考HID mouse例程。</p>
+<div id="应用举例" class="section level2 hasAnchor" number="4.3">
+<h2><span class="header-section-number">4.3</span> 应用举例：<a href="ch-comparator.html#应用举例" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="初始化模拟比较器模块" class="section level3 hasAnchor" number="4.3.1">
+<h3><span class="header-section-number">4.3.1</span> 初始化模拟比较器模块<a href="ch-comparator.html#初始化模拟比较器模块" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>模拟比较器模块的初始化配置如cmp_set，GPIO18作为VINP，GPIO19作为VINN，30mV的迟滞，VINN没有分压（配置为16/16），超低功耗模式，输出极性配置为0（如果VINP电压高于VINN，比较器返回的结果是1）。</p>
+<p>例子中模拟比较器模块使能了上升沿中断，使能了上升沿睡眠唤醒。</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb12-1"><a href="ch-comparator.html#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> lpc_pos_cb_isr<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
+<span id="cb12-2"><a href="ch-comparator.html#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb12-3"><a href="ch-comparator.html#cb12-3" aria-hidden="true" tabindex="-1"></a>    COMPARATOR_INTERRUPT_MODE_t status <span class="op">=</span> COMPARATOR_GetIntStatusAndClear<span class="op">();</span></span>
+<span id="cb12-4"><a href="ch-comparator.html#cb12-4" aria-hidden="true" tabindex="-1"></a>    printf<span class="op">(</span><span class="st">&quot;pos isr status %d %d</span><span class="sc">\r\n</span><span class="st">&quot;</span><span class="op">,</span> status<span class="op">,</span> COMPARATOR_GetComparatorResult<span class="op">());</span></span>
+<span id="cb12-5"><a href="ch-comparator.html#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb12-6"><a href="ch-comparator.html#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb12-7"><a href="ch-comparator.html#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> lpc_neg_cb_isr<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
+<span id="cb12-8"><a href="ch-comparator.html#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb12-9"><a href="ch-comparator.html#cb12-9" aria-hidden="true" tabindex="-1"></a>    COMPARATOR_INTERRUPT_MODE_t status <span class="op">=</span> COMPARATOR_GetIntStatusAndClear<span class="op">();</span></span>
+<span id="cb12-10"><a href="ch-comparator.html#cb12-10" aria-hidden="true" tabindex="-1"></a>    printf<span class="op">(</span><span class="st">&quot;neg isr status %d %d</span><span class="sc">\r\n</span><span class="st">&quot;</span><span class="op">,</span> status<span class="op">,</span> COMPARATOR_GetComparatorResult<span class="op">());</span></span>
+<span id="cb12-11"><a href="ch-comparator.html#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb12-12"><a href="ch-comparator.html#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb12-13"><a href="ch-comparator.html#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> COMPARATOR_SetStateStruct cmp_set <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb12-14"><a href="ch-comparator.html#cb12-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>v_in_p          <span class="op">=</span> COMPARATOR_VINP1_GPIO18<span class="op">,</span></span>
+<span id="cb12-15"><a href="ch-comparator.html#cb12-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>v_in_n          <span class="op">=</span> COMPARATOR_VINN1_GPIO19<span class="op">,</span></span>
+<span id="cb12-16"><a href="ch-comparator.html#cb12-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>en              <span class="op">=</span> COMPARATOR_ENABLE<span class="op">,</span></span>
+<span id="cb12-17"><a href="ch-comparator.html#cb12-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>hysteresis      <span class="op">=</span> COMPARATOR_30mV_HYSTERRESIS<span class="op">,</span></span>
+<span id="cb12-18"><a href="ch-comparator.html#cb12-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>vinn_division   <span class="op">=</span> COMPARATOR_16_16<span class="op">,</span></span>
+<span id="cb12-19"><a href="ch-comparator.html#cb12-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>work_mode       <span class="op">=</span> COMPARATOR_ULTRA_LOW_POWER<span class="op">,</span></span>
+<span id="cb12-20"><a href="ch-comparator.html#cb12-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>output_polarity <span class="op">=</span> COMPARATOR_OUT1_P_GREATE_N<span class="op">,</span></span>
+<span id="cb12-21"><a href="ch-comparator.html#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb12-22"><a href="ch-comparator.html#cb12-22" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_comparator<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb12-23"><a href="ch-comparator.html#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb12-24"><a href="ch-comparator.html#cb12-24" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGateMulti<span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_SysCtrl<span class="op">);</span></span>
+<span id="cb12-25"><a href="ch-comparator.html#cb12-25" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGateMulti<span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_PinCtrl<span class="op">);</span></span>
+<span id="cb12-26"><a href="ch-comparator.html#cb12-26" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGateMulti<span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_GPIO0<span class="op">);</span></span>
+<span id="cb12-27"><a href="ch-comparator.html#cb12-27" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGateMulti<span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_GPIO1<span class="op">);</span></span>
+<span id="cb12-28"><a href="ch-comparator.html#cb12-28" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGateMulti<span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_LPC<span class="op">);</span></span>
+<span id="cb12-29"><a href="ch-comparator.html#cb12-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-30"><a href="ch-comparator.html#cb12-30" aria-hidden="true" tabindex="-1"></a>    COMPARATOR_Initialize<span class="op">(&amp;</span>cmp_set<span class="op">);</span></span>
+<span id="cb12-31"><a href="ch-comparator.html#cb12-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-32"><a href="ch-comparator.html#cb12-32" aria-hidden="true" tabindex="-1"></a>    platform_set_irq_callback<span class="op">(</span>PLATFORM_CB_IRQ_LPC_POS<span class="op">,</span> lpc_pos_cb_isr<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb12-33"><a href="ch-comparator.html#cb12-33" aria-hidden="true" tabindex="-1"></a>    platform_set_irq_callback<span class="op">(</span>PLATFORM_CB_IRQ_LPC_NEG<span class="op">,</span> lpc_neg_cb_isr<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb12-34"><a href="ch-comparator.html#cb12-34" aria-hidden="true" tabindex="-1"></a>    COMPARATOR_SetInterrupt<span class="op">(</span>COMPARATOR_POSEDGE_INT_MODE<span class="op">);</span></span>
+<span id="cb12-35"><a href="ch-comparator.html#cb12-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-36"><a href="ch-comparator.html#cb12-36" aria-hidden="true" tabindex="-1"></a>    COMPARATOR_SetDeepSleepWakeupSource<span class="op">(</span><span class="dv">1</span><span class="op">,</span> COMPARATOR_HIGH_LEVEL_WAKEUP<span class="op">,</span> COMPARATOR_POSEDGE_WAKEUP_MODE<span class="op">);</span></span>
+<span id="cb12-37"><a href="ch-comparator.html#cb12-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb12-38"><a href="ch-comparator.html#cb12-38" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 
 </div>
 </div>
@@ -737,8 +727,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="ch-pwm.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="ch-rtc.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="ch-adc.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ch-dma.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

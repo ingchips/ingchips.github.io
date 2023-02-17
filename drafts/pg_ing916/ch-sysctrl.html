@@ -737,7 +737,7 @@ UART0_TX，分别用于触发 DMA 发送请求（通过 DMA 传输接收到的�
 <p>根据表 <a href="ch-sysctrl.html#tab:ch-sysctrl-tab-clk">19.1</a> 可知，I2S 可使用 <em>slk_slow</em>：</p>
 <div class="sourceCode" id="cb211"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb211-1"><a href="ch-sysctrl.html#cb211-1" aria-hidden="true" tabindex="-1"></a>SYSCTRL_SelectI2sClk<span class="op">(</span>SYSCTRL_CLK_SLOW<span class="op">);</span></span></code></pre></div>
 <p>或者独占一个分频器，对 <em>sclk_fast</em> 分频得到 <em>sclk_fast_i2s_div</em>，比如使用 <em>sclk_fast</em>
-的 5<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a> 分频：</p>
+的 5 分频：</p>
 <div class="sourceCode" id="cb212"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb212-1"><a href="ch-sysctrl.html#cb212-1" aria-hidden="true" tabindex="-1"></a>SYSCTRL_SelectI2sClk<span class="op">(</span>SYSCTRL_CLK_PLL_DIV_5<span class="op">);</span></span></code></pre></div></li>
 <li><p>读取时钟频率</p>
 <p>使用 <code>SYSCTRL_GetClk</code> 读取指定外设的时钟频率：</p>
@@ -771,9 +771,9 @@ UART0_TX，分别用于触发 DMA 发送请求（通过 DMA 传输接收到的�
 <span id="cb216-7"><a href="ch-sysctrl.html#cb216-7" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_SLOW_RC_48M <span class="op">=</span> <span class="op">...,</span></span>
 <span id="cb216-8"><a href="ch-sysctrl.html#cb216-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> SYSCTRL_SlowRCClkMode<span class="op">;</span></span></code></pre></div>
 <p>由于内部（芯片之间）、外部环境（温度）存在微小差异或变化，所以这个 RC 时钟的频率或存在一定误差，
-需要进行调谐以尽量接近标称值。通过 <code>SYSCTRL_AutoTuneSlowRC</code> 可自动完成调谐<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>：</p>
+需要进行调谐以尽量接近标称值。通过 <code>SYSCTRL_AutoTuneSlowRC</code> 可自动完成调谐<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>：</p>
 <div class="sourceCode" id="cb217"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb217-1"><a href="ch-sysctrl.html#cb217-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> SYSCTRL_AutoTuneSlowRC<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
-<p>这个函数返回的数据为调谐参数。如果认为有必要<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a>，可以把此参数储存起来，如果系统重启，
+<p>这个函数返回的数据为调谐参数。如果认为有必要<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>，可以把此参数储存起来，如果系统重启，
 可通过 <code>SYSCTRL_TuneSlowRC</code> 直接写入参数调谐频率。</p></li>
 </ol>
 <div class="rmdnote">
@@ -801,7 +801,7 @@ UART0_TX，分别用于触发 DMA 发送请求（通过 DMA 传输接收到的�
 <span id="cb218-2"><a href="ch-sysctrl.html#cb218-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> items <span class="co">// 各比特与 SYSCTRL_DMA 一一对应</span></span>
 <span id="cb218-3"><a href="ch-sysctrl.html#cb218-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">);</span></span></code></pre></div>
 <p>使用 <code>SYSCTRL_GetDmaId</code> 可获取为某外设握手信号的 DMA 信号 ID，如果返回 -1，
-说明没有规划该外设握手信号<a href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a>：</p>
+说明没有规划该外设握手信号<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a>：</p>
 <div class="sourceCode" id="cb219"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb219-1"><a href="ch-sysctrl.html#cb219-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> SYSCTRL_GetDmaId<span class="op">(</span>SYSCTRL_DMA item<span class="op">);</span></span></code></pre></div>
 </div>
 <div id="电源相关" class="section level3 hasAnchor" number="19.2.5">
@@ -963,12 +963,21 @@ UART0_TX，分别用于触发 DMA 发送请求（通过 DMA 传输接收到的�
 <span id="cb227-5"><a href="ch-sysctrl.html#cb227-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> SYSCTRL_CacheMemCtrl<span class="op">;</span></span></code></pre></div>
 <div class="rmdcaution">
 <p>
-务必注意： 1）从低功耗状态唤醒时，这两个内存块都将恢复默认值
-<code>AS_CACHE</code>；
-2）低功耗状态时，这两个内存块里的数据（无论处于哪种模式）都会丢失，而
-BLOCK_0、BLOCK_1 里的数据则可以保持； 3）映射为普通 RAM
-后，系统缺少高速缓存，性能有可能明显下降。
+<strong>务必注意</strong>：
 </p>
+<ol style="list-style-type: decimal">
+<li>
+从低功耗状态唤醒时，这两个内存块都将恢复默认值
+<code>AS_CACHE</code>；
+</li>
+<li>
+低功耗状态时，这两个内存块里的数据（无论处于哪种模式）都会丢失，而
+BLOCK_0、BLOCK_1 里的数据则可以保持；
+</li>
+<li>
+映射为普通 RAM 后，系统缺少高速缓存，性能有可能明显下降。
+</li>
+</ol>
 </div></li>
 </ol>
 
@@ -980,10 +989,9 @@ BLOCK_0、BLOCK_1 里的数据则可以保持； 3）映射为普通 RAM
 <ol start="4">
 <li id="fn4"><p>每个外设可单独对 <em>hclk</em> 门控。<a href="ch-sysctrl.html#fnref4" class="footnote-back">↩︎</a></p></li>
 <li id="fn5"><p>仅高速时钟。<a href="ch-sysctrl.html#fnref5" class="footnote-back">↩︎</a></p></li>
-<li id="fn6"><p><span class="math inline">\(5=1 + 4\)</span><a href="ch-sysctrl.html#fnref6" class="footnote-back">↩︎</a></p></li>
-<li id="fn7"><p>以 24MHz 晶体为参考。<a href="ch-sysctrl.html#fnref7" class="footnote-back">↩︎</a></p></li>
-<li id="fn8"><p>比如认为 <code>SYSCTRL_AutoTuneSlowRC</code> 耗时过长。<a href="ch-sysctrl.html#fnref8" class="footnote-back">↩︎</a></p></li>
-<li id="fn9"><p><code>SYSCTRL_SelectUsedDmaItems</code> 的 <code>items</code> 参数里对应的比特为 0<a href="ch-sysctrl.html#fnref9" class="footnote-back">↩︎</a></p></li>
+<li id="fn6"><p>以 24MHz 晶体为参考。<a href="ch-sysctrl.html#fnref6" class="footnote-back">↩︎</a></p></li>
+<li id="fn7"><p>比如认为 <code>SYSCTRL_AutoTuneSlowRC</code> 耗时过长。<a href="ch-sysctrl.html#fnref7" class="footnote-back">↩︎</a></p></li>
+<li id="fn8"><p><code>SYSCTRL_SelectUsedDmaItems</code> 的 <code>items</code> 参数里对应的比特为 0<a href="ch-sysctrl.html#fnref8" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

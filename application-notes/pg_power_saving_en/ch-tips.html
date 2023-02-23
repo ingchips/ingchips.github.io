@@ -169,10 +169,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6" data-path="ch-tips.html"><a href="ch-tips.html"><i class="fa fa-check"></i><b>6</b> Tips on Low Power Products</a>
 <ul>
 <li class="chapter" data-level="6.1" data-path="ch-tips.html"><a href="ch-tips.html#clock-gating"><i class="fa fa-check"></i><b>6.1</b> Clock Gating</a></li>
-<li class="chapter" data-level="6.2" data-path="ch-tips.html"><a href="ch-tips.html#choose-best-frequency"><i class="fa fa-check"></i><b>6.2</b> Choose Best Frequency</a></li>
-<li class="chapter" data-level="6.3" data-path="ch-tips.html"><a href="ch-tips.html#ch-tips-cpu"><i class="fa fa-check"></i><b>6.3</b> CPU</a></li>
-<li class="chapter" data-level="6.4" data-path="ch-tips.html"><a href="ch-tips.html#cpu-flash"><i class="fa fa-check"></i><b>6.4</b> CPU + Flash</a></li>
-<li class="chapter" data-level="6.5" data-path="ch-tips.html"><a href="ch-tips.html#computational-intensive-vs-hardware-timing"><i class="fa fa-check"></i><b>6.5</b> Computational Intensive vs Hardware Timing</a></li>
+<li class="chapter" data-level="6.2" data-path="ch-tips.html"><a href="ch-tips.html#choose-best-frequency"><i class="fa fa-check"></i><b>6.2</b> Choose Best Frequency</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="ch-tips.html"><a href="ch-tips.html#ch-tips-cpu"><i class="fa fa-check"></i><b>6.2.1</b> CPU</a></li>
+<li class="chapter" data-level="6.2.2" data-path="ch-tips.html"><a href="ch-tips.html#cpu-flash"><i class="fa fa-check"></i><b>6.2.2</b> CPU + Flash</a></li>
+<li class="chapter" data-level="6.2.3" data-path="ch-tips.html"><a href="ch-tips.html#computational-intensive-vs-hardware-timing"><i class="fa fa-check"></i><b>6.2.3</b> Computational Intensive vs Hardware Timing</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="ch-faq.html"><a href="ch-faq.html"><i class="fa fa-check"></i><b>7</b> FAQ</a></li>
 <li class="divider"></li>
@@ -209,9 +211,8 @@ If default UART is not used, then gate its clock.</p>
 <h2><span class="header-section-number">6.2</span> Choose Best Frequency<a href="ch-tips.html#choose-best-frequency" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>For SoC that has complex clock configurations like ING916, clock frequencies of
 each peripheral as well as CPU itself, should be chosen with care.</p>
-</div>
-<div id="ch-tips-cpu" class="section level2 hasAnchor" number="6.3">
-<h2><span class="header-section-number">6.3</span> CPU<a href="ch-tips.html#ch-tips-cpu" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="ch-tips-cpu" class="section level3 hasAnchor" number="6.2.1">
+<h3><span class="header-section-number">6.2.1</span> CPU<a href="ch-tips.html#ch-tips-cpu" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>The lower frequency, the less current is consumed. But, with a lower frequency,
 processing time becomes longer. Do not only measure current, but also execution time.</p>
 <p>Table <a href="ch-tips.html#tab:ch-tips-cpu-currents">6.1</a> shows current consumption<a href="#fn20" class="footnote-ref" id="fnref20"><sup>20</sup></a> of CPU running at varies frequencies under room temperature.</p>
@@ -340,8 +341,8 @@ acceptable;</li>
 voltage.</li>
 </ul>
 </div>
-<div id="cpu-flash" class="section level2 hasAnchor" number="6.4">
-<h2><span class="header-section-number">6.4</span> CPU + Flash<a href="ch-tips.html#cpu-flash" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="cpu-flash" class="section level3 hasAnchor" number="6.2.2">
+<h3><span class="header-section-number">6.2.2</span> CPU + Flash<a href="ch-tips.html#cpu-flash" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Flash embedded in ING916 SoC interfacing CPU through QSPI, which might
 become a bottleneck without cache. Since cache is shutdown in Category B sleep modes,
 in a short duration after waking up, the system works like without cache.
@@ -373,8 +374,8 @@ Figure 6.2: Idle Process
 better to run CPU as fast as possible and the impaction of the slower Flash
 can be neglected.</p>
 </div>
-<div id="computational-intensive-vs-hardware-timing" class="section level2 hasAnchor" number="6.5">
-<h2><span class="header-section-number">6.5</span> Computational Intensive vs Hardware Timing<a href="ch-tips.html#computational-intensive-vs-hardware-timing" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="computational-intensive-vs-hardware-timing" class="section level3 hasAnchor" number="6.2.3">
+<h3><span class="header-section-number">6.2.3</span> Computational Intensive vs Hardware Timing<a href="ch-tips.html#computational-intensive-vs-hardware-timing" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>There are computational intensive jobs, and there are slow hardware operations that
 need quite some time to complete. Different strategies shall be considered.</p>
 <p>For computational intensive jobs, check section <a href="#cpu-ch-tips-cpu">CPU</a> on how to
@@ -382,6 +383,7 @@ let it run more efficiently. For slow hardware operations, check if sleep modes
 can be utilized; if not, consider changing to a lower clock frequency for CPU,
 Flash, and notably <em>hclk</em>.</p>
 
+</div>
 </div>
 </div>
 <div class="footnotes">

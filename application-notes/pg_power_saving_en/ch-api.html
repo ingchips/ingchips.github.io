@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>4 API | Programmer’s Guide - Power Saving</title>
+  <meta name="description" content="4 API | Programmer’s Guide - Power Saving." />
+  <meta name="generator" content="bookdown 0.32 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="4 API | Programmer’s Guide - Power Saving" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="4 API | Programmer’s Guide - Power Saving." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="4 API | Programmer’s Guide - Power Saving" />
+  
+  <meta name="twitter:description" content="4 API | Programmer’s Guide - Power Saving." />
+  
+
+<meta name="author" content="Ingchips Technology Co., Ltd." />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="ch-framework.html"/>
+<link rel="next" href="ch-porting.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Programmer's Guide - Power Saving</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Revision History</a></li>
+<li class="chapter" data-level="2" data-path="ch-intro.html"><a href="ch-intro.html"><i class="fa fa-check"></i><b>2</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="ch-intro.html"><a href="ch-intro.html#abbreviations-terminology"><i class="fa fa-check"></i><b>2.1</b> Abbreviations &amp; Terminology</a></li>
+<li class="chapter" data-level="2.2" data-path="ch-intro.html"><a href="ch-intro.html#references"><i class="fa fa-check"></i><b>2.2</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="ch-framework.html"><a href="ch-framework.html"><i class="fa fa-check"></i><b>3</b> Framework</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="ch-framework.html"><a href="ch-framework.html#ch-framework-modes"><i class="fa fa-check"></i><b>3.1</b> Sleep Modes</a></li>
+<li class="chapter" data-level="3.2" data-path="ch-framework.html"><a href="ch-framework.html#wake-up-sources"><i class="fa fa-check"></i><b>3.2</b> Wake up Sources</a></li>
+<li class="chapter" data-level="3.3" data-path="ch-framework.html"><a href="ch-framework.html#ch-framework-app-works"><i class="fa fa-check"></i><b>3.3</b> Involvement of Apps</a></li>
+<li class="chapter" data-level="3.4" data-path="ch-framework.html"><a href="ch-framework.html#shutdown"><i class="fa fa-check"></i><b>3.4</b> Shutdown</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="ch-api.html"><a href="ch-api.html"><i class="fa fa-check"></i><b>4</b> API</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="ch-api.html"><a href="ch-api.html#callback-events"><i class="fa fa-check"></i><b>4.1</b> Callback events</a></li>
+<li class="chapter" data-level="4.2" data-path="ch-api.html"><a href="ch-api.html#interrupts"><i class="fa fa-check"></i><b>4.2</b> Interrupts</a></li>
+<li class="chapter" data-level="4.3" data-path="ch-api.html"><a href="ch-api.html#shutdown-1"><i class="fa fa-check"></i><b>4.3</b> Shutdown</a></li>
+<li class="chapter" data-level="4.4" data-path="ch-api.html"><a href="ch-api.html#k-clock"><i class="fa fa-check"></i><b>4.4</b> 32k Clock</a></li>
+<li class="chapter" data-level="4.5" data-path="ch-api.html"><a href="ch-api.html#timers"><i class="fa fa-check"></i><b>4.5</b> Timers</a></li>
+<li class="chapter" data-level="4.6" data-path="ch-api.html"><a href="ch-api.html#idle-procedure"><i class="fa fa-check"></i><b>4.6</b> IDLE Procedure</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="ch-porting.html"><a href="ch-porting.html"><i class="fa fa-check"></i><b>5</b> Porting</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="ch-porting.html"><a href="ch-porting.html#api"><i class="fa fa-check"></i><b>5.1</b> API</a></li>
+<li class="chapter" data-level="5.2" data-path="ch-porting.html"><a href="ch-porting.html#port-to-freertos"><i class="fa fa-check"></i><b>5.2</b> Port to FreeRTOS</a></li>
+<li class="chapter" data-level="5.3" data-path="ch-porting.html"><a href="ch-porting.html#port-to-rt-thread"><i class="fa fa-check"></i><b>5.3</b> Port to RT-Thread</a></li>
+<li class="chapter" data-level="5.4" data-path="ch-porting.html"><a href="ch-porting.html#port-to-huawei-liteos"><i class="fa fa-check"></i><b>5.4</b> Port to Huawei LiteOS</a></li>
+<li class="chapter" data-level="5.5" data-path="ch-porting.html"><a href="ch-porting.html#port-to-azure-rtos-threadx"><i class="fa fa-check"></i><b>5.5</b> Port to Azure RTOS ThreadX</a></li>
+<li class="chapter" data-level="5.6" data-path="ch-porting.html"><a href="ch-porting.html#truly-no-os"><i class="fa fa-check"></i><b>5.6</b> Truly No OS</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="ch-tips.html"><a href="ch-tips.html"><i class="fa fa-check"></i><b>6</b> Tips on Low Power Products</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="ch-tips.html"><a href="ch-tips.html#clock-gating"><i class="fa fa-check"></i><b>6.1</b> Clock Gating</a></li>
+<li class="chapter" data-level="6.2" data-path="ch-tips.html"><a href="ch-tips.html#choose-best-frequency"><i class="fa fa-check"></i><b>6.2</b> Choose Best Frequency</a></li>
+<li class="chapter" data-level="6.3" data-path="ch-tips.html"><a href="ch-tips.html#ch-tips-cpu"><i class="fa fa-check"></i><b>6.3</b> CPU</a></li>
+<li class="chapter" data-level="6.4" data-path="ch-tips.html"><a href="ch-tips.html#cpu-flash"><i class="fa fa-check"></i><b>6.4</b> CPU + Flash</a></li>
+<li class="chapter" data-level="6.5" data-path="ch-tips.html"><a href="ch-tips.html#computational-intensive-vs-hardware-timing"><i class="fa fa-check"></i><b>6.5</b> Computational Intensive vs Hardware Timing</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="ch-faq.html"><a href="ch-faq.html"><i class="fa fa-check"></i><b>7</b> FAQ</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Programmer’s Guide - Power Saving</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="ch-api" class="section level1 hasAnchor" number="4">
+<h1><span class="header-section-number">4</span> API<a href="ch-api.html#ch-api" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>There is a global switch for power saving, <em>Enable</em> or <em>Disable</em>, which can be
+configured by <code>platform_config</code> at any time:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="ch-api.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">// To enable power saving</span></span>
+<span id="cb1-2"><a href="ch-api.html#cb1-2" aria-hidden="true" tabindex="-1"></a>platform_config<span class="op">(</span>PLATFORM_CFG_POWER_SAVING<span class="op">,</span> PLATFORM_CFG_ENABLE<span class="op">);</span></span>
+<span id="cb1-3"><a href="ch-api.html#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="ch-api.html#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">// To disable power saving</span></span>
+<span id="cb1-5"><a href="ch-api.html#cb1-5" aria-hidden="true" tabindex="-1"></a>platform_config<span class="op">(</span>PLATFORM_CFG_POWER_SAVING<span class="op">,</span> PLATFORM_CFG_DISABLE<span class="op">);</span></span></code></pre></div>
+<div id="callback-events" class="section level2 hasAnchor" number="4.1">
+<h2><span class="header-section-number">4.1</span> Callback events<a href="ch-api.html#callback-events" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>As discussed in <a href="ch-framework.html#ch-framework-app-works">Involvement of Apps</a>, there are two events
+that should be handled by Apps:</p>
+<ul>
+<li><p><strong>PLATFORM_CB_EVT_QUERY_DEEP_SLEEP_ALLOWED</strong></p>
+<p>Handler of this event returns bit combination of allowed sleep modes in Category B.
+A value of 0 means that no mode in Category B is allowed at present.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="ch-api.html#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define PLATFORM_ALLOW_DEEP_SLEEP      ...</span></span>
+<span id="cb2-2"><a href="ch-api.html#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#define PLATFORM_ALLOW_DEEPER_SLEEP    ...</span></span>
+<span id="cb2-3"><a href="ch-api.html#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#define PLATFORM_ALLOW_BLE_ONLY_SLEEP  ...</span></span></code></pre></div>
+<p>For example, if both DEEP and DEEPER SLEEP are allowed, then:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="ch-api.html#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">return</span> PLATFORM_ALLOW_DEEP_SLEEP <span class="op">+</span> PLATFORM_ALLOW_DEEPER_SLEEP<span class="op">;</span></span></code></pre></div>
+<p>For ING916, Apps can also configure external wake up sources in the handle.</p></li>
+<li><p><strong>PLATFORM_CB_EVT_ON_DEEP_SLEEP_WAKEUP</strong></p>
+<p>In the handler of this event, Apps can re-initialize peripherals and do other jobs
+according to the needs.</p>
+<p>Input parameter <code>void *data</code> is casted from <code>platform_wakeup_call_reason_t</code>:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb4-1"><a href="ch-api.html#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
+<span id="cb4-2"><a href="ch-api.html#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb4-3"><a href="ch-api.html#cb4-3" aria-hidden="true" tabindex="-1"></a>    PLATFORM_WAKEUP_REASON_NORMAL <span class="op">=</span> <span class="op">...,</span></span>
+<span id="cb4-4"><a href="ch-api.html#cb4-4" aria-hidden="true" tabindex="-1"></a>    PLATFORM_WAKEUP_REASON_ABORTED <span class="op">=</span> <span class="op">...,</span></span>
+<span id="cb4-5"><a href="ch-api.html#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> platform_wakeup_call_reason_t<span class="op">;</span></span></code></pre></div>
+<p><em>PLATFORM_WAKEUP_REASON_NORMAL</em> means that this event is emitted for a normal
+(successful) wake up procedure, i.e. the sleep procedure is completed successfully;
+<em>PLATFORM_WAKEUP_REASON_ABORTED</em> means that the previous sleep procedure is aborted,
+i.e. sleep had not happened at all. For example, trying to go to DEEP SLEEP while
+EXT_INT is asserted will be a failure, and sleep will not happen.</p>
+<p>Event with <em>PLATFORM_WAKEUP_REASON_NORMAL</em> is always emitted; while
+event with <em>PLATFORM_WAKEUP_REASON_ABORTED</em> is emitted when
+<code>PLATFORM_CFG_ALWAYS_CALL_WAKEUP</code> is <em>Enabled</em>. For ING918, <code>PLATFORM_CFG_ALWAYS_CALL_WAKEUP</code>
+is default to <em>Disabled</em>; while for ING916, default to <em>Enabled</em>. This is
+because for ING916, external wake up sources such GPIO might need to be
+reconfigured if sleep procedure is aborted. Without this event, Apps will
+not be able to do such reconfiguration. Since external sources are not configurable
+in the case of ING918, so it is default to <em>Disabled</em>.</p>
+<p>If <code>PLATFORM_CFG_ALWAYS_CALL_WAKEUP</code> is <em>Enabled</em>, then there is <em>definitely</em>
+a <em>PLATFORM_CB_EVT_ON_DEEP_SLEEP_WAKEUP</em> event for each
+<em>PLATFORM_CB_EVT_QUERY_DEEP_SLEEP_ALLOWED</em> event that returns a non-0 value.</p></li>
+</ul>
+<p>Prototype of event handles should be compatible of:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="ch-api.html#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="dt">uint32_t</span> <span class="op">(*</span>f_platform_evt_cb<span class="op">)(</span><span class="dt">void</span> <span class="op">*</span>data<span class="op">,</span> <span class="dt">void</span> <span class="op">*</span>user_data<span class="op">);</span></span></code></pre></div>
+<p>Handlers are registered by:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb6-1"><a href="ch-api.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_set_evt_callback<span class="op">(</span></span>
+<span id="cb6-2"><a href="ch-api.html#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// the event</span></span>
+<span id="cb6-3"><a href="ch-api.html#cb6-3" aria-hidden="true" tabindex="-1"></a>  platform_evt_callback_type_t type<span class="op">,</span></span>
+<span id="cb6-4"><a href="ch-api.html#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// the callback function</span></span>
+<span id="cb6-5"><a href="ch-api.html#cb6-5" aria-hidden="true" tabindex="-1"></a>  f_platform_evt_cb f<span class="op">,</span></span>
+<span id="cb6-6"><a href="ch-api.html#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// user data that will be passed into callback function `f`</span></span>
+<span id="cb6-7"><a href="ch-api.html#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">void</span> <span class="op">*</span>user_data</span>
+<span id="cb6-8"><a href="ch-api.html#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
+</div>
+<div id="interrupts" class="section level2 hasAnchor" number="4.2">
+<h2><span class="header-section-number">4.2</span> Interrupts<a href="ch-api.html#interrupts" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Since CPU is powered off in Category B sleep modes, after waken up,
+from CPU’s point of view, interrupts should be re-enabled.</p>
+<p>For example, an UART port is used the App with both Rx and Tx interrupts are enabled.
+Then, in the waken up event handle, not only the peripheral itself should be re-initialized,
+its Rx and Tx interrupts enabled, but also the corresponding position in interrupt
+vector table. In the case ARM Cortex-M processors, it is called NVIC<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>.</p>
+<p>If the ISR is registered by <code>platform_set_irq_callback</code>, then there are two options to
+re-enable the interrupt:</p>
+<ol style="list-style-type: decimal">
+<li><p>Call <code>platform_set_irq_callback</code> again, since this API will enable the interrupt;</p></li>
+<li><p>Use <code>platform_enable_irq</code>:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb7-1"><a href="ch-api.html#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_enable_irq<span class="op">(</span></span>
+<span id="cb7-2"><a href="ch-api.html#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// corresponding interrupt request type</span></span>
+<span id="cb7-3"><a href="ch-api.html#cb7-3" aria-hidden="true" tabindex="-1"></a>  platform_irq_callback_type_t type<span class="op">,</span></span>
+<span id="cb7-4"><a href="ch-api.html#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// flag = 1 for enable; flag = 0 for disable</span></span>
+<span id="cb7-5"><a href="ch-api.html#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> flag<span class="op">);</span></span></code></pre></div></li>
+</ol>
+<p>If the ISR is in the table registered by <code>platform_set_irq_callback_table</code>, then
+use <code>platform_enable_irq</code>, too.</p>
+</div>
+<div id="shutdown-1" class="section level2 hasAnchor" number="4.3">
+<h2><span class="header-section-number">4.3</span> Shutdown<a href="ch-api.html#shutdown-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Shutdown is initiated by calling <code>platform_shutdown</code>:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb8-1"><a href="ch-api.html#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_shutdown<span class="op">(</span></span>
+<span id="cb8-2"><a href="ch-api.html#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Duration before power on again (measured in cycles of 32k clock)</span></span>
+<span id="cb8-3"><a href="ch-api.html#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint32_t</span> duration_cycles<span class="op">,</span></span>
+<span id="cb8-4"><a href="ch-api.html#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Pointer to the start of data to be retained</span></span>
+<span id="cb8-5"><a href="ch-api.html#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">void</span> <span class="op">*</span>p_retention_data<span class="op">,</span></span>
+<span id="cb8-6"><a href="ch-api.html#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Size of the data to be retained</span></span>
+<span id="cb8-7"><a href="ch-api.html#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint32_t</span> data_size<span class="op">);</span></span></code></pre></div>
+<p>When <code>duration_cycles</code> is zero, power on when external wake up source is asserted.
+When <code>duration_cycles</code> is not zero, it must be larger than a minimum value of 825
+cycles (about <span class="math inline">\(25.18ms\)</span>) reserved for hardware.
+<code>data_size</code> can be zero too if no data is needed to be retained. Only part of SYS
+memory starting from 0x2000000 can be retained.</p>
+<p>If this function fails, it will return. If this function successes, CPU is powered
+off, so it will not return.</p>
+</div>
+<div id="k-clock" class="section level2 hasAnchor" number="4.4">
+<h2><span class="header-section-number">4.4</span> 32k Clock<a href="ch-api.html#k-clock" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>32k clock is crucial for power saving. There are two sources for this clock, one
+is internal RC 32k clock, and the other is 32k crystal oscillator which needs an
+external crystal. So, platform provides APIs to select clock source, and change
+settings:</p>
+<ul>
+<li><p><strong>PLATFORM_CFG_RC32K_EN</strong></p>
+<p>Enable/Disable the internal RC 32k clock. Default: Enabled.</p></li>
+<li><p><strong>PLATFORM_CFG_OSC32K_EN</strong></p>
+<p>Enable/Disable 32k crystal oscillator. Default: Enable.</p></li>
+<li><p><strong>PLATFORM_CFG_32K_CLK</strong></p>
+<p>32k clock selection. Flag is <code>platform_32k_clk_src_t</code> with default value
+<code>PLATFORM_32K_RC</code>:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb9-1"><a href="ch-api.html#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
+<span id="cb9-2"><a href="ch-api.html#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb9-3"><a href="ch-api.html#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">// external 32k crystal oscillator</span></span>
+<span id="cb9-4"><a href="ch-api.html#cb9-4" aria-hidden="true" tabindex="-1"></a>  PLATFORM_32K_OSC<span class="op">,</span></span>
+<span id="cb9-5"><a href="ch-api.html#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// internal RC 32k clock</span></span>
+<span id="cb9-6"><a href="ch-api.html#cb9-6" aria-hidden="true" tabindex="-1"></a>  PLATFORM_32K_RC</span>
+<span id="cb9-7"><a href="ch-api.html#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> platform_32k_clk_src_t<span class="op">;</span></span></code></pre></div>
+<p>When modifying this configuration, both RC32K and OSC32K should be <strong>enabled</strong>.
+For ING918: both clocks must be running; To ensure a clock is running:</p>
+<ul>
+<li><strong>OSC32K</strong>: wait until status of OSC32K is OK;</li>
+<li><strong>RC32K</strong>: wait <span class="math inline">\(100\mu s\)</span> after enabled.</li>
+</ul>
+<p>It’s recommended to wait another <span class="math inline">\(100\mu s\)</span> before disabling the unused one.</p></li>
+<li><p><strong>PLATFORM_CFG_32K_CLK_ACC</strong></p>
+<p>Configure 32k clock accuracy in <em>ppm</em>.</p></li>
+<li><p><strong>PLATFORM_CFG_32K_CALI_PERIOD</strong></p>
+<p>32K clock auto-calibration<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a> period in seconds. Default: <span class="math inline">\(3600 \times 2 = 2 (\mathit{hours})\)</span>.</p></li>
+</ul>
+</div>
+<div id="timers" class="section level2 hasAnchor" number="4.5">
+<h2><span class="header-section-number">4.5</span> Timers<a href="ch-api.html#timers" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Platform also provides a few timer APIs coupled with power saving.</p>
+<p>There is an internal counter increased by <span class="math inline">\(1\)</span> per <span class="math inline">\(1 \mu s\)</span>, which wraps after
+<span class="math inline">\(7953.64 \mathit{days} (\approx 21.79 \mathit{years})\)</span>. Therefore, this timer can
+be treated as never wrapping practically. This counter is carefully recovered
+during waking up<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a>. It is reset to zero when power up again from
+shutdown. Use <code>platform_get_us_time</code> to read this counter:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb10-1"><a href="ch-api.html#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint64_t</span> platform_get_us_time<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<p>System tick is disabled and restarted when entering and leaving sleep modes.
+It’s difficult to properly reconfigure it accurately. Platform provides
+a configure item <code>PLATFORM_CFG_RTOS_ENH_TICK</code>. When enabled, accuracy of system ticks is improved
+but less power efficiency.</p>
+<p>Platform also provides another timer that survives in all sleep modes and is more accurate
+than system ticks. Such timers can be created by calling <code>platform_set_timer</code>:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb11-1"><a href="ch-api.html#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_set_timer<span class="op">(</span></span>
+<span id="cb11-2"><a href="ch-api.html#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// callback function when timer expires</span></span>
+<span id="cb11-3"><a href="ch-api.html#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">void</span> <span class="op">(*</span> callback<span class="op">)(</span><span class="dt">void</span><span class="op">),</span></span>
+<span id="cb11-4"><a href="ch-api.html#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// timer expires after this delay from now</span></span>
+<span id="cb11-5"><a href="ch-api.html#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Unit: 625us</span></span>
+<span id="cb11-6"><a href="ch-api.html#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> delay<span class="op">);</span></span></code></pre></div>
+<p>This timer has some unique features:</p>
+<ul>
+<li>Comparing to hardware timers, this timer can be thought as “running” during
+power saving mode;</li>
+<li>Comparing to RTOS software timers, this timer is software + hardware too;</li>
+<li>Comparing to RTOS software timers, this timer may be more accurate in some
+circumstance;</li>
+<li>This function always succeed, and only fails when running out of memory.</li>
+</ul>
+<p><code>callback</code> is also the identifier of the timer. So below two lines defines only
+one timer expiring after 200 units but not two separate timers:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb12-1"><a href="ch-api.html#cb12-1" aria-hidden="true" tabindex="-1"></a>platform_set_timer<span class="op">(</span>f<span class="op">,</span> <span class="dv">100</span><span class="op">);</span></span>
+<span id="cb12-2"><a href="ch-api.html#cb12-2" aria-hidden="true" tabindex="-1"></a>platform_set_timer<span class="op">(</span>f<span class="op">,</span> <span class="dv">200</span><span class="op">);</span></span></code></pre></div>
+<p>The callback function is called in a RTOS task (if existing), but not an ISR.</p>
+<p>Range of <code>delay</code> is <span class="math inline">\(0 \sim \mathit{0x7fffffff}\)</span>. When <code>delay</code> is zero, the timer associated
+with the callback function is cleared. Since <code>delay</code> is in <span class="math inline">\(625 \mu s\)</span>, the maximum
+delay is <span class="math inline">\(372.827 \mathit{hours} (\approx 15.5345 \mathit{days})\)</span>.</p>
+</div>
+<div id="idle-procedure" class="section level2 hasAnchor" number="4.6">
+<h2><span class="header-section-number">4.6</span> IDLE Procedure<a href="ch-api.html#idle-procedure" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>As mentioned in <a href="ch-framework.html#ch-framework-modes">Sleep Modes</a>, IDLE mode is base on CPU’s
+feature solely. It’s common for CPU to have an instruction that
+instruct CPU to stop and enter a slight sleep mode. It can wake up (continue to execute)
+<em>quickly</em> when there is any interrupt/exception, or other signals.
+For x86 processors, the instruction is <em>HLT</em> (halt),
+while for ARM Cortex-M processors, it is <em>wfi</em> (wait for interrupts) or <em>wfe</em>
+(wait for events). When there is only one ARM Cortex-M processor, the IDLE procedure
+is simply a <em>wfi</em> guarded by a pair of synchronization barriers:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb13-1"><a href="ch-api.html#cb13-1" aria-hidden="true" tabindex="-1"></a>__DSB<span class="op">();</span></span>
+<span id="cb13-2"><a href="ch-api.html#cb13-2" aria-hidden="true" tabindex="-1"></a>__wfi<span class="op">();</span></span>
+<span id="cb13-3"><a href="ch-api.html#cb13-3" aria-hidden="true" tabindex="-1"></a>__ISB<span class="op">();</span></span></code></pre></div>
+<p>Since there is a PLL in ING916, CPU and other components may run at a range of frequencies,
+event <code>PLATFORM_CB_EVT_IDLE_PROC</code> is defined to provide flexibility of customizing
+the IDLE procedure. This event is emitted each time IDLE mode is entered, and default
+IDLE procedure is replaced by the callback function. For example, Apps can lower
+clock frequencies to enjoy much low power consumption in IDLE mode if the slower
+response in waking up is acceptable:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb14-1"><a href="ch-api.html#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> idle_proc<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>dummy<span class="op">,</span> <span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
+<span id="cb14-2"><a href="ch-api.html#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb14-3"><a href="ch-api.html#cb14-3" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ConfigPLLClk<span class="op">(</span>DIV_PRE<span class="op">,</span> LOOP<span class="op">,</span> <span class="dv">63</span><span class="op">);</span></span>
+<span id="cb14-4"><a href="ch-api.html#cb14-4" aria-hidden="true" tabindex="-1"></a>    __DSB<span class="op">();</span></span>
+<span id="cb14-5"><a href="ch-api.html#cb14-5" aria-hidden="true" tabindex="-1"></a>    __WFI<span class="op">();</span></span>
+<span id="cb14-6"><a href="ch-api.html#cb14-6" aria-hidden="true" tabindex="-1"></a>    __ISB<span class="op">();</span></span>
+<span id="cb14-7"><a href="ch-api.html#cb14-7" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ConfigPLLClk<span class="op">(</span>DIV_PRE<span class="op">,</span> LOOP<span class="op">,</span> DIV_OUTPUT<span class="op">);</span></span>
+<span id="cb14-8"><a href="ch-api.html#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb14-9"><a href="ch-api.html#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb14-10"><a href="ch-api.html#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="ch-api.html#cb14-11" aria-hidden="true" tabindex="-1"></a>platform_set_evt_callback<span class="op">(</span>PLATFORM_CB_EVT_IDLE_PROC<span class="op">,</span></span>
+<span id="cb14-12"><a href="ch-api.html#cb14-12" aria-hidden="true" tabindex="-1"></a>    idle_proc<span class="op">,</span> NULL<span class="op">);</span></span></code></pre></div>
+
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="6">
+<li id="fn6"><p>Nested Vectored Interrupt Controller<a href="ch-api.html#fnref6" class="footnote-back">↩︎</a></p></li>
+<li id="fn7"><p><em>Calibration</em> means to measure the frequency of
+this clock with another high frequency and high precision clock.<a href="ch-api.html#fnref7" class="footnote-back">↩︎</a></p></li>
+<li id="fn8"><p>For DEEPER SLEEP mode of ING916, it is coarsely recovered
+comparing to other modes.<a href="ch-api.html#fnref8" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="ch-framework.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ch-porting.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["pg_power_saving.pdf", "pg_power_saving.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

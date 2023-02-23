@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>3 Framework | Programmer’s Guide - Power Saving</title>
+  <meta name="description" content="3 Framework | Programmer’s Guide - Power Saving." />
+  <meta name="generator" content="bookdown 0.32 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="3 Framework | Programmer’s Guide - Power Saving" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="3 Framework | Programmer’s Guide - Power Saving." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="3 Framework | Programmer’s Guide - Power Saving" />
+  
+  <meta name="twitter:description" content="3 Framework | Programmer’s Guide - Power Saving." />
+  
+
+<meta name="author" content="Ingchips Technology Co., Ltd." />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="ch-intro.html"/>
+<link rel="next" href="ch-api.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Programmer's Guide - Power Saving</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Revision History</a></li>
+<li class="chapter" data-level="2" data-path="ch-intro.html"><a href="ch-intro.html"><i class="fa fa-check"></i><b>2</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="ch-intro.html"><a href="ch-intro.html#abbreviations-terminology"><i class="fa fa-check"></i><b>2.1</b> Abbreviations &amp; Terminology</a></li>
+<li class="chapter" data-level="2.2" data-path="ch-intro.html"><a href="ch-intro.html#references"><i class="fa fa-check"></i><b>2.2</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="ch-framework.html"><a href="ch-framework.html"><i class="fa fa-check"></i><b>3</b> Framework</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="ch-framework.html"><a href="ch-framework.html#ch-framework-modes"><i class="fa fa-check"></i><b>3.1</b> Sleep Modes</a></li>
+<li class="chapter" data-level="3.2" data-path="ch-framework.html"><a href="ch-framework.html#wake-up-sources"><i class="fa fa-check"></i><b>3.2</b> Wake up Sources</a></li>
+<li class="chapter" data-level="3.3" data-path="ch-framework.html"><a href="ch-framework.html#ch-framework-app-works"><i class="fa fa-check"></i><b>3.3</b> Involvement of Apps</a></li>
+<li class="chapter" data-level="3.4" data-path="ch-framework.html"><a href="ch-framework.html#shutdown"><i class="fa fa-check"></i><b>3.4</b> Shutdown</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="ch-api.html"><a href="ch-api.html"><i class="fa fa-check"></i><b>4</b> API</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="ch-api.html"><a href="ch-api.html#callback-events"><i class="fa fa-check"></i><b>4.1</b> Callback events</a></li>
+<li class="chapter" data-level="4.2" data-path="ch-api.html"><a href="ch-api.html#interrupts"><i class="fa fa-check"></i><b>4.2</b> Interrupts</a></li>
+<li class="chapter" data-level="4.3" data-path="ch-api.html"><a href="ch-api.html#shutdown-1"><i class="fa fa-check"></i><b>4.3</b> Shutdown</a></li>
+<li class="chapter" data-level="4.4" data-path="ch-api.html"><a href="ch-api.html#k-clock"><i class="fa fa-check"></i><b>4.4</b> 32k Clock</a></li>
+<li class="chapter" data-level="4.5" data-path="ch-api.html"><a href="ch-api.html#timers"><i class="fa fa-check"></i><b>4.5</b> Timers</a></li>
+<li class="chapter" data-level="4.6" data-path="ch-api.html"><a href="ch-api.html#idle-procedure"><i class="fa fa-check"></i><b>4.6</b> IDLE Procedure</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="ch-porting.html"><a href="ch-porting.html"><i class="fa fa-check"></i><b>5</b> Porting</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="ch-porting.html"><a href="ch-porting.html#api"><i class="fa fa-check"></i><b>5.1</b> API</a></li>
+<li class="chapter" data-level="5.2" data-path="ch-porting.html"><a href="ch-porting.html#port-to-freertos"><i class="fa fa-check"></i><b>5.2</b> Port to FreeRTOS</a></li>
+<li class="chapter" data-level="5.3" data-path="ch-porting.html"><a href="ch-porting.html#port-to-rt-thread"><i class="fa fa-check"></i><b>5.3</b> Port to RT-Thread</a></li>
+<li class="chapter" data-level="5.4" data-path="ch-porting.html"><a href="ch-porting.html#port-to-huawei-liteos"><i class="fa fa-check"></i><b>5.4</b> Port to Huawei LiteOS</a></li>
+<li class="chapter" data-level="5.5" data-path="ch-porting.html"><a href="ch-porting.html#port-to-azure-rtos-threadx"><i class="fa fa-check"></i><b>5.5</b> Port to Azure RTOS ThreadX</a></li>
+<li class="chapter" data-level="5.6" data-path="ch-porting.html"><a href="ch-porting.html#truly-no-os"><i class="fa fa-check"></i><b>5.6</b> Truly No OS</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="ch-tips.html"><a href="ch-tips.html"><i class="fa fa-check"></i><b>6</b> Tips on Low Power Products</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="ch-tips.html"><a href="ch-tips.html#clock-gating"><i class="fa fa-check"></i><b>6.1</b> Clock Gating</a></li>
+<li class="chapter" data-level="6.2" data-path="ch-tips.html"><a href="ch-tips.html#choose-best-frequency"><i class="fa fa-check"></i><b>6.2</b> Choose Best Frequency</a></li>
+<li class="chapter" data-level="6.3" data-path="ch-tips.html"><a href="ch-tips.html#ch-tips-cpu"><i class="fa fa-check"></i><b>6.3</b> CPU</a></li>
+<li class="chapter" data-level="6.4" data-path="ch-tips.html"><a href="ch-tips.html#cpu-flash"><i class="fa fa-check"></i><b>6.4</b> CPU + Flash</a></li>
+<li class="chapter" data-level="6.5" data-path="ch-tips.html"><a href="ch-tips.html#computational-intensive-vs-hardware-timing"><i class="fa fa-check"></i><b>6.5</b> Computational Intensive vs Hardware Timing</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="ch-faq.html"><a href="ch-faq.html"><i class="fa fa-check"></i><b>7</b> FAQ</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Programmer’s Guide - Power Saving</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="ch-framework" class="section level1 hasAnchor" number="3">
+<h1><span class="header-section-number">3</span> Framework<a href="ch-framework.html#ch-framework" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>The implementation of power saving in SDK is designed to be easy to use.
+Generally, power saving relies on the idle process in RTOS, which is usually
+a process<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>
+having the lowest priority. It’s a common practice for OS(es) to have an idle process,
+for example, the idle process with PID 0 in Windows and Linux.</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch-framework-idle-task"></span>
+<img src="img/idle_task.png" alt="Idle Process" width="80%" />
+<p class="caption">
+Figure 3.1: Idle Process
+</p>
+</div>
+<p>Figure <a href="ch-framework.html#fig:ch-framework-idle-task">3.1</a> is an overview of the idle process. Once
+initialized, the idle process keeps trying to put the system into sleep modes to
+save power. It first checks how long the system could sleep, i.e. sleep time,
+which is generally determined by:</p>
+<ul>
+<li>When the next BLE sub-system activity occurs;</li>
+<li>When the next RTOS timer expires.</li>
+</ul>
+<p>Note that, peripherals, such as hardware timers, UART, are not taken into account here.</p>
+<p>Then, the idle process makes choice on sleep modes. Following factors are considered:</p>
+<ul>
+<li>Sleep time</li>
+<li>App’s opinion;</li>
+<li>Current system state.</li>
+</ul>
+<p>Different sleep modes have their own hard time requirements, because it needs extra
+time to bring the system into sleep modes and wake it up again. App’s opinion tells
+the idle process a subset of sleep modes which are allowed to be chosen from. Current
+system state is also considered.</p>
+<p>After the most suitable sleep mode which consumes lowest power, is decided, the sleep
+procedure stops RTOS and takes the system into the chosen sleep mode.</p>
+<p>After waken up, the wake up procedure performs post processing to make sure everything
+is normal, for example, the system tick is taken care of here. This framework knows
+nothing about peripherals and their configurations, and it just notifies App that
+the system has waken up. App could take this opportunity to configure peripherals.
+After everything is ready, the wake up procedure allows RTOS to continue. And the
+whole loop is started all over again.</p>
+<div id="ch-framework-modes" class="section level2 hasAnchor" number="3.1">
+<h2><span class="header-section-number">3.1</span> Sleep Modes<a href="ch-framework.html#ch-framework-modes" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>There are a variety of sleep modes available (supported by SoC and power saving framework)
+summarized in Table <a href="ch-framework.html#tab:ch-framework-sleep-modes">3.1</a>.</p>
+<table>
+<caption><span id="tab:ch-framework-sleep-modes">Table 3.1: </span> Sleep modes</caption>
+<colgroup>
+<col width="21%" />
+<col width="7%" />
+<col width="7%" />
+<col width="63%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Mode</th>
+<th align="center">ING918</th>
+<th align="center">ING916</th>
+<th align="left">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">IDLE</td>
+<td align="center"><span class="math inline">\(\checkmark\)</span></td>
+<td align="center"><span class="math inline">\(\checkmark\)</span></td>
+<td align="left">Everything is active; CPU is waiting for interrupts.</td>
+</tr>
+<tr class="even">
+<td align="center">SNOOZE</td>
+<td align="center"><span class="math inline">\(\checkmark\)</span></td>
+<td align="center"></td>
+<td align="left">Same as IDLE except RF is shutdown.</td>
+</tr>
+<tr class="odd">
+<td align="center">SLEEP</td>
+<td align="center"><span class="math inline">\(\checkmark\)</span></td>
+<td align="center"></td>
+<td align="left">Same as IDLE except BLE sub-system is shutdown.</td>
+</tr>
+<tr class="even">
+<td align="center">DEEP SLEEP</td>
+<td align="center"><span class="math inline">\(\checkmark\)</span></td>
+<td align="center"><span class="math inline">\(\checkmark\)</span></td>
+<td align="left">CPU and peripherals are all shutdown. Memory is retained.</td>
+</tr>
+<tr class="odd">
+<td align="center">DEEPER SLEEP</td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(\checkmark\)</span></td>
+<td align="left">Like DEEP SLEEP, but memory for BLE is shutdown.</td>
+</tr>
+<tr class="even">
+<td align="center">BLE ONLY SLEEP</td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(\checkmark\)</span></td>
+<td align="left">Like DEEP SLEEP, but BLE sub-system fully functional</td>
+</tr>
+</tbody>
+</table>
+<p>IDLE mode is the slightest sleep mode, backed by the underlying CPU while other modes are defined and backed by
+dedicated logic in the SoC out of CPU itself. There are subtle differences between
+different sleep modes besides the notes in
+Table <a href="ch-framework.html#tab:ch-framework-sleep-modes">3.1</a>:</p>
+<ul>
+<li><p>For DEEP SLEEP on ING916, some peripherals, such as GPIO, can be optionally
+put into special low power modes, rather than shutdown, in which case, its output could
+be retained or acting as wake up sources;</p></li>
+<li><p>For DEEPER SLEEP, comparing with DEEP SLEEP:</p>
+<ul>
+<li>Less peripherals are allowed to be put into special low power modes;</li>
+<li>Internal <span class="math inline">\(1 \mu s\)</span> timer becomes less accurate.</li>
+</ul></li>
+<li><p>For BLE ONLY SLEEP, the system can be waken up only by BLE sub-system.</p></li>
+</ul>
+<p>Different sleep modes consume different amount of current, since different components
+in SoC consume different amount of current. Here is a very rough quantitative summary,
+providing a qualitative analysis:</p>
+<ul>
+<li><p>CPU + Flash</p>
+<p>Current consumption heavily depends on working frequency. It may vary from about <span class="math inline">\(1mA\)</span> to
+more than <span class="math inline">\(10 mA\)</span>.</p>
+<p>For ING918, CPU clock is fixed at <span class="math inline">\(48M\mathit{Hz}\)</span>, consuming <span class="math inline">\({\scriptsize \sim} 5mA\)</span>.</p></li>
+<li><p>RAM retention</p>
+<p>More memory retained, more current is needed. It costs roughly <span class="math inline">\({\scriptsize \sim} 0.02 \mu A\)</span>
+per KiB.</p></li>
+<li><p>BLE Activity</p>
+<p>It costs from several <span class="math inline">\(mA\)</span> to more than <span class="math inline">\(10mA\)</span>.</p></li>
+</ul>
+</div>
+<div id="wake-up-sources" class="section level2 hasAnchor" number="3.2">
+<h2><span class="header-section-number">3.2</span> Wake up Sources<a href="ch-framework.html#wake-up-sources" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>There are two types of sources that can cause the system to wake up:</p>
+<ul>
+<li><p>Internal sources</p>
+<p>There is only one internal source: sleep timer. It is a dedicated hardware timer
+used only by the idle process, configured to sleep time, and cause the system
+to wake up when expired.</p>
+<p>This timer has 32 bits, and is driven by the 32K clock.</p></li>
+<li><p>External sources</p>
+<p>External sources are given in Table <a href="ch-framework.html#tab:ch-framework-wakeup-sources-918">3.2</a>
+and Table <a href="ch-framework.html#tab:ch-framework-wakeup-sources-916">3.3</a><a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>.</p>
+<table>
+<caption><span id="tab:ch-framework-wakeup-sources-918">Table 3.2: </span> External wake up sources of ING918</caption>
+<thead>
+<tr class="header">
+<th align="center">Mode</th>
+<th align="left">Sources</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">IDLE</td>
+<td align="left">All interrupts.</td>
+</tr>
+<tr class="even">
+<td align="center">SNOOZE</td>
+<td align="left">All interrupts.</td>
+</tr>
+<tr class="odd">
+<td align="center">SLEEP</td>
+<td align="left">All interrupts.</td>
+</tr>
+<tr class="even">
+<td align="center">DEEP SLEEP</td>
+<td align="left">EXT_INT.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption><span id="tab:ch-framework-wakeup-sources-916">Table 3.3: </span> External wake up sources of ING916</caption>
+<thead>
+<tr class="header">
+<th align="center">Mode</th>
+<th align="left">Sources</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">IDLE</td>
+<td align="left">All interrupts.</td>
+</tr>
+<tr class="even">
+<td align="center">DEEP SLEEP</td>
+<td align="left">GPIO/RTC/Comparator. Configurable.</td>
+</tr>
+<tr class="odd">
+<td align="center">DEEPER SLEEP</td>
+<td align="left">GPIO. Configurable.</td>
+</tr>
+<tr class="even">
+<td align="center">BLE ONLY SLEEP</td>
+<td align="left">BLE sub-system.</td>
+</tr>
+</tbody>
+</table></li>
+</ul>
+<div class="rmdnote">
+<ul>
+<li>
+<p>
+No matter which mode SoC is in, RESET pin always works, but we
+don’t name it as an external wake up source;
+</p>
+</li>
+<li>
+<p>
+Watchdog is an ordinary peripheral, and powered off in DEEP
+SLEEP, DEEPER SLEEP, and BLE ONLY SLEEP modes.
+</p>
+</li>
+</ul>
+</div>
+</div>
+<div id="ch-framework-app-works" class="section level2 hasAnchor" number="3.3">
+<h2><span class="header-section-number">3.3</span> Involvement of Apps<a href="ch-framework.html#ch-framework-app-works" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Sleep modes can be classified into two categories, Category A that do not need the
+involvements of Apps (IDLE, SNOOZE, and SLEEP), and Category B that do need the
+involvements of Apps (DEEP SLEEP, DEEPER SLEEP, and BLE ONLY SLEEP).</p>
+<p>This framework tried its best to minimize the involvements of Apps, and
+there are just two things to be handled by Apps:</p>
+<ol style="list-style-type: decimal">
+<li><p>Tell the idle process which modes in Category B are allowed to be used;</p>
+<p>For ING916, Apps can take this opportunity to configure external wake up sources as well.</p></li>
+<li><p>(Re-)Configure peripherals after waken up from Category B sleep modes.</p></li>
+</ol>
+<p>These two things are done in two platform event handlers.</p>
+<p>How to determine if a mode in Category B is allowed? Here are some suggestions.</p>
+<ul>
+<li><p>DEEP SLEEP</p>
+<ul>
+<li><p>If peripherals can’t be powered off now, for example, UART is running or FIFO
+not empty, then NO;</p></li>
+<li><p>Hardware timer is used, which generates interrupts very frequently (such as
+<span class="math inline">\(1000 \mathit{Hz}\)</span>), then NO.</p></li>
+</ul></li>
+<li><p>DEEPER SLEEP</p>
+<ul>
+<li><p>If DEEP SLEEP is not allowed, then NO;</p></li>
+<li><p>If external wake up source does not fit the need, for example, comparator is
+required as a wake up source, then NO;</p></li>
+<li><p>If memory allocated from Link Layer’s heap is in use<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>, then NO;</p></li>
+<li><p>If internal <span class="math inline">\(1\mu s\)</span> timer should be as accurate as in DEEP SLEEP, then NO.</p></li>
+</ul></li>
+<li><p>BLE ONLY SLEEP</p>
+<ul>
+<li><p>If DEEP SLEEP is not allowed, then NO;</p></li>
+<li><p>If other external wake up source are needed, then NO.</p></li>
+</ul></li>
+</ul>
+</div>
+<div id="shutdown" class="section level2 hasAnchor" number="3.4">
+<h2><span class="header-section-number">3.4</span> Shutdown<a href="ch-framework.html#shutdown" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The idle process implements an automatic and passive power saving mechanism.
+A proactive mechanism also exists, <em>Shutdown</em>, where developers can optionally specify
+a time after which the system is powered on again, and a portion of memory to
+be retained during shutdown. The time can be set to <span class="math inline">\(0\)</span>, which means to disable
+the power on timer, and stay in shutdown mode unless external power on signal is asserted
+or RESET.</p>
+<ul>
+<li><p>For ING918</p>
+<p>Shutdown is based on DEEP SLEEP, except that most of if not all memory is powered
+off too. As in DEEP SLEEP, the system can be powered on again by EXT_INT.</p></li>
+<li><p>For ING916</p>
+<p>Shutdown is based on DEEPER SLEEP. The system can be powered on again by external wake up
+source for DEEPER SLEEP too.</p></li>
+</ul>
+
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="3">
+<li id="fn3"><p>In embedding systems, it may also be called a <em>task</em> or <em>thread</em>.<a href="ch-framework.html#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p>Refer to
+<em>Programmer’s Guide - ING916XX Peripheral</em> for the configuration of wake up
+sources<a href="ch-framework.html#fnref4" class="footnote-back">↩︎</a></p></li>
+<li id="fn5"><p>This heap is powered off
+in DEEPER SLEEP mode.<a href="ch-framework.html#fnref5" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="ch-intro.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ch-api.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["pg_power_saving.pdf", "pg_power_saving.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

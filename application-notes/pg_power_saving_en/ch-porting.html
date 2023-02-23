@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>5 Porting | Programmer’s Guide - Power Saving</title>
+  <meta name="description" content="5 Porting | Programmer’s Guide - Power Saving." />
+  <meta name="generator" content="bookdown 0.32 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="5 Porting | Programmer’s Guide - Power Saving" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="5 Porting | Programmer’s Guide - Power Saving." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="5 Porting | Programmer’s Guide - Power Saving" />
+  
+  <meta name="twitter:description" content="5 Porting | Programmer’s Guide - Power Saving." />
+  
+
+<meta name="author" content="Ingchips Technology Co., Ltd." />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="ch-api.html"/>
+<link rel="next" href="ch-tips.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Programmer's Guide - Power Saving</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Revision History</a></li>
+<li class="chapter" data-level="2" data-path="ch-intro.html"><a href="ch-intro.html"><i class="fa fa-check"></i><b>2</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="ch-intro.html"><a href="ch-intro.html#abbreviations-terminology"><i class="fa fa-check"></i><b>2.1</b> Abbreviations &amp; Terminology</a></li>
+<li class="chapter" data-level="2.2" data-path="ch-intro.html"><a href="ch-intro.html#references"><i class="fa fa-check"></i><b>2.2</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="ch-framework.html"><a href="ch-framework.html"><i class="fa fa-check"></i><b>3</b> Framework</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="ch-framework.html"><a href="ch-framework.html#ch-framework-modes"><i class="fa fa-check"></i><b>3.1</b> Sleep Modes</a></li>
+<li class="chapter" data-level="3.2" data-path="ch-framework.html"><a href="ch-framework.html#wake-up-sources"><i class="fa fa-check"></i><b>3.2</b> Wake up Sources</a></li>
+<li class="chapter" data-level="3.3" data-path="ch-framework.html"><a href="ch-framework.html#ch-framework-app-works"><i class="fa fa-check"></i><b>3.3</b> Involvement of Apps</a></li>
+<li class="chapter" data-level="3.4" data-path="ch-framework.html"><a href="ch-framework.html#shutdown"><i class="fa fa-check"></i><b>3.4</b> Shutdown</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="ch-api.html"><a href="ch-api.html"><i class="fa fa-check"></i><b>4</b> API</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="ch-api.html"><a href="ch-api.html#callback-events"><i class="fa fa-check"></i><b>4.1</b> Callback events</a></li>
+<li class="chapter" data-level="4.2" data-path="ch-api.html"><a href="ch-api.html#interrupts"><i class="fa fa-check"></i><b>4.2</b> Interrupts</a></li>
+<li class="chapter" data-level="4.3" data-path="ch-api.html"><a href="ch-api.html#shutdown-1"><i class="fa fa-check"></i><b>4.3</b> Shutdown</a></li>
+<li class="chapter" data-level="4.4" data-path="ch-api.html"><a href="ch-api.html#k-clock"><i class="fa fa-check"></i><b>4.4</b> 32k Clock</a></li>
+<li class="chapter" data-level="4.5" data-path="ch-api.html"><a href="ch-api.html#timers"><i class="fa fa-check"></i><b>4.5</b> Timers</a></li>
+<li class="chapter" data-level="4.6" data-path="ch-api.html"><a href="ch-api.html#idle-procedure"><i class="fa fa-check"></i><b>4.6</b> IDLE Procedure</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="ch-porting.html"><a href="ch-porting.html"><i class="fa fa-check"></i><b>5</b> Porting</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="ch-porting.html"><a href="ch-porting.html#api"><i class="fa fa-check"></i><b>5.1</b> API</a></li>
+<li class="chapter" data-level="5.2" data-path="ch-porting.html"><a href="ch-porting.html#port-to-freertos"><i class="fa fa-check"></i><b>5.2</b> Port to FreeRTOS</a></li>
+<li class="chapter" data-level="5.3" data-path="ch-porting.html"><a href="ch-porting.html#port-to-rt-thread"><i class="fa fa-check"></i><b>5.3</b> Port to RT-Thread</a></li>
+<li class="chapter" data-level="5.4" data-path="ch-porting.html"><a href="ch-porting.html#port-to-huawei-liteos"><i class="fa fa-check"></i><b>5.4</b> Port to Huawei LiteOS</a></li>
+<li class="chapter" data-level="5.5" data-path="ch-porting.html"><a href="ch-porting.html#port-to-azure-rtos-threadx"><i class="fa fa-check"></i><b>5.5</b> Port to Azure RTOS ThreadX</a></li>
+<li class="chapter" data-level="5.6" data-path="ch-porting.html"><a href="ch-porting.html#truly-no-os"><i class="fa fa-check"></i><b>5.6</b> Truly No OS</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="ch-tips.html"><a href="ch-tips.html"><i class="fa fa-check"></i><b>6</b> Tips on Low Power Products</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="ch-tips.html"><a href="ch-tips.html#clock-gating"><i class="fa fa-check"></i><b>6.1</b> Clock Gating</a></li>
+<li class="chapter" data-level="6.2" data-path="ch-tips.html"><a href="ch-tips.html#choose-best-frequency"><i class="fa fa-check"></i><b>6.2</b> Choose Best Frequency</a></li>
+<li class="chapter" data-level="6.3" data-path="ch-tips.html"><a href="ch-tips.html#ch-tips-cpu"><i class="fa fa-check"></i><b>6.3</b> CPU</a></li>
+<li class="chapter" data-level="6.4" data-path="ch-tips.html"><a href="ch-tips.html#cpu-flash"><i class="fa fa-check"></i><b>6.4</b> CPU + Flash</a></li>
+<li class="chapter" data-level="6.5" data-path="ch-tips.html"><a href="ch-tips.html#computational-intensive-vs-hardware-timing"><i class="fa fa-check"></i><b>6.5</b> Computational Intensive vs Hardware Timing</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="ch-faq.html"><a href="ch-faq.html"><i class="fa fa-check"></i><b>7</b> FAQ</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Programmer’s Guide - Power Saving</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="ch-porting" class="section level1 hasAnchor" number="5">
+<h1><span class="header-section-number">5</span> Porting<a href="ch-porting.html#ch-porting" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>When using NoOS variants of platform bundles, power saving framework needs to
+be ported to other RTOS(es). The main work is to port the idle process to the
+targeting RTOS. The idle process<a href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a> looks like this:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb15-1"><a href="ch-porting.html#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> idle_task<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb15-2"><a href="ch-porting.html#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb15-3"><a href="ch-porting.html#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(;;)</span></span>
+<span id="cb15-4"><a href="ch-porting.html#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb15-5"><a href="ch-porting.html#cb15-5" aria-hidden="true" tabindex="-1"></a>        timeout_tick <span class="op">=</span> rtos_next_busy_tick<span class="op">();</span></span>
+<span id="cb15-6"><a href="ch-porting.html#cb15-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>platform_pre_suppress_ticks_and_sleep_processing<span class="op">(</span></span>
+<span id="cb15-7"><a href="ch-porting.html#cb15-7" aria-hidden="true" tabindex="-1"></a>          timeout_tick<span class="op">)</span> <span class="op">&gt;</span> some_limit<span class="op">)</span></span>
+<span id="cb15-8"><a href="ch-porting.html#cb15-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span></span>
+<span id="cb15-9"><a href="ch-porting.html#cb15-9" aria-hidden="true" tabindex="-1"></a>            rtos_stop_scheduler<span class="op">();</span></span>
+<span id="cb15-10"><a href="ch-porting.html#cb15-10" aria-hidden="true" tabindex="-1"></a>            platform_pre_sleep_processing<span class="op">();</span></span>
+<span id="cb15-11"><a href="ch-porting.html#cb15-11" aria-hidden="true" tabindex="-1"></a>            platform_post_sleep_processing<span class="op">();</span></span>
+<span id="cb15-12"><a href="ch-porting.html#cb15-12" aria-hidden="true" tabindex="-1"></a>            tick_cnt <span class="op">=</span> how_long_has_I_slept<span class="op">();</span></span>
+<span id="cb15-13"><a href="ch-porting.html#cb15-13" aria-hidden="true" tabindex="-1"></a>            rtos_compensate_system_ticks<span class="op">(</span>tick_cnt<span class="op">);</span></span>
+<span id="cb15-14"><a href="ch-porting.html#cb15-14" aria-hidden="true" tabindex="-1"></a>            restart_system_ticks<span class="op">();</span></span>
+<span id="cb15-15"><a href="ch-porting.html#cb15-15" aria-hidden="true" tabindex="-1"></a>            rtos_resume_scheduler<span class="op">();</span></span>
+<span id="cb15-16"><a href="ch-porting.html#cb15-16" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb15-17"><a href="ch-porting.html#cb15-17" aria-hidden="true" tabindex="-1"></a>        platform_os_idle_resumed_hook<span class="op">();</span></span>
+<span id="cb15-18"><a href="ch-porting.html#cb15-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb15-19"><a href="ch-porting.html#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>What needs to be ported is exactly those <code>rtos_...</code> functionalities:</p>
+<ul>
+<li><p><code>rtos_next_busy_tick</code> returns how many ticks the CPU can be put in sleep modes;</p></li>
+<li><p><code>rtos_stop_scheduler</code> stops the scheduler</p></li>
+<li><p><code>rtos_compensate_system_tick</code> compensates ticks counter of RTOS</p></li>
+<li><p><code>rtos_resume_scheduler</code> resumes the scheduler</p></li>
+</ul>
+<p><code>how_long_has_I_slept</code> calculates how long the last sleep was in ticks which is used
+to compensates ticks counter of RTOS. The result can be deduced by check system tick
+registers of CPU, or use other real-time timer including <code>platform_get_us_time</code>.
+<code>restart_system_tick</code> restarts system ticks.</p>
+<p>Besides, optionally, similar function of <code>PLATFORM_CFG_RTOS_ENH_TICK</code> needs to be ported too.</p>
+<div class="rmdcaution">
+<p>
+The idle process must be the <strong>only</strong> process having the
+lowest priority. Some RTOS(es) supported multiple processes have the
+same lowest priority. Developers should ensure that no other processes
+are having the lowest priority.
+</p>
+</div>
+<div id="api" class="section level2 hasAnchor" number="5.1">
+<h2><span class="header-section-number">5.1</span> API<a href="ch-porting.html#api" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>NoOS variants of platform bundles provide a collection of APIs to cooperate the porting.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb16-1"><a href="ch-porting.html#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Pre-suppress ticks and sleep processing</span></span>
+<span id="cb16-2"><a href="ch-porting.html#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co">// @return  adjusted ticks to sleep</span></span>
+<span id="cb16-3"><a href="ch-porting.html#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> platform_pre_suppress_ticks_and_sleep_processing<span class="op">(</span></span>
+<span id="cb16-4"><a href="ch-porting.html#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// expected ticks to sleep</span></span>
+<span id="cb16-5"><a href="ch-porting.html#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> expected_ticks</span>
+<span id="cb16-6"><a href="ch-porting.html#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span>
+<span id="cb16-7"><a href="ch-porting.html#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="ch-porting.html#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co">// Preprocessing for tick-less sleep</span></span>
+<span id="cb16-9"><a href="ch-porting.html#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_pre_sleep_processing<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span>
+<span id="cb16-10"><a href="ch-porting.html#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-11"><a href="ch-porting.html#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="co">// Postprocessing for tick-less sleep</span></span>
+<span id="cb16-12"><a href="ch-porting.html#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_post_sleep_processing<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span>
+<span id="cb16-13"><a href="ch-porting.html#cb16-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-14"><a href="ch-porting.html#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="co">// Hook for idle task got resumed</span></span>
+<span id="cb16-15"><a href="ch-porting.html#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_os_idle_resumed_hook<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+</div>
+<div id="port-to-freertos" class="section level2 hasAnchor" number="5.2">
+<h2><span class="header-section-number">5.2</span> Port to FreeRTOS<a href="ch-porting.html#port-to-freertos" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>FreeRTOS<a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a> is a real-time operating system for micro controllers and small microprocessors.
+It is a cross-platform RTOS kernel that is distributed freely under the MIT open source license.</p>
+<p>Platform binaries that has a built-in RTOS bundles FreeRTOS. NoOS variants are
+certainly portable to FreeRTOS. The portable can be done by just defining several macros
+to feed above APIs into FreeRTOS, such as:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb17-1"><a href="ch-porting.html#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define configPRE_SUPPRESS_TICKS_AND_SLEEP_PROCESSING(xExpectedIdleTime)  \</span></span>
+<span id="cb17-2"><a href="ch-porting.html#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="pp">  do {                                                                    \</span></span>
+<span id="cb17-3"><a href="ch-porting.html#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="pp">    xExpectedIdleTime =                                                   \</span></span>
+<span id="cb17-4"><a href="ch-porting.html#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="pp">      platform_pre_suppress_ticks_and_sleep_processing(xExpectedIdleTime);\</span></span>
+<span id="cb17-5"><a href="ch-porting.html#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="pp">  } while (0)</span></span></code></pre></div>
+<p>A complete example can be found in
+SDK repository<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a>.</p>
+</div>
+<div id="port-to-rt-thread" class="section level2 hasAnchor" number="5.3">
+<h2><span class="header-section-number">5.3</span> Port to RT-Thread<a href="ch-porting.html#port-to-rt-thread" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>RT-Thread<a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a> is an open source embedded real-time operating system for IoT devices.
+It has a small size, rich features, high performance and scalability.</p>
+<p><code>rtos_...</code> functionalities can be mapped to relevant RT-Thread APIs as shown in
+Table <a href="ch-porting.html#tab:ch-porting-rt-thread">5.1</a>.</p>
+<table>
+<caption><span id="tab:ch-porting-rt-thread">Table 5.1: </span> Relevant RT-Thread APIs</caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"><code>rtos_...</code> Functionalities</th>
+<th align="left">RT-Thread APIs</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>rtos_next_busy_tick</code></td>
+<td align="left"><code>rt_timer_next_timeout_tick</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>rtos_stop_scheduler</code></td>
+<td align="left"><code>rt_enter_critical</code>, <code>rt_hw_interrupt_disable</code></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>rtos_compensate_system_tick</code></td>
+<td align="left"><code>rt_tick_set</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>rtos_resume_scheduler</code></td>
+<td align="left"><code>rt_exit_critical</code>, <code>rt_hw_interrupt_enable</code></td>
+</tr>
+</tbody>
+</table>
+<p>A complete example can be found in
+SDK repository<a href="#fn13" class="footnote-ref" id="fnref13"><sup>13</sup></a>.</p>
+</div>
+<div id="port-to-huawei-liteos" class="section level2 hasAnchor" number="5.4">
+<h2><span class="header-section-number">5.4</span> Port to Huawei LiteOS<a href="ch-porting.html#port-to-huawei-liteos" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Huawei LiteOS<a href="#fn14" class="footnote-ref" id="fnref14"><sup>14</sup></a> was a lightweight real-time operating system for IoT devices developed by Huawei.
+It was open source, POSIX compliant, and has been incorporated into HarmonyOS.</p>
+<p><code>rtos_...</code> functionalities can be mapped to relevant LiteOS APIs as shown in
+Table <a href="ch-porting.html#tab:ch-porting-liteos">5.2</a>.</p>
+<table>
+<caption><span id="tab:ch-porting-liteos">Table 5.2: </span> Relevant LiteOS APIs</caption>
+<thead>
+<tr class="header">
+<th align="left"><code>rtos_...</code> Functionalities</th>
+<th align="left">LiteOS APIs</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>rtos_next_busy_tick</code></td>
+<td align="left"><code>OsSleepTicksGet</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>rtos_stop_scheduler</code></td>
+<td align="left"><code>LOS_IntLock</code></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>rtos_compensate_system_tick</code></td>
+<td align="left"><code>OsSysTimeUpdate</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>rtos_resume_scheduler</code></td>
+<td align="left"><code>LOS_IntRestore</code></td>
+</tr>
+</tbody>
+</table>
+<p>A complete example can be found in
+SDK repository<a href="#fn15" class="footnote-ref" id="fnref15"><sup>15</sup></a>.</p>
+</div>
+<div id="port-to-azure-rtos-threadx" class="section level2 hasAnchor" number="5.5">
+<h2><span class="header-section-number">5.5</span> Port to Azure RTOS ThreadX<a href="ch-porting.html#port-to-azure-rtos-threadx" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Azure RTOS ThreadX<a href="#fn16" class="footnote-ref" id="fnref16"><sup>16</sup></a> is Microsoft’s Real-Time Operating System (RTOS) for deeply embedded,
+real-time, and IoT applications. It has a small footprint, fast execution speed, and
+advanced features such as preemption-threshold scheduling, event chaining.</p>
+<p><code>rtos_...</code> functionalities can be mapped to relevant ThreadX APIs as shown in
+Table <a href="ch-porting.html#tab:ch-porting-threadx">5.3</a>.</p>
+<table>
+<caption><span id="tab:ch-porting-threadx">Table 5.3: </span> Relevant ThreadX APIs</caption>
+<thead>
+<tr class="header">
+<th align="left"><code>rtos_...</code> Functionalities</th>
+<th align="left">ThreadX APIs</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>rtos_next_busy_tick</code></td>
+<td align="left"><code>tx_timer_get_next</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>rtos_stop_scheduler</code></td>
+<td align="left"><code>TX_DISABLE</code></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>rtos_compensate_system_tick</code></td>
+<td align="left"><code>tx_time_increment</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>rtos_resume_scheduler</code></td>
+<td align="left"><code>TX_RESTORE</code></td>
+</tr>
+</tbody>
+</table>
+<p>A detailed explanation can be found online<a href="#fn17" class="footnote-ref" id="fnref17"><sup>17</sup></a>.</p>
+</div>
+<div id="truly-no-os" class="section level2 hasAnchor" number="5.6">
+<h2><span class="header-section-number">5.6</span> Truly No OS<a href="ch-porting.html#truly-no-os" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>It’s possible to run NoOS bundles without any RTOS, including full functional
+power saving.
+A complete example can be found in
+SDK repository<a href="#fn18" class="footnote-ref" id="fnref18"><sup>18</sup></a>.</p>
+<p>In the example, because there are no software timers, and no next busy tick,
+the whole idle process couldn’t be simpler:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb18-1"><a href="ch-porting.html#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> idle_process<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb18-2"><a href="ch-porting.html#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb18-3"><a href="ch-porting.html#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> ticks <span class="op">=</span></span>
+<span id="cb18-4"><a href="ch-porting.html#cb18-4" aria-hidden="true" tabindex="-1"></a>      platform_pre_suppress_ticks_and_sleep_processing<span class="op">(</span><span class="bn">0xffffff</span><span class="op">);</span></span>
+<span id="cb18-5"><a href="ch-porting.html#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>ticks <span class="op">&lt;</span> <span class="dv">5</span><span class="op">)</span> <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb18-6"><a href="ch-porting.html#cb18-6" aria-hidden="true" tabindex="-1"></a>    enter_critical<span class="op">();</span></span>
+<span id="cb18-7"><a href="ch-porting.html#cb18-7" aria-hidden="true" tabindex="-1"></a>    platform_pre_sleep_processing<span class="op">();</span></span>
+<span id="cb18-8"><a href="ch-porting.html#cb18-8" aria-hidden="true" tabindex="-1"></a>    platform_post_sleep_processing<span class="op">();</span></span>
+<span id="cb18-9"><a href="ch-porting.html#cb18-9" aria-hidden="true" tabindex="-1"></a>    leave_critical<span class="op">();</span></span>
+<span id="cb18-10"><a href="ch-porting.html#cb18-10" aria-hidden="true" tabindex="-1"></a>    platform_os_idle_resumed_hook<span class="op">();</span></span>
+<span id="cb18-11"><a href="ch-porting.html#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="9">
+<li id="fn9"><p>Since system tick interrupts are disabled during
+sleep, it is called tick-less low power feature in some RTOS(es).<a href="ch-porting.html#fnref9" class="footnote-back">↩︎</a></p></li>
+<li id="fn10"><p><a href="https://www.freertos.org/" class="uri">https://www.freertos.org/</a><a href="ch-porting.html#fnref10" class="footnote-back">↩︎</a></p></li>
+<li id="fn11"><p><a href="https://github.com/ingchips/ING918XX_SDK_SOURCE/tree/master/examples/peripheral_console_freertos" class="uri">https://github.com/ingchips/ING918XX_SDK_SOURCE/tree/master/examples/peripheral_console_freertos</a><a href="ch-porting.html#fnref11" class="footnote-back">↩︎</a></p></li>
+<li id="fn12"><p><a href="https://www.rt-thread.io/" class="uri">https://www.rt-thread.io/</a><a href="ch-porting.html#fnref12" class="footnote-back">↩︎</a></p></li>
+<li id="fn13"><p><a href="https://github.com/ingchips/ING918XX_SDK_SOURCE/tree/master/examples/peripheral_console_rt-thread" class="uri">https://github.com/ingchips/ING918XX_SDK_SOURCE/tree/master/examples/peripheral_console_rt-thread</a><a href="ch-porting.html#fnref13" class="footnote-back">↩︎</a></p></li>
+<li id="fn14"><p><a href="https://gitee.com/LiteOS/LiteOS" class="uri">https://gitee.com/LiteOS/LiteOS</a><a href="ch-porting.html#fnref14" class="footnote-back">↩︎</a></p></li>
+<li id="fn15"><p><a href="https://github.com/ingchips/ING918XX_SDK_SOURCE/tree/master/examples-gcc/peripheral_console_liteos" class="uri">https://github.com/ingchips/ING918XX_SDK_SOURCE/tree/master/examples-gcc/peripheral_console_liteos</a><a href="ch-porting.html#fnref15" class="footnote-back">↩︎</a></p></li>
+<li id="fn16"><p><a href="http://docs.microsoft.com/azure/rtos/threadx" class="uri">http://docs.microsoft.com/azure/rtos/threadx</a><a href="ch-porting.html#fnref16" class="footnote-back">↩︎</a></p></li>
+<li id="fn17"><p><a href="https://ingchips.github.io/blog/2022-03-11-threadx-porting/" class="uri">https://ingchips.github.io/blog/2022-03-11-threadx-porting/</a><a href="ch-porting.html#fnref17" class="footnote-back">↩︎</a></p></li>
+<li id="fn18"><p><a href="https://github.com/ingchips/ING918XX_SDK_SOURCE/tree/master/examples-gcc/peripheral_console_realtime" class="uri">https://github.com/ingchips/ING918XX_SDK_SOURCE/tree/master/examples-gcc/peripheral_console_realtime</a><a href="ch-porting.html#fnref18" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="ch-api.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ch-tips.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["pg_power_saving.pdf", "pg_power_saving.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

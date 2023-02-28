@@ -156,6 +156,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.4" data-path="ch-api.html"><a href="ch-api.html#k-clock"><i class="fa fa-check"></i><b>4.4</b> 32k Clock</a></li>
 <li class="chapter" data-level="4.5" data-path="ch-api.html"><a href="ch-api.html#timers"><i class="fa fa-check"></i><b>4.5</b> Timers</a></li>
 <li class="chapter" data-level="4.6" data-path="ch-api.html"><a href="ch-api.html#idle-procedure"><i class="fa fa-check"></i><b>4.6</b> IDLE Procedure</a></li>
+<li class="chapter" data-level="4.7" data-path="ch-api.html"><a href="ch-api.html#timing"><i class="fa fa-check"></i><b>4.7</b> Timing</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="ch-porting.html"><a href="ch-porting.html"><i class="fa fa-check"></i><b>5</b> Porting</a>
 <ul>
@@ -217,18 +218,23 @@ A value of 0 means that no mode in Category B is allowed at present.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="ch-api.html#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define PLATFORM_ALLOW_DEEP_SLEEP      ...</span></span>
 <span id="cb2-2"><a href="ch-api.html#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#define PLATFORM_ALLOW_DEEPER_SLEEP    ...</span></span>
 <span id="cb2-3"><a href="ch-api.html#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#define PLATFORM_ALLOW_BLE_ONLY_SLEEP  ...</span></span></code></pre></div>
-<p>For example, if both DEEP and DEEPER SLEEP are allowed, then:</p>
+<p>When DEEPER SLEEP is allowed, DEEP SLEEP is also allowed implicitly.
+For example, if both DEEP and DEEPER SLEEP are allowed, then:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="ch-api.html#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">return</span> PLATFORM_ALLOW_DEEP_SLEEP <span class="op">+</span> PLATFORM_ALLOW_DEEPER_SLEEP<span class="op">;</span></span></code></pre></div>
-<p>For ING916, Apps can also configure external wake up sources in the handle.</p></li>
+<p>or, simply (although not recommended),</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb4-1"><a href="ch-api.html#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">return</span> PLATFORM_ALLOW_DEEPER_SLEEP<span class="op">;</span></span></code></pre></div>
+<p>For ING916, Apps can also configure external wake up sources in the handle.</p>
+<p>When a sleep mode returned as allowed but is not supported in the system,
+the sleep mode is ignored.</p></li>
 <li><p><strong>PLATFORM_CB_EVT_ON_DEEP_SLEEP_WAKEUP</strong></p>
 <p>In the handler of this event, Apps can re-initialize peripherals and do other jobs
 according to the needs.</p>
 <p>Input parameter <code>void *data</code> is casted from <code>platform_wakeup_call_reason_t</code>:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb4-1"><a href="ch-api.html#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb4-2"><a href="ch-api.html#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb4-3"><a href="ch-api.html#cb4-3" aria-hidden="true" tabindex="-1"></a>    PLATFORM_WAKEUP_REASON_NORMAL <span class="op">=</span> <span class="op">...,</span></span>
-<span id="cb4-4"><a href="ch-api.html#cb4-4" aria-hidden="true" tabindex="-1"></a>    PLATFORM_WAKEUP_REASON_ABORTED <span class="op">=</span> <span class="op">...,</span></span>
-<span id="cb4-5"><a href="ch-api.html#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> platform_wakeup_call_reason_t<span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="ch-api.html#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
+<span id="cb5-2"><a href="ch-api.html#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb5-3"><a href="ch-api.html#cb5-3" aria-hidden="true" tabindex="-1"></a>    PLATFORM_WAKEUP_REASON_NORMAL <span class="op">=</span> <span class="op">...,</span></span>
+<span id="cb5-4"><a href="ch-api.html#cb5-4" aria-hidden="true" tabindex="-1"></a>    PLATFORM_WAKEUP_REASON_ABORTED <span class="op">=</span> <span class="op">...,</span></span>
+<span id="cb5-5"><a href="ch-api.html#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> platform_wakeup_call_reason_t<span class="op">;</span></span></code></pre></div>
 <p><em>PLATFORM_WAKEUP_REASON_NORMAL</em> means that this event is emitted for a normal
 (successful) wake up procedure, i.e. the sleep procedure is completed successfully;
 <em>PLATFORM_WAKEUP_REASON_ABORTED</em> means that the previous sleep procedure is aborted,
@@ -242,21 +248,21 @@ because for ING916, external wake up sources such GPIO might need to be
 reconfigured if sleep procedure is aborted. Without this event, Apps will
 not be able to do such reconfiguration. Since external sources are not configurable
 in the case of ING918, so it is default to <em>Disabled</em>.</p>
-<p>If <code>PLATFORM_CFG_ALWAYS_CALL_WAKEUP</code> is <em>Enabled</em>, then there is <em>definitely</em>
-a <em>PLATFORM_CB_EVT_ON_DEEP_SLEEP_WAKEUP</em> event for each
+<p>If <code>PLATFORM_CFG_ALWAYS_CALL_WAKEUP</code> is <em>Enabled</em>, then there will be
+a <em>PLATFORM_CB_EVT_ON_DEEP_SLEEP_WAKEUP</em> event <em>definitely</em> for each
 <em>PLATFORM_CB_EVT_QUERY_DEEP_SLEEP_ALLOWED</em> event that returns a non-0 value.</p></li>
 </ul>
-<p>Prototype of event handles should be compatible of:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="ch-api.html#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="dt">uint32_t</span> <span class="op">(*</span>f_platform_evt_cb<span class="op">)(</span><span class="dt">void</span> <span class="op">*</span>data<span class="op">,</span> <span class="dt">void</span> <span class="op">*</span>user_data<span class="op">);</span></span></code></pre></div>
+<p>The prototype of event handles should be compatible of:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb6-1"><a href="ch-api.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="dt">uint32_t</span> <span class="op">(*</span>f_platform_evt_cb<span class="op">)(</span><span class="dt">void</span> <span class="op">*</span>data<span class="op">,</span> <span class="dt">void</span> <span class="op">*</span>user_data<span class="op">);</span></span></code></pre></div>
 <p>Handlers are registered by:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb6-1"><a href="ch-api.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_set_evt_callback<span class="op">(</span></span>
-<span id="cb6-2"><a href="ch-api.html#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// the event</span></span>
-<span id="cb6-3"><a href="ch-api.html#cb6-3" aria-hidden="true" tabindex="-1"></a>  platform_evt_callback_type_t type<span class="op">,</span></span>
-<span id="cb6-4"><a href="ch-api.html#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// the callback function</span></span>
-<span id="cb6-5"><a href="ch-api.html#cb6-5" aria-hidden="true" tabindex="-1"></a>  f_platform_evt_cb f<span class="op">,</span></span>
-<span id="cb6-6"><a href="ch-api.html#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// user data that will be passed into callback function `f`</span></span>
-<span id="cb6-7"><a href="ch-api.html#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">void</span> <span class="op">*</span>user_data</span>
-<span id="cb6-8"><a href="ch-api.html#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb7-1"><a href="ch-api.html#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_set_evt_callback<span class="op">(</span></span>
+<span id="cb7-2"><a href="ch-api.html#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// the event</span></span>
+<span id="cb7-3"><a href="ch-api.html#cb7-3" aria-hidden="true" tabindex="-1"></a>  platform_evt_callback_type_t type<span class="op">,</span></span>
+<span id="cb7-4"><a href="ch-api.html#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// the callback function</span></span>
+<span id="cb7-5"><a href="ch-api.html#cb7-5" aria-hidden="true" tabindex="-1"></a>  f_platform_evt_cb f<span class="op">,</span></span>
+<span id="cb7-6"><a href="ch-api.html#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// user data that will be passed into callback function `f`</span></span>
+<span id="cb7-7"><a href="ch-api.html#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">void</span> <span class="op">*</span>user_data</span>
+<span id="cb7-8"><a href="ch-api.html#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
 </div>
 <div id="interrupts" class="section level2 hasAnchor" number="4.2">
 <h2><span class="header-section-number">4.2</span> Interrupts<a href="ch-api.html#interrupts" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -265,17 +271,17 @@ from CPU’s point of view, interrupts should be re-enabled.</p>
 <p>For example, an UART port is used the App with both Rx and Tx interrupts are enabled.
 Then, in the waken up event handle, not only the peripheral itself should be re-initialized,
 its Rx and Tx interrupts enabled, but also the corresponding position in interrupt
-vector table. In the case ARM Cortex-M processors, it is called NVIC<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>.</p>
+vector table. In the case ARM Cortex-M processors, it is called NVIC<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>.</p>
 <p>If the ISR is registered by <code>platform_set_irq_callback</code>, then there are two options to
 re-enable the interrupt:</p>
 <ol style="list-style-type: decimal">
 <li><p>Call <code>platform_set_irq_callback</code> again, since this API will enable the interrupt;</p></li>
 <li><p>Use <code>platform_enable_irq</code>:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb7-1"><a href="ch-api.html#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_enable_irq<span class="op">(</span></span>
-<span id="cb7-2"><a href="ch-api.html#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// corresponding interrupt request type</span></span>
-<span id="cb7-3"><a href="ch-api.html#cb7-3" aria-hidden="true" tabindex="-1"></a>  platform_irq_callback_type_t type<span class="op">,</span></span>
-<span id="cb7-4"><a href="ch-api.html#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// flag = 1 for enable; flag = 0 for disable</span></span>
-<span id="cb7-5"><a href="ch-api.html#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> flag<span class="op">);</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb8-1"><a href="ch-api.html#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_enable_irq<span class="op">(</span></span>
+<span id="cb8-2"><a href="ch-api.html#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// corresponding interrupt request type</span></span>
+<span id="cb8-3"><a href="ch-api.html#cb8-3" aria-hidden="true" tabindex="-1"></a>  platform_irq_callback_type_t type<span class="op">,</span></span>
+<span id="cb8-4"><a href="ch-api.html#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// flag = 1 for enable; flag = 0 for disable</span></span>
+<span id="cb8-5"><a href="ch-api.html#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> flag<span class="op">);</span></span></code></pre></div></li>
 </ol>
 <p>If the ISR is in the table registered by <code>platform_set_irq_callback_table</code>, then
 use <code>platform_enable_irq</code>, too.</p>
@@ -283,13 +289,13 @@ use <code>platform_enable_irq</code>, too.</p>
 <div id="shutdown-1" class="section level2 hasAnchor" number="4.3">
 <h2><span class="header-section-number">4.3</span> Shutdown<a href="ch-api.html#shutdown-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Shutdown is initiated by calling <code>platform_shutdown</code>:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb8-1"><a href="ch-api.html#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_shutdown<span class="op">(</span></span>
-<span id="cb8-2"><a href="ch-api.html#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Duration before power on again (measured in cycles of 32k clock)</span></span>
-<span id="cb8-3"><a href="ch-api.html#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint32_t</span> duration_cycles<span class="op">,</span></span>
-<span id="cb8-4"><a href="ch-api.html#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Pointer to the start of data to be retained</span></span>
-<span id="cb8-5"><a href="ch-api.html#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">void</span> <span class="op">*</span>p_retention_data<span class="op">,</span></span>
-<span id="cb8-6"><a href="ch-api.html#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Size of the data to be retained</span></span>
-<span id="cb8-7"><a href="ch-api.html#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint32_t</span> data_size<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb9-1"><a href="ch-api.html#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_shutdown<span class="op">(</span></span>
+<span id="cb9-2"><a href="ch-api.html#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Duration before power on again (measured in cycles of 32k clock)</span></span>
+<span id="cb9-3"><a href="ch-api.html#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint32_t</span> duration_cycles<span class="op">,</span></span>
+<span id="cb9-4"><a href="ch-api.html#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Pointer to the start of data to be retained</span></span>
+<span id="cb9-5"><a href="ch-api.html#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">void</span> <span class="op">*</span>p_retention_data<span class="op">,</span></span>
+<span id="cb9-6"><a href="ch-api.html#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Size of the data to be retained</span></span>
+<span id="cb9-7"><a href="ch-api.html#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint32_t</span> data_size<span class="op">);</span></span></code></pre></div>
 <p>When <code>duration_cycles</code> is zero, power on when external wake up source is asserted.
 When <code>duration_cycles</code> is not zero, it must be larger than a minimum value of 825
 cycles (about <span class="math inline">\(25.18ms\)</span>) reserved for hardware.
@@ -312,13 +318,13 @@ settings:</p>
 <li><p><strong>PLATFORM_CFG_32K_CLK</strong></p>
 <p>32k clock selection. Flag is <code>platform_32k_clk_src_t</code> with default value
 <code>PLATFORM_32K_RC</code>:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb9-1"><a href="ch-api.html#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb9-2"><a href="ch-api.html#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb9-3"><a href="ch-api.html#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">// external 32k crystal oscillator</span></span>
-<span id="cb9-4"><a href="ch-api.html#cb9-4" aria-hidden="true" tabindex="-1"></a>  PLATFORM_32K_OSC<span class="op">,</span></span>
-<span id="cb9-5"><a href="ch-api.html#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// internal RC 32k clock</span></span>
-<span id="cb9-6"><a href="ch-api.html#cb9-6" aria-hidden="true" tabindex="-1"></a>  PLATFORM_32K_RC</span>
-<span id="cb9-7"><a href="ch-api.html#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> platform_32k_clk_src_t<span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb10-1"><a href="ch-api.html#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
+<span id="cb10-2"><a href="ch-api.html#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb10-3"><a href="ch-api.html#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">// external 32k crystal oscillator</span></span>
+<span id="cb10-4"><a href="ch-api.html#cb10-4" aria-hidden="true" tabindex="-1"></a>  PLATFORM_32K_OSC<span class="op">,</span></span>
+<span id="cb10-5"><a href="ch-api.html#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// internal RC 32k clock</span></span>
+<span id="cb10-6"><a href="ch-api.html#cb10-6" aria-hidden="true" tabindex="-1"></a>  PLATFORM_32K_RC</span>
+<span id="cb10-7"><a href="ch-api.html#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> platform_32k_clk_src_t<span class="op">;</span></span></code></pre></div>
 <p>When modifying this configuration, both RC32K and OSC32K should be <strong>enabled</strong>.
 For ING918: both clocks must be running; To ensure a clock is running:</p>
 <ul>
@@ -329,7 +335,7 @@ For ING918: both clocks must be running; To ensure a clock is running:</p>
 <li><p><strong>PLATFORM_CFG_32K_CLK_ACC</strong></p>
 <p>Configure 32k clock accuracy in <em>ppm</em>.</p></li>
 <li><p><strong>PLATFORM_CFG_32K_CALI_PERIOD</strong></p>
-<p>32K clock auto-calibration<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a> period in seconds. Default: <span class="math inline">\(3600 \times 2 = 2 (\mathit{hours})\)</span>.</p></li>
+<p>32K clock auto-calibration<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a> period in seconds. Default: <span class="math inline">\(3600 \times 2 = 2 (\mathit{hours})\)</span>.</p></li>
 </ul>
 </div>
 <div id="timers" class="section level2 hasAnchor" number="4.5">
@@ -338,21 +344,21 @@ For ING918: both clocks must be running; To ensure a clock is running:</p>
 <p>There is an internal counter increased by <span class="math inline">\(1\)</span> per <span class="math inline">\(1 \mu s\)</span>, which wraps after
 <span class="math inline">\(7953.64 \mathit{days} (\approx 21.79 \mathit{years})\)</span>. Therefore, this timer can
 be treated as never wrapping practically. This counter is carefully recovered
-during waking up<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a>. It is reset to zero when power up again from
+during waking up<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>. It is reset to zero when power up again from
 shutdown. Use <code>platform_get_us_time</code> to read this counter:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb10-1"><a href="ch-api.html#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint64_t</span> platform_get_us_time<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb11-1"><a href="ch-api.html#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint64_t</span> platform_get_us_time<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
 <p>System tick is disabled and restarted when entering and leaving sleep modes.
 It’s difficult to properly reconfigure it accurately. Platform provides
 a configure item <code>PLATFORM_CFG_RTOS_ENH_TICK</code>. When enabled, accuracy of system ticks is improved
 but less power efficiency.</p>
 <p>Platform also provides another timer that survives in all sleep modes and is more accurate
 than system ticks. Such timers can be created by calling <code>platform_set_timer</code>:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb11-1"><a href="ch-api.html#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_set_timer<span class="op">(</span></span>
-<span id="cb11-2"><a href="ch-api.html#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// callback function when timer expires</span></span>
-<span id="cb11-3"><a href="ch-api.html#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">void</span> <span class="op">(*</span> callback<span class="op">)(</span><span class="dt">void</span><span class="op">),</span></span>
-<span id="cb11-4"><a href="ch-api.html#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// timer expires after this delay from now</span></span>
-<span id="cb11-5"><a href="ch-api.html#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Unit: 625us</span></span>
-<span id="cb11-6"><a href="ch-api.html#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> delay<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb12-1"><a href="ch-api.html#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_set_timer<span class="op">(</span></span>
+<span id="cb12-2"><a href="ch-api.html#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// callback function when timer expires</span></span>
+<span id="cb12-3"><a href="ch-api.html#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">void</span> <span class="op">(*</span> callback<span class="op">)(</span><span class="dt">void</span><span class="op">),</span></span>
+<span id="cb12-4"><a href="ch-api.html#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// timer expires after this delay from now</span></span>
+<span id="cb12-5"><a href="ch-api.html#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Unit: 625us</span></span>
+<span id="cb12-6"><a href="ch-api.html#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> delay<span class="op">);</span></span></code></pre></div>
 <p>This timer has some unique features:</p>
 <ul>
 <li>Comparing to hardware timers, this timer can be thought as “running” during
@@ -364,8 +370,8 @@ circumstance;</li>
 </ul>
 <p><code>callback</code> is also the identifier of the timer. So below two lines defines only
 one timer expiring after 200 units but not two separate timers:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb12-1"><a href="ch-api.html#cb12-1" aria-hidden="true" tabindex="-1"></a>platform_set_timer<span class="op">(</span>f<span class="op">,</span> <span class="dv">100</span><span class="op">);</span></span>
-<span id="cb12-2"><a href="ch-api.html#cb12-2" aria-hidden="true" tabindex="-1"></a>platform_set_timer<span class="op">(</span>f<span class="op">,</span> <span class="dv">200</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb13-1"><a href="ch-api.html#cb13-1" aria-hidden="true" tabindex="-1"></a>platform_set_timer<span class="op">(</span>f<span class="op">,</span> <span class="dv">100</span><span class="op">);</span></span>
+<span id="cb13-2"><a href="ch-api.html#cb13-2" aria-hidden="true" tabindex="-1"></a>platform_set_timer<span class="op">(</span>f<span class="op">,</span> <span class="dv">200</span><span class="op">);</span></span></code></pre></div>
 <p>The callback function is called in a RTOS task (if existing), but not an ISR.</p>
 <p>Range of <code>delay</code> is <span class="math inline">\(0 \sim \mathit{0x7fffffff}\)</span>. When <code>delay</code> is zero, the timer associated
 with the callback function is cleared. Since <code>delay</code> is in <span class="math inline">\(625 \mu s\)</span>, the maximum
@@ -381,38 +387,132 @@ For x86 processors, the instruction is <em>HLT</em> (halt),
 while for ARM Cortex-M processors, it is <em>wfi</em> (wait for interrupts) or <em>wfe</em>
 (wait for events). When there is only one ARM Cortex-M processor, the IDLE procedure
 is simply a <em>wfi</em> guarded by a pair of synchronization barriers:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb13-1"><a href="ch-api.html#cb13-1" aria-hidden="true" tabindex="-1"></a>__DSB<span class="op">();</span></span>
-<span id="cb13-2"><a href="ch-api.html#cb13-2" aria-hidden="true" tabindex="-1"></a>__wfi<span class="op">();</span></span>
-<span id="cb13-3"><a href="ch-api.html#cb13-3" aria-hidden="true" tabindex="-1"></a>__ISB<span class="op">();</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb14-1"><a href="ch-api.html#cb14-1" aria-hidden="true" tabindex="-1"></a>__DSB<span class="op">();</span></span>
+<span id="cb14-2"><a href="ch-api.html#cb14-2" aria-hidden="true" tabindex="-1"></a>__wfi<span class="op">();</span></span>
+<span id="cb14-3"><a href="ch-api.html#cb14-3" aria-hidden="true" tabindex="-1"></a>__ISB<span class="op">();</span></span></code></pre></div>
 <p>Since there is a PLL in ING916, CPU and other components may run at a range of frequencies,
 event <code>PLATFORM_CB_EVT_IDLE_PROC</code> is defined to provide flexibility of customizing
 the IDLE procedure. This event is emitted each time IDLE mode is entered, and default
 IDLE procedure is replaced by the callback function. For example, Apps can lower
 clock frequencies to enjoy much low power consumption in IDLE mode if the slower
 response in waking up is acceptable:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb14-1"><a href="ch-api.html#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> idle_proc<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>dummy<span class="op">,</span> <span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
-<span id="cb14-2"><a href="ch-api.html#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb14-3"><a href="ch-api.html#cb14-3" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ConfigPLLClk<span class="op">(</span>DIV_PRE<span class="op">,</span> LOOP<span class="op">,</span> <span class="dv">63</span><span class="op">);</span></span>
-<span id="cb14-4"><a href="ch-api.html#cb14-4" aria-hidden="true" tabindex="-1"></a>    __DSB<span class="op">();</span></span>
-<span id="cb14-5"><a href="ch-api.html#cb14-5" aria-hidden="true" tabindex="-1"></a>    __WFI<span class="op">();</span></span>
-<span id="cb14-6"><a href="ch-api.html#cb14-6" aria-hidden="true" tabindex="-1"></a>    __ISB<span class="op">();</span></span>
-<span id="cb14-7"><a href="ch-api.html#cb14-7" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ConfigPLLClk<span class="op">(</span>DIV_PRE<span class="op">,</span> LOOP<span class="op">,</span> DIV_OUTPUT<span class="op">);</span></span>
-<span id="cb14-8"><a href="ch-api.html#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb14-9"><a href="ch-api.html#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb14-10"><a href="ch-api.html#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-11"><a href="ch-api.html#cb14-11" aria-hidden="true" tabindex="-1"></a>platform_set_evt_callback<span class="op">(</span>PLATFORM_CB_EVT_IDLE_PROC<span class="op">,</span></span>
-<span id="cb14-12"><a href="ch-api.html#cb14-12" aria-hidden="true" tabindex="-1"></a>    idle_proc<span class="op">,</span> NULL<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb15-1"><a href="ch-api.html#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> idle_proc<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>dummy<span class="op">,</span> <span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
+<span id="cb15-2"><a href="ch-api.html#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb15-3"><a href="ch-api.html#cb15-3" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ConfigPLLClk<span class="op">(</span>DIV_PRE<span class="op">,</span> LOOP<span class="op">,</span> <span class="dv">63</span><span class="op">);</span></span>
+<span id="cb15-4"><a href="ch-api.html#cb15-4" aria-hidden="true" tabindex="-1"></a>    __DSB<span class="op">();</span></span>
+<span id="cb15-5"><a href="ch-api.html#cb15-5" aria-hidden="true" tabindex="-1"></a>    __WFI<span class="op">();</span></span>
+<span id="cb15-6"><a href="ch-api.html#cb15-6" aria-hidden="true" tabindex="-1"></a>    __ISB<span class="op">();</span></span>
+<span id="cb15-7"><a href="ch-api.html#cb15-7" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ConfigPLLClk<span class="op">(</span>DIV_PRE<span class="op">,</span> LOOP<span class="op">,</span> DIV_OUTPUT<span class="op">);</span></span>
+<span id="cb15-8"><a href="ch-api.html#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb15-9"><a href="ch-api.html#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb15-10"><a href="ch-api.html#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="ch-api.html#cb15-11" aria-hidden="true" tabindex="-1"></a>platform_set_evt_callback<span class="op">(</span>PLATFORM_CB_EVT_IDLE_PROC<span class="op">,</span></span>
+<span id="cb15-12"><a href="ch-api.html#cb15-12" aria-hidden="true" tabindex="-1"></a>    idle_proc<span class="op">,</span> NULL<span class="op">);</span></span></code></pre></div>
+</div>
+<div id="timing" class="section level2 hasAnchor" number="4.7">
+<h2><span class="header-section-number">4.7</span> Timing<a href="ch-api.html#timing" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Finally, there are several configuration to share some information about <em>outside</em> world
+to the power saving framework.</p>
+<ul>
+<li><p><strong>PLATFORM_CFG_xx_TIME_REDUCTION</strong> which helps to answer how much the sleep can take;</p>
+<p>As shown in Figure <a href="ch-api.html#fig:ch-api-time-reduction">4.1</a>, suppose now is <span class="math inline">\(T_0\)</span>, and
+next action occurs at <span class="math inline">\(T_1\)</span>. Obviously, the system can not sleep for <span class="math inline">\((T_1 - T_0)\)</span>,
+since there are pre-processing and post-processing in both hardware and software,
+which will take some time too. So extra time needs to be reduced from <span class="math inline">\((T_1 - T_0)\)</span>.</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch-api-time-reduction"></span>
+<img src="img/sleep_time_delay.png" alt="Sleep Time Calculation" width="60%" />
+<p class="caption">
+Figure 4.1: Sleep Time Calculation
+</p>
+</div>
+<p>The amount of time can be configured through <code>PLATFORM_CFG_SLEEP_TIME_REDUCTION</code> for
+SLEEP mode, and <code>PLATFORM_CFG_DEEP_SLEEP_TIME_REDUCTION</code> for DEEP SLEEP and DEEPER SLEEP modes.</p>
+<p>PLATFORM_CFG_SLEEP_TIME_REDUCTION is not applicable to ING916.</p></li>
+<li><p><strong>PLATFORM_CFG_LL_DELAY_COMPENSATION</strong> which helps to answer when starting to
+configure BLE sub-system.</p>
+<p>Suppose a BLE activity occurs at <span class="math inline">\(T_1\)</span> exactly, Link Layer software need to properly configure
+it before <span class="math inline">\(T_1\)</span>. Since CPU may run at a variant of frequencies, time needed to
+do this job also varies. This configurations tells the framework how much time shall be reserved
+for Link Layer software: let <span class="math inline">\(t\)</span> be PLATFORM_CFG_LL_DELAY_COMPENSATION, then Link Layer
+will start at <span class="math inline">\((T_1 - t)\)</span>.</p>
+<p>This configuration is not applicable to ING918.</p></li>
+</ul>
+<p>Default values are given in Table <a href="ch-api.html#tab:ch-api-default-timing">4.1</a>.</p>
+<table>
+<caption><span id="tab:ch-api-default-timing">Table 4.1: </span> Default Timing Configurations</caption>
+<thead>
+<tr class="header">
+<th align="center">Item</th>
+<th align="center">Default for ING918 <span class="math inline">\((\mu s)\)</span></th>
+<th align="center">Default for ING916 <span class="math inline">\((\mu s)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">SLEEP_TIME_REDUCTION</td>
+<td align="center"><span class="math inline">\(450\)</span></td>
+<td align="center"><span class="math inline">\(4000\)</span></td>
+</tr>
+<tr class="even">
+<td align="center">DEEP_SLEEP_TIME_REDUCTION</td>
+<td align="center"><span class="math inline">\(550\)</span></td>
+<td align="center">–</td>
+</tr>
+<tr class="odd">
+<td align="center">LL_DELAY_COMPENSATION</td>
+<td align="center">–</td>
+<td align="center"><span class="math inline">\(200\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Generally, these values do not need to updated in the case of ING918. If the wake up
+handler does a lot of processing, then those two reductions should be increased accordingly.</p>
+<p>It’s much more complicated for ING916. Good values can be found by trial and error,
+when precise measurement is impossible. When values are too small, BLE functions
+will be affected, so it can be used as an indicator.
+Table <a href="ch-api.html#tab:ch-api-default-timing">4.1</a> lists reference values for LL_DELAY_COMPENSATION.</p>
+<table>
+<caption><span id="tab:ch-api-default-timing">Table 4.1: </span> Examples for LL_DELAY_COMPENSATION</caption>
+<thead>
+<tr class="header">
+<th align="center">CPU Frequency (<span class="math inline">\(M\mathit{Hz}\)</span>)</th>
+<th align="center">Value <span class="math inline">\((\mu s)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><span class="math inline">\(48\)</span></td>
+<td align="center"><span class="math inline">\(1200\)</span></td>
+</tr>
+<tr class="even">
+<td align="center"><span class="math inline">\(32\)</span></td>
+<td align="center"><span class="math inline">\(2000\)</span></td>
+</tr>
+<tr class="odd">
+<td align="center"><span class="math inline">\(24\)</span></td>
+<td align="center"><span class="math inline">\(2500\)</span></td>
+</tr>
+<tr class="even">
+<td align="center"><span class="math inline">\(16\)</span></td>
+<td align="center"><span class="math inline">\(5000\)</span></td>
+</tr>
+<tr class="odd">
+<td align="center"><span class="math inline">\(8\)</span></td>
+<td align="center"><span class="math inline">\(9000\)</span></td>
+</tr>
+</tbody>
+</table>
 
 </div>
 </div>
 <div class="footnotes">
 <hr />
-<ol start="6">
-<li id="fn6"><p>Nested Vectored Interrupt Controller<a href="ch-api.html#fnref6" class="footnote-back">↩︎</a></p></li>
-<li id="fn7"><p><em>Calibration</em> means to measure the frequency of
-this clock with another high frequency and high precision clock.<a href="ch-api.html#fnref7" class="footnote-back">↩︎</a></p></li>
-<li id="fn8"><p>For DEEPER SLEEP mode of ING916, it is coarsely recovered
-comparing to other modes.<a href="ch-api.html#fnref8" class="footnote-back">↩︎</a></p></li>
+<ol start="5">
+<li id="fn5"><p>Nested Vectored Interrupt Controller<a href="ch-api.html#fnref5" class="footnote-back">↩︎</a></p></li>
+<li id="fn6"><p><em>Calibration</em> means to measure the frequency of
+this clock with another high frequency and high precision clock.<a href="ch-api.html#fnref6" class="footnote-back">↩︎</a></p></li>
+<li id="fn7"><p>For DEEPER SLEEP mode of ING916, it is coarsely recovered
+comparing to other modes.<a href="ch-api.html#fnref7" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

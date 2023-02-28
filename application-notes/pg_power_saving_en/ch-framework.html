@@ -156,6 +156,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.4" data-path="ch-api.html"><a href="ch-api.html#k-clock"><i class="fa fa-check"></i><b>4.4</b> 32k Clock</a></li>
 <li class="chapter" data-level="4.5" data-path="ch-api.html"><a href="ch-api.html#timers"><i class="fa fa-check"></i><b>4.5</b> Timers</a></li>
 <li class="chapter" data-level="4.6" data-path="ch-api.html"><a href="ch-api.html#idle-procedure"><i class="fa fa-check"></i><b>4.6</b> IDLE Procedure</a></li>
+<li class="chapter" data-level="4.7" data-path="ch-api.html"><a href="ch-api.html#timing"><i class="fa fa-check"></i><b>4.7</b> Timing</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="ch-porting.html"><a href="ch-porting.html"><i class="fa fa-check"></i><b>5</b> Porting</a>
 <ul>
@@ -228,7 +229,7 @@ which is generally determined by:</p>
 <p>Different sleep modes have their own hard time requirements, because it needs extra
 time to bring the system into sleep modes and wake it up again. App’s opinion tells
 the idle process a subset of sleep modes which are allowed to be chosen from. Current
-system state is also considered.</p>
+system state including BLE sub-system is also considered.</p>
 <p>After the most suitable sleep mode which consumes lowest power, is decided, the sleep
 procedure stops RTOS and takes the system into the chosen sleep mode.</p>
 <p>After waken up, the wake up procedure performs post processing to make sure everything
@@ -280,13 +281,13 @@ summarized in Table <a href="ch-framework.html#tab:ch-framework-sleep-modes">3.1
 <td align="center">DEEP SLEEP</td>
 <td align="center"><span class="math inline">\(\checkmark\)</span></td>
 <td align="center"><span class="math inline">\(\checkmark\)</span></td>
-<td align="left">CPU and peripherals are all shutdown. Memory is retained.</td>
+<td align="left">CPU and peripherals are all shutdown. All memory is retained.</td>
 </tr>
 <tr class="odd">
 <td align="center">DEEPER SLEEP</td>
 <td align="center"></td>
 <td align="center"><span class="math inline">\(\checkmark\)</span></td>
-<td align="left">Like DEEP SLEEP, but memory for BLE is shutdown.</td>
+<td align="left">Like DEEP SLEEP. Only a small portion of memory is retained.</td>
 </tr>
 <tr class="even">
 <td align="center">BLE ONLY SLEEP</td>
@@ -302,14 +303,16 @@ different sleep modes besides the notes in
 Table <a href="ch-framework.html#tab:ch-framework-sleep-modes">3.1</a>:</p>
 <ul>
 <li><p>For DEEP SLEEP on ING916, some peripherals, such as GPIO, can be optionally
-put into special low power modes, rather than shutdown, in which case, its output could
+put into special low power modes, rather than powered off, in which case, its output could
 be retained or acting as wake up sources;</p></li>
-<li><p>For DEEPER SLEEP, comparing with DEEP SLEEP:</p>
+<li><p>In DEEPER SLEEP, comparing with DEEP SLEEP:</p>
 <ul>
 <li>Less peripherals are allowed to be put into special low power modes;</li>
-<li>Internal <span class="math inline">\(1 \mu s\)</span> timer becomes less accurate.</li>
+<li>Internal <span class="math inline">\(1 \mu s\)</span> timer becomes less accurate;</li>
+<li>Only 16KiB of system memory is retained;</li>
 </ul></li>
-<li><p>For BLE ONLY SLEEP, the system can be waken up only by BLE sub-system.</p></li>
+<li><p>For BLE ONLY SLEEP, the system can be waken up only by BLE sub-system;</p></li>
+<li><p>DEEPER SLEEP is only available in the <em>mini</em> bundles.</p></li>
 </ul>
 <p>Different sleep modes consume different amount of current, since different components
 in SoC consume different amount of current. Here is a very rough quantitative summary,
@@ -437,7 +440,8 @@ not empty, then NO;</p></li>
 <li><p>If DEEP SLEEP is not allowed, then NO;</p></li>
 <li><p>If external wake up source does not fit the need, for example, comparator is
 required as a wake up source, then NO;</p></li>
-<li><p>If memory allocated from Link Layer’s heap is in use<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>, then NO;</p></li>
+<li><p>If memory outside of the retained range is in use, for example, memory allocated from Link Layer’s heap,
+then NO;</p></li>
 <li><p>If internal <span class="math inline">\(1\mu s\)</span> timer should be as accurate as in DEEP SLEEP, then NO.</p></li>
 </ul></li>
 <li><p>BLE ONLY SLEEP</p>
@@ -473,8 +477,6 @@ source for DEEPER SLEEP too.</p></li>
 <li id="fn4"><p>Refer to
 <em>Programmer’s Guide - ING916XX Peripheral</em> for the configuration of wake up
 sources<a href="ch-framework.html#fnref4" class="footnote-back">↩︎</a></p></li>
-<li id="fn5"><p>This heap is powered off
-in DEEPER SLEEP mode.<a href="ch-framework.html#fnref5" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

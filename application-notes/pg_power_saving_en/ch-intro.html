@@ -156,6 +156,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.4" data-path="ch-api.html"><a href="ch-api.html#k-clock"><i class="fa fa-check"></i><b>4.4</b> 32k Clock</a></li>
 <li class="chapter" data-level="4.5" data-path="ch-api.html"><a href="ch-api.html#timers"><i class="fa fa-check"></i><b>4.5</b> Timers</a></li>
 <li class="chapter" data-level="4.6" data-path="ch-api.html"><a href="ch-api.html#idle-procedure"><i class="fa fa-check"></i><b>4.6</b> IDLE Procedure</a></li>
+<li class="chapter" data-level="4.7" data-path="ch-api.html"><a href="ch-api.html#timing"><i class="fa fa-check"></i><b>4.7</b> Timing</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="ch-porting.html"><a href="ch-porting.html"><i class="fa fa-check"></i><b>5</b> Porting</a>
 <ul>
@@ -206,6 +207,11 @@ This document is a guide for developing low power products from the perspective 
 carefully to reduce power consumption; when there is nothing to do, to put the system into special modes
 to reduce power consumption. The latter one is covered by the power saving <a href="ch-framework.html#ch-framework">Framework</a>,
 while the former one is briefly discussed in <a href="ch-tips.html#ch-tips">Tips on Low Power System</a>.</p>
+<div class="rmdcaution">
+<p>
+Information about ING916 is subject to change.
+</p>
+</div>
 <div id="abbreviations-terminology" class="section level2 hasAnchor" number="2.1">
 <h2><span class="header-section-number">2.1</span> Abbreviations &amp; Terminology<a href="ch-intro.html#abbreviations-terminology" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <table>
@@ -283,6 +289,14 @@ while the former one is briefly discussed in <a href="ch-tips.html#ch-tips">Tips
 <tr class="odd">
 <td align="center">KiB</td>
 <td align="left">1024 Bytes</td>
+</tr>
+<tr class="even">
+<td align="center">Share memory</td>
+<td align="left">Memory in SoC that can be accessed by BLE sub-system (shared by BLE and CPU sub-systems)</td>
+</tr>
+<tr class="odd">
+<td align="center">System memory</td>
+<td align="left">Memory in SoC that can be accessed by CPU sub-system, but not BLE sub-system. It is starting from <span class="math inline">\(0x20000000\)</span>.</td>
 </tr>
 <tr class="even">
 <td align="center">System tick</td>

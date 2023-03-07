@@ -153,7 +153,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.1" data-path="ch-api.html"><a href="ch-api.html#callback-events"><i class="fa fa-check"></i><b>4.1</b> Callback events</a></li>
 <li class="chapter" data-level="4.2" data-path="ch-api.html"><a href="ch-api.html#interrupts"><i class="fa fa-check"></i><b>4.2</b> Interrupts</a></li>
 <li class="chapter" data-level="4.3" data-path="ch-api.html"><a href="ch-api.html#shutdown-1"><i class="fa fa-check"></i><b>4.3</b> Shutdown</a></li>
-<li class="chapter" data-level="4.4" data-path="ch-api.html"><a href="ch-api.html#k-clock"><i class="fa fa-check"></i><b>4.4</b> 32k Clock</a></li>
+<li class="chapter" data-level="4.4" data-path="ch-api.html"><a href="ch-api.html#k-clock"><i class="fa fa-check"></i><b>4.4</b> 32k Clock</a>
+<ul>
+<li class="chapter" data-level="4.4.1" data-path="ch-api.html"><a href="ch-api.html#internal-32k-rc-clock"><i class="fa fa-check"></i><b>4.4.1</b> Internal 32k RC Clock</a></li>
+</ul></li>
 <li class="chapter" data-level="4.5" data-path="ch-api.html"><a href="ch-api.html#timers"><i class="fa fa-check"></i><b>4.5</b> Timers</a></li>
 <li class="chapter" data-level="4.6" data-path="ch-api.html"><a href="ch-api.html#idle-procedure"><i class="fa fa-check"></i><b>4.6</b> IDLE Procedure</a></li>
 <li class="chapter" data-level="4.7" data-path="ch-api.html"><a href="ch-api.html#timing"><i class="fa fa-check"></i><b>4.7</b> Timing</a></li>
@@ -335,8 +338,38 @@ For ING918: both clocks must be running; To ensure a clock is running:</p>
 <li><p><strong>PLATFORM_CFG_32K_CLK_ACC</strong></p>
 <p>Configure 32k clock accuracy in <em>ppm</em>.</p></li>
 <li><p><strong>PLATFORM_CFG_32K_CALI_PERIOD</strong></p>
-<p>32K clock auto-calibration<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a> period in seconds. Default: <span class="math inline">\(3600 \times 2 = 2 (\mathit{hours})\)</span>.</p></li>
+<p>32k clock auto-calibration<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a> period in seconds.
+Default: <span class="math inline">\(3600 \times 2 = 2 (\mathit{hours})\)</span>.</p>
+<p>Beside auto-calibration, it can also be started manually by:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb11-1"><a href="ch-api.html#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> platform_calibrate_32k<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div></li>
 </ul>
+<p>The frequency of 32k clock can be calculated from calibration value:</p>
+<p><span class="math display">\[
+f = \frac{65536000000}{\mathit{Cali}} \mathit{Hz},
+\]</span></p>
+<p>where, the calibration value <span class="math inline">\((\mathit{Cali})\)</span> is an unsigned integer returned by
+<code>platform_read_info(PLATFORM_INFO_32K_CALI_VALUE)</code>.</p>
+<div id="internal-32k-rc-clock" class="section level3 hasAnchor" number="4.4.1">
+<h3><span class="header-section-number">4.4.1</span> Internal 32k RC Clock<a href="ch-api.html#internal-32k-rc-clock" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The internal 32k RC clock is less accurate 32k crystal oscillator generally. It can be tuned
+by selecting property capacitor and resistor. This process is done by invoking:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb12-1"><a href="ch-api.html#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint16_t</span> platform_32k_rc_auto_tune<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<p>This process takes hundreds of milliseconds, so it recommended to use it in a thread but not
+in <code>app_main</code>. This process can be done only once after starting up.
+It also returns a value representing the best choice which can be saved and used to
+tune the clock directly in latter restarts:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb13-1"><a href="ch-api.html#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_32k_rc_tune<span class="op">(</span></span>
+<span id="cb13-2"><a href="ch-api.html#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> value  <span class="co">// returned by `platform_32k_rc_auto_tune`</span></span>
+<span id="cb13-3"><a href="ch-api.html#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
+<div class="rmdnote">
+<p>
+<strong>ING918</strong>: RC clock’s power supply after waken up from
+DEEP SLEEP is different from starting up. Therefore, calling
+<code>platform_32k_rc_auto_tune()</code> after DEEP SLEEP can achieve
+better accuracy.
+</p>
+</div>
+</div>
 </div>
 <div id="timers" class="section level2 hasAnchor" number="4.5">
 <h2><span class="header-section-number">4.5</span> Timers<a href="ch-api.html#timers" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -346,19 +379,19 @@ For ING918: both clocks must be running; To ensure a clock is running:</p>
 be treated as never wrapping practically. This counter is carefully recovered
 during waking up<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>. It is reset to zero when power up again from
 shutdown. Use <code>platform_get_us_time</code> to read this counter:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb11-1"><a href="ch-api.html#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint64_t</span> platform_get_us_time<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb14-1"><a href="ch-api.html#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint64_t</span> platform_get_us_time<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
 <p>System tick is disabled and restarted when entering and leaving sleep modes.
 It’s difficult to properly reconfigure it accurately. Platform provides
 a configure item <code>PLATFORM_CFG_RTOS_ENH_TICK</code>. When enabled, accuracy of system ticks is improved
 but less power efficiency.</p>
 <p>Platform also provides another timer that survives in all sleep modes and is more accurate
 than system ticks. Such timers can be created by calling <code>platform_set_timer</code>:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb12-1"><a href="ch-api.html#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_set_timer<span class="op">(</span></span>
-<span id="cb12-2"><a href="ch-api.html#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// callback function when timer expires</span></span>
-<span id="cb12-3"><a href="ch-api.html#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">void</span> <span class="op">(*</span> callback<span class="op">)(</span><span class="dt">void</span><span class="op">),</span></span>
-<span id="cb12-4"><a href="ch-api.html#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// timer expires after this delay from now</span></span>
-<span id="cb12-5"><a href="ch-api.html#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Unit: 625us</span></span>
-<span id="cb12-6"><a href="ch-api.html#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> delay<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb15-1"><a href="ch-api.html#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_set_timer<span class="op">(</span></span>
+<span id="cb15-2"><a href="ch-api.html#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// callback function when timer expires</span></span>
+<span id="cb15-3"><a href="ch-api.html#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">void</span> <span class="op">(*</span> callback<span class="op">)(</span><span class="dt">void</span><span class="op">),</span></span>
+<span id="cb15-4"><a href="ch-api.html#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// timer expires after this delay from now</span></span>
+<span id="cb15-5"><a href="ch-api.html#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Unit: 625us</span></span>
+<span id="cb15-6"><a href="ch-api.html#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> delay<span class="op">);</span></span></code></pre></div>
 <p>This timer has some unique features:</p>
 <ul>
 <li>Comparing to hardware timers, this timer can be thought as “running” during
@@ -370,8 +403,8 @@ circumstance;</li>
 </ul>
 <p><code>callback</code> is also the identifier of the timer. So below two lines defines only
 one timer expiring after 200 units but not two separate timers:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb13-1"><a href="ch-api.html#cb13-1" aria-hidden="true" tabindex="-1"></a>platform_set_timer<span class="op">(</span>f<span class="op">,</span> <span class="dv">100</span><span class="op">);</span></span>
-<span id="cb13-2"><a href="ch-api.html#cb13-2" aria-hidden="true" tabindex="-1"></a>platform_set_timer<span class="op">(</span>f<span class="op">,</span> <span class="dv">200</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb16-1"><a href="ch-api.html#cb16-1" aria-hidden="true" tabindex="-1"></a>platform_set_timer<span class="op">(</span>f<span class="op">,</span> <span class="dv">100</span><span class="op">);</span></span>
+<span id="cb16-2"><a href="ch-api.html#cb16-2" aria-hidden="true" tabindex="-1"></a>platform_set_timer<span class="op">(</span>f<span class="op">,</span> <span class="dv">200</span><span class="op">);</span></span></code></pre></div>
 <p>The callback function is called in a RTOS task (if existing), but not an ISR.</p>
 <p>Range of <code>delay</code> is <span class="math inline">\(0 \sim \mathit{0x7fffffff}\)</span>. When <code>delay</code> is zero, the timer associated
 with the callback function is cleared. Since <code>delay</code> is in <span class="math inline">\(625 \mu s\)</span>, the maximum
@@ -387,27 +420,27 @@ For x86 processors, the instruction is <em>HLT</em> (halt),
 while for ARM Cortex-M processors, it is <em>wfi</em> (wait for interrupts) or <em>wfe</em>
 (wait for events). When there is only one ARM Cortex-M processor, the IDLE procedure
 is simply a <em>wfi</em> guarded by a pair of synchronization barriers:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb14-1"><a href="ch-api.html#cb14-1" aria-hidden="true" tabindex="-1"></a>__DSB<span class="op">();</span></span>
-<span id="cb14-2"><a href="ch-api.html#cb14-2" aria-hidden="true" tabindex="-1"></a>__wfi<span class="op">();</span></span>
-<span id="cb14-3"><a href="ch-api.html#cb14-3" aria-hidden="true" tabindex="-1"></a>__ISB<span class="op">();</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb17-1"><a href="ch-api.html#cb17-1" aria-hidden="true" tabindex="-1"></a>__DSB<span class="op">();</span></span>
+<span id="cb17-2"><a href="ch-api.html#cb17-2" aria-hidden="true" tabindex="-1"></a>__wfi<span class="op">();</span></span>
+<span id="cb17-3"><a href="ch-api.html#cb17-3" aria-hidden="true" tabindex="-1"></a>__ISB<span class="op">();</span></span></code></pre></div>
 <p>Since there is a PLL in ING916, CPU and other components may run at a range of frequencies,
 event <code>PLATFORM_CB_EVT_IDLE_PROC</code> is defined to provide flexibility of customizing
 the IDLE procedure. This event is emitted each time IDLE mode is entered, and default
 IDLE procedure is replaced by the callback function. For example, Apps can lower
 clock frequencies to enjoy much low power consumption in IDLE mode if the slower
 response in waking up is acceptable:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb15-1"><a href="ch-api.html#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> idle_proc<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>dummy<span class="op">,</span> <span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
-<span id="cb15-2"><a href="ch-api.html#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb15-3"><a href="ch-api.html#cb15-3" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ConfigPLLClk<span class="op">(</span>DIV_PRE<span class="op">,</span> LOOP<span class="op">,</span> <span class="dv">63</span><span class="op">);</span></span>
-<span id="cb15-4"><a href="ch-api.html#cb15-4" aria-hidden="true" tabindex="-1"></a>    __DSB<span class="op">();</span></span>
-<span id="cb15-5"><a href="ch-api.html#cb15-5" aria-hidden="true" tabindex="-1"></a>    __WFI<span class="op">();</span></span>
-<span id="cb15-6"><a href="ch-api.html#cb15-6" aria-hidden="true" tabindex="-1"></a>    __ISB<span class="op">();</span></span>
-<span id="cb15-7"><a href="ch-api.html#cb15-7" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ConfigPLLClk<span class="op">(</span>DIV_PRE<span class="op">,</span> LOOP<span class="op">,</span> DIV_OUTPUT<span class="op">);</span></span>
-<span id="cb15-8"><a href="ch-api.html#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb15-9"><a href="ch-api.html#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb15-10"><a href="ch-api.html#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-11"><a href="ch-api.html#cb15-11" aria-hidden="true" tabindex="-1"></a>platform_set_evt_callback<span class="op">(</span>PLATFORM_CB_EVT_IDLE_PROC<span class="op">,</span></span>
-<span id="cb15-12"><a href="ch-api.html#cb15-12" aria-hidden="true" tabindex="-1"></a>    idle_proc<span class="op">,</span> NULL<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb18-1"><a href="ch-api.html#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> idle_proc<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>dummy<span class="op">,</span> <span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
+<span id="cb18-2"><a href="ch-api.html#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb18-3"><a href="ch-api.html#cb18-3" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ConfigPLLClk<span class="op">(</span>DIV_PRE<span class="op">,</span> LOOP<span class="op">,</span> <span class="dv">63</span><span class="op">);</span></span>
+<span id="cb18-4"><a href="ch-api.html#cb18-4" aria-hidden="true" tabindex="-1"></a>    __DSB<span class="op">();</span></span>
+<span id="cb18-5"><a href="ch-api.html#cb18-5" aria-hidden="true" tabindex="-1"></a>    __WFI<span class="op">();</span></span>
+<span id="cb18-6"><a href="ch-api.html#cb18-6" aria-hidden="true" tabindex="-1"></a>    __ISB<span class="op">();</span></span>
+<span id="cb18-7"><a href="ch-api.html#cb18-7" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ConfigPLLClk<span class="op">(</span>DIV_PRE<span class="op">,</span> LOOP<span class="op">,</span> DIV_OUTPUT<span class="op">);</span></span>
+<span id="cb18-8"><a href="ch-api.html#cb18-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb18-9"><a href="ch-api.html#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb18-10"><a href="ch-api.html#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="ch-api.html#cb18-11" aria-hidden="true" tabindex="-1"></a>platform_set_evt_callback<span class="op">(</span>PLATFORM_CB_EVT_IDLE_PROC<span class="op">,</span></span>
+<span id="cb18-12"><a href="ch-api.html#cb18-12" aria-hidden="true" tabindex="-1"></a>    idle_proc<span class="op">,</span> NULL<span class="op">);</span></span></code></pre></div>
 </div>
 <div id="timing" class="section level2 hasAnchor" number="4.7">
 <h2><span class="header-section-number">4.7</span> Timing<a href="ch-api.html#timing" class="anchor-section" aria-label="Anchor link to header"></a></h2>

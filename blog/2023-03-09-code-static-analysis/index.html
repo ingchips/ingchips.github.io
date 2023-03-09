@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>代码的静态分析 - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="代码的静态分析是指在不运行代码的情况下，通过一些技术对代码进行扫描，检查代码是否符合一些规范、安全、可靠和可维护的标准。 静态分析可以帮助开发者提前发现和修复代码中的错误或潜在问题，提高产品质量和安全性。。"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+
+      <div id="box">
+        <input id="in_search" type="search" name="search" placeholder="搜索：输入并回车">
+      </div>
+
+      <script>
+        let search_input = document.getElementById('in_search');
+        if (search_input) {
+          search_input.addEventListener("keypress", function(event) {
+          if (event.key === "Enter") {
+            window.open('https://www.bing.com/search?q=' + encodeURIComponent(search_input.value) + '%20site%3A' + window.location.hostname);
+            event.preventDefault();
+            }
+          });
+        }
+      </script>
+
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item has-children">
+
+              
+<a class="" href="/docs/sdk/apps/#web-apps">
+  
+  Web 工具
+  
+</a>
+
+              
+
+                <ul class="submenu">
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/callgraph">
+  
+  Callgraph (调用图)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index_cn.html">
+  
+  ING918/ING916 FOTA (空中升级)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/powerprofiler/">
+  
+  Online Power Profiler
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/air_trace/">
+  
+  Trace Logger
+  
+</a>
+
+  </li>
+  
+</ul>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <article class="post post-full">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <header class="post-header has-gradient outer">
+      
+      
+      <div class="inner-sm">
+        <div class="post-meta">
+          <time class="published" datetime="2023-03-09 00:00">March 09, 2023</time>
+        </div>
+        <h1 class="post-title">代码的静态分析</h1>
+        
+        
+      </div>
+    </header>
+    <div class="inner-md outer">
+      <div class="post-content">
+        <ul id="markdown-toc">
+  <li><a href="#cppcheck" id="markdown-toc-cppcheck">Cppcheck</a></li>
+  <li><a href="#pvs-studio" id="markdown-toc-pvs-studio">PVS-Studio</a></li>
+</ul>
+
+<p>代码的静态分析是指在不运行代码的情况下，通过一些技术对代码进行扫描，检查代码是否符合一些规范、安全、可靠和可维护的标准。
+静态分析可以帮助开发者提前发现和修复代码中的错误或潜在问题，提高产品质量和安全性。
+静态分析除了依靠人力和编译器之外，也可以借助专门的工具。本文介绍几种适合用于嵌入式的静态分析工具。</p>
+
+<div class="note">
+<strong>必须注意：</strong>
+静态分析工具并不能检测出全部问题（即存在漏检），也不能保证报告的“问题”<strong>确实</strong>是问题（即存在虚警）。
+人的最终诊断（triage）必不可少。
+</div>
+
+<h2 id="cppcheck">Cppcheck</h2>
+
+<p><a href="http://cppcheck.net/">Cppcheck</a> 是一个开源的、用于C/C++代码的静态分析工具。它提供了独特的代码分析，可以检测出代码中的错误，
+并专注于检测未定义行为和危险的编码结构。它的目标是只检测代码中真正的错误，并尽可能地减少误报（错误地报告警告）。
+Cppcheck 可以检测内存泄漏、分配释放不匹配、缓冲区溢出等多种问题。</p>
+
+<p>以 Windows 为例，下载并安装 Cppcheck。打开主界面，点选菜单“Analyze” –&gt; “Directory …”，
+选择要分析目录。稍等片刻即可得到分析结果。</p>
+
+<p>以 SDK v8.2.5 为例，选择 UART GATT Console 所在目录，分析结果如下：</p>
+
+<p><img src="../img/cppcheck_uart_ex.png" alt="" /></p>
+
+<p>Cppcheck 报告了两个问题：</p>
+
+<ol>
+  <li>
+    <p>sscanf 参数类型有误</p>
+
+    <p>这里从字符串读取地址时，<code class="highlighter-rouge">%x</code> 对应于 <code class="highlighter-rouge">unsigned int *</code>。程序里错误地提供了 <code class="highlighter-rouge">int *</code>。应该将 <code class="highlighter-rouge">addr</code>
+ 的定义改为 <code class="highlighter-rouge">unsigned int addr[6]</code>。</p>
+
+    <p>由于这里每个元素只存储一个字节，这个问题不影响功能。</p>
+  </li>
+  <li>
+    <p>参与 <code class="highlighter-rouge">||</code> 运算的两个值相同</p>
+
+    <p>此处的代码是想接收所有的断行方式（\r、\n、\n\r、\r\n），但是“一不小心”，第二个 \n 也写成了 \r，应该改正。</p>
+
+    <p>这个问题将影响只使用 \n 断行（Unix LF 格式）的字符串。</p>
+  </li>
+</ol>
+
+<p>通过这个简单的测试，Cppcheck 帮助我们发现了 UART GATT Console 里的两个问题。Cppcheck 的其它功能，本文不再详述。</p>
+
+<h2 id="pvs-studio">PVS-Studio</h2>
+
+<p><a href="https://pvs-studio.com/en/">PVS-Studio</a>是一个静态分析器，用于检测 C，C++，C# 和 Java 代码中的错误和潜在漏洞。
+它可以提高代码质量，安全性和可靠性。它支持多种编码标准和开发工具，并且有多个版本适用于不同的平台。</p>
+
+<p>安装后，打开“C and C++ Compiler Monitoring UI”，点选菜单“Tools” –&gt; “Analyze Your Files (C and C++)…”，
+直接点击弹出的对话框里的“Start Monitoring”按钮，此时 PVS-Studio 在屏幕右下角显示一个监听窗口。
+打开 Keil，重新编译所要检查的项目，点击监听窗口里的“Stop Monitoring”按钮，等待 PVS-Studio 分析刚才所编译的文件。</p>
+
+      </div><!-- .post-content -->
+    </div><!-- .inner-md -->
+  </article><!-- .post -->
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2021-2022. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

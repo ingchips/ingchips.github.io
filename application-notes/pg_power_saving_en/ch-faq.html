@@ -151,7 +151,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4" data-path="ch-api.html"><a href="ch-api.html"><i class="fa fa-check"></i><b>4</b> API</a>
 <ul>
 <li class="chapter" data-level="4.1" data-path="ch-api.html"><a href="ch-api.html#callback-events"><i class="fa fa-check"></i><b>4.1</b> Callback events</a></li>
-<li class="chapter" data-level="4.2" data-path="ch-api.html"><a href="ch-api.html#interrupts"><i class="fa fa-check"></i><b>4.2</b> Interrupts</a></li>
+<li class="chapter" data-level="4.2" data-path="ch-api.html"><a href="ch-api.html#interrupts"><i class="fa fa-check"></i><b>4.2</b> Interrupts</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="ch-api.html"><a href="ch-api.html#side-note-on-priority"><i class="fa fa-check"></i><b>4.2.1</b> Side Note on Priority</a></li>
+</ul></li>
 <li class="chapter" data-level="4.3" data-path="ch-api.html"><a href="ch-api.html#shutdown-1"><i class="fa fa-check"></i><b>4.3</b> Shutdown</a></li>
 <li class="chapter" data-level="4.4" data-path="ch-api.html"><a href="ch-api.html#k-clock"><i class="fa fa-check"></i><b>4.4</b> 32k Clock</a>
 <ul>
@@ -227,18 +230,20 @@ PLATFORM_CB_EVT_ON_DEEP_SLEEP_WAKEUP, it’s generally not debug-able.</p>
 After everything is OK, re-enable power saving. Or, in the handler of
 PLATFORM_CB_EVT_QUERY_DEEP_SLEEP_ALLOWED, check if debugger is attached, and
 if so, disallow sleep modes of Category B:</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb23-1"><a href="ch-faq.html#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> query_deep_sleep_allowed<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>dummy<span class="op">,</span></span>
-<span id="cb23-2"><a href="ch-faq.html#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
-<span id="cb23-3"><a href="ch-faq.html#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb23-4"><a href="ch-faq.html#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>IS_DEBUGGER_ATTACHED<span class="op">())</span></span>
-<span id="cb23-5"><a href="ch-faq.html#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb23-6"><a href="ch-faq.html#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-7"><a href="ch-faq.html#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// ....</span></span>
-<span id="cb23-8"><a href="ch-faq.html#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb24"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb24-1"><a href="ch-faq.html#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> query_deep_sleep_allowed<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>dummy<span class="op">,</span></span>
+<span id="cb24-2"><a href="ch-faq.html#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
+<span id="cb24-3"><a href="ch-faq.html#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb24-4"><a href="ch-faq.html#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>IS_DEBUGGER_ATTACHED<span class="op">())</span></span>
+<span id="cb24-5"><a href="ch-faq.html#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb24-6"><a href="ch-faq.html#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-7"><a href="ch-faq.html#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// ....</span></span>
+<span id="cb24-8"><a href="ch-faq.html#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 </ul>
 <hr />
 
 </div>
+
+
 
 
 

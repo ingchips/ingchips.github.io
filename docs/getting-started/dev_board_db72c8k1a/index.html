@@ -2,10 +2,10 @@
 <html lang="en">
     <head>
 
-        <title>快速上手 - INGCHIPS</title>
+        <title>DB72C8K1A 扩展板使用手册 - INGCHIPS</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content="了解如何快速开始在 ING918 系列芯片上进行开发。"/>
+        <meta name="description" content="如何使用 DB72C8K1A 母板。"/>
         <link rel="stylesheet" href="/assets/css/main.css">
         <link rel="icon" href="/favicon.ico" type="image/x-icon" />
         <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
@@ -217,7 +217,7 @@
           
           
           
-          <li class="toc-item has-children current active">
+          <li class="toc-item has-children active">
             <a href="/docs/getting-started/">快速上手</a>
             
             
@@ -237,7 +237,7 @@
     <a href="/docs/getting-started/dev_board_91682/">DB682AC1A 核心板使用手册</a>
   </li>
 
-  <li class="toc-item">
+  <li class="toc-item current">
     <a href="/docs/getting-started/dev_board_db72c8k1a/">DB72C8K1A 扩展板使用手册</a>
   </li>
 
@@ -462,88 +462,196 @@
         <article class="post type-docs">
           <div class="post-inside">
             <header class="post-header">
-              <h1 class="post-title line-left">快速上手</h1>
+              <h1 class="post-title line-left">DB72C8K1A 扩展板使用手册</h1>
             </header><!-- .post-header -->
             <div class="post-content">
-              <p>桃芯 SDK 包含核心工具、平台代码包、程序示例及文档。</p>
+              <h2 id="1概述">1、概述</h2>
 
-<h2 id="0-获取开发板">0. 获取开发板</h2>
-
-<p>在淘宝商城 <a href="https://item.taobao.com/item.htm?ft=t&amp;id=641977580904">购买开发板</a>。</p>
+<p>该文档主要介绍桃芯科技 DB72C8K1A 扩展板的硬件资源及其使用方法。</p>
 
 <div class="note">
-<strong>立即体验:</strong> 现在，使用 <a href="playground">Playground</a>（游乐园）软件 ，
-<strong>不需要</strong>任何开发经验，甚至<strong>不需要</strong>懂英语，
-只需要一块 <a href="dev_board_91881B/">ING91881B 开发板</a> 和一台 Windows 计算机，
-立即开始体验桃芯科技。
+<strong>注意:</strong> 扩展板不包含 INGCHIPS SoC，需与核心板连接使用。
 </div>
 
-<h2 id="1-准备开发环境">1. 准备开发环境</h2>
+<h2 id="2硬件资源">2、硬件资源</h2>
 
-<p>SDK 不包含开发环境和编译器，用户需要事先准备好所有的开发环境。桃芯 SDK 支持 Keil MDK、IAR 等IDE，也支持 GNU Arm Embedded 工具链。</p>
+<p>主要包括温度传感器、加速度传感器、按键、LED、蜂鸣器等相关资源。</p>
 
-<h2 id="2-下载-sdk-安装包">2. 下载 SDK 安装包</h2>
+<p><img src="board_overview.png" width="90%" /></p>
 
-<p>根据所使用的操作系统，<a href="/docs/sdk/download">下载</a> 相应的 SDK 版本。</p>
+<p><strong>图 1 开发板</strong></p>
 
-<h2 id="3-安装-sdk">3. 安装 SDK</h2>
+<h3 id="21供电">2.1、供电</h3>
 
-<p>SDK 支持两种安装方式：如果只用到 Keil、Gnu 工具链，那么不提升权限就能安装，可以选择“Install for me only”；
-如果准备使用 IAR、Segger 等其它开发工具，那么需要提升权限，请选择“Install for all users”：</p>
+<p>通过 micro USB 接口供电。</p>
 
-<p><img src="setup_type.png" width="50%" /></p>
+<h3 id="22调试接口">2.2、调试接口</h3>
 
-<p>在安装向导的组件选择页面，提供了 IDE/Toolchain 集成选项，勾选某 IDE/Toolchain 表示对该 IDE/Toolchain 做适当配置，而非表示自动安装该 IDE/Toolchain。因此，只需要勾选已安装的开发环境和工具链，不要勾选没有安装的开发环境和工具链。</p>
+<p>开发板集成了 <a href="https://daplink.io/">DAPLink (CMSIS-DAP 的升级版)</a> 功能，
+支持 CDC 串口、拖放烧写。该功能通过一片 STM32 来实现，实际使用中通过 micro USB 接口与 PC 机通信。
+虚拟出的串口端口号在 PC 机设备管理器中查看，此串口使用丝印为 UART_TX 和 UART_RX 的两个管脚。
+DAPLink 使用丝印为 SW_CLK 和 SW_DIO 的两个管脚。</p>
 
-<p><img src="quick_start_install.png" width="80%" /></p>
-
-<h2 id="4-阅读文档示例">4. 阅读文档、示例</h2>
-
-<p>安装完毕后，打开 ingWizard，可以查看 SDK <a href="/user_guide_cn/">用户手册</a>、示例程序。</p>
-
-<p>开发板的使用方法请参阅<a href="dev_board_91881B">ING91881B 开发板使用手册</a>、<a href="dev_board_91880">ING91880 开发板使用手册</a>。</p>
-
-<p><a href="/docs/faq/#5-如何查看-sdk-示例的-markdown-文档">准备 Markdown 文档查看器</a>以便查看 SDK 示例的文档。</p>
-
-<h2 id="5-编译烧写示例程序">5. 编译、烧写示例程序</h2>
-
-<p>以 LED 示例程序 Peripheral LED 为例，
-在 ingWizard 里点击该程序即可在 Keil 里打开，编译后回到 ingWizard 下载程序。
-（详情可参考 SDK 用户手册中的<a href="/user_guide_cn/tutorial.html#编译您的项目">教程</a>部分）</p>
-
-<p>开发板烧写了 Peripheral LED 程序后，通过手机 App 可以实时控制开发板上的三色 LED。</p>
-
-<h2 id="6-用-app-连接">6. 用 APP 连接</h2>
-
-<p><a href="/docs/sdk/apps">扫码下载</a> iOS、Android 演示 App（ING BLE）。打开 App，点按扫描按钮，扫描到名为“ING LED”的设备后，
-点按设备名以连接到设备，然后在 App 里控制 LED 的 R/G/B 三色分量。</p>
+<p>DAPLink 固件 <a href="https://github.com/ingchips/DAPLink">开源</a>。</p>
 
 <div class="note">
-<strong>Note:</strong> iOS/Android 应用需要授予定位权限才能使用蓝牙设备。
+<strong>说明:</strong> 不同调试器提供的串口能力不同，某些调试器从 ING91X 向 PC 机进行高速传输时可能丢失数据。
+而 ING91X 可立即响应串口数据，所以从 PC 机到 ING918 传输时不存在此问题。
+例如使用了相同型号 STM32 芯片的 DAPLink 与 J-Link OB，以 921600 波特从 ING91X 向 PC 机传输时，DAPLink 不丢数据，
+而 J-Link OB 则存在问题。
 </div>
 
-<h2 id="7-温馨提示">7. 温馨提示</h2>
+<h3 id="23传感器">2.3、传感器</h3>
+
+<p>开发板自带两颗传感器，MTS01B 和 STK8BA58，IIC 接口，对应管脚的丝印为 IIC_SCL 和 IIC_SDA。
+MTS01B 为温度传感器，IIC 地址为 0b1000100；STK8BA58
+为三轴加速度传感器，IIC 地址为 0b0011000。</p>
+
+<p>有关传感器的使用方法，可参考以下示例：</p>
+
+<ul>
+  <li>Thermometer with FOTA （温度计）</li>
+  <li>Peripheral Pedometer （计步器）</li>
+</ul>
+
+<h3 id="24led">2.4、LED</h3>
+
+<p>开发板上有 1 个三色 LED 和 4 个绿色 LED，三色 LED 可以用于 PWM
+调光功能，绿色 LED 可以做为指示灯。三色 LED 通过专门的三色调光芯片 TLC57931，该芯片
+通过单线发送相应的控制命令，对应的管脚丝印为 TLED。</p>
+
+<p>有关 LED 的使用方法，可参考以下示例：</p>
+
+<ul>
+  <li>Peripheral LED （控制三色 LED）</li>
+</ul>
+
+<h3 id="25按键">2.5、按键</h3>
+
+<p>开发板上的按键分为两种：</p>
 
 <ol>
   <li>
-    <p>推荐使用 Keil µVision 开发环境。</p>
+    <p>系统按键</p>
 
-    <div class="important">
- <strong>注意:</strong> 需要安装 Keil MDK 版本，而非 51 版本。
- </div>
+    <p>用于复位芯片，位置见图 1 中 RESET 标志处，用于复位 ING91X。</p>
   </li>
   <li>
-    <p>SDK 目前优先支持 Windows，Linux，MacOS 更新较慢。</p>
-  </li>
-  <li>
-    <p>开发版支持使用 USB 供电，不需要外接电源。</p>
-  </li>
-  <li>
-    <p>开发板内置 DAPLink，即插即用。</p>
+    <p>功能按键</p>
+
+    <p>KEY1-4 用户可以自行分配功能，位置见图 1。默认上拉，按下为低。
+ 各按键对应的管脚丝印为 KEY1 ~ KEY4。</p>
+
+    <p>有关按键的使用方法，可参考以下示例：</p>
+
+    <ul>
+      <li>HID Keyboard （蓝牙键盘示例）</li>
+      <li>Peripheral ANCS （苹果通知中心服务）</li>
+    </ul>
   </li>
 </ol>
 
-<hr />
+<h3 id="26蜂鸣器">2.6、蜂鸣器</h3>
+
+<p>开发板上包含 1 个蜂鸣器，工作频率 4KHz，对应的管脚丝印为 BUZZER。</p>
+
+<p>有关蜂鸣器的使用方法，可参考以下示例：</p>
+
+<ul>
+  <li>Peripheral Piano （通过 PWM 驱动蜂鸣器）</li>
+</ul>
+
+<h3 id="27adc">2.7、ADC</h3>
+
+<p>开发板上留有模拟电压输出 AIN，其电压由可调电压控制，可用于测试芯片的 ADC 功能。</p>
+
+<p>有关 ADC 的使用方法，可参考以下示例：</p>
+
+<ul>
+  <li>Peripheral Battery （通过 ADC 监测电压）</li>
+</ul>
+
+<h2 id="3烧写程序">3、烧写程序</h2>
+
+<h3 id="31用-flash-downloader-烧写">3.1、用 Flash Downloader 烧写</h3>
+
+<ol>
+  <li>
+    <p>在 ingWizard 主界面找到要下载的项目，点击右键；</p>
+
+    <p><img src="start_download.png" width="35%" /></p>
+  </li>
+  <li>
+    <p>从弹出的快捷菜单中选择“Download to Flash…”，ingWizard 自动打开 Flash Downloader；</p>
+  </li>
+  <li>
+    <p>在 Flash Downloader 里点击“Setup UART”修改开发板使用的串口号；</p>
+  </li>
+  <li>
+    <p>点击“Start”；</p>
+
+    <p><img src="start_downloading.png" width="75%" /></p>
+
+    <div class="note">
+ <strong>说明:</strong> 一般情况下一个完整的程序包含两个二进制文件，platform.bin（包含协议栈、实时内核）和
+ App Bin。程序编译时，只有 App Bin 发生变化，platform.bin 不变。所以 platform.bin 只需要烧写一次。
+ 详情请参阅 SDK <a href="/user_guide">用户手册</a>关于<a href="/user_guide_cn/intro.html#架构">软件架构</a>的介绍。
+ </div>
+  </li>
+  <li>
+    <p>按动一次下载键（丝印为 LOAD），开发板即可进入下载模式。下载过程中界面显示如图所示。</p>
+
+    <p><img src="downloading_gui.png" width="95%" /></p>
+  </li>
+</ol>
+
+<h3 id="32使用调试器烧写">3.2、使用调试器烧写</h3>
+
+<p>所有示例都可以在（支持 CMSIS-DAP 的） IDE 直接通过 DAPLink 调试器下载，例如在 Keil 里直接点击“Download”。
+如果开发者选择使用 J-Link 调试器，那么所有示例都可以在 IDE 直接通过 J-Link 调试器下载，例如在 Keil 里直接点击“Download”。</p>
+
+<div class="important">
+<strong>注意:</strong> 此方法只烧写 App 编译出的程序，不烧写 platform.bin，所以开发板初次使用时，应该先
+使用 Flash Downloader 完整烧写 platform.bin 和 App Bin。
+有些 IDE （如 CrossStudio/SEGGER）可以修改设置同时烧写 platform.bin，但是 SDK 中的示例未做此设置。
+具体烧写方法请参照“使用 SWD 接口进行产品量产”。
+</div>
+
+<div class="note">
+<strong>说明:</strong> 如果单独安装过 J-Link 软件，第一次下载时 J-Link 将弹出对话框要求
+用户选择芯片类型。需要根据核心板上的芯片型号选择。对于 ING916，请选择“Unspecified Cortex-M4”。
+</div>
+
+<h3 id="33拖放烧写">3.3、拖放烧写</h3>
+
+<p>DAPLink 调试器会在上位机里呈现一个 U 盘，将 .bin 文件或者 .hex 文件复制（通过命令行或者<strong>拖放</strong>）到 U 盘即可完成烧写。
+烧写完成后，U 盘会重新挂载，查看 U 盘内的 DETAILS.TXT 文件，可发现 Remount count 计数增加 1。如果烧写失败，则会出现
+FAIL.TXT 文件，里面包含了详细错误信息；如果烧写成功，U 盘内无此文件。无论烧写是否成功，重新挂载后的 U 盘都不会“保存”
+所烧写的 .bin 文件或者 .hex 文件。</p>
+
+<p><img src="dap_drag.png" /></p>
+
+<ul>
+  <li>
+    <p>.bin 文件烧写</p>
+
+    <p>此模式只支持完整烧写，.bin 文件必须<strong>完整</strong>，同时包含 platform.bin 和 App Bin。建议通过 Flash Downloader 菜单项 File →
+  Merge &amp; Export … 自动合并导出完整 .bin 文件，然后烧写。</p>
+  </li>
+  <li>
+    <p>.hex 文件烧写</p>
+
+    <p><a href="http://en.wikipedia.org/wiki/Intel_HEX">Intel Hex</a> 文件包含地址信息，支持部分烧写。</p>
+  </li>
+</ul>
+
+<h2 id="4注意事项">4、注意事项</h2>
+
+<ul>
+  <li>通过开发板给外部设备供电时，注意电流限值；</li>
+  <li>增减外部设备时，请断电；</li>
+  <li>不要用金属部件遮挡印制板天线。</li>
+</ul>
 
               
               

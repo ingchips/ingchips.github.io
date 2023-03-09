@@ -2,10 +2,10 @@
 <html lang="en">
     <head>
 
-        <title>快速上手 - INGCHIPS</title>
+        <title>DB682AC1A 核心板使用手册 - INGCHIPS</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content="了解如何快速开始在 ING918 系列芯片上进行开发。"/>
+        <meta name="description" content="如何使用 DB682AC1A 核心板。"/>
         <link rel="stylesheet" href="/assets/css/main.css">
         <link rel="icon" href="/favicon.ico" type="image/x-icon" />
         <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
@@ -217,7 +217,7 @@
           
           
           
-          <li class="toc-item has-children current active">
+          <li class="toc-item has-children active">
             <a href="/docs/getting-started/">快速上手</a>
             
             
@@ -233,7 +233,7 @@
     <a href="/docs/getting-started/dev_board_91880/">ING91880 开发板使用手册</a>
   </li>
 
-  <li class="toc-item">
+  <li class="toc-item current">
     <a href="/docs/getting-started/dev_board_91682/">DB682AC1A 核心板使用手册</a>
   </li>
 
@@ -462,88 +462,93 @@
         <article class="post type-docs">
           <div class="post-inside">
             <header class="post-header">
-              <h1 class="post-title line-left">快速上手</h1>
+              <h1 class="post-title line-left">DB682AC1A 核心板使用手册</h1>
             </header><!-- .post-header -->
             <div class="post-content">
-              <p>桃芯 SDK 包含核心工具、平台代码包、程序示例及文档。</p>
+              <h2 id="1概述">1、概述</h2>
 
-<h2 id="0-获取开发板">0. 获取开发板</h2>
+<p>该文档主要介绍桃芯科技 DB682AC1A 核心板的硬件资源及其使用方法。</p>
 
-<p>在淘宝商城 <a href="https://item.taobao.com/item.htm?ft=t&amp;id=641977580904">购买开发板</a>。</p>
+<p>本核心板包含主芯片 ING91682A，所有 IO 全部引出，内置 USB 接口。</p>
 
-<div class="note">
-<strong>立即体验:</strong> 现在，使用 <a href="playground">Playground</a>（游乐园）软件 ，
-<strong>不需要</strong>任何开发经验，甚至<strong>不需要</strong>懂英语，
-只需要一块 <a href="dev_board_91881B/">ING91881B 开发板</a> 和一台 Windows 计算机，
-立即开始体验桃芯科技。
-</div>
+<p><img src="core_board.png" width="60%" /></p>
 
-<h2 id="1-准备开发环境">1. 准备开发环境</h2>
+<h2 id="2使用说明">2、使用说明</h2>
 
-<p>SDK 不包含开发环境和编译器，用户需要事先准备好所有的开发环境。桃芯 SDK 支持 Keil MDK、IAR 等IDE，也支持 GNU Arm Embedded 工具链。</p>
+<p>核心板有两种使用方式。</p>
 
-<h2 id="2-下载-sdk-安装包">2. 下载 SDK 安装包</h2>
+<h3 id="21-与扩展板组合使用">2.1 与扩展板组合使用</h3>
 
-<p>根据所使用的操作系统，<a href="/docs/sdk/download">下载</a> 相应的 SDK 版本。</p>
+<p>与扩展板组合使用时，主芯片可使用扩展板上的硬件资源，程序下载、调试串口功能等也由扩展板提供。
+具体使用方法请参考<a href="../dev_board_db72c8k1a">扩展板使用说明</a>。</p>
 
-<h2 id="3-安装-sdk">3. 安装 SDK</h2>
+<p><img src="combined.png" width="90%" /></p>
 
-<p>SDK 支持两种安装方式：如果只用到 Keil、Gnu 工具链，那么不提升权限就能安装，可以选择“Install for me only”；
-如果准备使用 IAR、Segger 等其它开发工具，那么需要提升权限，请选择“Install for all users”：</p>
+<h3 id="22-单独使用">2.2 单独使用</h3>
 
-<p><img src="setup_type.png" width="50%" /></p>
+<p>短接主芯片旁边的跳线帽，则主芯片由 USB 供电，否则由 VBAT、GND 管脚供电。</p>
 
-<p>在安装向导的组件选择页面，提供了 IDE/Toolchain 集成选项，勾选某 IDE/Toolchain 表示对该 IDE/Toolchain 做适当配置，而非表示自动安装该 IDE/Toolchain。因此，只需要勾选已安装的开发环境和工具链，不要勾选没有安装的开发环境和工具链。</p>
+<p>此时需要外接调试器或者串口工具。涉及管脚如下表。</p>
 
-<p><img src="quick_start_install.png" width="80%" /></p>
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">管脚丝印</th>
+      <th style="text-align: left">说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">IO0</td>
+      <td style="text-align: left">下载模式控制：从复位状态退出时，如果此管脚为高电平，进入下载模式</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">IO1</td>
+      <td style="text-align: left">串口下载时的 UART_TX</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">IO2</td>
+      <td style="text-align: left">串口下载时的 UART_RX</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">IO3</td>
+      <td style="text-align: left">复位后 SWD 接口的 CLK</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">IO4</td>
+      <td style="text-align: left">复位后 SWD 接口的 DIO</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">IO15</td>
+      <td style="text-align: left">下载模式选择：从复位状态退出时，如果此管脚和 IO0 同为高电平，进入 USB + 串口下载模式；如果只有 IO0 为高电平，则进入串口下载模式</td>
+    </tr>
+  </tbody>
+</table>
 
-<h2 id="4-阅读文档示例">4. 阅读文档、示例</h2>
+<h3 id="33-功耗测试">3.3 功耗测试</h3>
 
-<p>安装完毕后，打开 ingWizard，可以查看 SDK <a href="/user_guide_cn/">用户手册</a>、示例程序。</p>
+<p>测试芯片功耗时需要拔出主芯片旁边的跳线帽。</p>
 
-<p>开发板的使用方法请参阅<a href="dev_board_91881B">ING91881B 开发板使用手册</a>、<a href="dev_board_91880">ING91880 开发板使用手册</a>。</p>
+<h2 id="3烧写程序">3、烧写程序</h2>
 
-<p><a href="/docs/faq/#5-如何查看-sdk-示例的-markdown-文档">准备 Markdown 文档查看器</a>以便查看 SDK 示例的文档。</p>
+<h3 id="31-与扩展板组合使用">3.1 与扩展板组合使用</h3>
 
-<h2 id="5-编译烧写示例程序">5. 编译、烧写示例程序</h2>
+<p>烧写方法请参考<a href="../dev_board_db72c8k1a">扩展板使用说明</a>。</p>
 
-<p>以 LED 示例程序 Peripheral LED 为例，
-在 ingWizard 里点击该程序即可在 Keil 里打开，编译后回到 ingWizard 下载程序。
-（详情可参考 SDK 用户手册中的<a href="/user_guide_cn/tutorial.html#编译您的项目">教程</a>部分）</p>
+<h3 id="32-单独使用">3.2 单独使用</h3>
 
-<p>开发板烧写了 Peripheral LED 程序后，通过手机 App 可以实时控制开发板上的三色 LED。</p>
+<h4 id="321-使用串口烧写">3.2.1 使用串口烧写</h4>
 
-<h2 id="6-用-app-连接">6. 用 APP 连接</h2>
+<p>将主机串口连接到 IO2/IO3，在 Flash Downloader 选择该串口。保持 IO0 为高电平，拉低 RST 再释放，芯片就会进入串口下载模式。</p>
 
-<p><a href="/docs/sdk/apps">扫码下载</a> iOS、Android 演示 App（ING BLE）。打开 App，点按扫描按钮，扫描到名为“ING LED”的设备后，
-点按设备名以连接到设备，然后在 App 里控制 LED 的 R/G/B 三色分量。</p>
+<h4 id="322-使用-usb-烧写">3.2.2 使用 USB 烧写</h4>
 
-<div class="note">
-<strong>Note:</strong> iOS/Android 应用需要授予定位权限才能使用蓝牙设备。
-</div>
+<p>打开 Flash Downloader，点击 “Setup Port …”，在弹出的子窗口中将 Port 设置为 “USB”，点击 “OK”关闭子窗口。</p>
 
-<h2 id="7-温馨提示">7. 温馨提示</h2>
+<p><img src="port_usb.png" width="60%" /></p>
 
-<ol>
-  <li>
-    <p>推荐使用 Keil µVision 开发环境。</p>
+<p>将核心板 USB 连接到主机，保持 IO0 和 IO1 为高电平，拉低 RST 再释放，芯片就会进入 USB + 串口下载模式。点击“Start”即可通过 USB 完成下载。</p>
 
-    <div class="important">
- <strong>注意:</strong> 需要安装 Keil MDK 版本，而非 51 版本。
- </div>
-  </li>
-  <li>
-    <p>SDK 目前优先支持 Windows，Linux，MacOS 更新较慢。</p>
-  </li>
-  <li>
-    <p>开发版支持使用 USB 供电，不需要外接电源。</p>
-  </li>
-  <li>
-    <p>开发板内置 DAPLink，即插即用。</p>
-  </li>
-</ol>
-
-<hr />
 
               
               

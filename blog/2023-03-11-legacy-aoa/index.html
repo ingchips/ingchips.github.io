@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>使用 ING916 定位传统蓝牙设备 - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="总结 SDK 8.3 新功能。"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+
+      <div id="box">
+        <input id="in_search" type="search" name="search" placeholder="搜索：输入并回车">
+      </div>
+
+      <script>
+        let search_input = document.getElementById('in_search');
+        if (search_input) {
+          search_input.addEventListener("keypress", function(event) {
+          if (event.key === "Enter") {
+            window.open('https://www.bing.com/search?q=' + encodeURIComponent(search_input.value) + '%20site%3A' + window.location.hostname);
+            event.preventDefault();
+            }
+          });
+        }
+      </script>
+
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item has-children">
+
+              
+<a class="" href="/docs/sdk/apps/#web-apps">
+  
+  Web 工具
+  
+</a>
+
+              
+
+                <ul class="submenu">
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/callgraph">
+  
+  Callgraph (调用图)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index_cn.html">
+  
+  ING918/ING916 FOTA (空中升级)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/powerprofiler/">
+  
+  Online Power Profiler
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/air_trace/">
+  
+  Trace Logger
+  
+</a>
+
+  </li>
+  
+</ul>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <article class="post post-full">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <header class="post-header has-gradient outer">
+      
+      
+      <div class="inner-sm">
+        <div class="post-meta">
+          <time class="published" datetime="2023-03-09 00:00">March 09, 2023</time>
+        </div>
+        <h1 class="post-title">使用 ING916 定位传统蓝牙设备</h1>
+        
+        
+      </div>
+    </header>
+    <div class="inner-md outer">
+      <div class="post-content">
+        <ul id="markdown-toc">
+  <li><a href="#发送假冒-cte-信号" id="markdown-toc-发送假冒-cte-信号">发送“假冒” CTE 信号</a></li>
+  <li><a href="#获得-iq-采样" id="markdown-toc-获得-iq-采样">获得 IQ 采样</a></li>
+</ul>
+
+<p>SDK 8.3.0 为 ING916 引入了一项新的“非标”功能：将传统广播里一部分数据视为 CTE 并得到 IQ 采样。
+借助此功能，可以将现有的海量 BLE 4.2 设备作为 AoA 发送端，寻向、定位。</p>
+
+<p>本文以一个“非典型”的 BLE 设备 iPhone XR 为例，通过传统广播发送“假冒” CTE 信号，并通过 ING916
+获得 IQ 采样。</p>
+
+<h2 id="发送假冒-cte-信号">发送“假冒” CTE 信号</h2>
+
+<p>“假冒” CTE 信号指的是空口上一段足够长的全 1 信号。由于蓝牙广播数据在发送到空口前会经过白化处理，
+需要保证白化之后的数据全为 1。所谓白化是利用 LSFR 生成一伪随机扰码，将原始数据的各比特与扰码异或：</p>
+
+<p><img src="../img/ble_whitening.png" alt="" /></p>
+
+<p>由于 $(A \oplus B) \oplus B = A \oplus (B \oplus B) = A \oplus 0 = A$，
+所以要想在空中发送比特 A，可以先对其做一次白化处理。</p>
+
+<p>另一个需要解决的问题如何在 iPhone 上发送内容完全可控的 20 字节，空口长度 $160 \mu s$。iBeacon 恰好符合：
+16 个字节的 UUID，外加 Major、Minor 各 2 个字节。有关 iBeacon 的更多信息，可参考 “<a href="../ibeacon_zh/">蓝牙开发零门槛之二：iBeacon</a>”。</p>
+
+<p>使用 Locate app 发送 UUID 等全为 0 的 iBeacon 信号，使用 UART GATT Console 扫描其数据：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ADV xx:xx:xx:xx:xx:xx (RANDOM) -58dBm
+Type: 0x13
+0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+===============================================
+02 01 1A 1A FF 4C 00 02 15 00 00 00 00 00 00 00  | .....L..........
+00 00 00 00 00 00 00 00 00 00 00 00 00 C5        | ..............
+</code></pre></div></div>
+
+<p>可知，整个广播数据只包含 Flags 和 iBeacon，UUID 从第 9 个字节开始。这个字节对应与白化序列的
+第 $(2 + 6 + 9) = 17$ 个字节，这里的 2 为广播 PDU 里 Header 的长度，6 为 AdvA 的长度。
+以 37 信道为例，其白化序列从第 17 个字节开始的连续 160 个比特为：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="mh">0xe9</span><span class="p">,</span><span class="mh">0xab</span><span class="p">,</span><span class="mh">0xd0</span><span class="p">,</span><span class="mh">0x9e</span><span class="p">,</span><span class="mh">0x53</span><span class="p">,</span><span class="mh">0x33</span><span class="p">,</span><span class="mh">0xd8</span><span class="p">,</span><span class="mh">0xba</span><span class="p">,</span><span class="mh">0x98</span><span class="p">,</span><span class="mh">0x08</span><span class="p">,</span>
+ <span class="mh">0x24</span><span class="p">,</span><span class="mh">0xcb</span><span class="p">,</span><span class="mh">0x3b</span><span class="p">,</span><span class="mh">0xfc</span><span class="p">,</span><span class="mh">0x71</span><span class="p">,</span><span class="mh">0xa3</span><span class="p">,</span><span class="mh">0xf4</span><span class="p">,</span><span class="mh">0x55</span><span class="p">,</span><span class="mh">0x68</span><span class="p">,</span><span class="mh">0xcf</span><span class="p">}</span>
+</code></pre></div></div>
+
+<p>将其按比特取反就是要发送的原始数据：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="mh">0x16</span><span class="p">,</span><span class="mh">0x54</span><span class="p">,</span><span class="mh">0x2f</span><span class="p">,</span><span class="mh">0x61</span><span class="p">,</span><span class="mh">0xac</span><span class="p">,</span><span class="mh">0xcc</span><span class="p">,</span><span class="mh">0x27</span><span class="p">,</span><span class="mh">0x45</span><span class="p">,</span><span class="mh">0x67</span><span class="p">,</span><span class="mh">0xf7</span><span class="p">,</span>
+ <span class="mh">0xdb</span><span class="p">,</span><span class="mh">0x34</span><span class="p">,</span><span class="mh">0xc4</span><span class="p">,</span><span class="mh">0x03</span><span class="p">,</span><span class="mh">0x8e</span><span class="p">,</span><span class="mh">0x5c</span><span class="p">,</span><span class="mh">0x0b</span><span class="p">,</span><span class="mh">0xaa</span><span class="p">,</span><span class="mh">0x97</span><span class="p">,</span><span class="mh">0x30</span><span class="p">}</span>
+</code></pre></div></div>
+
+<p>将这组数据填入 iBeacon，然后发送：</p>
+
+<p><img src="../img/ibeacon_cte.png" width="50%" /></p>
+
+<p>使用 UART GATT Console 确认数据：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ADV xx:xx:xx:xx:xx:xx (RANDOM) -58dBm
+Type: 0x13
+0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+===============================================
+02 01 1A 1A FF 4C 00 02 15 16 54 2F 61 AC CC 27  | .....L....T/a..'
+45 67 F7 DB 34 C4 03 8E 5C 0B AA 97 30 C5        | Eg..4...\...0.
+</code></pre></div></div>
+
+<p>利用空中抓包工具，可确认空口上确实是连续的全 1：</p>
+
+<p><img src="../img/iphone_fake_cte.png" alt="" /></p>
+
+<p>需要注意，传统广播在 37、38、39 等 3 个信道上发送，每个信道使用的白化序列不同，但是无法为 3
+个信道配置不同的 iBeacon 数据。这里所发送的 iBeacon 只在第 37 信道上假冒了 CTE 信号。</p>
+
+<h2 id="获得-iq-采样">获得 IQ 采样</h2>
+
+<ol>
+  <li>
+    <p>要从传统广播里采集 IQ 数据，必须配置为只接收传统广播</p>
+
+    <p>在协议栈初始化后，调用：</p>
+
+    <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">platform_config</span><span class="p">(</span><span class="n">PLATFORM_CFG_LL_DBG_FLAGS</span><span class="p">,</span> <span class="n">LL_FLAG_LEGACY_ONLY_SCANNING</span><span class="p">);</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>锁定扫描信道</p>
+
+    <p>由于只在 37 信道上假冒了 CTE 信号，扫描时也锁定该信道：</p>
+
+    <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ll_scan_set_fixed_channel</span><span class="p">(</span><span class="mi">37</span><span class="p">);</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>开始扫描</p>
+
+    <p>扫描的配置无特殊之处。为了方便测试，可以把 iPhone 的地址加入白名单。</p>
+  </li>
+  <li>
+    <p>开始采样</p>
+
+    <p>扫描启动后，就可以通过 <code class="highlighter-rouge">ll_scanner_enable_iq_sampling_on_legacy</code> 开始采样。
+这个函数与 <code class="highlighter-rouge">ll_scanner_enable_iq_sampling</code> 相比，增加了 2 个参数：<code class="highlighter-rouge">sampling_offset</code>
+和 <code class="highlighter-rouge">cte_time</code>。</p>
+
+    <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">ll_scanner_enable_iq_sampling_on_legacy</span><span class="p">(</span>
+                       <span class="kt">uint16_t</span> <span class="n">sampling_offset</span><span class="p">,</span>
+                       <span class="kt">uint8_t</span> <span class="n">cte_type</span><span class="p">,</span>
+                       <span class="kt">uint8_t</span> <span class="n">cte_time</span><span class="p">,</span>
+                       <span class="kt">uint8_t</span> <span class="n">slot_len</span><span class="p">,</span>
+                       <span class="kt">uint8_t</span> <span class="n">switching_pattern_len</span><span class="p">,</span>
+                       <span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">switching_pattern</span><span class="p">,</span>
+                       <span class="kt">uint8_t</span> <span class="n">slot_sampling_offset</span><span class="p">,</span>
+                       <span class="kt">uint8_t</span> <span class="n">slot_sample_count</span><span class="p">);</span>
+</code></pre></div>    </div>
+
+    <p>因为不从广播数据中获取 CTEInfo，所以采样的起点和持续时间都需要外部提供。<code class="highlighter-rouge">sampling_offset</code>
+表示从哪个比特开始采样，第 0 比特为 Payload 的开始。对于 ADV_IND PDU，Payload 开始为 AdvA，
+然后为 AdvData，所以 <code class="highlighter-rouge">sampling_offset = 48</code> 就表示从 AdvData 的第 0 个比特开始采样。<code class="highlighter-rouge">cte_time</code>
+与 CTEInfo 里的定义一致，20 表示 $160 \mu s$。
+对于这个假冒用 CTE，<code class="highlighter-rouge">sampling_offset</code> 取值 $(6 + 9) * 8 ＝ 120$，<code class="highlighter-rouge">cte_time</code> 取值为 $20$。</p>
+
+    <p>获得采样后同 <code class="highlighter-rouge">ll_scanner_enable_iq_sampling</code> 一样，也是通过
+<code class="highlighter-rouge">HCI_SUBEVENT_LE_VENDOR_PRO_CONNECTIONLESS_IQ_REPORT</code> 事件上报 IQ 数据。
+具体使用方法请参考 <em>Central CTE</em> 示例。</p>
+  </li>
+</ol>
+
+<p>需要注意，这个功能只是对广播数据做 IQ 采样，至于与数据是否全为 1 无关。无论空口数据是什么，都会采样、上报。</p>
+
+      </div><!-- .post-content -->
+    </div><!-- .inner-md -->
+  </article><!-- .post -->
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2021-2022. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

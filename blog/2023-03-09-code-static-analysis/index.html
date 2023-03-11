@@ -216,7 +216,12 @@
     <div class="inner-md outer">
       <div class="post-content">
         <ul id="markdown-toc">
-  <li><a href="#cppcheck" id="markdown-toc-cppcheck">Cppcheck</a></li>
+  <li><a href="#gcc" id="markdown-toc-gcc">GCC</a></li>
+  <li><a href="#cppcheck" id="markdown-toc-cppcheck">Cppcheck</a>    <ul>
+      <li><a href="#直接分析" id="markdown-toc-直接分析">直接分析</a></li>
+      <li><a href="#与-keil-集成" id="markdown-toc-与-keil-集成">与 Keil 集成</a></li>
+    </ul>
+  </li>
   <li><a href="#pvs-studio" id="markdown-toc-pvs-studio">PVS-Studio</a></li>
 </ul>
 
@@ -230,13 +235,25 @@
 人的最终诊断（triage）必不可少。
 </div>
 
+<h2 id="gcc">GCC</h2>
+
+<p>使用 GCC 编译时指定 <a href="https://developers.redhat.com/blog/2020/03/26/static-analysis-in-gcc-10"><code class="highlighter-rouge">-fanalyzer</code></a>
+选项就可以启用静态分析功能，能够检查重复 <code class="highlighter-rouge">free</code> 等问题。</p>
+
+<p>打开 SDK 里的 GCC 项目示例，在 Makefile 文件添加 <code class="highlighter-rouge">CFLAGS=-fanalyzer</code>，重新编译就能体验 GCC 的这个分析功能。
+与后面的工具相比，它所能检测到的问题要少一些。</p>
+
 <h2 id="cppcheck">Cppcheck</h2>
 
 <p><a href="http://cppcheck.net/">Cppcheck</a> 是一个开源的、用于C/C++代码的静态分析工具。它提供了独特的代码分析，可以检测出代码中的错误，
-并专注于检测未定义行为和危险的编码结构。它的目标是只检测代码中真正的错误，并尽可能地减少误报（错误地报告警告）。
+并专注于检测未定义行为和危险的编码结构。它的目标是只检测代码中真正的错误，并尽可能地减少误报（虚警）。
 Cppcheck 可以检测内存泄漏、分配释放不匹配、缓冲区溢出等多种问题。</p>
 
-<p>以 Windows 为例，下载并安装 Cppcheck。打开主界面，点选菜单“Analyze” –&gt; “Directory …”，
+<p>以 Windows 为例，下载并安装 Cppcheck。</p>
+
+<h3 id="直接分析">直接分析</h3>
+
+<p>打开主界面，点选菜单“Analyze” –&gt; “Directory …”，
 选择要分析目录。稍等片刻即可得到分析结果。</p>
 
 <p>以 SDK v8.2.5 为例，选择 UART GATT Console 所在目录，分析结果如下：</p>
@@ -264,6 +281,17 @@ Cppcheck 可以检测内存泄漏、分配释放不匹配、缓冲区溢出等�
 </ol>
 
 <p>通过这个简单的测试，Cppcheck 帮助我们发现了 UART GATT Console 里的两个问题。Cppcheck 的其它功能，本文不再详述。</p>
+
+<h3 id="与-keil-集成">与 Keil 集成</h3>
+
+<p>可以在 Keil 里通过自定义工具的方式调用 Cppcheck：点选菜单“Tools” –&gt; “Customize Tools Menu…”，将 Cppcheck
+添加到工具菜单里：</p>
+
+<p><img src="../img/keil_cppcheck.png" alt="" /></p>
+
+<p>打开项目，点击菜单“Tools” –&gt; “Cppcheck”就会自动分析项目所在目录里的所有源代码。</p>
+
+<p>上面的 Cppcheck 参数仅供参考，请参照 Cppcheck 文档根据需要设置。</p>
 
 <h2 id="pvs-studio">PVS-Studio</h2>
 

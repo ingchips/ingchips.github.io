@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>SDK 8.3 更新说明 - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="总结 SDK 8.3 新功能。"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+
+      <div id="box">
+        <input id="in_search" type="search" name="search" placeholder="搜索：输入并回车">
+      </div>
+
+      <script>
+        let search_input = document.getElementById('in_search');
+        if (search_input) {
+          search_input.addEventListener("keypress", function(event) {
+          if (event.key === "Enter") {
+            window.open('https://www.bing.com/search?q=' + encodeURIComponent(search_input.value) + '%20site%3A' + window.location.hostname);
+            event.preventDefault();
+            }
+          });
+        }
+      </script>
+
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item has-children">
+
+              
+<a class="" href="/docs/sdk/apps/#web-apps">
+  
+  Web 工具
+  
+</a>
+
+              
+
+                <ul class="submenu">
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/callgraph">
+  
+  Callgraph (调用图)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index_cn.html">
+  
+  ING918/ING916 FOTA (空中升级)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/powerprofiler/">
+  
+  Online Power Profiler
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/air_trace/">
+  
+  Trace Logger
+  
+</a>
+
+  </li>
+  
+</ul>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <article class="post post-full">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <header class="post-header has-gradient outer">
+      
+      
+      <div class="inner-sm">
+        <div class="post-meta">
+          <time class="published" datetime="2023-03-11 00:00">March 11, 2023</time>
+        </div>
+        <h1 class="post-title">SDK 8.3 更新说明</h1>
+        
+        
+      </div>
+    </header>
+    <div class="inner-md outer">
+      <div class="post-content">
+        <ul id="markdown-toc">
+  <li><a href="#highlights" id="markdown-toc-highlights">Highlights</a></li>
+  <li><a href="#1-软件包" id="markdown-toc-1-软件包">1. 软件包</a></li>
+  <li><a href="#2-外设驱动" id="markdown-toc-2-外设驱动">2. 外设驱动</a></li>
+  <li><a href="#3-库函数" id="markdown-toc-3-库函数">3. 库函数</a></li>
+  <li><a href="#4-文档" id="markdown-toc-4-文档">4. 文档</a></li>
+  <li><a href="#5-工具" id="markdown-toc-5-工具">5. 工具</a></li>
+</ul>
+
+<h2 id="highlights">Highlights</h2>
+
+<ul>
+  <li>ING916: USB 下载器</li>
+  <li>新增《<a href="/application-notes/pg_power_saving_en/index.html">开发者手册：低功耗</a>》</li>
+  <li><em>mini</em> 软件包</li>
+</ul>
+
+<div class="important">
+<strong>已知问题（局限性）:</strong>
+<ul>
+<li>调试 ING916xx 时，复位方式不能选择 SYSRESETREQ，应该选择 VECTRESET（不同的调试器可能使用不同的名词，J-Link 里称为 Core）。
+    <ul>
+        <li>复位整个 SoC 的临时措施：对于 JLink，将
+        <a href="https://github.com/ingchips/doc_release/releases/download/v1.0/JlinkSettings.JLinkScript">自定义脚本</a>放到工程目录，并在进入调试模式后再次点击 IDE 里的 “复位” 按钮。</li>
+    </ul>
+</li>
+<li>ING916XX 省电模式仍在持续开发、改进中，QUERY_DEEP_SLEEP_ALLOWED 回调目前不允许返回 PLATFORM_ALLOW_BLE_ONLY_SLEEP。
+</li>
+</ul></div>
+
+<h2 id="1-软件包">1. 软件包</h2>
+
+<ul>
+  <li>
+    <p>[<strong>更新</strong>] ING916：优化低功耗时的电流表现 <span style="background:yellow">(<strong>8.3.0</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>新增</strong>] 回调函数表相关 API <span style="background:yellow">(<strong>8.3.0</strong>)</span></p>
+
+    <p>现有的 Platform 回调（事件及中断）注册使用了数组，占用一定的内存。考虑到内存资源宝贵，新增了两个 API，
+  <code class="highlighter-rouge">platform_set_evt_callback_table</code> 和 <code class="highlighter-rouge">platform_set_irq_callback_table</code>，可以一次性为所有事件、中断注册回调函数，
+  而且整个函数表可存储于 Flash。</p>
+
+    <p>下面的代码定义了回调函数表，并通过 <code class="highlighter-rouge">platform_set_evt_callback_table</code> 注册。</p>
+
+    <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">const</span> <span class="n">platform_evt_cb_table_t</span> <span class="n">evt_cb_table</span> <span class="o">=</span>
+  <span class="p">{</span>
+      <span class="p">.</span><span class="n">callbacks</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="p">[</span><span class="n">PLATFORM_CB_EVT_HARD_FAULT</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+              <span class="p">.</span><span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">f_platform_evt_cb</span><span class="p">)</span><span class="n">cb_hard_fault</span>
+          <span class="p">},</span>
+          <span class="p">[</span><span class="n">PLATFORM_CB_EVT_ASSERTION</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+              <span class="p">.</span><span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">f_platform_evt_cb</span><span class="p">)</span><span class="n">cb_assertion</span>
+          <span class="p">},</span>
+          <span class="p">[</span><span class="n">PLATFORM_CB_EVT_HEAP_OOM</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+              <span class="p">.</span><span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">f_platform_evt_cb</span><span class="p">)</span><span class="n">cb_heap_out_of_mem</span>
+          <span class="p">},</span>
+          <span class="c1">// ...</span>
+      <span class="p">}</span>
+  <span class="p">};</span>
+
+  <span class="n">platform_set_evt_callback_table</span><span class="p">(</span><span class="o">&amp;</span><span class="n">evt_cb_table</span><span class="p">);</span>
+</code></pre></div>    </div>
+
+    <p>两种注册方式不可混用，例如，不要既使用 <code class="highlighter-rouge">platform_set_evt_callback_table</code> 又使用
+  <code class="highlighter-rouge">platform_set_evt_callback</code>。</p>
+
+    <p>对于 CPU 而言，从深睡眠唤醒后中断恢复为屏蔽状态，新添了用于使能中断的 <code class="highlighter-rouge">platform_enable_irq</code>。</p>
+
+    <div class="note">
+  <strong>强烈建议:</strong>
+  采用如上所示的指定序号的数组初始化（ISO C99: Designated Initializers）写法。
+  </div>
+  </li>
+  <li>
+    <p>[<strong>新增</strong>] Extension/Experiment 软件包添加更多的 BLE 私有扩展功能 <span style="background:yellow">(<strong>8.3.0</strong>)</span></p>
+
+    <ul>
+      <li>锁频</li>
+    </ul>
+
+    <p>使用 <code class="highlighter-rouge">ll_lock_frequency</code> 锁频后，所有的蓝牙活动都被固定在指定的信道。使用 <code class="highlighter-rouge">ll_unlock_frequency</code> 可解锁。</p>
+
+    <ul>
+      <li>广播间隔不再要求必须 &gt;= 20ms。</li>
+    </ul>
+
+    <p><code class="highlighter-rouge">gap_set_ext_adv_para</code> 里的 <code class="highlighter-rouge">interval</code> 参数允许填 1。</p>
+
+    <ul>
+      <li>
+        <p>允许传统广播数据长度超过规范定义的 31 字节（ING916 专属）</p>
+      </li>
+      <li>
+        <p>自定义数据白化初值、广播数据包 PDU 类型、CTE 比特（ING916 专属）</p>
+      </li>
+      <li>
+        <p>对传统广播进行 CTE IQ 采样（ING916 专属）</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] ING916：持久化寄存器 API <span style="background:yellow">(<strong>8.3.0</strong>)</span></p>
+
+    <p>ING916 上的 <code class="highlighter-rouge">platform_write_persistent_reg</code>、<code class="highlighter-rouge">platform_read_persistent_reg</code> 功能现已正常。</p>
+  </li>
+  <li>
+    <p>[<strong>新增</strong>] <em>mini</em> 软件包 <span style="background:yellow">(<strong>8.3.0</strong>)</span></p>
+
+    <p><em>mini</em> 软件包 BLE 协议栈只占用 8KiB 共享内存，其余共享内存处于掉电状态，功耗更低。
+  由于分配的内存有限，其功能也有限，只支持一组广播集，一个连接。</p>
+
+    <p><em>Peripheral Console</em> 已切换到 <em>mini</em> 软件包。</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] Controller 里对 <em>LL_CONNECTION_PARAM_RSP</em> 的处理 <span style="background:yellow">(<strong>8.3.0</strong>)</span></p>
+
+    <p>当 <code class="highlighter-rouge">referenceEventCount</code> 字段小于或等于当前的 EventCount 且差别不大时，逻辑有误，导致断连接。现已修正。</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] 启用 Enhanced Ticks 时的稳定性问题 <span style="background:yellow">(<strong>8.3.0</strong>)</span></p>
+
+    <p>对于内置 FreeRTOS 的软件包，当启用 Enhanced Ticks 后，IDLE 进程有可能死循环。现已修正。</p>
+  </li>
+</ul>
+
+<h2 id="2-外设驱动">2. 外设驱动</h2>
+
+<ul>
+  <li>
+    <p>[<strong>更新</strong>] ING916：QDEC/KeyScan/SysCtrl/Comparator/ADC 驱动  <span style="background:yellow">(<strong>8.3.0</strong>)</span></p>
+
+    <p>完善接口。部分新接口可能与由版本不兼容。为 ADC 数据的滤波处理提供参考实现。</p>
+  </li>
+</ul>
+
+<h2 id="3-库函数">3. 库函数</h2>
+
+<ul>
+  <li>[<strong>更新</strong>] ING918：Power control 库现在提供 3 种策略供选择  <span style="background:yellow">(<strong>8.3.0</strong>)</span></li>
+</ul>
+
+<h2 id="4-文档">4. 文档</h2>
+
+<ul>
+  <li>[<strong>新增</strong>] 《<a href="/application-notes/pg_power_saving_en/index.html">开发者手册：低功耗</a>》 <span style="background:yellow">(<strong>8.3.0</strong>)</span></li>
+</ul>
+
+<h2 id="5-工具">5. 工具</h2>
+
+<ul>
+  <li>
+    <p>[<strong>修正</strong>] Wizard: FOTA/Cube 相关代码的生成 <span style="background:yellow">(<strong>8.3.0</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] Cube <span style="background:yellow">(<strong>8.3.0</strong>)</span></p>
+
+    <p>ING916 时钟树视图比较复杂，查找外设需要来回拖动界面。现在增加了查找功能，可以方便地定位外设，将其显示于屏幕中央：</p>
+
+    <p><img src="../img/cube_selector.png" alt="" /></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] tracer <span style="background:yellow">(<strong>8.3.0</strong>)</span></p>
+
+    <p>tracer 现已支持 ING916，可通过主菜单选择。注意：需要先选择 Chip Family，然后打开 log 文件。</p>
+  </li>
+  <li>
+    <p>[<strong>新增</strong>] ING916: USB downloader <span style="background:yellow">(<strong>8.3.0</strong>)</span></p>
+
+    <p>对于 ING916 芯片，可通过 USB 接口下载程序，相比串口，下载速度更快。提供 3 种下载工具：</p>
+
+    <ul>
+      <li><em>ing_usb.exe</em>：单独的命令行版本的下载工具</li>
+      <li><em>Downloader</em>：在原有的 GUI 版本里将端口配置为“USB”即可</li>
+      <li><em>icsdw.py</em>：Python 版本的下载工具，适合量产</li>
+    </ul>
+  </li>
+</ul>
+
+      </div><!-- .post-content -->
+    </div><!-- .inner-md -->
+  </article><!-- .post -->
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2021-2022. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

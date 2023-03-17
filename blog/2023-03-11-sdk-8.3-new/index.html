@@ -236,8 +236,10 @@
 <strong>已知问题（局限性）:</strong>
 <ul>
 <li>调试 ING916xx 时，复位方式不能选择 SYSRESETREQ，应该选择 VECTRESET（不同的调试器可能使用不同的名词，J-Link 里称为 Core）。
+几种调试时复位整个 SoC 的临时措施：
     <ul>
-        <li>复位整个 SoC 的临时措施：对于 JLink，将
+        <li>方法 1：先进入下载模式，然后再开始调试；</li>
+        <li>方法 2：对于 JLink，将
         <a href="https://github.com/ingchips/doc_release/releases/download/v1.0/JlinkSettings.JLinkScript">自定义脚本</a>放到工程目录，并在进入调试模式后再次点击 IDE 里的 “复位” 按钮。</li>
     </ul>
 </li>
@@ -338,6 +340,11 @@
     <p>[<strong>修正</strong>] 启用 Enhanced Ticks 时的稳定性问题 <span style="background:yellow">(<strong>8.3.0</strong>)</span></p>
 
     <p>对于内置 FreeRTOS 的软件包，当启用 Enhanced Ticks 后，IDLE 进程有可能死循环。现已修正。</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] API：platform_install_task_stack <span style="background:yellow">(<strong>8.3.0</strong>)</span></p>
+
+    <p>现在 <code class="highlighter-rouge">platform_install_task_stack</code> 支持为 Timer 任务重新配置栈空间。旧版本仅支持 Controller/Host 等两个任务。</p>
   </li>
 </ul>
 

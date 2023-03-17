@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>ING916xx将Cache用作普通RAM - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="Cache是CPU内部缓存，用于临时存储CPU需要频繁访问的数据和指令，以加快CPU的数据访问速度；而RAM是主存储器，用于存储程序和数据，是CPU和外部设备之间的桥梁，其访问速度相对较慢。"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+
+      <div id="box">
+        <input id="in_search" type="search" name="search" placeholder="搜索：输入并回车">
+      </div>
+
+      <script>
+        let search_input = document.getElementById('in_search');
+        if (search_input) {
+          search_input.addEventListener("keypress", function(event) {
+          if (event.key === "Enter") {
+            window.open('https://www.bing.com/search?q=' + encodeURIComponent(search_input.value) + '%20site%3A' + window.location.hostname);
+            event.preventDefault();
+            }
+          });
+        }
+      </script>
+
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item has-children">
+
+              
+<a class="" href="/docs/sdk/apps/#web-apps">
+  
+  Web 工具
+  
+</a>
+
+              
+
+                <ul class="submenu">
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/callgraph">
+  
+  Callgraph (调用图)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index_cn.html">
+  
+  ING918/ING916 FOTA (空中升级)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/powerprofiler/">
+  
+  Online Power Profiler
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/air_trace/">
+  
+  Trace Logger
+  
+</a>
+
+  </li>
+  
+</ul>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <article class="post post-full">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <header class="post-header has-gradient outer">
+      
+      
+      <div class="inner-sm">
+        <div class="post-meta">
+          <time class="published" datetime="2023-03-11 00:00">March 11, 2023</time>
+        </div>
+        <h1 class="post-title">ING916xx将Cache用作普通RAM</h1>
+        
+        
+      </div>
+    </header>
+    <div class="inner-md outer">
+      <div class="post-content">
+        <ul id="markdown-toc">
+  <li><a href="#coremark跑分" id="markdown-toc-coremark跑分">Coremark跑分</a></li>
+  <li><a href="#用法举例" id="markdown-toc-用法举例">用法举例</a>    <ul>
+      <li><a href="#自由使用申请固定地址内存" id="markdown-toc-自由使用申请固定地址内存">自由使用：申请固定地址内存</a></li>
+      <li><a href="#使用动态分配器如-arena-allocator" id="markdown-toc-使用动态分配器如-arena-allocator">使用动态分配器（如 Arena allocator）</a></li>
+    </ul>
+  </li>
+  <li><a href="#注意事项" id="markdown-toc-注意事项">注意事项</a></li>
+</ul>
+
+<p>Cache是CPU内部缓存，用于临时存储CPU需要频繁访问的数据和指令，以加快CPU的数据访问速度；而RAM是主存储器，用于存储程序和数据，是CPU和外部设备之间的桥梁，其访问速度相对较慢。</p>
+
+<p>速度：Cache的访问速度非常快，一般能够达到纳秒级别的响应速度；而RAM的访问速度相对较慢，一般需要几十到几百纳秒的时间。</p>
+
+<p>容量：Cache的容量比RAM要小得多，一般只有几百KB到几十MB的大小；而RAM的容量比Cache要大得多，一般从几百MB到数GB不等。</p>
+
+<p>成本：Cache的制造成本较高，但是由于其容量较小，因此总成本相对较低；而RAM的制造成本较低，但是容量较大，因此总成本相对较高。</p>
+
+<blockquote>
+  <p>因此，将 <em>Cache</em> 映射为 <em>RAM</em> 是一个不太常见的做法，因为 <em>Cache</em> 和 <em>RAM</em> 有着不同的设计目标和工作机制，将  <em>Cache</em> 映射为 <em>RAM</em> 可能会影响系统性能。如果真的需要将 <em>Cache</em> 映射为 <em>RAM</em> ，一般是出于某些特殊的需求，比如：<br /></p>
+  <ol>
+    <li>需要在 <em>Cache</em> 中执行代码，或者保存数据<br /></li>
+    <li>系统的 <em>RAM</em> 不够用<br /></li>
+    <li>需要速率更高的 <em>RAM</em><br /></li>
+    <li>部分硬件只能访问特定地址范围内的内存<br /></li>
+  </ol>
+</blockquote>
+
+<p><em>ING916XX</em> 的 <em>Cache</em> 由 <em>I-Cache-M</em> 和 <em>D-Cache-M</em> 两部分组成，均可作为 <em>RAM</em> 使用，在使用之前我们先进行 <em>Coremark</em> 跑分，测试一下映射为 <em>RAM</em> 与否对整个系统性能的影响。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">名称</th>
+      <th style="text-align: center">起始地址</th>
+      <th style="text-align: center">大小（KiB）</th>
+      <th style="text-align: center">备注</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong>D-Cache-M</strong></td>
+      <td style="text-align: center">0x2000E000</td>
+      <td style="text-align: center">8</td>
+      <td style="text-align: center">可映射为RAM</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><strong>I-Cache-M</strong></td>
+      <td style="text-align: center">0x20010000</td>
+      <td style="text-align: center">8</td>
+      <td style="text-align: center">可映射为RAM</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="coremark跑分">Coremark跑分<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup></h2>
+
+<p>我们将 <em>I-Cache-M</em> 和 <em>D-Cache-M</em> 是否映射为 <em>RAM</em> 所组成的 4 种情况分别进行跑分，其跑分的结果如下表所示。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">Compiler</th>
+      <th style="text-align: center">I-Cache-M<br />映射方式</th>
+      <th style="text-align: center">D-Cache-M<br />映射方式</th>
+      <th style="text-align: center">MHz</th>
+      <th style="text-align: center">Coremark</th>
+      <th style="text-align: center">Coremark/<br />MHz</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">GCCClang 13.0.0</td>
+      <td style="text-align: center">Cache</td>
+      <td style="text-align: center">Cache</td>
+      <td style="text-align: center">201.60</td>
+      <td style="text-align: center">557.32</td>
+      <td style="text-align: center">2.76</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">GCCClang 13.0.0</td>
+      <td style="text-align: center"><strong>RAM</strong></td>
+      <td style="text-align: center">Cache</td>
+      <td style="text-align: center">201.60</td>
+      <td style="text-align: center">8.41</td>
+      <td style="text-align: center">0.04</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">GCCClang 13.0.0</td>
+      <td style="text-align: center">Cache</td>
+      <td style="text-align: center"><strong>RAM</strong></td>
+      <td style="text-align: center">201.60</td>
+      <td style="text-align: center">555.99</td>
+      <td style="text-align: center">2.75</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">GCCClang 13.0.0</td>
+      <td style="text-align: center"><strong>RAM</strong></td>
+      <td style="text-align: center"><strong>RAM</strong></td>
+      <td style="text-align: center">201.60</td>
+      <td style="text-align: center">8.41</td>
+      <td style="text-align: center">0.04</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>通过上述表中的跑分结果，可以看出来将 <em>D-Cache-M</em> 映射为 <em>RAM</em> 对于系统整体的性能影响几乎可以忽略不计；而将 <em>I-Cache-M</em> 映射为 <em>RAM</em> 会导致整个系统的性能极度下降。所以，若需要使用，可以先使用 <em>D-Cache-M</em> 对应的8K空间。</p>
+
+<h2 id="用法举例">用法举例</h2>
+
+<h3 id="自由使用申请固定地址内存">自由使用：申请固定地址内存</h3>
+
+<p>1.<em>Arm Compiler V5</em> 版本</p>
+
+<pre><code class="language-C">#define RAM_SIZE 8192 // RAM的大小，单位为字节
+#define D_CACHE_ADDR    0x2000E000
+#define I_CACHE_ADDR    0x20010000
+
+char RAM_D[RAM_SIZE] __attribute__((at(D_CACHE_ADDR)));
+char RAM_I[RAM_SIZE] __attribute__((at(I_CACHE_ADDR)));
+</code></pre>
+
+<p>2.<em>Arm Compiler V6</em> 版本</p>
+
+<pre><code class="language-C">#define RAM_SIZE 8192 // RAM的大小，单位为字节
+
+char RAM_D[RAM_SIZE] __attribute__((section(".ARM.__at_0x2000E000")));
+char RAM_I[RAM_SIZE] __attribute__((section(".ARM.__at_0x20010000")));
+</code></pre>
+
+<p>有时为了 <strong>提高程序可读性</strong>、<strong>避免未定义的行为</strong> 等，我们需要在定义变量的同时就对变量进行初始化，需要参照一下步骤进行实现：</p>
+
+<ul>
+  <li><strong>修改.sct文件</strong> :在.sct文件中添加对应的RAM区，如下图所示，添加一段IRAM2</li>
+</ul>
+
+<p><img src="../img/cache-keil-setting.png" alt="" /></p>
+
+<ul>
+  <li><strong>定义C函数</strong> :方便在启动文件中调用</li>
+</ul>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">cache_to_ram</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">SYSCTRL_CacheControl</span><span class="p">(</span><span class="n">SYSCTRL_MEM_BLOCK_AS_CACHE</span> <span class="p">,</span><span class="n">SYSCTRL_MEM_BLOCK_AS_SYS_MEM</span> <span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li><strong>修改汇编代码</strong></li>
+</ul>
+
+<p>在 <em>startup_ing91600.s</em> 文件中存在如下一段代码</p>
+
+<pre><code class="language-assembly">; Reset Handler
+Reset_Handler   PROC
+                EXPORT  Reset_Handler
+                IMPORT  __scatterload
+
+                ; this push is consumed by main
+                PUSH    {R1, LR}
+
+                ; save msp
+                MRS     R1, MSP
+                MSR     PSP, R1
+</code></pre>
+
+<p>我们需要在上述的代码下方添加如下两行代码，在scatter_load之前调用 <code class="highlighter-rouge">SYSCTRL_CacheControl</code> 将D_Cache设置为RAM。</p>
+
+<pre><code class="language-assembly">				IMPORT	cache_ram
+				BL		cache_ram
+</code></pre>
+
+<ul>
+  <li><strong>初始化</strong> ：以 <em>Arm Compiler V6</em> 版本举例</li>
+</ul>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#define RAM_SIZE 10 // RAM的大小，单位为字节
+</span>
+<span class="kt">char</span> <span class="n">RAM</span><span class="p">[</span><span class="n">RAM_SIZE</span><span class="p">]</span> <span class="n">__attribute__</span><span class="p">((</span><span class="n">section</span><span class="p">(</span><span class="s">".ARM.__at_0x2000E000"</span><span class="p">)))</span> <span class="o">=</span> <span class="p">{</span><span class="sc">'A'</span><span class="p">,</span> <span class="sc">'B'</span><span class="p">,</span> <span class="sc">'C'</span><span class="p">,</span> <span class="sc">'D'</span><span class="p">,</span> <span class="sc">'E'</span><span class="p">,</span> <span class="sc">'F'</span><span class="p">,</span> <span class="sc">'G'</span><span class="p">,</span> <span class="sc">'H'</span><span class="p">,</span> <span class="sc">'I'</span><span class="p">,</span> <span class="sc">'J'</span><span class="p">};</span>
+</code></pre></div></div>
+
+<h3 id="使用动态分配器如-arena-allocator">使用动态分配器（如 Arena allocator）</h3>
+
+<p><em>Arena-allocator</em> 竞技场内存分配器是一种内存分配器，它使用的内存块都是从预先分配好的一块连续的内存空间中划分出来的。当需要分配内存时，分配器会从这块内存池中找到一块足够大的内存块，并返回给调用者。由于使用的内存空间是连续的，因此避免了内存碎片的产生，从而提高了内存分配效率和程序的运行性能。</p>
+
+<p>1.申请内存</p>
+
+<pre><code class="language-C">#define RAM_SIZE 8192 // RAM的大小，单位为字节
+char RAM[RAM_SIZE] __attribute__((section(".ARM.__at_0x2000E000")));
+</code></pre>
+
+<p>2.创建结构体 <code class="highlighter-rouge">Arena</code></p>
+
+<pre><code class="language-C">// 定义一个结构体，表示Arena
+typedef struct arena {
+    char *start;  // Arena起始地址
+    char *avail;  // 当前可用地址
+
+    size_t block_size;
+    size_t used;
+} arena;
+</code></pre>
+
+<p>3.创建相关函数</p>
+
+<p>1）<code class="highlighter-rouge">arena_init</code> — 初始化函数</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">arena_init</span><span class="p">(</span><span class="n">arena</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">block</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">a</span><span class="o">-&gt;</span><span class="n">start</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">block</span><span class="p">;</span>
+    <span class="n">a</span><span class="o">-&gt;</span><span class="n">avail</span> <span class="o">=</span> <span class="n">a</span><span class="o">-&gt;</span><span class="n">start</span><span class="p">;</span>
+    <span class="n">a</span><span class="o">-&gt;</span><span class="n">block_size</span> <span class="o">=</span> <span class="n">size</span><span class="p">;</span>
+    <span class="n">a</span><span class="o">-&gt;</span><span class="n">used</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>2）<code class="highlighter-rouge">arena_alloc</code>— 内存分配函数</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 分配内存</span>
+<span class="kt">void</span> <span class="o">*</span><span class="nf">arena_alloc</span><span class="p">(</span><span class="n">arena</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">a</span><span class="o">-&gt;</span><span class="n">block_size</span> <span class="o">-</span> <span class="n">a</span><span class="o">-&gt;</span><span class="n">used</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">void</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="n">a</span><span class="o">-&gt;</span><span class="n">avail</span><span class="p">;</span>
+        <span class="n">a</span><span class="o">-&gt;</span><span class="n">avail</span> <span class="o">+=</span> <span class="n">size</span><span class="p">;</span>
+        <span class="k">return</span> <span class="n">p</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>3.使用 <code class="highlighter-rouge">Arena allocator</code> 方法进行内存分配的伪代码如下所示。</p>
+
+<pre><code class="language-C">  // 在RAM上创建一个Arena allocator
+  arena_init(&amp;arena, RAM, RAM_SIZE);
+
+  // 使用Arena allocator分配内存
+  void *block = NULL;
+  size_t size = 100;
+  block = arena_alloc(&amp;arena, size);
+
+  // 使用block
+  ...
+</code></pre>
+
+<blockquote>
+  <p>上述使用的是比较简单的 <em>arena allocator</em> 使用方式，若要复杂使用，可根据需求对结构体、函数以及使用的机制做相应的修改即可。</p>
+</blockquote>
+
+<h2 id="注意事项">注意事项</h2>
+
+<ul>
+  <li>睡眠无数据保持：低功耗状态时，这两个内存块里的数据（无论处于哪种模式）都会丢失，而其它内存里的数据则可以保持；</li>
+  <li>从低功耗状态唤醒时，这两个内存块都将恢复默认值<em>AS_CACHE</em>，需要重新配置才能使用；</li>
+  <li>将 <strong>Cache</strong> 映射为普通 <strong>RAM</strong> 后，系统缺少高速缓存，性能有可能明显下降。</li>
+</ul>
+<div class="footnotes">
+  <ol>
+    <li id="fn:1">
+      <p><em>Coremark</em>跑分是通过运行测试程序来评估处理器性能的一种方法。 <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+      </div><!-- .post-content -->
+    </div><!-- .inner-md -->
+  </article><!-- .post -->
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2021-2022. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

@@ -295,26 +295,20 @@
     <p>[<strong>新增</strong>] Extension/Experiment 软件包添加更多的 BLE 私有扩展功能 <span style="background:yellow">(<strong>8.3.0</strong>)</span></p>
 
     <ul>
-      <li>锁频</li>
-    </ul>
-
-    <p>使用 <code class="highlighter-rouge">ll_lock_frequency</code> 锁频后，所有的蓝牙活动都被固定在指定的信道。使用 <code class="highlighter-rouge">ll_unlock_frequency</code> 可解锁。</p>
-
-    <ul>
-      <li>广播间隔不再要求必须 &gt;= 20ms。</li>
-    </ul>
-
-    <p><code class="highlighter-rouge">gap_set_ext_adv_para</code> 里的 <code class="highlighter-rouge">interval</code> 参数允许填 1。</p>
-
-    <ul>
       <li>
-        <p>允许传统广播数据长度超过规范定义的 31 字节（ING916 专属）</p>
+        <p>锁频。使用 <code class="highlighter-rouge">ll_lock_frequency</code> 锁频后，所有的蓝牙活动都被固定在指定的信道。使用 <code class="highlighter-rouge">ll_unlock_frequency</code> 可解锁。</p>
       </li>
       <li>
-        <p>自定义数据白化初值、广播数据包 PDU 类型、CTE 比特（ING916 专属）</p>
+        <p>广播间隔不再要求必须 &gt;= 20ms。<code class="highlighter-rouge">gap_set_ext_adv_para</code> 里的 <code class="highlighter-rouge">interval</code> 参数允许填 1。</p>
       </li>
       <li>
-        <p>对传统广播进行 CTE IQ 采样（ING916 专属）</p>
+        <p>仅限 <strong>ING916</strong>：允许传统广播数据长度超过规范定义的 31 字节</p>
+      </li>
+      <li>
+        <p>仅限 <strong>ING916</strong>：自定义数据白化初值、广播数据包 PDU 类型、CTE 比特</p>
+      </li>
+      <li>
+        <p>仅限 <strong>ING916</strong>：对传统广播进行 CTE IQ 采样</p>
       </li>
     </ul>
   </li>
@@ -326,8 +320,43 @@
   <li>
     <p>[<strong>新增</strong>] <em>mini</em> 软件包 <span style="background:yellow">(<strong>8.3.0</strong>)</span></p>
 
-    <p><em>mini</em> 软件包 BLE 协议栈只占用 8KiB 共享内存，其余共享内存处于掉电状态，功耗更低。
-  由于分配的内存有限，其功能也有限，只支持一组广播集，一个连接。</p>
+    <p>对于简单的应用而言，内存需求很小，为此，SDK 提供了 <em>mini</em> 软件包。这种软件里的 BLE
+  协议栈只占用 8KiB SHARE 内存，SYS 内存小于 16KiB。<strong>协议栈的功能受限</strong>，只支持一组广播集，一个连接。</p>
+
+    <p>App 通过 <code class="highlighter-rouge">SYSCTRL_SelectMemoryBlocks</code> 可关闭未使用的内存块，节省功耗。
+  比如 SYS 内存总占用小于 16KiB 时就在 <code class="highlighter-rouge">app_main</code> 里加一行代码：</p>
+
+    <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">SYSCTRL_SelectMemoryBlocks</span><span class="p">(</span><span class="n">SYSCTRL_RESERVED_MEM_BLOCKS</span><span class="p">);</span>
+</code></pre></div>    </div>
+
+    <p>（<strong>不推荐</strong>）对于 8KiB 以外的共享内存，也可以作为普通内存，自由使用。
+  开发者需要手工将对应的内存范围（下表）添加到开发工具中。</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align: center">芯片</th>
+          <th style="text-align: center">起始地址</th>
+          <th style="text-align: center">大小（KiB）</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align: center">ING918</td>
+          <td style="text-align: center">0x400A2000</td>
+          <td style="text-align: center">56</td>
+        </tr>
+        <tr>
+          <td style="text-align: center">ING916</td>
+          <td style="text-align: center">0x40122000</td>
+          <td style="text-align: center">24</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>以 Keil 和 ING918 为例，这段共享内存的设置如图：</p>
+
+    <p><img src="../img/keil_share_ram.png" alt="" /></p>
 
     <p><em>Peripheral Console</em> 已切换到 <em>mini</em> 软件包。</p>
   </li>
@@ -345,6 +374,11 @@
     <p>[<strong>更新</strong>] API：platform_install_task_stack <span style="background:yellow">(<strong>8.3.0</strong>)</span></p>
 
     <p>现在 <code class="highlighter-rouge">platform_install_task_stack</code> 支持为 Timer 任务重新配置栈空间。旧版本仅支持 Controller/Host 等两个任务。</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] 几个 ATT API 的签名 <span style="background:yellow">(<strong>8.3.0</strong>)</span></p>
+
+    <p><code class="highlighter-rouge">att_server_notify</code> 和 <code class="highlighter-rouge">att_server_indicate</code> 的数据参数现在使用 <code class="highlighter-rouge">const</code> 修饰。</p>
   </li>
 </ul>
 

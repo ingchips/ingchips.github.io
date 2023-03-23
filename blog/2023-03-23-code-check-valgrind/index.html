@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>使用 Valgrind 动态分析程序 - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="动态代码分析是通过在程序运行期间或之后检查应用程序进行调试的方法。"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+
+      <div id="box">
+        <input id="in_search" type="search" name="search" placeholder="搜索：输入并回车">
+      </div>
+
+      <script>
+        let search_input = document.getElementById('in_search');
+        if (search_input) {
+          search_input.addEventListener("keypress", function(event) {
+          if (event.key === "Enter") {
+            window.open('https://www.bing.com/search?q=' + encodeURIComponent(search_input.value) + '%20site%3A' + window.location.hostname);
+            event.preventDefault();
+            }
+          });
+        }
+      </script>
+
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item has-children">
+
+              
+<a class="" href="/docs/sdk/apps/#web-apps">
+  
+  Web 工具
+  
+</a>
+
+              
+
+                <ul class="submenu">
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/callgraph">
+  
+  Callgraph (调用图)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index_cn.html">
+  
+  ING918/ING916 FOTA (空中升级)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/powerprofiler/">
+  
+  Online Power Profiler
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/air_trace/">
+  
+  Trace Logger
+  
+</a>
+
+  </li>
+  
+</ul>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <article class="post post-full">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <header class="post-header has-gradient outer">
+      
+      
+      <div class="inner-sm">
+        <div class="post-meta">
+          <time class="published" datetime="2023-03-23 00:00">March 23, 2023</time>
+        </div>
+        <h1 class="post-title">使用 Valgrind 动态分析程序</h1>
+        
+        
+      </div>
+    </header>
+    <div class="inner-md outer">
+      <div class="post-content">
+        <ul id="markdown-toc">
+  <li><a href="#将程序转换为-rpc-客户端" id="markdown-toc-将程序转换为-rpc-客户端">将程序转换为 RPC 客户端</a>    <ul>
+      <li><a href="#rtos-的处理" id="markdown-toc-rtos-的处理">RTOS 的处理</a></li>
+    </ul>
+  </li>
+  <li><a href="#测试" id="markdown-toc-测试">测试</a>    <ul>
+      <li><a href="#valgrind-的设置" id="markdown-toc-valgrind-的设置">Valgrind 的设置</a></li>
+      <li><a href="#bug-1写溢出" id="markdown-toc-bug-1写溢出">Bug 1：写溢出</a></li>
+      <li><a href="#bug-2内存未释放" id="markdown-toc-bug-2内存未释放">Bug 2：内存未释放</a></li>
+    </ul>
+  </li>
+  <li><a href="#总结" id="markdown-toc-总结">总结</a></li>
+</ul>
+
+<p>之前介绍了<a href="../2023-03-09-code-static-anaysis.md">代码的静态分析</a>，现在再来看程序的动态分析。
+动态代码分析是通过在程序运行期间或之后检查应用程序进行调试的方法。在嵌入式领域，仿真或者在线调试是两种常见的动态分析调试方法，
+通过设置 <a href="https://www.keil.com/support/man/docs/uv4cl/uv4cl_db_dbg_breakpnts.htm">复杂的断点</a>
+有可能精准定位“事故”现场。</p>
+
+<p>有一些内存问题不会立即暴露，需要积累一段时间，再呈现出毫不相干的现象。这类问题虽不易通过仿真或者在线调试定位。
+有一些对于这一类问题的通用工具，比如适用于 Linux/Android/MacOS 的 <a href="https://valgrind.org/"><em>Valgrind</em></a>。
+由于绝大部分蓝牙相关的功能可以直接（或者稍加修改）以 RPC 客户端的形式运行于 Linux，我们也可以使用这个 Valgrind。
+Valgrind 是用来构建动态分析工具的框架。包含多种工具：</p>
+
+<ul>
+  <li>
+    <p>Memcheck：检查程序中的内存问题，如泄漏、越界、非法指针等，主要针对 C/C++ 程序；</p>
+  </li>
+  <li>
+    <p>Cachegrind：监测和分析 Cache 性能，辅助代码优化；</p>
+  </li>
+  <li>
+    <p>Massif：堆性能的监测和分析；</p>
+  </li>
+  <li>
+    <p>Helgrind：为多线程程序检测数据竞争；</p>
+  </li>
+  <li>
+    <p>……</p>
+  </li>
+</ul>
+
+<p>这里主要使用 Memcheck 工具。使用 Valgrind 这一类检测工具（instrumentation tools）时，
+被测程序的运行速度显著变慢。由于 PC 的速度远远比嵌入式 MCU 快，Valgrind 导致的“变慢”影响不大。</p>
+
+<h2 id="将程序转换为-rpc-客户端">将程序转换为 RPC 客户端</h2>
+
+<p>目前，RPC 客户端可以调用所有的蓝牙 API，若干 platform API，但不支持操作外设。所以需要采取一些方法脱离外设，比如：</p>
+
+<ul>
+  <li>
+    <p>使用 GPIO 驱动 LED 指示灯：改为 <code class="highlighter-rouge">printf</code> 或者图形界面；</p>
+  </li>
+  <li>
+    <p>输出 PWM：改为 <code class="highlighter-rouge">printf</code> 或者删除；</p>
+  </li>
+  <li>
+    <p>使用 GPIO 中断触发动作：改为从终端输入指令或者使用图形界面；</p>
+  </li>
+  <li>
+    <p>使用 SPI 与其它芯片通信：删除相关功能，并模拟必要流程。</p>
+  </li>
+</ul>
+
+<p>客户端程序的主入口为熟悉的 <code class="highlighter-rouge">setup_profile</code> 函数。如果转换后的程序包含多个模块，则需要修改 makefile，
+将各模块添加到 <code class="highlighter-rouge">PROJECT_FILES</code>；如果仅有一个模块，则不需要修改 makefile。</p>
+
+<h3 id="rtos-的处理">RTOS 的处理</h3>
+
+<p>如果程序里使用了 RTOS 的相关功能，存在三种情况：</p>
+
+<ol>
+  <li>
+    <p>只使用了通用 RTOS 接口（<code class="highlighter-rouge">gen_os_driver_t</code>）里的功能</p>
+
+    <p><code class="highlighter-rouge">platform_get_gen_os_driver</code> 仍然可用，代码无需修改。</p>
+  </li>
+  <li>
+    <p>使用了 FreeRTOS</p>
+
+    <p>FreeRTOS 提供了 <a href="https://www.freertos.org/FreeRTOS-simulator-for-Linux.html">Linux 上的模拟器</a>，
+ 代码也无需修改，只需要在编译时带上 <code class="highlighter-rouge">FreeRTOS=1</code> 参数即可。
+ 当然，其运行效果与嵌入式上的实际情况存在较大差异。</p>
+  </li>
+  <li>
+    <p>使用了其它的 RTOS</p>
+
+    <p>需要检查是否提供了 Linux 上的模拟器，并添加到 RPC 客户端。</p>
+  </li>
+</ol>
+
+<h2 id="测试">测试</h2>
+
+<p>现假设转换得到了一个 <a href="https://github.com/ingchips/ING918XX_SDK_SOURCE/blob/master/example_host/rpc_client/app/bug.cpp"><em>bug.cpp</em></a> 的模块，
+将它放到 <em>rpc_client/app</em> 目录下，在 Linux 系统里使用下面的命令编译它：</p>
+
+<p><code class="highlighter-rouge">make rebuild app=bug</code></p>
+
+<h3 id="valgrind-的设置">Valgrind 的设置</h3>
+
+<p><em>bug.cpp</em>  是一直执行的，测试时使用 Ctrl+C 强制退出，因此必然存在一些分配了但未释放的内存，
+需要为 Valgrind 编写 <a href="https://valgrind.org/docs/manual/manual-core.html#manual-core.suppress">suppression 文件</a>忽略这些问题，
+如 <a href="https://github.com/ingchips/ING918XX_SDK_SOURCE/blob/master/example_host/rpc_client/rpc.supp">rpc.supp</a>
+里的这一段内容表示告诉 Memcheck 工具忽略 FreeRTOS <code class="highlighter-rouge">vTaskStartScheduler</code> 泄露的内存：</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">{</span>
+  start up
+  Memcheck:Leak
+  ...
+  fun:vTaskStartScheduler
+  fun:main
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>运行 Memcheck 工具：</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>valgrind <span class="nt">--tool</span><span class="o">=</span>memcheck <span class="nt">--leak-check</span><span class="o">=</span>full <span class="nt">--show-leak-kinds</span><span class="o">=</span>all <span class="se">\</span>
+         <span class="nt">--suppressions</span><span class="o">=</span>rpc.supp <span class="nt">--suppressions</span><span class="o">=</span>app.supp <span class="se">\</span>
+         ./rpc.exe <span class="nt">-addr</span> XX.XX.XX.XX
+</code></pre></div></div>
+
+<h3 id="bug-1写溢出">Bug 1：写溢出</h3>
+
+<p>使用 ING BLE 连接到名为 <em>shell</em> 的设备，发送 3 个字符“abc”，Valgrind 立即报告内存写溢出：
+<em>bug.cpp</em> 于第 115 行分配了 3 个字节的储存空间，但是在第 56 行却要写入 4 个字节，如图。</p>
+
+<p><img src="../img/valgrind_write_4.png" alt="" /></p>
+
+<h3 id="bug-2内存未释放">Bug 2：内存未释放</h3>
+
+<p>重新运行 Valgrind，连接到设备然后断开，重复 3 次，Ctrl+C 强制退出，Valgrind 报告发现
+<em>bug.cpp</em> 第 115 行分配过的 6 个字节内存已不可达，无法释放，如图。</p>
+
+<p><img src="../img/valgrind_malloc2.png" alt="" /></p>
+
+<h2 id="总结">总结</h2>
+
+<p>借助 Valgrind 能够高效地发现特定类型的内存问题 —— 以转换为 RPC 客户端为代价。</p>
+
+      </div><!-- .post-content -->
+    </div><!-- .inner-md -->
+  </article><!-- .post -->
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2021-2022. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

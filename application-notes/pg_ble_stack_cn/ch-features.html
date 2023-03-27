@@ -372,10 +372,11 @@ S=8 传输包头信息的速率为 <span class="math inline">\(125kb/s\)</span>�
 <h3><span class="header-section-number">4.1.2</span> 扩展广播<a href="ch-features.html#扩展广播" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>在旧规范中，广播只能使用 37、38、39 等 3 个信道。随着 BLE 设备的快速增长，
 这 3 个信道将变得越来越拥挤。于是新规范将广播 <em>扩展</em> 到另外的 37 个信道，并将旧版广播称为传统广播
-（Legacy advertising）。</p>
-<p>扩展广播由一串广播 PDU 组成<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a>，第 1 个 PDU 仍位于 37、38、39 等 3
-个信道，相同内容重复 3 次<a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a>。这些 PDU 里含有一种新的长度可变的包头，其中的 AuxPtr
-用来通知扫描方何时、何地（信道）接收下一个 PDU，如同一个指向时频域的指针。AuxPtr 包含以下字段：</p>
+（Legacy advertising）。一个设备可以使用不同的广播参数、地址发送多组扩展广播，每组广播称为一个广播集。</p>
+<p>扩展广播由一串广播 PDU 组成<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a>，最多可携带 1650 字节的广播数据。
+第 1 个 PDU 仍位于 37、38、39 等 3 个信道，相同内容重复 3 次<a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a>。
+这些 PDU 里含有一种新的长度可变的包头，其中的 AuxPtr 用来通知扫描方何时、何地（信道）接收下一个 PDU，
+如同一个指向时频域的指针。AuxPtr 包含以下字段：</p>
 <ul>
 <li>信道号（Channel index）</li>
 <li>时钟精度（CA）</li>
@@ -543,8 +544,8 @@ PDU 没有任何区别。</p>
 <div id="广播时-coded-phy-选择" class="section level3 hasAnchor" number="4.6.1">
 <h3><span class="header-section-number">4.6.1</span> 广播时 Coded PHY 选择<a href="ch-features.html#广播时-coded-phy-选择" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>当使用 Coded PHY 发送广播时，5.4 以前的 HCI 无法指定 S=2 或者 S=8。5.4 补上了这一“漏洞”。
-SDK 从最开始<a href="#fn15" class="footnote-ref" id="fnref15"><sup>15</sup></a>
-就通过 API <code>ll_set_adv_coded_scheme</code> 提供了 S=2、S=8 选择功能。</p>
+SDK 一直支持<a href="#fn15" class="footnote-ref" id="fnref15"><sup>15</sup></a>
+通过 API <code>ll_set_adv_coded_scheme</code> 选择 S=2 或者 S=8。</p>
 
 </div>
 </div>

@@ -320,43 +320,6 @@
           
           
           
-          <li class="toc-item has-children">
-            <a href="/docs/ref_design/">参考设计</a>
-            
-            
-              <button class="submenu-toggle"><span class="screen-reader-text">Submenu</span><span class="icon-angle-right" aria-hidden="true"></span></button>
-              
-              <ul class="toc-submenu">
-
-  <li class="toc-item">
-    <a href="/docs/ref_design/ing918_hardware_design_notes/">ING918X芯片硬件设计指导</a>
-  </li>
-
-  <li class="toc-item">
-    <a href="/docs/ref_design/ing02-03/">ING02-03</a>
-  </li>
-
-  <li class="toc-item">
-    <a href="/docs/ref_design/ing04-01-05/">ING04-01-05</a>
-  </li>
-
-  <li class="toc-item">
-    <a href="/docs/ref_design/ing04-01-07/">ING04-01-07</a>
-  </li>
-
-</ul>
-
-            
-          </li>
-        
-          
-          
-          
-          
-          
-          
-          
-          
           <li class="toc-item">
             <a href="/docs/application-notes/">应用指南 & 开发手册</a>
             
@@ -467,7 +430,8 @@
             <div class="post-content">
               <p>SDK 安装包提供两种版本的串口下载工具，支持客户通过 UART 或者 USB 接口进行量产。</p>
 
-<h2 id="gui-版本">GUI 版本</h2>
+<h2 id="一对一烧录">一对一烧录</h2>
+<h3 id="gui-版本">GUI 版本</h3>
 
 <p>功能特点：</p>
 
@@ -497,7 +461,7 @@
 <span class="k">end</span><span class="p">;</span>
 </code></pre></div></div>
 
-<h2 id="python-3-版本">Python 3 版本</h2>
+<h3 id="python-3-版本">Python 3 版本</h3>
 
 <p>功能特点：</p>
 
@@ -512,6 +476,33 @@
 <p>当通过 USB 接口进行量产时，<strong>推荐使用 Python 3 版本</strong>。</p>
 
 <p>详情请参阅 <a href="/user_guide_cn/core-tools.html#ch2-downloader">用户手册</a>。</p>
+
+<h2 id="一对多烧录gui-版本">一对多烧录（GUI 版本）</h2>
+
+<p><a href="https://github.com/ingchips/batch-burner/">详情及源代码</a>，<a href="https://github.com/ingchips/batch-burner/releases">程序下载</a>。</p>
+
+<p>通过 GUI 操作配置监听多个串口进行批量一对多烧录，特性如下</p>
+
+<ul>
+  <li>最多监听 20 个串口，并行烧录</li>
+  <li>最多配置 6 个二进制文件</li>
+  <li>支持个人化（基于Python）</li>
+  <li>支持地址递增烧录</li>
+</ul>
+
+<p><img src="mb_burn_0.png" alt="mb_burn_0" /></p>
+
+<p>内置的 Python 脚本编辑工具：</p>
+
+<ul>
+  <li>保存 File/Save  或者快捷键 Ctrl+S</li>
+  <li>退出 File/Quit 或者快捷键 Esc</li>
+  <li>通过 <code class="highlighter-rouge">import burner</code> 导入内置的 <code class="highlighter-rouge">burner</code> 模块，提供烧录工具的一些功能，比如 <code class="highlighter-rouge">burner.AppendLog(...)</code>
+可以将脚本执行过程中的日志打印在烧录工具的日志界面。模块</li>
+  <li><code class="highlighter-rouge">on_start_bin(...)</code> 函数在每个 bin 烧录之前执行，参数 data 就是当前 bin 文件的二进制数据</li>
+</ul>
+
+<p><img src="mb_config_script.png" alt="mb_config_script" /></p>
 
               
               

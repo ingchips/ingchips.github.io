@@ -150,7 +150,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="4" data-path="ch-api.html"><a href="ch-api.html"><i class="fa fa-check"></i><b>4</b> API</a>
 <ul>
-<li class="chapter" data-level="4.1" data-path="ch-api.html"><a href="ch-api.html#callback-events"><i class="fa fa-check"></i><b>4.1</b> Callback events</a></li>
+<li class="chapter" data-level="4.1" data-path="ch-api.html"><a href="ch-api.html#callback-events"><i class="fa fa-check"></i><b>4.1</b> Callback events</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="ch-api.html"><a href="ch-api.html#platform_cb_evt_query_deep_sleep_allowed"><i class="fa fa-check"></i><b>4.1.1</b> <strong>PLATFORM_CB_EVT_QUERY_DEEP_SLEEP_ALLOWED</strong></a></li>
+<li class="chapter" data-level="4.1.2" data-path="ch-api.html"><a href="ch-api.html#platform_cb_evt_on_deep_sleep_wakeup"><i class="fa fa-check"></i><b>4.1.2</b> <strong>PLATFORM_CB_EVT_ON_DEEP_SLEEP_WAKEUP</strong></a></li>
+</ul></li>
 <li class="chapter" data-level="4.2" data-path="ch-api.html"><a href="ch-api.html#interrupts"><i class="fa fa-check"></i><b>4.2</b> Interrupts</a>
 <ul>
 <li class="chapter" data-level="4.2.1" data-path="ch-api.html"><a href="ch-api.html#side-note-on-priority"><i class="fa fa-check"></i><b>4.2.1</b> Side Note on Priority</a></li>
@@ -217,8 +221,8 @@ configured by <code>platform_config</code> at any time:</p>
 <h2><span class="header-section-number">4.1</span> Callback events<a href="ch-api.html#callback-events" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>As discussed in <a href="ch-framework.html#ch-framework-app-works">Involvement of Apps</a>, there are two events
 that should be handled by Apps:</p>
-<ul>
-<li><p><strong>PLATFORM_CB_EVT_QUERY_DEEP_SLEEP_ALLOWED</strong></p>
+<div id="platform_cb_evt_query_deep_sleep_allowed" class="section level3 hasAnchor" number="4.1.1">
+<h3><span class="header-section-number">4.1.1</span> <strong>PLATFORM_CB_EVT_QUERY_DEEP_SLEEP_ALLOWED</strong><a href="ch-api.html#platform_cb_evt_query_deep_sleep_allowed" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Handler of this event returns bit combination of allowed sleep modes in Category B.
 A value of 0 means that no mode in Category B is allowed at present.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="ch-api.html#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define PLATFORM_ALLOW_DEEP_SLEEP      ...</span></span>
@@ -231,8 +235,10 @@ For example, if both DEEP and DEEPER SLEEP are allowed, then:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb4-1"><a href="ch-api.html#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">return</span> PLATFORM_ALLOW_DEEPER_SLEEP<span class="op">;</span></span></code></pre></div>
 <p>For ING916, Apps can also configure external wake up sources in the handle.</p>
 <p>When a sleep mode returned as allowed but is not supported in the system,
-the sleep mode is ignored.</p></li>
-<li><p><strong>PLATFORM_CB_EVT_ON_DEEP_SLEEP_WAKEUP</strong></p>
+the sleep mode is ignored.</p>
+</div>
+<div id="platform_cb_evt_on_deep_sleep_wakeup" class="section level3 hasAnchor" number="4.1.2">
+<h3><span class="header-section-number">4.1.2</span> <strong>PLATFORM_CB_EVT_ON_DEEP_SLEEP_WAKEUP</strong><a href="ch-api.html#platform_cb_evt_on_deep_sleep_wakeup" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>In the handler of this event, Apps can re-initialize peripherals and do other jobs
 according to the needs.</p>
 <p>Input parameter <code>void *data</code> is casted from <code>platform_wakeup_call_reason_t</code>:</p>
@@ -256,8 +262,14 @@ not be able to do such reconfiguration. Since external sources are not configura
 in the case of ING918, so it is default to <em>Disabled</em>.</p>
 <p>If <code>PLATFORM_CFG_ALWAYS_CALL_WAKEUP</code> is <em>Enabled</em>, then there will be
 a <em>PLATFORM_CB_EVT_ON_DEEP_SLEEP_WAKEUP</em> event <em>definitely</em> for each
-<em>PLATFORM_CB_EVT_QUERY_DEEP_SLEEP_ALLOWED</em> event that returns a non-0 value.</p></li>
+<em>PLATFORM_CB_EVT_QUERY_DEEP_SLEEP_ALLOWED</em> event that returns a non-0 value.</p>
+<p>At present, this handler is invoked in a <em>strange</em> context. It is in neither an ordinary
+process, nor an interrupt service routine. In the case of FreeRTOS, neither normal
+APIs or their <em>FromISR</em> variants are allowed, with only a few exceptions, such as:</p>
+<ul>
+<li>Use <code>xSemaphoreGiveFromISR</code> on a binary semaphore.</li>
 </ul>
+<hr />
 <p>The prototype of event handles should be compatible of:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb6-1"><a href="ch-api.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="dt">uint32_t</span> <span class="op">(*</span>f_platform_evt_cb<span class="op">)(</span><span class="dt">void</span> <span class="op">*</span>data<span class="op">,</span> <span class="dt">void</span> <span class="op">*</span>user_data<span class="op">);</span></span></code></pre></div>
 <p>Handlers are registered by:</p>
@@ -269,6 +281,7 @@ a <em>PLATFORM_CB_EVT_ON_DEEP_SLEEP_WAKEUP</em> event <em>definitely</em> for ea
 <span id="cb7-6"><a href="ch-api.html#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// user data that will be passed into callback function `f`</span></span>
 <span id="cb7-7"><a href="ch-api.html#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">void</span> <span class="op">*</span>user_data</span>
 <span id="cb7-8"><a href="ch-api.html#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
+</div>
 </div>
 <div id="interrupts" class="section level2 hasAnchor" number="4.2">
 <h2><span class="header-section-number">4.2</span> Interrupts<a href="ch-api.html#interrupts" class="anchor-section" aria-label="Anchor link to header"></a></h2>

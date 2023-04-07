@@ -248,6 +248,11 @@
 </li>
 </ul></div>
 
+<div class="note">
+<strong>兼容性：</strong>
+v8.3.3 gap_start_ccm 函数签名与旧版本不兼容。
+</div>
+
 <h2 id="1-软件包">1. 软件包</h2>
 
 <ul>
@@ -392,11 +397,16 @@
       <li><code class="highlighter-rouge">ll_get_conn_info</code>, <code class="highlighter-rouge">ll_get_conn_events_info</code>：用于获取连接事件的相关信息（目前仅存在于 <em>exp</em> 软件包）</li>
     </ul>
   </li>
-</ul>
+  <li>
+    <p>[<strong>更新</strong>] <code class="highlighter-rouge">gap_start_ccm</code> <span style="background:yellow">(<strong>8.3.3</strong>)</span></p>
 
-<h2 id="2-外设驱动">2. 外设驱动</h2>
+    <p>与 <code class="highlighter-rouge">gap_aes_encrypt</code> 类似，新的 <code class="highlighter-rouge">gap_start_ccm</code> 增加了两个参数用于指定计算完成时的回调：</p>
 
-<ul>
+    <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">gap_hci_cmd_complete_cb_t</span> <span class="n">cb</span><span class="p">,</span> <span class="c1">// 计算完成后的回调</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">user_data</span>               <span class="c1">// 回调的用户数据</span>
+</code></pre></div>    </div>
+    <h2 id="2-外设驱动">2. 外设驱动</h2>
+  </li>
   <li>
     <p>[<strong>更新</strong>] ING916：QDEC/KeyScan/SysCtrl/Comparator/ADC 驱动  <span style="background:yellow">(<strong>8.3.0</strong>)</span></p>
 

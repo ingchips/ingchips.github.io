@@ -302,19 +302,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="12.1.3" data-path="ch-misc.html"><a href="ch-misc.html#基于私有方式-1-的-cte-接收和发送"><i class="fa fa-check"></i><b>12.1.3</b> 基于私有方式 #1 的 CTE 接收和发送</a></li>
 <li class="chapter" data-level="12.1.4" data-path="ch-misc.html"><a href="ch-misc.html#基于私有方式-2-的-cte-接收和发送"><i class="fa fa-check"></i><b>12.1.4</b> 基于私有方式 #2 的 CTE 接收和发送</a></li>
 </ul></li>
-<li class="chapter" data-level="12.2" data-path="ch-misc.html"><a href="ch-misc.html#兼容性"><i class="fa fa-check"></i><b>12.2</b> 兼容性</a>
+<li class="chapter" data-level="12.2" data-path="ch-misc.html"><a href="ch-misc.html#加密与解密"><i class="fa fa-check"></i><b>12.2</b> 加密与解密</a>
 <ul>
-<li class="chapter" data-level="12.2.1" data-path="ch-misc.html"><a href="ch-misc.html#data-length-与-mtu"><i class="fa fa-check"></i><b>12.2.1</b> Data Length 与 MTU</a></li>
+<li class="chapter" data-level="12.2.1" data-path="ch-misc.html"><a href="ch-misc.html#aes-128-加密"><i class="fa fa-check"></i><b>12.2.1</b> AES-128 加密</a></li>
+<li class="chapter" data-level="12.2.2" data-path="ch-misc.html"><a href="ch-misc.html#aes-ccm"><i class="fa fa-check"></i><b>12.2.2</b> AES-CCM</a></li>
 </ul></li>
-<li class="chapter" data-level="12.3" data-path="ch-misc.html"><a href="ch-misc.html#api-返回值"><i class="fa fa-check"></i><b>12.3</b> API 返回值</a></li>
-<li class="chapter" data-level="12.4" data-path="ch-misc.html"><a href="ch-misc.html#键值存储"><i class="fa fa-check"></i><b>12.4</b> 键值存储</a></li>
-<li class="chapter" data-level="12.5" data-path="ch-misc.html"><a href="ch-misc.html#ch98-le-dev-db"><i class="fa fa-check"></i><b>12.5</b> 设备数据库</a></li>
-<li class="chapter" data-level="12.6" data-path="ch-misc.html"><a href="ch-misc.html#ch-misc-synced-api"><i class="fa fa-check"></i><b>12.6</b> 同步版 API</a>
+<li class="chapter" data-level="12.3" data-path="ch-misc.html"><a href="ch-misc.html#兼容性"><i class="fa fa-check"></i><b>12.3</b> 兼容性</a>
 <ul>
-<li class="chapter" data-level="12.6.1" data-path="ch-misc.html"><a href="ch-misc.html#gap-同步-api"><i class="fa fa-check"></i><b>12.6.1</b> GAP 同步 API</a></li>
-<li class="chapter" data-level="12.6.2" data-path="ch-misc.html"><a href="ch-misc.html#gatt-客户端同步-api"><i class="fa fa-check"></i><b>12.6.2</b> GATT 客户端同步 API</a></li>
+<li class="chapter" data-level="12.3.1" data-path="ch-misc.html"><a href="ch-misc.html#data-length-与-mtu"><i class="fa fa-check"></i><b>12.3.1</b> Data Length 与 MTU</a></li>
 </ul></li>
-<li class="chapter" data-level="12.7" data-path="ch-misc.html"><a href="ch-misc.html#ch-misc-thread-safe-api"><i class="fa fa-check"></i><b>12.7</b> 线程安全的 API</a></li>
+<li class="chapter" data-level="12.4" data-path="ch-misc.html"><a href="ch-misc.html#api-返回值"><i class="fa fa-check"></i><b>12.4</b> API 返回值</a></li>
+<li class="chapter" data-level="12.5" data-path="ch-misc.html"><a href="ch-misc.html#键值存储"><i class="fa fa-check"></i><b>12.5</b> 键值存储</a></li>
+<li class="chapter" data-level="12.6" data-path="ch-misc.html"><a href="ch-misc.html#ch98-le-dev-db"><i class="fa fa-check"></i><b>12.6</b> 设备数据库</a></li>
+<li class="chapter" data-level="12.7" data-path="ch-misc.html"><a href="ch-misc.html#ch-misc-synced-api"><i class="fa fa-check"></i><b>12.7</b> 同步版 API</a>
+<ul>
+<li class="chapter" data-level="12.7.1" data-path="ch-misc.html"><a href="ch-misc.html#gap-同步-api"><i class="fa fa-check"></i><b>12.7.1</b> GAP 同步 API</a></li>
+<li class="chapter" data-level="12.7.2" data-path="ch-misc.html"><a href="ch-misc.html#gatt-客户端同步-api"><i class="fa fa-check"></i><b>12.7.2</b> GATT 客户端同步 API</a></li>
+</ul></li>
+<li class="chapter" data-level="12.8" data-path="ch-misc.html"><a href="ch-misc.html#ch-misc-thread-safe-api"><i class="fa fa-check"></i><b>12.8</b> 线程安全的 API</a></li>
 </ul></li>
 <li class="chapter" data-level="13" data-path="ch-cap.html"><a href="ch-cap.html"><i class="fa fa-check"></i><b>13</b> 协议栈能力</a>
 <ul>
@@ -393,14 +398,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>关于每个连接间隔内连接事件长度的提示信息（<code>min_ce_len</code> 和 <code>max_ce_len</code>）不会被传递给从端。Controller 可以借助这个信息更好地调度多种任务。
 从端 App 可调用 LL API <code>ll_hint_on_ce_len</code><a href="#fn22" class="footnote-ref" id="fnref22"><sup>22</sup></a> 将提示信息告知 Controller。</p>
 <p>收到对应的 <code>HCI_EVENT_COMMAND_STATUS</code> 事件，并且 <code>status</code> 为 <span class="math inline">\(0\)</span>，标志着开始执行连接建立任务。
-<code>HCI_SUBEVENT_LE_ENHANCED_CONNECTION_COMPLETE</code> 事件标志着连接建立任务的结束。</p>
+<code>HCI_SUBEVENT_LE_ENHANCED_CONNECTION_COMPLETE</code> 事件标志着连接建立任务的结束。也就是说每次调用这个函数将到达 3 个互斥的终点：</p>
+<ol style="list-style-type: decimal">
+<li>函数返回值非 <span class="math inline">\(0\)</span>；</li>
+<li>上报 <code>HCI_EVENT_COMMAND_STATUS</code> 事件，并且 <code>status</code> 非 <span class="math inline">\(0\)</span>；</li>
+<li>上报 <code>HCI_SUBEVENT_LE_ENHANCED_CONNECTION_COMPLETE</code> 事件。</li>
+</ol>
+<p>在上一次调用到达终点 3 前，再次调用 <code>gap_ext_create_connection</code> 会到达终点 1 或 2。</p>
 <div class="rmdcaution">
 <p>
 复杂应用（如多种蓝牙任务并发）中，务必响应
-<code>HCI_EVENT_COMMAND_STATUS</code> 事件检查建立连接命令是否出错。
-有时，Controller 会因为无法调度任务而上报
-<code>STATUS=0x07</code>。对于这种情况，建议 App
-延后一段时间再重新尝试建立连接。
+<code>HCI_EVENT_COMMAND_STATUS</code>
+事件检查建立连接命令是否出错（即到达终点 2）。 有时，Controller
+会因为无法调度任务而上报 <code>status</code> 为 <span class="math inline"><span class="math inline">\(0x07\)</span></span> 的
+<code>HCI_SUBEVENT_LE_ENHANCED_CONNECTION_COMPLETE</code> 事件。
+对于这种情况，建议 App 延后一段时间再重新尝试建立连接。
 </p>
 </div>
 </div>

@@ -227,7 +227,7 @@ function buildUpdatePlan(fullUpdate) {
     if (plan.length < 1) return plan;
 
     const flash = flashInfo();
-    var top = flash.base + flash.total_size;
+    var top = parseInt($('#ota_flash_top').val());
     for (var i in plan) {
         const padding = 4 - (plan[i].data.length & 0x3);
         if (padding != 4) {
@@ -727,6 +727,12 @@ function setup_drop_zone(id, drop_handler)
     dropZone.addEventListener('drop', drop_handler, false);
 }
 
+function update_flash_top() {
+    const flash = flashInfo();
+    var top = flash.base + flash.total_size;
+    $('#ota_flash_top').val('0x' + top.toString(16).padStart(8,"0"));
+}
+
 async function appStart() {
     $('#running_status').hide();
 
@@ -782,10 +788,14 @@ async function appStart() {
         await dumpKey(sk);
     });
 
+    $('#series_id').change(update_flash_top);
+    update_flash_top();
+
     await dumpKey(DEF_SK);
 
     //startRunning();
     //showProgress(msg.sel_dev, -1);
+    stopRunning();
     return;
 }
 

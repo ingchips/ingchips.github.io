@@ -795,7 +795,6 @@ async function appStart() {
 
     //startRunning();
     //showProgress(msg.sel_dev, -1);
-    stopRunning();
     return;
 }
 

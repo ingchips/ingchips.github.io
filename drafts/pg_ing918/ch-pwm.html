@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>8 脉宽调制发生器（PWM） | ING918XX 系列芯片外设开发者手册</title>
   <meta name="description" content="ING918XX 系列芯片开发者手册." />
-  <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.32 and GitBook 2.6.7" />
 
   <meta property="og:title" content="8 脉宽调制发生器（PWM） | ING918XX 系列芯片外设开发者手册" />
   <meta property="og:type" content="book" />
@@ -48,25 +48,24 @@
 
 
 
-<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
 <link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
 <link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
 <style type="text/css">
-code.sourceCode > span { display: inline-block; line-height: 1.25; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-code.sourceCode > span:empty { height: 1.2em; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -86,13 +85,13 @@ pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-le
 div.sourceCode
   {   }
 @media screen {
-code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -105,7 +104,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -137,30 +136,38 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> 版本历史</a></li>
-<li class="chapter" data-level="2" data-path="ch-overview.html"><a href="ch-overview.html"><i class="fa fa-check"></i><b>2</b> 概览</a><ul>
+<li class="chapter" data-level="2" data-path="ch-overview.html"><a href="ch-overview.html"><i class="fa fa-check"></i><b>2</b> 概览</a>
+<ul>
 <li class="chapter" data-level="2.1" data-path="ch-overview.html"><a href="ch-overview.html#缩略语及术语"><i class="fa fa-check"></i><b>2.1</b> 缩略语及术语</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="ch-adc.html"><a href="ch-adc.html"><i class="fa fa-check"></i><b>3</b> 模数转换器（ADC）</a><ul>
-<li class="chapter" data-level="3.1" data-path="ch-adc.html"><a href="ch-adc.html#adc-工作模式"><i class="fa fa-check"></i><b>3.1</b> ADC 工作模式</a><ul>
+<li class="chapter" data-level="3" data-path="ch-adc.html"><a href="ch-adc.html"><i class="fa fa-check"></i><b>3</b> 模数转换器（ADC）</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="ch-adc.html"><a href="ch-adc.html#adc-工作模式"><i class="fa fa-check"></i><b>3.1</b> ADC 工作模式</a>
+<ul>
 <li class="chapter" data-level="3.1.1" data-path="ch-adc.html"><a href="ch-adc.html#单次模式adc_mode_single"><i class="fa fa-check"></i><b>3.1.1</b> 单次模式：ADC_MODE_SINGLE</a></li>
 <li class="chapter" data-level="3.1.2" data-path="ch-adc.html"><a href="ch-adc.html#循环模式adc_mode_loop"><i class="fa fa-check"></i><b>3.1.2</b> 循环模式：ADC_MODE_LOOP</a></li>
 </ul></li>
 <li class="chapter" data-level="3.2" data-path="ch-adc.html"><a href="ch-adc.html#adc-采样数率"><i class="fa fa-check"></i><b>3.2</b> ADC 采样数率</a></li>
-<li class="chapter" data-level="3.3" data-path="ch-adc.html"><a href="ch-adc.html#adc-校准"><i class="fa fa-check"></i><b>3.3</b> ADC 校准</a><ul>
+<li class="chapter" data-level="3.3" data-path="ch-adc.html"><a href="ch-adc.html#adc-校准"><i class="fa fa-check"></i><b>3.3</b> ADC 校准</a>
+<ul>
 <li class="chapter" data-level="3.3.1" data-path="ch-adc.html"><a href="ch-adc.html#adc-校准预处理"><i class="fa fa-check"></i><b>3.3.1</b> ADC 校准预处理</a></li>
 <li class="chapter" data-level="3.3.2" data-path="ch-adc.html"><a href="ch-adc.html#adc-读取校准后的值"><i class="fa fa-check"></i><b>3.3.2</b> ADC 读取校准后的值</a></li>
 </ul></li>
 <li class="chapter" data-level="3.4" data-path="ch-adc.html"><a href="ch-adc.html#adc-综合示例"><i class="fa fa-check"></i><b>3.4</b> ADC 综合示例</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="ch-eflash.html"><a href="ch-eflash.html"><i class="fa fa-check"></i><b>4</b> 嵌入式闪存（Embedded Flash）</a><ul>
-<li class="chapter" data-level="4.1" data-path="ch-eflash.html"><a href="ch-eflash.html#eflash-写入数据"><i class="fa fa-check"></i><b>4.1</b> eFlash 写入数据</a><ul>
+<li class="chapter" data-level="4" data-path="ch-eflash.html"><a href="ch-eflash.html"><i class="fa fa-check"></i><b>4</b> 嵌入式闪存（Embedded Flash）</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="ch-eflash.html"><a href="ch-eflash.html#eflash-写入数据"><i class="fa fa-check"></i><b>4.1</b> eFlash 写入数据</a>
+<ul>
 <li class="chapter" data-level="4.1.1" data-path="ch-eflash.html"><a href="ch-eflash.html#eflash-先擦除然后写入数据"><i class="fa fa-check"></i><b>4.1.1</b> eFlash 先擦除然后写入数据</a></li>
 <li class="chapter" data-level="4.1.2" data-path="ch-eflash.html"><a href="ch-eflash.html#eflash-不擦除直接写入数据"><i class="fa fa-check"></i><b>4.1.2</b> eFlash 不擦除直接写入数据</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="ch-gpio.html"><a href="ch-gpio.html"><i class="fa fa-check"></i><b>5</b> 通用输入输出（GPIO）</a><ul>
+<li class="chapter" data-level="5" data-path="ch-gpio.html"><a href="ch-gpio.html"><i class="fa fa-check"></i><b>5</b> 通用输入输出（GPIO）</a>
+<ul>
 <li class="chapter" data-level="5.1" data-path="ch-gpio.html"><a href="ch-gpio.html#功能概述"><i class="fa fa-check"></i><b>5.1</b> 功能概述</a></li>
-<li class="chapter" data-level="5.2" data-path="ch-gpio.html"><a href="ch-gpio.html#使用说明"><i class="fa fa-check"></i><b>5.2</b> 使用说明</a><ul>
+<li class="chapter" data-level="5.2" data-path="ch-gpio.html"><a href="ch-gpio.html#使用说明"><i class="fa fa-check"></i><b>5.2</b> 使用说明</a>
+<ul>
 <li class="chapter" data-level="5.2.1" data-path="ch-gpio.html"><a href="ch-gpio.html#设置-io-方向"><i class="fa fa-check"></i><b>5.2.1</b> 设置 IO 方向</a></li>
 <li class="chapter" data-level="5.2.2" data-path="ch-gpio.html"><a href="ch-gpio.html#读取输入"><i class="fa fa-check"></i><b>5.2.2</b> 读取输入</a></li>
 <li class="chapter" data-level="5.2.3" data-path="ch-gpio.html"><a href="ch-gpio.html#设置输出"><i class="fa fa-check"></i><b>5.2.3</b> 设置输出</a></li>
@@ -168,16 +175,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.2.5" data-path="ch-gpio.html"><a href="ch-gpio.html#处理中断状态"><i class="fa fa-check"></i><b>5.2.5</b> 处理中断状态</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="ch-i2c.html"><a href="ch-i2c.html"><i class="fa fa-check"></i><b>6</b> 集成电路间总线（I2C）</a><ul>
+<li class="chapter" data-level="6" data-path="ch-i2c.html"><a href="ch-i2c.html"><i class="fa fa-check"></i><b>6</b> 集成电路间总线（I2C）</a>
+<ul>
 <li class="chapter" data-level="6.1" data-path="ch-i2c.html"><a href="ch-i2c.html#功能概述-1"><i class="fa fa-check"></i><b>6.1</b> 功能概述</a></li>
 <li class="chapter" data-level="6.2" data-path="ch-i2c.html"><a href="ch-i2c.html#i2c使用说明"><i class="fa fa-check"></i><b>6.2</b> I2C使用说明</a></li>
-<li class="chapter" data-level="6.3" data-path="ch-i2c.html"><a href="ch-i2c.html#使用方法"><i class="fa fa-check"></i><b>6.3</b> 使用方法</a><ul>
+<li class="chapter" data-level="6.3" data-path="ch-i2c.html"><a href="ch-i2c.html#使用方法"><i class="fa fa-check"></i><b>6.3</b> 使用方法</a>
+<ul>
 <li class="chapter" data-level="6.3.1" data-path="ch-i2c.html"><a href="ch-i2c.html#master读些采用queue模式"><i class="fa fa-check"></i><b>6.3.1</b> Master读些，采用QUEUE模式</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html"><i class="fa fa-check"></i><b>7</b> 管脚管理（PINCTRL）</a><ul>
+<li class="chapter" data-level="7" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html"><i class="fa fa-check"></i><b>7</b> 管脚管理（PINCTRL）</a>
+<ul>
 <li class="chapter" data-level="7.1" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#功能概述-2"><i class="fa fa-check"></i><b>7.1</b> 功能概述</a></li>
-<li class="chapter" data-level="7.2" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#使用说明-1"><i class="fa fa-check"></i><b>7.2</b> 使用说明</a><ul>
+<li class="chapter" data-level="7.2" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#使用说明-1"><i class="fa fa-check"></i><b>7.2</b> 使用说明</a>
+<ul>
 <li class="chapter" data-level="7.2.1" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#为外设配置-io-管脚"><i class="fa fa-check"></i><b>7.2.1</b> 为外设配置 IO 管脚</a></li>
 <li class="chapter" data-level="7.2.2" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#配置下拉下拉"><i class="fa fa-check"></i><b>7.2.2</b> 配置下拉、下拉</a></li>
 <li class="chapter" data-level="7.2.3" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#配置驱动能力"><i class="fa fa-check"></i><b>7.2.3</b> 配置驱动能力</a></li>
@@ -188,8 +199,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.2.8" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#io口配置为i2c参考代码"><i class="fa fa-check"></i><b>7.2.8</b> IO口配置为I2C参考代码</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="8" data-path="ch-pwm.html"><a href="ch-pwm.html"><i class="fa fa-check"></i><b>8</b> 脉宽调制发生器（PWM）</a><ul>
-<li class="chapter" data-level="8.1" data-path="ch-pwm.html"><a href="ch-pwm.html#pwm-工作模式"><i class="fa fa-check"></i><b>8.1</b> PWM 工作模式</a><ul>
+<li class="chapter" data-level="8" data-path="ch-pwm.html"><a href="ch-pwm.html"><i class="fa fa-check"></i><b>8</b> 脉宽调制发生器（PWM）</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="ch-pwm.html"><a href="ch-pwm.html#pwm-工作模式"><i class="fa fa-check"></i><b>8.1</b> PWM 工作模式</a>
+<ul>
 <li class="chapter" data-level="8.1.1" data-path="ch-pwm.html"><a href="ch-pwm.html#最简单的模式up_without_died_zone"><i class="fa fa-check"></i><b>8.1.1</b> 最简单的模式：UP_WITHOUT_DIED_ZONE</a></li>
 <li class="chapter" data-level="8.1.2" data-path="ch-pwm.html"><a href="ch-pwm.html#up_with_died_zone"><i class="fa fa-check"></i><b>8.1.2</b> UP_WITH_DIED_ZONE</a></li>
 <li class="chapter" data-level="8.1.3" data-path="ch-pwm.html"><a href="ch-pwm.html#updown_without_died_zone"><i class="fa fa-check"></i><b>8.1.3</b> UPDOWN_WITHOUT_DIED_ZONE</a></li>
@@ -197,7 +210,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="8.1.5" data-path="ch-pwm.html"><a href="ch-pwm.html#single_without_died_zone"><i class="fa fa-check"></i><b>8.1.5</b> SINGLE_WITHOUT_DIED_ZONE</a></li>
 <li class="chapter" data-level="8.1.6" data-path="ch-pwm.html"><a href="ch-pwm.html#输出控制"><i class="fa fa-check"></i><b>8.1.6</b> 输出控制</a></li>
 </ul></li>
-<li class="chapter" data-level="8.2" data-path="ch-pwm.html"><a href="ch-pwm.html#pwm-使用说明"><i class="fa fa-check"></i><b>8.2</b> PWM 使用说明</a><ul>
+<li class="chapter" data-level="8.2" data-path="ch-pwm.html"><a href="ch-pwm.html#pwm-使用说明"><i class="fa fa-check"></i><b>8.2</b> PWM 使用说明</a>
+<ul>
 <li class="chapter" data-level="8.2.1" data-path="ch-pwm.html"><a href="ch-pwm.html#启动与停止"><i class="fa fa-check"></i><b>8.2.1</b> 启动与停止</a></li>
 <li class="chapter" data-level="8.2.2" data-path="ch-pwm.html"><a href="ch-pwm.html#配置工作模式"><i class="fa fa-check"></i><b>8.2.2</b> 配置工作模式</a></li>
 <li class="chapter" data-level="8.2.3" data-path="ch-pwm.html"><a href="ch-pwm.html#配置门限"><i class="fa fa-check"></i><b>8.2.3</b> 配置门限</a></li>
@@ -205,9 +219,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="8.2.5" data-path="ch-pwm.html"><a href="ch-pwm.html#综合示例"><i class="fa fa-check"></i><b>8.2.5</b> 综合示例</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="9" data-path="ch-rtc.html"><a href="ch-rtc.html"><i class="fa fa-check"></i><b>9</b> 实时时钟（RTC）</a><ul>
+<li class="chapter" data-level="9" data-path="ch-rtc.html"><a href="ch-rtc.html"><i class="fa fa-check"></i><b>9</b> 实时时钟（RTC）</a>
+<ul>
 <li class="chapter" data-level="9.1" data-path="ch-rtc.html"><a href="ch-rtc.html#功能概述-3"><i class="fa fa-check"></i><b>9.1</b> 功能概述</a></li>
-<li class="chapter" data-level="9.2" data-path="ch-rtc.html"><a href="ch-rtc.html#接口说明"><i class="fa fa-check"></i><b>9.2</b> 接口说明</a><ul>
+<li class="chapter" data-level="9.2" data-path="ch-rtc.html"><a href="ch-rtc.html#接口说明"><i class="fa fa-check"></i><b>9.2</b> 接口说明</a>
+<ul>
 <li class="chapter" data-level="9.2.1" data-path="ch-rtc.html"><a href="ch-rtc.html#rtc使能禁止"><i class="fa fa-check"></i><b>9.2.1</b> RTC使能/禁止</a></li>
 <li class="chapter" data-level="9.2.2" data-path="ch-rtc.html"><a href="ch-rtc.html#获取rtc当前值"><i class="fa fa-check"></i><b>9.2.2</b> 获取RTC当前值</a></li>
 <li class="chapter" data-level="9.2.3" data-path="ch-rtc.html"><a href="ch-rtc.html#设置中断的计数值"><i class="fa fa-check"></i><b>9.2.3</b> 设置中断的计数值</a></li>
@@ -215,32 +231,41 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="9.3" data-path="ch-rtc.html"><a href="ch-rtc.html#rtc中断使用流程"><i class="fa fa-check"></i><b>9.3</b> RTC中断使用流程</a></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="ch-spi.html"><a href="ch-spi.html"><i class="fa fa-check"></i><b>10</b> SPI功能概述</a><ul>
+<li class="chapter" data-level="10" data-path="ch-spi.html"><a href="ch-spi.html"><i class="fa fa-check"></i><b>10</b> SPI功能概述</a>
+<ul>
 <li class="chapter" data-level="10.1" data-path="ch-spi.html"><a href="ch-spi.html#spi使用说明"><i class="fa fa-check"></i><b>10.1</b> SPI使用说明</a></li>
-<li class="chapter" data-level="10.2" data-path="ch-spi.html"><a href="ch-spi.html#场景1只读只写"><i class="fa fa-check"></i><b>10.2</b> 场景1：只读只写</a><ul>
+<li class="chapter" data-level="10.2" data-path="ch-spi.html"><a href="ch-spi.html#场景1只读只写"><i class="fa fa-check"></i><b>10.2</b> 场景1：只读只写</a>
+<ul>
 <li class="chapter" data-level="10.2.1" data-path="ch-spi.html"><a href="ch-spi.html#spi主配置"><i class="fa fa-check"></i><b>10.2.1</b> SPI主配置</a></li>
 </ul></li>
-<li class="chapter" data-level="10.3" data-path="ch-spi.html"><a href="ch-spi.html#场景2同时读写不带dma"><i class="fa fa-check"></i><b>10.3</b> 场景2：同时读写不带DMA</a><ul>
+<li class="chapter" data-level="10.3" data-path="ch-spi.html"><a href="ch-spi.html#场景2同时读写"><i class="fa fa-check"></i><b>10.3</b> 场景2：同时读写</a>
+<ul>
 <li class="chapter" data-level="10.3.1" data-path="ch-spi.html"><a href="ch-spi.html#spi主配置-1"><i class="fa fa-check"></i><b>10.3.1</b> SPI主配置</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="11" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html"><i class="fa fa-check"></i><b>11</b> 系统控制（SYSCTRL）</a><ul>
-<li class="chapter" data-level="11.1" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#功能概述-4"><i class="fa fa-check"></i><b>11.1</b> 功能概述</a><ul>
+<li class="chapter" data-level="11" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html"><i class="fa fa-check"></i><b>11</b> 系统控制（SYSCTRL）</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#功能概述-4"><i class="fa fa-check"></i><b>11.1</b> 功能概述</a>
+<ul>
 <li class="chapter" data-level="11.1.1" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#外设标识"><i class="fa fa-check"></i><b>11.1.1</b> 外设标识</a></li>
 <li class="chapter" data-level="11.1.2" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#时钟树"><i class="fa fa-check"></i><b>11.1.2</b> 时钟树</a></li>
 </ul></li>
-<li class="chapter" data-level="11.2" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#使用说明-2"><i class="fa fa-check"></i><b>11.2</b> 使用说明</a><ul>
+<li class="chapter" data-level="11.2" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#使用说明-2"><i class="fa fa-check"></i><b>11.2</b> 使用说明</a>
+<ul>
 <li class="chapter" data-level="11.2.1" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#外设复位"><i class="fa fa-check"></i><b>11.2.1</b> 外设复位</a></li>
 <li class="chapter" data-level="11.2.2" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#时钟门控"><i class="fa fa-check"></i><b>11.2.2</b> 时钟门控</a></li>
 <li class="chapter" data-level="11.2.3" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#时钟配置"><i class="fa fa-check"></i><b>11.2.3</b> 时钟配置</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="12" data-path="ch-timer.html"><a href="ch-timer.html"><i class="fa fa-check"></i><b>12</b> 定时器和看门狗</a><ul>
-<li class="chapter" data-level="12.1" data-path="ch-timer.html"><a href="ch-timer.html#功能概述-5"><i class="fa fa-check"></i><b>12.1</b> 功能概述</a><ul>
+<li class="chapter" data-level="12" data-path="ch-timer.html"><a href="ch-timer.html"><i class="fa fa-check"></i><b>12</b> 定时器和看门狗</a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="ch-timer.html"><a href="ch-timer.html#功能概述-5"><i class="fa fa-check"></i><b>12.1</b> 功能概述</a>
+<ul>
 <li class="chapter" data-level="12.1.1" data-path="ch-timer.html"><a href="ch-timer.html#计时器功能"><i class="fa fa-check"></i><b>12.1.1</b> 计时器功能</a></li>
 <li class="chapter" data-level="12.1.2" data-path="ch-timer.html"><a href="ch-timer.html#watchdog的功能"><i class="fa fa-check"></i><b>12.1.2</b> WATCHDOG的功能</a></li>
 </ul></li>
-<li class="chapter" data-level="12.2" data-path="ch-timer.html"><a href="ch-timer.html#timer使用说明"><i class="fa fa-check"></i><b>12.2</b> TIMER使用说明</a><ul>
+<li class="chapter" data-level="12.2" data-path="ch-timer.html"><a href="ch-timer.html#timer使用说明"><i class="fa fa-check"></i><b>12.2</b> TIMER使用说明</a>
+<ul>
 <li class="chapter" data-level="12.2.1" data-path="ch-timer.html"><a href="ch-timer.html#获取timer计数值"><i class="fa fa-check"></i><b>12.2.1</b> 获取Timer计数值</a></li>
 <li class="chapter" data-level="12.2.2" data-path="ch-timer.html"><a href="ch-timer.html#timer计数值清零"><i class="fa fa-check"></i><b>12.2.2</b> TIMER计数值清零</a></li>
 <li class="chapter" data-level="12.2.3" data-path="ch-timer.html"><a href="ch-timer.html#设置timer的比较值"><i class="fa fa-check"></i><b>12.2.3</b> 设置TIMER的比较值</a></li>
@@ -254,15 +279,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="12.2.11" data-path="ch-timer.html"><a href="ch-timer.html#获得timer的中断状态"><i class="fa fa-check"></i><b>12.2.11</b> 获得TIMER的中断状态</a></li>
 </ul></li>
 <li class="chapter" data-level="12.3" data-path="ch-timer.html"><a href="ch-timer.html#timer中断使用流程"><i class="fa fa-check"></i><b>12.3</b> TIMER中断使用流程</a></li>
-<li class="chapter" data-level="12.4" data-path="ch-timer.html"><a href="ch-timer.html#watchdog使用说明"><i class="fa fa-check"></i><b>12.4</b> Watchdog使用说明</a><ul>
+<li class="chapter" data-level="12.4" data-path="ch-timer.html"><a href="ch-timer.html#watchdog使用说明"><i class="fa fa-check"></i><b>12.4</b> Watchdog使用说明</a>
+<ul>
 <li class="chapter" data-level="12.4.1" data-path="ch-timer.html"><a href="ch-timer.html#使能看门狗"><i class="fa fa-check"></i><b>12.4.1</b> 使能看门狗</a></li>
 <li class="chapter" data-level="12.4.2" data-path="ch-timer.html"><a href="ch-timer.html#停用看门狗"><i class="fa fa-check"></i><b>12.4.2</b> 停用看门狗</a></li>
 <li class="chapter" data-level="12.4.3" data-path="ch-timer.html"><a href="ch-timer.html#喂狗"><i class="fa fa-check"></i><b>12.4.3</b> 喂狗</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="13" data-path="ch-uart.html"><a href="ch-uart.html"><i class="fa fa-check"></i><b>13</b> 通用异步收发传输器（UART）</a><ul>
+<li class="chapter" data-level="13" data-path="ch-uart.html"><a href="ch-uart.html"><i class="fa fa-check"></i><b>13</b> 通用异步收发传输器（UART）</a>
+<ul>
 <li class="chapter" data-level="13.1" data-path="ch-uart.html"><a href="ch-uart.html#功能概述-6"><i class="fa fa-check"></i><b>13.1</b> 功能概述</a></li>
-<li class="chapter" data-level="13.2" data-path="ch-uart.html"><a href="ch-uart.html#使用说明-3"><i class="fa fa-check"></i><b>13.2</b> 使用说明</a><ul>
+<li class="chapter" data-level="13.2" data-path="ch-uart.html"><a href="ch-uart.html#使用说明-3"><i class="fa fa-check"></i><b>13.2</b> 使用说明</a>
+<ul>
 <li class="chapter" data-level="13.2.1" data-path="ch-uart.html"><a href="ch-uart.html#设置波特率"><i class="fa fa-check"></i><b>13.2.1</b> 设置波特率</a></li>
 <li class="chapter" data-level="13.2.2" data-path="ch-uart.html"><a href="ch-uart.html#获取波特率"><i class="fa fa-check"></i><b>13.2.2</b> 获取波特率</a></li>
 <li class="chapter" data-level="13.2.3" data-path="ch-uart.html"><a href="ch-uart.html#接收错误查询"><i class="fa fa-check"></i><b>13.2.3</b> 接收错误查询</a></li>
@@ -299,7 +327,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="ch-pwm" class="section level1 hasAnchor">
+<div id="ch-pwm" class="section level1 hasAnchor" number="8">
 <h1><span class="header-section-number">8</span> 脉宽调制发生器（PWM）<a href="ch-pwm.html#ch-pwm" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>PWM 模块实现脉冲宽度调制信号的产生，控制 LED 等外部器件。通过 APB 总线读写
 寄存器来实现整个过程。ING918x 包括 6 个 PWM 模块，每个模块包含 2 个通道，因
@@ -311,31 +339,31 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>寄存器中定义最多四个占空比序列</li>
 <li>可以使用多种模式：命令模式、单步模式、对称模式、空白区模式</li>
 </ul>
-<div id="pwm-工作模式" class="section level2 hasAnchor">
+<div id="pwm-工作模式" class="section level2 hasAnchor" number="8.1">
 <h2><span class="header-section-number">8.1</span> PWM 工作模式<a href="ch-pwm.html#pwm-工作模式" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>PWM 使用的时钟频率可配置，请参考 <a href="ch-sysctrl.html#ch-sysctrl">SYSCTRL</a>。</p>
 <p>每个 PWM 通道支持以下多种工作模式：</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb35-1"><a href="ch-pwm.html#cb35-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb35-2"><a href="ch-pwm.html#cb35-2"></a>{</span>
-<span id="cb35-3"><a href="ch-pwm.html#cb35-3"></a>    ..._UP_WITHOUT_DIED_ZONE          = ...,</span>
-<span id="cb35-4"><a href="ch-pwm.html#cb35-4"></a>    ..._UP_WITH_DIED_ZONE             = ...,</span>
-<span id="cb35-5"><a href="ch-pwm.html#cb35-5"></a>    ..._UPDOWN_WITHOUT_DIED_ZONE      = ...,</span>
-<span id="cb35-6"><a href="ch-pwm.html#cb35-6"></a>    ..._UPDOWN_WITH_DIED_ZONE         = ...,</span>
-<span id="cb35-7"><a href="ch-pwm.html#cb35-7"></a>    ..._SINGLE_WITHOUT_DIED_ZONE      = ...,</span>
-<span id="cb35-8"><a href="ch-pwm.html#cb35-8"></a>} PWM_WorkMode_t;</span></code></pre></div>
-<div id="最简单的模式up_without_died_zone" class="section level3 hasAnchor">
+<div class="sourceCode" id="cb35"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb35-1"><a href="ch-pwm.html#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
+<span id="cb35-2"><a href="ch-pwm.html#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb35-3"><a href="ch-pwm.html#cb35-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">...</span>_UP_WITHOUT_DIED_ZONE          <span class="op">=</span> <span class="op">...,</span></span>
+<span id="cb35-4"><a href="ch-pwm.html#cb35-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">...</span>_UP_WITH_DIED_ZONE             <span class="op">=</span> <span class="op">...,</span></span>
+<span id="cb35-5"><a href="ch-pwm.html#cb35-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">...</span>_UPDOWN_WITHOUT_DIED_ZONE      <span class="op">=</span> <span class="op">...,</span></span>
+<span id="cb35-6"><a href="ch-pwm.html#cb35-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">...</span>_UPDOWN_WITH_DIED_ZONE         <span class="op">=</span> <span class="op">...,</span></span>
+<span id="cb35-7"><a href="ch-pwm.html#cb35-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">...</span>_SINGLE_WITHOUT_DIED_ZONE      <span class="op">=</span> <span class="op">...,</span></span>
+<span id="cb35-8"><a href="ch-pwm.html#cb35-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> PWM_WorkMode_t<span class="op">;</span></span></code></pre></div>
+<div id="最简单的模式up_without_died_zone" class="section level3 hasAnchor" number="8.1.1">
 <h3><span class="header-section-number">8.1.1</span> 最简单的模式：UP_WITHOUT_DIED_ZONE<a href="ch-pwm.html#最简单的模式up_without_died_zone" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>此模式需要配置两个门限：计数器回零门限 PERA_TH、高门限 HIGH_TH，HIGH_TH
 必须小于 HIGH_TH。以伪代码描述 A、B 输出如下：</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb36-1"><a href="ch-pwm.html#cb36-1"></a>cnt = <span class="dv">0</span>;</span>
-<span id="cb36-2"><a href="ch-pwm.html#cb36-2"></a>on_clock_rising_edge()</span>
-<span id="cb36-3"><a href="ch-pwm.html#cb36-3"></a>{</span>
-<span id="cb36-4"><a href="ch-pwm.html#cb36-4"></a>    cnt = cnt &lt; PERA_TH ? cnt + <span class="dv">1</span> : <span class="dv">0</span>;</span>
-<span id="cb36-5"><a href="ch-pwm.html#cb36-5"></a>    A = HIGH_TH &lt;= cnt;</span>
-<span id="cb36-6"><a href="ch-pwm.html#cb36-6"></a>    B = !A;</span>
-<span id="cb36-7"><a href="ch-pwm.html#cb36-7"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb36-1"><a href="ch-pwm.html#cb36-1" aria-hidden="true" tabindex="-1"></a>cnt <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb36-2"><a href="ch-pwm.html#cb36-2" aria-hidden="true" tabindex="-1"></a>on_clock_rising_edge<span class="op">()</span></span>
+<span id="cb36-3"><a href="ch-pwm.html#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb36-4"><a href="ch-pwm.html#cb36-4" aria-hidden="true" tabindex="-1"></a>    cnt <span class="op">=</span> cnt <span class="op">&lt;</span> PERA_TH <span class="op">?</span> cnt <span class="op">+</span> <span class="dv">1</span> <span class="op">:</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb36-5"><a href="ch-pwm.html#cb36-5" aria-hidden="true" tabindex="-1"></a>    A <span class="op">=</span> HIGH_TH <span class="op">&lt;=</span> cnt<span class="op">;</span></span>
+<span id="cb36-6"><a href="ch-pwm.html#cb36-6" aria-hidden="true" tabindex="-1"></a>    B <span class="op">=</span> <span class="op">!</span>A<span class="op">;</span></span>
+<span id="cb36-7"><a href="ch-pwm.html#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </div>
-<div id="up_with_died_zone" class="section level3 hasAnchor">
+<div id="up_with_died_zone" class="section level3 hasAnchor" number="8.1.2">
 <h3><span class="header-section-number">8.1.2</span> UP_WITH_DIED_ZONE<a href="ch-pwm.html#up_with_died_zone" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>与 UP_WITHOUT_DIED_ZONE 相比，此模式需要一个新的死区门限 DZONE_TH，DZONE_TH
 必须小于 HIGH_TH。以伪代码描述 A、B 输出如下：</p>
@@ -347,123 +375,123 @@ A = HIGH_TH + DZONE_TH &lt;= cnt;
 B = DZONE_TH &lt;= cnt &lt; HIGH_TH);
 }</p>
 </div>
-<div id="updown_without_died_zone" class="section level3 hasAnchor">
+<div id="updown_without_died_zone" class="section level3 hasAnchor" number="8.1.3">
 <h3><span class="header-section-number">8.1.3</span> UPDOWN_WITHOUT_DIED_ZONE<a href="ch-pwm.html#updown_without_died_zone" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>此模式需要的门限参数与 UP_WITHOUT_DIED_ZONE 相同。以伪代码描述 A、B 输出如下：</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb37-1"><a href="ch-pwm.html#cb37-1"></a>cnt = <span class="dv">0</span>;</span>
-<span id="cb37-2"><a href="ch-pwm.html#cb37-2"></a>on_clock_rising_edge()</span>
-<span id="cb37-3"><a href="ch-pwm.html#cb37-3"></a>{</span>
-<span id="cb37-4"><a href="ch-pwm.html#cb37-4"></a>    cnt = cnt &lt; <span class="dv">2</span> * PERA_TH ? cnt + <span class="dv">1</span> : <span class="dv">0</span>;</span>
-<span id="cb37-5"><a href="ch-pwm.html#cb37-5"></a>    A = PERA_TH - HIGH_TH &lt;= cnt &lt;= PERA_TH + HIGH_TH;</span>
-<span id="cb37-6"><a href="ch-pwm.html#cb37-6"></a>    B = !A;</span>
-<span id="cb37-7"><a href="ch-pwm.html#cb37-7"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb37-1"><a href="ch-pwm.html#cb37-1" aria-hidden="true" tabindex="-1"></a>cnt <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb37-2"><a href="ch-pwm.html#cb37-2" aria-hidden="true" tabindex="-1"></a>on_clock_rising_edge<span class="op">()</span></span>
+<span id="cb37-3"><a href="ch-pwm.html#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb37-4"><a href="ch-pwm.html#cb37-4" aria-hidden="true" tabindex="-1"></a>    cnt <span class="op">=</span> cnt <span class="op">&lt;</span> <span class="dv">2</span> <span class="op">*</span> PERA_TH <span class="op">?</span> cnt <span class="op">+</span> <span class="dv">1</span> <span class="op">:</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb37-5"><a href="ch-pwm.html#cb37-5" aria-hidden="true" tabindex="-1"></a>    A <span class="op">=</span> PERA_TH <span class="op">-</span> HIGH_TH <span class="op">&lt;=</span> cnt <span class="op">&lt;=</span> PERA_TH <span class="op">+</span> HIGH_TH<span class="op">;</span></span>
+<span id="cb37-6"><a href="ch-pwm.html#cb37-6" aria-hidden="true" tabindex="-1"></a>    B <span class="op">=</span> <span class="op">!</span>A<span class="op">;</span></span>
+<span id="cb37-7"><a href="ch-pwm.html#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </div>
-<div id="updown_with_died_zone" class="section level3 hasAnchor">
+<div id="updown_with_died_zone" class="section level3 hasAnchor" number="8.1.4">
 <h3><span class="header-section-number">8.1.4</span> UPDOWN_WITH_DIED_ZONE<a href="ch-pwm.html#updown_with_died_zone" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>与 UP_WITHOUT_DIED_ZONE 相比，此模式需要一个新的死区门限 DZONE_TH。
 以伪代码描述 A、B 输出如下：</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb38-1"><a href="ch-pwm.html#cb38-1"></a>cnt = <span class="dv">0</span>;</span>
-<span id="cb38-2"><a href="ch-pwm.html#cb38-2"></a>on_clock_rising_edge()</span>
-<span id="cb38-3"><a href="ch-pwm.html#cb38-3"></a>{</span>
-<span id="cb38-4"><a href="ch-pwm.html#cb38-4"></a>    cnt = cnt &lt; <span class="dv">2</span> * PERA_TH ? cnt + <span class="dv">1</span> : <span class="dv">0</span>;</span>
-<span id="cb38-5"><a href="ch-pwm.html#cb38-5"></a>    A = PERA_TH - HIGH_TH + DZONE_TH &lt;= cnt &lt;= PERA_TH + HIGH_TH;</span>
-<span id="cb38-6"><a href="ch-pwm.html#cb38-6"></a>    B = (cnt &lt; PERA_TH - HIGH_TH) || (cnt &gt; PERA_TH + HIGH_TH + DZONE_TH);</span>
-<span id="cb38-7"><a href="ch-pwm.html#cb38-7"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb38-1"><a href="ch-pwm.html#cb38-1" aria-hidden="true" tabindex="-1"></a>cnt <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb38-2"><a href="ch-pwm.html#cb38-2" aria-hidden="true" tabindex="-1"></a>on_clock_rising_edge<span class="op">()</span></span>
+<span id="cb38-3"><a href="ch-pwm.html#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb38-4"><a href="ch-pwm.html#cb38-4" aria-hidden="true" tabindex="-1"></a>    cnt <span class="op">=</span> cnt <span class="op">&lt;</span> <span class="dv">2</span> <span class="op">*</span> PERA_TH <span class="op">?</span> cnt <span class="op">+</span> <span class="dv">1</span> <span class="op">:</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb38-5"><a href="ch-pwm.html#cb38-5" aria-hidden="true" tabindex="-1"></a>    A <span class="op">=</span> PERA_TH <span class="op">-</span> HIGH_TH <span class="op">+</span> DZONE_TH <span class="op">&lt;=</span> cnt <span class="op">&lt;=</span> PERA_TH <span class="op">+</span> HIGH_TH<span class="op">;</span></span>
+<span id="cb38-6"><a href="ch-pwm.html#cb38-6" aria-hidden="true" tabindex="-1"></a>    B <span class="op">=</span> <span class="op">(</span>cnt <span class="op">&lt;</span> PERA_TH <span class="op">-</span> HIGH_TH<span class="op">)</span> <span class="op">||</span> <span class="op">(</span>cnt <span class="op">&gt;</span> PERA_TH <span class="op">+</span> HIGH_TH <span class="op">+</span> DZONE_TH<span class="op">);</span></span>
+<span id="cb38-7"><a href="ch-pwm.html#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </div>
-<div id="single_without_died_zone" class="section level3 hasAnchor">
+<div id="single_without_died_zone" class="section level3 hasAnchor" number="8.1.5">
 <h3><span class="header-section-number">8.1.5</span> SINGLE_WITHOUT_DIED_ZONE<a href="ch-pwm.html#single_without_died_zone" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>此模式需要配置两个门限：计数器回零门限 PERA_TH、高门限 HIGH_TH，HIGH_TH
 必须小于 HIGH_TH。此模式只产生一个脉冲，以伪代码描述 A、B 输出如下：</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb39-1"><a href="ch-pwm.html#cb39-1"></a>cnt = <span class="dv">0</span>;</span>
-<span id="cb39-2"><a href="ch-pwm.html#cb39-2"></a>on_clock_rising_edge()</span>
-<span id="cb39-3"><a href="ch-pwm.html#cb39-3"></a>{</span>
-<span id="cb39-4"><a href="ch-pwm.html#cb39-4"></a>    cnt++;</span>
-<span id="cb39-5"><a href="ch-pwm.html#cb39-5"></a>    A = HIGH_TH &lt;= cnt &lt; PERA_TH;</span>
-<span id="cb39-6"><a href="ch-pwm.html#cb39-6"></a>    B = !A;</span>
-<span id="cb39-7"><a href="ch-pwm.html#cb39-7"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb39-1"><a href="ch-pwm.html#cb39-1" aria-hidden="true" tabindex="-1"></a>cnt <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb39-2"><a href="ch-pwm.html#cb39-2" aria-hidden="true" tabindex="-1"></a>on_clock_rising_edge<span class="op">()</span></span>
+<span id="cb39-3"><a href="ch-pwm.html#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb39-4"><a href="ch-pwm.html#cb39-4" aria-hidden="true" tabindex="-1"></a>    cnt<span class="op">++;</span></span>
+<span id="cb39-5"><a href="ch-pwm.html#cb39-5" aria-hidden="true" tabindex="-1"></a>    A <span class="op">=</span> HIGH_TH <span class="op">&lt;=</span> cnt <span class="op">&lt;</span> PERA_TH<span class="op">;</span></span>
+<span id="cb39-6"><a href="ch-pwm.html#cb39-6" aria-hidden="true" tabindex="-1"></a>    B <span class="op">=</span> <span class="op">!</span>A<span class="op">;</span></span>
+<span id="cb39-7"><a href="ch-pwm.html#cb39-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <div class="rmdcaution">
 <p>
 以上伪代码仅用于辅助描述硬件行为，与实际行为可以存在微小差异。
 </p>
 </div>
 </div>
-<div id="输出控制" class="section level3 hasAnchor">
+<div id="输出控制" class="section level3 hasAnchor" number="8.1.6">
 <h3><span class="header-section-number">8.1.6</span> 输出控制<a href="ch-pwm.html#输出控制" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>对于每个通道的每一路输出，另有 3 个参数控制最终的两路输出：掩膜、停机输出值、反相。
 最终的输出以伪代码描述如下：</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb40-1"><a href="ch-pwm.html#cb40-1"></a>output_control(v)</span>
-<span id="cb40-2"><a href="ch-pwm.html#cb40-2"></a>{</span>
-<span id="cb40-3"><a href="ch-pwm.html#cb40-3"></a>    <span class="cf">if</span> (掩膜 == <span class="dv">1</span>) <span class="cf">return</span> A 路输出 <span class="dv">0</span>、B 路输出 <span class="dv">1</span>;</span>
-<span id="cb40-4"><a href="ch-pwm.html#cb40-4"></a>    <span class="cf">if</span> (本通道已停机) <span class="cf">return</span> 停机输出值;</span>
-<span id="cb40-5"><a href="ch-pwm.html#cb40-5"></a>    <span class="cf">if</span> (反相) v = !v;</span>
-<span id="cb40-6"><a href="ch-pwm.html#cb40-6"></a>    <span class="cf">return</span> v;</span>
-<span id="cb40-7"><a href="ch-pwm.html#cb40-7"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb40-1"><a href="ch-pwm.html#cb40-1" aria-hidden="true" tabindex="-1"></a>output_control<span class="op">(</span>v<span class="op">)</span></span>
+<span id="cb40-2"><a href="ch-pwm.html#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb40-3"><a href="ch-pwm.html#cb40-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>掩膜 <span class="op">==</span> <span class="dv">1</span><span class="op">)</span> <span class="cf">return</span> A 路输出 <span class="dv">0</span>、B 路输出 <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb40-4"><a href="ch-pwm.html#cb40-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>本通道已停机<span class="op">)</span> <span class="cf">return</span> 停机输出值<span class="op">;</span></span>
+<span id="cb40-5"><a href="ch-pwm.html#cb40-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>反相<span class="op">)</span> v <span class="op">=</span> <span class="op">!</span>v<span class="op">;</span></span>
+<span id="cb40-6"><a href="ch-pwm.html#cb40-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> v<span class="op">;</span></span>
+<span id="cb40-7"><a href="ch-pwm.html#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </div>
 </div>
-<div id="pwm-使用说明" class="section level2 hasAnchor">
+<div id="pwm-使用说明" class="section level2 hasAnchor" number="8.2">
 <h2><span class="header-section-number">8.2</span> PWM 使用说明<a href="ch-pwm.html#pwm-使用说明" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="启动与停止" class="section level3 hasAnchor">
+<div id="启动与停止" class="section level3 hasAnchor" number="8.2.1">
 <h3><span class="header-section-number">8.2.1</span> 启动与停止<a href="ch-pwm.html#启动与停止" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>共有两个开关与 PWM 的启动和停止有关：使能（Enable）、停机控制（HaltCtrl）。只有当 <code>Enable</code> 为 1，
 <code>HaltCtrl</code> 为 0 时，PWM 才真正开始工作。</p>
 <p>相关的 API 为：</p>
-<div class="sourceCode" id="cb41"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb41-1"><a href="ch-pwm.html#cb41-1"></a><span class="co">// 使能 PWM 通道</span></span>
-<span id="cb41-2"><a href="ch-pwm.html#cb41-2"></a><span class="dt">void</span> PWM_Enable(</span>
-<span id="cb41-3"><a href="ch-pwm.html#cb41-3"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> channel_index,    <span class="co">// 通道号</span></span>
-<span id="cb41-4"><a href="ch-pwm.html#cb41-4"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> enable            <span class="co">// 使能或禁用</span></span>
-<span id="cb41-5"><a href="ch-pwm.html#cb41-5"></a>    );</span>
-<span id="cb41-6"><a href="ch-pwm.html#cb41-6"></a><span class="co">// PWM 通道停机控制</span></span>
-<span id="cb41-7"><a href="ch-pwm.html#cb41-7"></a><span class="dt">void</span> PWM_HaltCtrlEnable(</span>
-<span id="cb41-8"><a href="ch-pwm.html#cb41-8"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> channel_index,    <span class="co">// 通道号</span></span>
-<span id="cb41-9"><a href="ch-pwm.html#cb41-9"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> enable            <span class="co">// 停机(1) 或运转(0)</span></span>
-<span id="cb41-10"><a href="ch-pwm.html#cb41-10"></a>    );</span></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb41-1"><a href="ch-pwm.html#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 使能 PWM 通道</span></span>
+<span id="cb41-2"><a href="ch-pwm.html#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> PWM_Enable<span class="op">(</span></span>
+<span id="cb41-3"><a href="ch-pwm.html#cb41-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> channel_index<span class="op">,</span>    <span class="co">// 通道号</span></span>
+<span id="cb41-4"><a href="ch-pwm.html#cb41-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> enable            <span class="co">// 使能或禁用</span></span>
+<span id="cb41-5"><a href="ch-pwm.html#cb41-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">);</span></span>
+<span id="cb41-6"><a href="ch-pwm.html#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="co">// PWM 通道停机控制</span></span>
+<span id="cb41-7"><a href="ch-pwm.html#cb41-7" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> PWM_HaltCtrlEnable<span class="op">(</span></span>
+<span id="cb41-8"><a href="ch-pwm.html#cb41-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> channel_index<span class="op">,</span>    <span class="co">// 通道号</span></span>
+<span id="cb41-9"><a href="ch-pwm.html#cb41-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> enable            <span class="co">// 停机(1) 或运转(0)</span></span>
+<span id="cb41-10"><a href="ch-pwm.html#cb41-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">);</span></span></code></pre></div>
 </div>
-<div id="配置工作模式" class="section level3 hasAnchor">
+<div id="配置工作模式" class="section level3 hasAnchor" number="8.2.2">
 <h3><span class="header-section-number">8.2.2</span> 配置工作模式<a href="ch-pwm.html#配置工作模式" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb42"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb42-1"><a href="ch-pwm.html#cb42-1"></a><span class="dt">void</span> PWM_SetMode(</span>
-<span id="cb42-2"><a href="ch-pwm.html#cb42-2"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> channel_index,    <span class="co">// 通道号</span></span>
-<span id="cb42-3"><a href="ch-pwm.html#cb42-3"></a>    <span class="dt">const</span> PWM_WorkMode_t mode       <span class="co">// 模式</span></span>
-<span id="cb42-4"><a href="ch-pwm.html#cb42-4"></a>    );</span></code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb42-1"><a href="ch-pwm.html#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> PWM_SetMode<span class="op">(</span></span>
+<span id="cb42-2"><a href="ch-pwm.html#cb42-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> channel_index<span class="op">,</span>    <span class="co">// 通道号</span></span>
+<span id="cb42-3"><a href="ch-pwm.html#cb42-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> PWM_WorkMode_t mode       <span class="co">// 模式</span></span>
+<span id="cb42-4"><a href="ch-pwm.html#cb42-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">);</span></span></code></pre></div>
 </div>
-<div id="配置门限" class="section level3 hasAnchor">
+<div id="配置门限" class="section level3 hasAnchor" number="8.2.3">
 <h3><span class="header-section-number">8.2.3</span> 配置门限<a href="ch-pwm.html#配置门限" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb43"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb43-1"><a href="ch-pwm.html#cb43-1"></a><span class="co">// 配置 PERA_TH</span></span>
-<span id="cb43-2"><a href="ch-pwm.html#cb43-2"></a><span class="dt">void</span> PWM_SetPeraThreshold(</span>
-<span id="cb43-3"><a href="ch-pwm.html#cb43-3"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> channel_index,</span>
-<span id="cb43-4"><a href="ch-pwm.html#cb43-4"></a>    <span class="dt">const</span> <span class="dt">uint32_t</span> threshold);</span></code></pre></div>
-<div class="sourceCode" id="cb44"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb44-1"><a href="ch-pwm.html#cb44-1"></a><span class="co">// 配置 DZONE_TH</span></span>
-<span id="cb44-2"><a href="ch-pwm.html#cb44-2"></a><span class="dt">void</span> PWM_SetDiedZoneThreshold(</span>
-<span id="cb44-3"><a href="ch-pwm.html#cb44-3"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> channel_index,</span>
-<span id="cb44-4"><a href="ch-pwm.html#cb44-4"></a>    <span class="dt">const</span> <span class="dt">uint32_t</span> threshold);</span></code></pre></div>
-<div class="sourceCode" id="cb45"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb45-1"><a href="ch-pwm.html#cb45-1"></a><span class="co">// 配置 HIGH_TH</span></span>
-<span id="cb45-2"><a href="ch-pwm.html#cb45-2"></a><span class="dt">void</span> PWM_SetHighThreshold(</span>
-<span id="cb45-3"><a href="ch-pwm.html#cb45-3"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> channel_index,</span>
-<span id="cb45-4"><a href="ch-pwm.html#cb45-4"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> multi_duty_index, <span class="co">// 对于 ING916XX，此参数无效</span></span>
-<span id="cb45-5"><a href="ch-pwm.html#cb45-5"></a>    <span class="dt">const</span> <span class="dt">uint32_t</span> threshold);</span></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb43-1"><a href="ch-pwm.html#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 配置 PERA_TH</span></span>
+<span id="cb43-2"><a href="ch-pwm.html#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> PWM_SetPeraThreshold<span class="op">(</span></span>
+<span id="cb43-3"><a href="ch-pwm.html#cb43-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> channel_index<span class="op">,</span></span>
+<span id="cb43-4"><a href="ch-pwm.html#cb43-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint32_t</span> threshold<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb44-1"><a href="ch-pwm.html#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 配置 DZONE_TH</span></span>
+<span id="cb44-2"><a href="ch-pwm.html#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> PWM_SetDiedZoneThreshold<span class="op">(</span></span>
+<span id="cb44-3"><a href="ch-pwm.html#cb44-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> channel_index<span class="op">,</span></span>
+<span id="cb44-4"><a href="ch-pwm.html#cb44-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint32_t</span> threshold<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb45-1"><a href="ch-pwm.html#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 配置 HIGH_TH</span></span>
+<span id="cb45-2"><a href="ch-pwm.html#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> PWM_SetHighThreshold<span class="op">(</span></span>
+<span id="cb45-3"><a href="ch-pwm.html#cb45-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> channel_index<span class="op">,</span></span>
+<span id="cb45-4"><a href="ch-pwm.html#cb45-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> multi_duty_index<span class="op">,</span> <span class="co">// 对于 ING916XX，此参数无效</span></span>
+<span id="cb45-5"><a href="ch-pwm.html#cb45-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint32_t</span> threshold<span class="op">);</span></span></code></pre></div>
 <p>各门限值最大支持 0xFFFFF，共 20 个比特。</p>
 </div>
-<div id="输出控制-1" class="section level3 hasAnchor">
+<div id="输出控制-1" class="section level3 hasAnchor" number="8.2.4">
 <h3><span class="header-section-number">8.2.4</span> 输出控制<a href="ch-pwm.html#输出控制-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb46"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb46-1"><a href="ch-pwm.html#cb46-1"></a><span class="co">// 掩膜控制</span></span>
-<span id="cb46-2"><a href="ch-pwm.html#cb46-2"></a><span class="dt">void</span> PWM_SetMask(</span>
-<span id="cb46-3"><a href="ch-pwm.html#cb46-3"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> channel_index,    <span class="co">// 通道号</span></span>
-<span id="cb46-4"><a href="ch-pwm.html#cb46-4"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> mask_a,           <span class="co">// A 路掩膜</span></span>
-<span id="cb46-5"><a href="ch-pwm.html#cb46-5"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> mask_b            <span class="co">// B 路掩膜</span></span>
-<span id="cb46-6"><a href="ch-pwm.html#cb46-6"></a>    );</span></code></pre></div>
-<div class="sourceCode" id="cb47"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb47-1"><a href="ch-pwm.html#cb47-1"></a><span class="co">// 配置停机输出值</span></span>
-<span id="cb47-2"><a href="ch-pwm.html#cb47-2"></a><span class="dt">void</span> PWM_HaltCtrlCfg(</span>
-<span id="cb47-3"><a href="ch-pwm.html#cb47-3"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> channel_index,    <span class="co">// 通道号</span></span>
-<span id="cb47-4"><a href="ch-pwm.html#cb47-4"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> out_a,            <span class="co">// A 路停机输出值</span></span>
-<span id="cb47-5"><a href="ch-pwm.html#cb47-5"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> out_b             <span class="co">// B 路停机输出值</span></span>
-<span id="cb47-6"><a href="ch-pwm.html#cb47-6"></a>    );</span></code></pre></div>
-<div class="sourceCode" id="cb48"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb48-1"><a href="ch-pwm.html#cb48-1"></a><span class="co">// 反相</span></span>
-<span id="cb48-2"><a href="ch-pwm.html#cb48-2"></a><span class="dt">void</span> PWM_SetInvertOutput(</span>
-<span id="cb48-3"><a href="ch-pwm.html#cb48-3"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> channel_index,    <span class="co">// 通道号</span></span>
-<span id="cb48-4"><a href="ch-pwm.html#cb48-4"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> inv_a,            <span class="co">// A 路是否反相</span></span>
-<span id="cb48-5"><a href="ch-pwm.html#cb48-5"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> inv_b             <span class="co">// B 路是否反相</span></span>
-<span id="cb48-6"><a href="ch-pwm.html#cb48-6"></a>    );</span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb46-1"><a href="ch-pwm.html#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 掩膜控制</span></span>
+<span id="cb46-2"><a href="ch-pwm.html#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> PWM_SetMask<span class="op">(</span></span>
+<span id="cb46-3"><a href="ch-pwm.html#cb46-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> channel_index<span class="op">,</span>    <span class="co">// 通道号</span></span>
+<span id="cb46-4"><a href="ch-pwm.html#cb46-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> mask_a<span class="op">,</span>           <span class="co">// A 路掩膜</span></span>
+<span id="cb46-5"><a href="ch-pwm.html#cb46-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> mask_b            <span class="co">// B 路掩膜</span></span>
+<span id="cb46-6"><a href="ch-pwm.html#cb46-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb47-1"><a href="ch-pwm.html#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 配置停机输出值</span></span>
+<span id="cb47-2"><a href="ch-pwm.html#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> PWM_HaltCtrlCfg<span class="op">(</span></span>
+<span id="cb47-3"><a href="ch-pwm.html#cb47-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> channel_index<span class="op">,</span>    <span class="co">// 通道号</span></span>
+<span id="cb47-4"><a href="ch-pwm.html#cb47-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> out_a<span class="op">,</span>            <span class="co">// A 路停机输出值</span></span>
+<span id="cb47-5"><a href="ch-pwm.html#cb47-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> out_b             <span class="co">// B 路停机输出值</span></span>
+<span id="cb47-6"><a href="ch-pwm.html#cb47-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb48"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb48-1"><a href="ch-pwm.html#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 反相</span></span>
+<span id="cb48-2"><a href="ch-pwm.html#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> PWM_SetInvertOutput<span class="op">(</span></span>
+<span id="cb48-3"><a href="ch-pwm.html#cb48-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> channel_index<span class="op">,</span>    <span class="co">// 通道号</span></span>
+<span id="cb48-4"><a href="ch-pwm.html#cb48-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> inv_a<span class="op">,</span>            <span class="co">// A 路是否反相</span></span>
+<span id="cb48-5"><a href="ch-pwm.html#cb48-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> inv_b             <span class="co">// B 路是否反相</span></span>
+<span id="cb48-6"><a href="ch-pwm.html#cb48-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">);</span></span></code></pre></div>
 </div>
-<div id="综合示例" class="section level3 hasAnchor">
+<div id="综合示例" class="section level3 hasAnchor" number="8.2.5">
 <h3><span class="header-section-number">8.2.5</span> 综合示例<a href="ch-pwm.html#综合示例" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>下面的例子将 <code>channel_index</code> 通道配置成输出频率为 <code>frequency</code>、占空比为 <code>(on_duty)%</code> 的方波，
 涉及 3 个关键参数：</p>
@@ -472,24 +500,24 @@ B = DZONE_TH &lt;= cnt &lt; HIGH_TH);
 <li><p>PERA_TH 控制输出信号的频率，设置为 <code>PWM_CLOCK_FREQ / frequency</code>；</p></li>
 <li><p>HIGH_TH 控制信号的占空比，设置为 <code>PERA_TH * (100 - on_duty) %</code></p></li>
 </ul>
-<div class="sourceCode" id="cb49"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb49-1"><a href="ch-pwm.html#cb49-1"></a><span class="dt">void</span> PWM_SetupSimple(</span>
-<span id="cb49-2"><a href="ch-pwm.html#cb49-2"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> channel_index,</span>
-<span id="cb49-3"><a href="ch-pwm.html#cb49-3"></a>    <span class="dt">const</span> <span class="dt">uint32_t</span> frequency,</span>
-<span id="cb49-4"><a href="ch-pwm.html#cb49-4"></a>    <span class="dt">const</span> <span class="dt">uint16_t</span> on_duty)</span>
-<span id="cb49-5"><a href="ch-pwm.html#cb49-5"></a>{</span>
-<span id="cb49-6"><a href="ch-pwm.html#cb49-6"></a>    <span class="dt">uint32_t</span> pera = PWM_CLOCK_FREQ / frequency;</span>
-<span id="cb49-7"><a href="ch-pwm.html#cb49-7"></a>    <span class="dt">uint32_t</span> high = pera &gt; <span class="dv">1000</span> ?</span>
-<span id="cb49-8"><a href="ch-pwm.html#cb49-8"></a>          pera / <span class="dv">100</span> * (<span class="dv">100</span> - on_duty)</span>
-<span id="cb49-9"><a href="ch-pwm.html#cb49-9"></a>        : pera * (<span class="dv">100</span> - on_duty) / <span class="dv">100</span>;</span>
-<span id="cb49-10"><a href="ch-pwm.html#cb49-10"></a>    PWM_HaltCtrlEnable(channel_index, <span class="dv">1</span>);</span>
-<span id="cb49-11"><a href="ch-pwm.html#cb49-11"></a>    PWM_Enable(channel_index, <span class="dv">0</span>);</span>
-<span id="cb49-12"><a href="ch-pwm.html#cb49-12"></a>    PWM_SetPeraThreshold(channel_index, pera);</span>
-<span id="cb49-13"><a href="ch-pwm.html#cb49-13"></a>    PWM_SetHighThreshold(channel_index, <span class="dv">0</span>, high);</span>
-<span id="cb49-14"><a href="ch-pwm.html#cb49-14"></a>    PWM_SetMode(channel_index, PWM_WORK_MODE_UP_WITHOUT_DIED_ZONE);</span>
-<span id="cb49-15"><a href="ch-pwm.html#cb49-15"></a>    PWM_SetMask(channel_index, <span class="dv">0</span>, <span class="dv">0</span>);</span>
-<span id="cb49-16"><a href="ch-pwm.html#cb49-16"></a>    PWM_Enable(channel_index, <span class="dv">1</span>);</span>
-<span id="cb49-17"><a href="ch-pwm.html#cb49-17"></a>    PWM_HaltCtrlEnable(channel_index, <span class="dv">0</span>);</span>
-<span id="cb49-18"><a href="ch-pwm.html#cb49-18"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb49-1"><a href="ch-pwm.html#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> PWM_SetupSimple<span class="op">(</span></span>
+<span id="cb49-2"><a href="ch-pwm.html#cb49-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> channel_index<span class="op">,</span></span>
+<span id="cb49-3"><a href="ch-pwm.html#cb49-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint32_t</span> frequency<span class="op">,</span></span>
+<span id="cb49-4"><a href="ch-pwm.html#cb49-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint16_t</span> on_duty<span class="op">)</span></span>
+<span id="cb49-5"><a href="ch-pwm.html#cb49-5" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb49-6"><a href="ch-pwm.html#cb49-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> pera <span class="op">=</span> PWM_CLOCK_FREQ <span class="op">/</span> frequency<span class="op">;</span></span>
+<span id="cb49-7"><a href="ch-pwm.html#cb49-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> high <span class="op">=</span> pera <span class="op">&gt;</span> <span class="dv">1000</span> <span class="op">?</span></span>
+<span id="cb49-8"><a href="ch-pwm.html#cb49-8" aria-hidden="true" tabindex="-1"></a>          pera <span class="op">/</span> <span class="dv">100</span> <span class="op">*</span> <span class="op">(</span><span class="dv">100</span> <span class="op">-</span> on_duty<span class="op">)</span></span>
+<span id="cb49-9"><a href="ch-pwm.html#cb49-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">:</span> pera <span class="op">*</span> <span class="op">(</span><span class="dv">100</span> <span class="op">-</span> on_duty<span class="op">)</span> <span class="op">/</span> <span class="dv">100</span><span class="op">;</span></span>
+<span id="cb49-10"><a href="ch-pwm.html#cb49-10" aria-hidden="true" tabindex="-1"></a>    PWM_HaltCtrlEnable<span class="op">(</span>channel_index<span class="op">,</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb49-11"><a href="ch-pwm.html#cb49-11" aria-hidden="true" tabindex="-1"></a>    PWM_Enable<span class="op">(</span>channel_index<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb49-12"><a href="ch-pwm.html#cb49-12" aria-hidden="true" tabindex="-1"></a>    PWM_SetPeraThreshold<span class="op">(</span>channel_index<span class="op">,</span> pera<span class="op">);</span></span>
+<span id="cb49-13"><a href="ch-pwm.html#cb49-13" aria-hidden="true" tabindex="-1"></a>    PWM_SetHighThreshold<span class="op">(</span>channel_index<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> high<span class="op">);</span></span>
+<span id="cb49-14"><a href="ch-pwm.html#cb49-14" aria-hidden="true" tabindex="-1"></a>    PWM_SetMode<span class="op">(</span>channel_index<span class="op">,</span> PWM_WORK_MODE_UP_WITHOUT_DIED_ZONE<span class="op">);</span></span>
+<span id="cb49-15"><a href="ch-pwm.html#cb49-15" aria-hidden="true" tabindex="-1"></a>    PWM_SetMask<span class="op">(</span>channel_index<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb49-16"><a href="ch-pwm.html#cb49-16" aria-hidden="true" tabindex="-1"></a>    PWM_Enable<span class="op">(</span>channel_index<span class="op">,</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb49-17"><a href="ch-pwm.html#cb49-17" aria-hidden="true" tabindex="-1"></a>    PWM_HaltCtrlEnable<span class="op">(</span>channel_index<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb49-18"><a href="ch-pwm.html#cb49-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 
 </div>
 </div>

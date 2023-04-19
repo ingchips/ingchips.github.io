@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>7 管脚管理（PINCTRL） | ING918XX 系列芯片外设开发者手册</title>
   <meta name="description" content="ING918XX 系列芯片开发者手册." />
-  <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.32 and GitBook 2.6.7" />
 
   <meta property="og:title" content="7 管脚管理（PINCTRL） | ING918XX 系列芯片外设开发者手册" />
   <meta property="og:type" content="book" />
@@ -48,25 +48,24 @@
 
 
 
-<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
 <link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
 <link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
 <style type="text/css">
-code.sourceCode > span { display: inline-block; line-height: 1.25; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-code.sourceCode > span:empty { height: 1.2em; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -86,13 +85,13 @@ pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-le
 div.sourceCode
   {   }
 @media screen {
-code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -105,7 +104,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -137,30 +136,38 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> 版本历史</a></li>
-<li class="chapter" data-level="2" data-path="ch-overview.html"><a href="ch-overview.html"><i class="fa fa-check"></i><b>2</b> 概览</a><ul>
+<li class="chapter" data-level="2" data-path="ch-overview.html"><a href="ch-overview.html"><i class="fa fa-check"></i><b>2</b> 概览</a>
+<ul>
 <li class="chapter" data-level="2.1" data-path="ch-overview.html"><a href="ch-overview.html#缩略语及术语"><i class="fa fa-check"></i><b>2.1</b> 缩略语及术语</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="ch-adc.html"><a href="ch-adc.html"><i class="fa fa-check"></i><b>3</b> 模数转换器（ADC）</a><ul>
-<li class="chapter" data-level="3.1" data-path="ch-adc.html"><a href="ch-adc.html#adc-工作模式"><i class="fa fa-check"></i><b>3.1</b> ADC 工作模式</a><ul>
+<li class="chapter" data-level="3" data-path="ch-adc.html"><a href="ch-adc.html"><i class="fa fa-check"></i><b>3</b> 模数转换器（ADC）</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="ch-adc.html"><a href="ch-adc.html#adc-工作模式"><i class="fa fa-check"></i><b>3.1</b> ADC 工作模式</a>
+<ul>
 <li class="chapter" data-level="3.1.1" data-path="ch-adc.html"><a href="ch-adc.html#单次模式adc_mode_single"><i class="fa fa-check"></i><b>3.1.1</b> 单次模式：ADC_MODE_SINGLE</a></li>
 <li class="chapter" data-level="3.1.2" data-path="ch-adc.html"><a href="ch-adc.html#循环模式adc_mode_loop"><i class="fa fa-check"></i><b>3.1.2</b> 循环模式：ADC_MODE_LOOP</a></li>
 </ul></li>
 <li class="chapter" data-level="3.2" data-path="ch-adc.html"><a href="ch-adc.html#adc-采样数率"><i class="fa fa-check"></i><b>3.2</b> ADC 采样数率</a></li>
-<li class="chapter" data-level="3.3" data-path="ch-adc.html"><a href="ch-adc.html#adc-校准"><i class="fa fa-check"></i><b>3.3</b> ADC 校准</a><ul>
+<li class="chapter" data-level="3.3" data-path="ch-adc.html"><a href="ch-adc.html#adc-校准"><i class="fa fa-check"></i><b>3.3</b> ADC 校准</a>
+<ul>
 <li class="chapter" data-level="3.3.1" data-path="ch-adc.html"><a href="ch-adc.html#adc-校准预处理"><i class="fa fa-check"></i><b>3.3.1</b> ADC 校准预处理</a></li>
 <li class="chapter" data-level="3.3.2" data-path="ch-adc.html"><a href="ch-adc.html#adc-读取校准后的值"><i class="fa fa-check"></i><b>3.3.2</b> ADC 读取校准后的值</a></li>
 </ul></li>
 <li class="chapter" data-level="3.4" data-path="ch-adc.html"><a href="ch-adc.html#adc-综合示例"><i class="fa fa-check"></i><b>3.4</b> ADC 综合示例</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="ch-eflash.html"><a href="ch-eflash.html"><i class="fa fa-check"></i><b>4</b> 嵌入式闪存（Embedded Flash）</a><ul>
-<li class="chapter" data-level="4.1" data-path="ch-eflash.html"><a href="ch-eflash.html#eflash-写入数据"><i class="fa fa-check"></i><b>4.1</b> eFlash 写入数据</a><ul>
+<li class="chapter" data-level="4" data-path="ch-eflash.html"><a href="ch-eflash.html"><i class="fa fa-check"></i><b>4</b> 嵌入式闪存（Embedded Flash）</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="ch-eflash.html"><a href="ch-eflash.html#eflash-写入数据"><i class="fa fa-check"></i><b>4.1</b> eFlash 写入数据</a>
+<ul>
 <li class="chapter" data-level="4.1.1" data-path="ch-eflash.html"><a href="ch-eflash.html#eflash-先擦除然后写入数据"><i class="fa fa-check"></i><b>4.1.1</b> eFlash 先擦除然后写入数据</a></li>
 <li class="chapter" data-level="4.1.2" data-path="ch-eflash.html"><a href="ch-eflash.html#eflash-不擦除直接写入数据"><i class="fa fa-check"></i><b>4.1.2</b> eFlash 不擦除直接写入数据</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="ch-gpio.html"><a href="ch-gpio.html"><i class="fa fa-check"></i><b>5</b> 通用输入输出（GPIO）</a><ul>
+<li class="chapter" data-level="5" data-path="ch-gpio.html"><a href="ch-gpio.html"><i class="fa fa-check"></i><b>5</b> 通用输入输出（GPIO）</a>
+<ul>
 <li class="chapter" data-level="5.1" data-path="ch-gpio.html"><a href="ch-gpio.html#功能概述"><i class="fa fa-check"></i><b>5.1</b> 功能概述</a></li>
-<li class="chapter" data-level="5.2" data-path="ch-gpio.html"><a href="ch-gpio.html#使用说明"><i class="fa fa-check"></i><b>5.2</b> 使用说明</a><ul>
+<li class="chapter" data-level="5.2" data-path="ch-gpio.html"><a href="ch-gpio.html#使用说明"><i class="fa fa-check"></i><b>5.2</b> 使用说明</a>
+<ul>
 <li class="chapter" data-level="5.2.1" data-path="ch-gpio.html"><a href="ch-gpio.html#设置-io-方向"><i class="fa fa-check"></i><b>5.2.1</b> 设置 IO 方向</a></li>
 <li class="chapter" data-level="5.2.2" data-path="ch-gpio.html"><a href="ch-gpio.html#读取输入"><i class="fa fa-check"></i><b>5.2.2</b> 读取输入</a></li>
 <li class="chapter" data-level="5.2.3" data-path="ch-gpio.html"><a href="ch-gpio.html#设置输出"><i class="fa fa-check"></i><b>5.2.3</b> 设置输出</a></li>
@@ -168,16 +175,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.2.5" data-path="ch-gpio.html"><a href="ch-gpio.html#处理中断状态"><i class="fa fa-check"></i><b>5.2.5</b> 处理中断状态</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="ch-i2c.html"><a href="ch-i2c.html"><i class="fa fa-check"></i><b>6</b> 集成电路间总线（I2C）</a><ul>
+<li class="chapter" data-level="6" data-path="ch-i2c.html"><a href="ch-i2c.html"><i class="fa fa-check"></i><b>6</b> 集成电路间总线（I2C）</a>
+<ul>
 <li class="chapter" data-level="6.1" data-path="ch-i2c.html"><a href="ch-i2c.html#功能概述-1"><i class="fa fa-check"></i><b>6.1</b> 功能概述</a></li>
 <li class="chapter" data-level="6.2" data-path="ch-i2c.html"><a href="ch-i2c.html#i2c使用说明"><i class="fa fa-check"></i><b>6.2</b> I2C使用说明</a></li>
-<li class="chapter" data-level="6.3" data-path="ch-i2c.html"><a href="ch-i2c.html#使用方法"><i class="fa fa-check"></i><b>6.3</b> 使用方法</a><ul>
+<li class="chapter" data-level="6.3" data-path="ch-i2c.html"><a href="ch-i2c.html#使用方法"><i class="fa fa-check"></i><b>6.3</b> 使用方法</a>
+<ul>
 <li class="chapter" data-level="6.3.1" data-path="ch-i2c.html"><a href="ch-i2c.html#master读些采用queue模式"><i class="fa fa-check"></i><b>6.3.1</b> Master读些，采用QUEUE模式</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html"><i class="fa fa-check"></i><b>7</b> 管脚管理（PINCTRL）</a><ul>
+<li class="chapter" data-level="7" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html"><i class="fa fa-check"></i><b>7</b> 管脚管理（PINCTRL）</a>
+<ul>
 <li class="chapter" data-level="7.1" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#功能概述-2"><i class="fa fa-check"></i><b>7.1</b> 功能概述</a></li>
-<li class="chapter" data-level="7.2" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#使用说明-1"><i class="fa fa-check"></i><b>7.2</b> 使用说明</a><ul>
+<li class="chapter" data-level="7.2" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#使用说明-1"><i class="fa fa-check"></i><b>7.2</b> 使用说明</a>
+<ul>
 <li class="chapter" data-level="7.2.1" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#为外设配置-io-管脚"><i class="fa fa-check"></i><b>7.2.1</b> 为外设配置 IO 管脚</a></li>
 <li class="chapter" data-level="7.2.2" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#配置下拉下拉"><i class="fa fa-check"></i><b>7.2.2</b> 配置下拉、下拉</a></li>
 <li class="chapter" data-level="7.2.3" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#配置驱动能力"><i class="fa fa-check"></i><b>7.2.3</b> 配置驱动能力</a></li>
@@ -188,8 +199,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.2.8" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#io口配置为i2c参考代码"><i class="fa fa-check"></i><b>7.2.8</b> IO口配置为I2C参考代码</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="8" data-path="ch-pwm.html"><a href="ch-pwm.html"><i class="fa fa-check"></i><b>8</b> 脉宽调制发生器（PWM）</a><ul>
-<li class="chapter" data-level="8.1" data-path="ch-pwm.html"><a href="ch-pwm.html#pwm-工作模式"><i class="fa fa-check"></i><b>8.1</b> PWM 工作模式</a><ul>
+<li class="chapter" data-level="8" data-path="ch-pwm.html"><a href="ch-pwm.html"><i class="fa fa-check"></i><b>8</b> 脉宽调制发生器（PWM）</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="ch-pwm.html"><a href="ch-pwm.html#pwm-工作模式"><i class="fa fa-check"></i><b>8.1</b> PWM 工作模式</a>
+<ul>
 <li class="chapter" data-level="8.1.1" data-path="ch-pwm.html"><a href="ch-pwm.html#最简单的模式up_without_died_zone"><i class="fa fa-check"></i><b>8.1.1</b> 最简单的模式：UP_WITHOUT_DIED_ZONE</a></li>
 <li class="chapter" data-level="8.1.2" data-path="ch-pwm.html"><a href="ch-pwm.html#up_with_died_zone"><i class="fa fa-check"></i><b>8.1.2</b> UP_WITH_DIED_ZONE</a></li>
 <li class="chapter" data-level="8.1.3" data-path="ch-pwm.html"><a href="ch-pwm.html#updown_without_died_zone"><i class="fa fa-check"></i><b>8.1.3</b> UPDOWN_WITHOUT_DIED_ZONE</a></li>
@@ -197,7 +210,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="8.1.5" data-path="ch-pwm.html"><a href="ch-pwm.html#single_without_died_zone"><i class="fa fa-check"></i><b>8.1.5</b> SINGLE_WITHOUT_DIED_ZONE</a></li>
 <li class="chapter" data-level="8.1.6" data-path="ch-pwm.html"><a href="ch-pwm.html#输出控制"><i class="fa fa-check"></i><b>8.1.6</b> 输出控制</a></li>
 </ul></li>
-<li class="chapter" data-level="8.2" data-path="ch-pwm.html"><a href="ch-pwm.html#pwm-使用说明"><i class="fa fa-check"></i><b>8.2</b> PWM 使用说明</a><ul>
+<li class="chapter" data-level="8.2" data-path="ch-pwm.html"><a href="ch-pwm.html#pwm-使用说明"><i class="fa fa-check"></i><b>8.2</b> PWM 使用说明</a>
+<ul>
 <li class="chapter" data-level="8.2.1" data-path="ch-pwm.html"><a href="ch-pwm.html#启动与停止"><i class="fa fa-check"></i><b>8.2.1</b> 启动与停止</a></li>
 <li class="chapter" data-level="8.2.2" data-path="ch-pwm.html"><a href="ch-pwm.html#配置工作模式"><i class="fa fa-check"></i><b>8.2.2</b> 配置工作模式</a></li>
 <li class="chapter" data-level="8.2.3" data-path="ch-pwm.html"><a href="ch-pwm.html#配置门限"><i class="fa fa-check"></i><b>8.2.3</b> 配置门限</a></li>
@@ -205,9 +219,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="8.2.5" data-path="ch-pwm.html"><a href="ch-pwm.html#综合示例"><i class="fa fa-check"></i><b>8.2.5</b> 综合示例</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="9" data-path="ch-rtc.html"><a href="ch-rtc.html"><i class="fa fa-check"></i><b>9</b> 实时时钟（RTC）</a><ul>
+<li class="chapter" data-level="9" data-path="ch-rtc.html"><a href="ch-rtc.html"><i class="fa fa-check"></i><b>9</b> 实时时钟（RTC）</a>
+<ul>
 <li class="chapter" data-level="9.1" data-path="ch-rtc.html"><a href="ch-rtc.html#功能概述-3"><i class="fa fa-check"></i><b>9.1</b> 功能概述</a></li>
-<li class="chapter" data-level="9.2" data-path="ch-rtc.html"><a href="ch-rtc.html#接口说明"><i class="fa fa-check"></i><b>9.2</b> 接口说明</a><ul>
+<li class="chapter" data-level="9.2" data-path="ch-rtc.html"><a href="ch-rtc.html#接口说明"><i class="fa fa-check"></i><b>9.2</b> 接口说明</a>
+<ul>
 <li class="chapter" data-level="9.2.1" data-path="ch-rtc.html"><a href="ch-rtc.html#rtc使能禁止"><i class="fa fa-check"></i><b>9.2.1</b> RTC使能/禁止</a></li>
 <li class="chapter" data-level="9.2.2" data-path="ch-rtc.html"><a href="ch-rtc.html#获取rtc当前值"><i class="fa fa-check"></i><b>9.2.2</b> 获取RTC当前值</a></li>
 <li class="chapter" data-level="9.2.3" data-path="ch-rtc.html"><a href="ch-rtc.html#设置中断的计数值"><i class="fa fa-check"></i><b>9.2.3</b> 设置中断的计数值</a></li>
@@ -215,32 +231,41 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="9.3" data-path="ch-rtc.html"><a href="ch-rtc.html#rtc中断使用流程"><i class="fa fa-check"></i><b>9.3</b> RTC中断使用流程</a></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="ch-spi.html"><a href="ch-spi.html"><i class="fa fa-check"></i><b>10</b> SPI功能概述</a><ul>
+<li class="chapter" data-level="10" data-path="ch-spi.html"><a href="ch-spi.html"><i class="fa fa-check"></i><b>10</b> SPI功能概述</a>
+<ul>
 <li class="chapter" data-level="10.1" data-path="ch-spi.html"><a href="ch-spi.html#spi使用说明"><i class="fa fa-check"></i><b>10.1</b> SPI使用说明</a></li>
-<li class="chapter" data-level="10.2" data-path="ch-spi.html"><a href="ch-spi.html#场景1只读只写"><i class="fa fa-check"></i><b>10.2</b> 场景1：只读只写</a><ul>
+<li class="chapter" data-level="10.2" data-path="ch-spi.html"><a href="ch-spi.html#场景1只读只写"><i class="fa fa-check"></i><b>10.2</b> 场景1：只读只写</a>
+<ul>
 <li class="chapter" data-level="10.2.1" data-path="ch-spi.html"><a href="ch-spi.html#spi主配置"><i class="fa fa-check"></i><b>10.2.1</b> SPI主配置</a></li>
 </ul></li>
-<li class="chapter" data-level="10.3" data-path="ch-spi.html"><a href="ch-spi.html#场景2同时读写不带dma"><i class="fa fa-check"></i><b>10.3</b> 场景2：同时读写不带DMA</a><ul>
+<li class="chapter" data-level="10.3" data-path="ch-spi.html"><a href="ch-spi.html#场景2同时读写"><i class="fa fa-check"></i><b>10.3</b> 场景2：同时读写</a>
+<ul>
 <li class="chapter" data-level="10.3.1" data-path="ch-spi.html"><a href="ch-spi.html#spi主配置-1"><i class="fa fa-check"></i><b>10.3.1</b> SPI主配置</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="11" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html"><i class="fa fa-check"></i><b>11</b> 系统控制（SYSCTRL）</a><ul>
-<li class="chapter" data-level="11.1" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#功能概述-4"><i class="fa fa-check"></i><b>11.1</b> 功能概述</a><ul>
+<li class="chapter" data-level="11" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html"><i class="fa fa-check"></i><b>11</b> 系统控制（SYSCTRL）</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#功能概述-4"><i class="fa fa-check"></i><b>11.1</b> 功能概述</a>
+<ul>
 <li class="chapter" data-level="11.1.1" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#外设标识"><i class="fa fa-check"></i><b>11.1.1</b> 外设标识</a></li>
 <li class="chapter" data-level="11.1.2" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#时钟树"><i class="fa fa-check"></i><b>11.1.2</b> 时钟树</a></li>
 </ul></li>
-<li class="chapter" data-level="11.2" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#使用说明-2"><i class="fa fa-check"></i><b>11.2</b> 使用说明</a><ul>
+<li class="chapter" data-level="11.2" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#使用说明-2"><i class="fa fa-check"></i><b>11.2</b> 使用说明</a>
+<ul>
 <li class="chapter" data-level="11.2.1" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#外设复位"><i class="fa fa-check"></i><b>11.2.1</b> 外设复位</a></li>
 <li class="chapter" data-level="11.2.2" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#时钟门控"><i class="fa fa-check"></i><b>11.2.2</b> 时钟门控</a></li>
 <li class="chapter" data-level="11.2.3" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#时钟配置"><i class="fa fa-check"></i><b>11.2.3</b> 时钟配置</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="12" data-path="ch-timer.html"><a href="ch-timer.html"><i class="fa fa-check"></i><b>12</b> 定时器和看门狗</a><ul>
-<li class="chapter" data-level="12.1" data-path="ch-timer.html"><a href="ch-timer.html#功能概述-5"><i class="fa fa-check"></i><b>12.1</b> 功能概述</a><ul>
+<li class="chapter" data-level="12" data-path="ch-timer.html"><a href="ch-timer.html"><i class="fa fa-check"></i><b>12</b> 定时器和看门狗</a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="ch-timer.html"><a href="ch-timer.html#功能概述-5"><i class="fa fa-check"></i><b>12.1</b> 功能概述</a>
+<ul>
 <li class="chapter" data-level="12.1.1" data-path="ch-timer.html"><a href="ch-timer.html#计时器功能"><i class="fa fa-check"></i><b>12.1.1</b> 计时器功能</a></li>
 <li class="chapter" data-level="12.1.2" data-path="ch-timer.html"><a href="ch-timer.html#watchdog的功能"><i class="fa fa-check"></i><b>12.1.2</b> WATCHDOG的功能</a></li>
 </ul></li>
-<li class="chapter" data-level="12.2" data-path="ch-timer.html"><a href="ch-timer.html#timer使用说明"><i class="fa fa-check"></i><b>12.2</b> TIMER使用说明</a><ul>
+<li class="chapter" data-level="12.2" data-path="ch-timer.html"><a href="ch-timer.html#timer使用说明"><i class="fa fa-check"></i><b>12.2</b> TIMER使用说明</a>
+<ul>
 <li class="chapter" data-level="12.2.1" data-path="ch-timer.html"><a href="ch-timer.html#获取timer计数值"><i class="fa fa-check"></i><b>12.2.1</b> 获取Timer计数值</a></li>
 <li class="chapter" data-level="12.2.2" data-path="ch-timer.html"><a href="ch-timer.html#timer计数值清零"><i class="fa fa-check"></i><b>12.2.2</b> TIMER计数值清零</a></li>
 <li class="chapter" data-level="12.2.3" data-path="ch-timer.html"><a href="ch-timer.html#设置timer的比较值"><i class="fa fa-check"></i><b>12.2.3</b> 设置TIMER的比较值</a></li>
@@ -254,15 +279,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="12.2.11" data-path="ch-timer.html"><a href="ch-timer.html#获得timer的中断状态"><i class="fa fa-check"></i><b>12.2.11</b> 获得TIMER的中断状态</a></li>
 </ul></li>
 <li class="chapter" data-level="12.3" data-path="ch-timer.html"><a href="ch-timer.html#timer中断使用流程"><i class="fa fa-check"></i><b>12.3</b> TIMER中断使用流程</a></li>
-<li class="chapter" data-level="12.4" data-path="ch-timer.html"><a href="ch-timer.html#watchdog使用说明"><i class="fa fa-check"></i><b>12.4</b> Watchdog使用说明</a><ul>
+<li class="chapter" data-level="12.4" data-path="ch-timer.html"><a href="ch-timer.html#watchdog使用说明"><i class="fa fa-check"></i><b>12.4</b> Watchdog使用说明</a>
+<ul>
 <li class="chapter" data-level="12.4.1" data-path="ch-timer.html"><a href="ch-timer.html#使能看门狗"><i class="fa fa-check"></i><b>12.4.1</b> 使能看门狗</a></li>
 <li class="chapter" data-level="12.4.2" data-path="ch-timer.html"><a href="ch-timer.html#停用看门狗"><i class="fa fa-check"></i><b>12.4.2</b> 停用看门狗</a></li>
 <li class="chapter" data-level="12.4.3" data-path="ch-timer.html"><a href="ch-timer.html#喂狗"><i class="fa fa-check"></i><b>12.4.3</b> 喂狗</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="13" data-path="ch-uart.html"><a href="ch-uart.html"><i class="fa fa-check"></i><b>13</b> 通用异步收发传输器（UART）</a><ul>
+<li class="chapter" data-level="13" data-path="ch-uart.html"><a href="ch-uart.html"><i class="fa fa-check"></i><b>13</b> 通用异步收发传输器（UART）</a>
+<ul>
 <li class="chapter" data-level="13.1" data-path="ch-uart.html"><a href="ch-uart.html#功能概述-6"><i class="fa fa-check"></i><b>13.1</b> 功能概述</a></li>
-<li class="chapter" data-level="13.2" data-path="ch-uart.html"><a href="ch-uart.html#使用说明-3"><i class="fa fa-check"></i><b>13.2</b> 使用说明</a><ul>
+<li class="chapter" data-level="13.2" data-path="ch-uart.html"><a href="ch-uart.html#使用说明-3"><i class="fa fa-check"></i><b>13.2</b> 使用说明</a>
+<ul>
 <li class="chapter" data-level="13.2.1" data-path="ch-uart.html"><a href="ch-uart.html#设置波特率"><i class="fa fa-check"></i><b>13.2.1</b> 设置波特率</a></li>
 <li class="chapter" data-level="13.2.2" data-path="ch-uart.html"><a href="ch-uart.html#获取波特率"><i class="fa fa-check"></i><b>13.2.2</b> 获取波特率</a></li>
 <li class="chapter" data-level="13.2.3" data-path="ch-uart.html"><a href="ch-uart.html#接收错误查询"><i class="fa fa-check"></i><b>13.2.3</b> 接收错误查询</a></li>
@@ -299,9 +327,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="ch-pinctrl" class="section level1 hasAnchor">
+<div id="ch-pinctrl" class="section level1 hasAnchor" number="7">
 <h1><span class="header-section-number">7</span> 管脚管理（PINCTRL）<a href="ch-pinctrl.html#ch-pinctrl" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div id="功能概述-2" class="section level2 hasAnchor">
+<div id="功能概述-2" class="section level2 hasAnchor" number="7.1">
 <h2><span class="header-section-number">7.1</span> 功能概述<a href="ch-pinctrl.html#功能概述-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>PINCTRL 模块管理芯片所有 IO 管脚的功能，包括外设 IO 的映射，上拉、下拉选择，输入模式控制，
 输出驱动能力设置等。</p>
@@ -411,107 +439,107 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tbody>
 </table>
 </div>
-<div id="使用说明-1" class="section level2 hasAnchor">
+<div id="使用说明-1" class="section level2 hasAnchor" number="7.2">
 <h2><span class="header-section-number">7.2</span> 使用说明<a href="ch-pinctrl.html#使用说明-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="为外设配置-io-管脚" class="section level3 hasAnchor">
+<div id="为外设配置-io-管脚" class="section level3 hasAnchor" number="7.2.1">
 <h3><span class="header-section-number">7.2.1</span> 为外设配置 IO 管脚<a href="ch-pinctrl.html#为外设配置-io-管脚" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <ol style="list-style-type: decimal">
 <li><p>将外设输出连接到 IO 管脚</p>
 <p>通过 <code>PINCTRL_SetPadMux</code> 将外设输出连接到 IO 管脚。
 注意按照表 <a href="ch-pinctrl.html#tab:ch-pinctrl-common-set">7.1</a> 和 表 <a href="ch-pinctrl.html#tab:ch-pinctrl-mapping">7.2</a>
 确认硬件是否支持。对于不支持的配置，显然无法生效。</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb26-1"><a href="ch-pinctrl.html#cb26-1"></a><span class="dt">void</span> PINCTRL_SetPadMux(</span>
-<span id="cb26-2"><a href="ch-pinctrl.html#cb26-2"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> io_pin_index, <span class="co">// IO 序号 (0..19)</span></span>
-<span id="cb26-3"><a href="ch-pinctrl.html#cb26-3"></a>  <span class="dt">const</span> io_source_t source    <span class="co">// IO 源</span></span>
-<span id="cb26-4"><a href="ch-pinctrl.html#cb26-4"></a>);</span></code></pre></div></li>
+<div class="sourceCode" id="cb26"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb26-1"><a href="ch-pinctrl.html#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> PINCTRL_SetPadMux<span class="op">(</span></span>
+<span id="cb26-2"><a href="ch-pinctrl.html#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> io_pin_index<span class="op">,</span> <span class="co">// IO 序号 (0..19)</span></span>
+<span id="cb26-3"><a href="ch-pinctrl.html#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> io_source_t source    <span class="co">// IO 源</span></span>
+<span id="cb26-4"><a href="ch-pinctrl.html#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div></li>
 <li><p>将 IO 管脚连接到外设的输入</p>
 <p>对于有些外设的输入同样通过 <code>PINCTRL_SetPadMux</code> 配置。对于另一些输入，
 PINCTRL 为不同的外设分别提供了 API 用以配置输入。比如对于 UART 用于硬件流控的
 RXD，需要通过 <code>PINCTRL_SelUartRxdIn</code> 配置 ：</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb27-1"><a href="ch-pinctrl.html#cb27-1"></a><span class="dt">void</span> PINCTRL_SelUartRxdIn(</span>
-<span id="cb27-2"><a href="ch-pinctrl.html#cb27-2"></a>    <span class="dt">const</span> uart_port_t port, <span class="co">//UART 序号</span></span>
-<span id="cb27-3"><a href="ch-pinctrl.html#cb27-3"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> io_pin_index)<span class="co">//连接到 RXD 输入的 IO 管脚</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb27"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb27-1"><a href="ch-pinctrl.html#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> PINCTRL_SelUartRxdIn<span class="op">(</span></span>
+<span id="cb27-2"><a href="ch-pinctrl.html#cb27-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> uart_port_t port<span class="op">,</span> <span class="co">//UART 序号</span></span>
+<span id="cb27-3"><a href="ch-pinctrl.html#cb27-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> io_pin_index<span class="op">)</span><span class="co">//连接到 RXD 输入的 IO 管脚</span></span></code></pre></div></li>
 </ol>
 </div>
-<div id="配置下拉下拉" class="section level3 hasAnchor">
+<div id="配置下拉下拉" class="section level3 hasAnchor" number="7.2.2">
 <h3><span class="header-section-number">7.2.2</span> 配置下拉、下拉<a href="ch-pinctrl.html#配置下拉下拉" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>IO 管脚的上拉、下拉模式通过 <code>PINCTRL_Pull</code> 配置：</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb28-1"><a href="ch-pinctrl.html#cb28-1"></a><span class="dt">void</span> PINCTRL_Pull(</span>
-<span id="cb28-2"><a href="ch-pinctrl.html#cb28-2"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> io_pin_index,     <span class="co">// IO 管脚序号</span></span>
-<span id="cb28-3"><a href="ch-pinctrl.html#cb28-3"></a>  <span class="dt">const</span> pinctrl_pull_mode_t mode  <span class="co">// 模式</span></span>
-<span id="cb28-4"><a href="ch-pinctrl.html#cb28-4"></a>  );</span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb28-1"><a href="ch-pinctrl.html#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> PINCTRL_Pull<span class="op">(</span></span>
+<span id="cb28-2"><a href="ch-pinctrl.html#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> io_pin_index<span class="op">,</span>     <span class="co">// IO 管脚序号</span></span>
+<span id="cb28-3"><a href="ch-pinctrl.html#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> pinctrl_pull_mode_t mode  <span class="co">// 模式</span></span>
+<span id="cb28-4"><a href="ch-pinctrl.html#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">);</span></span></code></pre></div>
 </div>
-<div id="配置驱动能力" class="section level3 hasAnchor">
+<div id="配置驱动能力" class="section level3 hasAnchor" number="7.2.3">
 <h3><span class="header-section-number">7.2.3</span> 配置驱动能力<a href="ch-pinctrl.html#配置驱动能力" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>通过 <code>PINCTRL_SetDriveStrength</code> 配置 IO 管脚的驱动能力：</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb29-1"><a href="ch-pinctrl.html#cb29-1"></a><span class="dt">void</span> PINCTRL_SetDriveStrength(</span>
-<span id="cb29-2"><a href="ch-pinctrl.html#cb29-2"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> io_pin_index,</span>
-<span id="cb29-3"><a href="ch-pinctrl.html#cb29-3"></a>  <span class="dt">const</span> pinctrl_drive_strenght_t strenght);</span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb29-1"><a href="ch-pinctrl.html#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> PINCTRL_SetDriveStrength<span class="op">(</span></span>
+<span id="cb29-2"><a href="ch-pinctrl.html#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> io_pin_index<span class="op">,</span></span>
+<span id="cb29-3"><a href="ch-pinctrl.html#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> pinctrl_drive_strenght_t strenght<span class="op">);</span></span></code></pre></div>
 </div>
-<div id="配置速率" class="section level3 hasAnchor">
+<div id="配置速率" class="section level3 hasAnchor" number="7.2.4">
 <h3><span class="header-section-number">7.2.4</span> 配置速率<a href="ch-pinctrl.html#配置速率" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb30"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb30-1"><a href="ch-pinctrl.html#cb30-1"></a><span class="dt">void</span> PINCTRL_SetSlewRate(</span>
-<span id="cb30-2"><a href="ch-pinctrl.html#cb30-2"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> io_pin_index,   <span class="co">//IO 管脚序号</span></span>
-<span id="cb30-3"><a href="ch-pinctrl.html#cb30-3"></a>  <span class="dt">const</span> pinctrl_slew_rate_t rate);  </span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb30-1"><a href="ch-pinctrl.html#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> PINCTRL_SetSlewRate<span class="op">(</span></span>
+<span id="cb30-2"><a href="ch-pinctrl.html#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> io_pin_index<span class="op">,</span>   <span class="co">//IO 管脚序号</span></span>
+<span id="cb30-3"><a href="ch-pinctrl.html#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> pinctrl_slew_rate_t rate<span class="op">);</span>  </span></code></pre></div>
 </div>
-<div id="io口pwm参考代码" class="section level3 hasAnchor">
+<div id="io口pwm参考代码" class="section level3 hasAnchor" number="7.2.5">
 <h3><span class="header-section-number">7.2.5</span> IO口PWM参考代码<a href="ch-pinctrl.html#io口pwm参考代码" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb31"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb31-1"><a href="ch-pinctrl.html#cb31-1"></a>  <span class="pp">#define LED1_PIN 10 </span><span class="co">//在GPIO10上输出</span></span>
-<span id="cb31-2"><a href="ch-pinctrl.html#cb31-2"></a>  <span class="pp">#define LED1_PWM_CH 4 </span><span class="co">//映射到PWM_4</span></span>
-<span id="cb31-3"><a href="ch-pinctrl.html#cb31-3"></a>  <span class="pp">#define  LED_FREQ     4000 </span><span class="co">//频率4K</span></span>
-<span id="cb31-4"><a href="ch-pinctrl.html#cb31-4"></a>  SYSCTRL_ClearClkGateMulti((<span class="dv">1</span> &lt;&lt; SYSCTRL_ClkGate_APB_PWM));  <span class="co">//打开PWM时钟域</span></span>
-<span id="cb31-5"><a href="ch-pinctrl.html#cb31-5"></a>  PINCTRL_SetGeneralPadMode(LED1_PIN, IO_MODE_PWM, , LED1_PWM_CH, <span class="dv">0</span>); <span class="co">//反向输出</span></span>
-<span id="cb31-6"><a href="ch-pinctrl.html#cb31-6"></a>  PWM_SetupSimple(LED1_PWM_CH, LED_FREQ, <span class="dv">10</span>);</span>
-<span id="cb31-7"><a href="ch-pinctrl.html#cb31-7"></a>  PWM_Enable(LED1_PWM_CH,<span class="dv">1</span>);</span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb31-1"><a href="ch-pinctrl.html#cb31-1" aria-hidden="true" tabindex="-1"></a>  <span class="pp">#define LED1_PIN 10 </span><span class="co">//在GPIO10上输出</span></span>
+<span id="cb31-2"><a href="ch-pinctrl.html#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="pp">#define LED1_PWM_CH 4 </span><span class="co">//映射到PWM_4</span></span>
+<span id="cb31-3"><a href="ch-pinctrl.html#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="pp">#define  LED_FREQ     4000 </span><span class="co">//频率4K</span></span>
+<span id="cb31-4"><a href="ch-pinctrl.html#cb31-4" aria-hidden="true" tabindex="-1"></a>  SYSCTRL_ClearClkGateMulti<span class="op">((</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ClkGate_APB_PWM<span class="op">));</span>  <span class="co">//打开PWM时钟域</span></span>
+<span id="cb31-5"><a href="ch-pinctrl.html#cb31-5" aria-hidden="true" tabindex="-1"></a>  PINCTRL_SetGeneralPadMode<span class="op">(</span>LED1_PIN<span class="op">,</span> IO_MODE_PWM<span class="op">,</span> <span class="op">,</span> LED1_PWM_CH<span class="op">,</span> <span class="dv">0</span><span class="op">);</span> <span class="co">//反向输出</span></span>
+<span id="cb31-6"><a href="ch-pinctrl.html#cb31-6" aria-hidden="true" tabindex="-1"></a>  PWM_SetupSimple<span class="op">(</span>LED1_PWM_CH<span class="op">,</span> LED_FREQ<span class="op">,</span> <span class="dv">10</span><span class="op">);</span></span>
+<span id="cb31-7"><a href="ch-pinctrl.html#cb31-7" aria-hidden="true" tabindex="-1"></a>  PWM_Enable<span class="op">(</span>LED1_PWM_CH<span class="op">,</span><span class="dv">1</span><span class="op">);</span></span></code></pre></div>
 </div>
-<div id="io口配置为uart参考代码" class="section level3 hasAnchor">
+<div id="io口配置为uart参考代码" class="section level3 hasAnchor" number="7.2.6">
 <h3><span class="header-section-number">7.2.6</span> IO口配置为UART参考代码<a href="ch-pinctrl.html#io口配置为uart参考代码" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb32"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb32-1"><a href="ch-pinctrl.html#cb32-1"></a>  <span class="pp">#define PIN_COMM_RX GIO_GPIO_8</span></span>
-<span id="cb32-2"><a href="ch-pinctrl.html#cb32-2"></a>  <span class="pp">#define PIN_COMM_TX GIO_GPIO_7</span></span>
-<span id="cb32-3"><a href="ch-pinctrl.html#cb32-3"></a>  SYSCTRL_ClearClkGateMulti((<span class="dv">1</span> &lt;&lt; SYSCTRL_ClkGate_APB_UART1));</span>
-<span id="cb32-4"><a href="ch-pinctrl.html#cb32-4"></a>  config_uart(OSC_CLK_FREQ, <span class="dv">921600</span>);</span>
-<span id="cb32-5"><a href="ch-pinctrl.html#cb32-5"></a></span>
-<span id="cb32-6"><a href="ch-pinctrl.html#cb32-6"></a>  PINCTRL_SetPadMux(PIN_COMM_RX, IO_SOURCE_GENERAL);</span>
-<span id="cb32-7"><a href="ch-pinctrl.html#cb32-7"></a>  PINCTRL_SelUartRxdIn(UART_PORT_1, PIN_COMM_RX);</span>
-<span id="cb32-8"><a href="ch-pinctrl.html#cb32-8"></a>  PINCTRL_SetPadMux(PIN_COMM_TX, IO_SOURCE_UART1_TXD);</span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb32-1"><a href="ch-pinctrl.html#cb32-1" aria-hidden="true" tabindex="-1"></a>  <span class="pp">#define PIN_COMM_RX GIO_GPIO_8</span></span>
+<span id="cb32-2"><a href="ch-pinctrl.html#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="pp">#define PIN_COMM_TX GIO_GPIO_7</span></span>
+<span id="cb32-3"><a href="ch-pinctrl.html#cb32-3" aria-hidden="true" tabindex="-1"></a>  SYSCTRL_ClearClkGateMulti<span class="op">((</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ClkGate_APB_UART1<span class="op">));</span></span>
+<span id="cb32-4"><a href="ch-pinctrl.html#cb32-4" aria-hidden="true" tabindex="-1"></a>  config_uart<span class="op">(</span>OSC_CLK_FREQ<span class="op">,</span> <span class="dv">921600</span><span class="op">);</span></span>
+<span id="cb32-5"><a href="ch-pinctrl.html#cb32-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-6"><a href="ch-pinctrl.html#cb32-6" aria-hidden="true" tabindex="-1"></a>  PINCTRL_SetPadMux<span class="op">(</span>PIN_COMM_RX<span class="op">,</span> IO_SOURCE_GENERAL<span class="op">);</span></span>
+<span id="cb32-7"><a href="ch-pinctrl.html#cb32-7" aria-hidden="true" tabindex="-1"></a>  PINCTRL_SelUartRxdIn<span class="op">(</span>UART_PORT_1<span class="op">,</span> PIN_COMM_RX<span class="op">);</span></span>
+<span id="cb32-8"><a href="ch-pinctrl.html#cb32-8" aria-hidden="true" tabindex="-1"></a>  PINCTRL_SetPadMux<span class="op">(</span>PIN_COMM_TX<span class="op">,</span> IO_SOURCE_UART1_TXD<span class="op">);</span></span></code></pre></div>
 </div>
-<div id="io口配置为spi参考代码" class="section level3 hasAnchor">
+<div id="io口配置为spi参考代码" class="section level3 hasAnchor" number="7.2.7">
 <h3><span class="header-section-number">7.2.7</span> IO口配置为SPI参考代码<a href="ch-pinctrl.html#io口配置为spi参考代码" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb33"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb33-1"><a href="ch-pinctrl.html#cb33-1"></a>{</span>
-<span id="cb33-2"><a href="ch-pinctrl.html#cb33-2"></a>  <span class="pp">#define SPI_MIC_CLK         GIO_GPIO_13</span></span>
-<span id="cb33-3"><a href="ch-pinctrl.html#cb33-3"></a>  <span class="pp">#define SPI_MIC_MOSI        GIO_GPIO_16</span></span>
-<span id="cb33-4"><a href="ch-pinctrl.html#cb33-4"></a>  <span class="pp">#define SPI_MIC_MISO        GIO_GPIO_17</span></span>
-<span id="cb33-5"><a href="ch-pinctrl.html#cb33-5"></a>  <span class="pp">#define SPI_MIC_CS          GIO_GPIO_8</span></span>
-<span id="cb33-6"><a href="ch-pinctrl.html#cb33-6"></a></span>
-<span id="cb33-7"><a href="ch-pinctrl.html#cb33-7"></a>  SYSCTRL_ClearClkGateMulti((<span class="dv">1</span> &lt;&lt; SYSCTRL_ClkGate_AHB_SPI0)</span>
-<span id="cb33-8"><a href="ch-pinctrl.html#cb33-8"></a>                              | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ClkGate_APB_PinCtrl)</span>
-<span id="cb33-9"><a href="ch-pinctrl.html#cb33-9"></a>                              | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ClkGate_APB_GPIO));</span>
-<span id="cb33-10"><a href="ch-pinctrl.html#cb33-10"></a></span>
-<span id="cb33-11"><a href="ch-pinctrl.html#cb33-11"></a>  PINCTRL_Pull(SPI_MIC_MOSI, PINCTRL_PULL_DOWN);</span>
-<span id="cb33-12"><a href="ch-pinctrl.html#cb33-12"></a>  PINCTRL_Pull(SPI_MIC_CLK, PINCTRL_PULL_UP);</span>
-<span id="cb33-13"><a href="ch-pinctrl.html#cb33-13"></a>  PINCTRL_Pull(SPI_MIC_CS, PINCTRL_PULL_UP);</span>
-<span id="cb33-14"><a href="ch-pinctrl.html#cb33-14"></a>  PINCTRL_Pull(SPI_MIC_MISO, PINCTRL_PULL_UP);</span>
-<span id="cb33-15"><a href="ch-pinctrl.html#cb33-15"></a></span>
-<span id="cb33-16"><a href="ch-pinctrl.html#cb33-16"></a>  PINCTRL_SetDriveStrength(SPI_MIC_MOSI, PINCTRL_DRIVE_12mA);</span>
-<span id="cb33-17"><a href="ch-pinctrl.html#cb33-17"></a>  PINCTRL_SetDriveStrength(SPI_MIC_CLK, PINCTRL_DRIVE_12mA);</span>
-<span id="cb33-18"><a href="ch-pinctrl.html#cb33-18"></a>  PINCTRL_SetDriveStrength(SPI_MIC_CS, PINCTRL_DRIVE_12mA);</span>
-<span id="cb33-19"><a href="ch-pinctrl.html#cb33-19"></a></span>
-<span id="cb33-20"><a href="ch-pinctrl.html#cb33-20"></a>  PINCTRL_SetPadMux(SPI_MIC_MOSI, IO_SOURCE_SPI0_DO);</span>
-<span id="cb33-21"><a href="ch-pinctrl.html#cb33-21"></a>  PINCTRL_SetPadMux(SPI_MIC_CLK, IO_SOURCE_SPI0_CLK);</span>
-<span id="cb33-22"><a href="ch-pinctrl.html#cb33-22"></a>    </span>
-<span id="cb33-23"><a href="ch-pinctrl.html#cb33-23"></a>  PINCTRL_SetPadMux(SPI_MIC_CS, IO_SOURCE_SPI0_SSN);</span>
-<span id="cb33-24"><a href="ch-pinctrl.html#cb33-24"></a>  PINCTRL_SelSpiDiIn(SPI_PORT_0, SPI_MIC_MISO);</span>
-<span id="cb33-25"><a href="ch-pinctrl.html#cb33-25"></a></span>
-<span id="cb33-26"><a href="ch-pinctrl.html#cb33-26"></a>  apSSP_DeviceDisable(AHB_SSP0);</span>
-<span id="cb33-27"><a href="ch-pinctrl.html#cb33-27"></a>  SPI_Init(AHB_SSP0);</span>
-<span id="cb33-28"><a href="ch-pinctrl.html#cb33-28"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb33-1"><a href="ch-pinctrl.html#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb33-2"><a href="ch-pinctrl.html#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="pp">#define SPI_MIC_CLK         GIO_GPIO_13</span></span>
+<span id="cb33-3"><a href="ch-pinctrl.html#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="pp">#define SPI_MIC_MOSI        GIO_GPIO_16</span></span>
+<span id="cb33-4"><a href="ch-pinctrl.html#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="pp">#define SPI_MIC_MISO        GIO_GPIO_17</span></span>
+<span id="cb33-5"><a href="ch-pinctrl.html#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="pp">#define SPI_MIC_CS          GIO_GPIO_8</span></span>
+<span id="cb33-6"><a href="ch-pinctrl.html#cb33-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-7"><a href="ch-pinctrl.html#cb33-7" aria-hidden="true" tabindex="-1"></a>  SYSCTRL_ClearClkGateMulti<span class="op">((</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ClkGate_AHB_SPI0<span class="op">)</span></span>
+<span id="cb33-8"><a href="ch-pinctrl.html#cb33-8" aria-hidden="true" tabindex="-1"></a>                              <span class="op">|</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ClkGate_APB_PinCtrl<span class="op">)</span></span>
+<span id="cb33-9"><a href="ch-pinctrl.html#cb33-9" aria-hidden="true" tabindex="-1"></a>                              <span class="op">|</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ClkGate_APB_GPIO<span class="op">));</span></span>
+<span id="cb33-10"><a href="ch-pinctrl.html#cb33-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-11"><a href="ch-pinctrl.html#cb33-11" aria-hidden="true" tabindex="-1"></a>  PINCTRL_Pull<span class="op">(</span>SPI_MIC_MOSI<span class="op">,</span> PINCTRL_PULL_DOWN<span class="op">);</span></span>
+<span id="cb33-12"><a href="ch-pinctrl.html#cb33-12" aria-hidden="true" tabindex="-1"></a>  PINCTRL_Pull<span class="op">(</span>SPI_MIC_CLK<span class="op">,</span> PINCTRL_PULL_UP<span class="op">);</span></span>
+<span id="cb33-13"><a href="ch-pinctrl.html#cb33-13" aria-hidden="true" tabindex="-1"></a>  PINCTRL_Pull<span class="op">(</span>SPI_MIC_CS<span class="op">,</span> PINCTRL_PULL_UP<span class="op">);</span></span>
+<span id="cb33-14"><a href="ch-pinctrl.html#cb33-14" aria-hidden="true" tabindex="-1"></a>  PINCTRL_Pull<span class="op">(</span>SPI_MIC_MISO<span class="op">,</span> PINCTRL_PULL_UP<span class="op">);</span></span>
+<span id="cb33-15"><a href="ch-pinctrl.html#cb33-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-16"><a href="ch-pinctrl.html#cb33-16" aria-hidden="true" tabindex="-1"></a>  PINCTRL_SetDriveStrength<span class="op">(</span>SPI_MIC_MOSI<span class="op">,</span> PINCTRL_DRIVE_12mA<span class="op">);</span></span>
+<span id="cb33-17"><a href="ch-pinctrl.html#cb33-17" aria-hidden="true" tabindex="-1"></a>  PINCTRL_SetDriveStrength<span class="op">(</span>SPI_MIC_CLK<span class="op">,</span> PINCTRL_DRIVE_12mA<span class="op">);</span></span>
+<span id="cb33-18"><a href="ch-pinctrl.html#cb33-18" aria-hidden="true" tabindex="-1"></a>  PINCTRL_SetDriveStrength<span class="op">(</span>SPI_MIC_CS<span class="op">,</span> PINCTRL_DRIVE_12mA<span class="op">);</span></span>
+<span id="cb33-19"><a href="ch-pinctrl.html#cb33-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-20"><a href="ch-pinctrl.html#cb33-20" aria-hidden="true" tabindex="-1"></a>  PINCTRL_SetPadMux<span class="op">(</span>SPI_MIC_MOSI<span class="op">,</span> IO_SOURCE_SPI0_DO<span class="op">);</span></span>
+<span id="cb33-21"><a href="ch-pinctrl.html#cb33-21" aria-hidden="true" tabindex="-1"></a>  PINCTRL_SetPadMux<span class="op">(</span>SPI_MIC_CLK<span class="op">,</span> IO_SOURCE_SPI0_CLK<span class="op">);</span></span>
+<span id="cb33-22"><a href="ch-pinctrl.html#cb33-22" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb33-23"><a href="ch-pinctrl.html#cb33-23" aria-hidden="true" tabindex="-1"></a>  PINCTRL_SetPadMux<span class="op">(</span>SPI_MIC_CS<span class="op">,</span> IO_SOURCE_SPI0_SSN<span class="op">);</span></span>
+<span id="cb33-24"><a href="ch-pinctrl.html#cb33-24" aria-hidden="true" tabindex="-1"></a>  PINCTRL_SelSpiDiIn<span class="op">(</span>SPI_PORT_0<span class="op">,</span> SPI_MIC_MISO<span class="op">);</span></span>
+<span id="cb33-25"><a href="ch-pinctrl.html#cb33-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-26"><a href="ch-pinctrl.html#cb33-26" aria-hidden="true" tabindex="-1"></a>  apSSP_DeviceDisable<span class="op">(</span>AHB_SSP0<span class="op">);</span></span>
+<span id="cb33-27"><a href="ch-pinctrl.html#cb33-27" aria-hidden="true" tabindex="-1"></a>  SPI_Init<span class="op">(</span>AHB_SSP0<span class="op">);</span></span>
+<span id="cb33-28"><a href="ch-pinctrl.html#cb33-28" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </div>
-<div id="io口配置为i2c参考代码" class="section level3 hasAnchor">
+<div id="io口配置为i2c参考代码" class="section level3 hasAnchor" number="7.2.8">
 <h3><span class="header-section-number">7.2.8</span> IO口配置为I2C参考代码<a href="ch-pinctrl.html#io口配置为i2c参考代码" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb34"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb34-1"><a href="ch-pinctrl.html#cb34-1"></a>SYSCTRL_ClearClkGateMulti(  (<span class="dv">1</span> &lt;&lt; SYSCTRL_ClkGate_APB_I2C0)</span>
-<span id="cb34-2"><a href="ch-pinctrl.html#cb34-2"></a>                              | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ClkGate_APB_PinCtrl));</span>
-<span id="cb34-3"><a href="ch-pinctrl.html#cb34-3"></a>PINCTRL_SetPadMux(<span class="dv">10</span>, IO_SOURCE_I2C0_SCL_OUT);</span>
-<span id="cb34-4"><a href="ch-pinctrl.html#cb34-4"></a>PINCTRL_SetPadMux(<span class="dv">11</span>, IO_SOURCE_I2C0_SDA_OUT);</span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb34-1"><a href="ch-pinctrl.html#cb34-1" aria-hidden="true" tabindex="-1"></a>SYSCTRL_ClearClkGateMulti<span class="op">(</span>  <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ClkGate_APB_I2C0<span class="op">)</span></span>
+<span id="cb34-2"><a href="ch-pinctrl.html#cb34-2" aria-hidden="true" tabindex="-1"></a>                              <span class="op">|</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ClkGate_APB_PinCtrl<span class="op">));</span></span>
+<span id="cb34-3"><a href="ch-pinctrl.html#cb34-3" aria-hidden="true" tabindex="-1"></a>PINCTRL_SetPadMux<span class="op">(</span><span class="dv">10</span><span class="op">,</span> IO_SOURCE_I2C0_SCL_OUT<span class="op">);</span></span>
+<span id="cb34-4"><a href="ch-pinctrl.html#cb34-4" aria-hidden="true" tabindex="-1"></a>PINCTRL_SetPadMux<span class="op">(</span><span class="dv">11</span><span class="op">,</span> IO_SOURCE_I2C0_SDA_OUT<span class="op">);</span></span></code></pre></div>
 
 </div>
 </div>

@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>10 SPI功能概述 | ING918XX 系列芯片外设开发者手册</title>
   <meta name="description" content="ING918XX 系列芯片开发者手册." />
-  <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.32 and GitBook 2.6.7" />
 
   <meta property="og:title" content="10 SPI功能概述 | ING918XX 系列芯片外设开发者手册" />
   <meta property="og:type" content="book" />
@@ -48,25 +48,24 @@
 
 
 
-<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
 <link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
 <link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
 <style type="text/css">
-code.sourceCode > span { display: inline-block; line-height: 1.25; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-code.sourceCode > span:empty { height: 1.2em; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -86,13 +85,13 @@ pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-le
 div.sourceCode
   {   }
 @media screen {
-code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -105,7 +104,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -137,30 +136,38 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> 版本历史</a></li>
-<li class="chapter" data-level="2" data-path="ch-overview.html"><a href="ch-overview.html"><i class="fa fa-check"></i><b>2</b> 概览</a><ul>
+<li class="chapter" data-level="2" data-path="ch-overview.html"><a href="ch-overview.html"><i class="fa fa-check"></i><b>2</b> 概览</a>
+<ul>
 <li class="chapter" data-level="2.1" data-path="ch-overview.html"><a href="ch-overview.html#缩略语及术语"><i class="fa fa-check"></i><b>2.1</b> 缩略语及术语</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="ch-adc.html"><a href="ch-adc.html"><i class="fa fa-check"></i><b>3</b> 模数转换器（ADC）</a><ul>
-<li class="chapter" data-level="3.1" data-path="ch-adc.html"><a href="ch-adc.html#adc-工作模式"><i class="fa fa-check"></i><b>3.1</b> ADC 工作模式</a><ul>
+<li class="chapter" data-level="3" data-path="ch-adc.html"><a href="ch-adc.html"><i class="fa fa-check"></i><b>3</b> 模数转换器（ADC）</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="ch-adc.html"><a href="ch-adc.html#adc-工作模式"><i class="fa fa-check"></i><b>3.1</b> ADC 工作模式</a>
+<ul>
 <li class="chapter" data-level="3.1.1" data-path="ch-adc.html"><a href="ch-adc.html#单次模式adc_mode_single"><i class="fa fa-check"></i><b>3.1.1</b> 单次模式：ADC_MODE_SINGLE</a></li>
 <li class="chapter" data-level="3.1.2" data-path="ch-adc.html"><a href="ch-adc.html#循环模式adc_mode_loop"><i class="fa fa-check"></i><b>3.1.2</b> 循环模式：ADC_MODE_LOOP</a></li>
 </ul></li>
 <li class="chapter" data-level="3.2" data-path="ch-adc.html"><a href="ch-adc.html#adc-采样数率"><i class="fa fa-check"></i><b>3.2</b> ADC 采样数率</a></li>
-<li class="chapter" data-level="3.3" data-path="ch-adc.html"><a href="ch-adc.html#adc-校准"><i class="fa fa-check"></i><b>3.3</b> ADC 校准</a><ul>
+<li class="chapter" data-level="3.3" data-path="ch-adc.html"><a href="ch-adc.html#adc-校准"><i class="fa fa-check"></i><b>3.3</b> ADC 校准</a>
+<ul>
 <li class="chapter" data-level="3.3.1" data-path="ch-adc.html"><a href="ch-adc.html#adc-校准预处理"><i class="fa fa-check"></i><b>3.3.1</b> ADC 校准预处理</a></li>
 <li class="chapter" data-level="3.3.2" data-path="ch-adc.html"><a href="ch-adc.html#adc-读取校准后的值"><i class="fa fa-check"></i><b>3.3.2</b> ADC 读取校准后的值</a></li>
 </ul></li>
 <li class="chapter" data-level="3.4" data-path="ch-adc.html"><a href="ch-adc.html#adc-综合示例"><i class="fa fa-check"></i><b>3.4</b> ADC 综合示例</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="ch-eflash.html"><a href="ch-eflash.html"><i class="fa fa-check"></i><b>4</b> 嵌入式闪存（Embedded Flash）</a><ul>
-<li class="chapter" data-level="4.1" data-path="ch-eflash.html"><a href="ch-eflash.html#eflash-写入数据"><i class="fa fa-check"></i><b>4.1</b> eFlash 写入数据</a><ul>
+<li class="chapter" data-level="4" data-path="ch-eflash.html"><a href="ch-eflash.html"><i class="fa fa-check"></i><b>4</b> 嵌入式闪存（Embedded Flash）</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="ch-eflash.html"><a href="ch-eflash.html#eflash-写入数据"><i class="fa fa-check"></i><b>4.1</b> eFlash 写入数据</a>
+<ul>
 <li class="chapter" data-level="4.1.1" data-path="ch-eflash.html"><a href="ch-eflash.html#eflash-先擦除然后写入数据"><i class="fa fa-check"></i><b>4.1.1</b> eFlash 先擦除然后写入数据</a></li>
 <li class="chapter" data-level="4.1.2" data-path="ch-eflash.html"><a href="ch-eflash.html#eflash-不擦除直接写入数据"><i class="fa fa-check"></i><b>4.1.2</b> eFlash 不擦除直接写入数据</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="ch-gpio.html"><a href="ch-gpio.html"><i class="fa fa-check"></i><b>5</b> 通用输入输出（GPIO）</a><ul>
+<li class="chapter" data-level="5" data-path="ch-gpio.html"><a href="ch-gpio.html"><i class="fa fa-check"></i><b>5</b> 通用输入输出（GPIO）</a>
+<ul>
 <li class="chapter" data-level="5.1" data-path="ch-gpio.html"><a href="ch-gpio.html#功能概述"><i class="fa fa-check"></i><b>5.1</b> 功能概述</a></li>
-<li class="chapter" data-level="5.2" data-path="ch-gpio.html"><a href="ch-gpio.html#使用说明"><i class="fa fa-check"></i><b>5.2</b> 使用说明</a><ul>
+<li class="chapter" data-level="5.2" data-path="ch-gpio.html"><a href="ch-gpio.html#使用说明"><i class="fa fa-check"></i><b>5.2</b> 使用说明</a>
+<ul>
 <li class="chapter" data-level="5.2.1" data-path="ch-gpio.html"><a href="ch-gpio.html#设置-io-方向"><i class="fa fa-check"></i><b>5.2.1</b> 设置 IO 方向</a></li>
 <li class="chapter" data-level="5.2.2" data-path="ch-gpio.html"><a href="ch-gpio.html#读取输入"><i class="fa fa-check"></i><b>5.2.2</b> 读取输入</a></li>
 <li class="chapter" data-level="5.2.3" data-path="ch-gpio.html"><a href="ch-gpio.html#设置输出"><i class="fa fa-check"></i><b>5.2.3</b> 设置输出</a></li>
@@ -168,16 +175,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.2.5" data-path="ch-gpio.html"><a href="ch-gpio.html#处理中断状态"><i class="fa fa-check"></i><b>5.2.5</b> 处理中断状态</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="ch-i2c.html"><a href="ch-i2c.html"><i class="fa fa-check"></i><b>6</b> 集成电路间总线（I2C）</a><ul>
+<li class="chapter" data-level="6" data-path="ch-i2c.html"><a href="ch-i2c.html"><i class="fa fa-check"></i><b>6</b> 集成电路间总线（I2C）</a>
+<ul>
 <li class="chapter" data-level="6.1" data-path="ch-i2c.html"><a href="ch-i2c.html#功能概述-1"><i class="fa fa-check"></i><b>6.1</b> 功能概述</a></li>
 <li class="chapter" data-level="6.2" data-path="ch-i2c.html"><a href="ch-i2c.html#i2c使用说明"><i class="fa fa-check"></i><b>6.2</b> I2C使用说明</a></li>
-<li class="chapter" data-level="6.3" data-path="ch-i2c.html"><a href="ch-i2c.html#使用方法"><i class="fa fa-check"></i><b>6.3</b> 使用方法</a><ul>
+<li class="chapter" data-level="6.3" data-path="ch-i2c.html"><a href="ch-i2c.html#使用方法"><i class="fa fa-check"></i><b>6.3</b> 使用方法</a>
+<ul>
 <li class="chapter" data-level="6.3.1" data-path="ch-i2c.html"><a href="ch-i2c.html#master读些采用queue模式"><i class="fa fa-check"></i><b>6.3.1</b> Master读些，采用QUEUE模式</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html"><i class="fa fa-check"></i><b>7</b> 管脚管理（PINCTRL）</a><ul>
+<li class="chapter" data-level="7" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html"><i class="fa fa-check"></i><b>7</b> 管脚管理（PINCTRL）</a>
+<ul>
 <li class="chapter" data-level="7.1" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#功能概述-2"><i class="fa fa-check"></i><b>7.1</b> 功能概述</a></li>
-<li class="chapter" data-level="7.2" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#使用说明-1"><i class="fa fa-check"></i><b>7.2</b> 使用说明</a><ul>
+<li class="chapter" data-level="7.2" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#使用说明-1"><i class="fa fa-check"></i><b>7.2</b> 使用说明</a>
+<ul>
 <li class="chapter" data-level="7.2.1" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#为外设配置-io-管脚"><i class="fa fa-check"></i><b>7.2.1</b> 为外设配置 IO 管脚</a></li>
 <li class="chapter" data-level="7.2.2" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#配置下拉下拉"><i class="fa fa-check"></i><b>7.2.2</b> 配置下拉、下拉</a></li>
 <li class="chapter" data-level="7.2.3" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#配置驱动能力"><i class="fa fa-check"></i><b>7.2.3</b> 配置驱动能力</a></li>
@@ -188,8 +199,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.2.8" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#io口配置为i2c参考代码"><i class="fa fa-check"></i><b>7.2.8</b> IO口配置为I2C参考代码</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="8" data-path="ch-pwm.html"><a href="ch-pwm.html"><i class="fa fa-check"></i><b>8</b> 脉宽调制发生器（PWM）</a><ul>
-<li class="chapter" data-level="8.1" data-path="ch-pwm.html"><a href="ch-pwm.html#pwm-工作模式"><i class="fa fa-check"></i><b>8.1</b> PWM 工作模式</a><ul>
+<li class="chapter" data-level="8" data-path="ch-pwm.html"><a href="ch-pwm.html"><i class="fa fa-check"></i><b>8</b> 脉宽调制发生器（PWM）</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="ch-pwm.html"><a href="ch-pwm.html#pwm-工作模式"><i class="fa fa-check"></i><b>8.1</b> PWM 工作模式</a>
+<ul>
 <li class="chapter" data-level="8.1.1" data-path="ch-pwm.html"><a href="ch-pwm.html#最简单的模式up_without_died_zone"><i class="fa fa-check"></i><b>8.1.1</b> 最简单的模式：UP_WITHOUT_DIED_ZONE</a></li>
 <li class="chapter" data-level="8.1.2" data-path="ch-pwm.html"><a href="ch-pwm.html#up_with_died_zone"><i class="fa fa-check"></i><b>8.1.2</b> UP_WITH_DIED_ZONE</a></li>
 <li class="chapter" data-level="8.1.3" data-path="ch-pwm.html"><a href="ch-pwm.html#updown_without_died_zone"><i class="fa fa-check"></i><b>8.1.3</b> UPDOWN_WITHOUT_DIED_ZONE</a></li>
@@ -197,7 +210,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="8.1.5" data-path="ch-pwm.html"><a href="ch-pwm.html#single_without_died_zone"><i class="fa fa-check"></i><b>8.1.5</b> SINGLE_WITHOUT_DIED_ZONE</a></li>
 <li class="chapter" data-level="8.1.6" data-path="ch-pwm.html"><a href="ch-pwm.html#输出控制"><i class="fa fa-check"></i><b>8.1.6</b> 输出控制</a></li>
 </ul></li>
-<li class="chapter" data-level="8.2" data-path="ch-pwm.html"><a href="ch-pwm.html#pwm-使用说明"><i class="fa fa-check"></i><b>8.2</b> PWM 使用说明</a><ul>
+<li class="chapter" data-level="8.2" data-path="ch-pwm.html"><a href="ch-pwm.html#pwm-使用说明"><i class="fa fa-check"></i><b>8.2</b> PWM 使用说明</a>
+<ul>
 <li class="chapter" data-level="8.2.1" data-path="ch-pwm.html"><a href="ch-pwm.html#启动与停止"><i class="fa fa-check"></i><b>8.2.1</b> 启动与停止</a></li>
 <li class="chapter" data-level="8.2.2" data-path="ch-pwm.html"><a href="ch-pwm.html#配置工作模式"><i class="fa fa-check"></i><b>8.2.2</b> 配置工作模式</a></li>
 <li class="chapter" data-level="8.2.3" data-path="ch-pwm.html"><a href="ch-pwm.html#配置门限"><i class="fa fa-check"></i><b>8.2.3</b> 配置门限</a></li>
@@ -205,9 +219,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="8.2.5" data-path="ch-pwm.html"><a href="ch-pwm.html#综合示例"><i class="fa fa-check"></i><b>8.2.5</b> 综合示例</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="9" data-path="ch-rtc.html"><a href="ch-rtc.html"><i class="fa fa-check"></i><b>9</b> 实时时钟（RTC）</a><ul>
+<li class="chapter" data-level="9" data-path="ch-rtc.html"><a href="ch-rtc.html"><i class="fa fa-check"></i><b>9</b> 实时时钟（RTC）</a>
+<ul>
 <li class="chapter" data-level="9.1" data-path="ch-rtc.html"><a href="ch-rtc.html#功能概述-3"><i class="fa fa-check"></i><b>9.1</b> 功能概述</a></li>
-<li class="chapter" data-level="9.2" data-path="ch-rtc.html"><a href="ch-rtc.html#接口说明"><i class="fa fa-check"></i><b>9.2</b> 接口说明</a><ul>
+<li class="chapter" data-level="9.2" data-path="ch-rtc.html"><a href="ch-rtc.html#接口说明"><i class="fa fa-check"></i><b>9.2</b> 接口说明</a>
+<ul>
 <li class="chapter" data-level="9.2.1" data-path="ch-rtc.html"><a href="ch-rtc.html#rtc使能禁止"><i class="fa fa-check"></i><b>9.2.1</b> RTC使能/禁止</a></li>
 <li class="chapter" data-level="9.2.2" data-path="ch-rtc.html"><a href="ch-rtc.html#获取rtc当前值"><i class="fa fa-check"></i><b>9.2.2</b> 获取RTC当前值</a></li>
 <li class="chapter" data-level="9.2.3" data-path="ch-rtc.html"><a href="ch-rtc.html#设置中断的计数值"><i class="fa fa-check"></i><b>9.2.3</b> 设置中断的计数值</a></li>
@@ -215,32 +231,41 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="9.3" data-path="ch-rtc.html"><a href="ch-rtc.html#rtc中断使用流程"><i class="fa fa-check"></i><b>9.3</b> RTC中断使用流程</a></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="ch-spi.html"><a href="ch-spi.html"><i class="fa fa-check"></i><b>10</b> SPI功能概述</a><ul>
+<li class="chapter" data-level="10" data-path="ch-spi.html"><a href="ch-spi.html"><i class="fa fa-check"></i><b>10</b> SPI功能概述</a>
+<ul>
 <li class="chapter" data-level="10.1" data-path="ch-spi.html"><a href="ch-spi.html#spi使用说明"><i class="fa fa-check"></i><b>10.1</b> SPI使用说明</a></li>
-<li class="chapter" data-level="10.2" data-path="ch-spi.html"><a href="ch-spi.html#场景1只读只写"><i class="fa fa-check"></i><b>10.2</b> 场景1：只读只写</a><ul>
+<li class="chapter" data-level="10.2" data-path="ch-spi.html"><a href="ch-spi.html#场景1只读只写"><i class="fa fa-check"></i><b>10.2</b> 场景1：只读只写</a>
+<ul>
 <li class="chapter" data-level="10.2.1" data-path="ch-spi.html"><a href="ch-spi.html#spi主配置"><i class="fa fa-check"></i><b>10.2.1</b> SPI主配置</a></li>
 </ul></li>
-<li class="chapter" data-level="10.3" data-path="ch-spi.html"><a href="ch-spi.html#场景2同时读写不带dma"><i class="fa fa-check"></i><b>10.3</b> 场景2：同时读写不带DMA</a><ul>
+<li class="chapter" data-level="10.3" data-path="ch-spi.html"><a href="ch-spi.html#场景2同时读写"><i class="fa fa-check"></i><b>10.3</b> 场景2：同时读写</a>
+<ul>
 <li class="chapter" data-level="10.3.1" data-path="ch-spi.html"><a href="ch-spi.html#spi主配置-1"><i class="fa fa-check"></i><b>10.3.1</b> SPI主配置</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="11" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html"><i class="fa fa-check"></i><b>11</b> 系统控制（SYSCTRL）</a><ul>
-<li class="chapter" data-level="11.1" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#功能概述-4"><i class="fa fa-check"></i><b>11.1</b> 功能概述</a><ul>
+<li class="chapter" data-level="11" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html"><i class="fa fa-check"></i><b>11</b> 系统控制（SYSCTRL）</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#功能概述-4"><i class="fa fa-check"></i><b>11.1</b> 功能概述</a>
+<ul>
 <li class="chapter" data-level="11.1.1" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#外设标识"><i class="fa fa-check"></i><b>11.1.1</b> 外设标识</a></li>
 <li class="chapter" data-level="11.1.2" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#时钟树"><i class="fa fa-check"></i><b>11.1.2</b> 时钟树</a></li>
 </ul></li>
-<li class="chapter" data-level="11.2" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#使用说明-2"><i class="fa fa-check"></i><b>11.2</b> 使用说明</a><ul>
+<li class="chapter" data-level="11.2" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#使用说明-2"><i class="fa fa-check"></i><b>11.2</b> 使用说明</a>
+<ul>
 <li class="chapter" data-level="11.2.1" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#外设复位"><i class="fa fa-check"></i><b>11.2.1</b> 外设复位</a></li>
 <li class="chapter" data-level="11.2.2" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#时钟门控"><i class="fa fa-check"></i><b>11.2.2</b> 时钟门控</a></li>
 <li class="chapter" data-level="11.2.3" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#时钟配置"><i class="fa fa-check"></i><b>11.2.3</b> 时钟配置</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="12" data-path="ch-timer.html"><a href="ch-timer.html"><i class="fa fa-check"></i><b>12</b> 定时器和看门狗</a><ul>
-<li class="chapter" data-level="12.1" data-path="ch-timer.html"><a href="ch-timer.html#功能概述-5"><i class="fa fa-check"></i><b>12.1</b> 功能概述</a><ul>
+<li class="chapter" data-level="12" data-path="ch-timer.html"><a href="ch-timer.html"><i class="fa fa-check"></i><b>12</b> 定时器和看门狗</a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="ch-timer.html"><a href="ch-timer.html#功能概述-5"><i class="fa fa-check"></i><b>12.1</b> 功能概述</a>
+<ul>
 <li class="chapter" data-level="12.1.1" data-path="ch-timer.html"><a href="ch-timer.html#计时器功能"><i class="fa fa-check"></i><b>12.1.1</b> 计时器功能</a></li>
 <li class="chapter" data-level="12.1.2" data-path="ch-timer.html"><a href="ch-timer.html#watchdog的功能"><i class="fa fa-check"></i><b>12.1.2</b> WATCHDOG的功能</a></li>
 </ul></li>
-<li class="chapter" data-level="12.2" data-path="ch-timer.html"><a href="ch-timer.html#timer使用说明"><i class="fa fa-check"></i><b>12.2</b> TIMER使用说明</a><ul>
+<li class="chapter" data-level="12.2" data-path="ch-timer.html"><a href="ch-timer.html#timer使用说明"><i class="fa fa-check"></i><b>12.2</b> TIMER使用说明</a>
+<ul>
 <li class="chapter" data-level="12.2.1" data-path="ch-timer.html"><a href="ch-timer.html#获取timer计数值"><i class="fa fa-check"></i><b>12.2.1</b> 获取Timer计数值</a></li>
 <li class="chapter" data-level="12.2.2" data-path="ch-timer.html"><a href="ch-timer.html#timer计数值清零"><i class="fa fa-check"></i><b>12.2.2</b> TIMER计数值清零</a></li>
 <li class="chapter" data-level="12.2.3" data-path="ch-timer.html"><a href="ch-timer.html#设置timer的比较值"><i class="fa fa-check"></i><b>12.2.3</b> 设置TIMER的比较值</a></li>
@@ -254,15 +279,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="12.2.11" data-path="ch-timer.html"><a href="ch-timer.html#获得timer的中断状态"><i class="fa fa-check"></i><b>12.2.11</b> 获得TIMER的中断状态</a></li>
 </ul></li>
 <li class="chapter" data-level="12.3" data-path="ch-timer.html"><a href="ch-timer.html#timer中断使用流程"><i class="fa fa-check"></i><b>12.3</b> TIMER中断使用流程</a></li>
-<li class="chapter" data-level="12.4" data-path="ch-timer.html"><a href="ch-timer.html#watchdog使用说明"><i class="fa fa-check"></i><b>12.4</b> Watchdog使用说明</a><ul>
+<li class="chapter" data-level="12.4" data-path="ch-timer.html"><a href="ch-timer.html#watchdog使用说明"><i class="fa fa-check"></i><b>12.4</b> Watchdog使用说明</a>
+<ul>
 <li class="chapter" data-level="12.4.1" data-path="ch-timer.html"><a href="ch-timer.html#使能看门狗"><i class="fa fa-check"></i><b>12.4.1</b> 使能看门狗</a></li>
 <li class="chapter" data-level="12.4.2" data-path="ch-timer.html"><a href="ch-timer.html#停用看门狗"><i class="fa fa-check"></i><b>12.4.2</b> 停用看门狗</a></li>
 <li class="chapter" data-level="12.4.3" data-path="ch-timer.html"><a href="ch-timer.html#喂狗"><i class="fa fa-check"></i><b>12.4.3</b> 喂狗</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="13" data-path="ch-uart.html"><a href="ch-uart.html"><i class="fa fa-check"></i><b>13</b> 通用异步收发传输器（UART）</a><ul>
+<li class="chapter" data-level="13" data-path="ch-uart.html"><a href="ch-uart.html"><i class="fa fa-check"></i><b>13</b> 通用异步收发传输器（UART）</a>
+<ul>
 <li class="chapter" data-level="13.1" data-path="ch-uart.html"><a href="ch-uart.html#功能概述-6"><i class="fa fa-check"></i><b>13.1</b> 功能概述</a></li>
-<li class="chapter" data-level="13.2" data-path="ch-uart.html"><a href="ch-uart.html#使用说明-3"><i class="fa fa-check"></i><b>13.2</b> 使用说明</a><ul>
+<li class="chapter" data-level="13.2" data-path="ch-uart.html"><a href="ch-uart.html#使用说明-3"><i class="fa fa-check"></i><b>13.2</b> 使用说明</a>
+<ul>
 <li class="chapter" data-level="13.2.1" data-path="ch-uart.html"><a href="ch-uart.html#设置波特率"><i class="fa fa-check"></i><b>13.2.1</b> 设置波特率</a></li>
 <li class="chapter" data-level="13.2.2" data-path="ch-uart.html"><a href="ch-uart.html#获取波特率"><i class="fa fa-check"></i><b>13.2.2</b> 获取波特率</a></li>
 <li class="chapter" data-level="13.2.3" data-path="ch-uart.html"><a href="ch-uart.html#接收错误查询"><i class="fa fa-check"></i><b>13.2.3</b> 接收错误查询</a></li>
@@ -299,7 +327,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="ch-spi" class="section level1 hasAnchor">
+<div id="ch-spi" class="section level1 hasAnchor" number="10">
 <h1><span class="header-section-number">10</span> SPI功能概述<a href="ch-spi.html#ch-spi" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <ul>
 <li>两个SPI模块</li>
@@ -308,102 +336,102 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>独立可屏蔽中断</li>
 <li>不支持DMA</li>
 </ul>
-<div id="spi使用说明" class="section level2 hasAnchor">
+<div id="spi使用说明" class="section level2 hasAnchor" number="10.1">
 <h2><span class="header-section-number">10.1</span> SPI使用说明<a href="ch-spi.html#spi使用说明" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>以下场景中均以SPI1为例，如果需要SPI0则可以根据情况修改</p>
 </div>
-<div id="场景1只读只写" class="section level2 hasAnchor">
+<div id="场景1只读只写" class="section level2 hasAnchor" number="10.2">
 <h2><span class="header-section-number">10.2</span> 场景1：只读只写<a href="ch-spi.html#场景1只读只写" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>其中SPI主配置为只写模式，先配置GPIO，（GPIO可以根据实际情况自己选择配置）</p>
-<div class="sourceCode" id="cb57"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb57-1"><a href="ch-spi.html#cb57-1"></a><span class="pp">#define SPI_MIC_CLK         GIO_GPIO_6</span></span>
-<span id="cb57-2"><a href="ch-spi.html#cb57-2"></a><span class="pp">#define SPI_MIC_MOSI        GIO_GPIO_7</span></span>
-<span id="cb57-3"><a href="ch-spi.html#cb57-3"></a><span class="pp">#define SPI_MIC_MISO        GIO_GPIO_8</span></span>
-<span id="cb57-4"><a href="ch-spi.html#cb57-4"></a><span class="pp">#define SPI_MIC_CS          GIO_GPIO_9</span></span></code></pre></div>
-<div id="spi主配置" class="section level3 hasAnchor">
+<div class="sourceCode" id="cb57"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb57-1"><a href="ch-spi.html#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define SPI_MIC_CLK         GIO_GPIO_6</span></span>
+<span id="cb57-2"><a href="ch-spi.html#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#define SPI_MIC_MOSI        GIO_GPIO_7</span></span>
+<span id="cb57-3"><a href="ch-spi.html#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#define SPI_MIC_MISO        GIO_GPIO_8</span></span>
+<span id="cb57-4"><a href="ch-spi.html#cb57-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#define SPI_MIC_CS          GIO_GPIO_9</span></span></code></pre></div>
+<div id="spi主配置" class="section level3 hasAnchor" number="10.2.1">
 <h3><span class="header-section-number">10.2.1</span> SPI主配置<a href="ch-spi.html#spi主配置" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div id="接口配置" class="section level4 hasAnchor">
+<div id="接口配置" class="section level4 hasAnchor" number="10.2.1.1">
 <h4><span class="header-section-number">10.2.1.1</span> 接口配置<a href="ch-spi.html#接口配置" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb58"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb58-1"><a href="ch-spi.html#cb58-1"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_spi_pin(<span class="dt">void</span>)</span>
-<span id="cb58-2"><a href="ch-spi.html#cb58-2"></a>{</span>
-<span id="cb58-3"><a href="ch-spi.html#cb58-3"></a>    <span class="co">// 打开SPI模块时钟</span></span>
-<span id="cb58-4"><a href="ch-spi.html#cb58-4"></a>    <span class="co">// 此处是以SPI1为例，如果是SPI0则需要更改</span></span>
-<span id="cb58-5"><a href="ch-spi.html#cb58-5"></a>    <span class="co">// 根据使用的GPIO，选择打开GPIO0或者GPIO1的时钟</span></span>
-<span id="cb58-6"><a href="ch-spi.html#cb58-6"></a>    SYSCTRL_ClearClkGateMulti(    (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_SPI1)</span>
-<span id="cb58-7"><a href="ch-spi.html#cb58-7"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_SysCtrl)</span>
-<span id="cb58-8"><a href="ch-spi.html#cb58-8"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_PinCtrl)</span>
-<span id="cb58-9"><a href="ch-spi.html#cb58-9"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_GPIO1)</span>
-<span id="cb58-10"><a href="ch-spi.html#cb58-10"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_GPIO0));</span>
-<span id="cb58-11"><a href="ch-spi.html#cb58-11"></a></span>
-<span id="cb58-12"><a href="ch-spi.html#cb58-12"></a>    <span class="co">// 设置IO MUX，将GPIO映射成SPI功能，不需要的pin可以使用IO_NOT_A_PIN替代</span></span>
-<span id="cb58-13"><a href="ch-spi.html#cb58-13"></a>    PINCTRL_SelSpiIn(SPI_PORT_1, SPI_MIC_CLK, SPI_MIC_CS, SPI_MIC_HOLD, SPI_MIC_WP, SPI_MIC_MISO, SPI_MIC_MOSI);</span>
-<span id="cb58-14"><a href="ch-spi.html#cb58-14"></a>    PINCTRL_SetPadMux(SPI_MIC_CLK, IO_SOURCE_SPI1_CLK_OUT);</span>
-<span id="cb58-15"><a href="ch-spi.html#cb58-15"></a>    PINCTRL_SetPadMux(SPI_MIC_CS, IO_SOURCE_SPI1_CSN_OUT);</span>
-<span id="cb58-16"><a href="ch-spi.html#cb58-16"></a>    PINCTRL_SetPadMux(SPI_MIC_MOSI, IO_SOURCE_SPI1_MOSI_OUT);</span>
-<span id="cb58-17"><a href="ch-spi.html#cb58-17"></a>    </span>
-<span id="cb58-18"><a href="ch-spi.html#cb58-18"></a>    <span class="co">// 设置SPI的中断</span></span>
-<span id="cb58-19"><a href="ch-spi.html#cb58-19"></a>    platform_set_irq_callback(PLATFORM_CB_IRQ_APBSPI,peripherals_spi_isr, NULL);</span></code></pre></div>
+<div class="sourceCode" id="cb58"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb58-1"><a href="ch-spi.html#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_spi_pin<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb58-2"><a href="ch-spi.html#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb58-3"><a href="ch-spi.html#cb58-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 打开SPI模块时钟</span></span>
+<span id="cb58-4"><a href="ch-spi.html#cb58-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 此处是以SPI1为例，如果是SPI0则需要更改</span></span>
+<span id="cb58-5"><a href="ch-spi.html#cb58-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 根据使用的GPIO，选择打开GPIO0或者GPIO1的时钟</span></span>
+<span id="cb58-6"><a href="ch-spi.html#cb58-6" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGateMulti<span class="op">(</span>    <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_SPI1<span class="op">)</span></span>
+<span id="cb58-7"><a href="ch-spi.html#cb58-7" aria-hidden="true" tabindex="-1"></a>                                <span class="op">|</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_SysCtrl<span class="op">)</span></span>
+<span id="cb58-8"><a href="ch-spi.html#cb58-8" aria-hidden="true" tabindex="-1"></a>                                <span class="op">|</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_PinCtrl<span class="op">)</span></span>
+<span id="cb58-9"><a href="ch-spi.html#cb58-9" aria-hidden="true" tabindex="-1"></a>                                <span class="op">|</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_GPIO1<span class="op">)</span></span>
+<span id="cb58-10"><a href="ch-spi.html#cb58-10" aria-hidden="true" tabindex="-1"></a>                                <span class="op">|</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_GPIO0<span class="op">));</span></span>
+<span id="cb58-11"><a href="ch-spi.html#cb58-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-12"><a href="ch-spi.html#cb58-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 设置IO MUX，将GPIO映射成SPI功能，不需要的pin可以使用IO_NOT_A_PIN替代</span></span>
+<span id="cb58-13"><a href="ch-spi.html#cb58-13" aria-hidden="true" tabindex="-1"></a>    PINCTRL_SelSpiIn<span class="op">(</span>SPI_PORT_1<span class="op">,</span> SPI_MIC_CLK<span class="op">,</span> SPI_MIC_CS<span class="op">,</span> SPI_MIC_HOLD<span class="op">,</span> SPI_MIC_WP<span class="op">,</span> SPI_MIC_MISO<span class="op">,</span> SPI_MIC_MOSI<span class="op">);</span></span>
+<span id="cb58-14"><a href="ch-spi.html#cb58-14" aria-hidden="true" tabindex="-1"></a>    PINCTRL_SetPadMux<span class="op">(</span>SPI_MIC_CLK<span class="op">,</span> IO_SOURCE_SPI1_CLK_OUT<span class="op">);</span></span>
+<span id="cb58-15"><a href="ch-spi.html#cb58-15" aria-hidden="true" tabindex="-1"></a>    PINCTRL_SetPadMux<span class="op">(</span>SPI_MIC_CS<span class="op">,</span> IO_SOURCE_SPI1_CSN_OUT<span class="op">);</span></span>
+<span id="cb58-16"><a href="ch-spi.html#cb58-16" aria-hidden="true" tabindex="-1"></a>    PINCTRL_SetPadMux<span class="op">(</span>SPI_MIC_MOSI<span class="op">,</span> IO_SOURCE_SPI1_MOSI_OUT<span class="op">);</span></span>
+<span id="cb58-17"><a href="ch-spi.html#cb58-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb58-18"><a href="ch-spi.html#cb58-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 设置SPI的中断</span></span>
+<span id="cb58-19"><a href="ch-spi.html#cb58-19" aria-hidden="true" tabindex="-1"></a>    platform_set_irq_callback<span class="op">(</span>PLATFORM_CB_IRQ_APBSPI<span class="op">,</span>peripherals_spi_isr<span class="op">,</span> NULL<span class="op">);</span></span></code></pre></div>
 </div>
-<div id="spi模块初始化" class="section level4 hasAnchor">
+<div id="spi模块初始化" class="section level4 hasAnchor" number="10.2.1.2">
 <h4><span class="header-section-number">10.2.1.2</span> SPI模块初始化<a href="ch-spi.html#spi模块初始化" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>常用设置项用注释标出，详细定义请参考“peripheral_ssp.h”</p>
-<div class="sourceCode" id="cb59"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb59-1"><a href="ch-spi.html#cb59-1"></a><span class="co">// 示例，每次传输大小是8个word</span></span>
-<span id="cb59-2"><a href="ch-spi.html#cb59-2"></a><span class="pp">#define DATA_LEN (SPI_FIFO_DEPTH)</span></span>
-<span id="cb59-3"><a href="ch-spi.html#cb59-3"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_spi_module(<span class="dt">void</span>)</span>
-<span id="cb59-4"><a href="ch-spi.html#cb59-4"></a>{</span>
-<span id="cb59-5"><a href="ch-spi.html#cb59-5"></a>    apSSP_sDeviceControlBlock pParam;</span>
-<span id="cb59-6"><a href="ch-spi.html#cb59-6"></a>    pParam.eSclkDiv = SPI_INTERFACETIMINGSCLKDIV_DEFAULT_2M;<span class="co">// SPI 时钟设置</span></span>
-<span id="cb59-7"><a href="ch-spi.html#cb59-7"></a>    pParam.eSCLKPolarity = SPI_CPOL_SCLK_LOW_IN_IDLE_STATES;<span class="co">// SPI 模式设置</span></span>
-<span id="cb59-8"><a href="ch-spi.html#cb59-8"></a>    pParam.eSCLKPhase = SPI_CPHA_ODD_SCLK_EDGES;<span class="co">// SPI 模式设置</span></span>
-<span id="cb59-9"><a href="ch-spi.html#cb59-9"></a>    pParam.eLsbMsbOrder = SPI_LSB_MOST_SIGNIFICANT_BIT_FIRST;</span>
-<span id="cb59-10"><a href="ch-spi.html#cb59-10"></a>    pParam.eDataSize = SPI_DATALEN_32_BITS;<span class="co">// SPI 每个传输单位的大小</span></span>
-<span id="cb59-11"><a href="ch-spi.html#cb59-11"></a>    pParam.eMasterSlaveMode = SPI_SLVMODE_MASTER_MODE;<span class="co">// SPI主模式</span></span>
-<span id="cb59-12"><a href="ch-spi.html#cb59-12"></a>    pParam.eReadWriteMode = SPI_TRANSMODE_WRITE_ONLY;<span class="co">// SPI只写</span></span>
-<span id="cb59-13"><a href="ch-spi.html#cb59-13"></a>    pParam.eQuadMode = SPI_DUALQUAD_REGULAR_MODE;</span>
-<span id="cb59-14"><a href="ch-spi.html#cb59-14"></a>    pParam.eWriteTransCnt = DATA_LEN;<span class="co">// SPI每次传输多少个单位（每个单位的大小是pParam.eDataSize）</span></span>
-<span id="cb59-15"><a href="ch-spi.html#cb59-15"></a>    pParam.eReadTransCnt = DATA_LEN;<span class="co">// SPI每次接收多少个单位（每个单位的大小是pParam.eDataSize）</span></span>
-<span id="cb59-16"><a href="ch-spi.html#cb59-16"></a>    pParam.eAddrEn = SPI_ADDREN_DISABLE;</span>
-<span id="cb59-17"><a href="ch-spi.html#cb59-17"></a>    pParam.eCmdEn = SPI_CMDEN_DISABLE;</span>
-<span id="cb59-18"><a href="ch-spi.html#cb59-18"></a>    pParam.RxThres = DATA_LEN/<span class="dv">2</span>;</span>
-<span id="cb59-19"><a href="ch-spi.html#cb59-19"></a>    pParam.TxThres = DATA_LEN/<span class="dv">2</span>;</span>
-<span id="cb59-20"><a href="ch-spi.html#cb59-20"></a>    pParam.SlaveDataOnly = SPI_SLVDATAONLY_ENABLE;</span>
-<span id="cb59-21"><a href="ch-spi.html#cb59-21"></a>    pParam.eAddrLen = SPI_ADDRLEN_1_BYTE;</span>
-<span id="cb59-22"><a href="ch-spi.html#cb59-22"></a>    pParam.eInterruptMask = (<span class="dv">1</span> &lt;&lt; bsSPI_INTREN_ENDINTEN);<span class="co">// 打开SPI中断（传输结束后触发）</span></span>
-<span id="cb59-23"><a href="ch-spi.html#cb59-23"></a>  </span>
-<span id="cb59-24"><a href="ch-spi.html#cb59-24"></a>    apSSP_DeviceParametersSet(APB_SSP1, &amp;pParam);</span>
-<span id="cb59-25"><a href="ch-spi.html#cb59-25"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb59"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb59-1"><a href="ch-spi.html#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 示例，每次传输大小是8个word</span></span>
+<span id="cb59-2"><a href="ch-spi.html#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#define DATA_LEN (SPI_FIFO_DEPTH)</span></span>
+<span id="cb59-3"><a href="ch-spi.html#cb59-3" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_spi_module<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb59-4"><a href="ch-spi.html#cb59-4" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb59-5"><a href="ch-spi.html#cb59-5" aria-hidden="true" tabindex="-1"></a>    apSSP_sDeviceControlBlock pParam<span class="op">;</span></span>
+<span id="cb59-6"><a href="ch-spi.html#cb59-6" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>eSclkDiv <span class="op">=</span> SPI_INTERFACETIMINGSCLKDIV_DEFAULT_2M<span class="op">;</span><span class="co">// SPI 时钟设置</span></span>
+<span id="cb59-7"><a href="ch-spi.html#cb59-7" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>eSCLKPolarity <span class="op">=</span> SPI_CPOL_SCLK_LOW_IN_IDLE_STATES<span class="op">;</span><span class="co">// SPI 模式设置</span></span>
+<span id="cb59-8"><a href="ch-spi.html#cb59-8" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>eSCLKPhase <span class="op">=</span> SPI_CPHA_ODD_SCLK_EDGES<span class="op">;</span><span class="co">// SPI 模式设置</span></span>
+<span id="cb59-9"><a href="ch-spi.html#cb59-9" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>eLsbMsbOrder <span class="op">=</span> SPI_LSB_MOST_SIGNIFICANT_BIT_FIRST<span class="op">;</span></span>
+<span id="cb59-10"><a href="ch-spi.html#cb59-10" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>eDataSize <span class="op">=</span> SPI_DATALEN_32_BITS<span class="op">;</span><span class="co">// SPI 每个传输单位的大小</span></span>
+<span id="cb59-11"><a href="ch-spi.html#cb59-11" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>eMasterSlaveMode <span class="op">=</span> SPI_SLVMODE_MASTER_MODE<span class="op">;</span><span class="co">// SPI主模式</span></span>
+<span id="cb59-12"><a href="ch-spi.html#cb59-12" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>eReadWriteMode <span class="op">=</span> SPI_TRANSMODE_WRITE_ONLY<span class="op">;</span><span class="co">// SPI只写</span></span>
+<span id="cb59-13"><a href="ch-spi.html#cb59-13" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>eQuadMode <span class="op">=</span> SPI_DUALQUAD_REGULAR_MODE<span class="op">;</span></span>
+<span id="cb59-14"><a href="ch-spi.html#cb59-14" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>eWriteTransCnt <span class="op">=</span> DATA_LEN<span class="op">;</span><span class="co">// SPI每次传输多少个单位（每个单位的大小是pParam.eDataSize）</span></span>
+<span id="cb59-15"><a href="ch-spi.html#cb59-15" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>eReadTransCnt <span class="op">=</span> DATA_LEN<span class="op">;</span><span class="co">// SPI每次接收多少个单位（每个单位的大小是pParam.eDataSize）</span></span>
+<span id="cb59-16"><a href="ch-spi.html#cb59-16" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>eAddrEn <span class="op">=</span> SPI_ADDREN_DISABLE<span class="op">;</span></span>
+<span id="cb59-17"><a href="ch-spi.html#cb59-17" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>eCmdEn <span class="op">=</span> SPI_CMDEN_DISABLE<span class="op">;</span></span>
+<span id="cb59-18"><a href="ch-spi.html#cb59-18" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>RxThres <span class="op">=</span> DATA_LEN<span class="op">/</span><span class="dv">2</span><span class="op">;</span></span>
+<span id="cb59-19"><a href="ch-spi.html#cb59-19" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>TxThres <span class="op">=</span> DATA_LEN<span class="op">/</span><span class="dv">2</span><span class="op">;</span></span>
+<span id="cb59-20"><a href="ch-spi.html#cb59-20" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>SlaveDataOnly <span class="op">=</span> SPI_SLVDATAONLY_ENABLE<span class="op">;</span></span>
+<span id="cb59-21"><a href="ch-spi.html#cb59-21" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>eAddrLen <span class="op">=</span> SPI_ADDRLEN_1_BYTE<span class="op">;</span></span>
+<span id="cb59-22"><a href="ch-spi.html#cb59-22" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>eInterruptMask <span class="op">=</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> bsSPI_INTREN_ENDINTEN<span class="op">);</span><span class="co">// 打开SPI中断（传输结束后触发）</span></span>
+<span id="cb59-23"><a href="ch-spi.html#cb59-23" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb59-24"><a href="ch-spi.html#cb59-24" aria-hidden="true" tabindex="-1"></a>    apSSP_DeviceParametersSet<span class="op">(</span>APB_SSP1<span class="op">,</span> <span class="op">&amp;</span>pParam<span class="op">);</span></span>
+<span id="cb59-25"><a href="ch-spi.html#cb59-25" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </div>
-<div id="spi-中断" class="section level4 hasAnchor">
+<div id="spi-中断" class="section level4 hasAnchor" number="10.2.1.3">
 <h4><span class="header-section-number">10.2.1.3</span> SPI 中断<a href="ch-spi.html#spi-中断" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb60"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb60-1"><a href="ch-spi.html#cb60-1"></a><span class="co">// SPI ENDINT中断触发标志传输结束，清除中断状态</span></span>
-<span id="cb60-2"><a href="ch-spi.html#cb60-2"></a><span class="dt">static</span> <span class="dt">uint32_t</span> peripherals_spi_isr(<span class="dt">void</span> *user_data)</span>
-<span id="cb60-3"><a href="ch-spi.html#cb60-3"></a>{</span>
-<span id="cb60-4"><a href="ch-spi.html#cb60-4"></a>    <span class="dt">uint32_t</span> stat = apSSP_GetIntRawStatus(APB_SSP1);</span>
-<span id="cb60-5"><a href="ch-spi.html#cb60-5"></a></span>
-<span id="cb60-6"><a href="ch-spi.html#cb60-6"></a>    <span class="cf">if</span>(stat &amp; (<span class="dv">1</span> &lt;&lt; bsSPI_INTREN_ENDINTEN))</span>
-<span id="cb60-7"><a href="ch-spi.html#cb60-7"></a>    {</span>
-<span id="cb60-8"><a href="ch-spi.html#cb60-8"></a>        apSSP_ClearIntStatus(APB_SSP1, <span class="dv">1</span> &lt;&lt; bsSPI_INTREN_ENDINTEN);</span>
-<span id="cb60-9"><a href="ch-spi.html#cb60-9"></a>    }  </span>
-<span id="cb60-10"><a href="ch-spi.html#cb60-10"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb60"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb60-1"><a href="ch-spi.html#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="co">// SPI ENDINT中断触发标志传输结束，清除中断状态</span></span>
+<span id="cb60-2"><a href="ch-spi.html#cb60-2" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> peripherals_spi_isr<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
+<span id="cb60-3"><a href="ch-spi.html#cb60-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb60-4"><a href="ch-spi.html#cb60-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> stat <span class="op">=</span> apSSP_GetIntRawStatus<span class="op">(</span>APB_SSP1<span class="op">);</span></span>
+<span id="cb60-5"><a href="ch-spi.html#cb60-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-6"><a href="ch-spi.html#cb60-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>stat <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> bsSPI_INTREN_ENDINTEN<span class="op">))</span></span>
+<span id="cb60-7"><a href="ch-spi.html#cb60-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb60-8"><a href="ch-spi.html#cb60-8" aria-hidden="true" tabindex="-1"></a>        apSSP_ClearIntStatus<span class="op">(</span>APB_SSP1<span class="op">,</span> <span class="dv">1</span> <span class="op">&lt;&lt;</span> bsSPI_INTREN_ENDINTEN<span class="op">);</span></span>
+<span id="cb60-9"><a href="ch-spi.html#cb60-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span>  </span>
+<span id="cb60-10"><a href="ch-spi.html#cb60-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </div>
-<div id="spi-发送数据" class="section level4 hasAnchor">
+<div id="spi-发送数据" class="section level4 hasAnchor" number="10.2.1.4">
 <h4><span class="header-section-number">10.2.1.4</span> SPI 发送数据<a href="ch-spi.html#spi-发送数据" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb61"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb61-1"><a href="ch-spi.html#cb61-1"></a><span class="dt">uint32_t</span> write_data[DATA_LEN];<span class="co">//数据大小等于pParam.eDataSize，数组大小等于pParam.eWriteTransCnt</span></span>
-<span id="cb61-2"><a href="ch-spi.html#cb61-2"></a><span class="dt">void</span> peripherals_spi_send_data(<span class="dt">void</span>)</span>
-<span id="cb61-3"><a href="ch-spi.html#cb61-3"></a>{</span>
-<span id="cb61-4"><a href="ch-spi.html#cb61-4"></a>    <span class="co">// 写入命令，触发SPI传输</span></span>
-<span id="cb61-5"><a href="ch-spi.html#cb61-5"></a>    apSSP_WriteCmd(APB_SSP1, <span class="bn">0x00</span>, <span class="bn">0x00</span>);<span class="co">//trigger transfer</span></span>
-<span id="cb61-6"><a href="ch-spi.html#cb61-6"></a></span>
-<span id="cb61-7"><a href="ch-spi.html#cb61-7"></a>    <span class="co">// 填写数据到TX FIFO，这个例子中DATA_LEN等于FIFO的深度（8），如果大于8，可以分为多次发送</span></span>
-<span id="cb61-8"><a href="ch-spi.html#cb61-8"></a>    <span class="cf">for</span>(i = <span class="dv">0</span>; i &lt; DATA_LEN; i++)</span>
-<span id="cb61-9"><a href="ch-spi.html#cb61-9"></a>    {</span>
-<span id="cb61-10"><a href="ch-spi.html#cb61-10"></a>        apSSP_WriteFIFO(APB_SSP1, write_data[i]);</span>
-<span id="cb61-11"><a href="ch-spi.html#cb61-11"></a>    }</span>
-<span id="cb61-12"><a href="ch-spi.html#cb61-12"></a></span>
-<span id="cb61-13"><a href="ch-spi.html#cb61-13"></a>    <span class="co">// 等待发送结束</span></span>
-<span id="cb61-14"><a href="ch-spi.html#cb61-14"></a>    <span class="cf">while</span>(apSSP_GetSPIActiveStatus(APB_SSP1));</span>
-<span id="cb61-15"><a href="ch-spi.html#cb61-15"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb61"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb61-1"><a href="ch-spi.html#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> write_data<span class="op">[</span>DATA_LEN<span class="op">];</span><span class="co">//数据大小等于pParam.eDataSize，数组大小等于pParam.eWriteTransCnt</span></span>
+<span id="cb61-2"><a href="ch-spi.html#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> peripherals_spi_send_data<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb61-3"><a href="ch-spi.html#cb61-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb61-4"><a href="ch-spi.html#cb61-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 写入命令，触发SPI传输</span></span>
+<span id="cb61-5"><a href="ch-spi.html#cb61-5" aria-hidden="true" tabindex="-1"></a>    apSSP_WriteCmd<span class="op">(</span>APB_SSP1<span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">);</span><span class="co">//trigger transfer</span></span>
+<span id="cb61-6"><a href="ch-spi.html#cb61-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-7"><a href="ch-spi.html#cb61-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 填写数据到TX FIFO，这个例子中DATA_LEN等于FIFO的深度（8），如果大于8，可以分为多次发送</span></span>
+<span id="cb61-8"><a href="ch-spi.html#cb61-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(</span>i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> DATA_LEN<span class="op">;</span> i<span class="op">++)</span></span>
+<span id="cb61-9"><a href="ch-spi.html#cb61-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb61-10"><a href="ch-spi.html#cb61-10" aria-hidden="true" tabindex="-1"></a>        apSSP_WriteFIFO<span class="op">(</span>APB_SSP1<span class="op">,</span> write_data<span class="op">[</span>i<span class="op">]);</span></span>
+<span id="cb61-11"><a href="ch-spi.html#cb61-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb61-12"><a href="ch-spi.html#cb61-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-13"><a href="ch-spi.html#cb61-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 等待发送结束</span></span>
+<span id="cb61-14"><a href="ch-spi.html#cb61-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span><span class="op">(</span>apSSP_GetSPIActiveStatus<span class="op">(</span>APB_SSP1<span class="op">));</span></span>
+<span id="cb61-15"><a href="ch-spi.html#cb61-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </div>
-<div id="使用流程" class="section level4 hasAnchor">
+<div id="使用流程" class="section level4 hasAnchor" number="10.2.1.5">
 <h4><span class="header-section-number">10.2.1.5</span> 使用流程<a href="ch-spi.html#使用流程" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <ul>
 <li>设置GPIO，setup_peripherals_spi_pin()</li>
@@ -414,107 +442,107 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </div>
-<div id="场景2同时读写不带dma" class="section level2 hasAnchor">
-<h2><span class="header-section-number">10.3</span> 场景2：同时读写不带DMA<a href="ch-spi.html#场景2同时读写不带dma" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>其中SPI主从都配置为同时读写模式，CPU操作读写，没有使用DMA 配置之前需要决定使用的GPIO，如果是普通模式，则不需要SPI_MIC_WP和SPI_MIC_HOLD</p>
-<div class="sourceCode" id="cb62"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb62-1"><a href="ch-spi.html#cb62-1"></a><span class="pp">#define SPI_MIC_CLK         GIO_GPIO_10</span></span>
-<span id="cb62-2"><a href="ch-spi.html#cb62-2"></a><span class="pp">#define SPI_MIC_MOSI        GIO_GPIO_11</span></span>
-<span id="cb62-3"><a href="ch-spi.html#cb62-3"></a><span class="pp">#define SPI_MIC_MISO        GIO_GPIO_12</span></span>
-<span id="cb62-4"><a href="ch-spi.html#cb62-4"></a><span class="pp">#define SPI_MIC_CS          GIO_GPIO_13</span></span>
-<span id="cb62-5"><a href="ch-spi.html#cb62-5"></a><span class="pp">#define SPI_MIC_WP          GIO_GPIO_14</span></span>
-<span id="cb62-6"><a href="ch-spi.html#cb62-6"></a><span class="pp">#define SPI_MIC_HOLD        GIO_GPIO_15</span></span></code></pre></div>
-<div id="spi主配置-1" class="section level3 hasAnchor">
+<div id="场景2同时读写" class="section level2 hasAnchor" number="10.3">
+<h2><span class="header-section-number">10.3</span> 场景2：同时读写<a href="ch-spi.html#场景2同时读写" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>其中SPI主从都配置为同时读写模式，CPU操作读写，先配置GPIO管脚，如果是普通模式，则不需要SPI_MIC_WP和SPI_MIC_HOLD</p>
+<div class="sourceCode" id="cb62"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb62-1"><a href="ch-spi.html#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define SPI_MIC_CLK         GIO_GPIO_10</span></span>
+<span id="cb62-2"><a href="ch-spi.html#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#define SPI_MIC_MOSI        GIO_GPIO_11</span></span>
+<span id="cb62-3"><a href="ch-spi.html#cb62-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#define SPI_MIC_MISO        GIO_GPIO_12</span></span>
+<span id="cb62-4"><a href="ch-spi.html#cb62-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#define SPI_MIC_CS          GIO_GPIO_13</span></span>
+<span id="cb62-5"><a href="ch-spi.html#cb62-5" aria-hidden="true" tabindex="-1"></a><span class="pp">#define SPI_MIC_WP          GIO_GPIO_14</span></span>
+<span id="cb62-6"><a href="ch-spi.html#cb62-6" aria-hidden="true" tabindex="-1"></a><span class="pp">#define SPI_MIC_HOLD        GIO_GPIO_15</span></span></code></pre></div>
+<div id="spi主配置-1" class="section level3 hasAnchor" number="10.3.1">
 <h3><span class="header-section-number">10.3.1</span> SPI主配置<a href="ch-spi.html#spi主配置-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div id="接口配置-1" class="section level4 hasAnchor">
+<div id="接口配置-1" class="section level4 hasAnchor" number="10.3.1.1">
 <h4><span class="header-section-number">10.3.1.1</span> 接口配置<a href="ch-spi.html#接口配置-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb63"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb63-1"><a href="ch-spi.html#cb63-1"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_spi_pin(<span class="dt">void</span>)</span>
-<span id="cb63-2"><a href="ch-spi.html#cb63-2"></a>{</span>
-<span id="cb63-3"><a href="ch-spi.html#cb63-3"></a>    <span class="co">// 打开SPI模块时钟</span></span>
-<span id="cb63-4"><a href="ch-spi.html#cb63-4"></a>    <span class="co">// 此处是以SPI1为例，如果是SPI0则需要更改</span></span>
-<span id="cb63-5"><a href="ch-spi.html#cb63-5"></a>    <span class="co">// 根据使用的GPIO，选择打开GPIO0或者GPIO1的时钟</span></span>
-<span id="cb63-6"><a href="ch-spi.html#cb63-6"></a>    SYSCTRL_ClearClkGateMulti(    (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_SPI1)</span>
-<span id="cb63-7"><a href="ch-spi.html#cb63-7"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_SysCtrl)</span>
-<span id="cb63-8"><a href="ch-spi.html#cb63-8"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_PinCtrl)</span>
-<span id="cb63-9"><a href="ch-spi.html#cb63-9"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_GPIO1)</span>
-<span id="cb63-10"><a href="ch-spi.html#cb63-10"></a>                                | (<span class="dv">1</span> &lt;&lt; SYSCTRL_ITEM_APB_GPIO0));</span>
-<span id="cb63-11"><a href="ch-spi.html#cb63-11"></a></span>
-<span id="cb63-12"><a href="ch-spi.html#cb63-12"></a>    <span class="co">// 设置IO MUX，将GPIO映射成SPI功能，不需要的pin可以使用IO_NOT_A_PIN替代</span></span>
-<span id="cb63-13"><a href="ch-spi.html#cb63-13"></a>    PINCTRL_SelSpiIn(SPI_PORT_1, SPI_MIC_CLK, SPI_MIC_CS, SPI_MIC_HOLD, SPI_MIC_WP, SPI_MIC_MISO, SPI_MIC_MOSI);</span>
-<span id="cb63-14"><a href="ch-spi.html#cb63-14"></a>    PINCTRL_SetPadMux(SPI_MIC_CLK, IO_SOURCE_SPI1_CLK_OUT);</span>
-<span id="cb63-15"><a href="ch-spi.html#cb63-15"></a>    PINCTRL_SetPadMux(SPI_MIC_CS, IO_SOURCE_SPI1_CSN_OUT);</span>
-<span id="cb63-16"><a href="ch-spi.html#cb63-16"></a>    PINCTRL_SetPadMux(SPI_MIC_MOSI, IO_SOURCE_SPI1_MOSI_OUT);</span>
-<span id="cb63-17"><a href="ch-spi.html#cb63-17"></a>    </span>
-<span id="cb63-18"><a href="ch-spi.html#cb63-18"></a>    <span class="co">// 设置SPI的中断</span></span>
-<span id="cb63-19"><a href="ch-spi.html#cb63-19"></a>    platform_set_irq_callback(PLATFORM_CB_IRQ_APBSPI, peripherals_spi_isr, NULL);</span></code></pre></div>
+<div class="sourceCode" id="cb63"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb63-1"><a href="ch-spi.html#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_spi_pin<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb63-2"><a href="ch-spi.html#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb63-3"><a href="ch-spi.html#cb63-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 打开SPI模块时钟</span></span>
+<span id="cb63-4"><a href="ch-spi.html#cb63-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 此处是以SPI1为例，如果是SPI0则需要更改</span></span>
+<span id="cb63-5"><a href="ch-spi.html#cb63-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 根据使用的GPIO，选择打开GPIO0或者GPIO1的时钟</span></span>
+<span id="cb63-6"><a href="ch-spi.html#cb63-6" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGateMulti<span class="op">(</span>    <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_SPI1<span class="op">)</span></span>
+<span id="cb63-7"><a href="ch-spi.html#cb63-7" aria-hidden="true" tabindex="-1"></a>                                <span class="op">|</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_SysCtrl<span class="op">)</span></span>
+<span id="cb63-8"><a href="ch-spi.html#cb63-8" aria-hidden="true" tabindex="-1"></a>                                <span class="op">|</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_PinCtrl<span class="op">)</span></span>
+<span id="cb63-9"><a href="ch-spi.html#cb63-9" aria-hidden="true" tabindex="-1"></a>                                <span class="op">|</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_GPIO1<span class="op">)</span></span>
+<span id="cb63-10"><a href="ch-spi.html#cb63-10" aria-hidden="true" tabindex="-1"></a>                                <span class="op">|</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_GPIO0<span class="op">));</span></span>
+<span id="cb63-11"><a href="ch-spi.html#cb63-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-12"><a href="ch-spi.html#cb63-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 设置IO MUX，将GPIO映射成SPI功能，不需要的pin可以使用IO_NOT_A_PIN替代</span></span>
+<span id="cb63-13"><a href="ch-spi.html#cb63-13" aria-hidden="true" tabindex="-1"></a>    PINCTRL_SelSpiIn<span class="op">(</span>SPI_PORT_1<span class="op">,</span> SPI_MIC_CLK<span class="op">,</span> SPI_MIC_CS<span class="op">,</span> SPI_MIC_HOLD<span class="op">,</span> SPI_MIC_WP<span class="op">,</span> SPI_MIC_MISO<span class="op">,</span> SPI_MIC_MOSI<span class="op">);</span></span>
+<span id="cb63-14"><a href="ch-spi.html#cb63-14" aria-hidden="true" tabindex="-1"></a>    PINCTRL_SetPadMux<span class="op">(</span>SPI_MIC_CLK<span class="op">,</span> IO_SOURCE_SPI1_CLK_OUT<span class="op">);</span></span>
+<span id="cb63-15"><a href="ch-spi.html#cb63-15" aria-hidden="true" tabindex="-1"></a>    PINCTRL_SetPadMux<span class="op">(</span>SPI_MIC_CS<span class="op">,</span> IO_SOURCE_SPI1_CSN_OUT<span class="op">);</span></span>
+<span id="cb63-16"><a href="ch-spi.html#cb63-16" aria-hidden="true" tabindex="-1"></a>    PINCTRL_SetPadMux<span class="op">(</span>SPI_MIC_MOSI<span class="op">,</span> IO_SOURCE_SPI1_MOSI_OUT<span class="op">);</span></span>
+<span id="cb63-17"><a href="ch-spi.html#cb63-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb63-18"><a href="ch-spi.html#cb63-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 设置SPI的中断</span></span>
+<span id="cb63-19"><a href="ch-spi.html#cb63-19" aria-hidden="true" tabindex="-1"></a>    platform_set_irq_callback<span class="op">(</span>PLATFORM_CB_IRQ_APBSPI<span class="op">,</span> peripherals_spi_isr<span class="op">,</span> NULL<span class="op">);</span></span></code></pre></div>
 </div>
-<div id="spi模块初始化-1" class="section level4 hasAnchor">
+<div id="spi模块初始化-1" class="section level4 hasAnchor" number="10.3.1.2">
 <h4><span class="header-section-number">10.3.1.2</span> SPI模块初始化<a href="ch-spi.html#spi模块初始化-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb64"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb64-1"><a href="ch-spi.html#cb64-1"></a><span class="co">// 示例，每次传输大小是8个word</span></span>
-<span id="cb64-2"><a href="ch-spi.html#cb64-2"></a><span class="pp">#define DATA_LEN (SPI_FIFO_DEPTH)</span></span>
-<span id="cb64-3"><a href="ch-spi.html#cb64-3"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_spi_module(<span class="dt">void</span>)</span>
-<span id="cb64-4"><a href="ch-spi.html#cb64-4"></a>{</span>
-<span id="cb64-5"><a href="ch-spi.html#cb64-5"></a>    apSSP_sDeviceControlBlock pParam;</span>
-<span id="cb64-6"><a href="ch-spi.html#cb64-6"></a>    pParam.eSclkDiv = SPI_INTERFACETIMINGSCLKDIV_DEFAULT_2M;<span class="co">// SPI 时钟设置</span></span>
-<span id="cb64-7"><a href="ch-spi.html#cb64-7"></a>    pParam.eSCLKPolarity = SPI_CPOL_SCLK_LOW_IN_IDLE_STATES;<span class="co">// SPI 模式设置</span></span>
-<span id="cb64-8"><a href="ch-spi.html#cb64-8"></a>    pParam.eSCLKPhase = SPI_CPHA_ODD_SCLK_EDGES;<span class="co">// SPI 模式设置</span></span>
-<span id="cb64-9"><a href="ch-spi.html#cb64-9"></a>    pParam.eLsbMsbOrder = SPI_LSB_MOST_SIGNIFICANT_BIT_FIRST;</span>
-<span id="cb64-10"><a href="ch-spi.html#cb64-10"></a>    pParam.eDataSize = SPI_DATALEN_32_BITS;<span class="co">// SPI 每个传输单位的大小</span></span>
-<span id="cb64-11"><a href="ch-spi.html#cb64-11"></a>    pParam.eMasterSlaveMode = SPI_SLVMODE_MASTER_MODE;<span class="co">// SPI主模式</span></span>
-<span id="cb64-12"><a href="ch-spi.html#cb64-12"></a>    pParam.eReadWriteMode = SPI_TRANSMODE_WRITE_READ_SAME_TIME;<span class="co">// SPI同时读写</span></span>
-<span id="cb64-13"><a href="ch-spi.html#cb64-13"></a>    pParam.eQuadMode = SPI_DUALQUAD_REGULAR_MODE;</span>
-<span id="cb64-14"><a href="ch-spi.html#cb64-14"></a>    pParam.eWriteTransCnt = DATA_LEN;<span class="co">// SPI每次传输多少个单位（每个单位的大小是pParam.eDataSize）</span></span>
-<span id="cb64-15"><a href="ch-spi.html#cb64-15"></a>    pParam.eReadTransCnt = DATA_LEN;<span class="co">// SPI每次接收多少个单位（每个单位的大小是pParam.eDataSize）</span></span>
-<span id="cb64-16"><a href="ch-spi.html#cb64-16"></a>    pParam.eAddrEn = SPI_ADDREN_DISABLE;</span>
-<span id="cb64-17"><a href="ch-spi.html#cb64-17"></a>    pParam.eCmdEn = SPI_CMDEN_DISABLE;</span>
-<span id="cb64-18"><a href="ch-spi.html#cb64-18"></a>    pParam.RxThres = DATA_LEN/<span class="dv">2</span>;</span>
-<span id="cb64-19"><a href="ch-spi.html#cb64-19"></a>    pParam.TxThres = DATA_LEN/<span class="dv">2</span>;</span>
-<span id="cb64-20"><a href="ch-spi.html#cb64-20"></a>    pParam.SlaveDataOnly = SPI_SLVDATAONLY_ENABLE;</span>
-<span id="cb64-21"><a href="ch-spi.html#cb64-21"></a>    pParam.eAddrLen = SPI_ADDRLEN_1_BYTE;</span>
-<span id="cb64-22"><a href="ch-spi.html#cb64-22"></a>    pParam.eInterruptMask = (<span class="dv">1</span> &lt;&lt; bsSPI_INTREN_ENDINTEN);<span class="co">// 打开SPI中断（传输结束后触发）</span></span>
-<span id="cb64-23"><a href="ch-spi.html#cb64-23"></a>  </span>
-<span id="cb64-24"><a href="ch-spi.html#cb64-24"></a>    apSSP_DeviceParametersSet(APB_SSP1, &amp;pParam);</span>
-<span id="cb64-25"><a href="ch-spi.html#cb64-25"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb64"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb64-1"><a href="ch-spi.html#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 示例，每次传输大小是8个word</span></span>
+<span id="cb64-2"><a href="ch-spi.html#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#define DATA_LEN (SPI_FIFO_DEPTH)</span></span>
+<span id="cb64-3"><a href="ch-spi.html#cb64-3" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_spi_module<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb64-4"><a href="ch-spi.html#cb64-4" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb64-5"><a href="ch-spi.html#cb64-5" aria-hidden="true" tabindex="-1"></a>    apSSP_sDeviceControlBlock pParam<span class="op">;</span></span>
+<span id="cb64-6"><a href="ch-spi.html#cb64-6" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>eSclkDiv <span class="op">=</span> SPI_INTERFACETIMINGSCLKDIV_DEFAULT_2M<span class="op">;</span><span class="co">// SPI 时钟设置</span></span>
+<span id="cb64-7"><a href="ch-spi.html#cb64-7" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>eSCLKPolarity <span class="op">=</span> SPI_CPOL_SCLK_LOW_IN_IDLE_STATES<span class="op">;</span><span class="co">// SPI 模式设置</span></span>
+<span id="cb64-8"><a href="ch-spi.html#cb64-8" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>eSCLKPhase <span class="op">=</span> SPI_CPHA_ODD_SCLK_EDGES<span class="op">;</span><span class="co">// SPI 模式设置</span></span>
+<span id="cb64-9"><a href="ch-spi.html#cb64-9" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>eLsbMsbOrder <span class="op">=</span> SPI_LSB_MOST_SIGNIFICANT_BIT_FIRST<span class="op">;</span></span>
+<span id="cb64-10"><a href="ch-spi.html#cb64-10" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>eDataSize <span class="op">=</span> SPI_DATALEN_32_BITS<span class="op">;</span><span class="co">// SPI 每个传输单位的大小</span></span>
+<span id="cb64-11"><a href="ch-spi.html#cb64-11" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>eMasterSlaveMode <span class="op">=</span> SPI_SLVMODE_MASTER_MODE<span class="op">;</span><span class="co">// SPI主模式</span></span>
+<span id="cb64-12"><a href="ch-spi.html#cb64-12" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>eReadWriteMode <span class="op">=</span> SPI_TRANSMODE_WRITE_READ_SAME_TIME<span class="op">;</span><span class="co">// SPI同时读写</span></span>
+<span id="cb64-13"><a href="ch-spi.html#cb64-13" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>eQuadMode <span class="op">=</span> SPI_DUALQUAD_REGULAR_MODE<span class="op">;</span></span>
+<span id="cb64-14"><a href="ch-spi.html#cb64-14" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>eWriteTransCnt <span class="op">=</span> DATA_LEN<span class="op">;</span><span class="co">// SPI每次传输多少个单位（每个单位的大小是pParam.eDataSize）</span></span>
+<span id="cb64-15"><a href="ch-spi.html#cb64-15" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>eReadTransCnt <span class="op">=</span> DATA_LEN<span class="op">;</span><span class="co">// SPI每次接收多少个单位（每个单位的大小是pParam.eDataSize）</span></span>
+<span id="cb64-16"><a href="ch-spi.html#cb64-16" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>eAddrEn <span class="op">=</span> SPI_ADDREN_DISABLE<span class="op">;</span></span>
+<span id="cb64-17"><a href="ch-spi.html#cb64-17" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>eCmdEn <span class="op">=</span> SPI_CMDEN_DISABLE<span class="op">;</span></span>
+<span id="cb64-18"><a href="ch-spi.html#cb64-18" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>RxThres <span class="op">=</span> DATA_LEN<span class="op">/</span><span class="dv">2</span><span class="op">;</span></span>
+<span id="cb64-19"><a href="ch-spi.html#cb64-19" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>TxThres <span class="op">=</span> DATA_LEN<span class="op">/</span><span class="dv">2</span><span class="op">;</span></span>
+<span id="cb64-20"><a href="ch-spi.html#cb64-20" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>SlaveDataOnly <span class="op">=</span> SPI_SLVDATAONLY_ENABLE<span class="op">;</span></span>
+<span id="cb64-21"><a href="ch-spi.html#cb64-21" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>eAddrLen <span class="op">=</span> SPI_ADDRLEN_1_BYTE<span class="op">;</span></span>
+<span id="cb64-22"><a href="ch-spi.html#cb64-22" aria-hidden="true" tabindex="-1"></a>    pParam<span class="op">.</span>eInterruptMask <span class="op">=</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> bsSPI_INTREN_ENDINTEN<span class="op">);</span><span class="co">// 打开SPI中断（传输结束后触发）</span></span>
+<span id="cb64-23"><a href="ch-spi.html#cb64-23" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb64-24"><a href="ch-spi.html#cb64-24" aria-hidden="true" tabindex="-1"></a>    apSSP_DeviceParametersSet<span class="op">(</span>APB_SSP1<span class="op">,</span> <span class="op">&amp;</span>pParam<span class="op">);</span></span>
+<span id="cb64-25"><a href="ch-spi.html#cb64-25" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </div>
-<div id="spi-中断-1" class="section level4 hasAnchor">
+<div id="spi-中断-1" class="section level4 hasAnchor" number="10.3.1.3">
 <h4><span class="header-section-number">10.3.1.3</span> SPI 中断<a href="ch-spi.html#spi-中断-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb65"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb65-1"><a href="ch-spi.html#cb65-1"></a><span class="co">// SPI ENDINT中断触发标志传输结束，清除中断状态</span></span>
-<span id="cb65-2"><a href="ch-spi.html#cb65-2"></a><span class="dt">static</span> <span class="dt">uint32_t</span> peripherals_spi_isr(<span class="dt">void</span> *user_data)</span>
-<span id="cb65-3"><a href="ch-spi.html#cb65-3"></a>{</span>
-<span id="cb65-4"><a href="ch-spi.html#cb65-4"></a>    <span class="dt">uint32_t</span> stat = apSSP_GetIntRawStatus(APB_SSP1);</span>
-<span id="cb65-5"><a href="ch-spi.html#cb65-5"></a>    </span>
-<span id="cb65-6"><a href="ch-spi.html#cb65-6"></a>    <span class="cf">if</span>(stat &amp; (<span class="dv">1</span> &lt;&lt; bsSPI_INTREN_ENDINTEN))</span>
-<span id="cb65-7"><a href="ch-spi.html#cb65-7"></a>    {</span>
-<span id="cb65-8"><a href="ch-spi.html#cb65-8"></a>        apSSP_ClearIntStatus(APB_SSP1, <span class="dv">1</span> &lt;&lt; bsSPI_INTREN_ENDINTEN);</span>
-<span id="cb65-9"><a href="ch-spi.html#cb65-9"></a>    }  </span>
-<span id="cb65-10"><a href="ch-spi.html#cb65-10"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb65"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb65-1"><a href="ch-spi.html#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="co">// SPI ENDINT中断触发标志传输结束，清除中断状态</span></span>
+<span id="cb65-2"><a href="ch-spi.html#cb65-2" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> peripherals_spi_isr<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
+<span id="cb65-3"><a href="ch-spi.html#cb65-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb65-4"><a href="ch-spi.html#cb65-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> stat <span class="op">=</span> apSSP_GetIntRawStatus<span class="op">(</span>APB_SSP1<span class="op">);</span></span>
+<span id="cb65-5"><a href="ch-spi.html#cb65-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb65-6"><a href="ch-spi.html#cb65-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>stat <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> bsSPI_INTREN_ENDINTEN<span class="op">))</span></span>
+<span id="cb65-7"><a href="ch-spi.html#cb65-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb65-8"><a href="ch-spi.html#cb65-8" aria-hidden="true" tabindex="-1"></a>        apSSP_ClearIntStatus<span class="op">(</span>APB_SSP1<span class="op">,</span> <span class="dv">1</span> <span class="op">&lt;&lt;</span> bsSPI_INTREN_ENDINTEN<span class="op">);</span></span>
+<span id="cb65-9"><a href="ch-spi.html#cb65-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span>  </span>
+<span id="cb65-10"><a href="ch-spi.html#cb65-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </div>
-<div id="spi-发送数据-1" class="section level4 hasAnchor">
+<div id="spi-发送数据-1" class="section level4 hasAnchor" number="10.3.1.4">
 <h4><span class="header-section-number">10.3.1.4</span> SPI 发送数据<a href="ch-spi.html#spi-发送数据-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb66"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb66-1"><a href="ch-spi.html#cb66-1"></a><span class="dt">uint32_t</span> write_data[DATA_LEN];<span class="co">//数据大小等于pParam.eDataSize，数组大小等于pParam.eWriteTransCnt</span></span>
-<span id="cb66-2"><a href="ch-spi.html#cb66-2"></a><span class="dt">void</span> peripherals_spi_send_data(<span class="dt">void</span>)</span>
-<span id="cb66-3"><a href="ch-spi.html#cb66-3"></a>{</span>
-<span id="cb66-4"><a href="ch-spi.html#cb66-4"></a>    <span class="co">// 写入命令，触发SPI传输</span></span>
-<span id="cb66-5"><a href="ch-spi.html#cb66-5"></a>    apSSP_WriteCmd(APB_SSP1, <span class="bn">0x00</span>, <span class="bn">0x00</span>);<span class="co">//trigger transfer</span></span>
-<span id="cb66-6"><a href="ch-spi.html#cb66-6"></a>    </span>
-<span id="cb66-7"><a href="ch-spi.html#cb66-7"></a>    <span class="co">// 填写数据到TX FIFO，这个例子中DATA_LEN等于FIFO的深度（8），如果大于8，可以分为多次发送接收，</span></span>
-<span id="cb66-8"><a href="ch-spi.html#cb66-8"></a>    <span class="co">// 每次发送完8个单位，需要读取RX FIFO中的数据</span></span>
-<span id="cb66-9"><a href="ch-spi.html#cb66-9"></a>    <span class="cf">for</span>(i = <span class="dv">0</span>; i &lt; DATA_LEN; i++)</span>
-<span id="cb66-10"><a href="ch-spi.html#cb66-10"></a>    {</span>
-<span id="cb66-11"><a href="ch-spi.html#cb66-11"></a>        apSSP_WriteFIFO(APB_SSP1, write_data[i]);</span>
-<span id="cb66-12"><a href="ch-spi.html#cb66-12"></a>    }</span>
-<span id="cb66-13"><a href="ch-spi.html#cb66-13"></a></span>
-<span id="cb66-14"><a href="ch-spi.html#cb66-14"></a>    <span class="co">// 等待发送结束</span></span>
-<span id="cb66-15"><a href="ch-spi.html#cb66-15"></a>    <span class="cf">while</span>(apSSP_GetSPIActiveStatus(APB_SSP1));</span>
-<span id="cb66-16"><a href="ch-spi.html#cb66-16"></a>    </span>
-<span id="cb66-17"><a href="ch-spi.html#cb66-17"></a>    <span class="co">// 读取当前RX FIFO中有效值的个数，然后从RX FIFO中读取返回值</span></span>
-<span id="cb66-18"><a href="ch-spi.html#cb66-18"></a>    <span class="dt">uint32_t</span> num = apSSP_GetDataNumInRxFifo(APB_SSP1);</span>
-<span id="cb66-19"><a href="ch-spi.html#cb66-19"></a>    <span class="cf">for</span>(i = <span class="dv">0</span>; i &lt; num; i++)</span>
-<span id="cb66-20"><a href="ch-spi.html#cb66-20"></a>    {</span>
-<span id="cb66-21"><a href="ch-spi.html#cb66-21"></a>        apSSP_ReadFIFO(APB_SSP1, &amp;read_data[i]);</span>
-<span id="cb66-22"><a href="ch-spi.html#cb66-22"></a>    }</span>
-<span id="cb66-23"><a href="ch-spi.html#cb66-23"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb66"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb66-1"><a href="ch-spi.html#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> write_data<span class="op">[</span>DATA_LEN<span class="op">];</span><span class="co">//数据大小等于pParam.eDataSize，数组大小等于pParam.eWriteTransCnt</span></span>
+<span id="cb66-2"><a href="ch-spi.html#cb66-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> peripherals_spi_send_data<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb66-3"><a href="ch-spi.html#cb66-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb66-4"><a href="ch-spi.html#cb66-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 写入命令，触发SPI传输</span></span>
+<span id="cb66-5"><a href="ch-spi.html#cb66-5" aria-hidden="true" tabindex="-1"></a>    apSSP_WriteCmd<span class="op">(</span>APB_SSP1<span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">);</span><span class="co">//trigger transfer</span></span>
+<span id="cb66-6"><a href="ch-spi.html#cb66-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb66-7"><a href="ch-spi.html#cb66-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 填写数据到TX FIFO，这个例子中DATA_LEN等于FIFO的深度（8），如果大于8，可以分为多次发送接收，</span></span>
+<span id="cb66-8"><a href="ch-spi.html#cb66-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 每次发送完8个单位，需要读取RX FIFO中的数据</span></span>
+<span id="cb66-9"><a href="ch-spi.html#cb66-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(</span>i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> DATA_LEN<span class="op">;</span> i<span class="op">++)</span></span>
+<span id="cb66-10"><a href="ch-spi.html#cb66-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb66-11"><a href="ch-spi.html#cb66-11" aria-hidden="true" tabindex="-1"></a>        apSSP_WriteFIFO<span class="op">(</span>APB_SSP1<span class="op">,</span> write_data<span class="op">[</span>i<span class="op">]);</span></span>
+<span id="cb66-12"><a href="ch-spi.html#cb66-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb66-13"><a href="ch-spi.html#cb66-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-14"><a href="ch-spi.html#cb66-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 等待发送结束</span></span>
+<span id="cb66-15"><a href="ch-spi.html#cb66-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span><span class="op">(</span>apSSP_GetSPIActiveStatus<span class="op">(</span>APB_SSP1<span class="op">));</span></span>
+<span id="cb66-16"><a href="ch-spi.html#cb66-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb66-17"><a href="ch-spi.html#cb66-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 读取当前RX FIFO中有效值的个数，然后从RX FIFO中读取返回值</span></span>
+<span id="cb66-18"><a href="ch-spi.html#cb66-18" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> num <span class="op">=</span> apSSP_GetDataNumInRxFifo<span class="op">(</span>APB_SSP1<span class="op">);</span></span>
+<span id="cb66-19"><a href="ch-spi.html#cb66-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(</span>i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> num<span class="op">;</span> i<span class="op">++)</span></span>
+<span id="cb66-20"><a href="ch-spi.html#cb66-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb66-21"><a href="ch-spi.html#cb66-21" aria-hidden="true" tabindex="-1"></a>        apSSP_ReadFIFO<span class="op">(</span>APB_SSP1<span class="op">,</span> <span class="op">&amp;</span>read_data<span class="op">[</span>i<span class="op">]);</span></span>
+<span id="cb66-22"><a href="ch-spi.html#cb66-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb66-23"><a href="ch-spi.html#cb66-23" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </div>
-<div id="使用流程-1" class="section level4 hasAnchor">
+<div id="使用流程-1" class="section level4 hasAnchor" number="10.3.1.5">
 <h4><span class="header-section-number">10.3.1.5</span> 使用流程<a href="ch-spi.html#使用流程-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <ul>
 <li>设置GPIO，setup_peripherals_spi_pin()</li>

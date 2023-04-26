@@ -450,7 +450,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>连接建立；</li>
 <li>已达到预定的广播时长、次数，自动停止；</li>
 <li>极端情况：Controller 无法完成任务处理。</li>
-</ul></li>
+</ul>
+<p>注意，高占空比广播停止时不上报此事件，而是上报 <code>HCI_SUBEVENT_LE_ENHANCED_CONNECTION_COMPLETE</code> 事件。
+当未能建立连接高占空比广播超时时，<code>status</code> 置为 <span class="math inline">\(0x3C\)</span>（定向广播超时）。</p></li>
 <li><p><code>HCI_SUBEVENT_LE_SCAN_REQUEST_RECEIVED</code></p>
 <p>开发者使能扫描请求指示后，HCI 回调会收到 <code>HCI_SUBEVENT_LE_SCAN_REQUEST_RECEIVED</code> 事件。</p></li>
 </ul>

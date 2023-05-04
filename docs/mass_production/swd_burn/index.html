@@ -516,11 +516,13 @@
 
 <h3 id="手动添加芯片型号">手动添加芯片型号</h3>
 
+<h4 id="v680--v760">v6.80 ~ v7.60</h4>
+
 <p>假设 SDK 安装目录为 “/”，J-Link 安装目录为 “/SEGGER/JLink”。</p>
 
 <ol>
   <li>
-    <p>更新 JLinkDevices.xml</p>
+    <p>更新 JLinkDevices.xml (#abc)</p>
 
     <p>将 /sdk/flash/SEGFlash/JLinkDevices.xml 文件里 <code class="highlighter-rouge">&lt;Device&gt;</code> 和 <code class="highlighter-rouge">&lt;/Device&gt;</code> 之间的一段内容粘贴到
  /SEGGER/JLink/JLinkDevices.xml 文件末尾 <code class="highlighter-rouge">&lt;/Database&gt;</code> 之前。</p>
@@ -531,6 +533,59 @@
     <p>将 /sdk/flash/SEGFlash/ 目录下 Ingchips 文件夹复制到 /SEGGER/JLink/Devices 目录。</p>
   </li>
 </ol>
+
+<h4 id="v762-及以上">v7.62 及以上</h4>
+
+<p>假设当前 Windows 用户名为 TonyStark，进入目录 C:\Users\TonyStark\AppData\Roaming\SEGGER
+（以下简记为 USER_SEGGER）：</p>
+
+<ol>
+  <li>
+    <p>准备目录</p>
+
+    <ul>
+      <li>
+        <p>检查这个目录下是否存在“JLinkDevices”文件夹，如果没有，则创建它；</p>
+      </li>
+      <li>
+        <p>进入“JLinkDevices”，检查是否存在“Devices”文件夹，如果没有，则创建它；</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>更新 JLinkDevices.xml</p>
+
+    <ul>
+      <li>
+        <p>如果 USER_SEGGER\JLinkDevices 目录下没有 JLinkDevices.xml 文件，
+ 则直接将 /sdk/flash/SEGFlash/JLinkDevices.xml 文件复制到
+ USER_SEGGER\JLinkDevices 目录</p>
+      </li>
+      <li>
+        <p>如果有 JLinkDevices.xml 文件，将 /sdk/flash/SEGFlash/JLinkDevices.xml 文件里
+ <code class="highlighter-rouge">&lt;Device&gt;</code> 和 <code class="highlighter-rouge">&lt;/Device&gt;</code> 之间的一段内容粘贴到
+ USER_SEGGER\JLinkDevices/JLinkDevices.xml 文件末尾 <code class="highlighter-rouge">&lt;/Database&gt;</code> 之前。</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>复制 Flash 烧写算法包</p>
+
+    <p>将 /sdk/flash/SEGFlash/ 目录下 Ingchips 文件夹复制到 USER_SEGGER\JLinkDevices\Devices 目录</p>
+  </li>
+</ol>
+
+<p>最终得到的 USER_SEGGER\JLinkDevices 目录结构如下图：</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>└── JLinkDevices
+    ├── Devices
+    │   └── Ingchips
+    │       ├── ING91600
+    │       │   ├── ...
+    │       └── ING91800
+    │           └── ...
+    └── JLinkDevices.xml
+</code></pre></div></div>
 
 <h3 id="创建-j-flash-项目">创建 J-Flash 项目</h3>
 

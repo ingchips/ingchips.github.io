@@ -236,15 +236,7 @@
 <div class="important">
 <strong>已知问题（局限性）:</strong>
 <ul>
-<li>调试 ING916xx 时，复位方式不能选择 SYSRESETREQ，应该选择 VECTRESET（不同的调试器可能使用不同的名词，J-Link 里称为 Core）。
-几种调试时复位整个 SoC 的临时措施：
-    <ul>
-        <li>方法 1：先进入下载模式，然后再开始调试；</li>
-        <li>方法 2：对于 JLink，将
-        <a href="https://github.com/ingchips/doc_release/releases/download/v1.0/JlinkSettings.JLinkScript">自定义脚本</a>放到工程目录，并在进入调试模式后再次点击 IDE 里的 “复位” 按钮。</li>
-    </ul>
-</li>
-<li>ING916XX 省电模式仍在持续开发、改进中，QUERY_DEEP_SLEEP_ALLOWED 回调目前不允许返回 PLATFORM_ALLOW_BLE_ONLY_SLEEP。
+<li>ING916XX 省电模式仍在持续开发、改进中，QUERY_DEEP_SLEEP_ALLOWED 回调返回 PLATFORM_ALLOW_BLE_ONLY_SLEEP 时可能导致死机。
 </li>
 </ul></div>
 
@@ -287,8 +279,8 @@ v8.3.3 gap_start_ccm 函数签名与旧版本不兼容。
   <span class="n">platform_set_evt_callback_table</span><span class="p">(</span><span class="o">&amp;</span><span class="n">evt_cb_table</span><span class="p">);</span>
 </code></pre></div>    </div>
 
-    <p>两种注册方式不可混用，例如，不要既使用 <code class="highlighter-rouge">platform_set_evt_callback_table</code> 又使用
-  <code class="highlighter-rouge">platform_set_evt_callback</code>。</p>
+    <p>对于同一种回调类型（事件或者中断），不可混用两种注册方式。例如，对于事件回调，程序里不能既使用
+  <code class="highlighter-rouge">platform_set_evt_callback_table</code> 又使用 <code class="highlighter-rouge">platform_set_evt_callback</code>。</p>
 
     <p>对于 CPU 而言，从深睡眠唤醒后中断恢复为屏蔽状态，新添了用于使能中断的 <code class="highlighter-rouge">platform_enable_irq</code>。</p>
 
@@ -314,7 +306,7 @@ v8.3.3 gap_start_ccm 函数签名与旧版本不兼容。
         <p>仅限 <strong>ING916</strong>：自定义数据白化初值、广播数据包 PDU 类型、CTE 比特</p>
       </li>
       <li>
-        <p>仅限 <strong>ING916</strong>：对传统广播进行 CTE IQ 采样</p>
+        <p>仅限 <strong>ING916</strong>：对<a href="../2023-03-11-legacy-aoa/">传统广播进行 CTE IQ 采样</a></p>
       </li>
     </ul>
   </li>
@@ -411,6 +403,27 @@ v8.3.3 gap_start_ccm 函数签名与旧版本不兼容。
 
     <p>现在 ING916/ING918 使用完全相同的 32k 配置、切换流程，不再需要延迟等待等操作。</p>
   </li>
+  <li>
+    <p>[<strong>新增</strong>] 补充 IAR 所需要的头文件 <span style="background:yellow">(<strong>8.3.5</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] ING916: slave latency 不起作用 <span style="background:yellow">(<strong>8.3.5</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] 与某些反应迅速的 Controller 的兼容性 <span style="background:yellow">(<strong>8.3.5</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] 忽略参数有误的 <em>CONNECT_IND</em> <span style="background:yellow">(<strong>8.3.5</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] 内存不足时尝试建立新连接会导致 HardFault <span style="background:yellow">(<strong>8.3.5</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] ING916: <em>mini</em> 及 <em>noos_mini</em> 软件包将部分函数移至 RAM 以降低功耗 <span style="background:yellow">(<strong>8.3.5</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] ING916: QUERY_DEEP_SLEEP_ALLOWED 支持返回 PLATFORM_ALLOW_BLE_ONLY_SLEEP  <span style="background:yellow">(<strong>8.3.5</strong>)</span></p>
+  </li>
 </ul>
 
 <h2 id="2-外设驱动">2. 外设驱动</h2>
@@ -441,6 +454,18 @@ v8.3.3 gap_start_ccm 函数签名与旧版本不兼容。
       <li>修正 ING918 下唤醒源的读取；</li>
       <li>为 ING916 PVD、PDR 添加 API。</li>
     </ul>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] ING916: ADC 时钟 <span style="background:yellow">(<strong>8.3.5</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] ING916: ADC 支持更多的工厂数据格式 <span style="background:yellow">(<strong>8.3.5</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>新增</strong>] <code class="highlighter-rouge">SYSCTRL_Init</code> 函数 <span style="background:yellow">(<strong>8.3.5</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] ING916: SPI 增加关于 格式/Dummy/XiP 的接口 <span style="background:yellow">(<strong>8.3.5</strong>)</span></p>
   </li>
 </ul>
 
@@ -479,6 +504,12 @@ v8.3.3 gap_start_ccm 函数签名与旧版本不兼容。
   </li>
   <li>
     <p>[<strong>更新</strong>] HID Mouse：演示 DIR_ADV <span style="background:yellow">(<strong>8.3.4</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] Peripheral Console (FreeRTOS): 补充 IAR 所需要的头文件 <span style="background:yellow">(<strong>8.3.5</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] Voice Remote Control: 增加 SBC 编码器 <span style="background:yellow">(<strong>8.3.5</strong>)</span></p>
   </li>
 </ul>
 
@@ -522,6 +553,12 @@ v8.3.3 gap_start_ccm 函数签名与旧版本不兼容。
   </li>
   <li>
     <p>[<strong>修正</strong>] Cube 关于 WATCHDOG/ING91682C/GPIO唤醒 等的问题 <span style="background:yellow">(<strong>8.3.4</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] Cube 关于 UART 等的问题 <span style="background:yellow">(<strong>8.3.5</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] Wizard 生成使用事件回调表的代码 <span style="background:yellow">(<strong>8.3.5</strong>)</span></p>
   </li>
 </ul>
 

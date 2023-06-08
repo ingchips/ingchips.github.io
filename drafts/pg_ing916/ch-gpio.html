@@ -465,6 +465,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="21.2.8" data-path="ch-uart.html"><a href="ch-uart.html#接收数据"><i class="fa fa-check"></i><b>21.2.8</b> 接收数据</a></li>
 <li class="chapter" data-level="21.2.9" data-path="ch-uart.html"><a href="ch-uart.html#dma传输模式使能"><i class="fa fa-check"></i><b>21.2.9</b> DMA传输模式使能</a></li>
 </ul></li>
+<li class="chapter" data-level="21.3" data-path="ch-uart.html"><a href="ch-uart.html#示例代码"><i class="fa fa-check"></i><b>21.3</b> 示例代码</a>
+<ul>
+<li class="chapter" data-level="21.3.1" data-path="ch-uart.html"><a href="ch-uart.html#uart接收变长字节数据"><i class="fa fa-check"></i><b>21.3.1</b> UART接收变长字节数据</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="22" data-path="ch-usb.html"><a href="ch-usb.html"><i class="fa fa-check"></i><b>22</b> Universal serial bus device (USB)</a>
 <ul>
@@ -673,7 +677,315 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="低功耗保持状态" class="section level3 hasAnchor" number="7.2.7">
 <h3><span class="header-section-number">7.2.7</span> 低功耗保持状态<a href="ch-gpio.html#低功耗保持状态" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>所有 GPIO 可以在芯片进入低功耗状态后保持状态。根据功能的不同，存在两种类型的 GPIO，
-<span class="math inline">\(\{0,5,6,21,22,23,36,37\}\)</span> 称为 A 型 GPIO，其它 GPIO 为 B 型。</p>
+总结于表 <a href="ch-gpio.html#tab:ch-gpio-func">7.1</a>。</p>
+<table>
+<caption><span id="tab:ch-gpio-func">表 7.1: </span> GPIO 的保持与唤醒功能</caption>
+<thead>
+<tr class="header">
+<th align="center">序号</th>
+<th align="center">分类</th>
+<th align="center">低功耗保持</th>
+<th align="center">DEEP 唤醒源</th>
+<th align="center">DEEPER 唤醒源</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">0</td>
+<td align="center">A</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+</tr>
+<tr class="even">
+<td align="center">1</td>
+<td align="center">B</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="center">2</td>
+<td align="center">B</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="center">3</td>
+<td align="center">B</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="center">4</td>
+<td align="center">B</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="center">5</td>
+<td align="center">A</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+</tr>
+<tr class="odd">
+<td align="center">6</td>
+<td align="center">A</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+</tr>
+<tr class="even">
+<td align="center">7</td>
+<td align="center">B</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="center">8</td>
+<td align="center">B</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="center">9</td>
+<td align="center">B</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="center">10</td>
+<td align="center">B</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="center">11</td>
+<td align="center">B</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="center">12</td>
+<td align="center">B</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="center">13</td>
+<td align="center">B</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="center">14</td>
+<td align="center">B</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="center">15</td>
+<td align="center">B</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="center">16</td>
+<td align="center">B</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="center">17</td>
+<td align="center">B</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="center">18</td>
+<td align="center">C</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="center">19</td>
+<td align="center">C</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="center">20</td>
+<td align="center">C</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="center">21</td>
+<td align="center">A</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+</tr>
+<tr class="odd">
+<td align="center">22</td>
+<td align="center">A</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+</tr>
+<tr class="even">
+<td align="center">23</td>
+<td align="center">A</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+</tr>
+<tr class="odd">
+<td align="center">24</td>
+<td align="center">B</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="center">25</td>
+<td align="center">B</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="center">26</td>
+<td align="center">C</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="center">27</td>
+<td align="center">C</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="center">28</td>
+<td align="center">C</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="center">29</td>
+<td align="center">B</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="center">30</td>
+<td align="center">B</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="center">31</td>
+<td align="center">B</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="center">32</td>
+<td align="center">B</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="center">33</td>
+<td align="center">B</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="center">34</td>
+<td align="center">B</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="center">35</td>
+<td align="center">B</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="center">36</td>
+<td align="center">A</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+</tr>
+<tr class="even">
+<td align="center">37</td>
+<td align="center">A</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+</tr>
+<tr class="odd">
+<td align="center">38</td>
+<td align="center">C</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="center">39</td>
+<td align="center">C</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="center">40</td>
+<td align="center">C</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="center">41</td>
+<td align="center">C</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>
 <ul>
 <li><p>对于 A 型 GPIO</p>
 <p>使用 <code>GIO_EnableRetentionGroupA</code> 使能或禁用 A 型 GPIO 的低功耗状态保持功能。
@@ -690,6 +1002,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 IO 方向为输出的 B 型 GPIO 处于高阻状态，对这些 GPIO 的配置再做修改无法生效。只有禁用保持功能后，才会生效。</p>
 <div class="sourceCode" id="cb40"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb40-1"><a href="ch-gpio.html#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> GIO_EnableHighZGroupB<span class="op">(</span><span class="dt">uint8_t</span> enable<span class="op">);</span></span></code></pre></div>
 <p>这两个功能是互斥的，比如先后调用这个两个函数，先使能保持再使能高阻，则只有高阻功能生效。</p></li>
+<li><p>对于 C 型 GPIO</p>
+<p>不支持低功耗保持。</p></li>
 </ul>
 <div class="rmdnote">
 <p>
@@ -701,8 +1015,8 @@ IO 方向为输出的 B 型 GPIO 处于高阻状态，对这些 GPIO 的配置�
 <div id="睡眠唤醒源" class="section level3 hasAnchor" number="7.2.8">
 <h3><span class="header-section-number">7.2.8</span> 睡眠唤醒源<a href="ch-gpio.html#睡眠唤醒源" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>一部分 GPIO 支持作为低功耗状态的唤醒源：出现指定的电平信号时，将系统从低功耗状态下唤醒。
-对于深度睡眠（DEEP Sleep），这些 GPIO （<span class="math inline">\(\{0..17, 21..25, 29..37\}\)</span>）可作为唤醒源，其中包含所有的 A 型 GPIO 和部分 B 型 GPIO。
-对于更深度的睡眠（DEEPER Sleep），所有的 A 型 GPIO 可作为唤醒源。</p>
+对于深度睡眠（DEEP Sleep），这些 GPIO （<span class="math inline">\(\{0..17, 21..25, 29..37\}\)</span>）可作为唤醒源，包括所有的 A 型 GPIO 和 B 型 GPIO；
+对于更深度的睡眠（DEEPER Sleep），所有的 A 型 GPIO 可作为唤醒源，参见表 <a href="ch-gpio.html#tab:ch-gpio-func">7.1</a>。</p>
 <ul>
 <li><p>深度睡眠唤醒源</p>
 <p>使用 <code>GIO_EnableDeepSleepWakeupSource</code> 使能（或停用）某个 GPIO 的唤醒功能。

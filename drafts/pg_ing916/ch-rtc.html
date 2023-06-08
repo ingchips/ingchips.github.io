@@ -465,6 +465,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="21.2.8" data-path="ch-uart.html"><a href="ch-uart.html#接收数据"><i class="fa fa-check"></i><b>21.2.8</b> 接收数据</a></li>
 <li class="chapter" data-level="21.2.9" data-path="ch-uart.html"><a href="ch-uart.html#dma传输模式使能"><i class="fa fa-check"></i><b>21.2.9</b> DMA传输模式使能</a></li>
 </ul></li>
+<li class="chapter" data-level="21.3" data-path="ch-uart.html"><a href="ch-uart.html#示例代码"><i class="fa fa-check"></i><b>21.3</b> 示例代码</a>
+<ul>
+<li class="chapter" data-level="21.3.1" data-path="ch-uart.html"><a href="ch-uart.html#uart接收变长字节数据"><i class="fa fa-check"></i><b>21.3.1</b> UART接收变长字节数据</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="22" data-path="ch-usb.html"><a href="ch-usb.html"><i class="fa fa-check"></i><b>22</b> Universal serial bus device (USB)</a>
 <ul>
@@ -667,45 +671,52 @@ RTC产生中断后， 需要消除中断状态方可再次触发。利用 <code>
 <span id="cb174-3"><a href="ch-rtc.html#cb174-3" aria-hidden="true" tabindex="-1"></a>    RTC_TRIM_FAST <span class="op">=</span> <span class="bn">0x00</span><span class="op">,</span>  </span>
 <span id="cb174-4"><a href="ch-rtc.html#cb174-4" aria-hidden="true" tabindex="-1"></a>    RTC_TRIM_SLOW <span class="op">=</span> <span class="bn">0x01</span><span class="op">,</span></span>
 <span id="cb174-5"><a href="ch-rtc.html#cb174-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span>rtc_trim_direction_t<span class="op">;</span></span></code></pre></div></li>
+<li><p>设置 <em>半秒修正值</em> ，作用于每半秒对应的计数值。</p>
+<div class="sourceCode" id="cb175"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb175-1"><a href="ch-rtc.html#cb175-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> RTC_HSecCntTrim<span class="op">(</span></span>
+<span id="cb175-2"><a href="ch-rtc.html#cb175-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> trim</span>
+<span id="cb175-3"><a href="ch-rtc.html#cb175-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">);</span></span></code></pre></div></li>
 <li><p>设置 <em>秒修正值</em> ，作用于每秒对应的计数值。</p>
-<div class="sourceCode" id="cb175"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb175-1"><a href="ch-rtc.html#cb175-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> RTC_SecCntTrim<span class="op">(</span></span>
-<span id="cb175-2"><a href="ch-rtc.html#cb175-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> trim<span class="op">,</span>      <span class="co">//修正值（计数值）</span></span>
-<span id="cb175-3"><a href="ch-rtc.html#cb175-3" aria-hidden="true" tabindex="-1"></a>  rtc_trim_direction_t dir  <span class="co">//方向，具体参考 `rtc_trim_direction_t`</span></span>
-<span id="cb175-4"><a href="ch-rtc.html#cb175-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">);</span></span></code></pre></div></li>
-<li><p>设置 <em>分钟修正值</em> ，作用于每分钟最后1秒的计数值。</p>
-<div class="sourceCode" id="cb176"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb176-1"><a href="ch-rtc.html#cb176-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> RTC_MinCntTrim<span class="op">(</span></span>
-<span id="cb176-2"><a href="ch-rtc.html#cb176-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> trim<span class="op">,</span> </span>
-<span id="cb176-3"><a href="ch-rtc.html#cb176-3" aria-hidden="true" tabindex="-1"></a>  rtc_trim_direction_t dir</span>
+<div class="sourceCode" id="cb176"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb176-1"><a href="ch-rtc.html#cb176-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> RTC_SecCntTrim<span class="op">(</span></span>
+<span id="cb176-2"><a href="ch-rtc.html#cb176-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> trim<span class="op">,</span>      <span class="co">//修正值（计数值）</span></span>
+<span id="cb176-3"><a href="ch-rtc.html#cb176-3" aria-hidden="true" tabindex="-1"></a>  rtc_trim_direction_t dir  <span class="co">//方向，具体参考 `rtc_trim_direction_t`</span></span>
 <span id="cb176-4"><a href="ch-rtc.html#cb176-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">);</span></span></code></pre></div></li>
-<li><p>设置 <em>小时修正值</em> ，作用于每小时最后1秒的计数值。</p>
-<div class="sourceCode" id="cb177"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb177-1"><a href="ch-rtc.html#cb177-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> RTC_HourCntTrim<span class="op">(</span></span>
+<li><p>设置 <em>分钟修正值</em> ，作用于每分钟最后1秒的计数值。</p>
+<div class="sourceCode" id="cb177"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb177-1"><a href="ch-rtc.html#cb177-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> RTC_MinCntTrim<span class="op">(</span></span>
 <span id="cb177-2"><a href="ch-rtc.html#cb177-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> trim<span class="op">,</span> </span>
 <span id="cb177-3"><a href="ch-rtc.html#cb177-3" aria-hidden="true" tabindex="-1"></a>  rtc_trim_direction_t dir</span>
 <span id="cb177-4"><a href="ch-rtc.html#cb177-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">);</span></span></code></pre></div></li>
-<li><p>设置 <em>天修正值</em> ，作用于每天最后1秒的计数值。</p>
-<div class="sourceCode" id="cb178"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb178-1"><a href="ch-rtc.html#cb178-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> RTC_DayCntTrim<span class="op">(</span></span>
+<li><p>设置 <em>小时修正值</em> ，作用于每小时最后1秒的计数值。</p>
+<div class="sourceCode" id="cb178"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb178-1"><a href="ch-rtc.html#cb178-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> RTC_HourCntTrim<span class="op">(</span></span>
 <span id="cb178-2"><a href="ch-rtc.html#cb178-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> trim<span class="op">,</span> </span>
 <span id="cb178-3"><a href="ch-rtc.html#cb178-3" aria-hidden="true" tabindex="-1"></a>  rtc_trim_direction_t dir</span>
 <span id="cb178-4"><a href="ch-rtc.html#cb178-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">);</span></span></code></pre></div></li>
+<li><p>设置 <em>天修正值</em> ，作用于每天最后1秒的计数值。</p>
+<div class="sourceCode" id="cb179"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb179-1"><a href="ch-rtc.html#cb179-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> RTC_DayCntTrim<span class="op">(</span></span>
+<span id="cb179-2"><a href="ch-rtc.html#cb179-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> trim<span class="op">,</span> </span>
+<span id="cb179-3"><a href="ch-rtc.html#cb179-3" aria-hidden="true" tabindex="-1"></a>  rtc_trim_direction_t dir</span>
+<span id="cb179-4"><a href="ch-rtc.html#cb179-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">);</span></span></code></pre></div></li>
 </ul>
 <div class="rmdcaution">
 <p>
-注意，若设置多个修正值，则以较长时间段的修正值为优先。譬如，设置了
+注意 1. 注意由于位宽限制，半秒修正只能设置小于16384的值。 2.
+若设置多个修正值，则以较长时间段的修正值为优先。譬如，设置了
 <em>秒修正值</em> 和 <em>分钟修正值</em> ， 则 <em>秒修正值</em>
 只作用于每分钟的前 <strong>59</strong> 秒，最后 <strong>1</strong>
-秒则采用 <em>分钟修正值</em> ， 其余情形以此类推。
+秒则采用 <em>分钟修正值</em> ， 其余情形以此类推。 3.
+在使用trim时，主要使用的时 <strong>半秒trim</strong> 和
+<strong>秒trim</strong> ，其余只是用看来辅助微调。
 </p>
 </div>
 <ol start="2" style="list-style-type: decimal">
 <li><strong>设置多个修正值</strong></li>
 </ol>
 <p>通过 <code>RTC_SetAllTrimValue</code> 可以同时设置多个时间段的修正值。</p>
-<div class="sourceCode" id="cb179"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb179-1"><a href="ch-rtc.html#cb179-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> RTC_SetAllTrimValue<span class="op">(</span></span>
-<span id="cb179-2"><a href="ch-rtc.html#cb179-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> day_trim<span class="op">,</span> </span>
-<span id="cb179-3"><a href="ch-rtc.html#cb179-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> hour_trim<span class="op">,</span> </span>
-<span id="cb179-4"><a href="ch-rtc.html#cb179-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> min_trim<span class="op">,</span></span>
-<span id="cb179-5"><a href="ch-rtc.html#cb179-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> sec_trim</span>
-<span id="cb179-6"><a href="ch-rtc.html#cb179-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb180"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb180-1"><a href="ch-rtc.html#cb180-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> RTC_SetAllTrimValue<span class="op">(</span></span>
+<span id="cb180-2"><a href="ch-rtc.html#cb180-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> day_trim<span class="op">,</span> </span>
+<span id="cb180-3"><a href="ch-rtc.html#cb180-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> hour_trim<span class="op">,</span> </span>
+<span id="cb180-4"><a href="ch-rtc.html#cb180-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> min_trim<span class="op">,</span></span>
+<span id="cb180-5"><a href="ch-rtc.html#cb180-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> sec_trim</span>
+<span id="cb180-6"><a href="ch-rtc.html#cb180-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">);</span></span></code></pre></div>
 需要注意的是，8bits中只有低5bits用于表示修正值，最高bit表示修正的方向，也就是正负，如下图所示（图 <a href="ch-rtc.html#fig:The-Datastruct-to-SetAllTrimValue">17.1</a>）。：
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:The-Datastruct-to-SetAllTrimValue"></span>
 <img src="img/RTC/The_Datastruct_to_SetAllTrimValue.jpg" alt="RTC设置多个修正值数据结构" width="70%" />
@@ -718,35 +729,63 @@ RTC产生中断后， 需要消除中断状态方可再次触发。利用 <code>
 </ol>
 <p>通过 <code>RTC_GetAllTrimValue</code> 可以获取多个时间段的修正值，返回值为 <code>day_trim</code> ，获取到的值的数据结构与 <code>RTC_SetAllTrimValue</code> 中所使用的结构一致，
 具体可参照上图<a href="ch-rtc.html#fig:The-Datastruct-to-SetAllTrimValue">17.1</a>。</p>
-<div class="sourceCode" id="cb180"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb180-1"><a href="ch-rtc.html#cb180-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> RTC_GetAllTrimValue<span class="op">(</span></span>
-<span id="cb180-2"><a href="ch-rtc.html#cb180-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> <span class="op">*</span>hour_trim<span class="op">,</span> </span>
-<span id="cb180-3"><a href="ch-rtc.html#cb180-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> <span class="op">*</span>min_trim<span class="op">,</span></span>
-<span id="cb180-4"><a href="ch-rtc.html#cb180-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> <span class="op">*</span>sec_trim</span>
-<span id="cb180-5"><a href="ch-rtc.html#cb180-5" aria-hidden="true" tabindex="-1"></a>  <span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb181"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb181-1"><a href="ch-rtc.html#cb181-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> RTC_GetAllTrimValue<span class="op">(</span></span>
+<span id="cb181-2"><a href="ch-rtc.html#cb181-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> <span class="op">*</span>hour_trim<span class="op">,</span> </span>
+<span id="cb181-3"><a href="ch-rtc.html#cb181-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> <span class="op">*</span>min_trim<span class="op">,</span></span>
+<span id="cb181-4"><a href="ch-rtc.html#cb181-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> <span class="op">*</span>sec_trim</span>
+<span id="cb181-5"><a href="ch-rtc.html#cb181-5" aria-hidden="true" tabindex="-1"></a>  <span class="op">);</span></span></code></pre></div>
 <ol start="4" style="list-style-type: decimal">
 <li><strong>清除所有修正值</strong></li>
 </ol>
 <p>通过 <code>RTC_ClearAllTrimValue</code> 可以将所有修正值置0;</p>
-<div class="sourceCode" id="cb181"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb181-1"><a href="ch-rtc.html#cb181-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> RTC_ClearAllTrimValue<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb182"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb182-1"><a href="ch-rtc.html#cb182-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> RTC_ClearAllTrimValue<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
 <ol start="5" style="list-style-type: decimal">
-<li><strong>确定修正值的两种方法</strong></li>
+<li><strong>修正值的两种方法</strong></li>
 </ol>
 <ul>
-<li><p><em>频率测量法</em></p></li>
-<li><p><em>时间观测法</em></p></li>
+<li><p>第一步：调用<code>platform_read_info</code>函数，获取32K时钟计数校准值。</p>
+<div class="sourceCode" id="cb183"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb183-1"><a href="ch-rtc.html#cb183-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> cali_value <span class="op">=</span> <span class="op">(</span><span class="dt">int</span><span class="op">)(</span><span class="fl">1000000.</span> <span class="op">/</span> <span class="op">(</span>platform_read_info<span class="op">(</span>PLATFORM_INFO_32K_CALI_VALUE<span class="op">)</span> <span class="op">/</span> <span class="fl">65536.</span><span class="op">));</span></span></code></pre></div></li>
+<li><p>第二步：分类处理</p>
+<ul>
+<li><p>cali_value &lt; 32768：设置半秒trim</p>
+<div class="sourceCode" id="cb184"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb184-1"><a href="ch-rtc.html#cb184-1" aria-hidden="true" tabindex="-1"></a>RTC_HSecCntTrim<span class="op">(</span>cali_value <span class="op">/</span> <span class="dv">2</span><span class="op">);</span></span></code></pre></div></li>
+<li><p>cali_value &gt; 32768：设置秒trim</p>
+<div class="sourceCode" id="cb185"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb185-1"><a href="ch-rtc.html#cb185-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> delta_value <span class="op">=</span> cali_value <span class="op">-</span> <span class="dv">32768</span><span class="op">;</span></span>
+<span id="cb185-2"><a href="ch-rtc.html#cb185-2" aria-hidden="true" tabindex="-1"></a>RTC_SecCntTrim<span class="op">((</span><span class="dt">uint8_t</span><span class="op">)</span>delta_value<span class="op">,</span>RTC_TRIM_SLOW<span class="op">);</span></span></code></pre></div></li>
+</ul></li>
 </ul>
 <ol start="6" style="list-style-type: decimal">
 <li><strong>校准性能</strong></li>
 </ol>
-<p>下表<a href="#tab:ch-rtc-Trimming-Capability">17.1</a>显示了RTC各修正值的修正能力，
+<p>下表 <a href="ch-rtc.html#tab:ch-rtc-Trimming-Capability">17.1</a> 显示了RTC各修正值的修正能力，
 这些修正能力值是在假设其余修正值均为0的情况下所计算出来的。</p>
-<p>Table: (#tab:ch-rtc-Trimming-Capability) 数字修正能力
-|修正值 |性能 (PPM)|
-|:–|:—-|
-|Second|± 30.5 ~ 946|
-|Minute|± 0.508 ~ 15.77 |
-|Hour|± 0.008 ~ 0.262 |
-|Day|± 0.000353 ~ 0.0109|</p>
+<table>
+<caption><span id="tab:ch-rtc-Trimming-Capability">表 17.1: </span> 数字修正能力</caption>
+<thead>
+<tr class="header">
+<th align="left">修正值</th>
+<th align="left">性能 (PPM)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Second</td>
+<td align="left">± 30.5 ~ 946</td>
+</tr>
+<tr class="even">
+<td align="left">Minute</td>
+<td align="left">± 0.508 ~ 15.77</td>
+</tr>
+<tr class="odd">
+<td align="left">Hour</td>
+<td align="left">± 0.008 ~ 0.262</td>
+</tr>
+<tr class="even">
+<td align="left">Day</td>
+<td align="left">± 0.000353 ~ 0.0109</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 </div>

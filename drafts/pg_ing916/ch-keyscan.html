@@ -465,6 +465,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="21.2.8" data-path="ch-uart.html"><a href="ch-uart.html#接收数据"><i class="fa fa-check"></i><b>21.2.8</b> 接收数据</a></li>
 <li class="chapter" data-level="21.2.9" data-path="ch-uart.html"><a href="ch-uart.html#dma传输模式使能"><i class="fa fa-check"></i><b>21.2.9</b> DMA传输模式使能</a></li>
 </ul></li>
+<li class="chapter" data-level="21.3" data-path="ch-uart.html"><a href="ch-uart.html#示例代码"><i class="fa fa-check"></i><b>21.3</b> 示例代码</a>
+<ul>
+<li class="chapter" data-level="21.3.1" data-path="ch-uart.html"><a href="ch-uart.html#uart接收变长字节数据"><i class="fa fa-check"></i><b>21.3.1</b> UART接收变长字节数据</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="22" data-path="ch-usb.html"><a href="ch-usb.html"><i class="fa fa-check"></i><b>22</b> Universal serial bus device (USB)</a>
 <ul>
@@ -531,7 +535,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">11.1</span> 功能概述<a href="ch-keyscan.html#功能概述-5" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>特性：</p>
 <ul>
-<li>可配置矩阵，最大支持16行<em>15列或者15行</em>16列的键盘矩阵。</li>
+<li>可配置矩阵，最大支持18行*18列的键盘矩阵。</li>
 <li>每个单独的行或者列可以设置启用或者禁用。</li>
 <li>可配置时钟。</li>
 <li>支持输入硬件去抖动，去抖时间可配置。</li>
@@ -569,9 +573,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb111-13"><a href="ch-keyscan.html#cb111-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span>KEY_IN_COL_14<span class="op">,</span> GIO_GPIO_14<span class="op">},</span> <span class="co">// 第4列</span></span>
 <span id="cb111-14"><a href="ch-keyscan.html#cb111-14" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
 <span id="cb111-15"><a href="ch-keyscan.html#cb111-15" aria-hidden="true" tabindex="-1"></a><span class="pp">#define key_in_col_num (sizeof(key_in_col) / sizeof(key_in_col[0]))</span></span></code></pre></div>
-<p>第1行按键接到了GPIO32，映射到KEYSCAN模块的ROW6。</p>
-<p>第1列按键接到了GPIO11，映射到KEYSCAN模块的COL11。</p>
-<p>以此类推4行4列的键盘阵列。</p>
+<p>第1行按键接到了GPIO32，映射到KEYSCAN模块的ROW6。第1列按键接到了GPIO11，映射到KEYSCAN模块的COL11。以此类推4行4列的键盘阵列。</p>
 <p>注意：KEYSCAN的ROW和COL不是随意映射到GPIO，映射关系参考管脚管理（PINCTRL）说明文档。</p>
 </div>
 <div id="keyscan模块初始化" class="section level3 hasAnchor" number="11.2.2">
@@ -685,16 +687,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb117-34"><a href="ch-keyscan.html#cb117-34" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_keyscan<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
 <span id="cb117-35"><a href="ch-keyscan.html#cb117-35" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
 <span id="cb117-36"><a href="ch-keyscan.html#cb117-36" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGateMulti<span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_KeyScan<span class="op">);</span></span>
-<span id="cb117-37"><a href="ch-keyscan.html#cb117-37" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGateMulti<span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_SysCtrl<span class="op">);</span></span>
-<span id="cb117-38"><a href="ch-keyscan.html#cb117-38" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGateMulti<span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_PinCtrl<span class="op">);</span></span>
-<span id="cb117-39"><a href="ch-keyscan.html#cb117-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb117-40"><a href="ch-keyscan.html#cb117-40" aria-hidden="true" tabindex="-1"></a>    KEYSCAN_Initialize<span class="op">(&amp;</span>keyscan_set<span class="op">);</span></span>
-<span id="cb117-41"><a href="ch-keyscan.html#cb117-41" aria-hidden="true" tabindex="-1"></a>    KEYSCAN_InitKeyScanToIdx<span class="op">(&amp;</span>keyscan_set<span class="op">,</span> <span class="op">&amp;</span>key_ctx<span class="op">);</span></span>
-<span id="cb117-42"><a href="ch-keyscan.html#cb117-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb117-43"><a href="ch-keyscan.html#cb117-43" aria-hidden="true" tabindex="-1"></a>    platform_set_irq_callback<span class="op">(</span>PLATFORM_CB_IRQ_KEYSCAN<span class="op">,</span> keyscan_cb_isr<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
-<span id="cb117-44"><a href="ch-keyscan.html#cb117-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb117-45"><a href="ch-keyscan.html#cb117-45" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span><span class="op">;</span></span>
-<span id="cb117-46"><a href="ch-keyscan.html#cb117-46" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<span id="cb117-37"><a href="ch-keyscan.html#cb117-37" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGateMulti<span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_PinCtrl<span class="op">);</span></span>
+<span id="cb117-38"><a href="ch-keyscan.html#cb117-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb117-39"><a href="ch-keyscan.html#cb117-39" aria-hidden="true" tabindex="-1"></a>    KEYSCAN_Initialize<span class="op">(&amp;</span>keyscan_set<span class="op">);</span></span>
+<span id="cb117-40"><a href="ch-keyscan.html#cb117-40" aria-hidden="true" tabindex="-1"></a>    KEYSCAN_InitKeyScanToIdx<span class="op">(&amp;</span>keyscan_set<span class="op">,</span> <span class="op">&amp;</span>key_ctx<span class="op">);</span></span>
+<span id="cb117-41"><a href="ch-keyscan.html#cb117-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb117-42"><a href="ch-keyscan.html#cb117-42" aria-hidden="true" tabindex="-1"></a>    platform_set_irq_callback<span class="op">(</span>PLATFORM_CB_IRQ_KEYSCAN<span class="op">,</span> keyscan_cb_isr<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb117-43"><a href="ch-keyscan.html#cb117-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb117-44"><a href="ch-keyscan.html#cb117-44" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb117-45"><a href="ch-keyscan.html#cb117-45" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </div>
 <div id="中断数据处理" class="section level3 hasAnchor" number="11.3.2">
 <h3><span class="header-section-number">11.3.2</span> 中断数据处理<a href="ch-keyscan.html#中断数据处理" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -755,34 +756,36 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb118-55"><a href="ch-keyscan.html#cb118-55" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="op">(</span>KEYSCAN_GetIntStateFifoEmptyRaw<span class="op">()</span> <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span id="cb118-56"><a href="ch-keyscan.html#cb118-56" aria-hidden="true" tabindex="-1"></a>        key_data <span class="op">=</span> KEYSCAN_GetKeyData<span class="op">();</span></span>
 <span id="cb118-57"><a href="ch-keyscan.html#cb118-57" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>KEYSCAN_KeyDataToRowColIdx<span class="op">(&amp;</span>key_ctx<span class="op">,</span> key_data<span class="op">,</span> <span class="op">&amp;</span>row<span class="op">,</span> <span class="op">&amp;</span>col<span class="op">))</span> <span class="op">{</span></span>
-<span id="cb118-58"><a href="ch-keyscan.html#cb118-58" aria-hidden="true" tabindex="-1"></a>            key_state_buf<span class="op">[</span>key_state_now_index<span class="op">][</span>row<span class="op">][</span>col<span class="op">]</span> <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
-<span id="cb118-59"><a href="ch-keyscan.html#cb118-59" aria-hidden="true" tabindex="-1"></a>            have_key_pressed <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
-<span id="cb118-60"><a href="ch-keyscan.html#cb118-60" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
-<span id="cb118-61"><a href="ch-keyscan.html#cb118-61" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>have_key_pressed <span class="op">==</span> <span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb118-62"><a href="ch-keyscan.html#cb118-62" aria-hidden="true" tabindex="-1"></a>                have_key_pressed <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb118-63"><a href="ch-keyscan.html#cb118-63" aria-hidden="true" tabindex="-1"></a>                no_key_pressed_cnt <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb118-64"><a href="ch-keyscan.html#cb118-64" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
-<span id="cb118-65"><a href="ch-keyscan.html#cb118-65" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
-<span id="cb118-66"><a href="ch-keyscan.html#cb118-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb118-67"><a href="ch-keyscan.html#cb118-67" aria-hidden="true" tabindex="-1"></a>            <span class="cf">switch</span> <span class="op">(</span>no_key_pressed_cnt<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb118-68"><a href="ch-keyscan.html#cb118-68" aria-hidden="true" tabindex="-1"></a>            <span class="cf">case</span> <span class="dv">0</span><span class="op">:</span> <span class="co">// have key pressed</span></span>
-<span id="cb118-69"><a href="ch-keyscan.html#cb118-69" aria-hidden="true" tabindex="-1"></a>                no_key_pressed_cnt<span class="op">++;</span></span>
-<span id="cb118-70"><a href="ch-keyscan.html#cb118-70" aria-hidden="true" tabindex="-1"></a>                printf_key_state<span class="op">();</span></span>
-<span id="cb118-71"><a href="ch-keyscan.html#cb118-71" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span><span class="op">;</span></span>
-<span id="cb118-72"><a href="ch-keyscan.html#cb118-72" aria-hidden="true" tabindex="-1"></a>            <span class="cf">case</span> <span class="dv">1</span><span class="op">:</span> <span class="co">// all key released</span></span>
-<span id="cb118-73"><a href="ch-keyscan.html#cb118-73" aria-hidden="true" tabindex="-1"></a>                no_key_pressed_cnt<span class="op">++;</span></span>
-<span id="cb118-74"><a href="ch-keyscan.html#cb118-74" aria-hidden="true" tabindex="-1"></a>                printf_key_state<span class="op">();</span></span>
-<span id="cb118-75"><a href="ch-keyscan.html#cb118-75" aria-hidden="true" tabindex="-1"></a>                key_state_clear<span class="op">();</span></span>
-<span id="cb118-76"><a href="ch-keyscan.html#cb118-76" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span><span class="op">;</span></span>
-<span id="cb118-77"><a href="ch-keyscan.html#cb118-77" aria-hidden="true" tabindex="-1"></a>            <span class="cf">case</span> <span class="dv">2</span><span class="op">:</span></span>
+<span id="cb118-58"><a href="ch-keyscan.html#cb118-58" aria-hidden="true" tabindex="-1"></a>            <span class="co">// 扫描到有按键按下 按键位置为 row col</span></span>
+<span id="cb118-59"><a href="ch-keyscan.html#cb118-59" aria-hidden="true" tabindex="-1"></a>            key_state_buf<span class="op">[</span>key_state_now_index<span class="op">][</span>row<span class="op">][</span>col<span class="op">]</span> <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb118-60"><a href="ch-keyscan.html#cb118-60" aria-hidden="true" tabindex="-1"></a>            have_key_pressed <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb118-61"><a href="ch-keyscan.html#cb118-61" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb118-62"><a href="ch-keyscan.html#cb118-62" aria-hidden="true" tabindex="-1"></a>            <span class="co">// 完成一次扫描 根据have_key_pressed判断该轮扫描中是否有按键按下</span></span>
+<span id="cb118-63"><a href="ch-keyscan.html#cb118-63" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>have_key_pressed <span class="op">==</span> <span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb118-64"><a href="ch-keyscan.html#cb118-64" aria-hidden="true" tabindex="-1"></a>                have_key_pressed <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb118-65"><a href="ch-keyscan.html#cb118-65" aria-hidden="true" tabindex="-1"></a>                no_key_pressed_cnt <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb118-66"><a href="ch-keyscan.html#cb118-66" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb118-67"><a href="ch-keyscan.html#cb118-67" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb118-68"><a href="ch-keyscan.html#cb118-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb118-69"><a href="ch-keyscan.html#cb118-69" aria-hidden="true" tabindex="-1"></a>            <span class="cf">switch</span> <span class="op">(</span>no_key_pressed_cnt<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb118-70"><a href="ch-keyscan.html#cb118-70" aria-hidden="true" tabindex="-1"></a>            <span class="cf">case</span> <span class="dv">0</span><span class="op">:</span> <span class="co">// 该轮扫描中有按键按下</span></span>
+<span id="cb118-71"><a href="ch-keyscan.html#cb118-71" aria-hidden="true" tabindex="-1"></a>                no_key_pressed_cnt<span class="op">++;</span></span>
+<span id="cb118-72"><a href="ch-keyscan.html#cb118-72" aria-hidden="true" tabindex="-1"></a>                printf_key_state<span class="op">();</span></span>
+<span id="cb118-73"><a href="ch-keyscan.html#cb118-73" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb118-74"><a href="ch-keyscan.html#cb118-74" aria-hidden="true" tabindex="-1"></a>            <span class="cf">case</span> <span class="dv">1</span><span class="op">:</span> <span class="co">// 该轮扫描中没有按键按下 上一轮扫描中有按键按下 说明按键释放</span></span>
+<span id="cb118-75"><a href="ch-keyscan.html#cb118-75" aria-hidden="true" tabindex="-1"></a>                no_key_pressed_cnt<span class="op">++;</span></span>
+<span id="cb118-76"><a href="ch-keyscan.html#cb118-76" aria-hidden="true" tabindex="-1"></a>                printf_key_state<span class="op">();</span></span>
+<span id="cb118-77"><a href="ch-keyscan.html#cb118-77" aria-hidden="true" tabindex="-1"></a>                key_state_clear<span class="op">();</span></span>
 <span id="cb118-78"><a href="ch-keyscan.html#cb118-78" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span><span class="op">;</span></span>
-<span id="cb118-79"><a href="ch-keyscan.html#cb118-79" aria-hidden="true" tabindex="-1"></a>            <span class="cf">default</span><span class="op">:</span></span>
+<span id="cb118-79"><a href="ch-keyscan.html#cb118-79" aria-hidden="true" tabindex="-1"></a>            <span class="cf">case</span> <span class="dv">2</span><span class="op">:</span> <span class="co">// 连续两轮或以上都没有按键按下</span></span>
 <span id="cb118-80"><a href="ch-keyscan.html#cb118-80" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span><span class="op">;</span></span>
-<span id="cb118-81"><a href="ch-keyscan.html#cb118-81" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
-<span id="cb118-82"><a href="ch-keyscan.html#cb118-82" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb118-83"><a href="ch-keyscan.html#cb118-83" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb118-84"><a href="ch-keyscan.html#cb118-84" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb118-85"><a href="ch-keyscan.html#cb118-85" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<span id="cb118-81"><a href="ch-keyscan.html#cb118-81" aria-hidden="true" tabindex="-1"></a>            <span class="cf">default</span><span class="op">:</span></span>
+<span id="cb118-82"><a href="ch-keyscan.html#cb118-82" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb118-83"><a href="ch-keyscan.html#cb118-83" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb118-84"><a href="ch-keyscan.html#cb118-84" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb118-85"><a href="ch-keyscan.html#cb118-85" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb118-86"><a href="ch-keyscan.html#cb118-86" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb118-87"><a href="ch-keyscan.html#cb118-87" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </div>
 <div id="效果" class="section level3 hasAnchor" number="11.3.3">
 <h3><span class="header-section-number">11.3.3</span> 效果<a href="ch-keyscan.html#效果" class="anchor-section" aria-label="Anchor link to header"></a></h3>

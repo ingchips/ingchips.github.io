@@ -465,6 +465,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="21.2.8" data-path="ch-uart.html"><a href="ch-uart.html#接收数据"><i class="fa fa-check"></i><b>21.2.8</b> 接收数据</a></li>
 <li class="chapter" data-level="21.2.9" data-path="ch-uart.html"><a href="ch-uart.html#dma传输模式使能"><i class="fa fa-check"></i><b>21.2.9</b> DMA传输模式使能</a></li>
 </ul></li>
+<li class="chapter" data-level="21.3" data-path="ch-uart.html"><a href="ch-uart.html#示例代码"><i class="fa fa-check"></i><b>21.3</b> 示例代码</a>
+<ul>
+<li class="chapter" data-level="21.3.1" data-path="ch-uart.html"><a href="ch-uart.html#uart接收变长字节数据"><i class="fa fa-check"></i><b>21.3.1</b> UART接收变长字节数据</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="22" data-path="ch-usb.html"><a href="ch-usb.html"><i class="fa fa-check"></i><b>22</b> Universal serial bus device (USB)</a>
 <ul>
@@ -529,7 +533,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1><span class="header-section-number">4</span> 模拟比较器（COMPARATOR）<a href="ch-comparator.html#ch-comparator" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <div id="功能概述" class="section level2 hasAnchor" number="4.1">
 <h2><span class="header-section-number">4.1</span> 功能概述<a href="ch-comparator.html#功能概述" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>模拟比较器根据比较两个输入电压的结果以获得高电平或低电平输出。</p>
+<p>模拟比较器比较两个输入电压，输出高电平或低电平。</p>
 <p>特性：</p>
 <ul>
 <li>支持轨到轨输入。</li>
@@ -563,8 +567,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="获取模拟比较器结果" class="section level3 hasAnchor" number="4.2.2">
 <h3><span class="header-section-number">4.2.2</span> 获取模拟比较器结果<a href="ch-comparator.html#获取模拟比较器结果" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>模拟比较器模块输出结果的极性可以配置。</p>
-<p>如果output_polarity配置为0，如果VINP电压高于VINN，比较器返回的结果是1；如果VINP电压低于VINN，比较器返回的结果是0。</p>
-<p>如果output_polarity配置为1，如果VINP电压高于VINN，比较器返回的结果是0；如果VINP电压低于VINN，比较器返回的结果是1。</p>
+<p>如果output_polarity配置为0：如果VINP电压高于VINN，比较器返回的结果是1；如果VINP电压低于VINN，比较器返回的结果是0。</p>
+<p>如果output_polarity配置为1：如果VINP电压高于VINN，比较器返回的结果是0；如果VINP电压低于VINN，比较器返回的结果是1。</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb10-1"><a href="ch-comparator.html#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
 <span id="cb10-2"><a href="ch-comparator.html#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> Get comparator result</span></span>
 <span id="cb10-3"><a href="ch-comparator.html#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
@@ -636,7 +640,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">4.3</span> 应用举例：<a href="ch-comparator.html#应用举例" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <div id="初始化模拟比较器模块" class="section level3 hasAnchor" number="4.3.1">
 <h3><span class="header-section-number">4.3.1</span> 初始化模拟比较器模块<a href="ch-comparator.html#初始化模拟比较器模块" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>模拟比较器模块的初始化配置如cmp_set，GPIO18作为VINP，GPIO19作为VINN，30mV的迟滞，VINN没有分压（配置为16/16），超低功耗模式，输出极性配置为0（如果VINP电压高于VINN，比较器返回的结果是1）。</p>
+<p>模拟比较器模块的初始化配置如cmp_set，GPIO18作为VINP，GPIO19作为VINN，30mV的迟滞，VINN没有分压（配置为16/16），超低功耗模式，输出极性配置为0。</p>
 <p>例子中模拟比较器模块使能了上升沿中断，使能了上升沿睡眠唤醒。</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb13-1"><a href="ch-comparator.html#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> lpc_pos_cb_isr<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
 <span id="cb13-2"><a href="ch-comparator.html#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
@@ -650,7 +654,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb13-10"><a href="ch-comparator.html#cb13-10" aria-hidden="true" tabindex="-1"></a>    printf<span class="op">(</span><span class="st">&quot;neg isr status %d %d</span><span class="sc">\r\n</span><span class="st">&quot;</span><span class="op">,</span> status<span class="op">,</span> COMPARATOR_GetComparatorResult<span class="op">());</span></span>
 <span id="cb13-11"><a href="ch-comparator.html#cb13-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
 <span id="cb13-12"><a href="ch-comparator.html#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb13-13"><a href="ch-comparator.html#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> COMPARATOR_SetStateStruct cmp_set <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb13-13"><a href="ch-comparator.html#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> <span class="dt">static</span> COMPARATOR_SetStateStruct cmp_set <span class="op">=</span> <span class="op">{</span></span>
 <span id="cb13-14"><a href="ch-comparator.html#cb13-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>v_in_p          <span class="op">=</span> COMPARATOR_VINP1_GPIO18<span class="op">,</span></span>
 <span id="cb13-15"><a href="ch-comparator.html#cb13-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>v_in_n          <span class="op">=</span> COMPARATOR_VINN1_GPIO19<span class="op">,</span></span>
 <span id="cb13-16"><a href="ch-comparator.html#cb13-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>en              <span class="op">=</span> COMPARATOR_ENABLE<span class="op">,</span></span>
@@ -661,21 +665,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb13-21"><a href="ch-comparator.html#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
 <span id="cb13-22"><a href="ch-comparator.html#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_comparator<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
 <span id="cb13-23"><a href="ch-comparator.html#cb13-23" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb13-24"><a href="ch-comparator.html#cb13-24" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGateMulti<span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_SysCtrl<span class="op">);</span></span>
-<span id="cb13-25"><a href="ch-comparator.html#cb13-25" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGateMulti<span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_PinCtrl<span class="op">);</span></span>
-<span id="cb13-26"><a href="ch-comparator.html#cb13-26" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGateMulti<span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_GPIO0<span class="op">);</span></span>
-<span id="cb13-27"><a href="ch-comparator.html#cb13-27" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGateMulti<span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_GPIO1<span class="op">);</span></span>
-<span id="cb13-28"><a href="ch-comparator.html#cb13-28" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGateMulti<span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_LPC<span class="op">);</span></span>
-<span id="cb13-29"><a href="ch-comparator.html#cb13-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-30"><a href="ch-comparator.html#cb13-30" aria-hidden="true" tabindex="-1"></a>    COMPARATOR_Initialize<span class="op">(&amp;</span>cmp_set<span class="op">);</span></span>
-<span id="cb13-31"><a href="ch-comparator.html#cb13-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-32"><a href="ch-comparator.html#cb13-32" aria-hidden="true" tabindex="-1"></a>    platform_set_irq_callback<span class="op">(</span>PLATFORM_CB_IRQ_LPC_POS<span class="op">,</span> lpc_pos_cb_isr<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
-<span id="cb13-33"><a href="ch-comparator.html#cb13-33" aria-hidden="true" tabindex="-1"></a>    platform_set_irq_callback<span class="op">(</span>PLATFORM_CB_IRQ_LPC_NEG<span class="op">,</span> lpc_neg_cb_isr<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
-<span id="cb13-34"><a href="ch-comparator.html#cb13-34" aria-hidden="true" tabindex="-1"></a>    COMPARATOR_SetInterrupt<span class="op">(</span>COMPARATOR_POSEDGE_INT_MODE<span class="op">);</span></span>
-<span id="cb13-35"><a href="ch-comparator.html#cb13-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-36"><a href="ch-comparator.html#cb13-36" aria-hidden="true" tabindex="-1"></a>    COMPARATOR_SetDeepSleepWakeupSource<span class="op">(</span><span class="dv">1</span><span class="op">,</span> COMPARATOR_HIGH_LEVEL_WAKEUP<span class="op">,</span> COMPARATOR_POSEDGE_WAKEUP_MODE<span class="op">);</span></span>
-<span id="cb13-37"><a href="ch-comparator.html#cb13-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span><span class="op">;</span></span>
-<span id="cb13-38"><a href="ch-comparator.html#cb13-38" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<span id="cb13-24"><a href="ch-comparator.html#cb13-24" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGateMulti<span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_PinCtrl<span class="op">);</span></span>
+<span id="cb13-25"><a href="ch-comparator.html#cb13-25" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGateMulti<span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_GPIO0<span class="op">);</span></span>
+<span id="cb13-26"><a href="ch-comparator.html#cb13-26" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGateMulti<span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_GPIO1<span class="op">);</span></span>
+<span id="cb13-27"><a href="ch-comparator.html#cb13-27" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGateMulti<span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_LPC<span class="op">);</span></span>
+<span id="cb13-28"><a href="ch-comparator.html#cb13-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-29"><a href="ch-comparator.html#cb13-29" aria-hidden="true" tabindex="-1"></a>    COMPARATOR_Initialize<span class="op">(&amp;</span>cmp_set<span class="op">);</span></span>
+<span id="cb13-30"><a href="ch-comparator.html#cb13-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-31"><a href="ch-comparator.html#cb13-31" aria-hidden="true" tabindex="-1"></a>    platform_set_irq_callback<span class="op">(</span>PLATFORM_CB_IRQ_LPC_POS<span class="op">,</span> lpc_pos_cb_isr<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb13-32"><a href="ch-comparator.html#cb13-32" aria-hidden="true" tabindex="-1"></a>    platform_set_irq_callback<span class="op">(</span>PLATFORM_CB_IRQ_LPC_NEG<span class="op">,</span> lpc_neg_cb_isr<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb13-33"><a href="ch-comparator.html#cb13-33" aria-hidden="true" tabindex="-1"></a>    COMPARATOR_SetInterrupt<span class="op">(</span>COMPARATOR_POSEDGE_INT_MODE<span class="op">);</span></span>
+<span id="cb13-34"><a href="ch-comparator.html#cb13-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-35"><a href="ch-comparator.html#cb13-35" aria-hidden="true" tabindex="-1"></a>    COMPARATOR_SetDeepSleepWakeupSource<span class="op">(</span><span class="dv">1</span><span class="op">,</span> COMPARATOR_HIGH_LEVEL_WAKEUP<span class="op">,</span> COMPARATOR_POSEDGE_WAKEUP_MODE<span class="op">);</span></span>
+<span id="cb13-36"><a href="ch-comparator.html#cb13-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb13-37"><a href="ch-comparator.html#cb13-37" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 
 </div>
 </div>

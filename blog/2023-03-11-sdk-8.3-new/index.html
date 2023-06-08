@@ -236,13 +236,16 @@
 <div class="important">
 <strong>已知问题（局限性）:</strong>
 <ul>
-<li>ING916XX 省电模式仍在持续开发、改进中，QUERY_DEEP_SLEEP_ALLOWED 回调返回 PLATFORM_ALLOW_BLE_ONLY_SLEEP 时可能导致死机。
-</li>
+<li>ING916XX 省电模式仍在持续开发、改进中，QUERY_DEEP_SLEEP_ALLOWED 回调返回 PLATFORM_ALLOW_BLE_ONLY_SLEEP 时可能导致死机；
+    DEEPER SLEEP 模式下底电流可能出现异常，因此 QUERY_DEEP_SLEEP_ALLOWED 回调目前忽略 PLATFORM_ALLOW_DEEPER_SLEEP。</li>
 </ul></div>
 
 <div class="note">
 <strong>兼容性：</strong>
-v8.3.3 gap_start_ccm 函数签名与旧版本不兼容。
+<ul>
+<li>v8.3.3: gap_start_ccm 函数签名与旧版本不兼容。</li>
+<li>v8.3.6: ING916 ADC 驱动的部分接口与旧版本不兼容。</li>
+</ul>
 </div>
 
 <h2 id="1-软件包">1. 软件包</h2>
@@ -424,6 +427,21 @@ v8.3.3 gap_start_ccm 函数签名与旧版本不兼容。
   <li>
     <p>[<strong>更新</strong>] ING916: QUERY_DEEP_SLEEP_ALLOWED 支持返回 PLATFORM_ALLOW_BLE_ONLY_SLEEP  <span style="background:yellow">(<strong>8.3.5</strong>)</span></p>
   </li>
+  <li>
+    <p>[<strong>更新</strong>] ING916: <code class="highlighter-rouge">platform_auto_tune()</code> 现在总是调整到 &lt;= 32768Hz 的状态 <span style="background:yellow">(<strong>8.3.6</strong>)</span></p>
+
+    <p>由于 RTC 时钟对于  &gt; 32768Hz 的 32k 时钟支持的频率范围有限，所以 <code class="highlighter-rouge">platform_auto_tune()</code> 现在总是调整到 &lt;= 32768Hz
+  且尽量接近 32768Hz 的状态。</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] ING916: <code class="highlighter-rouge">platform_shutdown()</code> 默认使用 DEEP sleep 实现 <span style="background:yellow">(<strong>8.3.6</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] 某些情况下 <code class="highlighter-rouge">ll_get_conn_events_info</code> 输出的连接事件信息有误 (<em>Experimental</em> 软件包) <span style="background:yellow">(<strong>8.3.6</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] 带确认的 Raw Packet：Responder 的数据无法如预期地得到对端的确认 (<em>Extension</em> 和 <em>Experimental</em> 软件包) <span style="background:yellow">(<strong>8.3.6</strong>)</span></p>
+  </li>
 </ul>
 
 <h2 id="2-外设驱动">2. 外设驱动</h2>
@@ -467,6 +485,15 @@ v8.3.3 gap_start_ccm 函数签名与旧版本不兼容。
   <li>
     <p>[<strong>更新</strong>] ING916: SPI 增加关于 格式/Dummy/XiP 的接口 <span style="background:yellow">(<strong>8.3.5</strong>)</span></p>
   </li>
+  <li>
+    <p>[<strong>修正</strong>] ING916: 关于 B 型 GPIO 范围的说明有误 <span style="background:yellow">(<strong>8.3.6</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] ING916: RTC 增加调整 API <span style="background:yellow">(<strong>8.3.6</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] ING916: ADC 更新 Gain 相关接口 <span style="background:yellow">(<strong>8.3.6</strong>)</span></p>
+  </li>
 </ul>
 
 <h2 id="3-库函数">3. 库函数</h2>
@@ -479,6 +506,13 @@ v8.3.3 gap_start_ccm 函数签名与旧版本不兼容。
     <p>[<strong>新增</strong>] USB MSC 模块 <span style="background:yellow">(<strong>8.3.4</strong>)</span></p>
 
     <p>方便为 app 添加 U 盘功能。</p>
+  </li>
+  <li>
+    <p>[修正] Mesh 库: 堆溢出等问题 <span style="background:yellow">(<strong>8.3.6</strong>)</span></p>
+
+    <p>改进 Mesh 库的消息缓存，避免堆溢出导致的 HardFault；修复 <code class="highlighter-rouge">cfg_srv</code> 结构体无法保存到 Flash 的问题。</p>
+
+    <p>Mesh 库内部版本号变为 v1.1.2。</p>
   </li>
 </ul>
 
@@ -510,6 +544,9 @@ v8.3.3 gap_start_ccm 函数签名与旧版本不兼容。
   </li>
   <li>
     <p>[<strong>更新</strong>] Voice Remote Control: 增加 SBC 编码器 <span style="background:yellow">(<strong>8.3.5</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] 配合外设驱动、Mesh 库等相应更新了几个示例 <span style="background:yellow">(<strong>8.3.6</strong>)</span></p>
   </li>
 </ul>
 
@@ -559,6 +596,9 @@ v8.3.3 gap_start_ccm 函数签名与旧版本不兼容。
   </li>
   <li>
     <p>[<strong>更新</strong>] Wizard 生成使用事件回调表的代码 <span style="background:yellow">(<strong>8.3.5</strong>)</span></p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] Cube 关于 GPIO 的问题 <span style="background:yellow">(<strong>8.3.6</strong>)</span></p>
   </li>
 </ul>
 

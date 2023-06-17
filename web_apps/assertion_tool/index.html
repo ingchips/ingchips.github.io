@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="dist/css/uikit.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+    <title>ING918/ING916 Assertion Explainer</title>
+</head>
+<body>
+<!-- UIkit JS -->
+<script src="dist/js/uikit.min.js"></script>
+<script src="dist/js/uikit-icons.min.js"></script>
+<script src="dist/js/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+<script src="msg.js"></script>
+<script src="main.js"></script>
+<script>
+
+</script>
+
+<div class="uk-container">
+
+<div id="loader">
+    <div class="uk-margin"> </div>
+
+    <div class="uk-margin">
+        <h2 id="title">ING918/ING916 Assertion Explainer</h2>
+    </div>
+
+    <div class="uk-margin">
+        <form class="uk-form-horizontal">
+            <div class="uk-margin">
+                <label class="uk-form-label" for="form-horizontal-text">Assertion Message</label>
+                <div class="uk-form-controls">
+                    <input class="uk-input" id="assertion_info" type="text" placeholder="[ASSERTION] @ mss_mem.c:276" value=""></input>
+                    Examples: [ASSERTION] @ mss_mem.c:276
+                </div>
+            </div>
+        </form>
+        <div class="uk-margin">
+            <button id="btn_explain" class="uk-button uk-button-primary">Explain</button>
+        </div>
+    </div>
+
+    <div class="uk-margin"></div>
+
+    <div id="main_window" >
+
+        <div class="uk-card uk-card-default uk-card-body" id="assertion_mss_mem"> <div id="assertion_mss_mem_content"></div> <pre id="assertion_mss_mem_content_md" hidden>
+## Heap Corrupted
+
+> Link Layer's heap is corrupted.
+
+----
+
+Link Layer's heap has an internal integrity checking mechanism: each memory block is guarded a few
+magic numbers. When these numbers are different from expectation, that block must be corrupted, so
+an assertion is raised.
+
+### How to deal with it?
+
+* Are you using `ll_malloc` to allocate buffers from Link Layer's heap? Check if too many bytes are written into it.
+
+* Hunt for wild pointers.
+
+* Bisect or revert to elder revisions to locate the code causing the problem.
+
+* [Dump the memory](/user_guide/dive-into-sdk.html#memory-dump) and contact us for further support.
+
+        </pre></div>
+
+        <div class="uk-card uk-card-default uk-card-body" id="assertion_ble_llc_ctrl"> <div id="assertion_ble_llc_ctrl_content"></div> <pre id="assertion_ble_llc_ctrl_content_md" hidden>
+## Out of Memory
+
+> Connection manager fails to allocate memory.
+
+----
+
+Connection manager fails to allocate memory for Link Layer control procedures.
+
+### How to deal with it?
+
+* Are you using `ll_malloc` to allocate too much memory? Please reduce the amount.
+
+</pre></div>
+
+        <div class="uk-card uk-card-default uk-card-body" id="assertion_mss_msg"> <div id="assertion_mss_msg_content"></div> <pre id="assertion_mss_msg_content_md" hidden>
+## Out of Memory
+
+> Message manager fails to allocate memory.
+
+----
+
+Message manager in the Controller fails to allocate memory for inter process communication.
+
+### How to deal with it?
+
+* Are you using `ll_malloc` to allocate too much memory? Please reduce the amount.
+
+</pre></div>
+
+        <div class="uk-card uk-card-default uk-card-body" id="assertion_mss_process"> <div id="assertion_mss_process_content"></div> <pre id="assertion_mss_process_content_md" hidden>
+## Memory Corrupted
+
+> Variables for inter process communication is corrupted.
+
+----
+
+Variables for inter process communication within Controller is corrupted.
+
+Memory location of these variables: near the end of RAM range reserved for `platform.bin`.
+
+### How to deal with it?
+
+* Hunt for wild pointers.
+
+* Bisect or revert to elder revisions to locate the code causing the problem.
+
+* [Dump the memory](/user_guide/dive-into-sdk.html#memory-dump) and contact us for further support.
+
+</pre></div>
+
+    <div class="uk-card uk-card-default uk-card-body" id="assertion_mss_task"> <div id="assertion_mss_task_content"></div> <pre id="assertion_mss_task_content_md" hidden>
+## Memory Corrupted
+
+> Variables for multi-tasking is corrupted.
+
+----
+
+Variables for multi-tasking within Controller is corrupted.
+
+Memory location of these variables: near the end of RAM range reserved for `platform.bin`.
+
+### How to deal with it?
+
+* Hunt for wild pointers.
+
+* Bisect or revert to elder revisions to locate the code causing the problem.
+
+* [Dump the memory](/user_guide/dive-into-sdk.html#memory-dump) and contact us for further support.
+
+</pre></div>
+
+        <div class="uk-card uk-card-default uk-card-body" id="assertion_hci_internal_transport"> <div id="assertion_hci_internal_transport_content"></div> <pre id="assertion_hci_internal_transport_content_md" hidden>
+## Memory Corrupted
+
+> Variables for HCI is corrupted.
+----
+
+Variables for the internal Host-Controller Interface is corrupted.
+
+### How to deal with it?
+
+* Hunt for wild pointers.
+
+* Bisect or revert to elder revisions to locate the code causing the problem.
+
+* [Dump the memory](/user_guide/dive-into-sdk.html#memory-dump) and contact us for further support.
+
+        </pre></div>
+
+        <div class="uk-card uk-card-default uk-card-body" id="assertion_exit_0"> <div id="assertion_exit_0_content"></div> <pre id="assertion_exit_0_content_md" hidden>
+## FreeRTOS Specific: Task Function Exited
+
+> A function that implements a task has exited.
+----
+
+A function that implements a task must not exit or attempt to return to
+its caller as there is nothing to return to.
+
+### How to deal with it?
+
+If a task wants to exit it should instead call `vTaskDelete(NULL)`.
+
+        </pre></div>
+
+        <div class="uk-card uk-card-default uk-card-body" id="assertion_fromisr_0"> <div id="assertion_fromisr_0_content"></div> <pre id="assertion_fromisr_0_content_md" hidden>
+## FreeRTOS Specific: Unsafe API called in ISR
+
+> A function that is not interrupt safe is called in ISR.
+----
+
+This is not the interrupt safe version of the enter critical function and it is
+being called from an interrupt context.  Only API
+functions that end in "FromISR" can be used in an interrupt.
+
+### How to deal with it?
+
+* Call the corresponding function that end in "FromISR" instead;
+
+* Use `IS_IN_INTERRUPT()` to test if in an interrupt and call the correct API variant.
+
+        </pre></div>
+
+        <div class="uk-card uk-card-default uk-card-body" id="assertion_sys_port_916"> <div id="assertion_sys_port_916_content"></div> <pre id="assertion_sys_port_916_content_md" hidden>
+## FreeRTOS Usage Violation
+
+> Various FreeRTOS usage violations.
+----
+
+Examples:
+
+* Call `vPortExitCritical()` without `vPortEnterCritical()`
+
+* Interrupt priority higher than `configMAX_SYSCALL_INTERRUPT_PRIORITY`, and within the ISR,
+  a "FromISR" function is called.
+
+  ISR safe FreeRTOS API functions must *only* be called
+  from interrupts that have been assigned a priority at or below
+  `configMAX_SYSCALL_INTERRUPT_PRIORITY`, i.e. the value of priority is equal or larger
+  than `configMAX_SYSCALL_INTERRUPT_PRIORITY`.
+
+        </pre></div>
+
+        <div class="uk-card uk-card-default uk-card-body" id="assertion_sys_port_918"> <div id="assertion_sys_port_918_content"></div> <pre id="assertion_sys_port_918_content_md" hidden>
+## FreeRTOS Usage Violation
+
+> Various FreeRTOS usage violations.
+----
+
+Examples:
+
+* Call `vPortExitCritical()` without `vPortEnterCritical()`
+
+* Interrupt priority higher than `configMAX_SYSCALL_INTERRUPT_PRIORITY`, and within the ISR,
+    a "FromISR" function is called.
+
+    ISR safe FreeRTOS API functions must *only* be called
+    from interrupts that have been assigned a priority at or below
+    `configMAX_SYSCALL_INTERRUPT_PRIORITY`, i.e. the value of priority is equal or larger
+    than `configMAX_SYSCALL_INTERRUPT_PRIORITY`.
+
+        </pre></div>
+
+        <div class="uk-card uk-card-default uk-card-body" id="assertion_unknown"> <div id="assertion_unknown_content"></div> <pre id="assertion_unknown_content_md" hidden>
+## Internal Error
+
+----
+
+Please contact us for further support.
+        </pre></div>
+
+    </div>
+
+</div>
+
+</div>
+
+</body>
+</html>

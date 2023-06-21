@@ -652,7 +652,7 @@ RTC产生中断后， 需要消除中断状态方可再次触发。利用 <code>
 <p>RTC 支持作为低功耗状态的唤醒源：RTC的闹钟唤醒信号在 <code>RTC_ConfigAlarm</code> 指定的时间将系统唤醒。
 使用 <code>RTC_EnableDeepSleepWakeupSource</code> 使能 RTC 的唤醒功能。</p>
 <div class="sourceCode" id="cb173"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb173-1"><a href="ch-rtc.html#cb173-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> RTC_EnableDeepSleepWakeupSource<span class="op">(</span></span>
-<span id="cb173-2"><a href="ch-rtc.html#cb173-2" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> enable    <span class="co">//使能(0)/禁用(1)</span></span>
+<span id="cb173-2"><a href="ch-rtc.html#cb173-2" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> enable    <span class="co">//使能(1)/禁用(0)</span></span>
 <span id="cb173-3"><a href="ch-rtc.html#cb173-3" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code></pre></div>
 </div>
 <div id="数字调校" class="section level3 hasAnchor" number="17.2.11">
@@ -744,14 +744,22 @@ RTC产生中断后， 需要消除中断状态方可再次触发。利用 <code>
 </ol>
 <ul>
 <li><p>第一步：调用<code>platform_read_info</code>函数，获取32K时钟计数校准值。</p>
-<div class="sourceCode" id="cb183"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb183-1"><a href="ch-rtc.html#cb183-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> cali_value <span class="op">=</span> <span class="op">(</span><span class="dt">int</span><span class="op">)(</span><span class="fl">1000000.</span> <span class="op">/</span> <span class="op">(</span>platform_read_info<span class="op">(</span>PLATFORM_INFO_32K_CALI_VALUE<span class="op">)</span> <span class="op">/</span> <span class="fl">65536.</span><span class="op">));</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb183"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb183-1"><a href="ch-rtc.html#cb183-1" aria-hidden="true" tabindex="-1"></a><span class="dt">float</span> cali_value <span class="op">=</span> <span class="fl">1000000.</span> <span class="op">/</span> <span class="op">(</span>platform_read_info<span class="op">(</span>PLATFORM_INFO_32K_CALI_VALUE<span class="op">)</span> <span class="op">/</span> <span class="fl">65536.</span><span class="op">);</span></span></code></pre></div></li>
 <li><p>第二步：分类处理</p>
 <ul>
 <li><p>cali_value &lt; 32768：设置半秒trim</p>
-<div class="sourceCode" id="cb184"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb184-1"><a href="ch-rtc.html#cb184-1" aria-hidden="true" tabindex="-1"></a>RTC_HSecCntTrim<span class="op">(</span>cali_value <span class="op">/</span> <span class="dv">2</span><span class="op">);</span></span></code></pre></div></li>
-<li><p>cali_value &gt; 32768：设置秒trim</p>
-<div class="sourceCode" id="cb185"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb185-1"><a href="ch-rtc.html#cb185-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> delta_value <span class="op">=</span> cali_value <span class="op">-</span> <span class="dv">32768</span><span class="op">;</span></span>
-<span id="cb185-2"><a href="ch-rtc.html#cb185-2" aria-hidden="true" tabindex="-1"></a>RTC_SecCntTrim<span class="op">((</span><span class="dt">uint8_t</span><span class="op">)</span>delta_value<span class="op">,</span>RTC_TRIM_SLOW<span class="op">);</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb184"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb184-1"><a href="ch-rtc.html#cb184-1" aria-hidden="true" tabindex="-1"></a>RTC_HSecCntTrim<span class="op">((</span><span class="dt">int</span><span class="op">)</span>cali_value <span class="op">/</span> <span class="dv">2</span><span class="op">);</span></span></code></pre></div></li>
+<li><p>cali_value &gt; 32768:根据分析，秒trim引入的时RTC计数值的整数部分，而天、时、分的trim则是小数部分，
+每种trim大致的修正能力，我们可以参考 <a href="ch-rtc.html#tab:ch-rtc-Trimming-Capability">17.1</a> ，由于Day的修正能较弱，所以
+在使用中我们不考虑使用<code>RTC_DayCntTrim</code>,当然若有需要也可自行使用。</p>
+<div class="sourceCode" id="cb185"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb185-1"><a href="ch-rtc.html#cb185-1" aria-hidden="true" tabindex="-1"></a><span class="dt">float</span> delta_value <span class="op">=</span> cali_value <span class="op">-</span> <span class="fl">32768.</span><span class="op">;</span> <span class="co">//获取Δ</span></span>
+<span id="cb185-2"><a href="ch-rtc.html#cb185-2" aria-hidden="true" tabindex="-1"></a><span class="dt">float</span> delta_ipart<span class="op">,</span>delta_fpart<span class="op">;</span></span>
+<span id="cb185-3"><a href="ch-rtc.html#cb185-3" aria-hidden="true" tabindex="-1"></a>delta_fpart <span class="op">=</span> __builtin_modff<span class="op">(</span>delta_value<span class="op">,&amp;</span>delta_ipart<span class="op">);</span><span class="co">//分离整数和小数部分</span></span>
+<span id="cb185-4"><a href="ch-rtc.html#cb185-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb185-5"><a href="ch-rtc.html#cb185-5" aria-hidden="true" tabindex="-1"></a>RTC_SecCntTrim<span class="op">((</span><span class="dt">uint8_t</span><span class="op">)</span>delta_ipart<span class="op">,</span>RTC_TRIM_SLOW<span class="op">);</span></span>
+<span id="cb185-6"><a href="ch-rtc.html#cb185-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb185-7"><a href="ch-rtc.html#cb185-7" aria-hidden="true" tabindex="-1"></a>RTC_MinCntTrim<span class="op">();</span></span>
+<span id="cb185-8"><a href="ch-rtc.html#cb185-8" aria-hidden="true" tabindex="-1"></a>RTC_HourCntTrim<span class="op">();</span></span></code></pre></div></li>
 </ul></li>
 </ul>
 <ol start="6" style="list-style-type: decimal">

@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- UIkit CSS -->
     <link rel="stylesheet" href="dist/css/uikit.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/vs.min.css">
     <title>ING918/ING916 Assertion Explainer</title>
 </head>
 <body>
@@ -22,7 +22,6 @@
 
 <div class="uk-container">
 
-<div id="loader">
     <div class="uk-margin"> </div>
 
     <div class="uk-margin">
@@ -48,7 +47,10 @@
 
     <div id="main_window" >
 
-        <div class="uk-card uk-card-default uk-card-body" id="assertion_mss_mem"> <div id="assertion_mss_mem_content"></div> <pre id="assertion_mss_mem_content_md" hidden>
+    </div>
+
+    <div id="all_assertions" hidden>
+         <pre id="md:assertion_mss_mem">
 ## Heap Corrupted
 
 > Link Layer's heap is corrupted.
@@ -69,39 +71,26 @@ an assertion is raised.
 
 * [Dump the memory](/user_guide/dive-into-sdk.html#memory-dump) and contact us for further support.
 
-        </pre></div>
+        </pre>
 
-        <div class="uk-card uk-card-default uk-card-body" id="assertion_ble_llc_ctrl"> <div id="assertion_ble_llc_ctrl_content"></div> <pre id="assertion_ble_llc_ctrl_content_md" hidden>
+        <pre id="md:assertion_ble_llc_ctrl|assertion_mss_msg">
 ## Out of Memory
 
-> Connection manager fails to allocate memory.
+> Controller fails to allocate memory.
 
 ----
 
-Connection manager fails to allocate memory for Link Layer control procedures.
+Controller fails to allocate memory for Link Layer control procedures or internal messages.
 
 ### How to deal with it?
 
-* Are you using `ll_malloc` to allocate too much memory? Please reduce the amount.
+Are you using `ll_malloc` to allocate too much memory? Please reduce the amount.
 
-</pre></div>
+Tips: Call `ll_get_heap_free_size` to check the free size of Link Layer's heap in bytes.
 
-        <div class="uk-card uk-card-default uk-card-body" id="assertion_mss_msg"> <div id="assertion_mss_msg_content"></div> <pre id="assertion_mss_msg_content_md" hidden>
-## Out of Memory
+</pre>
 
-> Message manager fails to allocate memory.
-
-----
-
-Message manager in the Controller fails to allocate memory for inter process communication.
-
-### How to deal with it?
-
-* Are you using `ll_malloc` to allocate too much memory? Please reduce the amount.
-
-</pre></div>
-
-        <div class="uk-card uk-card-default uk-card-body" id="assertion_mss_process"> <div id="assertion_mss_process_content"></div> <pre id="assertion_mss_process_content_md" hidden>
+<pre id="md:assertion_mss_process">
 ## Memory Corrupted
 
 > Variables for inter process communication is corrupted.
@@ -120,9 +109,9 @@ Memory location of these variables: near the end of RAM range reserved for `plat
 
 * [Dump the memory](/user_guide/dive-into-sdk.html#memory-dump) and contact us for further support.
 
-</pre></div>
+</pre>
 
-    <div class="uk-card uk-card-default uk-card-body" id="assertion_mss_task"> <div id="assertion_mss_task_content"></div> <pre id="assertion_mss_task_content_md" hidden>
+<pre id="md:assertion_mss_task">
 ## Memory Corrupted
 
 > Variables for multi-tasking is corrupted.
@@ -141,9 +130,9 @@ Memory location of these variables: near the end of RAM range reserved for `plat
 
 * [Dump the memory](/user_guide/dive-into-sdk.html#memory-dump) and contact us for further support.
 
-</pre></div>
+</pre>
 
-        <div class="uk-card uk-card-default uk-card-body" id="assertion_hci_internal_transport"> <div id="assertion_hci_internal_transport_content"></div> <pre id="assertion_hci_internal_transport_content_md" hidden>
+<pre id="md:assertion_hci_internal_transport">
 ## Memory Corrupted
 
 > Variables for HCI is corrupted.
@@ -159,9 +148,9 @@ Variables for the internal Host-Controller Interface is corrupted.
 
 * [Dump the memory](/user_guide/dive-into-sdk.html#memory-dump) and contact us for further support.
 
-        </pre></div>
+</pre>
 
-        <div class="uk-card uk-card-default uk-card-body" id="assertion_exit_0"> <div id="assertion_exit_0_content"></div> <pre id="assertion_exit_0_content_md" hidden>
+<pre id="md:assertion_exit_0">
 ## FreeRTOS Specific: Task Function Exited
 
 > A function that implements a task has exited.
@@ -174,9 +163,9 @@ its caller as there is nothing to return to.
 
 If a task wants to exit it should instead call `vTaskDelete(NULL)`.
 
-        </pre></div>
+</pre>
 
-        <div class="uk-card uk-card-default uk-card-body" id="assertion_fromisr_0"> <div id="assertion_fromisr_0_content"></div> <pre id="assertion_fromisr_0_content_md" hidden>
+<pre id="md:assertion_fromisr_0">
 ## FreeRTOS Specific: Unsafe API called in ISR
 
 > A function that is not interrupt safe is called in ISR.
@@ -192,9 +181,9 @@ functions that end in "FromISR" can be used in an interrupt.
 
 * Use `IS_IN_INTERRUPT()` to test if in an interrupt and call the correct API variant.
 
-        </pre></div>
+</pre>
 
-        <div class="uk-card uk-card-default uk-card-body" id="assertion_sys_port_916"> <div id="assertion_sys_port_916_content"></div> <pre id="assertion_sys_port_916_content_md" hidden>
+<pre id="md:assertion_sys_port_916">
 ## FreeRTOS Usage Violation
 
 > Various FreeRTOS usage violations.
@@ -212,9 +201,9 @@ Examples:
   `configMAX_SYSCALL_INTERRUPT_PRIORITY`, i.e. the value of priority is equal or larger
   than `configMAX_SYSCALL_INTERRUPT_PRIORITY`.
 
-        </pre></div>
+</pre>
 
-        <div class="uk-card uk-card-default uk-card-body" id="assertion_sys_port_918"> <div id="assertion_sys_port_918_content"></div> <pre id="assertion_sys_port_918_content_md" hidden>
+<pre id="md:assertion_sys_port_918">
 ## FreeRTOS Usage Violation
 
 > Various FreeRTOS usage violations.
@@ -232,19 +221,46 @@ Examples:
     `configMAX_SYSCALL_INTERRUPT_PRIORITY`, i.e. the value of priority is equal or larger
     than `configMAX_SYSCALL_INTERRUPT_PRIORITY`.
 
-        </pre></div>
+</pre>
 
-        <div class="uk-card uk-card-default uk-card-body" id="assertion_unknown"> <div id="assertion_unknown_content"></div> <pre id="assertion_unknown_content_md" hidden>
+<pre id="md:assertion_ble_hcic_eif_828|assertion_ble_hcic_eif_798">
+## Malformed HCI Command
+
+> Parameters too long
+----
+
+Parameters of an HCI command exceeds maximum length. Some HCI commands have a variable
+number of parameters with an upper limit. Take _LE Set Extended Scan Parameters_ as an example.
+It accepts at most two types of PHYs on primary advertising channels. The corresponding GAP
+is `gap_set_ext_scan_para`, and if a value which is larger than 2 is passed as `config_num`,
+this assertion is triggered.
+
+```c
+/**
+ * ...
+ * @param config_num           configure number 2 at most. It indicates that host would configure how many kinds of PHY
+ * ...
+ */
+uint8_t gap_set_ext_scan_para(const bd_addr_type_t own_addr_type,
+                              const scan_filter_policy_t filter,
+                              const uint8_t config_num,
+                              const scan_phy_config_t *configs);
+```
+
+### How to deal with it?
+
+Check _Programmers' Guide on BLE_, and do not pass invalid parameters to `gap_set_ext_scan_para`,
+`gap_ext_create_connection`, etc.
+</pre>
+
+<pre id="md:assertion_unknown">
 ## Internal Error
 
 ----
 
 Please contact us for further support.
-        </pre></div>
-
+</pre>
     </div>
-
-</div>
 
 </div>
 

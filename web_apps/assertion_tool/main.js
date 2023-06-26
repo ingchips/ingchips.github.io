@@ -35,10 +35,10 @@ function explain0(fn, lo) {
 
 function explain() {
     let val = $('#assertion_info').val();
-    console.log(val);
+
     if (val == '') alert(msg.need_input);
 
-    var m = /([^ ]+):([0-9]+)/.exec(val);
+    var m = /([a-zA-Z0-9_\.]+):([0-9]+)/.exec(val);
     if (m.length == 3)
     {
         explain0(m[1], m[2]);
@@ -61,12 +61,21 @@ async function appStart() {
         headerIds: false,
       });
 
-    main.children().each(function(index, elem) {
-        let id = $(this).attr('id');
-        all_pages[id] = $('#' + id);
-        all_pages[id].hide();
-        $('#' + id + '_content').html(
-            marked.parse($('#' + id + '_content_md').text()));
+    $('#all_assertions').children().each(function (index, elem) {
+        let content = marked.parse($(this).text());
+
+        for (let id of $(this).attr('id').substr(3).split('|'))
+        {
+            jQuery('<div>', {
+                id: id,
+                class: 'uk-card uk-card-default uk-card-body',
+                style: 'display:none',
+            }).appendTo(main);
+
+            all_pages[id] = $('#' + id);
+
+            $('#' + id).html(content);
+        }
     });
 
     hljs.highlightAll();

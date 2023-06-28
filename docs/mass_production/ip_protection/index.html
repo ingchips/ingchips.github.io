@@ -445,15 +445,29 @@
 
 <h2 id="启用-ip-保护">启用 IP 保护</h2>
 
-<h3 id="uart-接口">UART 接口</h3>
+<h3 id="uartusb-接口">UART/USB 接口</h3>
 
-<p>在串口下载工具（Flash Downloader）里点击 Options 按钮，将 Read Protection 使能即可。如下图所示。</p>
+<p>在下载工具（Flash Downloader）里点击 Options 按钮，将 Read Protection 使能。如下图所示。</p>
 
 <p><img src="uart_setup.png" alt="uart_ip_protection" /></p>
 
+<p>当使用 Python 版的 USB 下载工具时：先用 Flash Downloader 打开相应的 ini 文件，使能 Read Protection，
+关闭 Flash Downloader；然后下载。</p>
+
 <h3 id="swd-接口">SWD 接口</h3>
 
-<p>参考通过 SWD 接口进行量产的<a href="../swd_burn/">说明</a>，用 platform_entry_lock.hex 代替 platform_entry.hex。</p>
+<ul>
+  <li>
+    <p>ING918</p>
+
+    <p>参考通过 SWD 接口进行量产的<a href="../swd_burn/">说明</a>，用 platform_entry_lock.hex 代替 platform_entry.hex。</p>
+  </li>
+  <li>
+    <p>ING916</p>
+
+    <p>参考通过 SWD 接口进行量产的<a href="../swd_burn/">说明</a>，用 platform_lock.hex 代替 platform.hex。</p>
+  </li>
+</ul>
 
 <h2 id="注意事项">注意事项</h2>
 
@@ -461,7 +475,13 @@
 
 <ol>
   <li>利用 FOTA 进行空中升级；</li>
-  <li>通过 UART 接口先停用 IP 保护（如前述，停用 IP 保护意味着 Flash 被全部擦除一次）。</li>
+  <li>
+    <p>通过 UART 接口先停用 IP 保护（如前述，停用 IP 保护意味着 Flash 被全部擦除一次）。</p>
+
+    <div class="note">
+ <strong>提醒:</strong> 对于 ING918，出厂前写入的 ADC 校准数据也将丢失。如需备份数据，请联系技术支持。
+ </div>
+  </li>
 </ol>
 
 <div class="important">

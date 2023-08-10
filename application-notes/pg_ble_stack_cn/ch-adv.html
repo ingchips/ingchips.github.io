@@ -446,13 +446,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p><code>HCI_SUBEVENT_LE_ADVERTISING_SET_TERMINATED</code></p>
 <p>一个广播集停止广播时，HCI 回调会收到 <code>HCI_SUBEVENT_LE_ADVERTISING_SET_TERMINATED</code> 事件。这个事件的触发条件如下：</p>
 <ul>
-<li>通过 GAP API 停止广播；</li>
-<li>连接建立；</li>
-<li>已达到预定的广播时长、次数，自动停止；</li>
-<li>极端情况：Controller 无法完成任务处理。</li>
+<li>连接建立：此时 <code>status</code> 为 <code>0</code>，可读取广播句柄和连接句柄的对应关系；</li>
+<li>已达到预定的广播时长、次数，自动停止：此时 <code>status</code> 为 <code>0x43</code>；</li>
+<li>极端情况：Controller 无法完成任务处理：此时 <code>status</code> 为 <code>0xFE</code>。</li>
 </ul>
 <p>注意，高占空比广播停止时不上报此事件，而是上报 <code>HCI_SUBEVENT_LE_ENHANCED_CONNECTION_COMPLETE</code> 事件。
-当未能建立连接高占空比广播超时时，<code>status</code> 置为 <span class="math inline">\(0x3C\)</span>（定向广播超时）。</p></li>
+当未能建立连接高占空比广播超时时，<code>status</code> 置为 <code>0x3C</code>（定向广播超时）。</p></li>
 <li><p><code>HCI_SUBEVENT_LE_SCAN_REQUEST_RECEIVED</code></p>
 <p>开发者使能扫描请求指示后，HCI 回调会收到 <code>HCI_SUBEVENT_LE_SCAN_REQUEST_RECEIVED</code> 事件。</p></li>
 </ul>

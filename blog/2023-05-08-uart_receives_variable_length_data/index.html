@@ -5,7 +5,7 @@
         <title>UART接收变长字节数据 - INGCHIPS</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content="在嵌入式系统领域，尤其是涉及到串口通信时，通常需要考虑UART接收不定长字节数据。在这篇博客中，我们将主要探讨两种桃芯可实现UART接收变长字节数据的方法：UART+FIFO+DMA方式和UART+FIFO方式。"/>
+        <meta name="description" content="当今，串行通信协议在各种嵌入式系统和物联网设备中被广泛应用。其中，UART作为最基础的串行通信协议之一，被广泛应用于微控制器、传感器、通信模块等设备之间的数据传输。在UART通信中，数据的传输方式通常是定长字节，即每次传输的字节数是固定的。然而，在一些特殊的应用场景中，变长字节数据的传输方式则更加适用。"/>
         <link rel="stylesheet" href="/assets/css/main.css">
         <link rel="icon" href="/favicon.ico" type="image/x-icon" />
         <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
@@ -227,267 +227,127 @@
     <div class="inner-md outer">
       <div class="post-content">
         <ul id="markdown-toc">
-  <li><a href="#uart接收变长字节数据的使用场景及优势" id="markdown-toc-uart接收变长字节数据的使用场景及优势">UART接收变长字节数据的使用场景及优势</a></li>
-  <li><a href="#uart接收变长字节数据的实现方式" id="markdown-toc-uart接收变长字节数据的实现方式">UART接收变长字节数据的实现方式</a></li>
+  <li><a href="#优势分析" id="markdown-toc-优势分析">优势分析</a></li>
+  <li><a href="#实现方式" id="markdown-toc-实现方式">实现方式</a></li>
   <li><a href="#桃芯可实现方案" id="markdown-toc-桃芯可实现方案">桃芯可实现方案</a>    <ul>
-      <li><a href="#uartfifodma方式针对ing916系列" id="markdown-toc-uartfifodma方式针对ing916系列">UART+FIFO+DMA方式（针对ING916系列）</a>        <ul>
-          <li><a href="#示例代码" id="markdown-toc-示例代码">示例代码</a></li>
+      <li><a href="#uart-fifo-mode-only方式" id="markdown-toc-uart-fifo-mode-only方式">UART FIFO Mode Only方式</a>        <ul>
+          <li><a href="#方案简介" id="markdown-toc-方案简介">方案简介</a></li>
+          <li><a href="#配置流程" id="markdown-toc-配置流程">配置流程</a></li>
         </ul>
       </li>
-      <li><a href="#uartfifo方式针对ing918系列" id="markdown-toc-uartfifo方式针对ing918系列">UART+FIFO方式（针对ING918系列）</a>        <ul>
-          <li><a href="#示例代码-1" id="markdown-toc-示例代码-1">示例代码</a></li>
+      <li><a href="#uart-fifo-mode--dma方式" id="markdown-toc-uart-fifo-mode--dma方式">UART FIFO Mode + DMA方式</a>        <ul>
+          <li><a href="#方案简介-1" id="markdown-toc-方案简介-1">方案简介</a></li>
+          <li><a href="#配置流程-1" id="markdown-toc-配置流程-1">配置流程</a></li>
         </ul>
       </li>
+      <li><a href="#总结" id="markdown-toc-总结">总结</a></li>
     </ul>
   </li>
-  <li><a href="#总结" id="markdown-toc-总结">总结</a></li>
 </ul>
 
-<p>在嵌入式系统领域，尤其是涉及到串口通信时，通常需要考虑UART接收不定长字节数据。在这篇博客中，我们将主要探讨两种<strong>桃芯可实现</strong>UART接收变长字节数据的方法：<em>UART+FIFO+DMA方式</em>和<em>UART+FIFO方式</em>。</p>
+<p>当今，串行通信协议在各种嵌入式系统和物联网设备中被广泛应用。其中，UART作为最基础的串行通信协议之一，被广泛应用于微控制器、传感器、通信模块等设备之间的数据传输。在UART通信中，数据的传输方式通常是定长字节，即每次传输的字节数是固定的。然而，在一些特殊的应用场景中，变长字节数据的传输方式则更加适用。</p>
 
-<p>我们将首先讨论UART接收变长字节数据的使用场景及优势，接着深入了解这两种方法的使用及需要注意的细节。</p>
+<p>在这篇博客中，我将介绍UART接收变长字节数据的优势和实现方法，以及与定长字节数据传输方式的区别，并探讨两种<strong>桃芯可实现</strong>的方法————<em>UART FIFO Mode + DMA方式</em>和<em>UART FIFO Mode Only方式</em>。</p>
 
-<h2 id="uart接收变长字节数据的使用场景及优势">UART接收变长字节数据的使用场景及优势</h2>
+<h2 id="优势分析">优势分析</h2>
 
-<p>UART（通用异步收发器）是一种广泛应用于嵌入式系统的串行通信接口。在实际应用中，UART接收变长字节数据的场景很常见，如 <strong>传感器数据采集</strong> 、 <strong>控制指令的传输</strong> 等。这种场景的一个显著特点是 <strong>数据长度不固定</strong> ，可能会在不同的通信过程中发生变化。在这种情况下，使用UART接收变长字节数据具有以下优势：</p>
+<p>在实际应用中，UART接收变长字节数据的场景很常见，下面列举了几种比较常见的场景：</p>
 
 <ol>
-  <li><strong>灵活性</strong>：可以根据实际需要动态调整接收数据的长度，适应不同场景的需求。</li>
+  <li>传感器数据传输</li>
+  <li>文件传输</li>
+  <li>音视频数据传输</li>
+  <li>协议传输</li>
+</ol>
+
+<p>这些场景都有显著特点是<em>数据长度不固定</em> 、 <em>传输时间不固定</em>，可能会在不同的通信过程中发生变化。除此之外，甚至会当有一些硬件不支持流控。在这些情况下，就需要用到UART接收变长字节数据的方法，优势：</p>
+
+<ol>
+  <li><strong>灵活性高</strong>：可以根据实际需要动态调整接收数据的长度，适应不同场景的需求。</li>
   <li><strong>节省资源</strong>：只需要接收实际需要的数据，避免了接收固定长度数据时可能产生的资源浪费。</li>
   <li><strong>提高通信效率</strong>：变长字节数据可以根据实际数据量进行发送，减少了通信过程中的空闲时间，提高了通信效率。</li>
 </ol>
 
-<h2 id="uart接收变长字节数据的实现方式">UART接收变长字节数据的实现方式</h2>
+<h2 id="实现方式">实现方式</h2>
 
-<ul>
-  <li>UART单字节中断接收</li>
-  <li>UART+FIFO方式</li>
-  <li>UART+DMA方式</li>
-</ul>
+<p>在实际应用中常见的实现方式有三种<strong>UART单字中断接收</strong>、<strong>UART FIFO Mode Only方式</strong>、<strong>UART FIFO Mode + DMA方式</strong>，在下表中我对三种方式的实现原理以及优缺点进行了详细的说明：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">方式</th>
+      <th style="text-align: center">实现原理</th>
+      <th style="text-align: center">优点</th>
+      <th style="text-align: center">缺点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">UART单字节中断接收</td>
+      <td style="text-align: center">每接收到一个字节<br />触发一次中断处理</td>
+      <td style="text-align: center">简单易实现，<br />不需要额外的<br />硬件支持</td>
+      <td style="text-align: center">需要频繁的中断处<br />理，CPU负载高，<br />适用于低速数据传<br />输</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">UART FIFO Mode Only</td>
+      <td style="text-align: center">使用硬件FIFO缓存<br />存储接收到的数据</td>
+      <td style="text-align: center">可以减轻CPU<br />负载，适用于<br />中速数据传输</td>
+      <td style="text-align: center">FIFO缓存大小限制<br />了接收数据的最大<br />长度，需要设置合<br />适的缓存大小和中<br />断频率</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">UART FIFO Mode + DMA</td>
+      <td style="text-align: center">使用DMA直接将接<br />收到的数据存储到<br />内存中</td>
+      <td style="text-align: center">可以大大提高<br />接收效率，适<br />用于高速数据<br />传输和大数据<br />量的接收</td>
+      <td style="text-align: center">需要硬件支持，实<br />现复杂，需要额外<br />的DMA控制器和<br />内存空间，高端芯<br />片支持程度较好</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>需要注意的是，选择哪种方式需要根据具体<strong>场景的需求</strong>和<strong>硬件条件</strong>综合考虑。单字节中断接收可以适用于低速数据传输，而<strong>UART+FIFO</strong>和<strong>UART+DMA</strong>适用于<strong>中高速</strong>数据传输和<strong>大数据量</strong>的接收，具有更高的效率和可靠性。另外，不同芯片和模块对这些方式的支持程度也不同，需要根据具体情况进行选择和配置。</p>
 
 <h2 id="桃芯可实现方案">桃芯可实现方案</h2>
 
-<h3 id="uartfifodma方式针对ing916系列">UART+FIFO+DMA方式（针对ING916系列）</h3>
+<p>由于ING916x CPU 处理UART接收数据时，尤其是单字节接收时频繁进入中断，极大地增加了CPU loading，同时CPU无法进入低功耗工作模式。鉴于上述情况，ING916x提供了以下两种接收变长数据的工作方式，在UART接收变长数据完成后，等待UART RXD线上空闲一段时间后快速进入一次中断处理。</p>
 
-<p>UART+FIFO+DMA方式是通过使用DMA（直接存储器访问）控制器并结合UART模块内部的FIFO实现UART接收变长字节数据的方法。DMA控制器可以在不占用CPU资源的前提下，将接收到的数据直接传输到指定的内存地址。这种方式具有以下特点：</p>
+<h3 id="uart-fifo-mode-only方式">UART FIFO Mode Only方式</h3>
 
-<ol>
-  <li><strong>实时性</strong>：DMA控制器可以实时监控UART接收缓冲区，一旦检测到数据接收完成，就立即进行数据传输，确保数据的实时性。</li>
-  <li><strong>减轻CPU负担</strong>：借助DMA控制器，CPU无需参与数据传输过程，可以专注于执行其他任务。</li>
-  <li><strong>高效性</strong>：DMA控制器可以在接收数据的同时进行数据传输，提高了系统的整体效率。</li>
-  <li><strong>可靠性</strong>：传输过程之中CPU干预的次数降低，提高系统响应的速度，大大减少了传输过程中出错的概率。</li>
-  <li><strong>降低低功耗</strong>：中断次数显著减少，MCU有更多的时间可以进入睡眠状态，大大地降低了功耗。</li>
-</ol>
+<h4 id="方案简介">方案简介</h4>
 
-<p><strong>使用注意事项：</strong>
-配置DMA控制器时，需要注意设置合适的传输数据长度以及目标内存地址，以确保数据正确传输。
-使用UART+FIFO+DMA方式时，需要根据实际需要配置UART接收触发的条件，例如数据帧间隔时间、接收缓冲区数据量等。</p>
+<p>UART FIFO Mode Only方式是仅依赖于UART模块内部的FIFO（先进先出）缓冲区实现接收变长字节数据的方法。在这种方式下，CPU需要定期检查UART接收缓冲区并读取数据。</p>
 
-<h4 id="示例代码">示例代码</h4>
+<p>假设FIFO的深度为<code class="highlighter-rouge">32</code>bytes，为了保证RX FIFO不溢出，单次接收到半满状态，即将<code class="highlighter-rouge">RXIFLSEL</code>设置为<code class="highlighter-rouge">16</code>bytes，同时使能UART的<strong>接收中断</strong>以及<strong>接收超时中断</strong>，至此完成配置，等待数据到来。</p>
 
-<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#define bsDMA_INT_C_MASK         1    
-#define bsDMA_DST_REQ_SEL        4
-#define bsDMA_SRC_REQ_SEL        8
-#define bsDMA_DST_ADDR_CTRL      12
-#define bsDMA_SRC_ADDR_CTRL      14
-#define bsDMA_DST_MODE           16
-#define bsDMA_SRC_MODE           17
-#define bsDMA_DST_WIDTH          18
-#define bsDMA_SRC_WIDTH          21
-#define bsDMA_SRC_BURST_SIZE     24
-</span>
-<span class="cp">#define DMA_RX_CHANNEL_ID  1
-#define DMA_TX_CHANNEL_ID  0
-</span>
-<span class="n">DMA_Descriptor</span> <span class="n">test</span> <span class="nf">__attribute__</span><span class="p">((</span><span class="n">aligned</span> <span class="p">(</span><span class="mi">8</span><span class="p">)));</span>
-<span class="kt">char</span> <span class="n">dst</span><span class="p">[</span><span class="mi">256</span><span class="p">];</span>
-<span class="kt">char</span> <span class="n">src</span><span class="p">[]</span> <span class="o">=</span> <span class="s">"Finished to receive a frame!</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+<p>接收数据时，每到达<code class="highlighter-rouge">16</code>bytes就会触发一次接收中断，在中断中读取16bytes数据，清除中断后继续接收数据，如此反复，尾部数据不足<code class="highlighter-rouge">16</code>bytes时，则会触发接收超时中断，在中断中读空FIFO，至此传输的数据接收完成，并将所有的数据打包发送给应用层去使用。</p>
 
-<span class="kt">void</span> <span class="nf">setup_peripheral_dma</span><span class="p">()</span>
-<span class="p">{</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">"setup_peripheral_dma</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
-    <span class="n">SYSCTRL_ClearClkGate</span><span class="p">(</span><span class="n">SYSCTRL_ITEM_APB_DMA</span><span class="p">);</span> 
-
-    <span class="c1">//配置DMA接收</span>
-    <span class="n">APB_DMA</span><span class="o">-&gt;</span><span class="n">Channels</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">Descriptor</span><span class="p">.</span><span class="n">Ctrl</span> <span class="o">=</span> <span class="p">((</span><span class="kt">uint32_t</span><span class="p">)</span><span class="mh">0x0</span> <span class="o">&lt;&lt;</span> <span class="n">bsDMA_INT_C_MASK</span><span class="p">)</span>
-                                            <span class="o">|</span> <span class="p">((</span><span class="kt">uint32_t</span><span class="p">)</span><span class="mh">0x0</span> <span class="o">&lt;&lt;</span><span class="n">bsDMA_DST_REQ_SEL</span><span class="p">)</span>
-                                            <span class="o">|</span> <span class="p">((</span><span class="kt">uint32_t</span><span class="p">)</span><span class="mh">0x0</span> <span class="o">&lt;&lt;</span> <span class="n">bsDMA_SRC_REQ_SEL</span><span class="p">)</span>
-                                            <span class="o">|</span> <span class="p">((</span><span class="kt">uint32_t</span><span class="p">)</span><span class="mh">0x0</span> <span class="o">&lt;&lt;</span> <span class="n">bsDMA_DST_ADDR_CTRL</span><span class="p">)</span>
-                                            <span class="o">|</span> <span class="p">((</span><span class="kt">uint32_t</span><span class="p">)</span><span class="mh">0x2</span> <span class="o">&lt;&lt;</span> <span class="n">bsDMA_SRC_ADDR_CTRL</span><span class="p">)</span>   <span class="c1">//DMA_ADDRESS_FIXED</span>
-                                            <span class="o">|</span> <span class="p">((</span><span class="kt">uint32_t</span><span class="p">)</span><span class="mh">0x0</span> <span class="o">&lt;&lt;</span> <span class="n">bsDMA_DST_MODE</span><span class="p">)</span>
-                                            <span class="o">|</span> <span class="p">((</span><span class="kt">uint32_t</span><span class="p">)</span><span class="mh">0x1</span> <span class="o">&lt;&lt;</span> <span class="n">bsDMA_SRC_MODE</span><span class="p">)</span>     <span class="c1">//</span>
-                                            <span class="o">|</span> <span class="p">((</span><span class="kt">uint32_t</span><span class="p">)</span><span class="mh">0x0</span> <span class="o">&lt;&lt;</span> <span class="n">bsDMA_DST_WIDTH</span><span class="p">)</span>
-                                            <span class="o">|</span> <span class="p">((</span><span class="kt">uint32_t</span><span class="p">)</span><span class="mh">0x0</span> <span class="o">&lt;&lt;</span> <span class="n">bsDMA_SRC_WIDTH</span><span class="p">)</span>
-                                            <span class="o">|</span> <span class="p">((</span><span class="kt">uint32_t</span><span class="p">)</span><span class="mh">0x2</span> <span class="o">&lt;&lt;</span> <span class="n">bsDMA_SRC_BURST_SIZE</span><span class="p">);</span> <span class="c1">//4 transefers</span>
-
-    <span class="n">APB_DMA</span><span class="o">-&gt;</span><span class="n">Channels</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">Descriptor</span><span class="p">.</span><span class="n">SrcAddr</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint32_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">APB_UART0</span><span class="o">-&gt;</span><span class="n">DataRead</span><span class="p">;</span>
-    <span class="n">APB_DMA</span><span class="o">-&gt;</span><span class="n">Channels</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">Descriptor</span><span class="p">.</span><span class="n">DstAddr</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint32_t</span><span class="p">)</span><span class="n">dst</span><span class="p">;</span>
-    <span class="n">APB_DMA</span><span class="o">-&gt;</span><span class="n">Channels</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">Descriptor</span><span class="p">.</span><span class="n">TranSize</span> <span class="o">=</span> <span class="mi">48</span><span class="p">;</span>
-
-    <span class="n">DMA_EnableChannel</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">APB_DMA</span><span class="o">-&gt;</span><span class="n">Channels</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">Descriptor</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="c1">//添加UART通过DMA发送的配置</span>
-<span class="kt">void</span> <span class="nf">UART_trigger_DmaSend</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
-<span class="p">{</span> 
-    <span class="n">DMA_PrepareMem2Peripheral</span><span class="p">(</span>  <span class="o">&amp;</span><span class="n">test</span><span class="p">,</span>
-                                <span class="n">SYSCTRL_DMA_UART0_TX</span><span class="p">,</span>
-                                <span class="n">src</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">src</span><span class="p">),</span>
-                                <span class="n">DMA_ADDRESS_INC</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-    <span class="n">DMA_EnableChannel</span><span class="p">(</span><span class="n">DMA_TX_CHANNEL_ID</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">test</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="nf">setup_peripheral_uart</span><span class="p">()</span>
-<span class="p">{</span>
-    <span class="n">APB_UART0</span><span class="o">-&gt;</span><span class="n">FifoSelect</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">bsUART_TRANS_INT_LEVEL</span> <span class="p">)</span> <span class="o">|</span>
-                    <span class="p">(</span><span class="mh">0X7</span> <span class="o">&lt;&lt;</span> <span class="n">bsUART_RECV_INT_LEVEL</span>  <span class="p">)</span> <span class="p">;</span>
-    <span class="n">APB_UART0</span><span class="o">-&gt;</span><span class="n">IntMask</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">bsUART_RECEIVE_INTENAB</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">bsUART_TRANSMIT_INTENAB</span><span class="p">)</span> <span class="o">|</span>
-                        <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">bsUART_TIMEOUT_INTENAB</span><span class="p">);</span>
-    <span class="n">APB_UART0</span><span class="o">-&gt;</span><span class="n">Control</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">bsUART_RECEIVE_ENABLE</span> <span class="o">|</span>
-                <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">bsUART_TRANSMIT_ENABLE</span> <span class="o">|</span>
-                <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">bsUART_ENABLE</span>          <span class="o">|</span>
-                <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">bsUART_CTS_ENA</span>         <span class="o">|</span>
-                <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">bsUART_RTS_ENA</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kt">uint32_t</span> <span class="nf">uart_isr</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">user_data</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="kt">uint32_t</span> <span class="n">status</span><span class="p">;</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">"@%x #%x #%x</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">APB_UART0</span><span class="o">-&gt;</span><span class="n">IntMask</span><span class="p">,</span><span class="n">APB_UART0</span><span class="o">-&gt;</span><span class="n">IntRaw</span><span class="p">,</span><span class="n">APB_UART0</span><span class="o">-&gt;</span><span class="n">Interrupt</span><span class="p">);</span>
-
-    <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="n">status</span> <span class="o">=</span> <span class="n">apUART_Get_all_raw_int_stat</span><span class="p">(</span><span class="n">APB_UART0</span><span class="p">);</span>
-
-        <span class="k">if</span> <span class="p">(</span><span class="n">status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-            <span class="k">break</span><span class="p">;</span>
-
-        <span class="n">APB_UART0</span><span class="o">-&gt;</span><span class="n">IntClear</span> <span class="o">=</span> <span class="n">status</span><span class="p">;</span>
-
-        <span class="c1">// rx timeout_int</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">status</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">bsUART_TIMEOUT_INTENAB</span><span class="p">))</span>
-        <span class="p">{</span>
-            <span class="k">while</span> <span class="p">(</span><span class="n">apUART_Check_RXFIFO_EMPTY</span><span class="p">(</span><span class="n">APB_UART0</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="p">{</span>
-                <span class="kt">char</span> <span class="n">c</span> <span class="o">=</span> <span class="n">APB_UART0</span><span class="o">-&gt;</span><span class="n">DataRead</span><span class="p">;</span>
-                <span class="kt">int</span> <span class="n">index</span> <span class="o">=</span> <span class="n">APB_DMA</span><span class="o">-&gt;</span><span class="n">Channels</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">Descriptor</span><span class="p">.</span><span class="n">DstAddr</span> <span class="o">-</span> <span class="p">(</span><span class="kt">uint32_t</span><span class="p">)</span><span class="n">dst</span><span class="p">;</span>
-                <span class="n">dst</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span><span class="p">;</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">index</span> <span class="o">==</span> <span class="mi">255</span><span class="p">)</span> 
-                <span class="p">{</span>
-                    <span class="n">APB_DMA</span><span class="o">-&gt;</span><span class="n">Channels</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">Descriptor</span><span class="p">.</span><span class="n">DstAddr</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint32_t</span><span class="p">)</span><span class="n">dst</span><span class="p">;</span>
-                    <span class="n">UART_trigger_DmaSend</span><span class="p">();</span>
-                <span class="p">}</span>
-                <span class="k">else</span>
-                    <span class="n">APB_DMA</span><span class="o">-&gt;</span><span class="n">Channels</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">Descriptor</span><span class="p">.</span><span class="n">DstAddr</span><span class="o">++</span><span class="p">;</span>
-
-                <span class="n">APB_DMA</span><span class="o">-&gt;</span><span class="n">Channels</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">Descriptor</span><span class="p">.</span><span class="n">TranSize</span> <span class="o">=</span> <span class="mi">48</span><span class="p">;</span>
-            <span class="p">}</span>
-            <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">len=%d, dst = %s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">APB_DMA</span><span class="o">-&gt;</span><span class="n">Channels</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">Descriptor</span><span class="p">.</span><span class="n">TranSize</span><span class="p">,</span><span class="n">dst</span><span class="p">);</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="nf">uart_peripherals_read_data</span><span class="p">()</span>
-<span class="p">{</span>
-    <span class="c1">//注册uart0中断</span>
-    <span class="n">platform_set_irq_callback</span><span class="p">(</span><span class="n">PLATFORM_CB_IRQ_UART0</span><span class="p">,</span> <span class="n">uart_isr</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-    <span class="n">setup_peripheral_uart</span><span class="p">();</span>
-    <span class="n">setup_peripheral_dma</span><span class="p">();</span>
-<span class="p">}</span>
-</code></pre></div></div>
-
-<h3 id="uartfifo方式针对ing918系列">UART+FIFO方式（针对ING918系列）</h3>
-
-<p>UART+FIFO方式是仅依赖于UART模块内部的FIFO（先进先出）缓冲区实现接收变长字节数据的方法。在这种方式下，CPU需要定期检查UART接收缓冲区并读取数据。</p>
-
-<p><strong>优势：</strong></p>
+<h4 id="配置流程">配置流程</h4>
 
 <ol>
-  <li><strong>简单性</strong>：不需要额外的硬件资源（如DMA控制器），配置较为简单。</li>
-  <li><strong>灵活性</strong>：可以根据实际需要动态调整CPU读取UART接收缓冲区的频率，以适应不同场景的需求。</li>
+  <li>配置UART波特率，同时配置使能<strong>UART RX FIFO Mode</strong>，配置相应RXIFLSEL为0x10.</li>
+  <li>UART RX开始接收数据，<strong>CPU</strong>周期性收到UART模块的<strong>UARTRTINTR</strong>中断，则<strong>CPU</strong>进入中断处理程序。在中断处理程序里<strong>CPU</strong>需要把<strong>UART RX FIFO</strong>中数据读出处理，每次读出<code class="highlighter-rouge">16</code>bytes.</li>
+  <li>对于<strong>UART RX</strong>尾部数据，直到<strong>CPU</strong>收到UART模块的<strong>UARTRTINTR</strong>中断，则<strong>CPU</strong>进入中断处理程序。在中断处理程序里<strong>CPU</strong>需要把UART RX FIFO中的剩余数据读出，应该是<code class="highlighter-rouge">3-6</code>bytes，具体方法是先读出<code class="highlighter-rouge">3</code>bytes, 然后查询UART模块的RX FIFO空标志位<strong>RXFE</strong>，直至把<strong>UART RX FIFO</strong>读空。</li>
 </ol>
 
-<p><strong>劣势：</strong></p>
+<h3 id="uart-fifo-mode--dma方式">UART FIFO Mode + DMA方式</h3>
+
+<h4 id="方案简介-1">方案简介</h4>
+
+<p>UART FIFO Mode + DMA方式是通过使用DMA（直接存储器访问）控制器并结合UART模块内部的FIFO实现UART接收变长字节数据的方法。DMA控制器可以在不占用CPU资源的前提下，将接收到的数据直接传输到指定的内存地址。但是由于ING916XX系列的DMA不支持DMA LEN，而是设置固定长度，所以我们需要开启UART的接收超时中断，等待数据到来。</p>
+
+<p>接收数据时，DMA会自动的将UART中的数据按照最小单元<code class="highlighter-rouge">SrcBurstSize</code>将数据循环读出，直到达到最大值<code class="highlighter-rouge">TranSize</code>,所以我们需要随时更新<code class="highlighter-rouge">TranSize</code>以保证数据持续接收，尾部数据不足<code class="highlighter-rouge">SrcBurstSize</code>时，则会触发接收超时中断，在中断中读空FIFO，至此传输的数据接收完成，并将所有的数据打包发送给应用层去使用。</p>
+
+<h4 id="配置流程-1">配置流程</h4>
 
 <ol>
-  <li><strong>功耗</strong>：每当接收的数据达到<code class="highlighter-rouge">RXIFLSEL</code>时，就需要唤醒一次MCU，相对于使用DMA的方式而言，耗费了更多的资源，增加了系统功耗。</li>
+  <li>配置UART波特率，同时配置使能UART RX FIFO Mode，配置相应RXIFLSEL为0x7（推荐值）。</li>
+  <li>配置DMA模块 其中一个channel配合UART RX handshake工作模式，配置SrcBurstSize为0x2（推荐值）。</li>
+  <li>配置完UART和DMA模块后，UART RX开始接收数据，直到CPU收到UART模块的<strong>UARTRTINTR</strong>中断，则CPU进入中断处理程序。在中断处理程序里<strong>CPU</strong>需要把<strong>UART RX FIFO</strong>中的剩余数据读出，应该是<code class="highlighter-rouge">3-6</code>bytes，具体方法是先读出3 bytes, 然后查询UART模块的RX FIFO空标志位<strong>RXFE</strong>，直至把<strong>UART RX FIFO</strong>读空。<strong>同时在中断处理程序里更新DMA配置数值，以便进行下一次UART变长数据接收。</strong></li>
 </ol>
 
-<p><strong>使用注意事项：</strong></p>
+<h3 id="总结">总结</h3>
 
-<p>使用UART+FIFO方式时，需要合理配置UART接收触发的条件，以确保数据的实时性与准确性。
-CPU需要定期检查UART接收缓冲区并读取数据，这可能会占用一定的CPU资源。因此，在资源有限的情况下，需要权衡CPU资源分配。</p>
+<p>如果UART模块使能FIFO Mode，不配合DMA搬运接收数据的情况，应用中会有很多限制。建议在有UART FIFO且硬件不支持DMA的情况下使用UART FIFO Mode Only方式，譬如<strong>ING918XX系列芯片</strong>。对于ING916XX系列芯片，建议使用UART FIFO Mode + DMA方式，能够使提升CPU的性能，并且降低系统的功耗。</p>
 
-<h4 id="示例代码-1">示例代码</h4>
-
-<p>假设完整的一帧数据长度为<code class="highlighter-rouge">256</code>字节，将<code class="highlighter-rouge">RXIFLSEL</code>设置为<code class="highlighter-rouge">16</code>，参考代码如下所示。</p>
-
-<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">char</span> <span class="n">dst</span><span class="p">[</span><span class="mi">256</span><span class="p">];</span>
-<span class="kt">int</span> <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-<span class="kt">void</span> <span class="nf">setup_peripheral_uart</span><span class="p">()</span>
-<span class="p">{</span>
-    <span class="n">APB_UART0</span><span class="o">-&gt;</span><span class="n">FifoSelect</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">bsUART_TRANS_INT_LEVEL</span> <span class="p">)</span> <span class="o">|</span>
-                    <span class="p">(</span><span class="mh">0X10</span> <span class="o">&lt;&lt;</span> <span class="n">bsUART_RECV_INT_LEVEL</span>  <span class="p">)</span> <span class="p">;</span>
-    <span class="n">APB_UART0</span><span class="o">-&gt;</span><span class="n">IntMask</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">bsUART_RECEIVE_INTENAB</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">bsUART_TRANSMIT_INTENAB</span><span class="p">)</span> <span class="o">|</span>
-                        <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">bsUART_TIMEOUT_INTENAB</span><span class="p">);</span>
-    <span class="n">APB_UART0</span><span class="o">-&gt;</span><span class="n">Control</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">bsUART_RECEIVE_ENABLE</span> <span class="o">|</span>
-                <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">bsUART_TRANSMIT_ENABLE</span> <span class="o">|</span>
-                <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">bsUART_ENABLE</span>          <span class="o">|</span>
-                <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">bsUART_CTS_ENA</span>         <span class="o">|</span>
-                <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">bsUART_RTS_ENA</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kt">uint32_t</span> <span class="nf">uart_isr</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">user_data</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="kt">uint32_t</span> <span class="n">status</span><span class="p">;</span>
-
-    <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="n">status</span> <span class="o">=</span> <span class="n">apUART_Get_all_raw_int_stat</span><span class="p">(</span><span class="n">APB_UART0</span><span class="p">);</span>
-
-        <span class="k">if</span> <span class="p">(</span><span class="n">status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-            <span class="k">break</span><span class="p">;</span>
-
-        <span class="n">APB_UART0</span><span class="o">-&gt;</span><span class="n">IntClear</span> <span class="o">=</span> <span class="n">status</span><span class="p">;</span>
-
-        <span class="c1">// rx int</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">status</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">bsUART_RECEIVE_INTENAB</span><span class="p">))</span>
-        <span class="p">{</span>
-            <span class="k">while</span> <span class="p">(</span><span class="n">apUART_Check_RXFIFO_EMPTY</span><span class="p">(</span><span class="n">APB_UART0</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="p">{</span>
-                <span class="kt">char</span> <span class="n">c</span> <span class="o">=</span> <span class="n">APB_UART0</span><span class="o">-&gt;</span><span class="n">DataRead</span><span class="p">;</span>
-                <span class="n">dst</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span><span class="p">;</span>
-                <span class="n">index</span><span class="o">++</span><span class="p">;</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-
-        <span class="c1">// rx timeout_int</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">status</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">bsUART_TIMEOUT_INTENAB</span><span class="p">))</span>
-        <span class="p">{</span>
-            <span class="k">while</span> <span class="p">(</span><span class="n">apUART_Check_RXFIFO_EMPTY</span><span class="p">(</span><span class="n">APB_UART0</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="p">{</span>
-                <span class="kt">char</span> <span class="n">c</span> <span class="o">=</span> <span class="n">APB_UART0</span><span class="o">-&gt;</span><span class="n">DataRead</span><span class="p">;</span>
-                <span class="n">dst</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span><span class="p">;</span>
-                <span class="n">index</span><span class="o">++</span><span class="p">;</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-        <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">dst = %s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">dst</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="nf">uart_peripherals_read_data</span><span class="p">()</span>
-<span class="p">{</span>
-    <span class="c1">//注册uart0中断</span>
-    <span class="n">platform_set_irq_callback</span><span class="p">(</span><span class="n">PLATFORM_CB_IRQ_UART0</span><span class="p">,</span> <span class="n">uart_isr</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-    <span class="n">setup_peripheral_uart</span><span class="p">();</span>
-<span class="p">}</span>
-</code></pre></div></div>
-
-<h2 id="总结">总结</h2>
-
-<p>总之，UART接收变长字节数据在嵌入式系统中具有广泛的应用场景，具有很高的<strong>灵活性</strong>和<strong>通信效率</strong>。通过比较<em>UART+DMA方式</em>、<em>UART+FIFO方式</em>以及<em>UART+FIFO+DMA</em>方式，我们可以选择适合自己项目需求的实现方法。在实际应用中，需要根据实际情况权衡各种因素，如实时性、CPU负担、硬件资源等，从而选择最合适的UART接收变长字节数据的实现方式。</p>
+<p>上述两种<strong>桃芯可实现</strong>的方案已经完全实现，具体的代码可以查看<a href="https://ingchips.github.io/drafts/pg_ing916/ch-uart.html">《ING916XXx系列芯片开发者手册》</a>的UART部分。</p>
 
 
       </div><!-- .post-content -->

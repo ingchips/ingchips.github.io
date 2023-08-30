@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>重载中断向量表 - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="某些特定场景下，需要修改 SDK 默认的中断处理行为，此时可以考虑重载中断向量表。"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+
+      <div id="box">
+        <input id="in_search" type="search" name="search" placeholder="搜索：输入并回车">
+      </div>
+
+      <script>
+        let search_input = document.getElementById('in_search');
+        if (search_input) {
+          search_input.addEventListener("keypress", function(event) {
+          if (event.key === "Enter") {
+            window.open('https://www.bing.com/search?q=' + encodeURIComponent(search_input.value) + '%20site%3A' + window.location.hostname);
+            event.preventDefault();
+            }
+          });
+        }
+      </script>
+
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item has-children">
+
+              
+<a class="" href="/docs/sdk/apps/#web-apps">
+  
+  Web 工具
+  
+</a>
+
+              
+
+                <ul class="submenu">
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/callgraph">
+  
+  Callgraph (调用图)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index_cn.html">
+  
+  ING918/ING916 FOTA (空中升级)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/powerprofiler/">
+  
+  Online Power Profiler
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/air_trace/">
+  
+  Trace Logger
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/assertion_tool/index.html">
+  
+  ING918/ING916 Assertion Tool
+  
+</a>
+
+  </li>
+  
+</ul>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <article class="post post-full">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <header class="post-header has-gradient outer">
+      
+      
+      <div class="inner-sm">
+        <div class="post-meta">
+          <time class="published" datetime="2023-08-30 00:00">August 30, 2023</time>
+        </div>
+        <h1 class="post-title">重载中断向量表</h1>
+        
+        
+      </div>
+    </header>
+    <div class="inner-md outer">
+      <div class="post-content">
+        <ul id="markdown-toc">
+  <li><a href="#1-获取芯片的最大中断号" id="markdown-toc-1-获取芯片的最大中断号">1. 获取芯片的最大中断号</a></li>
+  <li><a href="#2-定义完整的中断向量表" id="markdown-toc-2-定义完整的中断向量表">2. 定义完整的中断向量表</a></li>
+  <li><a href="#3-实现-override_handler" id="markdown-toc-3-实现-override_handler">3. 实现 <code class="highlighter-rouge">Override_Handler</code></a></li>
+  <li><a href="#4-替换中断向量表" id="markdown-toc-4-替换中断向量表">4. 替换中断向量表</a></li>
+</ul>
+
+<p>某些特定场景下，需要自定义中断向量表，同时又维持 SDK 现有的功能，比如，
+响应未开放的中断（如 SysTick）、精确统计中断处理的开销等等，
+此时可以考虑重载 platform 的中断向量表。</p>
+
+<p>下面介绍具体的步骤。</p>
+
+<h2 id="1-获取芯片的最大中断号">1. 获取芯片的最大中断号</h2>
+
+<p>找到 <code class="highlighter-rouge">platform_irq_callback_type_t</code> 里的最末一个中断名称，通过 <code class="highlighter-rouge">platform_read_info</code>
+转换为底层中断号（记为 N）。或者直接取一个足够大的值，如 N = 64。</p>
+
+<h2 id="2-定义完整的中断向量表">2. 定义完整的中断向量表</h2>
+
+<p>打开初始化文件，修改 <code class="highlighter-rouge">__Vectors</code> 的定义：</p>
+
+<pre><code class="language-asm">        IMPORT  Override_Handler
+
+__Vectors       DCD     0                 ; Top of Stack
+        DCD     Reset_Handler             ; Reset Handler
+        DCD     Override_Handler          ; NMI Handler
+        DCD     Override_Handler          ; Hard Fault Handler
+        DCD     Override_Handler          ; MPU Fault Handler
+        DCD     Override_Handler          ; Bus Fault Handler
+        DCD     Override_Handler          ; Usage Fault Handler
+        DCD     0                         ; Reserved
+        DCD     0                         ; Reserved
+        DCD     0                         ; Reserved
+        DCD     0                         ; Reserved
+        DCD     Override_Handler          ; SVCall Handler
+        DCD     Override_Handler          ; Debug Monitor Handler
+        DCD     0                         ; Reserved
+        DCD     Override_Handler          ; PendSV Handler
+        DCD     Override_Handler          ; SysTick Handler
+
+        ; 重复 N 次
+        DCD Override_Handler
+        ....
+        DCD Override_Handler
+
+__Vectors_End
+</code></pre>
+
+<h2 id="3-实现-override_handler">3. 实现 <code class="highlighter-rouge">Override_Handler</code></h2>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">Override_Handler</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="cp">#define PLATFORM_NVIC_VECT  0x02002000
+</span>    <span class="k">typedef</span> <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">f_irq_handler</span><span class="p">)(</span><span class="kt">void</span><span class="p">);</span>
+
+    <span class="kt">int</span> <span class="n">irq</span> <span class="o">=</span> <span class="n">SCB</span><span class="o">-&gt;</span><span class="n">ICSR</span> <span class="o">&amp;</span> <span class="n">SCB_ICSR_VECTACTIVE_Msk</span><span class="p">;</span>
+    <span class="n">f_irq_handler</span> <span class="n">isr</span> <span class="o">=</span> <span class="p">(</span><span class="n">f_irq_handler</span><span class="p">)</span><span class="n">io_read</span><span class="p">(</span><span class="n">PLATFORM_NVIC_VECT</span> <span class="o">+</span> <span class="n">irq</span> <span class="o">*</span> <span class="mi">4</span><span class="p">);</span>
+
+    <span class="c1">// TODO: 实现所需功能</span>
+
+    <span class="c1">// 继续调用 platform 内的 ISR</span>
+    <span class="n">isr</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="4-替换中断向量表">4. 替换中断向量表</h2>
+
+<p>在需要的位置（比如 <code class="highlighter-rouge">app_main</code>）里设置中断向量表：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">app_main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="k">extern</span> <span class="kt">uint32_t</span> <span class="n">__Vectors</span><span class="p">;</span>
+    <span class="n">SCB</span><span class="o">-&gt;</span><span class="n">VTOR</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint32_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">__Vectors</span><span class="p">;</span>
+
+    <span class="c1">//....</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+      </div><!-- .post-content -->
+    </div><!-- .inner-md -->
+  </article><!-- .post -->
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2021-2023. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

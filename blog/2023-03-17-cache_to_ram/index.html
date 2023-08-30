@@ -446,6 +446,8 @@ Reset_Handler   PROC
 
     <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="c1">// 分配内存</span>
  <span class="kt">void</span> <span class="o">*</span><span class="nf">arena_alloc</span><span class="p">(</span><span class="n">arena</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+     <span class="c1">// 4 字节对齐</span>
+     <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="n">size</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">~</span><span class="mh">0x3ul</span><span class="p">;</span>
      <span class="k">if</span> <span class="p">(</span><span class="n">a</span><span class="o">-&gt;</span><span class="n">block_size</span> <span class="o">&gt;=</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
          <span class="kt">void</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="n">a</span><span class="o">-&gt;</span><span class="n">start</span><span class="p">;</span>
          <span class="n">a</span><span class="o">-&gt;</span><span class="n">start</span> <span class="o">+=</span> <span class="n">size</span><span class="p">;</span>
@@ -463,7 +465,7 @@ Reset_Handler   PROC
 </ol>
 
 <pre><code class="language-C">SYSCTRL_CacheControl(SYSCTRL_MEM_BLOCK_AS_CACHE, SYSCTRL_MEM_BLOCK_AS_SYS_MEM);
-
+{
     arena_init(&amp;arena, D_CACHE_ADDR, RAM_SIZE);
 
     t1 *var1 = (t1 *)arena_alloc(&amp;arena, sizeof(t1));
@@ -471,7 +473,7 @@ Reset_Handler   PROC
 
     // 使用 var1, var2
     // ...
-
+}
 SYSCTRL_CacheControl(SYSCTRL_MEM_BLOCK_AS_CACHE, SYSCTRL_MEM_BLOCK_AS_CACHE);
 </code></pre>
 

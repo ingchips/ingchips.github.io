@@ -279,8 +279,13 @@ __Vectors_End
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">Override_Handler</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="cp">#define PLATFORM_NVIC_VECT  0x02002000
-</span>    <span class="k">typedef</span> <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">f_irq_handler</span><span class="p">)(</span><span class="kt">void</span><span class="p">);</span>
+<span class="cp">#if (INGCHIPS_FAMILY == INGCHIPS_FAMILY_918)
+</span>    <span class="cp">#define PLATFORM_NVIC_VECT  FLASH_BASE
+#elif (INGCHIPS_FAMILY == INGCHIPS_FAMILY_916)
+</span>    <span class="cp">#define PLATFORM_NVIC_VECT  (FLASH_BASE + 0x2000)
+#endif
+</span>
+    <span class="k">typedef</span> <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">f_irq_handler</span><span class="p">)(</span><span class="kt">void</span><span class="p">);</span>
 
     <span class="kt">int</span> <span class="n">irq</span> <span class="o">=</span> <span class="n">SCB</span><span class="o">-&gt;</span><span class="n">ICSR</span> <span class="o">&amp;</span> <span class="n">SCB_ICSR_VECTACTIVE_Msk</span><span class="p">;</span>
     <span class="n">f_irq_handler</span> <span class="n">isr</span> <span class="o">=</span> <span class="p">(</span><span class="n">f_irq_handler</span><span class="p">)</span><span class="n">io_read</span><span class="p">(</span><span class="n">PLATFORM_NVIC_VECT</span> <span class="o">+</span> <span class="n">irq</span> <span class="o">*</span> <span class="mi">4</span><span class="p">);</span>

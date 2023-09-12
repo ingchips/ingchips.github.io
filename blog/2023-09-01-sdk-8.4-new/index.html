@@ -227,9 +227,15 @@
     <div class="inner-md outer">
       <div class="post-content">
         <ul id="markdown-toc">
-  <li><a href="#840" id="markdown-toc-840">8.4.0</a>    <ul>
+  <li><a href="#841" id="markdown-toc-841">8.4.1</a>    <ul>
       <li><a href="#1-软件包" id="markdown-toc-1-软件包">1. 软件包</a></li>
       <li><a href="#2-外设驱动" id="markdown-toc-2-外设驱动">2. 外设驱动</a></li>
+      <li><a href="#3-工具" id="markdown-toc-3-工具">3. 工具</a></li>
+    </ul>
+  </li>
+  <li><a href="#840" id="markdown-toc-840">8.4.0</a>    <ul>
+      <li><a href="#1-软件包-1" id="markdown-toc-1-软件包-1">1. 软件包</a></li>
+      <li><a href="#2-外设驱动-1" id="markdown-toc-2-外设驱动-1">2. 外设驱动</a></li>
       <li><a href="#3-示例" id="markdown-toc-3-示例">3. 示例</a></li>
       <li><a href="#4-工具" id="markdown-toc-4-工具">4. 工具</a></li>
     </ul>
@@ -243,9 +249,75 @@
 </li>
 </ul></div>
 
-<h2 id="840">8.4.0</h2>
+<h2 id="841">8.4.1</h2>
 
 <h3 id="1-软件包">1. 软件包</h3>
+
+<ul>
+  <li>
+    <p>[<strong>修正</strong>] Raw Package API: 当接收的数据包的数据长度为 0 时报错</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] ING916: 将更多的代码移动到 RAM 以降低功耗 (限 <em>mini</em> 和 <em>noos_mini</em> 软件包)</p>
+
+    <p>该更新针对空包维持连接状态优化了功耗。</p>
+  </li>
+  <li>
+    <p>[<strong>新增</strong>] BLE 协议栈 API: <code class="highlighter-rouge">btstack_reset</code></p>
+
+    <p>可完整复位协议栈。</p>
+  </li>
+  <li>
+    <p>[<strong>新增</strong>] platform event: <code class="highlighter-rouge">PLATFORM_CB_EVT_HCI_RECV</code></p>
+  </li>
+  <li>
+    <p>[<strong>新增</strong>] platform API: <code class="highlighter-rouge">platform_get_link_layer_interf</code></p>
+
+    <p>借助以上两个接口可完整暴露 Controller 的功能，为开发 BLE Dongle 带来可能。后续版本将提供示例。</p>
+  </li>
+</ul>
+
+<h3 id="2-外设驱动">2. 外设驱动</h3>
+
+<ul>
+  <li>
+    <p>[<strong>新增</strong>] ING916xx: Flash 写保护接口 <code class="highlighter-rouge">flash_enable_write_protection</code></p>
+
+    <p>通过此接口可将 ING916xx 内置的 Flash 的全部或者一部分置为写保护状态。再次向写保护区域写入数据时，需要先解除写保护。</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] ING916xx: USB BPS 头文件中增加 <code class="highlighter-rouge">bsp_usb_disable</code></p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] ING916xx: <code class="highlighter-rouge">KEYSCAN_Initialize</code> 对 GPIO 上下拉的配置。</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] ING916xx: <code class="highlighter-rouge">SYSCTRL_SelectMemoryBlocks</code> 潜在的睡眠电流达 20uA 的问题</p>
+  </li>
+</ul>
+
+<h3 id="3-工具">3. 工具</h3>
+
+<ul>
+  <li>
+    <p>[<strong>更新</strong>] Downloader: 为 ING916 增加 Flash 写保护选项。</p>
+
+    <p><img src="../img/flash_write_protection.png" alt="" /></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] ING916 Flash 下载算法</p>
+
+    <p>更新后的 ING916 Flash 下载算法行为如下：</p>
+
+    <ul>
+      <li>开始下载时，解除写保护。</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="840">8.4.0</h2>
+
+<h3 id="1-软件包-1">1. 软件包</h3>
 
 <ul>
   <li>
@@ -304,9 +376,28 @@
     <div class="note">
   <strong>注意：</strong>此 API 处于实验阶段，后续版本可能修改。</div>
   </li>
+  <li>
+    <p>[<strong>新增</strong>] 链路层配置项：<code class="highlighter-rouge">LL_CFG_FEATURE_SET_MASK</code></p>
+
+    <p>有时需要“模仿”其它 BLE 设备的链路层协议流程，而支持的特性对后续的链路层协议流程影响很大。
+  为此增加了链路层特性掩码，方便开发者即时调整上报给对端设备的链路层特性。例如，模仿只支持加密和 2M PHY
+  两种特性的设备：</p>
+
+    <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">feature_mask</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span>
+  <span class="p">{</span>
+      <span class="mh">0x01</span><span class="p">,</span>       <span class="c1">// 比特 0: LE Encryption</span>
+      <span class="mh">0x01</span><span class="p">,</span>       <span class="c1">// 比特 8: LE 2M PHY</span>
+  <span class="p">};</span>
+
+  <span class="c1">//...</span>
+  <span class="n">ll_config</span><span class="p">(</span><span class="n">LL_CFG_FEATURE_SET_MASK</span><span class="p">,</span> <span class="p">(</span><span class="kt">uintptr_t</span><span class="p">)</span><span class="n">feature_mask</span><span class="p">);</span>
+</code></pre></div>    </div>
+
+    <p>注意，这里只是修改了 Feature Exchange 流程的上报值，对链路层的实际功能没有影响。</p>
+  </li>
 </ul>
 
-<h3 id="2-外设驱动">2. 外设驱动</h3>
+<h3 id="2-外设驱动-1">2. 外设驱动</h3>
 
 <ul>
   <li>

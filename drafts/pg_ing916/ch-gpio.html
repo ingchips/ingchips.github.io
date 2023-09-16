@@ -154,7 +154,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.1.7" data-path="ch-adc.html"><a href="ch-adc.html#输入电压范围"><i class="fa fa-check"></i><b>3.1.7</b> 输入电压范围</a></li>
 <li class="chapter" data-level="3.1.8" data-path="ch-adc.html"><a href="ch-adc.html#采样率"><i class="fa fa-check"></i><b>3.1.8</b> 采样率</a></li>
 </ul></li>
-<li class="chapter" data-level="3.2" data-path="ch-adc.html"><a href="ch-adc.html#使用方法"><i class="fa fa-check"></i><b>3.2</b> 使用方法</a></li>
+<li class="chapter" data-level="3.2" data-path="ch-adc.html"><a href="ch-adc.html#使用方法"><i class="fa fa-check"></i><b>3.2</b> 使用方法</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="ch-adc.html"><a href="ch-adc.html#时钟配置"><i class="fa fa-check"></i><b>3.2.1</b> 时钟配置</a></li>
+<li class="chapter" data-level="3.2.2" data-path="ch-adc.html"><a href="ch-adc.html#adc精度初始化-校准"><i class="fa fa-check"></i><b>3.2.2</b> ADC精度初始化 &amp; 校准</a></li>
+<li class="chapter" data-level="3.2.3" data-path="ch-adc.html"><a href="ch-adc.html#adc参数配置"><i class="fa fa-check"></i><b>3.2.3</b> ADC参数配置</a></li>
+<li class="chapter" data-level="3.2.4" data-path="ch-adc.html"><a href="ch-adc.html#adc数据处理"><i class="fa fa-check"></i><b>3.2.4</b> ADC数据处理</a></li>
+</ul></li>
 <li class="chapter" data-level="3.3" data-path="ch-adc.html"><a href="ch-adc.html#编程指南"><i class="fa fa-check"></i><b>3.3</b> 编程指南</a>
 <ul>
 <li class="chapter" data-level="3.3.1" data-path="ch-adc.html"><a href="ch-adc.html#驱动接口"><i class="fa fa-check"></i><b>3.3.1</b> 驱动接口</a></li>
@@ -1020,16 +1026,23 @@ IO 方向为输出的 B 型 GPIO 处于高阻状态，对这些 GPIO 的配置�
 <ul>
 <li><p>深度睡眠唤醒源</p>
 <p>使用 <code>GIO_EnableDeepSleepWakeupSource</code> 使能（或停用）某个 GPIO 的唤醒功能。
-其中，<code>io_index</code> 应该为支持该功能的 GPIO 的编号；<code>level</code> 为触发电平，1 为高电平唤醒，0 为低电平唤醒；
-触发电平与上下拉应该相互配合：
-高电平唤醒时，使用下拉；低电平唤醒时，使用上拉。
-对于 A 型 GPIO，忽略 <code>pull</code> 参数，其上下拉由 <code>PINCTRL_Pull</code> 控制。</p>
+其中，<code>io_index</code> 应该为支持该功能的 GPIO 的编号；<code>mode</code> 为唤醒方式；对于 A 型 GPIO，
+忽略 <code>pull</code> 参数，其上下拉由 <code>PINCTRL_Pull</code> 控制。共支持以下 5 种唤醒方式：</p>
+<ul>
+<li><code>GIO_WAKEUP_MODE_LOW_LEVEL</code>：通过低电平唤醒；</li>
+<li><code>GIO_WAKEUP_MODE_HIGH_LEVEL</code>：通过高电平唤醒；</li>
+<li><code>GIO_WAKEUP_MODE_RISING_EDGE</code>：通过上升沿唤醒；</li>
+<li><code>GIO_WAKEUP_MODE_FALLING_EDGE</code>：通过下降沿唤醒；</li>
+<li><code>GIO_WAKEUP_MODE_ANY_EDGE</code>： 通过任意边沿唤醒，即上升沿或下降沿皆可。</li>
+</ul>
+<p>当使用电平唤醒时，电平与上下拉应该相互配合：高电平唤醒时，使用下拉；低电平唤醒时，使用上拉。
+当使用边沿唤醒时，注意脉冲需要维持至少 100 $us%。</p>
 <p>对于 B 型 GPIO，这里的上下拉配置仅用于低功耗状态。对于这种 GPIO，
 建议正常状态时的上下拉与这里的配置保持一致，以免由于配置切换产生“毛刺”。</p>
 <div class="sourceCode" id="cb41"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb41-1"><a href="ch-gpio.html#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> GIO_EnableDeepSleepWakeupSource<span class="op">(</span></span>
 <span id="cb41-2"><a href="ch-gpio.html#cb41-2" aria-hidden="true" tabindex="-1"></a>  GIO_Index_t io_index<span class="op">,</span>     <span class="co">// GPIO 编号</span></span>
 <span id="cb41-3"><a href="ch-gpio.html#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> enable<span class="op">,</span>           <span class="co">// 使能(1)/禁用(0)</span></span>
-<span id="cb41-4"><a href="ch-gpio.html#cb41-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> level<span class="op">,</span>            <span class="co">// 触发唤醒的电平</span></span>
+<span id="cb41-4"><a href="ch-gpio.html#cb41-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> mode <span class="op">,</span>            <span class="co">// 触发方式</span></span>
 <span id="cb41-5"><a href="ch-gpio.html#cb41-5" aria-hidden="true" tabindex="-1"></a>  pinctrl_pull_mode_t pull  <span class="co">// 上下拉配置</span></span>
 <span id="cb41-6"><a href="ch-gpio.html#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
 <p>任意一个唤醒源检测到唤醒电平就会将系统从低功耗状态唤醒。</p></li>

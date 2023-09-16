@@ -154,7 +154,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.1.7" data-path="ch-adc.html"><a href="ch-adc.html#输入电压范围"><i class="fa fa-check"></i><b>3.1.7</b> 输入电压范围</a></li>
 <li class="chapter" data-level="3.1.8" data-path="ch-adc.html"><a href="ch-adc.html#采样率"><i class="fa fa-check"></i><b>3.1.8</b> 采样率</a></li>
 </ul></li>
-<li class="chapter" data-level="3.2" data-path="ch-adc.html"><a href="ch-adc.html#使用方法"><i class="fa fa-check"></i><b>3.2</b> 使用方法</a></li>
+<li class="chapter" data-level="3.2" data-path="ch-adc.html"><a href="ch-adc.html#使用方法"><i class="fa fa-check"></i><b>3.2</b> 使用方法</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="ch-adc.html"><a href="ch-adc.html#时钟配置"><i class="fa fa-check"></i><b>3.2.1</b> 时钟配置</a></li>
+<li class="chapter" data-level="3.2.2" data-path="ch-adc.html"><a href="ch-adc.html#adc精度初始化-校准"><i class="fa fa-check"></i><b>3.2.2</b> ADC精度初始化 &amp; 校准</a></li>
+<li class="chapter" data-level="3.2.3" data-path="ch-adc.html"><a href="ch-adc.html#adc参数配置"><i class="fa fa-check"></i><b>3.2.3</b> ADC参数配置</a></li>
+<li class="chapter" data-level="3.2.4" data-path="ch-adc.html"><a href="ch-adc.html#adc数据处理"><i class="fa fa-check"></i><b>3.2.4</b> ADC数据处理</a></li>
+</ul></li>
 <li class="chapter" data-level="3.3" data-path="ch-adc.html"><a href="ch-adc.html#编程指南"><i class="fa fa-check"></i><b>3.3</b> 编程指南</a>
 <ul>
 <li class="chapter" data-level="3.3.1" data-path="ch-adc.html"><a href="ch-adc.html#驱动接口"><i class="fa fa-check"></i><b>3.3.1</b> 驱动接口</a></li>
@@ -574,63 +580,63 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>idle之后任何bus上的活动将会触发resume中断（用户需要在初始化中使能resume中断）,用户也可以选择使用remote wakeup主动唤醒。</li>
 <li>唤醒之后的usb将重新进入”CONFIGURED”状态，每1ms（full-speed）将会收到1个SOF中断（用户需要在初始化中使能SOF中断）。</li>
 </ul>
-<div class="sourceCode" id="cb284"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb284-1"><a href="ch-usb.html#cb284-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb284-2"><a href="ch-usb.html#cb284-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb284-3"><a href="ch-usb.html#cb284-3" aria-hidden="true" tabindex="-1"></a>  USB_DEVICE_NONE<span class="op">,</span></span>
-<span id="cb284-4"><a href="ch-usb.html#cb284-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">/* A USB device may be attached or detached from the USB */</span></span>
-<span id="cb284-5"><a href="ch-usb.html#cb284-5" aria-hidden="true" tabindex="-1"></a>  USB_DEVICE_ATTACHED<span class="op">,</span></span>
-<span id="cb284-6"><a href="ch-usb.html#cb284-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">/*USB devices may obtain power from an external source  */</span></span>
-<span id="cb284-7"><a href="ch-usb.html#cb284-7" aria-hidden="true" tabindex="-1"></a>  USB_DEVICE_POWERED<span class="op">,</span></span>
-<span id="cb284-8"><a href="ch-usb.html#cb284-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">/*  After the device has been powered, and reset is done */</span></span>
-<span id="cb284-9"><a href="ch-usb.html#cb284-9" aria-hidden="true" tabindex="-1"></a>  USB_DEVICE_DEFAULT<span class="op">,</span></span>
-<span id="cb284-10"><a href="ch-usb.html#cb284-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">/*  All USB devices use the default address when initially powered</span></span>
-<span id="cb284-11"><a href="ch-usb.html#cb284-11" aria-hidden="true" tabindex="-1"></a><span class="co">  or after the device has been reset. Each USB device is assigned</span></span>
-<span id="cb284-12"><a href="ch-usb.html#cb284-12" aria-hidden="true" tabindex="-1"></a><span class="co">  a unique address by the host after attachment or after reset. */</span></span>
-<span id="cb284-13"><a href="ch-usb.html#cb284-13" aria-hidden="true" tabindex="-1"></a>  USB_DEVICE_ADDRESS<span class="op">,</span></span>
-<span id="cb284-14"><a href="ch-usb.html#cb284-14" aria-hidden="true" tabindex="-1"></a>  <span class="co">/* Before a USB device function may be used, the device must be configured. */</span></span>
-<span id="cb284-15"><a href="ch-usb.html#cb284-15" aria-hidden="true" tabindex="-1"></a>  USB_DEVICE_CONFIGURED<span class="op">,</span></span>
-<span id="cb284-16"><a href="ch-usb.html#cb284-16" aria-hidden="true" tabindex="-1"></a>  <span class="co">/* In order to conserve power, USB devices automatically enter the</span></span>
-<span id="cb284-17"><a href="ch-usb.html#cb284-17" aria-hidden="true" tabindex="-1"></a><span class="co">  Suspended state when the device has observed no bus traffic for</span></span>
-<span id="cb284-18"><a href="ch-usb.html#cb284-18" aria-hidden="true" tabindex="-1"></a><span class="co">  a specified period */</span></span>
-<span id="cb284-19"><a href="ch-usb.html#cb284-19" aria-hidden="true" tabindex="-1"></a>  USB_DEVICE_SUSPENDED<span class="op">,</span></span>
-<span id="cb284-20"><a href="ch-usb.html#cb284-20" aria-hidden="true" tabindex="-1"></a>  USB_DEVICE_TEST_RESET_DONE</span>
-<span id="cb284-21"><a href="ch-usb.html#cb284-21" aria-hidden="true" tabindex="-1"></a><span class="op">}</span>USB_DEVICE_STATE_E<span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb273"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb273-1"><a href="ch-usb.html#cb273-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
+<span id="cb273-2"><a href="ch-usb.html#cb273-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb273-3"><a href="ch-usb.html#cb273-3" aria-hidden="true" tabindex="-1"></a>  USB_DEVICE_NONE<span class="op">,</span></span>
+<span id="cb273-4"><a href="ch-usb.html#cb273-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">/* A USB device may be attached or detached from the USB */</span></span>
+<span id="cb273-5"><a href="ch-usb.html#cb273-5" aria-hidden="true" tabindex="-1"></a>  USB_DEVICE_ATTACHED<span class="op">,</span></span>
+<span id="cb273-6"><a href="ch-usb.html#cb273-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">/*USB devices may obtain power from an external source  */</span></span>
+<span id="cb273-7"><a href="ch-usb.html#cb273-7" aria-hidden="true" tabindex="-1"></a>  USB_DEVICE_POWERED<span class="op">,</span></span>
+<span id="cb273-8"><a href="ch-usb.html#cb273-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">/*  After the device has been powered, and reset is done */</span></span>
+<span id="cb273-9"><a href="ch-usb.html#cb273-9" aria-hidden="true" tabindex="-1"></a>  USB_DEVICE_DEFAULT<span class="op">,</span></span>
+<span id="cb273-10"><a href="ch-usb.html#cb273-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">/*  All USB devices use the default address when initially powered</span></span>
+<span id="cb273-11"><a href="ch-usb.html#cb273-11" aria-hidden="true" tabindex="-1"></a><span class="co">  or after the device has been reset. Each USB device is assigned</span></span>
+<span id="cb273-12"><a href="ch-usb.html#cb273-12" aria-hidden="true" tabindex="-1"></a><span class="co">  a unique address by the host after attachment or after reset. */</span></span>
+<span id="cb273-13"><a href="ch-usb.html#cb273-13" aria-hidden="true" tabindex="-1"></a>  USB_DEVICE_ADDRESS<span class="op">,</span></span>
+<span id="cb273-14"><a href="ch-usb.html#cb273-14" aria-hidden="true" tabindex="-1"></a>  <span class="co">/* Before a USB device function may be used, the device must be configured. */</span></span>
+<span id="cb273-15"><a href="ch-usb.html#cb273-15" aria-hidden="true" tabindex="-1"></a>  USB_DEVICE_CONFIGURED<span class="op">,</span></span>
+<span id="cb273-16"><a href="ch-usb.html#cb273-16" aria-hidden="true" tabindex="-1"></a>  <span class="co">/* In order to conserve power, USB devices automatically enter the</span></span>
+<span id="cb273-17"><a href="ch-usb.html#cb273-17" aria-hidden="true" tabindex="-1"></a><span class="co">  Suspended state when the device has observed no bus traffic for</span></span>
+<span id="cb273-18"><a href="ch-usb.html#cb273-18" aria-hidden="true" tabindex="-1"></a><span class="co">  a specified period */</span></span>
+<span id="cb273-19"><a href="ch-usb.html#cb273-19" aria-hidden="true" tabindex="-1"></a>  USB_DEVICE_SUSPENDED<span class="op">,</span></span>
+<span id="cb273-20"><a href="ch-usb.html#cb273-20" aria-hidden="true" tabindex="-1"></a>  USB_DEVICE_TEST_RESET_DONE</span>
+<span id="cb273-21"><a href="ch-usb.html#cb273-21" aria-hidden="true" tabindex="-1"></a><span class="op">}</span>USB_DEVICE_STATE_E<span class="op">;</span></span></code></pre></div>
 </div>
 <div id="设置-io" class="section level3 hasAnchor" number="22.2.3">
 <h3><span class="header-section-number">22.2.3</span> 设置 IO<a href="ch-usb.html#设置-io" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>USB的DP/DM固定在GPIO16/17,IO初始化细节请参考<code>ING_SDK\sdk\src\BSP\bsp\_usb.c</code>中的<code>bsp_usb_init()</code></p>
-<div class="sourceCode" id="cb285"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb285-1"><a href="ch-usb.html#cb285-1" aria-hidden="true" tabindex="-1"></a><span class="co">// </span><span class="al">ATTENTION</span><span class="co"> ! FIXED IO FOR USB on 916 series</span></span>
-<span id="cb285-2"><a href="ch-usb.html#cb285-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#define USB_PIN_DP GIO_GPIO_16</span></span>
-<span id="cb285-3"><a href="ch-usb.html#cb285-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#define USB_PIN_DM GIO_GPIO_17</span></span></code></pre></div>
+<div class="sourceCode" id="cb274"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb274-1"><a href="ch-usb.html#cb274-1" aria-hidden="true" tabindex="-1"></a><span class="co">// </span><span class="al">ATTENTION</span><span class="co"> ! FIXED IO FOR USB on 916 series</span></span>
+<span id="cb274-2"><a href="ch-usb.html#cb274-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#define USB_PIN_DP GIO_GPIO_16</span></span>
+<span id="cb274-3"><a href="ch-usb.html#cb274-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#define USB_PIN_DM GIO_GPIO_17</span></span></code></pre></div>
 </div>
 <div id="设置-phy" class="section level3 hasAnchor" number="22.2.4">
 <h3><span class="header-section-number">22.2.4</span> 设置 PHY<a href="ch-usb.html#设置-phy" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>使用<code>SYSCTRL_USBPhyConfig()</code>初始化PHY, 细节请参考<code>ING_SDK\sdk\src\BSP\bsp\_usb.c</code>中的<code>bsp_usb_init()</code>。</p>
-<div class="sourceCode" id="cb286"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb286-1"><a href="ch-usb.html#cb286-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
-<span id="cb286-2"><a href="ch-usb.html#cb286-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> Config USB PHY functionality</span></span>
-<span id="cb286-3"><a href="ch-usb.html#cb286-3" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
-<span id="cb286-4"><a href="ch-usb.html#cb286-4" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">enable</span><span class="co">            Enable(1)/Disable(0) usb phy module</span></span>
-<span id="cb286-5"><a href="ch-usb.html#cb286-5" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">pull_sel</span><span class="co">          DP pull up(0x1)/DM pull up(0x2)/DP&amp;DM pull down(0x3)</span></span>
-<span id="cb286-6"><a href="ch-usb.html#cb286-6" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
-<span id="cb286-7"><a href="ch-usb.html#cb286-7" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> SYSCTRL_USBPhyConfig<span class="op">(</span><span class="dt">uint8_t</span> enable<span class="op">,</span> <span class="dt">uint8_t</span> pull_sel<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb275"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb275-1"><a href="ch-usb.html#cb275-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb275-2"><a href="ch-usb.html#cb275-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> Config USB PHY functionality</span></span>
+<span id="cb275-3"><a href="ch-usb.html#cb275-3" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
+<span id="cb275-4"><a href="ch-usb.html#cb275-4" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">enable</span><span class="co">            Enable(1)/Disable(0) usb phy module</span></span>
+<span id="cb275-5"><a href="ch-usb.html#cb275-5" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">pull_sel</span><span class="co">          DP pull up(0x1)/DM pull up(0x2)/DP&amp;DM pull down(0x3)</span></span>
+<span id="cb275-6"><a href="ch-usb.html#cb275-6" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb275-7"><a href="ch-usb.html#cb275-7" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> SYSCTRL_USBPhyConfig<span class="op">(</span><span class="dt">uint8_t</span> enable<span class="op">,</span> <span class="dt">uint8_t</span> pull_sel<span class="op">);</span></span></code></pre></div>
 </div>
 <div id="usb-模块初始化" class="section level3 hasAnchor" number="22.2.5">
 <h3><span class="header-section-number">22.2.5</span> USB 模块初始化<a href="ch-usb.html#usb-模块初始化" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>细节请参考<code>ING_SDK\sdk\src\BSP\bsp\_usb.c</code>中的<code>bsp_usb_init()</code>。</p>
 <ul>
 <li><p>USB模块首选需要打开USB中断并配置相应接口，其中<code>USB_IrqHandler</code>由driver提供不需要用户修改。</p>
-<div class="sourceCode" id="cb287"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb287-1"><a href="ch-usb.html#cb287-1" aria-hidden="true" tabindex="-1"></a>platform_set_irq_callback<span class="op">(</span>PLATFORM_CB_IRQ_USB<span class="op">,</span> USB_IrqHandler<span class="op">,</span> NULL<span class="op">);</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb276"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb276-1"><a href="ch-usb.html#cb276-1" aria-hidden="true" tabindex="-1"></a>platform_set_irq_callback<span class="op">(</span>PLATFORM_CB_IRQ_USB<span class="op">,</span> USB_IrqHandler<span class="op">,</span> NULL<span class="op">);</span></span></code></pre></div></li>
 <li><p>其次需要初始化USB模块以及相关状态信息，入参结构体中用户需要提供event handler，其余为可选项</p>
-<div class="sourceCode" id="cb288"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb288-1"><a href="ch-usb.html#cb288-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
-<span id="cb288-2"><a href="ch-usb.html#cb288-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> interface API. initilize usb module and related variables,</span></span>
-<span id="cb288-3"><a href="ch-usb.html#cb288-3" aria-hidden="true" tabindex="-1"></a><span class="co"> must be called before any usb usage</span></span>
-<span id="cb288-4"><a href="ch-usb.html#cb288-4" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
-<span id="cb288-5"><a href="ch-usb.html#cb288-5" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">device</span><span class="co"> callback function with structure USB_INIT_CONFIG_T.</span></span>
-<span id="cb288-6"><a href="ch-usb.html#cb288-6" aria-hidden="true" tabindex="-1"></a><span class="co"> *            When this function has been called your device is ready</span></span>
-<span id="cb288-7"><a href="ch-usb.html#cb288-7" aria-hidden="true" tabindex="-1"></a><span class="co">              to be enumerated by the USB host.</span></span>
-<span id="cb288-8"><a href="ch-usb.html#cb288-8" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[out]</span><span class="co"> </span><span class="cv">null</span><span class="co">.</span></span>
-<span id="cb288-9"><a href="ch-usb.html#cb288-9" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
-<span id="cb288-10"><a href="ch-usb.html#cb288-10" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> USB_ERROR_TYPE_E USB_InitConfig<span class="op">(</span>USB_INIT_CONFIG_T <span class="op">*</span>config<span class="op">);</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb277"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb277-1"><a href="ch-usb.html#cb277-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb277-2"><a href="ch-usb.html#cb277-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> interface API. initilize usb module and related variables,</span></span>
+<span id="cb277-3"><a href="ch-usb.html#cb277-3" aria-hidden="true" tabindex="-1"></a><span class="co"> must be called before any usb usage</span></span>
+<span id="cb277-4"><a href="ch-usb.html#cb277-4" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
+<span id="cb277-5"><a href="ch-usb.html#cb277-5" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">device</span><span class="co"> callback function with structure USB_INIT_CONFIG_T.</span></span>
+<span id="cb277-6"><a href="ch-usb.html#cb277-6" aria-hidden="true" tabindex="-1"></a><span class="co"> *            When this function has been called your device is ready</span></span>
+<span id="cb277-7"><a href="ch-usb.html#cb277-7" aria-hidden="true" tabindex="-1"></a><span class="co">              to be enumerated by the USB host.</span></span>
+<span id="cb277-8"><a href="ch-usb.html#cb277-8" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[out]</span><span class="co"> </span><span class="cv">null</span><span class="co">.</span></span>
+<span id="cb277-9"><a href="ch-usb.html#cb277-9" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb277-10"><a href="ch-usb.html#cb277-10" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> USB_ERROR_TYPE_E USB_InitConfig<span class="op">(</span>USB_INIT_CONFIG_T <span class="op">*</span>config<span class="op">);</span></span></code></pre></div></li>
 </ul>
 </div>
 <div id="event-handler" class="section level3 hasAnchor" number="22.2.6">
@@ -644,7 +650,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p>descriptor需要按照协议格式准备，并且放置在4bytes对齐的全局地址， 并通过<code>USB_SendData()</code>发送给host，在整个过程中，该全局地址和数据需要保持。 （4bytes对齐是内部DMA搬运的要求，否则可能出现错误）。</p></li>
 <li><p>对于没有data stage的request，event handler中不需要使用 <code>USB_SendData()</code>以及<code>USB_RecvData()</code>。</p></li>
 <li><p>对于不支持的request，需要设置status为：</p>
-<div class="sourceCode" id="cb289"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb289-1"><a href="ch-usb.html#cb289-1" aria-hidden="true" tabindex="-1"></a>status <span class="op">=</span> USB_ERROR_REQUEST_NOT_SUPPORT<span class="op">;</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb278"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb278-1"><a href="ch-usb.html#cb278-1" aria-hidden="true" tabindex="-1"></a>status <span class="op">=</span> USB_ERROR_REQUEST_NOT_SUPPORT<span class="op">;</span></span></code></pre></div></li>
 <li><p>根据返回的status，driver判断当前request是否支持，否则按照协议发送stall给host。</p></li>
 <li><p>对于包含data stage的out传输，driver将继续接收数据，数据将在<code>USB_EVENT_EP_DATA_TRANSFER</code>的EP0通知用户。</p></li>
 <li><p>setup/data/status stage的切换将在driver内进行。</p></li>
@@ -652,15 +658,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p>USB_EVENT_EP_DATA_TRANSFER</p>
 <p>数据相关的处理，接收和发射数据。</p>
 <p>参数包含ep number</p>
-<div class="sourceCode" id="cb290"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb290-1"><a href="ch-usb.html#cb290-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span>  ep<span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb279"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb279-1"><a href="ch-usb.html#cb279-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span>  ep<span class="op">;</span></span></code></pre></div>
 <p>以及数据处理类型，分别代表发送和接收transfer的结束。</p>
-<div class="sourceCode" id="cb291"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb291-1"><a href="ch-usb.html#cb291-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb291-2"><a href="ch-usb.html#cb291-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb291-3"><a href="ch-usb.html#cb291-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">/// Event send when a receive transfert is finish</span></span>
-<span id="cb291-4"><a href="ch-usb.html#cb291-4" aria-hidden="true" tabindex="-1"></a>    USB_CALLBACK_TYPE_RECEIVE_END<span class="op">,</span></span>
-<span id="cb291-5"><a href="ch-usb.html#cb291-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">/// Event send when a transmit transfert is finish</span></span>
-<span id="cb291-6"><a href="ch-usb.html#cb291-6" aria-hidden="true" tabindex="-1"></a>    USB_CALLBACK_TYPE_TRANSMIT_END</span>
-<span id="cb291-7"><a href="ch-usb.html#cb291-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> USB_CALLBACK_EP_TYPE_T<span class="op">;</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb280"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb280-1"><a href="ch-usb.html#cb280-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
+<span id="cb280-2"><a href="ch-usb.html#cb280-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb280-3"><a href="ch-usb.html#cb280-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">/// Event send when a receive transfert is finish</span></span>
+<span id="cb280-4"><a href="ch-usb.html#cb280-4" aria-hidden="true" tabindex="-1"></a>    USB_CALLBACK_TYPE_RECEIVE_END<span class="op">,</span></span>
+<span id="cb280-5"><a href="ch-usb.html#cb280-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">/// Event send when a transmit transfert is finish</span></span>
+<span id="cb280-6"><a href="ch-usb.html#cb280-6" aria-hidden="true" tabindex="-1"></a>    USB_CALLBACK_TYPE_TRANSMIT_END</span>
+<span id="cb280-7"><a href="ch-usb.html#cb280-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> USB_CALLBACK_EP_TYPE_T<span class="op">;</span></span></code></pre></div></li>
 <li><p>USB_EVENT_DEVICE_RESET</p>
 <p>USB reset 中断的event，代表枚举的开始。</p></li>
 <li><p>USB_EVENT_DEVICE_SOF</p>
@@ -678,14 +684,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p>如果场景不支持某个request，则需要设置status == USB_ERROR_REQUEST_NOT_SUPPORT。driver会据此发送stall。</p></li>
 <li><p>如果场景需要处理某个request，则需要将status设置为非USB_ERROR_REQUEST_NOT_SUPPORT状态。</p></li>
 <li><p>用户需要将所有descriptor保存在4bytes对齐的全局地址。以device descriptor为例</p>
-<div class="sourceCode" id="cb292"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb292-1"><a href="ch-usb.html#cb292-1" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> USB_REQUEST_DEVICE_DESCRIPTOR_DEVICE<span class="op">:</span></span>
-<span id="cb292-2"><a href="ch-usb.html#cb292-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb292-3"><a href="ch-usb.html#cb292-3" aria-hidden="true" tabindex="-1"></a>  size <span class="op">=</span> <span class="kw">sizeof</span><span class="op">(</span>USB_DEVICE_DESCRIPTOR_REAL_T<span class="op">);</span></span>
-<span id="cb292-4"><a href="ch-usb.html#cb292-4" aria-hidden="true" tabindex="-1"></a>  size <span class="op">=</span> <span class="op">(</span>setup<span class="op">-&gt;</span>wLength <span class="op">&lt;</span> size<span class="op">)</span> <span class="op">?</span> <span class="op">(</span>setup<span class="op">-&gt;</span>wLength<span class="op">)</span> <span class="op">:</span> size<span class="op">;</span></span>
-<span id="cb292-5"><a href="ch-usb.html#cb292-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb292-6"><a href="ch-usb.html#cb292-6" aria-hidden="true" tabindex="-1"></a>  status <span class="op">|=</span> USB_SendData<span class="op">(</span><span class="dv">0</span><span class="op">,</span> <span class="op">(</span><span class="dt">void</span><span class="op">*)&amp;</span>DeviceDescriptor<span class="op">,</span> size<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
-<span id="cb292-7"><a href="ch-usb.html#cb292-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb292-8"><a href="ch-usb.html#cb292-8" aria-hidden="true" tabindex="-1"></a><span class="cf">break</span><span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb281"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb281-1"><a href="ch-usb.html#cb281-1" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> USB_REQUEST_DEVICE_DESCRIPTOR_DEVICE<span class="op">:</span></span>
+<span id="cb281-2"><a href="ch-usb.html#cb281-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb281-3"><a href="ch-usb.html#cb281-3" aria-hidden="true" tabindex="-1"></a>  size <span class="op">=</span> <span class="kw">sizeof</span><span class="op">(</span>USB_DEVICE_DESCRIPTOR_REAL_T<span class="op">);</span></span>
+<span id="cb281-4"><a href="ch-usb.html#cb281-4" aria-hidden="true" tabindex="-1"></a>  size <span class="op">=</span> <span class="op">(</span>setup<span class="op">-&gt;</span>wLength <span class="op">&lt;</span> size<span class="op">)</span> <span class="op">?</span> <span class="op">(</span>setup<span class="op">-&gt;</span>wLength<span class="op">)</span> <span class="op">:</span> size<span class="op">;</span></span>
+<span id="cb281-5"><a href="ch-usb.html#cb281-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb281-6"><a href="ch-usb.html#cb281-6" aria-hidden="true" tabindex="-1"></a>  status <span class="op">|=</span> USB_SendData<span class="op">(</span><span class="dv">0</span><span class="op">,</span> <span class="op">(</span><span class="dt">void</span><span class="op">*)&amp;</span>DeviceDescriptor<span class="op">,</span> size<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb281-7"><a href="ch-usb.html#cb281-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb281-8"><a href="ch-usb.html#cb281-8" aria-hidden="true" tabindex="-1"></a><span class="cf">break</span><span class="op">;</span></span></code></pre></div>
 <p>首先判断size，确保数据没有超出request要求，然后使用USB_SendData发送in transfer数据。其中DeviceDescriptor为device descriptor地址。</p></li>
 <li><p>set address request需要配置device地址，因此在driver layer实现。</p></li>
 </ul>
@@ -697,12 +703,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="remote-wakeup" class="section level4 hasAnchor" number="22.2.6.3">
 <h4><span class="header-section-number">22.2.6.3</span> remote wakeup<a href="ch-usb.html#remote-wakeup" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>进入suspend的device可以选择主动唤醒，唤醒通过bsp_usb_device_remote_wakeup()连续发送10ms的resume signal来实现。</p>
-<div class="sourceCode" id="cb293"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb293-1"><a href="ch-usb.html#cb293-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> bsp_usb_device_remote_wakeup<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
-<span id="cb293-2"><a href="ch-usb.html#cb293-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb293-3"><a href="ch-usb.html#cb293-3" aria-hidden="true" tabindex="-1"></a>  USB_DeviceSetRemoteWakeupBit<span class="op">(</span>U_TRUE<span class="op">);</span></span>
-<span id="cb293-4"><a href="ch-usb.html#cb293-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// setup timer for 10ms, then disable resume signal</span></span>
-<span id="cb293-5"><a href="ch-usb.html#cb293-5" aria-hidden="true" tabindex="-1"></a>  platform_set_timer<span class="op">(</span>internal_bsp_usb_device_remote_wakeup_stop<span class="op">,</span><span class="dv">16</span><span class="op">);</span></span>
-<span id="cb293-6"><a href="ch-usb.html#cb293-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb282"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb282-1"><a href="ch-usb.html#cb282-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> bsp_usb_device_remote_wakeup<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb282-2"><a href="ch-usb.html#cb282-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb282-3"><a href="ch-usb.html#cb282-3" aria-hidden="true" tabindex="-1"></a>  USB_DeviceSetRemoteWakeupBit<span class="op">(</span>U_TRUE<span class="op">);</span></span>
+<span id="cb282-4"><a href="ch-usb.html#cb282-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// setup timer for 10ms, then disable resume signal</span></span>
+<span id="cb282-5"><a href="ch-usb.html#cb282-5" aria-hidden="true" tabindex="-1"></a>  platform_set_timer<span class="op">(</span>internal_bsp_usb_device_remote_wakeup_stop<span class="op">,</span><span class="dv">16</span><span class="op">);</span></span>
+<span id="cb282-6"><a href="ch-usb.html#cb282-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </div>
 </div>
 <div id="常用driver-api" class="section level3 hasAnchor" number="22.2.7">
@@ -717,8 +723,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>flag：NULL。</li>
 <li>如果成功则返回U_TRUE，否则返回U_FALSE。</li>
 </ul>
-<div class="sourceCode" id="cb294"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb294-1"><a href="ch-usb.html#cb294-1" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> USB_ERROR_TYPE_E USB_SendData<span class="op">(</span><span class="dt">uint8_t</span> ep<span class="op">,</span> <span class="dt">void</span><span class="op">*</span> buffer<span class="op">,</span></span>
-<span id="cb294-2"><a href="ch-usb.html#cb294-2" aria-hidden="true" tabindex="-1"></a>                                    <span class="dt">uint16_t</span> size<span class="op">,</span> <span class="dt">uint32_t</span> flag<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb283"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb283-1"><a href="ch-usb.html#cb283-1" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> USB_ERROR_TYPE_E USB_SendData<span class="op">(</span><span class="dt">uint8_t</span> ep<span class="op">,</span> <span class="dt">void</span><span class="op">*</span> buffer<span class="op">,</span></span>
+<span id="cb283-2"><a href="ch-usb.html#cb283-2" aria-hidden="true" tabindex="-1"></a>                                    <span class="dt">uint16_t</span> size<span class="op">,</span> <span class="dt">uint32_t</span> flag<span class="op">);</span></span></code></pre></div>
 </div>
 <div id="receive-usb-data" class="section level4 hasAnchor" number="22.2.7.2">
 <h4><span class="header-section-number">22.2.7.2</span> receive usb data<a href="ch-usb.html#receive-usb-data" class="anchor-section" aria-label="Anchor link to header"></a></h4>
@@ -733,53 +739,53 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li>如果成功则返回U_TRUE，否则返回U_FALSE。</li>
 </ul>
-<div class="sourceCode" id="cb295"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb295-1"><a href="ch-usb.html#cb295-1" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> USB_ERROR_TYPE_E USB_RecvData<span class="op">(</span><span class="dt">uint8_t</span> ep<span class="op">,</span> <span class="dt">void</span><span class="op">*</span> buffer<span class="op">,</span></span>
-<span id="cb295-2"><a href="ch-usb.html#cb295-2" aria-hidden="true" tabindex="-1"></a>                                    <span class="dt">uint16_t</span> size<span class="op">,</span> <span class="dt">uint32_t</span> flag<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb284"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb284-1"><a href="ch-usb.html#cb284-1" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> USB_ERROR_TYPE_E USB_RecvData<span class="op">(</span><span class="dt">uint8_t</span> ep<span class="op">,</span> <span class="dt">void</span><span class="op">*</span> buffer<span class="op">,</span></span>
+<span id="cb284-2"><a href="ch-usb.html#cb284-2" aria-hidden="true" tabindex="-1"></a>                                    <span class="dt">uint16_t</span> size<span class="op">,</span> <span class="dt">uint32_t</span> flag<span class="op">);</span></span></code></pre></div>
 </div>
 <div id="enabledisable-ep" class="section level4 hasAnchor" number="22.2.7.3">
 <h4><span class="header-section-number">22.2.7.3</span> enable/disable ep<a href="ch-usb.html#enabledisable-ep" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>正常处理中不需要使用该API，特殊情况下可以根据需求打开关闭某个特定的endpoint。</p>
-<div class="sourceCode" id="cb296"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb296-1"><a href="ch-usb.html#cb296-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
-<span id="cb296-2"><a href="ch-usb.html#cb296-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> interface APIs. use this pair for enable/disable certain ep.</span></span>
-<span id="cb296-3"><a href="ch-usb.html#cb296-3" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
-<span id="cb296-4"><a href="ch-usb.html#cb296-4" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">ep</span><span class="co"> number with USB_EP_DIRECTION_IN/OUT.</span></span>
-<span id="cb296-5"><a href="ch-usb.html#cb296-5" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[out]</span><span class="co"> </span><span class="cv">null</span></span>
-<span id="cb296-6"><a href="ch-usb.html#cb296-6" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
-<span id="cb296-7"><a href="ch-usb.html#cb296-7" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="dt">void</span> USB_EnableEp<span class="op">(</span><span class="dt">uint8_t</span> ep<span class="op">,</span> USB_EP_TYPE_T type<span class="op">);</span></span>
-<span id="cb296-8"><a href="ch-usb.html#cb296-8" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="dt">void</span> USB_DisableEp<span class="op">(</span><span class="dt">uint8_t</span> ep<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb285"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb285-1"><a href="ch-usb.html#cb285-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb285-2"><a href="ch-usb.html#cb285-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> interface APIs. use this pair for enable/disable certain ep.</span></span>
+<span id="cb285-3"><a href="ch-usb.html#cb285-3" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
+<span id="cb285-4"><a href="ch-usb.html#cb285-4" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">ep</span><span class="co"> number with USB_EP_DIRECTION_IN/OUT.</span></span>
+<span id="cb285-5"><a href="ch-usb.html#cb285-5" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[out]</span><span class="co"> </span><span class="cv">null</span></span>
+<span id="cb285-6"><a href="ch-usb.html#cb285-6" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb285-7"><a href="ch-usb.html#cb285-7" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="dt">void</span> USB_EnableEp<span class="op">(</span><span class="dt">uint8_t</span> ep<span class="op">,</span> USB_EP_TYPE_T type<span class="op">);</span></span>
+<span id="cb285-8"><a href="ch-usb.html#cb285-8" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="dt">void</span> USB_DisableEp<span class="op">(</span><span class="dt">uint8_t</span> ep<span class="op">);</span></span></code></pre></div>
 </div>
 <div id="usb-close" class="section level4 hasAnchor" number="22.2.7.4">
 <h4><span class="header-section-number">22.2.7.4</span> usb close<a href="ch-usb.html#usb-close" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>USB的disable请使用bsp layer中的<code>bsp_usb_disable()</code>。</p>
-<div class="sourceCode" id="cb297"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb297-1"><a href="ch-usb.html#cb297-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
-<span id="cb297-2"><a href="ch-usb.html#cb297-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> interface API. shutdown usb module and reset all status data.</span></span>
-<span id="cb297-3"><a href="ch-usb.html#cb297-3" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
-<span id="cb297-4"><a href="ch-usb.html#cb297-4" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">null</span><span class="co">.</span></span>
-<span id="cb297-5"><a href="ch-usb.html#cb297-5" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[out]</span><span class="co"> </span><span class="cv">null</span><span class="co">.</span></span>
-<span id="cb297-6"><a href="ch-usb.html#cb297-6" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
-<span id="cb297-7"><a href="ch-usb.html#cb297-7" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="dt">void</span> bsp_usb_disable<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb286"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb286-1"><a href="ch-usb.html#cb286-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb286-2"><a href="ch-usb.html#cb286-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> interface API. shutdown usb module and reset all status data.</span></span>
+<span id="cb286-3"><a href="ch-usb.html#cb286-3" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
+<span id="cb286-4"><a href="ch-usb.html#cb286-4" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">null</span><span class="co">.</span></span>
+<span id="cb286-5"><a href="ch-usb.html#cb286-5" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[out]</span><span class="co"> </span><span class="cv">null</span><span class="co">.</span></span>
+<span id="cb286-6"><a href="ch-usb.html#cb286-6" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb286-7"><a href="ch-usb.html#cb286-7" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="dt">void</span> bsp_usb_disable<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
 </div>
 <div id="usb-stall" class="section level4 hasAnchor" number="22.2.7.5">
 <h4><span class="header-section-number">22.2.7.5</span> usb stall<a href="ch-usb.html#usb-stall" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb298"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb298-1"><a href="ch-usb.html#cb298-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
-<span id="cb298-2"><a href="ch-usb.html#cb298-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> interface API. set ep stall pid for current transfer</span></span>
-<span id="cb298-3"><a href="ch-usb.html#cb298-3" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
-<span id="cb298-4"><a href="ch-usb.html#cb298-4" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">ep</span><span class="co"> num with direction.</span></span>
-<span id="cb298-5"><a href="ch-usb.html#cb298-5" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">U_TRUE:</span><span class="co"> stall, U_FALSE: set back to normal</span></span>
-<span id="cb298-6"><a href="ch-usb.html#cb298-6" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[out]</span><span class="co"> </span><span class="cv">null</span><span class="co">.</span></span>
-<span id="cb298-7"><a href="ch-usb.html#cb298-7" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
-<span id="cb298-8"><a href="ch-usb.html#cb298-8" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="dt">void</span> USB_SetStallEp<span class="op">(</span><span class="dt">uint8_t</span> ep<span class="op">,</span> <span class="dt">uint8_t</span> stall<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb287"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb287-1"><a href="ch-usb.html#cb287-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb287-2"><a href="ch-usb.html#cb287-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> interface API. set ep stall pid for current transfer</span></span>
+<span id="cb287-3"><a href="ch-usb.html#cb287-3" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
+<span id="cb287-4"><a href="ch-usb.html#cb287-4" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">ep</span><span class="co"> num with direction.</span></span>
+<span id="cb287-5"><a href="ch-usb.html#cb287-5" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">U_TRUE:</span><span class="co"> stall, U_FALSE: set back to normal</span></span>
+<span id="cb287-6"><a href="ch-usb.html#cb287-6" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[out]</span><span class="co"> </span><span class="cv">null</span><span class="co">.</span></span>
+<span id="cb287-7"><a href="ch-usb.html#cb287-7" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb287-8"><a href="ch-usb.html#cb287-8" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="dt">void</span> USB_SetStallEp<span class="op">(</span><span class="dt">uint8_t</span> ep<span class="op">,</span> <span class="dt">uint8_t</span> stall<span class="op">);</span></span></code></pre></div>
 </div>
 <div id="usb-in-endpoint-nak" class="section level4 hasAnchor" number="22.2.7.6">
 <h4><span class="header-section-number">22.2.7.6</span> usb in endpoint nak<a href="ch-usb.html#usb-in-endpoint-nak" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb299"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb299-1"><a href="ch-usb.html#cb299-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
-<span id="cb299-2"><a href="ch-usb.html#cb299-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> interface API. use this api to set NAK on a specific IN ep</span></span>
-<span id="cb299-3"><a href="ch-usb.html#cb299-3" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
-<span id="cb299-4"><a href="ch-usb.html#cb299-4" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">U_TRUE:</span><span class="co"> enable NAK on required IN ep. U_FALSE: stop NAK</span></span>
-<span id="cb299-5"><a href="ch-usb.html#cb299-5" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">ep:</span><span class="co"> ep number with USB_EP_DIRECTION_IN/OUT.</span></span>
-<span id="cb299-6"><a href="ch-usb.html#cb299-6" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[out]</span><span class="co"> </span><span class="cv">null</span><span class="co">.</span></span>
-<span id="cb299-7"><a href="ch-usb.html#cb299-7" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
-<span id="cb299-8"><a href="ch-usb.html#cb299-8" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="dt">void</span> USB_SetInEndpointNak<span class="op">(</span><span class="dt">uint8_t</span> ep<span class="op">,</span> <span class="dt">uint8_t</span> enable<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb288"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb288-1"><a href="ch-usb.html#cb288-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb288-2"><a href="ch-usb.html#cb288-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> interface API. use this api to set NAK on a specific IN ep</span></span>
+<span id="cb288-3"><a href="ch-usb.html#cb288-3" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
+<span id="cb288-4"><a href="ch-usb.html#cb288-4" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">U_TRUE:</span><span class="co"> enable NAK on required IN ep. U_FALSE: stop NAK</span></span>
+<span id="cb288-5"><a href="ch-usb.html#cb288-5" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">ep:</span><span class="co"> ep number with USB_EP_DIRECTION_IN/OUT.</span></span>
+<span id="cb288-6"><a href="ch-usb.html#cb288-6" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[out]</span><span class="co"> </span><span class="cv">null</span><span class="co">.</span></span>
+<span id="cb288-7"><a href="ch-usb.html#cb288-7" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb288-8"><a href="ch-usb.html#cb288-8" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="dt">void</span> USB_SetInEndpointNak<span class="op">(</span><span class="dt">uint8_t</span> ep<span class="op">,</span> <span class="dt">uint8_t</span> enable<span class="op">);</span></span></code></pre></div>
 </div>
 </div>
 <div id="使用场景" class="section level3 hasAnchor" number="22.2.8">
@@ -790,36 +796,36 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><p>参考：<code>\ING\_SDK\sdk\src\BSP\bsp_usb.c</code></p>
 <p>首先调用<code>bsp_usb_init()</code>初始化USB模块,之后的USB活动则全部在<code>bsp_usb_event_handler()</code>中处理。</p>
-<div class="sourceCode" id="cb300"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb300-1"><a href="ch-usb.html#cb300-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define FEATURE_WCID_SUPPORT</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb289"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb289-1"><a href="ch-usb.html#cb289-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define FEATURE_WCID_SUPPORT</span></span></code></pre></div></li>
 <li><p>device需要在enumeration阶段提供WCID标识和相关descriptor。示例中的descriptor实现如下：</p>
-<div class="sourceCode" id="cb301"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb301-1"><a href="ch-usb.html#cb301-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define USB_WCID_DESCRIPTOR_INDEX_4 \</span></span>
-<span id="cb301-2"><a href="ch-usb.html#cb301-2" aria-hidden="true" tabindex="-1"></a><span class="pp">{ \</span></span>
-<span id="cb301-3"><a href="ch-usb.html#cb301-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb301-4"><a href="ch-usb.html#cb301-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#define USB_WCID_DESCRIPTOR_INDEX_5 \</span></span>
-<span id="cb301-5"><a href="ch-usb.html#cb301-5" aria-hidden="true" tabindex="-1"></a><span class="pp">{ \</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb290"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb290-1"><a href="ch-usb.html#cb290-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define USB_WCID_DESCRIPTOR_INDEX_4 \</span></span>
+<span id="cb290-2"><a href="ch-usb.html#cb290-2" aria-hidden="true" tabindex="-1"></a><span class="pp">{ \</span></span>
+<span id="cb290-3"><a href="ch-usb.html#cb290-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb290-4"><a href="ch-usb.html#cb290-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#define USB_WCID_DESCRIPTOR_INDEX_5 \</span></span>
+<span id="cb290-5"><a href="ch-usb.html#cb290-5" aria-hidden="true" tabindex="-1"></a><span class="pp">{ \</span></span></code></pre></div></li>
 <li><p>通过修改<code>USB_STRING_PRODUCT</code>来改变产品名称iproduct</p>
-<div class="sourceCode" id="cb302"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb302-1"><a href="ch-usb.html#cb302-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define USB_STRING_PRODUCT {16,0x3,&#39;w&#39;,0,&#39;i&#39;,0,&#39;n&#39;,0,&#39;-&#39;,0,&#39;d&#39;,0,&#39;e&#39;,0,&#39;v&#39;,0}</span></span></code></pre></div>
+<div class="sourceCode" id="cb291"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb291-1"><a href="ch-usb.html#cb291-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define USB_STRING_PRODUCT {16,0x3,&#39;w&#39;,0,&#39;i&#39;,0,&#39;n&#39;,0,&#39;-&#39;,0,&#39;d&#39;,0,&#39;e&#39;,0,&#39;v&#39;,0}</span></span></code></pre></div>
 <p>第一个值是整个数组的长度，第二个值不变，之后是16bit unicode字符串 （每个符号占用两个字节），该示例中iproduct为’win-dev’。</p></li>
 <li><p>该示例中打开了两个bulk endpoint，endpoint 1 为input，endpoint 2为output,最大包长为64：</p>
-<div class="sourceCode" id="cb303"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb303-1"><a href="ch-usb.html#cb303-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define USB_EP_1_DESCRIPTOR \</span></span>
-<span id="cb303-2"><a href="ch-usb.html#cb303-2" aria-hidden="true" tabindex="-1"></a><span class="pp">{ \</span></span>
-<span id="cb303-3"><a href="ch-usb.html#cb303-3" aria-hidden="true" tabindex="-1"></a><span class="pp">  .size = sizeof(USB_EP_DESCRIPTOR_REAL_T), \</span></span>
-<span id="cb303-4"><a href="ch-usb.html#cb303-4" aria-hidden="true" tabindex="-1"></a><span class="pp">  .type = 5, \</span></span>
-<span id="cb303-5"><a href="ch-usb.html#cb303-5" aria-hidden="true" tabindex="-1"></a><span class="pp">  .ep = USB_EP_DIRECTION_IN(EP_IN), \</span></span>
-<span id="cb303-6"><a href="ch-usb.html#cb303-6" aria-hidden="true" tabindex="-1"></a><span class="pp">  .attributes = USB_EP_TYPE_BULK, \</span></span>
-<span id="cb303-7"><a href="ch-usb.html#cb303-7" aria-hidden="true" tabindex="-1"></a><span class="pp">  .mps = EP_X_MPS_BYTES, \</span></span>
-<span id="cb303-8"><a href="ch-usb.html#cb303-8" aria-hidden="true" tabindex="-1"></a><span class="pp">  .interval = 0 \</span></span>
-<span id="cb303-9"><a href="ch-usb.html#cb303-9" aria-hidden="true" tabindex="-1"></a><span class="pp">}</span></span>
-<span id="cb303-10"><a href="ch-usb.html#cb303-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb303-11"><a href="ch-usb.html#cb303-11" aria-hidden="true" tabindex="-1"></a><span class="pp">#define USB_EP_2_DESCRIPTOR \</span></span>
-<span id="cb303-12"><a href="ch-usb.html#cb303-12" aria-hidden="true" tabindex="-1"></a><span class="pp">{ \</span></span>
-<span id="cb303-13"><a href="ch-usb.html#cb303-13" aria-hidden="true" tabindex="-1"></a><span class="pp">  .size = sizeof(USB_EP_DESCRIPTOR_REAL_T), \</span></span>
-<span id="cb303-14"><a href="ch-usb.html#cb303-14" aria-hidden="true" tabindex="-1"></a><span class="pp">  .type = 5, \</span></span>
-<span id="cb303-15"><a href="ch-usb.html#cb303-15" aria-hidden="true" tabindex="-1"></a><span class="pp">  .ep = USB_EP_DIRECTION_OUT(EP_OUT), \</span></span>
-<span id="cb303-16"><a href="ch-usb.html#cb303-16" aria-hidden="true" tabindex="-1"></a><span class="pp">  .attributes = USB_EP_TYPE_BULK, \</span></span>
-<span id="cb303-17"><a href="ch-usb.html#cb303-17" aria-hidden="true" tabindex="-1"></a><span class="pp">  .mps = EP_X_MPS_BYTES, \</span></span>
-<span id="cb303-18"><a href="ch-usb.html#cb303-18" aria-hidden="true" tabindex="-1"></a><span class="pp">  .interval = 0 \</span></span>
-<span id="cb303-19"><a href="ch-usb.html#cb303-19" aria-hidden="true" tabindex="-1"></a><span class="pp">}</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb292"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb292-1"><a href="ch-usb.html#cb292-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define USB_EP_1_DESCRIPTOR \</span></span>
+<span id="cb292-2"><a href="ch-usb.html#cb292-2" aria-hidden="true" tabindex="-1"></a><span class="pp">{ \</span></span>
+<span id="cb292-3"><a href="ch-usb.html#cb292-3" aria-hidden="true" tabindex="-1"></a><span class="pp">  .size = sizeof(USB_EP_DESCRIPTOR_REAL_T), \</span></span>
+<span id="cb292-4"><a href="ch-usb.html#cb292-4" aria-hidden="true" tabindex="-1"></a><span class="pp">  .type = 5, \</span></span>
+<span id="cb292-5"><a href="ch-usb.html#cb292-5" aria-hidden="true" tabindex="-1"></a><span class="pp">  .ep = USB_EP_DIRECTION_IN(EP_IN), \</span></span>
+<span id="cb292-6"><a href="ch-usb.html#cb292-6" aria-hidden="true" tabindex="-1"></a><span class="pp">  .attributes = USB_EP_TYPE_BULK, \</span></span>
+<span id="cb292-7"><a href="ch-usb.html#cb292-7" aria-hidden="true" tabindex="-1"></a><span class="pp">  .mps = EP_X_MPS_BYTES, \</span></span>
+<span id="cb292-8"><a href="ch-usb.html#cb292-8" aria-hidden="true" tabindex="-1"></a><span class="pp">  .interval = 0 \</span></span>
+<span id="cb292-9"><a href="ch-usb.html#cb292-9" aria-hidden="true" tabindex="-1"></a><span class="pp">}</span></span>
+<span id="cb292-10"><a href="ch-usb.html#cb292-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb292-11"><a href="ch-usb.html#cb292-11" aria-hidden="true" tabindex="-1"></a><span class="pp">#define USB_EP_2_DESCRIPTOR \</span></span>
+<span id="cb292-12"><a href="ch-usb.html#cb292-12" aria-hidden="true" tabindex="-1"></a><span class="pp">{ \</span></span>
+<span id="cb292-13"><a href="ch-usb.html#cb292-13" aria-hidden="true" tabindex="-1"></a><span class="pp">  .size = sizeof(USB_EP_DESCRIPTOR_REAL_T), \</span></span>
+<span id="cb292-14"><a href="ch-usb.html#cb292-14" aria-hidden="true" tabindex="-1"></a><span class="pp">  .type = 5, \</span></span>
+<span id="cb292-15"><a href="ch-usb.html#cb292-15" aria-hidden="true" tabindex="-1"></a><span class="pp">  .ep = USB_EP_DIRECTION_OUT(EP_OUT), \</span></span>
+<span id="cb292-16"><a href="ch-usb.html#cb292-16" aria-hidden="true" tabindex="-1"></a><span class="pp">  .attributes = USB_EP_TYPE_BULK, \</span></span>
+<span id="cb292-17"><a href="ch-usb.html#cb292-17" aria-hidden="true" tabindex="-1"></a><span class="pp">  .mps = EP_X_MPS_BYTES, \</span></span>
+<span id="cb292-18"><a href="ch-usb.html#cb292-18" aria-hidden="true" tabindex="-1"></a><span class="pp">  .interval = 0 \</span></span>
+<span id="cb292-19"><a href="ch-usb.html#cb292-19" aria-hidden="true" tabindex="-1"></a><span class="pp">}</span></span></code></pre></div></li>
 <li><p>在set configuration(USB_REQUEST_DEVICE_SET_CONFIGURATION)之后，In/out endpoint 可以使用，通过<code>USB_RecvData()</code>配置out endpoint接收host发送的数据。 在收到host的数据后<code>USB_CALLBACK_TYPE_RECEIVE_END</code>，通过<code>USB_SendData()</code>将数据 发送给host（通过in endpoint）。</p></li>
 <li><p>在WIN10及以上的系统上，该设备会自动加载winusb.sys并枚举成WinUsb Device, 设备名称为”win-dev”。 <img src="img/USB/usb_win_dev.PNG" title="win_dev" alt="WinUsb Device" /></p></li>
 <li><p>通过ing_usb.exe可以对该设备进行一些简单数据测试:</p>
@@ -850,31 +856,31 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="标准描述符" class="section level5 hasAnchor" number="22.2.8.2.1">
 <h5><span class="header-section-number">22.2.8.2.1</span> 标准描述符<a href="ch-usb.html#标准描述符" class="anchor-section" aria-label="Anchor link to header"></a></h5>
 <p>其标准描述符结构如下，configuration descriptor之后分别是interface descriptor, hid descriptor, endpoint descriptor。</p>
-<div class="sourceCode" id="cb306"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb306-1"><a href="ch-usb.html#cb306-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> __attribute__<span class="op">((</span>packed<span class="op">))</span></span>
-<span id="cb306-2"><a href="ch-usb.html#cb306-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb306-3"><a href="ch-usb.html#cb306-3" aria-hidden="true" tabindex="-1"></a>  USB_CONFIG_DESCRIPTOR_REAL_T config<span class="op">;</span></span>
-<span id="cb306-4"><a href="ch-usb.html#cb306-4" aria-hidden="true" tabindex="-1"></a>  USB_INTERFACE_DESCRIPTOR_REAL_T interface_kb<span class="op">;</span></span>
-<span id="cb306-5"><a href="ch-usb.html#cb306-5" aria-hidden="true" tabindex="-1"></a>  BSP_USB_HID_DESCRIPTOR_T hid_kb<span class="op">;</span></span>
-<span id="cb306-6"><a href="ch-usb.html#cb306-6" aria-hidden="true" tabindex="-1"></a>  USB_EP_DESCRIPTOR_REAL_T ep_kb<span class="op">[</span>bNUM_EP_KB<span class="op">];</span></span>
-<span id="cb306-7"><a href="ch-usb.html#cb306-7" aria-hidden="true" tabindex="-1"></a>  USB_INTERFACE_DESCRIPTOR_REAL_T interface_mo<span class="op">;</span></span>
-<span id="cb306-8"><a href="ch-usb.html#cb306-8" aria-hidden="true" tabindex="-1"></a>  BSP_USB_HID_DESCRIPTOR_T hid_mo<span class="op">;</span></span>
-<span id="cb306-9"><a href="ch-usb.html#cb306-9" aria-hidden="true" tabindex="-1"></a>  USB_EP_DESCRIPTOR_REAL_T ep_mo<span class="op">[</span>bNUM_EP_MO<span class="op">];</span></span>
-<span id="cb306-10"><a href="ch-usb.html#cb306-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span>BSP_USB_DESC_STRUCTURE_T<span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb295"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb295-1"><a href="ch-usb.html#cb295-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> __attribute__<span class="op">((</span>packed<span class="op">))</span></span>
+<span id="cb295-2"><a href="ch-usb.html#cb295-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb295-3"><a href="ch-usb.html#cb295-3" aria-hidden="true" tabindex="-1"></a>  USB_CONFIG_DESCRIPTOR_REAL_T config<span class="op">;</span></span>
+<span id="cb295-4"><a href="ch-usb.html#cb295-4" aria-hidden="true" tabindex="-1"></a>  USB_INTERFACE_DESCRIPTOR_REAL_T interface_kb<span class="op">;</span></span>
+<span id="cb295-5"><a href="ch-usb.html#cb295-5" aria-hidden="true" tabindex="-1"></a>  BSP_USB_HID_DESCRIPTOR_T hid_kb<span class="op">;</span></span>
+<span id="cb295-6"><a href="ch-usb.html#cb295-6" aria-hidden="true" tabindex="-1"></a>  USB_EP_DESCRIPTOR_REAL_T ep_kb<span class="op">[</span>bNUM_EP_KB<span class="op">];</span></span>
+<span id="cb295-7"><a href="ch-usb.html#cb295-7" aria-hidden="true" tabindex="-1"></a>  USB_INTERFACE_DESCRIPTOR_REAL_T interface_mo<span class="op">;</span></span>
+<span id="cb295-8"><a href="ch-usb.html#cb295-8" aria-hidden="true" tabindex="-1"></a>  BSP_USB_HID_DESCRIPTOR_T hid_mo<span class="op">;</span></span>
+<span id="cb295-9"><a href="ch-usb.html#cb295-9" aria-hidden="true" tabindex="-1"></a>  USB_EP_DESCRIPTOR_REAL_T ep_mo<span class="op">[</span>bNUM_EP_MO<span class="op">];</span></span>
+<span id="cb295-10"><a href="ch-usb.html#cb295-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span>BSP_USB_DESC_STRUCTURE_T<span class="op">;</span></span></code></pre></div>
 <p>上述描述符的示例在路径<code>\ING_SDK\sdk\src\BSP\bsp_usb_hid.h</code>，以keyboard interface为例：</p>
-<div class="sourceCode" id="cb307"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb307-1"><a href="ch-usb.html#cb307-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define USB_INTERFACE_DESCRIPTOR_KB \</span></span>
-<span id="cb307-2"><a href="ch-usb.html#cb307-2" aria-hidden="true" tabindex="-1"></a><span class="pp">{ \</span></span>
-<span id="cb307-3"><a href="ch-usb.html#cb307-3" aria-hidden="true" tabindex="-1"></a><span class="pp">  .size = sizeof(USB_INTERFACE_DESCRIPTOR_REAL_T), \</span></span>
-<span id="cb307-4"><a href="ch-usb.html#cb307-4" aria-hidden="true" tabindex="-1"></a><span class="pp">  .type = 4, \</span></span>
-<span id="cb307-5"><a href="ch-usb.html#cb307-5" aria-hidden="true" tabindex="-1"></a><span class="pp">  .interfaceIndex = 0x00, \</span></span>
-<span id="cb307-6"><a href="ch-usb.html#cb307-6" aria-hidden="true" tabindex="-1"></a><span class="pp">  .alternateSetting = 0x00, \</span></span>
-<span id="cb307-7"><a href="ch-usb.html#cb307-7" aria-hidden="true" tabindex="-1"></a><span class="pp">  .nbEp = bNUM_EP_KB,  \</span></span>
-<span id="cb307-8"><a href="ch-usb.html#cb307-8" aria-hidden="true" tabindex="-1"></a><span class="pp">  .usbClass = 0x03, \</span></span>
-<span id="cb307-9"><a href="ch-usb.html#cb307-9" aria-hidden="true" tabindex="-1"></a><span class="pp">  /* 0: no subclass, 1: boot interface */ \</span></span>
-<span id="cb307-10"><a href="ch-usb.html#cb307-10" aria-hidden="true" tabindex="-1"></a><span class="pp">  .usbSubClass = 0x00, \</span></span>
-<span id="cb307-11"><a href="ch-usb.html#cb307-11" aria-hidden="true" tabindex="-1"></a><span class="pp">  /* 0: none, 1: keyboard, 2: mouse */ \</span></span>
-<span id="cb307-12"><a href="ch-usb.html#cb307-12" aria-hidden="true" tabindex="-1"></a><span class="pp">  .usbProto = 0x00, \</span></span>
-<span id="cb307-13"><a href="ch-usb.html#cb307-13" aria-hidden="true" tabindex="-1"></a><span class="pp">  .iDescription = 0x00 \</span></span>
-<span id="cb307-14"><a href="ch-usb.html#cb307-14" aria-hidden="true" tabindex="-1"></a><span class="pp">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb296"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb296-1"><a href="ch-usb.html#cb296-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define USB_INTERFACE_DESCRIPTOR_KB \</span></span>
+<span id="cb296-2"><a href="ch-usb.html#cb296-2" aria-hidden="true" tabindex="-1"></a><span class="pp">{ \</span></span>
+<span id="cb296-3"><a href="ch-usb.html#cb296-3" aria-hidden="true" tabindex="-1"></a><span class="pp">  .size = sizeof(USB_INTERFACE_DESCRIPTOR_REAL_T), \</span></span>
+<span id="cb296-4"><a href="ch-usb.html#cb296-4" aria-hidden="true" tabindex="-1"></a><span class="pp">  .type = 4, \</span></span>
+<span id="cb296-5"><a href="ch-usb.html#cb296-5" aria-hidden="true" tabindex="-1"></a><span class="pp">  .interfaceIndex = 0x00, \</span></span>
+<span id="cb296-6"><a href="ch-usb.html#cb296-6" aria-hidden="true" tabindex="-1"></a><span class="pp">  .alternateSetting = 0x00, \</span></span>
+<span id="cb296-7"><a href="ch-usb.html#cb296-7" aria-hidden="true" tabindex="-1"></a><span class="pp">  .nbEp = bNUM_EP_KB,  \</span></span>
+<span id="cb296-8"><a href="ch-usb.html#cb296-8" aria-hidden="true" tabindex="-1"></a><span class="pp">  .usbClass = 0x03, \</span></span>
+<span id="cb296-9"><a href="ch-usb.html#cb296-9" aria-hidden="true" tabindex="-1"></a><span class="pp">  /* 0: no subclass, 1: boot interface */ \</span></span>
+<span id="cb296-10"><a href="ch-usb.html#cb296-10" aria-hidden="true" tabindex="-1"></a><span class="pp">  .usbSubClass = 0x00, \</span></span>
+<span id="cb296-11"><a href="ch-usb.html#cb296-11" aria-hidden="true" tabindex="-1"></a><span class="pp">  /* 0: none, 1: keyboard, 2: mouse */ \</span></span>
+<span id="cb296-12"><a href="ch-usb.html#cb296-12" aria-hidden="true" tabindex="-1"></a><span class="pp">  .usbProto = 0x00, \</span></span>
+<span id="cb296-13"><a href="ch-usb.html#cb296-13" aria-hidden="true" tabindex="-1"></a><span class="pp">  .iDescription = 0x00 \</span></span>
+<span id="cb296-14"><a href="ch-usb.html#cb296-14" aria-hidden="true" tabindex="-1"></a><span class="pp">}</span></span></code></pre></div>
 <p>其中可能需要根据场景修改的变量使用宏定义，其他则使用常量。请注意：该实现中没有打开boot function。</p>
 </div>
 <div id="报告描述符" class="section level5 hasAnchor" number="22.2.8.2.2">
@@ -883,40 +889,40 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li>keyboard的report描述符为：</li>
 </ul>
-<div class="sourceCode" id="cb308"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb308-1"><a href="ch-usb.html#cb308-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define USB_HID_KB_REPORT_DESCRIPTOR {  \</span></span>
-<span id="cb308-2"><a href="ch-usb.html#cb308-2" aria-hidden="true" tabindex="-1"></a><span class="pp">    0x05, 0x01, /* USAGE_PAGE (Generic Desktop)                       */  \</span></span>
-<span id="cb308-3"><a href="ch-usb.html#cb308-3" aria-hidden="true" tabindex="-1"></a><span class="pp">    0x09, 0x06, /* USAGE (Keyboard)                                   */  \</span></span>
-<span id="cb308-4"><a href="ch-usb.html#cb308-4" aria-hidden="true" tabindex="-1"></a><span class="pp">    0xa1, 0x01, /* COLLECTION (Application)                           */  \</span></span>
-<span id="cb308-5"><a href="ch-usb.html#cb308-5" aria-hidden="true" tabindex="-1"></a><span class="pp">    0x05, 0x07, /*   USAGE_PAGE (Keyboard)                            */  \</span></span>
-<span id="cb308-6"><a href="ch-usb.html#cb308-6" aria-hidden="true" tabindex="-1"></a><span class="pp">    ...\ING_SDK\sdk\src\BSP\bsp_usb_hid.h</span></span></code></pre></div>
+<div class="sourceCode" id="cb297"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb297-1"><a href="ch-usb.html#cb297-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define USB_HID_KB_REPORT_DESCRIPTOR {  \</span></span>
+<span id="cb297-2"><a href="ch-usb.html#cb297-2" aria-hidden="true" tabindex="-1"></a><span class="pp">    0x05, 0x01, /* USAGE_PAGE (Generic Desktop)                       */  \</span></span>
+<span id="cb297-3"><a href="ch-usb.html#cb297-3" aria-hidden="true" tabindex="-1"></a><span class="pp">    0x09, 0x06, /* USAGE (Keyboard)                                   */  \</span></span>
+<span id="cb297-4"><a href="ch-usb.html#cb297-4" aria-hidden="true" tabindex="-1"></a><span class="pp">    0xa1, 0x01, /* COLLECTION (Application)                           */  \</span></span>
+<span id="cb297-5"><a href="ch-usb.html#cb297-5" aria-hidden="true" tabindex="-1"></a><span class="pp">    0x05, 0x07, /*   USAGE_PAGE (Keyboard)                            */  \</span></span>
+<span id="cb297-6"><a href="ch-usb.html#cb297-6" aria-hidden="true" tabindex="-1"></a><span class="pp">    ...\ING_SDK\sdk\src\BSP\bsp_usb_hid.h</span></span></code></pre></div>
 <p>keyboard report descriptor包含8bit modifier input，8bit reserve, 5bit led output, 3bit reserve, 6bytes key usage id 。report本地结构为：</p>
-<div class="sourceCode" id="cb309"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb309-1"><a href="ch-usb.html#cb309-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define KEY_TABLE_LEN (6)</span></span>
-<span id="cb309-2"><a href="ch-usb.html#cb309-2" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> __attribute__<span class="op">((</span>packed<span class="op">))</span></span>
-<span id="cb309-3"><a href="ch-usb.html#cb309-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb309-4"><a href="ch-usb.html#cb309-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> modifier<span class="op">;</span></span>
-<span id="cb309-5"><a href="ch-usb.html#cb309-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> reserved<span class="op">;</span></span>
-<span id="cb309-6"><a href="ch-usb.html#cb309-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> key_table<span class="op">[</span>KEY_TABLE_LEN<span class="op">];</span></span>
-<span id="cb309-7"><a href="ch-usb.html#cb309-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span>BSP_KEYB_REPORT_s<span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb298"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb298-1"><a href="ch-usb.html#cb298-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define KEY_TABLE_LEN (6)</span></span>
+<span id="cb298-2"><a href="ch-usb.html#cb298-2" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> __attribute__<span class="op">((</span>packed<span class="op">))</span></span>
+<span id="cb298-3"><a href="ch-usb.html#cb298-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb298-4"><a href="ch-usb.html#cb298-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> modifier<span class="op">;</span></span>
+<span id="cb298-5"><a href="ch-usb.html#cb298-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> reserved<span class="op">;</span></span>
+<span id="cb298-6"><a href="ch-usb.html#cb298-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> key_table<span class="op">[</span>KEY_TABLE_LEN<span class="op">];</span></span>
+<span id="cb298-7"><a href="ch-usb.html#cb298-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span>BSP_KEYB_REPORT_s<span class="op">;</span></span></code></pre></div>
 <p>report中的usage id data的实现分别在以下enum中：</p>
-<div class="sourceCode" id="cb310"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb310-1"><a href="ch-usb.html#cb310-1" aria-hidden="true" tabindex="-1"></a>BSP_KEYB_KEYB_USAGE_ID_e</span>
-<span id="cb310-2"><a href="ch-usb.html#cb310-2" aria-hidden="true" tabindex="-1"></a>BSP_KEYB_KEYB_MODIFIER_e</span>
-<span id="cb310-3"><a href="ch-usb.html#cb310-3" aria-hidden="true" tabindex="-1"></a>BSP_KEYB_KEYB_LED_e</span></code></pre></div>
+<div class="sourceCode" id="cb299"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb299-1"><a href="ch-usb.html#cb299-1" aria-hidden="true" tabindex="-1"></a>BSP_KEYB_KEYB_USAGE_ID_e</span>
+<span id="cb299-2"><a href="ch-usb.html#cb299-2" aria-hidden="true" tabindex="-1"></a>BSP_KEYB_KEYB_MODIFIER_e</span>
+<span id="cb299-3"><a href="ch-usb.html#cb299-3" aria-hidden="true" tabindex="-1"></a>BSP_KEYB_KEYB_LED_e</span></code></pre></div>
 <ul>
 <li>mouse的report描述符为：</li>
 </ul>
-<div class="sourceCode" id="cb311"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb311-1"><a href="ch-usb.html#cb311-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define USB_HID_MOUSE_REPORT_DESCRIPTOR_SIZE (50)</span></span>
-<span id="cb311-2"><a href="ch-usb.html#cb311-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#define USB_HID_MOUSE_REPORT_DESCRIPTOR { \</span></span>
-<span id="cb311-3"><a href="ch-usb.html#cb311-3" aria-hidden="true" tabindex="-1"></a><span class="pp">    0x05, 0x01, /* USAGE_PAGE (Generic Desktop)       */   \</span></span>
-<span id="cb311-4"><a href="ch-usb.html#cb311-4" aria-hidden="true" tabindex="-1"></a><span class="pp">    0x09, 0x02, /* USAGE (Mouse)                      */   \</span></span>
-<span id="cb311-5"><a href="ch-usb.html#cb311-5" aria-hidden="true" tabindex="-1"></a><span class="pp">    0xa1, 0x01, /* COLLECTION (Application)           */   \</span></span>
-<span id="cb311-6"><a href="ch-usb.html#cb311-6" aria-hidden="true" tabindex="-1"></a><span class="pp">    ...\ING_SDK\sdk\src\BSP\bsp_usb_hid.h</span></span></code></pre></div>
+<div class="sourceCode" id="cb300"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb300-1"><a href="ch-usb.html#cb300-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define USB_HID_MOUSE_REPORT_DESCRIPTOR_SIZE (50)</span></span>
+<span id="cb300-2"><a href="ch-usb.html#cb300-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#define USB_HID_MOUSE_REPORT_DESCRIPTOR { \</span></span>
+<span id="cb300-3"><a href="ch-usb.html#cb300-3" aria-hidden="true" tabindex="-1"></a><span class="pp">    0x05, 0x01, /* USAGE_PAGE (Generic Desktop)       */   \</span></span>
+<span id="cb300-4"><a href="ch-usb.html#cb300-4" aria-hidden="true" tabindex="-1"></a><span class="pp">    0x09, 0x02, /* USAGE (Mouse)                      */   \</span></span>
+<span id="cb300-5"><a href="ch-usb.html#cb300-5" aria-hidden="true" tabindex="-1"></a><span class="pp">    0xa1, 0x01, /* COLLECTION (Application)           */   \</span></span>
+<span id="cb300-6"><a href="ch-usb.html#cb300-6" aria-hidden="true" tabindex="-1"></a><span class="pp">    ...\ING_SDK\sdk\src\BSP\bsp_usb_hid.h</span></span></code></pre></div>
 <p>report包含一个3bit button(button 1 ~ button 3), 5bit reserve, 8bit x value, 8bit y value 结构为：</p>
-<div class="sourceCode" id="cb312"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb312-1"><a href="ch-usb.html#cb312-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> __attribute__<span class="op">((</span>packed<span class="op">))</span></span>
-<span id="cb312-2"><a href="ch-usb.html#cb312-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb312-3"><a href="ch-usb.html#cb312-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> button<span class="op">;</span><span class="co">/* 1 ~ 3 */</span></span>
-<span id="cb312-4"><a href="ch-usb.html#cb312-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int8_t</span> pos_x<span class="op">;</span><span class="co">/* -127 ~ 127 */</span></span>
-<span id="cb312-5"><a href="ch-usb.html#cb312-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int8_t</span> pos_y<span class="op">;</span><span class="co">/* -127 ~ 127 */</span></span>
-<span id="cb312-6"><a href="ch-usb.html#cb312-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span>BSP_MOUSE_REPORT_s<span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb301"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb301-1"><a href="ch-usb.html#cb301-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> __attribute__<span class="op">((</span>packed<span class="op">))</span></span>
+<span id="cb301-2"><a href="ch-usb.html#cb301-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb301-3"><a href="ch-usb.html#cb301-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> button<span class="op">;</span><span class="co">/* 1 ~ 3 */</span></span>
+<span id="cb301-4"><a href="ch-usb.html#cb301-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int8_t</span> pos_x<span class="op">;</span><span class="co">/* -127 ~ 127 */</span></span>
+<span id="cb301-5"><a href="ch-usb.html#cb301-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int8_t</span> pos_y<span class="op">;</span><span class="co">/* -127 ~ 127 */</span></span>
+<span id="cb301-6"><a href="ch-usb.html#cb301-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span>BSP_MOUSE_REPORT_s<span class="op">;</span></span></code></pre></div>
 </div>
 <div id="standardclass-request" class="section level5 hasAnchor" number="22.2.8.2.3">
 <h5><span class="header-section-number">22.2.8.2.3</span> standard/class request<a href="ch-usb.html#standardclass-request" class="anchor-section" aria-label="Anchor link to header"></a></h5>
@@ -926,62 +932,62 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>setup-&gt;wIndex代表了interface num，其中0为keyboard interface（参考BSP_USB_DESC_STRUCTURE_T）</li>
 <li>使用USB_SendData发送report数据</li>
 </ul>
-<div class="sourceCode" id="cb313"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb313-1"><a href="ch-usb.html#cb313-1" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> USB_REQUEST_DEVICE_GET_DESCRIPTOR<span class="op">:</span></span>
-<span id="cb313-2"><a href="ch-usb.html#cb313-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb313-3"><a href="ch-usb.html#cb313-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">switch</span><span class="op">(((</span>setup<span class="op">-&gt;</span>wValue<span class="op">)&gt;&gt;</span><span class="dv">8</span><span class="op">)&amp;</span><span class="bn">0xFF</span><span class="op">)</span></span>
-<span id="cb313-4"><a href="ch-usb.html#cb313-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
-<span id="cb313-5"><a href="ch-usb.html#cb313-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> USB_REQUEST_HID_CLASS_DESCRIPTOR_REPORT<span class="op">:</span></span>
-<span id="cb313-6"><a href="ch-usb.html#cb313-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb313-7"><a href="ch-usb.html#cb313-7" aria-hidden="true" tabindex="-1"></a>      <span class="cf">switch</span><span class="op">(</span>setup<span class="op">-&gt;</span>wIndex<span class="op">)</span></span>
-<span id="cb313-8"><a href="ch-usb.html#cb313-8" aria-hidden="true" tabindex="-1"></a>      <span class="op">{</span></span>
-<span id="cb313-9"><a href="ch-usb.html#cb313-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">case</span> <span class="dv">0</span><span class="op">:</span></span>
-<span id="cb313-10"><a href="ch-usb.html#cb313-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span></span>
-<span id="cb313-11"><a href="ch-usb.html#cb313-11" aria-hidden="true" tabindex="-1"></a>          size <span class="op">=</span> <span class="kw">sizeof</span><span class="op">(</span>ReportKeybDescriptor<span class="op">);</span></span>
-<span id="cb313-12"><a href="ch-usb.html#cb313-12" aria-hidden="true" tabindex="-1"></a>          size <span class="op">=</span> <span class="op">(</span>setup<span class="op">-&gt;</span>wLength <span class="op">&lt;</span> size<span class="op">)</span> <span class="op">?</span> <span class="op">(</span>setup<span class="op">-&gt;</span>wLength<span class="op">)</span> <span class="op">:</span> size<span class="op">;</span></span>
-<span id="cb313-13"><a href="ch-usb.html#cb313-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb313-14"><a href="ch-usb.html#cb313-14" aria-hidden="true" tabindex="-1"></a>          status <span class="op">|=</span> USB_SendData<span class="op">(</span><span class="dv">0</span><span class="op">,</span> <span class="op">&amp;</span>ReportKeybDescriptor<span class="op">,</span> size<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
-<span id="cb313-15"><a href="ch-usb.html#cb313-15" aria-hidden="true" tabindex="-1"></a>          KeybReport<span class="op">.</span>pending <span class="op">=</span> U_FALSE<span class="op">;</span></span>
-<span id="cb313-16"><a href="ch-usb.html#cb313-16" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span><span class="cf">break</span><span class="op">;</span></span>
-<span id="cb313-17"><a href="ch-usb.html#cb313-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">...</span>\ING_SDK\sdk\src\BSP\bsp_usb_hid<span class="op">.</span>c</span></code></pre></div>
+<div class="sourceCode" id="cb302"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb302-1"><a href="ch-usb.html#cb302-1" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> USB_REQUEST_DEVICE_GET_DESCRIPTOR<span class="op">:</span></span>
+<span id="cb302-2"><a href="ch-usb.html#cb302-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb302-3"><a href="ch-usb.html#cb302-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">switch</span><span class="op">(((</span>setup<span class="op">-&gt;</span>wValue<span class="op">)&gt;&gt;</span><span class="dv">8</span><span class="op">)&amp;</span><span class="bn">0xFF</span><span class="op">)</span></span>
+<span id="cb302-4"><a href="ch-usb.html#cb302-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb302-5"><a href="ch-usb.html#cb302-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> USB_REQUEST_HID_CLASS_DESCRIPTOR_REPORT<span class="op">:</span></span>
+<span id="cb302-6"><a href="ch-usb.html#cb302-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb302-7"><a href="ch-usb.html#cb302-7" aria-hidden="true" tabindex="-1"></a>      <span class="cf">switch</span><span class="op">(</span>setup<span class="op">-&gt;</span>wIndex<span class="op">)</span></span>
+<span id="cb302-8"><a href="ch-usb.html#cb302-8" aria-hidden="true" tabindex="-1"></a>      <span class="op">{</span></span>
+<span id="cb302-9"><a href="ch-usb.html#cb302-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">case</span> <span class="dv">0</span><span class="op">:</span></span>
+<span id="cb302-10"><a href="ch-usb.html#cb302-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span></span>
+<span id="cb302-11"><a href="ch-usb.html#cb302-11" aria-hidden="true" tabindex="-1"></a>          size <span class="op">=</span> <span class="kw">sizeof</span><span class="op">(</span>ReportKeybDescriptor<span class="op">);</span></span>
+<span id="cb302-12"><a href="ch-usb.html#cb302-12" aria-hidden="true" tabindex="-1"></a>          size <span class="op">=</span> <span class="op">(</span>setup<span class="op">-&gt;</span>wLength <span class="op">&lt;</span> size<span class="op">)</span> <span class="op">?</span> <span class="op">(</span>setup<span class="op">-&gt;</span>wLength<span class="op">)</span> <span class="op">:</span> size<span class="op">;</span></span>
+<span id="cb302-13"><a href="ch-usb.html#cb302-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb302-14"><a href="ch-usb.html#cb302-14" aria-hidden="true" tabindex="-1"></a>          status <span class="op">|=</span> USB_SendData<span class="op">(</span><span class="dv">0</span><span class="op">,</span> <span class="op">&amp;</span>ReportKeybDescriptor<span class="op">,</span> size<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb302-15"><a href="ch-usb.html#cb302-15" aria-hidden="true" tabindex="-1"></a>          KeybReport<span class="op">.</span>pending <span class="op">=</span> U_FALSE<span class="op">;</span></span>
+<span id="cb302-16"><a href="ch-usb.html#cb302-16" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span><span class="cf">break</span><span class="op">;</span></span>
+<span id="cb302-17"><a href="ch-usb.html#cb302-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">...</span>\ING_SDK\sdk\src\BSP\bsp_usb_hid<span class="op">.</span>c</span></code></pre></div>
 </div>
 <div id="report-data-发送" class="section level5 hasAnchor" number="22.2.8.2.4">
 <h5><span class="header-section-number">22.2.8.2.4</span> report data 发送<a href="ch-usb.html#report-data-发送" class="anchor-section" aria-label="Anchor link to header"></a></h5>
 <ul>
 <li>keyboard key的发送,入参为一个键值以及其是否处于按下的状态，如果该键按下，则将其添加到report中并发送出去。</li>
 </ul>
-<div class="sourceCode" id="cb314"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb314-1"><a href="ch-usb.html#cb314-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
-<span id="cb314-2"><a href="ch-usb.html#cb314-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> interface API. send keyboard key report</span></span>
-<span id="cb314-3"><a href="ch-usb.html#cb314-3" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
-<span id="cb314-4"><a href="ch-usb.html#cb314-4" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">key:</span><span class="co"> value comes from BSP_KEYB_KEYB_USAGE_ID_e</span></span>
-<span id="cb314-5"><a href="ch-usb.html#cb314-5" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">press:</span><span class="co"> 1: pressed, 0: released</span></span>
-<span id="cb314-6"><a href="ch-usb.html#cb314-6" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[out]</span><span class="co"> </span><span class="cv">null</span><span class="co">.</span></span>
-<span id="cb314-7"><a href="ch-usb.html#cb314-7" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
-<span id="cb314-8"><a href="ch-usb.html#cb314-8" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="dt">void</span> bsp_usb_handle_hid_keyb_key_report<span class="op">(</span><span class="dt">uint8_t</span> key<span class="op">,</span> <span class="dt">uint8_t</span> press<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb303"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb303-1"><a href="ch-usb.html#cb303-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb303-2"><a href="ch-usb.html#cb303-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> interface API. send keyboard key report</span></span>
+<span id="cb303-3"><a href="ch-usb.html#cb303-3" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
+<span id="cb303-4"><a href="ch-usb.html#cb303-4" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">key:</span><span class="co"> value comes from BSP_KEYB_KEYB_USAGE_ID_e</span></span>
+<span id="cb303-5"><a href="ch-usb.html#cb303-5" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">press:</span><span class="co"> 1: pressed, 0: released</span></span>
+<span id="cb303-6"><a href="ch-usb.html#cb303-6" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[out]</span><span class="co"> </span><span class="cv">null</span><span class="co">.</span></span>
+<span id="cb303-7"><a href="ch-usb.html#cb303-7" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb303-8"><a href="ch-usb.html#cb303-8" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="dt">void</span> bsp_usb_handle_hid_keyb_key_report<span class="op">(</span><span class="dt">uint8_t</span> key<span class="op">,</span> <span class="dt">uint8_t</span> press<span class="op">);</span></span></code></pre></div>
 <ul>
 <li>keyboard modifier的发送，与key类似，区别是modifier是bitmap data。</li>
 </ul>
-<div class="sourceCode" id="cb315"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb315-1"><a href="ch-usb.html#cb315-1" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="dt">void</span> bsp_usb_handle_hid_keyb_key_report<span class="op">(</span><span class="dt">uint8_t</span> key<span class="op">,</span> <span class="dt">uint8_t</span> press<span class="op">);</span></span>
-<span id="cb315-2"><a href="ch-usb.html#cb315-2" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
-<span id="cb315-3"><a href="ch-usb.html#cb315-3" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> interface API. send keyboard modifier report</span></span>
-<span id="cb315-4"><a href="ch-usb.html#cb315-4" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
-<span id="cb315-5"><a href="ch-usb.html#cb315-5" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">modifier:</span><span class="co"> value comes from BSP_KEYB_KEYB_MODIFIER_e</span></span>
-<span id="cb315-6"><a href="ch-usb.html#cb315-6" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">press:</span><span class="co"> 1: pressed, 0: released</span></span>
-<span id="cb315-7"><a href="ch-usb.html#cb315-7" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[out]</span><span class="co"> </span><span class="cv">null</span><span class="co">.</span></span>
-<span id="cb315-8"><a href="ch-usb.html#cb315-8" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
-<span id="cb315-9"><a href="ch-usb.html#cb315-9" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="dt">void</span> bsp_usb_handle_hid_keyb_modifier_report<span class="op">(</span>BSP_KEYB_KEYB_MODIFIER_e modifier<span class="op">,</span> <span class="dt">uint8_t</span> press<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb304"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb304-1"><a href="ch-usb.html#cb304-1" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="dt">void</span> bsp_usb_handle_hid_keyb_key_report<span class="op">(</span><span class="dt">uint8_t</span> key<span class="op">,</span> <span class="dt">uint8_t</span> press<span class="op">);</span></span>
+<span id="cb304-2"><a href="ch-usb.html#cb304-2" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb304-3"><a href="ch-usb.html#cb304-3" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> interface API. send keyboard modifier report</span></span>
+<span id="cb304-4"><a href="ch-usb.html#cb304-4" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
+<span id="cb304-5"><a href="ch-usb.html#cb304-5" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">modifier:</span><span class="co"> value comes from BSP_KEYB_KEYB_MODIFIER_e</span></span>
+<span id="cb304-6"><a href="ch-usb.html#cb304-6" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">press:</span><span class="co"> 1: pressed, 0: released</span></span>
+<span id="cb304-7"><a href="ch-usb.html#cb304-7" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[out]</span><span class="co"> </span><span class="cv">null</span><span class="co">.</span></span>
+<span id="cb304-8"><a href="ch-usb.html#cb304-8" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb304-9"><a href="ch-usb.html#cb304-9" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="dt">void</span> bsp_usb_handle_hid_keyb_modifier_report<span class="op">(</span>BSP_KEYB_KEYB_MODIFIER_e modifier<span class="op">,</span> <span class="dt">uint8_t</span> press<span class="op">);</span></span></code></pre></div>
 <ul>
 <li><p>keyboard led的获取，该示例中没有out endpoint，因此led report可能是用EP0的set report得到， 参考：USB_REQUEST_HID_CLASS_REQUEST_SET_REPORT。</p></li>
 <li><p>mouse report的发送,入参分别为x,y的相对值和button的组合（按下为1，释放为0）。</p></li>
 </ul>
-<div class="sourceCode" id="cb316"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb316-1"><a href="ch-usb.html#cb316-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
-<span id="cb316-2"><a href="ch-usb.html#cb316-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> interface API. send mouse report</span></span>
-<span id="cb316-3"><a href="ch-usb.html#cb316-3" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
-<span id="cb316-4"><a href="ch-usb.html#cb316-4" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">x:</span><span class="co"> 8bit int x axis value, relative,</span></span>
-<span id="cb316-5"><a href="ch-usb.html#cb316-5" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">y:</span><span class="co"> 8bit int y axis value, relative,</span></span>
-<span id="cb316-6"><a href="ch-usb.html#cb316-6" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">btn:</span><span class="co"> 8bit value, button 1 to 3,</span></span>
-<span id="cb316-7"><a href="ch-usb.html#cb316-7" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[out]</span><span class="co"> </span><span class="cv">null</span><span class="co">.</span></span>
-<span id="cb316-8"><a href="ch-usb.html#cb316-8" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
-<span id="cb316-9"><a href="ch-usb.html#cb316-9" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="dt">void</span> bsp_usb_handle_hid_mouse_report<span class="op">(</span><span class="dt">int8_t</span> x<span class="op">,</span> <span class="dt">int8_t</span> y<span class="op">,</span> <span class="dt">uint8_t</span> btn<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb305"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb305-1"><a href="ch-usb.html#cb305-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb305-2"><a href="ch-usb.html#cb305-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> interface API. send mouse report</span></span>
+<span id="cb305-3"><a href="ch-usb.html#cb305-3" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
+<span id="cb305-4"><a href="ch-usb.html#cb305-4" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">x:</span><span class="co"> 8bit int x axis value, relative,</span></span>
+<span id="cb305-5"><a href="ch-usb.html#cb305-5" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">y:</span><span class="co"> 8bit int y axis value, relative,</span></span>
+<span id="cb305-6"><a href="ch-usb.html#cb305-6" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">btn:</span><span class="co"> 8bit value, button 1 to 3,</span></span>
+<span id="cb305-7"><a href="ch-usb.html#cb305-7" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[out]</span><span class="co"> </span><span class="cv">null</span><span class="co">.</span></span>
+<span id="cb305-8"><a href="ch-usb.html#cb305-8" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb305-9"><a href="ch-usb.html#cb305-9" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="dt">void</span> bsp_usb_handle_hid_mouse_report<span class="op">(</span><span class="dt">int8_t</span> x<span class="op">,</span> <span class="dt">int8_t</span> y<span class="op">,</span> <span class="dt">uint8_t</span> btn<span class="op">);</span></span></code></pre></div>
 </div>
 </div>
 <div id="example-3-usb-msc" class="section level4 hasAnchor" number="22.2.8.3">

@@ -154,7 +154,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.1.7" data-path="ch-adc.html"><a href="ch-adc.html#输入电压范围"><i class="fa fa-check"></i><b>3.1.7</b> 输入电压范围</a></li>
 <li class="chapter" data-level="3.1.8" data-path="ch-adc.html"><a href="ch-adc.html#采样率"><i class="fa fa-check"></i><b>3.1.8</b> 采样率</a></li>
 </ul></li>
-<li class="chapter" data-level="3.2" data-path="ch-adc.html"><a href="ch-adc.html#使用方法"><i class="fa fa-check"></i><b>3.2</b> 使用方法</a></li>
+<li class="chapter" data-level="3.2" data-path="ch-adc.html"><a href="ch-adc.html#使用方法"><i class="fa fa-check"></i><b>3.2</b> 使用方法</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="ch-adc.html"><a href="ch-adc.html#时钟配置"><i class="fa fa-check"></i><b>3.2.1</b> 时钟配置</a></li>
+<li class="chapter" data-level="3.2.2" data-path="ch-adc.html"><a href="ch-adc.html#adc精度初始化-校准"><i class="fa fa-check"></i><b>3.2.2</b> ADC精度初始化 &amp; 校准</a></li>
+<li class="chapter" data-level="3.2.3" data-path="ch-adc.html"><a href="ch-adc.html#adc参数配置"><i class="fa fa-check"></i><b>3.2.3</b> ADC参数配置</a></li>
+<li class="chapter" data-level="3.2.4" data-path="ch-adc.html"><a href="ch-adc.html#adc数据处理"><i class="fa fa-check"></i><b>3.2.4</b> ADC数据处理</a></li>
+</ul></li>
 <li class="chapter" data-level="3.3" data-path="ch-adc.html"><a href="ch-adc.html#编程指南"><i class="fa fa-check"></i><b>3.3</b> 编程指南</a>
 <ul>
 <li class="chapter" data-level="3.3.1" data-path="ch-adc.html"><a href="ch-adc.html#驱动接口"><i class="fa fa-check"></i><b>3.3.1</b> 驱动接口</a></li>
@@ -585,8 +591,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p>normal mode</p></li>
 <li><p>handshake mode</p></li>
 </ul>
-<p>一般外设寄存器选择用握手方式。</p>
-<p>选择握手方式要和外设协商好SrcBurstSize，当前支持2^n(n = 0-7)大小的SrcBurstSize。</p>
+<p>DMA搬运前需要对数据源和数据目的地址的数据方式进行配置。</p>
+<p>数据方式的选择有如下建议：</p>
+<p><strong>1.</strong> 从内存搬运数据选择normal mode；</p>
+<p><strong>2.</strong> 从外设FIFO搬运数据选择handshake mode，同时要和外设协商好BurstSize，支持2^n(n = 0-7)大小的BurstSize。</p>
 </div>
 <div id="数据位宽" class="section level3 hasAnchor" number="5.1.7">
 <h3><span class="header-section-number">5.1.7</span> 数据位宽<a href="ch-dma.html#数据位宽" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -604,7 +612,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">5.2</span> 使用方法<a href="ch-dma.html#使用方法-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <div id="方法概述" class="section level3 hasAnchor" number="5.2.1">
 <h3><span class="header-section-number">5.2.1</span> 方法概述<a href="ch-dma.html#方法概述" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>首先确认数据搬运需求是单次搬运还是成串搬运，搬运类型memory和peripheral的关系。</p>
+<p>首先确认数据搬运需求是单次搬运还是成串搬运，以及搬运类型，即memory和peripheral的关系。</p>
 <div id="单次搬运" class="section level4 hasAnchor" number="5.2.1.1">
 <h4><span class="header-section-number">5.2.1.1</span> 单次搬运<a href="ch-dma.html#单次搬运" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p><strong>1.</strong> 注册DMA中断</p>

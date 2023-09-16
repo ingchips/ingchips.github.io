@@ -154,7 +154,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.1.7" data-path="ch-adc.html"><a href="ch-adc.html#输入电压范围"><i class="fa fa-check"></i><b>3.1.7</b> 输入电压范围</a></li>
 <li class="chapter" data-level="3.1.8" data-path="ch-adc.html"><a href="ch-adc.html#采样率"><i class="fa fa-check"></i><b>3.1.8</b> 采样率</a></li>
 </ul></li>
-<li class="chapter" data-level="3.2" data-path="ch-adc.html"><a href="ch-adc.html#使用方法"><i class="fa fa-check"></i><b>3.2</b> 使用方法</a></li>
+<li class="chapter" data-level="3.2" data-path="ch-adc.html"><a href="ch-adc.html#使用方法"><i class="fa fa-check"></i><b>3.2</b> 使用方法</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="ch-adc.html"><a href="ch-adc.html#时钟配置"><i class="fa fa-check"></i><b>3.2.1</b> 时钟配置</a></li>
+<li class="chapter" data-level="3.2.2" data-path="ch-adc.html"><a href="ch-adc.html#adc精度初始化-校准"><i class="fa fa-check"></i><b>3.2.2</b> ADC精度初始化 &amp; 校准</a></li>
+<li class="chapter" data-level="3.2.3" data-path="ch-adc.html"><a href="ch-adc.html#adc参数配置"><i class="fa fa-check"></i><b>3.2.3</b> ADC参数配置</a></li>
+<li class="chapter" data-level="3.2.4" data-path="ch-adc.html"><a href="ch-adc.html#adc数据处理"><i class="fa fa-check"></i><b>3.2.4</b> ADC数据处理</a></li>
+</ul></li>
 <li class="chapter" data-level="3.3" data-path="ch-adc.html"><a href="ch-adc.html#编程指南"><i class="fa fa-check"></i><b>3.3</b> 编程指南</a>
 <ul>
 <li class="chapter" data-level="3.3.1" data-path="ch-adc.html"><a href="ch-adc.html#驱动接口"><i class="fa fa-check"></i><b>3.3.1</b> 驱动接口</a></li>
@@ -572,7 +578,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="adc通道" class="section level3 hasAnchor" number="3.1.5">
 <h3><span class="header-section-number">3.1.5</span> ADC通道<a href="ch-adc.html#adc通道" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>ADC共12个channel，即ch0-ch11。</p>
-<p>其中ch0-ch7是通用通道，ch8-ch11是内部通道，可以用来采集内部信号。</p>
+<p>其中ch0-ch8、ch10-ch11为通用通道，ch9为1.2V内部参考电压专用通道。</p>
 <p>具体通道的输入连接引脚如下：</p>
 <table>
 <caption><span id="tab:ch-ADC-input-connection">表 3.1: </span> ADC输入连接引脚</caption>
@@ -617,7 +623,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tr>
 <tr class="odd">
 <td align="left">ch8</td>
-<td align="left">diag_hv_soc</td>
+<td align="left">GPIO35</td>
 </tr>
 <tr class="even">
 <td align="left">ch9</td>
@@ -625,15 +631,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tr>
 <tr class="odd">
 <td align="left">ch10</td>
-<td align="left">VCC</td>
+<td align="left">GPIO30</td>
 </tr>
 <tr class="even">
 <td align="left">ch11</td>
-<td align="left">V18_FLASH</td>
+<td align="left">GPIO31</td>
 </tr>
 </tbody>
 </table>
-<p>ch0-ch7可以配置成4对差分输入通道，配置后对应差分通道ch0-ch3。</p>
+<p>通道输入模式配置规则：</p>
+<p><strong>1.</strong> 通用通道ch0-ch8、ch10-ch11均可配置成单端输入通道；</p>
+<p><strong>2.</strong> ch0-ch7可以配置成4对差分输入通道，配置后对应差分通道ch0-ch3，如差分通道ch0对应ADC通道ch0和ch1，以此类推。</p>
 <p><strong>注意：</strong> 配置ADC输入模式为差分模式下则只有ch0-ch3及ch8-ch11，ch4-ch7无意义。</p>
 <p>以下是关于ADC通道对于开发者的几点使用建议：</p>
 <p><strong>1.</strong> 在使能通道前请先配置ADC输入模式；</p>
@@ -646,7 +654,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="pga" class="section level3 hasAnchor" number="3.1.6">
 <h3><span class="header-section-number">3.1.6</span> PGA<a href="ch-adc.html#pga" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>ADC的PGA默认开启，可调用ADC_PgaEnable(0)接口关闭。</p>
+<p>ADC的PGA默认开启，可调用ADC_PgaEnable(0)接口关闭PGA。</p>
 <p>ADC的PGA有6个可配值，其大小为： <span class="math display">\[PGA\_PARA \in [0, 5]\]</span></p>
 <p>目前ch0-ch7可以配置为上述任意PGA_PARA，ch8-ch11的PGA_PARA为固定值1。</p>
 <p>若PGA设置为关闭，单端模式时PGA_PARA=1，差分模式时PGA_PARA=0。（ch8-ch11除外，仍为固定值）</p>
@@ -795,8 +803,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="使用方法" class="section level2 hasAnchor" number="3.2">
 <h2><span class="header-section-number">3.2</span> 使用方法<a href="ch-adc.html#使用方法" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="时钟配置" class="section level4 hasAnchor" number="3.2.0.1">
-<h4><span class="header-section-number">3.2.0.1</span> 时钟配置<a href="ch-adc.html#时钟配置" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="时钟配置" class="section level3 hasAnchor" number="3.2.1">
+<h3><span class="header-section-number">3.2.1</span> 时钟配置<a href="ch-adc.html#时钟配置" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>当前ADC所用时钟源为 <code>clock slow</code> 或其经过分频得到的ADC工作时钟，建议选用后者。</p>
 <p>当前ADC工作时钟可以配置范围为500K-8M。</p>
 <p><strong>注意：</strong> 由于ADC工作时钟须经过 <code>clock slow</code> 分频，故在同时使用和ADC同时钟源模块时，如IR，可能出现时钟配置冲突的现象。开发者在实际使用时注意时钟规划，具体请参考916时钟树（图 <a href="ch-adc.html#fig:916-clk-tree-ADC">3.1</a>）。</p>
@@ -807,8 +815,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </p>
 </div>
 </div>
-<div id="adc精度初始化-校准" class="section level4 hasAnchor" number="3.2.0.2">
-<h4><span class="header-section-number">3.2.0.2</span> ADC精度初始化 &amp; 校准<a href="ch-adc.html#adc精度初始化-校准" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="adc精度初始化-校准" class="section level3 hasAnchor" number="3.2.2">
+<h3><span class="header-section-number">3.2.2</span> ADC精度初始化 &amp; 校准<a href="ch-adc.html#adc精度初始化-校准" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>ADC精度初始化接口：ADC_ftInit。</p>
 <p>ADC校准包含精度校准和内部参考电压校准。</p>
 <p>ADC精度校准接口：ADC_Calibration。</p>
@@ -823,8 +831,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p>每次进行内部参考电压校准后，需要重新配置ADC参数和使能通道；</p></li>
 </ul>
 </div>
-<div id="adc参数配置" class="section level4 hasAnchor" number="3.2.0.3">
-<h4><span class="header-section-number">3.2.0.3</span> ADC参数配置<a href="ch-adc.html#adc参数配置" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="adc参数配置" class="section level3 hasAnchor" number="3.2.3">
+<h3><span class="header-section-number">3.2.3</span> ADC参数配置<a href="ch-adc.html#adc参数配置" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>ADC参数配置接口的函数声明如下：</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="ch-adc.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ADC_ConvCfg<span class="op">(</span>SADC_adcCtrlMode ctrlMode<span class="op">,</span> </span>
 <span id="cb1-2"><a href="ch-adc.html#cb1-2" aria-hidden="true" tabindex="-1"></a>                 SADC_pgaPara pgaPara<span class="op">,</span></span>
@@ -836,6 +844,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-8"><a href="ch-adc.html#cb1-8" aria-hidden="true" tabindex="-1"></a>                 <span class="dt">uint32_t</span> loopDelay<span class="op">);</span></span></code></pre></div>
 <p>涉及参数有：ADC转换模式、PGA_PARA、PGA使能开关、采样通道、data触发中断数、data触发DMA搬运数、ADC输入模式和 <code>loop-delay</code>。</p>
 <p>具体的参数取值范围请参考ADC头文件里对应的枚举定义或参数说明。</p>
+<p>对于pgaPara的选取请参考本文档“PGA”和“输入电压范围”章节，或参考peripheral_adc.h文件中“ADC_PgaParaSet”的函数声明。</p>
 <p>data触发中断数和data触发DMA搬运数决定了搬运ADC数据的方式。前者用触发中断的方式，后者用触发DMA搬运的方式。</p>
 <p><strong>注意：</strong> data触发中断数和data触发DMA搬运数应该一个为0，一个非0,。如果两值都非0则默认选择触发中断的方式，DMA配置不生效；</p>
 <p>关于搬运方式的建议：</p>
@@ -845,8 +854,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <p><strong>注意：</strong> 多次调用ADC_ConvCfg则以最后一次调用为准（除通道使能，不会自动关闭之前已使能的通道），如只需使能（关闭）ADC通道可以通过ADC_EnableChannel接口完成。</p>
 </div>
-<div id="adc数据处理" class="section level4 hasAnchor" number="3.2.0.4">
-<h4><span class="header-section-number">3.2.0.4</span> ADC数据处理<a href="ch-adc.html#adc数据处理" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="adc数据处理" class="section level3 hasAnchor" number="3.2.4">
+<h3><span class="header-section-number">3.2.4</span> ADC数据处理<a href="ch-adc.html#adc数据处理" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>ADC数据处理的推荐步骤为：</p>
 <p><strong>1.</strong> 调用ADC_PopFifoData（或DMA搬运buff）读取FIFO中的ADC原始数据；</p>
 <p><strong>2.</strong> 调用ADC_GetDataChannel得到原始数据中的数据所属通道（如需要）；</p>

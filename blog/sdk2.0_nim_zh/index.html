@@ -245,9 +245,9 @@
 结合了 Python、Lisp 等语言的一些特性，高效（Efficient）、高能（Expressive）、
 高颜值（Elegant）。</p>
 
-<p>使用 Nim 开发的项目编译时先由 Nim 编译器将 nim 源代码转译成 <code class="highlighter-rouge">C</code> 代码，
+<p>使用 Nim 开发的项目编译时先由 Nim 编译器将 nim 源代码转译成 <code class="language-plaintext highlighter-rouge">C</code> 代码，
 然后通过 Gnu 工具链将这些转换出来的代码连同 SDK 提供
-的 <code class="highlighter-rouge">C</code> 代码一起编译、链接得到可在 ING918xx 上运行的程序。整个流程如图所示。</p>
+的 <code class="language-plaintext highlighter-rouge">C</code> 代码一起编译、链接得到可在 ING918xx 上运行的程序。整个流程如图所示。</p>
 
 <p><img src="/user_guide/img/ch1-nim-build.png" alt="" /></p>
 
@@ -260,20 +260,20 @@
 
 <p>打开 ingWizard 的 Options 窗口，把 Gnu 工具链 和 Nim 两个页面上的信息补充完整。</p>
 
-<p>推荐 <code class="highlighter-rouge">Visual Studio Code</code> 作为代码编辑器，它的 Nim 插件可以实现语法高亮、补全、查错等功能。</p>
+<p>推荐 <code class="language-plaintext highlighter-rouge">Visual Studio Code</code> 作为代码编辑器，它的 Nim 插件可以实现语法高亮、补全、查错等功能。</p>
 
 <h2 id="创建第一个-nim-项目">创建第一个 Nim 项目</h2>
 
-<p>打开 ingWizard 的项目向导，在 <code class="highlighter-rouge">Develpment Tool</code> 页面选择 <code class="highlighter-rouge">Nim + Gnu Toolchain</code>。
+<p>打开 ingWizard 的项目向导，在 <code class="language-plaintext highlighter-rouge">Develpment Tool</code> 页面选择 <code class="language-plaintext highlighter-rouge">Nim + Gnu Toolchain</code>。
 与 C 项目一样，ingWizard 图形界面也可以为 Nim 项目创建蓝牙广播和 GATT Profile 数据。
-SDK 为 Nim 项目提供了一个名为 <code class="highlighter-rouge">btdatabuilder</code> 的模块，这个模块使用了 Nim 的元编程特性，
+SDK 为 Nim 项目提供了一个名为 <code class="language-plaintext highlighter-rouge">btdatabuilder</code> 的模块，这个模块使用了 Nim 的元编程特性，
 可以通过代码便捷地创建这些数据。为演示该模块的使用，我们选择使用代码创建蓝牙广播和
 GATT Profile 数据：</p>
 
 <p><img src="/user_guide/img/ch1-nim-by-code.png" alt="" /></p>
 
 <p>一直点击“Next”直至新项目创建完成。用 Visual Studio Code 或者其它编辑器打开新项目里的
-<code class="highlighter-rouge">profile.nim</code> 文件。</p>
+<code class="language-plaintext highlighter-rouge">profile.nim</code> 文件。</p>
 
 <h2 id="创建广播数据">创建广播数据</h2>
 
@@ -292,7 +292,7 @@ GATT Profile 数据：</p>
 
 <p>注：上述 Major/Minor 为0，仅供演示用。</p>
 
-<p>上面的代码在编译时会被 Nim 内置的虚拟机执行，得出广播数据（一个数组）并存储在 <code class="highlighter-rouge">advData</code> 里。</p>
+<p>上面的代码在编译时会被 Nim 内置的虚拟机执行，得出广播数据（一个数组）并存储在 <code class="language-plaintext highlighter-rouge">advData</code> 里。</p>
 
 <h2 id="友商对比">友商对比</h2>
 
@@ -306,8 +306,8 @@ GATT Profile 数据：</p>
 
     <ol>
       <li>构造一个数组，写入 iBeacon 数据</li>
-      <li>把广播的数据项填写到 <code class="highlighter-rouge">ble_advdata_t</code></li>
-      <li>调用 <code class="highlighter-rouge">ble_advdata_encode</code> 函数生成完整的广播数据（也即上面例子里的 <code class="highlighter-rouge">advData</code>）</li>
+      <li>把广播的数据项填写到 <code class="language-plaintext highlighter-rouge">ble_advdata_t</code></li>
+      <li>调用 <code class="language-plaintext highlighter-rouge">ble_advdata_encode</code> 函数生成完整的广播数据（也即上面例子里的 <code class="language-plaintext highlighter-rouge">advData</code>）</li>
     </ol>
 
     <p>这些流程跑下来，得到的广播数据是固定不变的。
@@ -332,9 +332,9 @@ GATT Profile 数据：</p>
 
 <p><img src="../img/nim_profile_pad.png" alt="" /></p>
 
-<p>上面的代码由 Nim 转译为 C 后，完整的 Profile 数据被存储在 <code class="highlighter-rouge">profileData</code> 里，
-并用常量<code class="highlighter-rouge">HANDLE_BATTERY_LEVEL</code> 表示电池电量指示属性的句柄（handle），
-用常量 <code class="highlighter-rouge">HANDLE_BATTERY_LEVEL_OFFSET</code> 表示电量数值在 <code class="highlighter-rouge">profileData</code> 里的字节偏移。</p>
+<p>上面的代码由 Nim 转译为 C 后，完整的 Profile 数据被存储在 <code class="language-plaintext highlighter-rouge">profileData</code> 里，
+并用常量<code class="language-plaintext highlighter-rouge">HANDLE_BATTERY_LEVEL</code> 表示电池电量指示属性的句柄（handle），
+用常量 <code class="language-plaintext highlighter-rouge">HANDLE_BATTERY_LEVEL_OFFSET</code> 表示电量数值在 <code class="language-plaintext highlighter-rouge">profileData</code> 里的字节偏移。</p>
 
 <p>这里编译时生成的变量、常量在代码里可以“正常”使用。比如创建一个任务周期性地随机修改电量数值：</p>
 
@@ -344,12 +344,12 @@ GATT Profile 数据：</p>
 
 <ul>
   <li>
-    <p>使用 <code class="highlighter-rouge">C</code> 标准库提供的伪随机数函数</p>
+    <p>使用 <code class="language-plaintext highlighter-rouge">C</code> 标准库提供的伪随机数函数</p>
 
     <p><img src="../img/nim_rand_c_pad.png" alt="" /></p>
   </li>
   <li>
-    <p>使用 <code class="highlighter-rouge">Nim</code> 内置的伪随机数函数</p>
+    <p>使用 <code class="language-plaintext highlighter-rouge">Nim</code> 内置的伪随机数函数</p>
 
     <p><img src="../img/nim_rand_builtin_pad.png" alt="" /></p>
   </li>
@@ -370,7 +370,7 @@ GATT Profile 数据：</p>
   <li>
     <p>N 厂</p>
 
-    <p>同样是运行时生成，需要绕来绕去地调用 <code class="highlighter-rouge">xxx_service_add</code>、<code class="highlighter-rouge">xxx_characteristics_add</code> 等一系列函数。</p>
+    <p>同样是运行时生成，需要绕来绕去地调用 <code class="language-plaintext highlighter-rouge">xxx_service_add</code>、<code class="language-plaintext highlighter-rouge">xxx_characteristics_add</code> 等一系列函数。</p>
   </li>
   <li>
     <p>T 厂</p>
@@ -383,9 +383,9 @@ GATT Profile 数据：</p>
 
 <h2 id="编译">编译</h2>
 
-<p>ingWizard 自动为项目创建了 <code class="highlighter-rouge">makefile</code>，只需要在输入 <code class="highlighter-rouge">make</code> 命令即可完成所有编译步骤。</p>
+<p>ingWizard 自动为项目创建了 <code class="language-plaintext highlighter-rouge">makefile</code>，只需要在输入 <code class="language-plaintext highlighter-rouge">make</code> 命令即可完成所有编译步骤。</p>
 
-<p><code class="highlighter-rouge">makefile</code> 文件里只包含了项目的核心设置，内容简洁，便于修改。</p>
+<p><code class="language-plaintext highlighter-rouge">makefile</code> 文件里只包含了项目的核心设置，内容简洁，便于修改。</p>
 
 <h2 id="为什么引入-nim">为什么引入 Nim？</h2>
 

@@ -271,15 +271,15 @@
  Central 角色的设备从链路层角度看又扮演了 master 角色。</p>
 
 <p>INGChips 918xx 及 SDK 全面支持各种角色各种状态并发。
-下面简要介绍 SDK 中内置的 <code class="highlighter-rouge">smart_meter</code> 示例的开发过程。<code class="highlighter-rouge">smart_meter</code> 作为中心设备，可以连接最多四个外围设备（四个 <code class="highlighter-rouge">thermo_ota</code> 温度计）；作为外围设备，
-可与手机连接并将收集到的温度数据传输到手机。此外，<code class="highlighter-rouge">smart_meter</code> 通过 UART 口接受
+下面简要介绍 SDK 中内置的 <code class="language-plaintext highlighter-rouge">smart_meter</code> 示例的开发过程。<code class="language-plaintext highlighter-rouge">smart_meter</code> 作为中心设备，可以连接最多四个外围设备（四个 <code class="language-plaintext highlighter-rouge">thermo_ota</code> 温度计）；作为外围设备，
+可与手机连接并将收集到的温度数据传输到手机。此外，<code class="language-plaintext highlighter-rouge">smart_meter</code> 通过 UART 口接受
 上位机的控制，可以设置各温度计的地址、控制程序的启动等。</p>
 
 <p><img src="../img/smart_meter.png" width="80%" /></p>
 
-<p><code class="highlighter-rouge">smart_meter</code> 与手机的连接使用了一个自定义的 GATT 服务，通过这个服务在手机和蓝牙设备之间建立了
-一个基于字符串的输入、输出通道。<code class="highlighter-rouge">smart_meter</code> 使用输出通道传输温度数据。有关这个自定义服务的使用
-方法可参考 <code class="highlighter-rouge">peripheral_console</code> 示例。这个例子演示了如何利用这个服务实现简单的“空中”调试。</p>
+<p><code class="language-plaintext highlighter-rouge">smart_meter</code> 与手机的连接使用了一个自定义的 GATT 服务，通过这个服务在手机和蓝牙设备之间建立了
+一个基于字符串的输入、输出通道。<code class="language-plaintext highlighter-rouge">smart_meter</code> 使用输出通道传输温度数据。有关这个自定义服务的使用
+方法可参考 <code class="language-plaintext highlighter-rouge">peripheral_console</code> 示例。这个例子演示了如何利用这个服务实现简单的“空中”调试。</p>
 
 <h2 id="1-使用项目向导创建一个-peripheral-应用">1. 使用项目向导创建一个 Peripheral 应用</h2>
 
@@ -289,7 +289,7 @@
 
 <h2 id="2-定义从设备即温度计">2. 定义从设备（即温度计）</h2>
 
-<p>温度计设备用设备地址和 <code class="highlighter-rouge">id</code> 作为标识。每个设备占用一条独立的链路（<code class="highlighter-rouge">conn_handle</code>）。</p>
+<p>温度计设备用设备地址和 <code class="language-plaintext highlighter-rouge">id</code> 作为标识。每个设备占用一条独立的链路（<code class="language-plaintext highlighter-rouge">conn_handle</code>）。</p>
 
 <pre><code class="language-C">typedef struct slave_info
 {
@@ -306,12 +306,12 @@
 <h2 id="3-扫描并连接到温度计">3. 扫描并连接到温度计</h2>
 
 <p>调用两个 GAP 函数开始扫描，一旦扫描到待连接的温度计，就停止扫描并调用
-<code class="highlighter-rouge">gap_ext_create_connection</code> 发起连接。连接建立成功后，检查是否还有待连接的
+<code class="language-plaintext highlighter-rouge">gap_ext_create_connection</code> 发起连接。连接建立成功后，检查是否还有待连接的
 温度计，如果有，再次开始扫描。</p>
 
 <h2 id="4-发现服务">4. 发现服务</h2>
 
-<p>这部分功能需要调用一系列 <code class="highlighter-rouge">gatt_client</code> 模块的 API。这部分 API 的整体逻辑跟
+<p>这部分功能需要调用一系列 <code class="language-plaintext highlighter-rouge">gatt_client</code> 模块的 API。这部分 API 的整体逻辑跟
 Android、iOS 蓝牙 API 基本类似。</p>
 
 <h2 id="5-数据传输">5. 数据传输</h2>
@@ -351,8 +351,8 @@ end;
 
 <h2 id="8-测试">8. 测试</h2>
 
-<p>在上位机输入 <code class="highlighter-rouge">start</code> 命令启动 <code class="highlighter-rouge">smart_meter</code>，用手机连接到名为 ING Smart Meter 的设备，就可以看到
-四个温度计上报的温度了。随机重启几个温度计，可以看到 <code class="highlighter-rouge">smart_meter</code> 能够自动重新建立连接。</p>
+<p>在上位机输入 <code class="language-plaintext highlighter-rouge">start</code> 命令启动 <code class="language-plaintext highlighter-rouge">smart_meter</code>，用手机连接到名为 ING Smart Meter 的设备，就可以看到
+四个温度计上报的温度了。随机重启几个温度计，可以看到 <code class="language-plaintext highlighter-rouge">smart_meter</code> 能够自动重新建立连接。</p>
 
       </div><!-- .post-content -->
     </div><!-- .inner-md -->

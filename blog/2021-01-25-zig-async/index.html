@@ -226,12 +226,12 @@
     </header>
     <div class="inner-md outer">
       <div class="post-content">
-        <p><a href="https://ziglang.org/">Zig</a> 是一门新的、通用的编程语言。Zig 0.5.0 引入了 <code class="highlighter-rouge">async</code> 函数。
+        <p><a href="https://ziglang.org/">Zig</a> 是一门新的、通用的编程语言。Zig 0.5.0 引入了 <code class="language-plaintext highlighter-rouge">async</code> 函数。
 这一特性不依赖于任何操作系统特供的功能（线程、epoll），甚至都不需要在堆上分配内存。
-这意思着 <code class="highlighter-rouge">async</code> 函数可以直接在 ING918xx 这样的嵌入式系统上使用。</p>
+这意思着 <code class="language-plaintext highlighter-rouge">async</code> 函数可以直接在 ING918xx 这样的嵌入式系统上使用。</p>
 
 <p>以用 C 语言读取远端设备一个特性（Characteristics）的值为例，需要定义一个回调函数，
-在这个回调函数里响应 <code class="highlighter-rouge">GATT_EVENT_CHARACTERISTIC_VALUE_QUERY_RESULT</code> 事件获取特性的值。
+在这个回调函数里响应 <code class="language-plaintext highlighter-rouge">GATT_EVENT_CHARACTERISTIC_VALUE_QUERY_RESULT</code> 事件获取特性的值。
 代码如下：</p>
 
 <pre><code class="language-C">void read_characteristic_value_callback(uint8_t packet_type, uint16_t _,
@@ -264,26 +264,26 @@ gatt_client_read_value_of_characteristic_using_value_handle(
                 value_handle);
 </code></pre>
 
-<p>如果需要读取两个特性，需要在 <code class="highlighter-rouge">GATT_EVENT_QUERY_COMPLETE</code> 事件中再次调用
-<code class="highlighter-rouge">read_value_of_characteristic</code>。这时面临两个选择：</p>
+<p>如果需要读取两个特性，需要在 <code class="language-plaintext highlighter-rouge">GATT_EVENT_QUERY_COMPLETE</code> 事件中再次调用
+<code class="language-plaintext highlighter-rouge">read_value_of_characteristic</code>。这时面临两个选择：</p>
 
 <ol>
   <li>
-    <p>定义一个新的回调函数 <code class="highlighter-rouge">read_characteristic_value_callback_2</code></p>
+    <p>定义一个新的回调函数 <code class="language-plaintext highlighter-rouge">read_characteristic_value_callback_2</code></p>
 
-    <p>选择这条路，每读一个特性对应地定义一个回调函数，在每个回调函数的 <code class="highlighter-rouge">GATT_EVENT_QUERY_COMPLETE</code>
+    <p>选择这条路，每读一个特性对应地定义一个回调函数，在每个回调函数的 <code class="language-plaintext highlighter-rouge">GATT_EVENT_QUERY_COMPLETE</code>
  事件里触发下一个特性的读取操作。这一连串的回调、读取，代码高度类似，维护困难。</p>
   </li>
   <li>
-    <p>复用同一个回调函数 <code class="highlighter-rouge">read_characteristic_value_callback</code></p>
+    <p>复用同一个回调函数 <code class="language-plaintext highlighter-rouge">read_characteristic_value_callback</code></p>
 
     <p>这条路看起来虽然回调函数少了，但是回调函数需要识别当前正在读取哪个特性，再决定接下来需要读取哪个特性，逻辑复杂，代码杂乱。</p>
   </li>
 </ol>
 
-<p>Zig 为我们提供了又一种选择：<code class="highlighter-rouge">async</code>。
-借助一个辅助模块，可以实现下面的效果：<code class="highlighter-rouge">demo</code> 函数先发现 <code class="highlighter-rouge">GAP</code> 服务；
-如果服务存在，再发现其中的 <code class="highlighter-rouge">DEVICE_NAME</code> 特性；如果该特性存在，再读取特性的值。这三个
+<p>Zig 为我们提供了又一种选择：<code class="language-plaintext highlighter-rouge">async</code>。
+借助一个辅助模块，可以实现下面的效果：<code class="language-plaintext highlighter-rouge">demo</code> 函数先发现 <code class="language-plaintext highlighter-rouge">GAP</code> 服务；
+如果服务存在，再发现其中的 <code class="language-plaintext highlighter-rouge">DEVICE_NAME</code> 特性；如果该特性存在，再读取特性的值。这三个
 异步操作以同步执行的方式集中在一个函数里，逻辑清晰易懂。</p>
 
 <div class="language-zig highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="n">demo</span><span class="p">()</span> <span class="k">void</span> <span class="p">{</span>
@@ -307,7 +307,7 @@ gatt_client_read_value_of_characteristic_using_value_handle(
 
 <p>Zig 的“野心”之一是取代 C。与 SDK 已经支持的 <a href="/blog/sdk2.0_nim_zh/">Nim</a> 语言相比，
 Zig 与 C 完全无缝衔接，
-几行代码就可以把 <code class="highlighter-rouge">platform</code> 提供的各种 API 导入：</p>
+几行代码就可以把 <code class="language-plaintext highlighter-rouge">platform</code> 提供的各种 API 导入：</p>
 
 <div class="language-zig highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">pub</span> <span class="k">usingnamespace</span> <span class="nb">@cImport</span><span class="p">({</span>
     <span class="nb">@cInclude</span><span class="p">(</span><span class="s">"platform_api.h"</span><span class="p">);</span>
@@ -320,8 +320,8 @@ Zig 与 C 完全无缝衔接，
 <span class="p">});</span>
 </code></pre></div></div>
 
-<p><code class="highlighter-rouge">demo()</code> 函数用到的 <code class="highlighter-rouge">service_discoverer</code> 的实现如下。这段 Zig 代码与 C 版本相比，
-关键的区别就在于 Zig 引入的 <code class="highlighter-rouge">anyframe</code> 类型，及两个相应的操作 <code class="highlighter-rouge">suspend</code> 和 <code class="highlighter-rouge">resume</code>。</p>
+<p><code class="language-plaintext highlighter-rouge">demo()</code> 函数用到的 <code class="language-plaintext highlighter-rouge">service_discoverer</code> 的实现如下。这段 Zig 代码与 C 版本相比，
+关键的区别就在于 Zig 引入的 <code class="language-plaintext highlighter-rouge">anyframe</code> 类型，及两个相应的操作 <code class="language-plaintext highlighter-rouge">suspend</code> 和 <code class="language-plaintext highlighter-rouge">resume</code>。</p>
 
 <div class="language-zig highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">bool</span> <span class="n">session_complete</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
 
@@ -370,8 +370,8 @@ Zig 与 C 完全无缝衔接，
 <span class="p">};</span>
 </code></pre></div></div>
 
-<p>最后，由于 <code class="highlighter-rouge">demo()</code> 函数遵从 <code class="highlighter-rouge">.Async</code> 调用规范，无法被 C 世界所调用，需要一个“桥接”函数连通
-<code class="highlighter-rouge">.Async</code> 和 C：</p>
+<p>最后，由于 <code class="language-plaintext highlighter-rouge">demo()</code> 函数遵从 <code class="language-plaintext highlighter-rouge">.Async</code> 调用规范，无法被 C 世界所调用，需要一个“桥接”函数连通
+<code class="language-plaintext highlighter-rouge">.Async</code> 和 C：</p>
 
 <div class="language-zig highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span> <span class="n">the_frame</span><span class="p">:</span> <span class="nb">@Frame</span><span class="p">(</span><span class="n">demo</span><span class="p">)</span> <span class="o">=</span> <span class="k">undefined</span><span class="p">;</span>
 
@@ -380,11 +380,11 @@ Zig 与 C 完全无缝衔接，
 <span class="p">}</span>
 </code></pre></div></div>
 
-<p>这个 <code class="highlighter-rouge">zig_discover</code> 可以在 C 模块里直接调用。</p>
+<p>这个 <code class="language-plaintext highlighter-rouge">zig_discover</code> 可以在 C 模块里直接调用。</p>
 
 <p><strong>说明: </strong> 本文使用的是 Zig 主分支最新版本 (撰写本文时 0.8.0 尚未发布)，
 编译器在嵌入式系统交差编译方面仍存在一些问题，
-<code class="highlighter-rouge">@frameSize</code> 和 <code class="highlighter-rouge">@asyncCall</code> 的行为异常，上面的 <code class="highlighter-rouge">the_frame</code> 只能定义为全局变量。
+<code class="language-plaintext highlighter-rouge">@frameSize</code> 和 <code class="language-plaintext highlighter-rouge">@asyncCall</code> 的行为异常，上面的 <code class="language-plaintext highlighter-rouge">the_frame</code> 只能定义为全局变量。
 对使用 Zig 进行嵌入式开发感兴趣的读者可以<a href="https://github.com/ingchips/doc_release/releases/download/v1.0/zig_demo_0.1.zip">下载</a>示例代码。</p>
 
       </div><!-- .post-content -->

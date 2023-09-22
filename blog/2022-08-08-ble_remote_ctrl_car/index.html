@@ -267,41 +267,41 @@
 
 <h3 id="添加一个customize-service">添加一个Customize Service</h3>
 
-<p>在创建项目之前，点击 <code class="highlighter-rouge">ingWizard</code> 上边栏中的 <code class="highlighter-rouge">Customize Service</code> 按钮，打开 <code class="highlighter-rouge">Manage Customize Service</code>：</p>
+<p>在创建项目之前，点击 <code class="language-plaintext highlighter-rouge">ingWizard</code> 上边栏中的 <code class="language-plaintext highlighter-rouge">Customize Service</code> 按钮，打开 <code class="language-plaintext highlighter-rouge">Manage Customize Service</code>：</p>
 
 <p><img src="../img/car_imag0_1.png" alt="图片" /></p>
 
-<p>点击 <code class="highlighter-rouge">Add Service</code> 创建一个新的自定义服务，将 Name 填写为 <code class="highlighter-rouge">Car Control</code>，Type 填写为 <code class="highlighter-rouge">com.ingchips.service.car_control</code>，
+<p>点击 <code class="language-plaintext highlighter-rouge">Add Service</code> 创建一个新的自定义服务，将 Name 填写为 <code class="language-plaintext highlighter-rouge">Car Control</code>，Type 填写为 <code class="language-plaintext highlighter-rouge">com.ingchips.service.car_control</code>，
 点击 <em>Generate</em> 随机生成服务 UUID 或者按照参照格式自行填写即可。</p>
 
 <p><img src="../img/car_imag0_2.png" alt="图片" /></p>
 
-<p>需要添加一个特征，点击<code class="highlighter-rouge">Characteristics</code>右侧的 <em>Add</em> 按钮，将 Type 改为<code class="highlighter-rouge">com.ingchips.Charateristc.input</code>，UUID 的生成的方法与上述方法一致。</p>
+<p>需要添加一个特征，点击<code class="language-plaintext highlighter-rouge">Characteristics</code>右侧的 <em>Add</em> 按钮，将 Type 改为<code class="language-plaintext highlighter-rouge">com.ingchips.Charateristc.input</code>，UUID 的生成的方法与上述方法一致。</p>
 
 <p><img src="../img/car_imag0_3.png" alt="图片" /></p>
 
-<p>点击 <em>OK</em> 按钮返回至特征创建的界面，勾选 <code class="highlighter-rouge">writeWithoutResponse</code> 和 <code class="highlighter-rouge">dynamic</code> 属性，至此，自定义服务创建完毕。我们可以新建项目了！</p>
+<p>点击 <em>OK</em> 按钮返回至特征创建的界面，勾选 <code class="language-plaintext highlighter-rouge">writeWithoutResponse</code> 和 <code class="language-plaintext highlighter-rouge">dynamic</code> 属性，至此，自定义服务创建完毕。我们可以新建项目了！</p>
 
 <p><img src="../img/car_imag0_4.png" alt="图片" /></p>
 
 <h3 id="设置广播数据">设置广播数据</h3>
 
-<p>蓝牙小车的广播数据包含 <code class="highlighter-rouge">0x01 - «Flags»</code> 和 <code class="highlighter-rouge">0x07 - «Complete List of 128-bit Service Class UUID»</code> 两项：</p>
+<p>蓝牙小车的广播数据包含 <code class="language-plaintext highlighter-rouge">0x01 - «Flags»</code> 和 <code class="language-plaintext highlighter-rouge">0x07 - «Complete List of 128-bit Service Class UUID»</code> 两项：</p>
 
 <ol>
   <li>
     <p>Flags</p>
 
-    <p>值固定为 <code class="highlighter-rouge">0x06</code>，也即置位两个bit，LE General Discoverable Mode
- &amp; BR/EDR Not Supported。用广播数据编辑器添加点击 <code class="highlighter-rouge">0x01 - «Flags»</code>，
- 勾选 <code class="highlighter-rouge">LE General Discoverable Mode</code> 和 <code class="highlighter-rouge">BR/EDR Not Supported</code>。</p>
+    <p>值固定为 <code class="language-plaintext highlighter-rouge">0x06</code>，也即置位两个bit，LE General Discoverable Mode
+ &amp; BR/EDR Not Supported。用广播数据编辑器添加点击 <code class="language-plaintext highlighter-rouge">0x01 - «Flags»</code>，
+ 勾选 <code class="language-plaintext highlighter-rouge">LE General Discoverable Mode</code> 和 <code class="language-plaintext highlighter-rouge">BR/EDR Not Supported</code>。</p>
 
     <p><img src="../img/car_imag1.png" alt="" /></p>
   </li>
   <li>
     <p>Complete List of 128-bit Service Class UUID</p>
 
-    <p>勾选 <code class="highlighter-rouge">Edit Raw Data</code>，然后点击<code class="highlighter-rouge">0x07 - «Complete List of 128-bit Service Class UUID»</code>，勾选自定义的<code class="highlighter-rouge">Car Control</code>，
+    <p>勾选 <code class="language-plaintext highlighter-rouge">Edit Raw Data</code>，然后点击<code class="language-plaintext highlighter-rouge">0x07 - «Complete List of 128-bit Service Class UUID»</code>，勾选自定义的<code class="language-plaintext highlighter-rouge">Car Control</code>，
  点击 <em>Apply</em> 即可在右侧边栏看到输入的 UUID，最后点击 <em>OK</em> 保存。</p>
 
     <p><img src="../img/car_imag2.png" alt="" /></p>
@@ -311,14 +311,14 @@
 <h3 id="建立gatt配置文件">建立GATT配置文件</h3>
 
 <p>返回 <em>peripheral Setup</em> 页面，单击 <em>Setup ATT database . . .</em> 打开 GATT 配置编辑器。添加两个服务，
-分别是 <code class="highlighter-rouge">SIG Service</code> 中的 <code class="highlighter-rouge">General Access(0x1800)</code> 和自定义的 <code class="highlighter-rouge">Car Control</code>。</p>
+分别是 <code class="language-plaintext highlighter-rouge">SIG Service</code> 中的 <code class="language-plaintext highlighter-rouge">General Access(0x1800)</code> 和自定义的 <code class="language-plaintext highlighter-rouge">Car Control</code>。</p>
 
 <p>首先，删除 General Access Service 中除了 Device Name of General Access 特征之外的所有特征。接下来，编辑特性值 Device Name of General Access：
-右键单击特征，选择 <code class="highlighter-rouge">Edit String Value . . .</code> 菜单，并设置值为 <code class="highlighter-rouge">bleremotectrlcar</code>;</p>
+右键单击特征，选择 <code class="language-plaintext highlighter-rouge">Edit String Value . . .</code> 菜单，并设置值为 <code class="language-plaintext highlighter-rouge">bleremotectrlcar</code>;</p>
 
 <p><img src="../img/car_imag3.png" alt="" /></p>
 
-<p>添加 <code class="highlighter-rouge">Customize Service</code> 中的服务，需要在 <code class="highlighter-rouge">Add Service</code> 按钮的下拉菜单中选择 <code class="highlighter-rouge">Customize Service</code>，并添加 “Car Control”，该服务的特征值我们不需要做修改，点击 OK 保存配置。</p>
+<p>添加 <code class="language-plaintext highlighter-rouge">Customize Service</code> 中的服务，需要在 <code class="language-plaintext highlighter-rouge">Add Service</code> 按钮的下拉菜单中选择 <code class="language-plaintext highlighter-rouge">Customize Service</code>，并添加 “Car Control”，该服务的特征值我们不需要做修改，点击 OK 保存配置。</p>
 
 <p><img src="../img/car_imag4.png" alt="图片" /></p>
 
@@ -332,7 +332,7 @@
 
 <h4 id="添加基本服务代码">添加基本服务代码</h4>
 
-<p>打开项目，在 <em>profile.c</em> 文件中我们分别创建连接句柄 <code class="highlighter-rouge">handle_send</code> 和信号量 <code class="highlighter-rouge">notify_enable</code>:</p>
+<p>打开项目，在 <em>profile.c</em> 文件中我们分别创建连接句柄 <code class="language-plaintext highlighter-rouge">handle_send</code> 和信号量 <code class="language-plaintext highlighter-rouge">notify_enable</code>:</p>
 
 <pre><code class="language-C">static hci_con_handle_t handle_send = 0;
 static uint8_t notify_enable = 0;
@@ -351,7 +351,7 @@ static uint8_t notify_enable = 0;
 }
 </code></pre>
 
-<p>接着找到 <code class="highlighter-rouge">user_packet_handler</code> 函数，我们能看到一个名为<code class="highlighter-rouge">HCI_SUBEVENT_LE_ENHANCED_CONNECTION_COMPLETE</code>的连接事件，在每次建立连接完毕之后就会触发该事件：</p>
+<p>接着找到 <code class="language-plaintext highlighter-rouge">user_packet_handler</code> 函数，我们能看到一个名为<code class="language-plaintext highlighter-rouge">HCI_SUBEVENT_LE_ENHANCED_CONNECTION_COMPLETE</code>的连接事件，在每次建立连接完毕之后就会触发该事件：</p>
 
 <pre><code class="language-C">case HCI_EVENT_LE_META:
     switch (hci_event_le_meta_get_subevent_code(packet))
@@ -367,7 +367,7 @@ static uint8_t notify_enable = 0;
     break;
 </code></pre>
 
-<p>在该事件的数据包中，我们可以获取到 <em>Central</em> 设备发送的连接请求数据包，通过解析后可以获得其对应的连接间隔以及发送窗口，我们创建 <code class="highlighter-rouge">hint_ce_len</code> 函数，在函数内部我们将窗口大小的值通过 <code class="highlighter-rouge">ll_hint_on_ce_len</code> 上报给链路层，方便其做任务调度。</p>
+<p>在该事件的数据包中，我们可以获取到 <em>Central</em> 设备发送的连接请求数据包，通过解析后可以获得其对应的连接间隔以及发送窗口，我们创建 <code class="language-plaintext highlighter-rouge">hint_ce_len</code> 函数，在函数内部我们将窗口大小的值通过 <code class="language-plaintext highlighter-rouge">ll_hint_on_ce_len</code> 上报给链路层，方便其做任务调度。</p>
 
 <pre><code class="language-C">static void hint_ce_len(uint16_t interval)
 {
@@ -377,7 +377,7 @@ static uint8_t notify_enable = 0;
 }
 </code></pre>
 
-<p>因此我们将<code class="highlighter-rouge">HCI_SUBEVENT_LE_ENHANCED_CONNECTION_COMPLETE</code>事件中的代码修改为：</p>
+<p>因此我们将<code class="language-plaintext highlighter-rouge">HCI_SUBEVENT_LE_ENHANCED_CONNECTION_COMPLETE</code>事件中的代码修改为：</p>
 
 <pre><code class="language-C">case HCI_SUBBEVENT_LE_ENHANCED_CONNECTION_COMPLETE:
     {
@@ -390,7 +390,7 @@ static uint8_t notify_enable = 0;
     break;
 </code></pre>
 
-<p>连接建立完毕后，我们还需要获取并检查连接参数，故添加一个名为 <code class="highlighter-rouge">HCI_SUBEVENT_LE_CONNECTION_UPDATE_COMPLETE</code> 的事件。</p>
+<p>连接建立完毕后，我们还需要获取并检查连接参数，故添加一个名为 <code class="language-plaintext highlighter-rouge">HCI_SUBEVENT_LE_CONNECTION_UPDATE_COMPLETE</code> 的事件。</p>
 
 <h3 id="驱动电机控制">驱动电机控制</h3>
 
@@ -404,7 +404,7 @@ static uint8_t notify_enable = 0;
 #define PIN_DRIVE     7     //GPIO_7
 </code></pre>
 
-<p>下车的驱动我们采取的是固定频率的 PWM 波，所以我们定义函数 <code class="highlighter-rouge">set_freq0_drive</code> 如下所示：</p>
+<p>下车的驱动我们采取的是固定频率的 PWM 波，所以我们定义函数 <code class="language-plaintext highlighter-rouge">set_freq0_drive</code> 如下所示：</p>
 
 <pre><code class="language-C">void set_freq0_drive(uint8_t channel_index, uint16_t freq)
 {
@@ -426,8 +426,8 @@ static uint8_t notify_enable = 0;
 }
 </code></pre>
 
-<p>直流电机的速度通常与 PWM 波的占空比成正相关，所以，如果需要调整速度，只需要修改 PWM 的占空比。通过上述的代码，我们可以产生频率为 <code class="highlighter-rouge">freq</code>，
-占空比为 50% 的 <code class="highlighter-rouge">PWM</code>波，通过调节函数 <code class="highlighter-rouge">PWM_SetHighThreshold</code> 的第三个参数可控制占空比，即伪代码 <code class="highlighter-rouge">PWM_SetHighThreshold(channel_index, 0, freq * (1 - 占空比))</code>。</p>
+<p>直流电机的速度通常与 PWM 波的占空比成正相关，所以，如果需要调整速度，只需要修改 PWM 的占空比。通过上述的代码，我们可以产生频率为 <code class="language-plaintext highlighter-rouge">freq</code>，
+占空比为 50% 的 <code class="language-plaintext highlighter-rouge">PWM</code>波，通过调节函数 <code class="language-plaintext highlighter-rouge">PWM_SetHighThreshold</code> 的第三个参数可控制占空比，即伪代码 <code class="language-plaintext highlighter-rouge">PWM_SetHighThreshold(channel_index, 0, freq * (1 - 占空比))</code>。</p>
 
 <h4 id="驱动轮方向控制">驱动轮方向控制</h4>
 
@@ -460,7 +460,7 @@ static uint8_t notify_enable = 0;
   </tbody>
 </table>
 
-<p>所以我们采用开发板上的两路 GPIO 分别作为 A(B)IN1、A(B)IN2 的输入。参考 SDK 中的其他例程对 GPIO 完成初始化相关设置之后，我们通过 <code class="highlighter-rouge">GIO_WriteValue</code> 函数将所需的值写入对应的 GPIO 即可，例如：</p>
+<p>所以我们采用开发板上的两路 GPIO 分别作为 A(B)IN1、A(B)IN2 的输入。参考 SDK 中的其他例程对 GPIO 完成初始化相关设置之后，我们通过 <code class="language-plaintext highlighter-rouge">GIO_WriteValue</code> 函数将所需的值写入对应的 GPIO 即可，例如：</p>
 
 <pre><code class="language-C">#define PIN_AIN1_BIN2 GIO_GPIO_12
 #define PIN_AIN2_BIN1 GIO_GPIO_13
@@ -510,7 +510,7 @@ GIO_WiterValue(PIN_AIN2_BIN1, 0);
   </tbody>
 </table>
 
-<p>通过前面的分析，我们只需要给开发板的 <code class="highlighter-rouge">PWM</code> 配置参数，使其产生合适的波形，来驱动180°舵机即可。所以接下来我们来配置一下PWM。</p>
+<p>通过前面的分析，我们只需要给开发板的 <code class="language-plaintext highlighter-rouge">PWM</code> 配置参数，使其产生合适的波形，来驱动180°舵机即可。所以接下来我们来配置一下PWM。</p>
 
 <h4 id="pwm设置">PWM设置</h4>
 
@@ -520,14 +520,14 @@ GIO_WiterValue(PIN_AIN2_BIN1, 0);
 #define PIN_STEER   8  //GPIO_8
 </code></pre>
 
-<p>接下来我们就可以参照 SDK 中有关 PWM 的例程,编写一个能产生固定频率的 PWM 波生成函数 <code class="highlighter-rouge">set_freq0_steer</code>,具体的代码编写我们基本可以参照前面的
-<code class="highlighter-rouge">set_freq0_drive</code>。但是由于舵机有五个状态值，
-所以我们需要将函数修改为<code class="highlighter-rouge">set_freq0_steer(uint8_t channel_index, uint16_t freq, uint8_t steer_status)</code>，通过参数
-<code class="highlighter-rouge">steer_status</code> 将我们从遥控器发送的数据包中解算出的角度值传递给PWM波生成函数。</p>
+<p>接下来我们就可以参照 SDK 中有关 PWM 的例程,编写一个能产生固定频率的 PWM 波生成函数 <code class="language-plaintext highlighter-rouge">set_freq0_steer</code>,具体的代码编写我们基本可以参照前面的
+<code class="language-plaintext highlighter-rouge">set_freq0_drive</code>。但是由于舵机有五个状态值，
+所以我们需要将函数修改为<code class="language-plaintext highlighter-rouge">set_freq0_steer(uint8_t channel_index, uint16_t freq, uint8_t steer_status)</code>，通过参数
+<code class="language-plaintext highlighter-rouge">steer_status</code> 将我们从遥控器发送的数据包中解算出的角度值传递给PWM波生成函数。</p>
 
 <h2 id="蓝牙小车遥控器">蓝牙小车遥控器</h2>
 
-<p>在<code class="highlighter-rouge">ingWizard</code>里创建项目，在<code class="highlighter-rouge">Role of Your Device</code>页面里将设备角色设定为 <em>Central</em>，然后一路 Next 下去，对应的项目旧创建好了。</p>
+<p>在<code class="language-plaintext highlighter-rouge">ingWizard</code>里创建项目，在<code class="language-plaintext highlighter-rouge">Role of Your Device</code>页面里将设备角色设定为 <em>Central</em>，然后一路 Next 下去，对应的项目旧创建好了。</p>
 
 <p>在小车（Peripheral）端我们已经配置好了广播事件等的配置，所以遥控器（Central）端需要首先配置好扫描、连接等事件。</p>
 
@@ -538,11 +538,11 @@ GIO_WiterValue(PIN_AIN2_BIN1, 0);
 <pre><code class="language-C">const uint8_t UUID_SERV_CAR_CTRL[]    = {0x58,0xb6,0x31,0x20,0xf1,0xd3,0x46,0xf7,0xb8,0xa5,0x61,0x54,0x9c,0xbb,0xdf,0x72};
 </code></pre>
 
-<p>添加服务特征 <code class="highlighter-rouge">Command Input</code> 的UUID</p>
+<p>添加服务特征 <code class="language-plaintext highlighter-rouge">Command Input</code> 的UUID</p>
 <pre><code class="language-C">const uint8_t UUID_CHAR_CMD_IN[]   = {0x0b,0x33,0xc8,0xb4,0x0f,0xfc,0x49,0x17,0x83,0xd4,0xfb,0x67,0x72,0x60,0x58,0xdf};
 </code></pre>
 
-<p>打开项目，在 <em>profile.c</em> 里找到 <code class="highlighter-rouge">user_packet_handler</code>，我们可以看到一个名为 <code class="highlighter-rouge">BTSTACK_EVENT_STATE</code> 事件，在该事件中我们可以处理有关蓝牙协议栈的一些事件,这部分的代码在项目创建后自动生成，所以我们不需要进行修改：</p>
+<p>打开项目，在 <em>profile.c</em> 里找到 <code class="language-plaintext highlighter-rouge">user_packet_handler</code>，我们可以看到一个名为 <code class="language-plaintext highlighter-rouge">BTSTACK_EVENT_STATE</code> 事件，在该事件中我们可以处理有关蓝牙协议栈的一些事件,这部分的代码在项目创建后自动生成，所以我们不需要进行修改：</p>
 
 <pre><code class="language-C">case BTSTACK_EVENT_STATE:
       if (btstack_event_state_get_state(packet) != HCI_STATE_WORKING)
@@ -552,7 +552,7 @@ GIO_WiterValue(PIN_AIN2_BIN1, 0);
       break;
 </code></pre>
 
-<p>紧接着我们可以看到一个名为 <code class="highlighter-rouge">HCI_EVENT_LE_META</code> 的事件，我们找到其中的 <code class="highlighter-rouge">HCI_SUBEVENT_LE_EXTENDED_ADVERTISING_REPORT</code> 事件，并将代码修改为如下所示：</p>
+<p>紧接着我们可以看到一个名为 <code class="language-plaintext highlighter-rouge">HCI_EVENT_LE_META</code> 的事件，我们找到其中的 <code class="language-plaintext highlighter-rouge">HCI_SUBEVENT_LE_EXTENDED_ADVERTISING_REPORT</code> 事件，并将代码修改为如下所示：</p>
 
 <pre><code class="language-C">case HCI_SUBEVENT_LE_EXTENDED_ADVERTISING_REPORT:
     {
@@ -578,7 +578,7 @@ GIO_WiterValue(PIN_AIN2_BIN1, 0);
     }
 </code></pre>
 
-<p>连接建立完毕之后，我们需要通过匹配UUID去发现相关服务，所以我们需要创建 <code class="highlighter-rouge">HCI_SUBEVENT_LE_ENHANCE_CONNECTION_COMPLETE</code> 事件，并添加相关代码：</p>
+<p>连接建立完毕之后，我们需要通过匹配UUID去发现相关服务，所以我们需要创建 <code class="language-plaintext highlighter-rouge">HCI_SUBEVENT_LE_ENHANCE_CONNECTION_COMPLETE</code> 事件，并添加相关代码：</p>
 
 <pre><code class="language-C">const le_meta_event_enh_create_conn_complete_t *conn_complete
                 = decode_hci_le_meta_event(packet, le_meta_event_enh_create_conn_complete_t);
@@ -610,7 +610,7 @@ gatt_client_discover_primary_services_by_uuid128(service_discovery_callback, con
 }
 </code></pre>
 
-<p>添加特征发现回调函数，并通过<code class="highlighter-rouge">UUID_CHAR_CMD_IN</code>发现服务特征</p>
+<p>添加特征发现回调函数，并通过<code class="language-plaintext highlighter-rouge">UUID_CHAR_CMD_IN</code>发现服务特征</p>
 <pre><code class="language-C">void characteristic_discovery_callback(uint8_t packet_type, uint16_t _, const uint8_t *packet, uint16_t size)
 {
     switch (packet[0])
@@ -652,7 +652,7 @@ gatt_client_discover_primary_services_by_uuid128(service_discovery_callback, con
 }
 </code></pre>
 
-<p>但是考虑到连接可能不会一次性成功，每次连接失败后会触发<code class="highlighter-rouge">HCI_EVENT_DISCONNECTION_COMPLETE</code>事件，所以我们需要在该事件中添加如下代码，重新开启扫描：</p>
+<p>但是考虑到连接可能不会一次性成功，每次连接失败后会触发<code class="language-plaintext highlighter-rouge">HCI_EVENT_DISCONNECTION_COMPLETE</code>事件，所以我们需要在该事件中添加如下代码，重新开启扫描：</p>
 
 <pre><code class="language-C">reset_info();     //Initialize related parameters
 gap_set_ext_scan_enable(1, 0, 0, 0);  //start continuous scanning
@@ -664,9 +664,9 @@ gap_set_ext_scan_enable(1, 0, 0, 0);  //start continuous scanning
 
 <h4 id="数据采集">数据采集</h4>
 
-<p>ADC的配置我们可以参照<code class="highlighter-rouge">peripheral Battery</code>例程，并使用其 <em>profile.c</em> 文件中的 <code class="highlighter-rouge">read_adc(uint8_t channel)</code>函数进行数据采集。
-为了能够近乎实时地获取，我们需要创建 task，并在 task 内部的 <code class="highlighter-rouge">for</code> 循环调用 <code class="highlighter-rouge">read_adc</code>，因此我们在 <em>profile.c</em> 的 <code class="highlighter-rouge">setup_profile</code>
-函数中利用 <code class="highlighter-rouge">xTaskCreate</code> 函数创建 task：</p>
+<p>ADC的配置我们可以参照<code class="language-plaintext highlighter-rouge">peripheral Battery</code>例程，并使用其 <em>profile.c</em> 文件中的 <code class="language-plaintext highlighter-rouge">read_adc(uint8_t channel)</code>函数进行数据采集。
+为了能够近乎实时地获取，我们需要创建 task，并在 task 内部的 <code class="language-plaintext highlighter-rouge">for</code> 循环调用 <code class="language-plaintext highlighter-rouge">read_adc</code>，因此我们在 <em>profile.c</em> 的 <code class="language-plaintext highlighter-rouge">setup_profile</code>
+函数中利用 <code class="language-plaintext highlighter-rouge">xTaskCreate</code> 函数创建 task：</p>
 
 <pre><code class="language-C">    xTaskCreate(XYcordinates_adc_task,
                "x",
@@ -694,7 +694,7 @@ static void XYcordinates_adc_task(void *pdata)
 
 <h4 id="数据发送">数据发送</h4>
 
-<p>关于数据发送就比较简单了，我们按照自己的需求进行组帧，并通过 <code class="highlighter-rouge">gatt_client_write_value_of_characteristic_without_response</code> 函数进行发送。</p>
+<p>关于数据发送就比较简单了，我们按照自己的需求进行组帧，并通过 <code class="language-plaintext highlighter-rouge">gatt_client_write_value_of_characteristic_without_response</code> 函数进行发送。</p>
 
 <div class="note">
 <strong>注意:</strong> 本教程中只提供部分参考代码，实际开发可根据需求自行调整修改。开发板上还有三轴加速度计，感兴趣的朋友们还可以尝试着给遥控小车添加一个平衡功能。

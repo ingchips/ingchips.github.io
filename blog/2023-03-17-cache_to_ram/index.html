@@ -330,7 +330,7 @@
 
 <p>要像使用普通 RAM 一样自由使用，需要额外做一点准备工作：修改初始化文件。</p>
 
-<p>简便起见，我们用 C 语言编写 <code class="highlighter-rouge">init_memory</code> 函数，然后在初始化文件中调用这个无参数的函数。</p>
+<p>简便起见，我们用 C 语言编写 <code class="language-plaintext highlighter-rouge">init_memory</code> 函数，然后在初始化文件中调用这个无参数的函数。</p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">init_memory</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
 <span class="p">{</span>
@@ -338,7 +338,7 @@
 <span class="p">}</span>
 </code></pre></div></div>
 
-<p>打开 <code class="highlighter-rouge">startup_ing91600.s</code>，找到如下一段代码：</p>
+<p>打开 <code class="language-plaintext highlighter-rouge">startup_ing91600.s</code>，找到如下一段代码：</p>
 
 <pre><code class="language-asm">; Reset Handler
 Reset_Handler   PROC
@@ -352,7 +352,7 @@ Reset_Handler   PROC
                 MSR     PSP, R1
 </code></pre>
 
-<p>在执行 <code class="highlighter-rouge">scatter_load</code> 之前调用 <code class="highlighter-rouge">init_memory</code> 将 D_Cache 设置为 RAM。</p>
+<p>在执行 <code class="language-plaintext highlighter-rouge">scatter_load</code> 之前调用 <code class="language-plaintext highlighter-rouge">init_memory</code> 将 D_Cache 设置为 RAM。</p>
 
 <pre><code class="language-asm">                IMPORT  init_memory
 
@@ -398,7 +398,7 @@ Reset_Handler   PROC
     </ul>
   </li>
   <li>
-    <p>修改 <code class="highlighter-rouge">.sct</code> 文件</p>
+    <p>修改 <code class="language-plaintext highlighter-rouge">.sct</code> 文件</p>
   </li>
 </ul>
 
@@ -418,7 +418,7 @@ Reset_Handler   PROC
 
 <ol>
   <li>
-    <p>定义结构体 <code class="highlighter-rouge">Arena</code></p>
+    <p>定义结构体 <code class="language-plaintext highlighter-rouge">Arena</code></p>
 
     <pre><code class="language-C"> // 定义一个结构体，表示 Arena
  typedef struct arena {
@@ -431,7 +431,7 @@ Reset_Handler   PROC
     <p>实现两个接口</p>
 
     <ol>
-      <li>初始化函数：<code class="highlighter-rouge">arena_init</code></li>
+      <li>初始化函数：<code class="language-plaintext highlighter-rouge">arena_init</code></li>
     </ol>
 
     <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="kt">void</span> <span class="nf">arena_init</span><span class="p">(</span><span class="n">arena</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">block</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
@@ -441,7 +441,7 @@ Reset_Handler   PROC
 </code></pre></div>    </div>
 
     <ol>
-      <li>内存分配函数：<code class="highlighter-rouge">arena_alloc</code></li>
+      <li>内存分配函数：<code class="language-plaintext highlighter-rouge">arena_alloc</code></li>
     </ol>
 
     <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="c1">// 分配内存</span>

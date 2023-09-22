@@ -315,16 +315,16 @@
 
 <p>UART FIFO Mode Only方式是仅依赖于UART模块内部的FIFO（先进先出）缓冲区实现接收变长字节数据的方法。在这种方式下，CPU需要定期检查UART接收缓冲区并读取数据。</p>
 
-<p>假设FIFO的深度为<code class="highlighter-rouge">32</code>bytes，为了保证RX FIFO不溢出，单次接收到半满状态，即将<code class="highlighter-rouge">RXIFLSEL</code>设置为<code class="highlighter-rouge">16</code>bytes，同时使能UART的<strong>接收中断</strong>以及<strong>接收超时中断</strong>，至此完成配置，等待数据到来。</p>
+<p>假设FIFO的深度为<code class="language-plaintext highlighter-rouge">32</code>bytes，为了保证RX FIFO不溢出，单次接收到半满状态，即将<code class="language-plaintext highlighter-rouge">RXIFLSEL</code>设置为<code class="language-plaintext highlighter-rouge">16</code>bytes，同时使能UART的<strong>接收中断</strong>以及<strong>接收超时中断</strong>，至此完成配置，等待数据到来。</p>
 
-<p>接收数据时，每到达<code class="highlighter-rouge">16</code>bytes就会触发一次接收中断，在中断中读取16bytes数据，清除中断后继续接收数据，如此反复，尾部数据不足<code class="highlighter-rouge">16</code>bytes时，则会触发接收超时中断，在中断中读空FIFO，至此传输的数据接收完成，并将所有的数据打包发送给应用层去使用。</p>
+<p>接收数据时，每到达<code class="language-plaintext highlighter-rouge">16</code>bytes就会触发一次接收中断，在中断中读取16bytes数据，清除中断后继续接收数据，如此反复，尾部数据不足<code class="language-plaintext highlighter-rouge">16</code>bytes时，则会触发接收超时中断，在中断中读空FIFO，至此传输的数据接收完成，并将所有的数据打包发送给应用层去使用。</p>
 
 <h4 id="配置流程">配置流程</h4>
 
 <ol>
   <li>配置UART波特率，同时配置使能<strong>UART RX FIFO Mode</strong>，配置相应RXIFLSEL为0x10.</li>
-  <li>UART RX开始接收数据，<strong>CPU</strong>周期性收到UART模块的<strong>UARTRTINTR</strong>中断，则<strong>CPU</strong>进入中断处理程序。在中断处理程序里<strong>CPU</strong>需要把<strong>UART RX FIFO</strong>中数据读出处理，每次读出<code class="highlighter-rouge">16</code>bytes.</li>
-  <li>对于<strong>UART RX</strong>尾部数据，直到<strong>CPU</strong>收到UART模块的<strong>UARTRTINTR</strong>中断，则<strong>CPU</strong>进入中断处理程序。在中断处理程序里<strong>CPU</strong>需要把UART RX FIFO中的剩余数据读出，应该是<code class="highlighter-rouge">3-6</code>bytes，具体方法是先读出<code class="highlighter-rouge">3</code>bytes, 然后查询UART模块的RX FIFO空标志位<strong>RXFE</strong>，直至把<strong>UART RX FIFO</strong>读空。</li>
+  <li>UART RX开始接收数据，<strong>CPU</strong>周期性收到UART模块的<strong>UARTRTINTR</strong>中断，则<strong>CPU</strong>进入中断处理程序。在中断处理程序里<strong>CPU</strong>需要把<strong>UART RX FIFO</strong>中数据读出处理，每次读出<code class="language-plaintext highlighter-rouge">16</code>bytes.</li>
+  <li>对于<strong>UART RX</strong>尾部数据，直到<strong>CPU</strong>收到UART模块的<strong>UARTRTINTR</strong>中断，则<strong>CPU</strong>进入中断处理程序。在中断处理程序里<strong>CPU</strong>需要把UART RX FIFO中的剩余数据读出，应该是<code class="language-plaintext highlighter-rouge">3-6</code>bytes，具体方法是先读出<code class="language-plaintext highlighter-rouge">3</code>bytes, 然后查询UART模块的RX FIFO空标志位<strong>RXFE</strong>，直至把<strong>UART RX FIFO</strong>读空。</li>
 </ol>
 
 <h3 id="uart-fifo-mode--dma方式">UART FIFO Mode + DMA方式</h3>
@@ -333,14 +333,14 @@
 
 <p>UART FIFO Mode + DMA方式是通过使用DMA（直接存储器访问）控制器并结合UART模块内部的FIFO实现UART接收变长字节数据的方法。DMA控制器可以在不占用CPU资源的前提下，将接收到的数据直接传输到指定的内存地址。但是由于ING916XX系列的DMA不支持DMA LEN，而是设置固定长度，所以我们需要开启UART的接收超时中断，等待数据到来。</p>
 
-<p>接收数据时，DMA会自动的将UART中的数据按照最小单元<code class="highlighter-rouge">SrcBurstSize</code>将数据循环读出，直到达到最大值<code class="highlighter-rouge">TranSize</code>,所以我们需要随时更新<code class="highlighter-rouge">TranSize</code>以保证数据持续接收，尾部数据不足<code class="highlighter-rouge">SrcBurstSize</code>时，则会触发接收超时中断，在中断中读空FIFO，至此传输的数据接收完成，并将所有的数据打包发送给应用层去使用。</p>
+<p>接收数据时，DMA会自动的将UART中的数据按照最小单元<code class="language-plaintext highlighter-rouge">SrcBurstSize</code>将数据循环读出，直到达到最大值<code class="language-plaintext highlighter-rouge">TranSize</code>,所以我们需要随时更新<code class="language-plaintext highlighter-rouge">TranSize</code>以保证数据持续接收，尾部数据不足<code class="language-plaintext highlighter-rouge">SrcBurstSize</code>时，则会触发接收超时中断，在中断中读空FIFO，至此传输的数据接收完成，并将所有的数据打包发送给应用层去使用。</p>
 
 <h4 id="配置流程-1">配置流程</h4>
 
 <ol>
   <li>配置UART波特率，同时配置使能UART RX FIFO Mode，配置相应RXIFLSEL为0x7（推荐值）。</li>
   <li>配置DMA模块 其中一个channel配合UART RX handshake工作模式，配置SrcBurstSize为0x2（推荐值）。</li>
-  <li>配置完UART和DMA模块后，UART RX开始接收数据，直到CPU收到UART模块的<strong>UARTRTINTR</strong>中断，则CPU进入中断处理程序。在中断处理程序里<strong>CPU</strong>需要把<strong>UART RX FIFO</strong>中的剩余数据读出，应该是<code class="highlighter-rouge">3-6</code>bytes，具体方法是先读出3 bytes, 然后查询UART模块的RX FIFO空标志位<strong>RXFE</strong>，直至把<strong>UART RX FIFO</strong>读空。<strong>同时在中断处理程序里更新DMA配置数值，以便进行下一次UART变长数据接收。</strong></li>
+  <li>配置完UART和DMA模块后，UART RX开始接收数据，直到CPU收到UART模块的<strong>UARTRTINTR</strong>中断，则CPU进入中断处理程序。在中断处理程序里<strong>CPU</strong>需要把<strong>UART RX FIFO</strong>中的剩余数据读出，应该是<code class="language-plaintext highlighter-rouge">3-6</code>bytes，具体方法是先读出3 bytes, 然后查询UART模块的RX FIFO空标志位<strong>RXFE</strong>，直至把<strong>UART RX FIFO</strong>读空。<strong>同时在中断处理程序里更新DMA配置数值，以便进行下一次UART变长数据接收。</strong></li>
 </ol>
 
 <h3 id="总结">总结</h3>

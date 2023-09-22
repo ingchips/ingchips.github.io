@@ -278,22 +278,22 @@
 </ul>
 
 <p>在 Wizard 里右键单击一个项目，从快捷菜单中选择“Edit with Cube…”即可打开 Cube。
-Cube 生成的代码保存在项目里的 <code class="highlighter-rouge">/data/setup_soc.cgen</code> 文件内，Cube 本身的数据保存在
- <code class="highlighter-rouge">/data/cube_SERIES.dat</code> 文件内，这里 <em>SERIES</em> 为芯片系列。</p>
+Cube 生成的代码保存在项目里的 <code class="language-plaintext highlighter-rouge">/data/setup_soc.cgen</code> 文件内，Cube 本身的数据保存在
+ <code class="language-plaintext highlighter-rouge">/data/cube_SERIES.dat</code> 文件内，这里 <em>SERIES</em> 为芯片系列。</p>
 
 <p>要使用 Cube 生成的代码，只需 3 步：</p>
 
 <ol>
   <li>
-    <p>在 <code class="highlighter-rouge">main.c</code> 里包含 <code class="highlighter-rouge">../data/setup_soc.cgen</code>；</p>
+    <p>在 <code class="language-plaintext highlighter-rouge">main.c</code> 里包含 <code class="language-plaintext highlighter-rouge">../data/setup_soc.cgen</code>；</p>
 
-    <p>这行代码需要在 <code class="highlighter-rouge">#include "ingsoc.h"</code> 之后。</p>
+    <p>这行代码需要在 <code class="language-plaintext highlighter-rouge">#include "ingsoc.h"</code> 之后。</p>
   </li>
   <li>
-    <p>在 <code class="highlighter-rouge">setup_peripheral</code> 函数里调用 <code class="highlighter-rouge">cube_setup_peripherals()</code></p>
+    <p>在 <code class="language-plaintext highlighter-rouge">setup_peripheral</code> 函数里调用 <code class="language-plaintext highlighter-rouge">cube_setup_peripherals()</code></p>
   </li>
   <li>
-    <p>在 <code class="highlighter-rouge">app_main</code> 函数的开头调用  <code class="highlighter-rouge">cube_soc_init()</code></p>
+    <p>在 <code class="language-plaintext highlighter-rouge">app_main</code> 函数的开头调用  <code class="language-plaintext highlighter-rouge">cube_soc_init()</code></p>
   </li>
 </ol>
 
@@ -343,8 +343,8 @@ Cube 生成的代码保存在项目里的 <code class="highlighter-rouge">/data/
 <span class="n">APB_PINCTRL</span><span class="o">-&gt;</span><span class="n">OUT_CTRL</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x00001522</span><span class="p">;</span> <span class="c1">// 0x00001547</span>
 </code></pre></div></div>
 
-<p>这是 Cube 对 <code class="highlighter-rouge">PINCTRL_SetPadMux(16, IO_SOURCE_PWM0_A)</code> 做了“计算”后得出的结果，
-显然比在芯片里执行 <code class="highlighter-rouge">PINCTRL_SetPadMux(16, IO_SOURCE_PWM0_A)</code> 效率更高。
+<p>这是 Cube 对 <code class="language-plaintext highlighter-rouge">PINCTRL_SetPadMux(16, IO_SOURCE_PWM0_A)</code> 做了“计算”后得出的结果，
+显然比在芯片里执行 <code class="language-plaintext highlighter-rouge">PINCTRL_SetPadMux(16, IO_SOURCE_PWM0_A)</code> 效率更高。
 这对于 ING916XX 系列为重要：因为 PINCTRL 配置需要查一张<a href="https://github.com/ingchips/ING918XX_SDK_SOURCE/blob/07ffc140a28b86dfeda95cc9ea1f560e2b5adeae/src/FWlib/peripheral_pinctrl.c#L265">复杂的表格</a>，每次睡眠醒来都需要重新配置，
 所以使用 Cube 既可以减小程序体积，对于降低功耗也有一定好处。</p>
 

@@ -254,7 +254,7 @@
   <li>[<strong>新增</strong>] Raw Packet Bare 模式 (extension) <span style="background:yellow">(<strong>6.7.0</strong>)</span></li>
 </ul>
 
-<p>通过 <code class="highlighter-rouge">ll_raw_packet_set_bare_mode</code> 启用 Bare 模式后，开发者可获得更多的自定义特性：指定带外频点、
+<p>通过 <code class="language-plaintext highlighter-rouge">ll_raw_packet_set_bare_mode</code> 启用 Bare 模式后，开发者可获得更多的自定义特性：指定带外频点、
 自定义 CRC、自定义数据白化等。</p>
 
 <ul>
@@ -302,19 +302,19 @@
 <h2 id="2-库函数">2. 库函数</h2>
 
 <ul>
-  <li>[<strong>新增</strong>] <code class="highlighter-rouge">platform_util.c</code> 模块 <span style="background:yellow">(<strong>6.7.0</strong>)</span></li>
+  <li>[<strong>新增</strong>] <code class="language-plaintext highlighter-rouge">platform_util.c</code> 模块 <span style="background:yellow">(<strong>6.7.0</strong>)</span></li>
 </ul>
 
-<p>使用本模块提供的函数可以提取 <code class="highlighter-rouge">platform.bin</code> 的版本号等信息。</p>
+<p>使用本模块提供的函数可以提取 <code class="language-plaintext highlighter-rouge">platform.bin</code> 的版本号等信息。</p>
 
 <ul>
-  <li>[<strong>修正</strong>] <code class="highlighter-rouge">gatt_client_util.c</code> 模块 <span style="background:yellow">(<strong>6.7.0</strong>)</span></li>
+  <li>[<strong>修正</strong>] <code class="language-plaintext highlighter-rouge">gatt_client_util.c</code> 模块 <span style="background:yellow">(<strong>6.7.0</strong>)</span></li>
 </ul>
 
 <p>修正了出错处理流程．</p>
 
 <ul>
-  <li>[<strong>更新</strong>] <code class="highlighter-rouge">power_ctrl.lib</code> <span style="background:yellow">(<strong>6.7.0</strong>)</span></li>
+  <li>[<strong>更新</strong>] <code class="language-plaintext highlighter-rouge">power_ctrl.lib</code> <span style="background:yellow">(<strong>6.7.0</strong>)</span></li>
 </ul>
 
 <p>微调了低功耗流程的相关参数。</p>
@@ -327,14 +327,14 @@
 的功能。具体使用方法见文末“Trace 到 Flash 的使用方法”。</p>
 
 <ul>
-  <li>[<strong>修正</strong>] <code class="highlighter-rouge">iic.c</code>: 写内存溢出  <span style="background:yellow">(<strong>6.7.1</strong>)</span></li>
+  <li>[<strong>修正</strong>] <code class="language-plaintext highlighter-rouge">iic.c</code>: 写内存溢出  <span style="background:yellow">(<strong>6.7.1</strong>)</span></li>
 </ul>
 
-<p><code class="highlighter-rouge">iic.c</code> 保存从 I2C 读取的数据时，“隐式”要求预留数据缓存区至 4 字节的边界。如果没有预留，会导致内存意外改写。
+<p><code class="language-plaintext highlighter-rouge">iic.c</code> 保存从 I2C 读取的数据时，“隐式”要求预留数据缓存区至 4 字节的边界。如果没有预留，会导致内存意外改写。
 本版本去掉了这个“隐式”要求。</p>
 
 <ul>
-  <li>[<strong>新增</strong>] <code class="highlighter-rouge">adc_cali.c</code>: ADC 校准  <span style="background:yellow">(<strong>6.7.2</strong>)</span></li>
+  <li>[<strong>新增</strong>] <code class="language-plaintext highlighter-rouge">adc_cali.c</code>: ADC 校准  <span style="background:yellow">(<strong>6.7.2</strong>)</span></li>
 </ul>
 
 <h2 id="3-示例">3. 示例</h2>
@@ -351,7 +351,7 @@ Arm Toolchain 兼容。</p>
 </div>
 
 <ul>
-  <li>[<strong>更新</strong>] <code class="highlighter-rouge">Central CTE</code> &amp; <code class="highlighter-rouge">Peripheral CTE</code>: 演示了私有无连接 AoA <span style="background:yellow">(<strong>6.7.0</strong>)</span></li>
+  <li>[<strong>更新</strong>] <code class="language-plaintext highlighter-rouge">Central CTE</code> &amp; <code class="language-plaintext highlighter-rouge">Peripheral CTE</code>: 演示了私有无连接 AoA <span style="background:yellow">(<strong>6.7.0</strong>)</span></li>
 </ul>
 
 <h2 id="4-工具">4. 工具</h2>
@@ -374,7 +374,7 @@ Arm Toolchain 兼容。</p>
     <ul>
       <li>Flash 数据导出：
         <ul>
-          <li>Python 脚本<code class="highlighter-rouge">flash_dump.py</code></li>
+          <li>Python 脚本<code class="language-plaintext highlighter-rouge">flash_dump.py</code></li>
           <li>Flash Downloader：Tools -&gt; Flash Dump</li>
         </ul>
       </li>
@@ -395,13 +395,13 @@ Arm Toolchain 兼容。</p>
   <li>
     <p>规划 Flash 空间</p>
 
-    <p>调用 <code class="highlighter-rouge">trace_flash_init</code> 时指定 Flash 空间。</p>
+    <p>调用 <code class="language-plaintext highlighter-rouge">trace_flash_init</code> 时指定 Flash 空间。</p>
   </li>
   <li>
     <p>确定 Trace 触发条件</p>
 
-    <p>由于 Flash 空间受限，可以在出现特定条件时通过 <code class="highlighter-rouge">trace_flash_enable</code> 时控制是否将数据写入 Flash。
-通过 <code class="highlighter-rouge">trace_flash_erase_all</code> 可以擦除用于存储 Trace 数据的 Flash 空间。</p>
+    <p>由于 Flash 空间受限，可以在出现特定条件时通过 <code class="language-plaintext highlighter-rouge">trace_flash_enable</code> 时控制是否将数据写入 Flash。
+通过 <code class="language-plaintext highlighter-rouge">trace_flash_erase_all</code> 可以擦除用于存储 Trace 数据的 Flash 空间。</p>
   </li>
   <li>
     <p>根据需要确定要抓取的 Trace 项目</p>
@@ -418,9 +418,9 @@ Arm Toolchain 兼容。</p>
 
 <ul>
   <li>
-    <p>使用 Python 3 脚本命令行：<code class="highlighter-rouge">python flash_dump.py com_port start_addr page_no file_name</code></p>
+    <p>使用 Python 3 脚本命令行：<code class="language-plaintext highlighter-rouge">python flash_dump.py com_port start_addr page_no file_name</code></p>
 
-    <p>比如：<code class="highlighter-rouge">python flash_dump.py COM3 0x44000 11 c:\temp\temp.bin</code></p>
+    <p>比如：<code class="language-plaintext highlighter-rouge">python flash_dump.py COM3 0x44000 11 c:\temp\temp.bin</code></p>
 
     <p>使芯片进入下载模式即可完成导出。</p>
   </li>

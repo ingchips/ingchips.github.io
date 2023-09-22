@@ -456,7 +456,7 @@
 <p>例如通过以下脚本可根据烧写次数配置产品的蓝牙设备地址：</p>
 
 <div class="language-pascal highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">const</span>
-  <span class="n">BD_ADDR_ADDR</span> <span class="p">=</span> <span class="p">$</span><span class="m">1</span><span class="p">;</span>
+  <span class="n">BD_ADDR_ADDR</span> <span class="p">=</span> <span class="mh">$1</span><span class="p">;</span>
 
 <span class="k">procedure</span> <span class="n">OnStartRun</span><span class="p">(</span><span class="k">const</span> <span class="n">BatchCounter</span><span class="p">:</span> <span class="kt">Integer</span><span class="p">;</span> <span class="k">var</span> <span class="n">Abort</span><span class="p">:</span> <span class="kt">Boolean</span><span class="p">);</span>
 <span class="k">begin</span>
@@ -467,9 +467,9 @@
 <span class="k">begin</span>
   <span class="c1">// Note that BinIndex counts from 1 (not 0), just as shown on GUI
 </span>  <span class="k">if</span> <span class="n">BinIndex</span> <span class="p">&lt;&gt;</span> <span class="m">2</span> <span class="k">then</span> <span class="k">Exit</span><span class="p">;</span>
-  <span class="n">Data</span><span class="p">[</span><span class="n">BD_ADDR_ADDR</span> <span class="p">+</span> <span class="m">0</span><span class="p">]</span> <span class="p">:=</span> <span class="n">BatchCounter</span> <span class="k">and</span> <span class="p">$</span><span class="n">FF</span><span class="p">;</span>
-  <span class="n">Data</span><span class="p">[</span><span class="n">BD_ADDR_ADDR</span> <span class="p">+</span> <span class="m">1</span><span class="p">]</span> <span class="p">:=</span> <span class="p">(</span><span class="n">BatchCounter</span> <span class="k">shr</span> <span class="m">8</span><span class="p">)</span> <span class="k">and</span> <span class="p">$</span><span class="n">FF</span><span class="p">;</span>
-  <span class="n">Data</span><span class="p">[</span><span class="n">BD_ADDR_ADDR</span> <span class="p">+</span> <span class="m">2</span><span class="p">]</span> <span class="p">:=</span> <span class="p">(</span><span class="n">BatchCounter</span> <span class="k">shr</span> <span class="m">8</span><span class="p">)</span> <span class="k">and</span> <span class="p">$</span><span class="n">FF</span><span class="p">;</span>
+  <span class="n">Data</span><span class="p">[</span><span class="n">BD_ADDR_ADDR</span> <span class="p">+</span> <span class="m">0</span><span class="p">]</span> <span class="p">:=</span> <span class="n">BatchCounter</span> <span class="k">and</span> <span class="mh">$FF</span><span class="p">;</span>
+  <span class="n">Data</span><span class="p">[</span><span class="n">BD_ADDR_ADDR</span> <span class="p">+</span> <span class="m">1</span><span class="p">]</span> <span class="p">:=</span> <span class="p">(</span><span class="n">BatchCounter</span> <span class="k">shr</span> <span class="m">8</span><span class="p">)</span> <span class="k">and</span> <span class="mh">$FF</span><span class="p">;</span>
+  <span class="n">Data</span><span class="p">[</span><span class="n">BD_ADDR_ADDR</span> <span class="p">+</span> <span class="m">2</span><span class="p">]</span> <span class="p">:=</span> <span class="p">(</span><span class="n">BatchCounter</span> <span class="k">shr</span> <span class="m">8</span><span class="p">)</span> <span class="k">and</span> <span class="mh">$FF</span><span class="p">;</span>
 <span class="k">end</span><span class="p">;</span>
 </code></pre></div></div>
 
@@ -509,9 +509,9 @@
 <ul>
   <li>保存 File/Save  或者快捷键 Ctrl+S</li>
   <li>退出 File/Quit 或者快捷键 Esc</li>
-  <li>通过 <code class="highlighter-rouge">import burner</code> 导入内置的 <code class="highlighter-rouge">burner</code> 模块，提供烧录工具的一些功能，比如 <code class="highlighter-rouge">burner.AppendLog(...)</code>
+  <li>通过 <code class="language-plaintext highlighter-rouge">import burner</code> 导入内置的 <code class="language-plaintext highlighter-rouge">burner</code> 模块，提供烧录工具的一些功能，比如 <code class="language-plaintext highlighter-rouge">burner.AppendLog(...)</code>
 可以将脚本执行过程中的日志打印在烧录工具的日志界面。模块</li>
-  <li><code class="highlighter-rouge">on_start_bin(...)</code> 函数在每个 bin 烧录之前执行，参数 data 就是当前 bin 文件的二进制数据</li>
+  <li><code class="language-plaintext highlighter-rouge">on_start_bin(...)</code> 函数在每个 bin 烧录之前执行，参数 data 就是当前 bin 文件的二进制数据</li>
 </ul>
 
 <p><img src="mb_config_script.png" alt="mb_config_script" /></p>

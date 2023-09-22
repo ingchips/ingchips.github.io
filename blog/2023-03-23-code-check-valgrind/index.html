@@ -277,10 +277,10 @@ Valgrind 是用来构建动态分析工具的框架。包含多种工具：</p>
 
 <ul>
   <li>
-    <p>使用 GPIO 驱动 LED 指示灯：改为 <code class="highlighter-rouge">printf</code> 或者图形界面；</p>
+    <p>使用 GPIO 驱动 LED 指示灯：改为 <code class="language-plaintext highlighter-rouge">printf</code> 或者图形界面；</p>
   </li>
   <li>
-    <p>输出 PWM：改为 <code class="highlighter-rouge">printf</code> 或者删除；</p>
+    <p>输出 PWM：改为 <code class="language-plaintext highlighter-rouge">printf</code> 或者删除；</p>
   </li>
   <li>
     <p>使用 GPIO 中断触发动作：改为从终端输入指令或者使用图形界面；</p>
@@ -290,8 +290,8 @@ Valgrind 是用来构建动态分析工具的框架。包含多种工具：</p>
   </li>
 </ul>
 
-<p>客户端程序的主入口为熟悉的 <code class="highlighter-rouge">setup_profile</code> 函数。如果转换后的程序包含多个模块，则需要修改 makefile，
-将各模块添加到 <code class="highlighter-rouge">PROJECT_FILES</code>；如果仅有一个模块，则不需要修改 makefile。</p>
+<p>客户端程序的主入口为熟悉的 <code class="language-plaintext highlighter-rouge">setup_profile</code> 函数。如果转换后的程序包含多个模块，则需要修改 makefile，
+将各模块添加到 <code class="language-plaintext highlighter-rouge">PROJECT_FILES</code>；如果仅有一个模块，则不需要修改 makefile。</p>
 
 <h3 id="rtos-的处理">RTOS 的处理</h3>
 
@@ -299,15 +299,15 @@ Valgrind 是用来构建动态分析工具的框架。包含多种工具：</p>
 
 <ol>
   <li>
-    <p>只使用了通用 RTOS 接口（<code class="highlighter-rouge">gen_os_driver_t</code>）里的功能</p>
+    <p>只使用了通用 RTOS 接口（<code class="language-plaintext highlighter-rouge">gen_os_driver_t</code>）里的功能</p>
 
-    <p><code class="highlighter-rouge">platform_get_gen_os_driver</code> 仍然可用，代码无需修改。</p>
+    <p><code class="language-plaintext highlighter-rouge">platform_get_gen_os_driver</code> 仍然可用，代码无需修改。</p>
   </li>
   <li>
     <p>使用了 FreeRTOS</p>
 
     <p>FreeRTOS 提供了 <a href="https://www.freertos.org/FreeRTOS-simulator-for-Linux.html">Linux 上的模拟器</a>，
- 代码也无需修改，只需要在编译时带上 <code class="highlighter-rouge">FreeRTOS=1</code> 参数即可。
+ 代码也无需修改，只需要在编译时带上 <code class="language-plaintext highlighter-rouge">FreeRTOS=1</code> 参数即可。
  当然，其运行效果与嵌入式上的实际情况存在较大差异。</p>
   </li>
   <li>
@@ -322,14 +322,14 @@ Valgrind 是用来构建动态分析工具的框架。包含多种工具：</p>
 <p>现假设转换得到了一个 <a href="https://github.com/ingchips/ING918XX_SDK_SOURCE/blob/master/example_host/rpc_client/app/bug.cpp"><em>bug.cpp</em></a> 的模块，
 将它放到 <em>rpc_client/app</em> 目录下，在 Linux 系统里使用下面的命令编译它：</p>
 
-<p><code class="highlighter-rouge">make rebuild app=bug</code></p>
+<p><code class="language-plaintext highlighter-rouge">make rebuild app=bug</code></p>
 
 <h3 id="valgrind-的设置">Valgrind 的设置</h3>
 
 <p><em>bug.cpp</em>  是一直执行的，测试时使用 Ctrl+C 强制退出，因此必然存在一些分配了但未释放的内存，
 需要为 Valgrind 编写 <a href="https://valgrind.org/docs/manual/manual-core.html#manual-core.suppress">suppression 文件</a>忽略这些问题，
 如 <a href="https://github.com/ingchips/ING918XX_SDK_SOURCE/blob/master/example_host/rpc_client/rpc.supp">rpc.supp</a>
-里的这一段内容表示告诉 Memcheck 工具忽略 FreeRTOS <code class="highlighter-rouge">vTaskStartScheduler</code> 泄露的内存：</p>
+里的这一段内容表示告诉 Memcheck 工具忽略 FreeRTOS <code class="language-plaintext highlighter-rouge">vTaskStartScheduler</code> 泄露的内存：</p>
 
 <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">{</span>
   start up

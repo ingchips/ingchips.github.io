@@ -293,7 +293,7 @@
     <p>TDengine 数据库设计</p>
 
     <p>用一个超级表保存温度和时间戳，每个温度计一张子表。
- 通过以下命令创建 <code class="highlighter-rouge">test</code> 数据库和 <code class="highlighter-rouge">thermo_data</code> 超级表，<code class="highlighter-rouge">dev_id</code> 为字符串型的 TAG。</p>
+ 通过以下命令创建 <code class="language-plaintext highlighter-rouge">test</code> 数据库和 <code class="language-plaintext highlighter-rouge">thermo_data</code> 超级表，<code class="language-plaintext highlighter-rouge">dev_id</code> 为字符串型的 TAG。</p>
 
     <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">create</span> <span class="k">database</span> <span class="n">test</span><span class="p">;</span>
  <span class="n">use</span> <span class="n">test</span><span class="p">;</span>
@@ -334,7 +334,7 @@
       <li>
         <p>添加规则</p>
 
-        <p>利用规则将温度数据写入数据库，由于表名称里禁止出现某些特殊字符，故以 <code class="highlighter-rouge">dev_id</code> 的 MD5 为子表名
+        <p>利用规则将温度数据写入数据库，由于表名称里禁止出现某些特殊字符，故以 <code class="language-plaintext highlighter-rouge">dev_id</code> 的 MD5 为子表名
 （注：表名的第一个字符不能为数字）。</p>
 
         <p>SQL 代码：</p>
@@ -405,7 +405,7 @@ typedef struct thermo_beacon_adv
 <h3 id="采集端">采集端</h3>
 
 <p>采集端通过 UART 接口控制 Air724UG 模组，利用其提供的 MQTT AT 指令连接到 MQTT Broker服务嚣。
-采集端解析扫描到的温度计广播，将温度数据以 JSON 形式发布到 <code class="highlighter-rouge">thermo/data</code> 主题。</p>
+采集端解析扫描到的温度计广播，将温度数据以 JSON 形式发布到 <code class="language-plaintext highlighter-rouge">thermo/data</code> 主题。</p>
 
 <h4 id="mqtt-服务模块">MQTT 服务模块</h4>
 
@@ -437,7 +437,7 @@ typedef struct mqtt_fsm
 
 <h4 id="温度扫描与上报">温度扫描与上报</h4>
 
-<p>扫描到 <code class="highlighter-rouge">thermo_beacon_adv_t</code> 数据后，转换成 JSON 形式发布到 <code class="highlighter-rouge">thermo/data</code> 主题，核心代码如下：</p>
+<p>扫描到 <code class="language-plaintext highlighter-rouge">thermo_beacon_adv_t</code> 数据后，转换成 JSON 形式发布到 <code class="language-plaintext highlighter-rouge">thermo/data</code> 主题，核心代码如下：</p>
 
 <pre><code class="language-C">#define TOPIC       "thermo/data"
 
@@ -471,7 +471,7 @@ default:
 }
 </code></pre>
 
-<p><code class="highlighter-rouge">format_json</code> 函数的实现如下：</p>
+<p><code class="language-plaintext highlighter-rouge">format_json</code> 函数的实现如下：</p>
 
 <pre><code class="language-C">const char *format_json(const le_ext_adv_report_t *report, const thermo_beacon_adv_t *p_beacon)
 {
@@ -484,7 +484,7 @@ default:
 }
 </code></pre>
 
-<p><code class="highlighter-rouge">float_ieee_11073_val_to_repr</code> 函数的定义可在 SDK “Smart Meter” 示例中找到。</p>
+<p><code class="language-plaintext highlighter-rouge">float_ieee_11073_val_to_repr</code> 函数的定义可在 SDK “Smart Meter” 示例中找到。</p>
 
 <h3 id="结论">结论</h3>
 

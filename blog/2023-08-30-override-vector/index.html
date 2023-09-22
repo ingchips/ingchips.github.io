@@ -229,7 +229,7 @@
         <ul id="markdown-toc">
   <li><a href="#1-获取芯片的最大中断号" id="markdown-toc-1-获取芯片的最大中断号">1. 获取芯片的最大中断号</a></li>
   <li><a href="#2-定义完整的中断向量表" id="markdown-toc-2-定义完整的中断向量表">2. 定义完整的中断向量表</a></li>
-  <li><a href="#3-实现-override_handler" id="markdown-toc-3-实现-override_handler">3. 实现 <code class="highlighter-rouge">Override_Handler</code></a></li>
+  <li><a href="#3-实现-override_handler" id="markdown-toc-3-实现-override_handler">3. 实现 <code class="language-plaintext highlighter-rouge">Override_Handler</code></a></li>
   <li><a href="#4-替换中断向量表" id="markdown-toc-4-替换中断向量表">4. 替换中断向量表</a></li>
 </ul>
 
@@ -241,12 +241,12 @@
 
 <h2 id="1-获取芯片的最大中断号">1. 获取芯片的最大中断号</h2>
 
-<p>找到 <code class="highlighter-rouge">platform_irq_callback_type_t</code> 里的最末一个中断名称，通过 <code class="highlighter-rouge">platform_read_info</code>
+<p>找到 <code class="language-plaintext highlighter-rouge">platform_irq_callback_type_t</code> 里的最末一个中断名称，通过 <code class="language-plaintext highlighter-rouge">platform_read_info</code>
 转换为底层中断号（记为 N）。或者直接取一个足够大的值，如 N = 64。</p>
 
 <h2 id="2-定义完整的中断向量表">2. 定义完整的中断向量表</h2>
 
-<p>打开初始化文件，修改 <code class="highlighter-rouge">__Vectors</code> 的定义：</p>
+<p>打开初始化文件，修改 <code class="language-plaintext highlighter-rouge">__Vectors</code> 的定义：</p>
 
 <pre><code class="language-asm">        IMPORT  Override_Handler
 
@@ -275,7 +275,7 @@ __Vectors       DCD     0                 ; Top of Stack
 __Vectors_End
 </code></pre>
 
-<h2 id="3-实现-override_handler">3. 实现 <code class="highlighter-rouge">Override_Handler</code></h2>
+<h2 id="3-实现-override_handler">3. 实现 <code class="language-plaintext highlighter-rouge">Override_Handler</code></h2>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">Override_Handler</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
 <span class="p">{</span>
@@ -299,7 +299,7 @@ __Vectors_End
 
 <h2 id="4-替换中断向量表">4. 替换中断向量表</h2>
 
-<p>在需要的位置（比如 <code class="highlighter-rouge">app_main</code>）里设置中断向量表：</p>
+<p>在需要的位置（比如 <code class="language-plaintext highlighter-rouge">app_main</code>）里设置中断向量表：</p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">app_main</span><span class="p">()</span>
 <span class="p">{</span>

@@ -287,7 +287,7 @@
 <span class="n">vPortFree</span>
 </code></pre></div></div>
 
-<p>这两个 API 的原型及用法与 <code class="highlighter-rouge">malloc/free</code> 类似。</p>
+<p>这两个 API 的原型及用法与 <code class="language-plaintext highlighter-rouge">malloc/free</code> 类似。</p>
 
 <p>对于 NoOS 的软件包，RTOS 及堆由开发者选择、配置。下表汇总了几种常见 RTOS 的堆内存 API。</p>
 
@@ -302,23 +302,23 @@
   <tbody>
     <tr>
       <td>FreeRTOS</td>
-      <td><code class="highlighter-rouge">pvPortMalloc</code></td>
-      <td><code class="highlighter-rouge">vPortFree</code></td>
+      <td><code class="language-plaintext highlighter-rouge">pvPortMalloc</code></td>
+      <td><code class="language-plaintext highlighter-rouge">vPortFree</code></td>
     </tr>
     <tr>
       <td>RT-Thread</td>
-      <td><code class="highlighter-rouge">rt_malloc</code></td>
-      <td><code class="highlighter-rouge">rt_free</code></td>
+      <td><code class="language-plaintext highlighter-rouge">rt_malloc</code></td>
+      <td><code class="language-plaintext highlighter-rouge">rt_free</code></td>
     </tr>
     <tr>
       <td>ThreadX</td>
-      <td>如 <code class="highlighter-rouge">tx_byte_allocate</code> 等</td>
-      <td>如 <code class="highlighter-rouge">tx_byte_release</code> 等</td>
+      <td>如 <code class="language-plaintext highlighter-rouge">tx_byte_allocate</code> 等</td>
+      <td>如 <code class="language-plaintext highlighter-rouge">tx_byte_release</code> 等</td>
     </tr>
     <tr>
       <td>LiteOS</td>
-      <td><code class="highlighter-rouge">LOS_MemAlloc</code></td>
-      <td><code class="highlighter-rouge">LOS_MemFree</code></td>
+      <td><code class="language-plaintext highlighter-rouge">LOS_MemAlloc</code></td>
+      <td><code class="language-plaintext highlighter-rouge">LOS_MemFree</code></td>
     </tr>
   </tbody>
 </table>
@@ -331,7 +331,7 @@
 <span class="kt">void</span> <span class="nf">ll_free</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">buffer</span><span class="p">);</span>
 </code></pre></div></div>
 
-<p>这两个 API 的原型及用法与 <code class="highlighter-rouge">malloc/free</code> 类似。如果内存不足，<code class="highlighter-rouge">ll_malloc</code> 将返回 <code class="highlighter-rouge">NULL</code>。</p>
+<p>这两个 API 的原型及用法与 <code class="language-plaintext highlighter-rouge">malloc/free</code> 类似。如果内存不足，<code class="language-plaintext highlighter-rouge">ll_malloc</code> 将返回 <code class="language-plaintext highlighter-rouge">NULL</code>。</p>
 
 <h2 id="其它提示">其它提示</h2>
 
@@ -341,7 +341,7 @@
 
 <h3 id="2-关于-mallocfree">2. 关于 malloc/free</h3>
 
-<p>对于 C 标准库函数 <code class="highlighter-rouge">malloc/free</code> 等所使用的堆，Wizard 创建新项目时提供了两种实现方式：</p>
+<p>对于 C 标准库函数 <code class="language-plaintext highlighter-rouge">malloc/free</code> 等所使用的堆，Wizard 创建新项目时提供了两种实现方式：</p>
 
 <ul>
   <li>
@@ -354,26 +354,26 @@
     <p>这个堆占用可自由使用的空闲 RAM。</p>
   </li>
   <li>
-    <p>重写 <code class="highlighter-rouge">malloc/free</code></p>
+    <p>重写 <code class="language-plaintext highlighter-rouge">malloc/free</code></p>
 
     <p>选择 “Overrided malloc/free”:</p>
 
     <p><img src="../img/wizard_override_malloc.png" alt="" /></p>
 
-    <p>这种方式下，利用 <em>Tools/malloc_override.c</em> 模块重写 <code class="highlighter-rouge">malloc/free</code>。
-  这个模块内又可以通过 <code class="highlighter-rouge">HEAP_OVERRIDE_TYPE</code> 选择不同的堆 API 作为支撑，比如：</p>
+    <p>这种方式下，利用 <em>Tools/malloc_override.c</em> 模块重写 <code class="language-plaintext highlighter-rouge">malloc/free</code>。
+  这个模块内又可以通过 <code class="language-plaintext highlighter-rouge">HEAP_OVERRIDE_TYPE</code> 选择不同的堆 API 作为支撑，比如：</p>
 
     <ul>
-      <li>使用 FreeRTOS 的 <code class="highlighter-rouge">pvPortMalloc/vPortFree</code></li>
-      <li>使用协议栈链路层的 <code class="highlighter-rouge">ll_malloc/ll_free</code></li>
+      <li>使用 FreeRTOS 的 <code class="language-plaintext highlighter-rouge">pvPortMalloc/vPortFree</code></li>
+      <li>使用协议栈链路层的 <code class="language-plaintext highlighter-rouge">ll_malloc/ll_free</code></li>
     </ul>
   </li>
 </ul>
 
 <h3 id="3-关于-newdelete">3. 关于 new/delete</h3>
 
-<p>C++ 标准运算符 <code class="highlighter-rouge">new</code> 的情况比较复杂。对于 Keil，无论是否使用 MicroLIB，当 <code class="highlighter-rouge">new</code> 需要分配内存时，
-也会调用 <code class="highlighter-rouge">malloc</code>，关于 <code class="highlighter-rouge">malloc/free</code> 的说明同样适用；对于其它编译器，请查阅相关文档。</p>
+<p>C++ 标准运算符 <code class="language-plaintext highlighter-rouge">new</code> 的情况比较复杂。对于 Keil，无论是否使用 MicroLIB，当 <code class="language-plaintext highlighter-rouge">new</code> 需要分配内存时，
+也会调用 <code class="language-plaintext highlighter-rouge">malloc</code>，关于 <code class="language-plaintext highlighter-rouge">malloc/free</code> 的说明同样适用；对于其它编译器，请查阅相关文档。</p>
 
 <h2 id="关于移植">关于移植</h2>
 
@@ -392,11 +392,11 @@
 <span class="p">}</span>
 </code></pre></div></div>
 
-<p>首先根据 <code class="highlighter-rouge">struct large</code> 占用的空间判断，RTOS 的堆无法提供如此巨大的空间，必选使用链路层的堆。</p>
+<p>首先根据 <code class="language-plaintext highlighter-rouge">struct large</code> 占用的空间判断，RTOS 的堆无法提供如此巨大的空间，必选使用链路层的堆。</p>
 
 <h3 id="方法-1用宏代替变量">方法 1：用宏代替变量</h3>
 
-<p>在 <code class="highlighter-rouge">setup_profile</code> 内为 <code class="highlighter-rouge">large_data</code> 分配内存。之后，可以正常调用 <code class="highlighter-rouge">foo</code> 等使用 <code class="highlighter-rouge">large_data</code> 的函数。</p>
+<p>在 <code class="language-plaintext highlighter-rouge">setup_profile</code> 内为 <code class="language-plaintext highlighter-rouge">large_data</code> 分配内存。之后，可以正常调用 <code class="language-plaintext highlighter-rouge">foo</code> 等使用 <code class="language-plaintext highlighter-rouge">large_data</code> 的函数。</p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
 <span class="k">struct</span> <span class="n">large</span> <span class="o">*</span><span class="n">p_large_data</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
@@ -433,7 +433,7 @@
   <li>
     <p>获取堆内存指针</p>
 
-    <p>屏蔽 <code class="highlighter-rouge">large_data</code> 的定义，在 <code class="highlighter-rouge">setup_profile</code> 获取堆内存指针：</p>
+    <p>屏蔽 <code class="language-plaintext highlighter-rouge">large_data</code> 的定义，在 <code class="language-plaintext highlighter-rouge">setup_profile</code> 获取堆内存指针：</p>
 
     <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="kt">uint32_t</span> <span class="nf">setup_profile</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">user_data</span><span class="p">)</span>
  <span class="p">{</span>
@@ -451,7 +451,7 @@
     <p>将代码还原，正常定义全局变量；</p>
   </li>
   <li>
-    <p>再次修改 <code class="highlighter-rouge">setup_profile</code>：</p>
+    <p>再次修改 <code class="language-plaintext highlighter-rouge">setup_profile</code>：</p>
 
     <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="kt">uint32_t</span> <span class="nf">setup_profile</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">user_data</span><span class="p">)</span>
  <span class="p">{</span>

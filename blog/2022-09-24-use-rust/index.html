@@ -252,7 +252,7 @@ Mozilla 2020 年 8 月裁员波及到 Rust 开发团队，一年后，AWS、华�
 一切需要无垃圾回收语言的场景都该使用 Rust”。</p>
 
 <p>对于嵌入式领域，Rust 官方一直着力<a href="https://www.rust-lang.org/what/embedded">推广</a>，网络上资料、教程众多。本文与这些资料不同：不使用 Rust
-的 Cargo 等 <em>时髦</em> 工具，坚持使用 <code class="highlighter-rouge">rustc</code>、<code class="highlighter-rouge">makefile</code> 这些 <em>老派</em> 工具 —— 与 C 共存而不是<a href="https://github.com/stm32-rs">从头重写</a>，充分享受现有的 C 红利。</p>
+的 Cargo 等 <em>时髦</em> 工具，坚持使用 <code class="language-plaintext highlighter-rouge">rustc</code>、<code class="language-plaintext highlighter-rouge">makefile</code> 这些 <em>老派</em> 工具 —— 与 C 共存而不是<a href="https://github.com/stm32-rs">从头重写</a>，充分享受现有的 C 红利。</p>
 
 <h2 id="准备-rust">准备 Rust</h2>
 
@@ -265,12 +265,12 @@ Mozilla 2020 年 8 月裁员波及到 Rust 开发团队，一年后，AWS、华�
   <li>
     <p><a href="http://releases.llvm.org/download.html">下载</a>、安装 LLVM</p>
 
-    <p>假设 LLVM 的安装目录为 <code class="highlighter-rouge">D:\programs\LLVM</code>，那么新建一个环境变量 <code class="highlighter-rouge">LIBCLANG_PATH</code>，值为 <code class="highlighter-rouge">D:\programs\LLVM\bin</code>。</p>
+    <p>假设 LLVM 的安装目录为 <code class="language-plaintext highlighter-rouge">D:\programs\LLVM</code>，那么新建一个环境变量 <code class="language-plaintext highlighter-rouge">LIBCLANG_PATH</code>，值为 <code class="language-plaintext highlighter-rouge">D:\programs\LLVM\bin</code>。</p>
   </li>
   <li>
-    <p>安装 <code class="highlighter-rouge">bindgen</code></p>
+    <p>安装 <code class="language-plaintext highlighter-rouge">bindgen</code></p>
 
-    <p>执行命令 <code class="highlighter-rouge">cargo install bindgen</code> 安装 <code class="highlighter-rouge">bindgen</code>。</p>
+    <p>执行命令 <code class="language-plaintext highlighter-rouge">cargo install bindgen</code> 安装 <code class="language-plaintext highlighter-rouge">bindgen</code>。</p>
   </li>
   <li>
     <p>为 Rust 编译器添加编译目标</p>
@@ -311,7 +311,7 @@ Mozilla 2020 年 8 月裁员波及到 Rust 开发团队，一年后，AWS、华�
 
     <p>如果使用的是 ING918xx 开发板，则执行命令添加对应的编译目标：</p>
 
-    <p><code class="highlighter-rouge">rustup target add thumbv7m-none-eabi</code></p>
+    <p><code class="language-plaintext highlighter-rouge">rustup target add thumbv7m-none-eabi</code></p>
   </li>
 </ol>
 
@@ -356,7 +356,7 @@ Mozilla 2020 年 8 月裁员波及到 Rust 开发团队，一年后，AWS、华�
 <span class="nd">include!</span><span class="p">(</span><span class="s">"ble_bindings.rs"</span><span class="p">);</span>
 </code></pre></div></div>
 
-<p>这里的 <em>ble_bindings.rs</em> 稍后通过 <code class="highlighter-rouge">bindgen</code> 工具从 <em>ble_bindings.h</em> 生成。</p>
+<p>这里的 <em>ble_bindings.rs</em> 稍后通过 <code class="language-plaintext highlighter-rouge">bindgen</code> 工具从 <em>ble_bindings.h</em> 生成。</p>
 
 <p><em>cty.rs</em> 文件定义了 C 常见类型与 Rust 标准类型之间的映射，其完整内容见文末附录。</p>
 
@@ -369,9 +369,9 @@ Mozilla 2020 年 8 月裁员波及到 Rust 开发团队，一年后，AWS、华�
 	bindgen <span class="nt">-o</span> src/ble_lib/<span class="nv">$(RS_BINDINGS)</span>.rs src/<span class="nv">$(RS_BINDINGS)</span>.h <span class="nt">--no-debug</span> <span class="s2">".*"</span> <span class="nt">--no-default</span> <span class="s2">".*"</span> <span class="nt">--rustified-enum</span> <span class="s2">".*"</span> <span class="nt">--use-core</span> <span class="nt">--ctypes-prefix</span><span class="o">=</span>cty <span class="nt">--</span> <span class="nv">$(ING_SRC_INC)</span> <span class="nv">$(ING_BUNDLE_INC)</span> <span class="nt">-D__SOFTFP__</span> <span class="nt">-target</span> armv7m-none-eabi
 </code></pre></div></div>
 
-<p>这里，<code class="highlighter-rouge">--no-debug</code> 用来禁止 <code class="highlighter-rouge">bindgen</code> 生成 Debug trait，因为 <code class="highlighter-rouge">bindgen</code> 只能 <em>尽力</em> 生成 Debug trait，不能保证 100%；<code class="highlighter-rouge">--no-default</code> 用来禁止 <code class="highlighter-rouge">bindgen</code> 生成 Default traits。<code class="highlighter-rouge">--use-core</code> 和 <code class="highlighter-rouge">--ctypes-prefix=cty</code> 配合，告诉 <code class="highlighter-rouge">bindgen</code> 转换时不要从 <code class="highlighter-rouge">std</code> 导入 C 类型。</p>
+<p>这里，<code class="language-plaintext highlighter-rouge">--no-debug</code> 用来禁止 <code class="language-plaintext highlighter-rouge">bindgen</code> 生成 Debug trait，因为 <code class="language-plaintext highlighter-rouge">bindgen</code> 只能 <em>尽力</em> 生成 Debug trait，不能保证 100%；<code class="language-plaintext highlighter-rouge">--no-default</code> 用来禁止 <code class="language-plaintext highlighter-rouge">bindgen</code> 生成 Default traits。<code class="language-plaintext highlighter-rouge">--use-core</code> 和 <code class="language-plaintext highlighter-rouge">--ctypes-prefix=cty</code> 配合，告诉 <code class="language-plaintext highlighter-rouge">bindgen</code> 转换时不要从 <code class="language-plaintext highlighter-rouge">std</code> 导入 C 类型。</p>
 
-<p><code class="highlighter-rouge">--</code> 后面的参数供 LLVM 使用，对于 ING918xx，需要添加参数 <code class="highlighter-rouge">-D__SOFTFP__ -target armv7m-none-eabi</code>。</p>
+<p><code class="language-plaintext highlighter-rouge">--</code> 后面的参数供 LLVM 使用，对于 ING918xx，需要添加参数 <code class="language-plaintext highlighter-rouge">-D__SOFTFP__ -target armv7m-none-eabi</code>。</p>
 
 <h2 id="替换-mainc">替换 <em>main.c</em></h2>
 
@@ -437,7 +437,7 @@ Mozilla 2020 年 8 月裁员波及到 Rust 开发团队，一年后，AWS、华�
 
 <h2 id="测试">测试</h2>
 
-<p><code class="highlighter-rouge">make</code>，回到 <em>Wizard</em>，从右键菜单打开 Flash Downder，下载到开发板。通过手机 App 可搜索到名为 <em>Hello from Rust</em> 的设备。</p>
+<p><code class="language-plaintext highlighter-rouge">make</code>，回到 <em>Wizard</em>，从右键菜单打开 Flash Downder，下载到开发板。通过手机 App 可搜索到名为 <em>Hello from Rust</em> 的设备。</p>
 
 <p>至此，Rust 语言开发已全线打通。</p>
 

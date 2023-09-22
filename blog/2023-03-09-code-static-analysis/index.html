@@ -248,10 +248,10 @@
 
 <h2 id="gcc">GCC</h2>
 
-<p>使用 GCC 编译时指定 <a href="https://developers.redhat.com/blog/2020/03/26/static-analysis-in-gcc-10"><code class="highlighter-rouge">-fanalyzer</code></a>
-选项就可以启用静态分析功能，能够检查重复 <code class="highlighter-rouge">free</code> 等问题。</p>
+<p>使用 GCC 编译时指定 <a href="https://developers.redhat.com/blog/2020/03/26/static-analysis-in-gcc-10"><code class="language-plaintext highlighter-rouge">-fanalyzer</code></a>
+选项就可以启用静态分析功能，能够检查重复 <code class="language-plaintext highlighter-rouge">free</code> 等问题。</p>
 
-<p>打开 SDK 里的 GCC 项目示例，在 Makefile 文件添加 <code class="highlighter-rouge">CFLAGS=-fanalyzer</code>，重新编译就能体验 GCC 的这个分析功能。
+<p>打开 SDK 里的 GCC 项目示例，在 Makefile 文件添加 <code class="language-plaintext highlighter-rouge">CFLAGS=-fanalyzer</code>，重新编译就能体验 GCC 的这个分析功能。
 与后面的工具相比，它所能检测到的问题要少一些。</p>
 
 <h2 id="cppcheck">Cppcheck</h2>
@@ -277,13 +277,13 @@ Cppcheck 可以检测内存泄漏、分配释放不匹配、缓冲区溢出等�
   <li>
     <p>sscanf 参数类型有误</p>
 
-    <p>这里从字符串读取地址时，<code class="highlighter-rouge">%x</code> 对应于 <code class="highlighter-rouge">unsigned int *</code>。程序里错误地提供了 <code class="highlighter-rouge">int *</code>。应该将 <code class="highlighter-rouge">addr</code>
- 的定义改为 <code class="highlighter-rouge">unsigned int addr[6]</code>。</p>
+    <p>这里从字符串读取地址时，<code class="language-plaintext highlighter-rouge">%x</code> 对应于 <code class="language-plaintext highlighter-rouge">unsigned int *</code>。程序里错误地提供了 <code class="language-plaintext highlighter-rouge">int *</code>。应该将 <code class="language-plaintext highlighter-rouge">addr</code>
+ 的定义改为 <code class="language-plaintext highlighter-rouge">unsigned int addr[6]</code>。</p>
 
     <p>由于这里每个元素只存储一个字节，这个问题不影响功能。</p>
   </li>
   <li>
-    <p>参与 <code class="highlighter-rouge">||</code> 运算的两个值相同</p>
+    <p>参与 <code class="language-plaintext highlighter-rouge">||</code> 运算的两个值相同</p>
 
     <p>此处的代码是想接收所有的断行方式（\r、\n、\n\r、\r\n），但是“一不小心”，第二个 \n 也写成了 \r，应该改正。</p>
 

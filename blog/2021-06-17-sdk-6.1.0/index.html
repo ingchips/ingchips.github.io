@@ -243,7 +243,7 @@
     <p>静态数值存储于 ATT 数据库内，协议栈直接提取数值传递到 Client</p>
   </li>
   <li>
-    <p>对于动态数值，协议栈每次读取数值时会两次调用回调函数（<code class="highlighter-rouge">att_read_callback</code>）：第一次数据指针为空，用来获取数值长度；
+    <p>对于动态数值，协议栈每次读取数值时会两次调用回调函数（<code class="language-plaintext highlighter-rouge">att_read_callback</code>）：第一次数据指针为空，用来获取数值长度；
 第二次数据指针不为空，回调函数此时将数据写入数据指针指向的内存。</p>
   </li>
 </ul>
@@ -255,13 +255,13 @@
 
 <ol>
   <li>
-    <p>回调函数 <code class="highlighter-rouge">att_read_callback</code> 在第一次被调用（数据指针为空）时返回 <code class="highlighter-rouge">ATT_DEFERRED_READ</code>；</p>
+    <p>回调函数 <code class="language-plaintext highlighter-rouge">att_read_callback</code> 在第一次被调用（数据指针为空）时返回 <code class="language-plaintext highlighter-rouge">ATT_DEFERRED_READ</code>；</p>
   </li>
   <li>
     <p>app 开始获取数据；</p>
   </li>
   <li>
-    <p>数据就绪之后，调用 <code class="highlighter-rouge">att_server_deferred_read_response</code> 发送数据。</p>
+    <p>数据就绪之后，调用 <code class="language-plaintext highlighter-rouge">att_server_deferred_read_response</code> 发送数据。</p>
   </li>
 </ol>
 
@@ -271,7 +271,7 @@
 用其它设备（设备 B）连接到 GATT Relay 后，GATT Relay 会把设备 B 里的 GATT Client 发起的所有请求转发到设备 A，
 再将响应转发回设备 B。</p>
 
-<p>这个例子里回调函数使用延迟读取方式，待 GATT Client 从设备 A 获得数据后，调用 <code class="highlighter-rouge">att_server_deferred_read_response</code>
+<p>这个例子里回调函数使用延迟读取方式，待 GATT Client 从设备 A 获得数据后，调用 <code class="language-plaintext highlighter-rouge">att_server_deferred_read_response</code>
 将结果传递到设备 B。</p>
 
 <pre><code class="language-C">void gatt_read_callback(uint8_t packet_type, uint16_t _, const uint8_t *packet, uint16_t size)

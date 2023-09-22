@@ -260,9 +260,9 @@ ThreadX 随之更名为 <a href="http://docs.microsoft.com/azure/rtos/threadx">A
 
 <ul>
   <li>（几乎）一个函数对应一个独立的源文件，醒目、直接；</li>
-  <li>模块化程度高，比如，内存管理 <code class="highlighter-rouge">byte_allocate</code> 模块可以去除；</li>
-  <li>每个 API 都存在两个版本，一个以 <code class="highlighter-rouge">_txe_</code> 开头，包含<strong>详尽</strong>的参数检查，适合调试、学习；另一个是以 <code class="highlighter-rouge">_tx</code> 开头的“正常”版本；
-调用 API 时只用 <code class="highlighter-rouge">tx_</code> 开头的宏版本，这个宏版本会依照编译选项映射成 <code class="highlighter-rouge">_txe_</code> 或者 <code class="highlighter-rouge">_tx</code>；</li>
+  <li>模块化程度高，比如，内存管理 <code class="language-plaintext highlighter-rouge">byte_allocate</code> 模块可以去除；</li>
+  <li>每个 API 都存在两个版本，一个以 <code class="language-plaintext highlighter-rouge">_txe_</code> 开头，包含<strong>详尽</strong>的参数检查，适合调试、学习；另一个是以 <code class="language-plaintext highlighter-rouge">_tx</code> 开头的“正常”版本；
+调用 API 时只用 <code class="language-plaintext highlighter-rouge">tx_</code> 开头的宏版本，这个宏版本会依照编译选项映射成 <code class="language-plaintext highlighter-rouge">_txe_</code> 或者 <code class="language-plaintext highlighter-rouge">_tx</code>；</li>
   <li>其它特性（如 preemption-threshold, event chaining, 性能分析等）跟移植关系不大，不再赘述。</li>
 </ul>
 
@@ -348,7 +348,7 @@ _tx_initialize_low_level
 
 <h3 id="软件定时器相关-api">软件定时器相关 API</h3>
 
-<p>软件定时器的存储空间由我们在堆上分配，然后将指针作为 <code class="highlighter-rouge">gen_handle_t</code>。具体实现如下：</p>
+<p>软件定时器的存储空间由我们在堆上分配，然后将指针作为 <code class="language-plaintext highlighter-rouge">gen_handle_t</code>。具体实现如下：</p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">gen_handle_t</span> <span class="nf">port_timer_create</span><span class="p">(</span>
         <span class="kt">uint32_t</span> <span class="n">timeout_in_ms</span><span class="p">,</span>
@@ -489,11 +489,11 @@ _tx_initialize_low_level
 
 <h3 id="全局临界区-api">全局临界区 API</h3>
 
-<p>可以借助 <code class="highlighter-rouge">TX_DISABLE</code>、<code class="highlighter-rouge">TX_RESTORE</code> 配合计数器实现。</p>
+<p>可以借助 <code class="language-plaintext highlighter-rouge">TX_DISABLE</code>、<code class="language-plaintext highlighter-rouge">TX_RESTORE</code> 配合计数器实现。</p>
 
 <h3 id="os-入口-api">OS 入口 API</h3>
 
-<p>ThreadX 的入口是 <code class="highlighter-rouge">tx_kernel_enter</code>。把它拆成两个部分：一部分在 <code class="highlighter-rouge">app_main</code> 返回 platform
+<p>ThreadX 的入口是 <code class="language-plaintext highlighter-rouge">tx_kernel_enter</code>。把它拆成两个部分：一部分在 <code class="language-plaintext highlighter-rouge">app_main</code> 返回 platform
 之前执行，此时 ThreadX 允许创建线程；后一部分封装成通用 OS 的入口。</p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 前一部分</span>
@@ -557,12 +557,12 @@ _tx_initialize_low_level
 <span class="p">}</span>
 </code></pre></div></div>
 
-<p>ThreadX 目前不使用 SVC 中断，<code class="highlighter-rouge">no_op</code> 是一个桩函数。</p>
+<p>ThreadX 目前不使用 SVC 中断，<code class="language-plaintext highlighter-rouge">no_op</code> 是一个桩函数。</p>
 
 <h3 id="测试">测试</h3>
 
-<p>参照 SDK 里 <code class="highlighter-rouge">Peripheral Console</code> 项目的 <code class="highlighter-rouge">profile.c</code>、<code class="highlighter-rouge">service_console.c</code> 加入项目，然后参照
-<code class="highlighter-rouge">Peripheral Console (RT-Thread)</code> 修改 <code class="highlighter-rouge">main.c</code>，准备一条欢迎信息：</p>
+<p>参照 SDK 里 <code class="language-plaintext highlighter-rouge">Peripheral Console</code> 项目的 <code class="language-plaintext highlighter-rouge">profile.c</code>、<code class="language-plaintext highlighter-rouge">service_console.c</code> 加入项目，然后参照
+<code class="language-plaintext highlighter-rouge">Peripheral Console (RT-Thread)</code> 修改 <code class="language-plaintext highlighter-rouge">main.c</code>，准备一条欢迎信息：</p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#define expand2(X)  #X
 #define expand(X)   expand2(X)
@@ -576,7 +576,7 @@ _tx_initialize_low_level
 <h3 id="低功耗">低功耗</h3>
 
 <p>ThreadX 默认的低功耗实现方式不合适，需要自行创建一个空闲线程，实现“无滴答”低功耗。空闲线程的具体实现与
-<code class="highlighter-rouge">Peripheral Console (RT-Thread)</code> 类似，主要流程如下：</p>
+<code class="language-plaintext highlighter-rouge">Peripheral Console (RT-Thread)</code> 类似，主要流程如下：</p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">thread_idle_entry</span><span class="p">(</span><span class="n">ULONG</span> <span class="n">thread_input</span><span class="p">)</span>
 <span class="p">{</span>

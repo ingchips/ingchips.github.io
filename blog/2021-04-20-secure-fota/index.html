@@ -256,7 +256,7 @@
 
 <h2 id="1-直接使用">1. 直接使用</h2>
 
-<p>打开 SDK 5.6.2 里的 <code class="highlighter-rouge">Thermometer with OTA</code>，设置 <code class="highlighter-rouge">SECURE_FOTA</code> 编译开关，重新编译下载。使用
+<p>打开 SDK 5.6.2 里的 <code class="language-plaintext highlighter-rouge">Thermometer with OTA</code>，设置 <code class="language-plaintext highlighter-rouge">SECURE_FOTA</code> 编译开关，重新编译下载。使用
 <a href="/web_apps/ing918_ota/index_cn.html">Web 版 FOTA 工具</a> 连接到到设备，即可进行安全升级。</p>
 
 <div class="note">
@@ -295,14 +295,14 @@
 
 <p>编译 uECC 前，请确认接受其协议。使用 Gnu Arm Toolchain 编译 uECC 时，建议使用以下选项：</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-D uECC_PLATFORM=uECC_arm_thumb \
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-D uECC_PLATFORM=uECC_arm_thumb \
 -D uECC_SUPPORTS_secp160r1=0    \
 -D uECC_SUPPORTS_secp224r1=0    \
 -D uECC_SUPPORTS_secp256k1=0    \
 -Os -ffunction-sections -fdata-sections -fshort-wchar
 </code></pre></div></div>
 
-<p>将 uECC 连同 <a href="https://github.com/amosnier/sha-2">SHA-256</a> 编译成一个库 <code class="highlighter-rouge">ing918_uecc.lib</code>。</p>
+<p>将 uECC 连同 <a href="https://github.com/amosnier/sha-2">SHA-256</a> 编译成一个库 <code class="language-plaintext highlighter-rouge">ing918_uecc.lib</code>。</p>
 
 <h3 id="2-uecc-相关的初始化">2. uECC 相关的初始化</h3>
 
@@ -355,7 +355,7 @@ uECC_make_key(session_keys.pk, session_keys.sk, CURVE);
 <p>升级工具对每一页（8192 字节）的数据分别用会话根私钥进行签名，然后加密、追加 CRC （这里由于存在签名，所以 CRC 并不必要）。
 设备侧在将数据写入 Flash 之前，先检查 CRC，再解密，最后用升级工具的会话公钥验证签名。</p>
 
-<p>出于演示目的，<code class="highlighter-rouge">Thermometer with OTA</code> 里的加密重复使用了共享密钥的 SHA-256 做异或计算。</p>
+<p>出于演示目的，<code class="language-plaintext highlighter-rouge">Thermometer with OTA</code> 里的加密重复使用了共享密钥的 SHA-256 做异或计算。</p>
 
 <h2 id="3-风险提示">3. 风险提示</h2>
 

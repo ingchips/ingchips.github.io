@@ -247,16 +247,16 @@
 当一个方向上持续发送 251 字节的数据包，而另一方向上只发送空包时，可以到达单向速率的理论最高值。此时，
 发送 251 字节所消耗的总时间为：</p>
 
-<script type="math/tex; mode=display">1048 + 44 + 150 * 2 = 1392 (\mu s)</script>
+\[1048 + 44 + 150 * 2 = 1392 (\mu s)\]
 
 <p>所以链路层所能提供的理论峰值速率为：</p>
 
-<script type="math/tex; mode=display">251 * 8 / 1392 * 1000000 \approx 1442.528 (kbps)</script>
+\[251 * 8 / 1392 * 1000000 \approx 1442.528 (kbps)\]
 
 <p>对于工作于 GATT 之上的应用程序，扣除 I2CAP、ATT 各层的开销，典型情况下单个数据包中
 GATT 最大有效载荷为 251 - 7 = 244 字节。所以 GATT 能为应用程序提供的理论峰值速率为：</p>
 
-<script type="math/tex; mode=display">244 * 8 / 1392 * 1000000 \approx 1402.298 (kbps)</script>
+\[244 * 8 / 1392 * 1000000 \approx 1402.298 (kbps)\]
 
 <h2 id="速率实测">速率实测</h2>
 
@@ -266,7 +266,7 @@ GATT 最大有效载荷为 251 - 7 = 244 字节。所以 GATT 能为应用程序
 
 <h3 id="与手机对测">与手机对测</h3>
 
-<p>先下载 <code class="highlighter-rouge">peripheral_throughput</code> 程序。通过 <code class="highlighter-rouge">ING BLE</code> app 连接到名为 <code class="highlighter-rouge">ING Tpt</code> 的蓝牙设备，
+<p>先下载 <code class="language-plaintext highlighter-rouge">peripheral_throughput</code> 程序。通过 <code class="language-plaintext highlighter-rouge">ING BLE</code> app 连接到名为 <code class="language-plaintext highlighter-rouge">ING Tpt</code> 的蓝牙设备，
 进入吞吐率测试界面，在这里既可以进行主设备到从设备、从设备到主设备的单向测试，也可以同时进行双向测试。</p>
 
 <p>下图是使用某支持 BLE 5.0 的 Android 手机测得的速率，从模块到手机可获得 1M+ bps 的传输速率。</p>
@@ -275,7 +275,7 @@ GATT 最大有效载荷为 251 - 7 = 244 字节。所以 GATT 能为应用程序
 
 <h3 id="模块对测">模块对测</h3>
 
-<p><code class="highlighter-rouge">central_throughput</code> 程序演示了 BLE 主设备典型的工作流程：</p>
+<p><code class="language-plaintext highlighter-rouge">central_throughput</code> 程序演示了 BLE 主设备典型的工作流程：</p>
 
 <ol>
   <li>扫描到支持吞吐率服务（service）的设备后，与其建立连接；</li>
@@ -290,15 +290,15 @@ GATT 最大有效载荷为 251 - 7 = 244 字节。所以 GATT 能为应用程序
   <li>
     <p>输出：从设备通过该特性向主设备发送测试数据</p>
 
-    <p>该特性包含 <code class="highlighter-rouge">Client Characteristic Configuration</code> 描述符。</p>
+    <p>该特性包含 <code class="language-plaintext highlighter-rouge">Client Characteristic Configuration</code> 描述符。</p>
   </li>
   <li>
     <p>输入：主设备通过该特性向从设备发送测试数据</p>
   </li>
 </ul>
 
-<p>将 <code class="highlighter-rouge">central_throughput</code> 下载到另一模块，连接串口工具。输入“?” （注意：需要在行末附加回车、换行）
-可以查看程序支持的测试控制命令。程序搜索到 <code class="highlighter-rouge">peripheral_throughput</code> 后会自动连接，输入“<code class="highlighter-rouge">start s-&gt;m</code>”
+<p>将 <code class="language-plaintext highlighter-rouge">central_throughput</code> 下载到另一模块，连接串口工具。输入“?” （注意：需要在行末附加回车、换行）
+可以查看程序支持的测试控制命令。程序搜索到 <code class="language-plaintext highlighter-rouge">peripheral_throughput</code> 后会自动连接，输入“<code class="language-plaintext highlighter-rouge">start s-&gt;m</code>”
 即可开始测试从主设备到从设备的吞吐率。</p>
 
 <p><img src="../img/cmd.png" alt="Examples" /></p>

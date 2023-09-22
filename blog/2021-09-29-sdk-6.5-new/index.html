@@ -262,8 +262,8 @@
 
     <p>SDK 4.0 里引入了 <a href="../2020-10-13-sdk4.0_ext">更小的连接间隔</a> 的扩展功能，现在最小连接间隔进一步缩减到 1.25ms。</p>
 
-    <p>使用 <code class="highlighter-rouge">extension</code> 包创建主、从两个程序。主设备调用 <code class="highlighter-rouge">gap_ext_create_connection</code> 建立连接时，
- 将 <code class="highlighter-rouge">interval_min</code> 和 <code class="highlighter-rouge">interval_max</code> 两个参数设置为 <code class="highlighter-rouge">1</code>，就可以创建 1.25ms 间隔的连接。</p>
+    <p>使用 <code class="language-plaintext highlighter-rouge">extension</code> 包创建主、从两个程序。主设备调用 <code class="language-plaintext highlighter-rouge">gap_ext_create_connection</code> 建立连接时，
+ 将 <code class="language-plaintext highlighter-rouge">interval_min</code> 和 <code class="language-plaintext highlighter-rouge">interval_max</code> 两个参数设置为 <code class="language-plaintext highlighter-rouge">1</code>，就可以创建 1.25ms 间隔的连接。</p>
   </li>
   <li>
     <p><del>[<strong>新增</strong>] 以 1ms 为单位的连接间隔 <span style="background:yellow">(<strong>6.5.0</strong>)</span></del></p>
@@ -271,13 +271,13 @@
     <p>此功能在 6.5.1 里修改了实现方式。</p>
   </li>
   <li>
-    <p>[<strong>新增</strong>] <code class="highlighter-rouge">ll_set_conn_interval_unit</code> <span style="background:yellow">(<strong>6.5.1</strong>)</span></p>
+    <p>[<strong>新增</strong>] <code class="language-plaintext highlighter-rouge">ll_set_conn_interval_unit</code> <span style="background:yellow">(<strong>6.5.1</strong>)</span></p>
 
-    <p>在使用 <code class="highlighter-rouge">extension</code> 包的程序里调用 <code class="highlighter-rouge">ll_set_conn_interval_unit(X)</code>
+    <p>在使用 <code class="language-plaintext highlighter-rouge">extension</code> 包的程序里调用 <code class="language-plaintext highlighter-rouge">ll_set_conn_interval_unit(X)</code>
  可将连接间隔的时间单位从 1.25ms 切换为 X μs。</p>
 
-    <p>主、从两个程序里都调用 <code class="highlighter-rouge">ll_set_conn_interval_unit(X)</code>，并在调用
- <code class="highlighter-rouge">gap_ext_create_connection</code> 建立连接时将 <code class="highlighter-rouge">interval_min</code> 和 <code class="highlighter-rouge">interval_max</code> 两个参数设置为 <code class="highlighter-rouge">1</code>，
+    <p>主、从两个程序里都调用 <code class="language-plaintext highlighter-rouge">ll_set_conn_interval_unit(X)</code>，并在调用
+ <code class="language-plaintext highlighter-rouge">gap_ext_create_connection</code> 建立连接时将 <code class="language-plaintext highlighter-rouge">interval_min</code> 和 <code class="language-plaintext highlighter-rouge">interval_max</code> 两个参数设置为 <code class="language-plaintext highlighter-rouge">1</code>，
  就可以创建 X μs 间隔的连接。X 的最小值受限于空口时长及处理器速度，下面的截图显示了 X = 800 的情况。
  可以看出建立连接后的第 1 个连接事件后协议栈需要处理的工作较多，以至于无法按时调度第 2 个连接事件。
  后续连接事件调度正常。（Trace 采用的时间戳来自 32k 时钟，误差 ±30 μs）</p>
@@ -292,7 +292,7 @@
   <li>
     <p>[<strong>更新</strong>] 最多 26 个连接 <span style="background:yellow">(<strong>6.5.0</strong>)</span></p>
 
-    <p><code class="highlighter-rouge">mass_conn</code> 软件包支持的最大连接数从 24 个提升到 26 个。</p>
+    <p><code class="language-plaintext highlighter-rouge">mass_conn</code> 软件包支持的最大连接数从 24 个提升到 26 个。</p>
 
     <div class="note">
  <strong>注意：</strong>白名单（可接受名单）的最大长度仍为 24。
@@ -316,11 +316,11 @@
   <li>
     <p>[<strong>新增</strong>] SysTick 增强 <span style="background:yellow">(<strong>6.4.0</strong>)</span></p>
 
-    <p>ING918xx 退出睡眠状态重新配置 <code class="highlighter-rouge">SysTick</code> 时可能会引入（均值） 0.5 个 32k 时钟周期的误差。
- 当这种情况频繁出现时，<code class="highlighter-rouge">SysTick</code> 上的累积误差显著。SysTick 增强功能可以在很大程度上控制这种累积误差。</p>
+    <p>ING918xx 退出睡眠状态重新配置 <code class="language-plaintext highlighter-rouge">SysTick</code> 时可能会引入（均值） 0.5 个 32k 时钟周期的误差。
+ 当这种情况频繁出现时，<code class="language-plaintext highlighter-rouge">SysTick</code> 上的累积误差显著。SysTick 增强功能可以在很大程度上控制这种累积误差。</p>
 
-    <p>通过 <code class="highlighter-rouge">platform_config(PLATFORM_CFG_RTOS_ENH_TICK, PLATFORM_CFG_ENABLE)</code> 启用此功能。
- 下图演示了当一个硬件定时器以一定频率产生中断时，对 <code class="highlighter-rouge">vTaskDelay(1s)</code> 实际时长的影响。</p>
+    <p>通过 <code class="language-plaintext highlighter-rouge">platform_config(PLATFORM_CFG_RTOS_ENH_TICK, PLATFORM_CFG_ENABLE)</code> 启用此功能。
+ 下图演示了当一个硬件定时器以一定频率产生中断时，对 <code class="language-plaintext highlighter-rouge">vTaskDelay(1s)</code> 实际时长的影响。</p>
 
     <p><img src="../img/sdk_64_enh_systicks.png" alt="" /></p>
 
@@ -350,7 +350,7 @@
   <li>
     <p>[<strong>新增</strong>] 文件合并 <span style="background:yellow">(<strong>6.5.0</strong>)</span></p>
 
-    <p>将项目里的多个二进制文件合并为一个，下载地址为 <code class="highlighter-rouge">Min(各文件的下载地址)</code>。</p>
+    <p>将项目里的多个二进制文件合并为一个，下载地址为 <code class="language-plaintext highlighter-rouge">Min(各文件的下载地址)</code>。</p>
 
     <p><img src="../img/sdk_65_merge_bin.png" alt="" /></p>
   </li>
@@ -367,7 +367,7 @@
     <p>[<strong>新增</strong>] Central FOTA <span style="background:yellow">(<strong>6.4.0</strong>)</span></p>
 
     <p>这个示例演示了如何作为中心设备对其它设备进行空中升级。使用 <a href="../2021-01-25-zig-async">Zig 语言</a>
- 将整个 FOTA 过程封装成 <code class="highlighter-rouge">fota_client_do_update</code>：</p>
+ 将整个 FOTA 过程封装成 <code class="language-plaintext highlighter-rouge">fota_client_do_update</code>：</p>
 
     <pre><code class="language-C"> /**
  * @brief FOTA client.

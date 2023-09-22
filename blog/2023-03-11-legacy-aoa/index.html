@@ -252,7 +252,7 @@
 
 <p>使用 Locate app 发送 UUID 等全为 0 的 iBeacon 信号，使用 UART GATT Console 扫描其数据：</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ADV xx:xx:xx:xx:xx:xx (RANDOM) -58dBm
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ADV xx:xx:xx:xx:xx:xx (RANDOM) -58dBm
 Type: 0x13
 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
 ===============================================
@@ -280,7 +280,7 @@ Type: 0x13
 
 <p>使用 UART GATT Console 确认数据：</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ADV xx:xx:xx:xx:xx:xx (RANDOM) -58dBm
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ADV xx:xx:xx:xx:xx:xx (RANDOM) -58dBm
 Type: 0x13
 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
 ===============================================
@@ -322,9 +322,9 @@ Type: 0x13
   <li>
     <p>开始采样</p>
 
-    <p>扫描启动后，就可以通过 <code class="highlighter-rouge">ll_scanner_enable_iq_sampling_on_legacy</code> 开始采样。
-这个函数与 <code class="highlighter-rouge">ll_scanner_enable_iq_sampling</code> 相比，增加了 2 个参数：<code class="highlighter-rouge">sampling_offset</code>
-和 <code class="highlighter-rouge">cte_time</code>。</p>
+    <p>扫描启动后，就可以通过 <code class="language-plaintext highlighter-rouge">ll_scanner_enable_iq_sampling_on_legacy</code> 开始采样。
+这个函数与 <code class="language-plaintext highlighter-rouge">ll_scanner_enable_iq_sampling</code> 相比，增加了 2 个参数：<code class="language-plaintext highlighter-rouge">sampling_offset</code>
+和 <code class="language-plaintext highlighter-rouge">cte_time</code>。</p>
 
     <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">ll_scanner_enable_iq_sampling_on_legacy</span><span class="p">(</span>
                        <span class="kt">uint16_t</span> <span class="n">sampling_offset</span><span class="p">,</span>
@@ -337,14 +337,14 @@ Type: 0x13
                        <span class="kt">uint8_t</span> <span class="n">slot_sample_count</span><span class="p">);</span>
 </code></pre></div>    </div>
 
-    <p>因为不从广播数据中获取 CTEInfo，所以采样的起点和持续时间都需要外部提供。<code class="highlighter-rouge">sampling_offset</code>
+    <p>因为不从广播数据中获取 CTEInfo，所以采样的起点和持续时间都需要外部提供。<code class="language-plaintext highlighter-rouge">sampling_offset</code>
 表示从哪个比特开始采样，第 0 比特为 Payload 的开始。对于 ADV_IND PDU，Payload 开始为 AdvA，
-然后为 AdvData，所以 <code class="highlighter-rouge">sampling_offset = 48</code> 就表示从 AdvData 的第 0 个比特开始采样。<code class="highlighter-rouge">cte_time</code>
+然后为 AdvData，所以 <code class="language-plaintext highlighter-rouge">sampling_offset = 48</code> 就表示从 AdvData 的第 0 个比特开始采样。<code class="language-plaintext highlighter-rouge">cte_time</code>
 与 CTEInfo 里的定义一致，20 表示 $160 \mu s$。
-对于这个假冒用 CTE，<code class="highlighter-rouge">sampling_offset</code> 取值 $(6 + 9) * 8 ＝ 120$，<code class="highlighter-rouge">cte_time</code> 取值为 $20$。</p>
+对于这个假冒用 CTE，<code class="language-plaintext highlighter-rouge">sampling_offset</code> 取值 $(6 + 9) * 8 ＝ 120$，<code class="language-plaintext highlighter-rouge">cte_time</code> 取值为 $20$。</p>
 
-    <p>获得采样后同 <code class="highlighter-rouge">ll_scanner_enable_iq_sampling</code> 一样，也是通过
-<code class="highlighter-rouge">HCI_SUBEVENT_LE_VENDOR_PRO_CONNECTIONLESS_IQ_REPORT</code> 事件上报 IQ 数据。
+    <p>获得采样后同 <code class="language-plaintext highlighter-rouge">ll_scanner_enable_iq_sampling</code> 一样，也是通过
+<code class="language-plaintext highlighter-rouge">HCI_SUBEVENT_LE_VENDOR_PRO_CONNECTIONLESS_IQ_REPORT</code> 事件上报 IQ 数据。
 具体使用方法请参考 <em>Central CTE</em> 示例。</p>
   </li>
 </ol>

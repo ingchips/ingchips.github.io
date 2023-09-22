@@ -269,10 +269,10 @@
     <p>[<strong>新增</strong>] 回调函数表相关 API <span style="background:yellow">(<strong>8.3.0</strong>)</span></p>
 
     <p>现有的 Platform 回调（事件及中断）注册使用了数组，占用一定的内存。考虑到内存资源宝贵，新增了两个 API，
-  <code class="highlighter-rouge">platform_set_evt_callback_table</code> 和 <code class="highlighter-rouge">platform_set_irq_callback_table</code>，可以一次性为所有事件、中断注册回调函数，
+  <code class="language-plaintext highlighter-rouge">platform_set_evt_callback_table</code> 和 <code class="language-plaintext highlighter-rouge">platform_set_irq_callback_table</code>，可以一次性为所有事件、中断注册回调函数，
   而且整个函数表可存储于 Flash。</p>
 
-    <p>下面的代码定义了回调函数表，并通过 <code class="highlighter-rouge">platform_set_evt_callback_table</code> 注册。</p>
+    <p>下面的代码定义了回调函数表，并通过 <code class="language-plaintext highlighter-rouge">platform_set_evt_callback_table</code> 注册。</p>
 
     <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">const</span> <span class="n">platform_evt_cb_table_t</span> <span class="n">evt_cb_table</span> <span class="o">=</span>
   <span class="p">{</span>
@@ -294,9 +294,9 @@
 </code></pre></div>    </div>
 
     <p>对于同一种回调类型（事件或者中断），不可混用两种注册方式。例如，对于事件回调，程序里不能既使用
-  <code class="highlighter-rouge">platform_set_evt_callback_table</code> 又使用 <code class="highlighter-rouge">platform_set_evt_callback</code>。</p>
+  <code class="language-plaintext highlighter-rouge">platform_set_evt_callback_table</code> 又使用 <code class="language-plaintext highlighter-rouge">platform_set_evt_callback</code>。</p>
 
-    <p>对于 CPU 而言，从深睡眠唤醒后中断恢复为屏蔽状态，新添了用于使能中断的 <code class="highlighter-rouge">platform_enable_irq</code>。</p>
+    <p>对于 CPU 而言，从深睡眠唤醒后中断恢复为屏蔽状态，新添了用于使能中断的 <code class="language-plaintext highlighter-rouge">platform_enable_irq</code>。</p>
 
     <div class="note">
   <strong>强烈建议:</strong>
@@ -308,10 +308,10 @@
 
     <ul>
       <li>
-        <p>锁频。使用 <code class="highlighter-rouge">ll_lock_frequency</code> 锁频后，所有的蓝牙活动都被固定在指定的信道。使用 <code class="highlighter-rouge">ll_unlock_frequency</code> 可解锁。</p>
+        <p>锁频。使用 <code class="language-plaintext highlighter-rouge">ll_lock_frequency</code> 锁频后，所有的蓝牙活动都被固定在指定的信道。使用 <code class="language-plaintext highlighter-rouge">ll_unlock_frequency</code> 可解锁。</p>
       </li>
       <li>
-        <p>广播间隔不再要求必须 &gt;= 20ms。<code class="highlighter-rouge">gap_set_ext_adv_para</code> 里的 <code class="highlighter-rouge">interval</code> 参数允许填 1。</p>
+        <p>广播间隔不再要求必须 &gt;= 20ms。<code class="language-plaintext highlighter-rouge">gap_set_ext_adv_para</code> 里的 <code class="language-plaintext highlighter-rouge">interval</code> 参数允许填 1。</p>
       </li>
       <li>
         <p>仅限 <strong>ING916</strong>：允许传统广播数据长度超过规范定义的 31 字节</p>
@@ -327,7 +327,7 @@
   <li>
     <p>[<strong>修正</strong>] ING916：持久化寄存器 API <span style="background:yellow">(<strong>8.3.0</strong>)</span></p>
 
-    <p>ING916 上的 <code class="highlighter-rouge">platform_write_persistent_reg</code>、<code class="highlighter-rouge">platform_read_persistent_reg</code> 功能现已正常。</p>
+    <p>ING916 上的 <code class="language-plaintext highlighter-rouge">platform_write_persistent_reg</code>、<code class="language-plaintext highlighter-rouge">platform_read_persistent_reg</code> 功能现已正常。</p>
   </li>
   <li>
     <p>[<strong>新增</strong>] <em>mini</em> 软件包 <span style="background:yellow">(<strong>8.3.0</strong>)</span></p>
@@ -335,8 +335,8 @@
     <p>对于简单的应用而言，内存需求很小，为此，SDK 提供了 <em>mini</em> 软件包。这种软件里的 BLE
   协议栈只占用 8KiB SHARE 内存，SYS 内存小于 16KiB。<strong>协议栈的功能受限</strong>，只支持一组广播集，一个连接。</p>
 
-    <p>App 通过 <code class="highlighter-rouge">SYSCTRL_SelectMemoryBlocks</code> 可关闭未使用的内存块，节省功耗。
-  比如 SYS 内存总占用小于 16KiB 时就在 <code class="highlighter-rouge">app_main</code> 里加一行代码：</p>
+    <p>App 通过 <code class="language-plaintext highlighter-rouge">SYSCTRL_SelectMemoryBlocks</code> 可关闭未使用的内存块，节省功耗。
+  比如 SYS 内存总占用小于 16KiB 时就在 <code class="language-plaintext highlighter-rouge">app_main</code> 里加一行代码：</p>
 
     <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">SYSCTRL_SelectMemoryBlocks</span><span class="p">(</span><span class="n">SYSCTRL_RESERVED_MEM_BLOCKS</span><span class="p">);</span>
 </code></pre></div>    </div>
@@ -375,7 +375,7 @@
   <li>
     <p>[<strong>修正</strong>] Controller 里对 <em>LL_CONNECTION_PARAM_RSP</em> 的处理 <span style="background:yellow">(<strong>8.3.0</strong>)</span></p>
 
-    <p>当 <code class="highlighter-rouge">referenceEventCount</code> 字段小于或等于当前的 EventCount 且差别不大时，逻辑有误，导致断连接。现已修正。</p>
+    <p>当 <code class="language-plaintext highlighter-rouge">referenceEventCount</code> 字段小于或等于当前的 EventCount 且差别不大时，逻辑有误，导致断连接。现已修正。</p>
   </li>
   <li>
     <p>[<strong>修正</strong>] 启用 Enhanced Ticks 时的稳定性问题 <span style="background:yellow">(<strong>8.3.0</strong>)</span></p>
@@ -385,12 +385,12 @@
   <li>
     <p>[<strong>更新</strong>] API：platform_install_task_stack <span style="background:yellow">(<strong>8.3.0</strong>)</span></p>
 
-    <p>现在 <code class="highlighter-rouge">platform_install_task_stack</code> 支持为 Timer 任务重新配置栈空间。旧版本仅支持 Controller/Host 等两个任务。</p>
+    <p>现在 <code class="language-plaintext highlighter-rouge">platform_install_task_stack</code> 支持为 Timer 任务重新配置栈空间。旧版本仅支持 Controller/Host 等两个任务。</p>
   </li>
   <li>
     <p>[<strong>更新</strong>] 几个 ATT API 的签名 <span style="background:yellow">(<strong>8.3.0</strong>)</span></p>
 
-    <p><code class="highlighter-rouge">att_server_notify</code> 和 <code class="highlighter-rouge">att_server_indicate</code> 的数据参数现在使用 <code class="highlighter-rouge">const</code> 修饰。</p>
+    <p><code class="language-plaintext highlighter-rouge">att_server_notify</code> 和 <code class="language-plaintext highlighter-rouge">att_server_indicate</code> 的数据参数现在使用 <code class="language-plaintext highlighter-rouge">const</code> 修饰。</p>
   </li>
   <li>
     <p>[<strong>修正</strong>] 8.3.0 引入的低功耗下 BLE 加密无法完成的问题 <span style="background:yellow">(<strong>8.3.2</strong>)</span></p>
@@ -399,14 +399,14 @@
     <p>[<strong>新增</strong>] 3 个 LL API <span style="background:yellow">(<strong>8.3.3</strong>)</span></p>
 
     <ul>
-      <li><code class="highlighter-rouge">ll_aes_encrypt</code> 用于以阻塞方式快速执行 AES 加密（所有软件包）</li>
-      <li><code class="highlighter-rouge">ll_get_conn_info</code>, <code class="highlighter-rouge">ll_get_conn_events_info</code>：用于获取连接事件的相关信息（目前仅存在于 <em>exp</em> 软件包）</li>
+      <li><code class="language-plaintext highlighter-rouge">ll_aes_encrypt</code> 用于以阻塞方式快速执行 AES 加密（所有软件包）</li>
+      <li><code class="language-plaintext highlighter-rouge">ll_get_conn_info</code>, <code class="language-plaintext highlighter-rouge">ll_get_conn_events_info</code>：用于获取连接事件的相关信息（目前仅存在于 <em>exp</em> 软件包）</li>
     </ul>
   </li>
   <li>
-    <p>[<strong>更新</strong>] <code class="highlighter-rouge">gap_start_ccm</code> <span style="background:yellow">(<strong>8.3.3</strong>)</span></p>
+    <p>[<strong>更新</strong>] <code class="language-plaintext highlighter-rouge">gap_start_ccm</code> <span style="background:yellow">(<strong>8.3.3</strong>)</span></p>
 
-    <p>与 <code class="highlighter-rouge">gap_aes_encrypt</code> 类似，新的 <code class="highlighter-rouge">gap_start_ccm</code> 增加了两个参数用于指定计算完成时的回调：</p>
+    <p>与 <code class="language-plaintext highlighter-rouge">gap_aes_encrypt</code> 类似，新的 <code class="language-plaintext highlighter-rouge">gap_start_ccm</code> 增加了两个参数用于指定计算完成时的回调：</p>
 
     <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">gap_hci_cmd_complete_cb_t</span> <span class="n">cb</span><span class="p">,</span> <span class="c1">// 计算完成后的回调</span>
   <span class="kt">void</span> <span class="o">*</span><span class="n">user_data</span>               <span class="c1">// 回调的用户数据</span>
@@ -439,16 +439,16 @@
     <p>[<strong>更新</strong>] ING916: QUERY_DEEP_SLEEP_ALLOWED 支持返回 PLATFORM_ALLOW_BLE_ONLY_SLEEP  <span style="background:yellow">(<strong>8.3.5</strong>)</span></p>
   </li>
   <li>
-    <p>[<strong>更新</strong>] ING916: <code class="highlighter-rouge">platform_auto_tune()</code> 现在总是调整到 &lt;= 32768Hz 的状态 <span style="background:yellow">(<strong>8.3.6</strong>)</span></p>
+    <p>[<strong>更新</strong>] ING916: <code class="language-plaintext highlighter-rouge">platform_auto_tune()</code> 现在总是调整到 &lt;= 32768Hz 的状态 <span style="background:yellow">(<strong>8.3.6</strong>)</span></p>
 
-    <p>由于 RTC 时钟对于  &gt; 32768Hz 的 32k 时钟支持的频率范围有限，所以 <code class="highlighter-rouge">platform_auto_tune()</code> 现在总是调整到 &lt;= 32768Hz
+    <p>由于 RTC 时钟对于  &gt; 32768Hz 的 32k 时钟支持的频率范围有限，所以 <code class="language-plaintext highlighter-rouge">platform_auto_tune()</code> 现在总是调整到 &lt;= 32768Hz
   且尽量接近 32768Hz 的状态。</p>
   </li>
   <li>
-    <p>[<strong>更新</strong>] ING916: <code class="highlighter-rouge">platform_shutdown()</code> 默认使用 DEEP sleep 实现 <span style="background:yellow">(<strong>8.3.6</strong>)</span></p>
+    <p>[<strong>更新</strong>] ING916: <code class="language-plaintext highlighter-rouge">platform_shutdown()</code> 默认使用 DEEP sleep 实现 <span style="background:yellow">(<strong>8.3.6</strong>)</span></p>
   </li>
   <li>
-    <p>[<strong>修正</strong>] 某些情况下 <code class="highlighter-rouge">ll_get_conn_events_info</code> 输出的连接事件信息有误 (<em>Experimental</em> 软件包) <span style="background:yellow">(<strong>8.3.6</strong>)</span></p>
+    <p>[<strong>修正</strong>] 某些情况下 <code class="language-plaintext highlighter-rouge">ll_get_conn_events_info</code> 输出的连接事件信息有误 (<em>Experimental</em> 软件包) <span style="background:yellow">(<strong>8.3.6</strong>)</span></p>
   </li>
   <li>
     <p>[<strong>修正</strong>] 带确认的 Raw Packet：Responder 的数据无法如预期地得到对端的确认 (<em>Extension</em> 和 <em>Experimental</em> 软件包) <span style="background:yellow">(<strong>8.3.6</strong>)</span></p>
@@ -462,12 +462,12 @@
   <li>
     <p>[<strong>更新</strong>] ING916: 改善 <em>mass_conn</em> 软件包在设置了较少的连接数后的吞吐率 <span style="background:yellow">(<strong>8.3.7</strong>)</span></p>
 
-    <p><em>mass_conn</em> 软件包吞吐率较低。通过 <code class="highlighter-rouge">ll_set_max_conn_number</code> 设置较小的并发连接数可提高 <em>mass_conn</em> 软件包吞吐率。</p>
+    <p><em>mass_conn</em> 软件包吞吐率较低。通过 <code class="language-plaintext highlighter-rouge">ll_set_max_conn_number</code> 设置较小的并发连接数可提高 <em>mass_conn</em> 软件包吞吐率。</p>
   </li>
   <li>
     <p>[<strong>更新</strong>] 连接事件信息获取接口（目前仅存在于 <em>exp</em> 软件包） <span style="background:yellow">(<strong>8.3.7</strong>)</span></p>
 
-    <p>涉及 <code class="highlighter-rouge">ll_get_conn_info</code>, <code class="highlighter-rouge">ll_get_conn_events_info</code>。</p>
+    <p>涉及 <code class="language-plaintext highlighter-rouge">ll_get_conn_info</code>, <code class="language-plaintext highlighter-rouge">ll_get_conn_events_info</code>。</p>
   </li>
   <li>
     <p>[<strong>新增</strong>] Channel map 更新事件（目前仅存在于 <em>exp</em> 软件包） <span style="background:yellow">(<strong>8.3.7</strong>)</span></p>
@@ -530,7 +530,7 @@
     <p>[<strong>更新</strong>] ING916: ADC 支持更多的工厂数据格式 <span style="background:yellow">(<strong>8.3.5</strong>)</span></p>
   </li>
   <li>
-    <p>[<strong>新增</strong>] <code class="highlighter-rouge">SYSCTRL_Init</code> 函数 <span style="background:yellow">(<strong>8.3.5</strong>)</span></p>
+    <p>[<strong>新增</strong>] <code class="language-plaintext highlighter-rouge">SYSCTRL_Init</code> 函数 <span style="background:yellow">(<strong>8.3.5</strong>)</span></p>
   </li>
   <li>
     <p>[<strong>更新</strong>] ING916: SPI 增加关于 格式/Dummy/XiP 的接口 <span style="background:yellow">(<strong>8.3.5</strong>)</span></p>
@@ -551,10 +551,10 @@
     <p>[<strong>修正</strong>] ING916：工厂数据格式定义  <span style="background:yellow">(<strong>8.3.8</strong>)</span></p>
   </li>
   <li>
-    <p>[<strong>更新</strong>] ING918：SPI 增加新的工作模式 <code class="highlighter-rouge">NONE_DATA</code>  <span style="background:yellow">(<strong>8.3.8</strong>)</span></p>
+    <p>[<strong>更新</strong>] ING918：SPI 增加新的工作模式 <code class="language-plaintext highlighter-rouge">NONE_DATA</code>  <span style="background:yellow">(<strong>8.3.8</strong>)</span></p>
   </li>
   <li>
-    <p>[<strong>修正</strong>] ING916：<code class="highlighter-rouge">write_flash()</code> 发生错误时的行为  <span style="background:yellow">(<strong>8.3.9</strong>)</span></p>
+    <p>[<strong>修正</strong>] ING916：<code class="language-plaintext highlighter-rouge">write_flash()</code> 发生错误时的行为  <span style="background:yellow">(<strong>8.3.9</strong>)</span></p>
   </li>
 </ul>
 
@@ -572,7 +572,7 @@
   <li>
     <p>[修正] Mesh 库: 堆溢出等问题 <span style="background:yellow">(<strong>8.3.6</strong>)</span></p>
 
-    <p>改进 Mesh 库的消息缓存，避免堆溢出导致的 HardFault；修复 <code class="highlighter-rouge">cfg_srv</code> 结构体无法保存到 Flash 的问题。</p>
+    <p>改进 Mesh 库的消息缓存，避免堆溢出导致的 HardFault；修复 <code class="language-plaintext highlighter-rouge">cfg_srv</code> 结构体无法保存到 Flash 的问题。</p>
 
     <p>Mesh 库内部版本号变为 v1.1.2。</p>
   </li>
@@ -669,7 +669,7 @@
     <p>[<strong>更新</strong>] Cube：生成 RF 控制代码；修正了一些问题 <span style="background:yellow">(<strong>8.3.8</strong>)</span></p>
   </li>
   <li>
-    <p>[<strong>更新</strong>] <code class="highlighter-rouge">gen_files</code>：为 ING916 生成 <code class="highlighter-rouge">platform_lock.hex</code> 文件 <span style="background:yellow">(<strong>8.3.8</strong>)</span></p>
+    <p>[<strong>更新</strong>] <code class="language-plaintext highlighter-rouge">gen_files</code>：为 ING916 生成 <code class="language-plaintext highlighter-rouge">platform_lock.hex</code> 文件 <span style="background:yellow">(<strong>8.3.8</strong>)</span></p>
   </li>
   <li>
     <p>[<strong>修正</strong>] Wizard <em>Check and Fix</em> 时，某些地址没有更新 <span style="background:yellow">(<strong>8.3.9</strong>)</span></p>

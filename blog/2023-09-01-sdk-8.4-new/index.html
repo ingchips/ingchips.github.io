@@ -263,15 +263,15 @@
     <p>该更新针对空包维持连接状态优化了功耗。</p>
   </li>
   <li>
-    <p>[<strong>新增</strong>] BLE 协议栈 API: <code class="highlighter-rouge">btstack_reset</code></p>
+    <p>[<strong>新增</strong>] BLE 协议栈 API: <code class="language-plaintext highlighter-rouge">btstack_reset</code></p>
 
     <p>可完整复位协议栈。</p>
   </li>
   <li>
-    <p>[<strong>新增</strong>] platform event: <code class="highlighter-rouge">PLATFORM_CB_EVT_HCI_RECV</code></p>
+    <p>[<strong>新增</strong>] platform event: <code class="language-plaintext highlighter-rouge">PLATFORM_CB_EVT_HCI_RECV</code></p>
   </li>
   <li>
-    <p>[<strong>新增</strong>] platform API: <code class="highlighter-rouge">platform_get_link_layer_interf</code></p>
+    <p>[<strong>新增</strong>] platform API: <code class="language-plaintext highlighter-rouge">platform_get_link_layer_interf</code></p>
 
     <p>借助以上两个接口可完整暴露 Controller 的功能，为开发 BLE Dongle 带来可能。后续版本将提供示例。</p>
   </li>
@@ -281,18 +281,18 @@
 
 <ul>
   <li>
-    <p>[<strong>新增</strong>] ING916xx: Flash 写保护接口 <code class="highlighter-rouge">flash_enable_write_protection</code></p>
+    <p>[<strong>新增</strong>] ING916xx: Flash 写保护接口 <code class="language-plaintext highlighter-rouge">flash_enable_write_protection</code></p>
 
     <p>通过此接口可将 ING916xx 内置的 Flash 的全部或者一部分置为写保护状态。再次向写保护区域写入数据时，需要先解除写保护。</p>
   </li>
   <li>
-    <p>[<strong>更新</strong>] ING916xx: USB BPS 头文件中增加 <code class="highlighter-rouge">bsp_usb_disable</code></p>
+    <p>[<strong>更新</strong>] ING916xx: USB BPS 头文件中增加 <code class="language-plaintext highlighter-rouge">bsp_usb_disable</code></p>
   </li>
   <li>
-    <p>[<strong>修正</strong>] ING916xx: <code class="highlighter-rouge">KEYSCAN_Initialize</code> 对 GPIO 上下拉的配置。</p>
+    <p>[<strong>修正</strong>] ING916xx: <code class="language-plaintext highlighter-rouge">KEYSCAN_Initialize</code> 对 GPIO 上下拉的配置。</p>
   </li>
   <li>
-    <p>[<strong>修正</strong>] ING916xx: <code class="highlighter-rouge">SYSCTRL_SelectMemoryBlocks</code> 潜在的睡眠电流达 20uA 的问题</p>
+    <p>[<strong>修正</strong>] ING916xx: <code class="language-plaintext highlighter-rouge">SYSCTRL_SelectMemoryBlocks</code> 潜在的睡眠电流达 20uA 的问题</p>
   </li>
 </ul>
 
@@ -323,8 +323,8 @@
   <li>
     <p>[<strong>修正</strong>] SM：配对设备数量超出存储容量时不报错</p>
 
-    <p>过去，当超出存储容量时，SM 模块仍会在 SM_EVENT_STATE_CHANGED 事件中报告 <code class="highlighter-rouge">SM_FINAL_PAIRED</code> 等成功信息；
-  现在，SM 模块将在 SM_EVENT_STATE_CHANGED 事件中报告 <code class="highlighter-rouge">SM_FINAL_FAIL_OUT_OF_STORAGE</code>。</p>
+    <p>过去，当超出存储容量时，SM 模块仍会在 SM_EVENT_STATE_CHANGED 事件中报告 <code class="language-plaintext highlighter-rouge">SM_FINAL_PAIRED</code> 等成功信息；
+  现在，SM 模块将在 SM_EVENT_STATE_CHANGED 事件中报告 <code class="language-plaintext highlighter-rouge">SM_FINAL_FAIL_OUT_OF_STORAGE</code>。</p>
   </li>
   <li>
     <p>[<strong>修正</strong>] Controller：使用可解析地址的定向广播时的兼容性</p>
@@ -334,19 +334,19 @@
   <li>
     <p>[<strong>更新</strong>] 键值存储模块（kv_storage）现在允许自定义后端实现</p>
 
-    <p>默认的 KV 后端在写入时通过 <code class="highlighter-rouge">f_kv_write_to_nvm</code> 回调一并写入所有数据。
-  如果发现默认的 KV 实现方式不合适，可以在 <code class="highlighter-rouge">app_main</code> 里调用 <code class="highlighter-rouge">kv_init_backend</code>，传入自定义的后端接口。</p>
+    <p>默认的 KV 后端在写入时通过 <code class="language-plaintext highlighter-rouge">f_kv_write_to_nvm</code> 回调一并写入所有数据。
+  如果发现默认的 KV 实现方式不合适，可以在 <code class="language-plaintext highlighter-rouge">app_main</code> 里调用 <code class="language-plaintext highlighter-rouge">kv_init_backend</code>，传入自定义的后端接口。</p>
 
     <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kt">void</span> <span class="nf">kv_init_backend</span><span class="p">(</span><span class="k">const</span> <span class="n">kv_backend_t</span> <span class="o">*</span><span class="n">backend</span><span class="p">);</span>
 </code></pre></div>    </div>
 
-    <p>自定义后端带来了灵活性，比如利用 <code class="highlighter-rouge">kv_value_modified_of_key</code> 接口可实现小颗粒度（K-V 对）的精细化存储。</p>
+    <p>自定义后端带来了灵活性，比如利用 <code class="language-plaintext highlighter-rouge">kv_value_modified_of_key</code> 接口可实现小颗粒度（K-V 对）的精细化存储。</p>
   </li>
   <li>
     <p>[<strong>修正</strong>] Host：使用公共地址（public address）时无法配对</p>
   </li>
   <li>
-    <p>[<strong>修正</strong>] ING916xx: <code class="highlighter-rouge">platform_switch_app</code> 功能异常</p>
+    <p>[<strong>修正</strong>] ING916xx: <code class="language-plaintext highlighter-rouge">platform_switch_app</code> 功能异常</p>
   </li>
   <li>
     <p>[<strong>修正</strong>] ING916xx: BLE_ONLY_SLEEP 睡眠模式的稳定性问题</p>
@@ -355,20 +355,20 @@
     <p>[<strong>更新</strong>] 提供更多的定时器接口</p>
 
     <ul>
-      <li><code class="highlighter-rouge">platform_get_timer_counter</code></li>
-      <li><code class="highlighter-rouge">platform_set_abs_timer</code></li>
-      <li><code class="highlighter-rouge">platform_delete_timer</code></li>
+      <li><code class="language-plaintext highlighter-rouge">platform_get_timer_counter</code></li>
+      <li><code class="language-plaintext highlighter-rouge">platform_set_abs_timer</code></li>
+      <li><code class="language-plaintext highlighter-rouge">platform_delete_timer</code></li>
     </ul>
 
-    <p>相比原来单一的 <code class="highlighter-rouge">platform_set_timer</code>，现在的接口可实现更多功能，比如准确模拟周期性定时器。</p>
+    <p>相比原来单一的 <code class="language-plaintext highlighter-rouge">platform_set_timer</code>，现在的接口可实现更多功能，比如准确模拟周期性定时器。</p>
   </li>
   <li>
-    <p>[<strong>新增</strong>] GAP API：<code class="highlighter-rouge">gap_set_callback_for_next_hci</code></p>
+    <p>[<strong>新增</strong>] GAP API：<code class="language-plaintext highlighter-rouge">gap_set_callback_for_next_hci</code></p>
 
     <p>具体用途将在后续版本中演示。</p>
   </li>
   <li>
-    <p>[<strong>新增</strong>] SM API：<code class="highlighter-rouge">sm_register_external_ltk_callback</code></p>
+    <p>[<strong>新增</strong>] SM API：<code class="language-plaintext highlighter-rouge">sm_register_external_ltk_callback</code></p>
 
     <p>一些 BLE 应用可能会以自定义的方式协商 LTK（比如 Find My）。通过此 API 注册回调，
   可将这种外部生成的 LTK 传递给 SM 层。</p>
@@ -377,7 +377,7 @@
   <strong>注意：</strong>此 API 处于实验阶段，后续版本可能修改。</div>
   </li>
   <li>
-    <p>[<strong>新增</strong>] 链路层配置项：<code class="highlighter-rouge">LL_CFG_FEATURE_SET_MASK</code></p>
+    <p>[<strong>新增</strong>] 链路层配置项：<code class="language-plaintext highlighter-rouge">LL_CFG_FEATURE_SET_MASK</code></p>
 
     <p>有时需要“模仿”其它 BLE 设备的链路层协议流程，而支持的特性对后续的链路层协议流程影响很大。
   为此增加了链路层特性掩码，方便开发者即时调整上报给对端设备的链路层特性。例如，模仿只支持加密和 2M PHY
@@ -401,16 +401,16 @@
 
 <ul>
   <li>
-    <p>[<strong>修正</strong>] ING916xx: <code class="highlighter-rouge">SYSCTRL_EnableConfigClocksAfterWakeup</code> 与 Flash 读保护功能冲突</p>
+    <p>[<strong>修正</strong>] ING916xx: <code class="language-plaintext highlighter-rouge">SYSCTRL_EnableConfigClocksAfterWakeup</code> 与 Flash 读保护功能冲突</p>
   </li>
   <li>
-    <p>[<strong>修正</strong>] ING916xx: <code class="highlighter-rouge">SYSCTRL_CacheControl</code> 无法配置 D-Cache 的问题</p>
+    <p>[<strong>修正</strong>] ING916xx: <code class="language-plaintext highlighter-rouge">SYSCTRL_CacheControl</code> 无法配置 D-Cache 的问题</p>
   </li>
   <li>
-    <p>[<strong>修正</strong>] ING916xx: <code class="highlighter-rouge">apSSP_DeviceParametersSet</code> 参数范围溢出时寄存器配置异常</p>
+    <p>[<strong>修正</strong>] ING916xx: <code class="language-plaintext highlighter-rouge">apSSP_DeviceParametersSet</code> 参数范围溢出时寄存器配置异常</p>
   </li>
   <li>
-    <p>[<strong>修正</strong>] ING916xx: <code class="highlighter-rouge">ADC_GetVol</code> 遇到最大读数时返回值错误</p>
+    <p>[<strong>修正</strong>] ING916xx: <code class="language-plaintext highlighter-rouge">ADC_GetVol</code> 遇到最大读数时返回值错误</p>
   </li>
   <li>
     <p>[<strong>修正</strong>] ING916xx: ADC/PDM 的时钟分频范围</p>
@@ -421,8 +421,8 @@
     <p>新增了两个相关的接口：</p>
 
     <ul>
-      <li><code class="highlighter-rouge">SYSCTRL_EnableClockOutput</code></li>
-      <li><code class="highlighter-rouge">PINCTRL_SelClockOutput</code></li>
+      <li><code class="language-plaintext highlighter-rouge">SYSCTRL_EnableClockOutput</code></li>
+      <li><code class="language-plaintext highlighter-rouge">PINCTRL_SelClockOutput</code></li>
     </ul>
   </li>
 </ul>
@@ -430,7 +430,7 @@
 <h3 id="3-示例">3. 示例</h3>
 
 <ul>
-  <li>[<strong>更新</strong>] <code class="highlighter-rouge">HID Keyboard</code>：演示里 <code class="highlighter-rouge">kv_init_backend</code> 的用法</li>
+  <li>[<strong>更新</strong>] <code class="language-plaintext highlighter-rouge">HID Keyboard</code>：演示里 <code class="language-plaintext highlighter-rouge">kv_init_backend</code> 的用法</li>
 </ul>
 
 <h3 id="4-工具">4. 工具</h3>

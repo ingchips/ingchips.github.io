@@ -318,7 +318,7 @@
     <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="n">EPD_Display</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
 </code></pre></div>    </div>
 
-    <p>这里 <code class="highlighter-rouge">image</code> 是长度为 $5000$ 的 <code class="highlighter-rouge">uint8_t</code> 数组，每个比特对应屏幕的一个像素：$1$ 为“白”，$0$ 为“黑”。从屏幕的左上角按手写顺序到右下角将像素点编号为
+    <p>这里 <code class="language-plaintext highlighter-rouge">image</code> 是长度为 $5000$ 的 <code class="language-plaintext highlighter-rouge">uint8_t</code> 数组，每个比特对应屏幕的一个像素：$1$ 为“白”，$0$ 为“黑”。从屏幕的左上角按手写顺序到右下角将像素点编号为
  $0..4999$，每 $8$ 个像素切分为一组，一组就与数组里的一个字节相对应：最高位上的比特对应最左边的像素。—— 整个对应关系非常自然、直观。</p>
   </li>
 </ol>
@@ -327,7 +327,7 @@
 卡分配两个独立的 SPI，避免频繁为两个模块修改 SPI 参数。两个 SPI 一个位于 APB 总线上，一个位于 AHB 总线上，我们将 AHB 总线上的 SPI0 分配给 SD 卡，
 APB 总线上的 SPI1 分配给墨水屏。</p>
 
-<p>墨水屏的 SPI 适配沿用厂家 <em>Dev_Config.c</em> 模块，对 <code class="highlighter-rouge">eink_conf</code> 稍作扩展：</p>
+<p>墨水屏的 SPI 适配沿用厂家 <em>Dev_Config.c</em> 模块，对 <code class="language-plaintext highlighter-rouge">eink_conf</code> 稍作扩展：</p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">eink_conf_t</span> <span class="n">econf</span> <span class="o">=</span>
 <span class="p">{</span>
@@ -360,7 +360,7 @@ APB 总线上的 SPI1 分配给墨水屏。</p>
 <span class="p">}</span>
 </code></pre></div></div>
 
-<p><code class="highlighter-rouge">SPI_Init()</code> 用来配置 SPI 参数：</p>
+<p><code class="language-plaintext highlighter-rouge">SPI_Init()</code> 用来配置 SPI 参数：</p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">static</span> <span class="kt">void</span> <span class="nf">SPI_Init</span><span class="p">(</span><span class="n">SSP_TypeDef</span> <span class="o">*</span><span class="n">SSP_Ptr</span><span class="p">)</span>
 <span class="p">{</span>
@@ -379,9 +379,9 @@ APB 总线上的 SPI1 分配给墨水屏。</p>
 <h2 id="2-sd-卡与文件系统">2. SD 卡与文件系统</h2>
 
 <p>这部分直接把 <em>Data Logger</em> 示例的相关代码（<em>Fatfs</em> 完整代码、SPI 适配模块 <em>mmc_spi.c</em>）复制过来，再修改管脚配置。
-配置一个 1kHz 的硬件定时器，在中断处理程序里调用 <code class="highlighter-rouge">disk_timerproc()</code>。由于这个中断产生频率较高，
+配置一个 1kHz 的硬件定时器，在中断处理程序里调用 <code class="language-plaintext highlighter-rouge">disk_timerproc()</code>。由于这个中断产生频率较高，
 为了 <a href="../2021-09-29-sdk-6.5-new#15-freertos-相关">保证 SysTick 的准确性</a>，
-记得在 <code class="highlighter-rouge">app_main</code> 里使能 <code class="highlighter-rouge">PLATFORM_CFG_RTOS_ENH_TICK</code>：</p>
+记得在 <code class="language-plaintext highlighter-rouge">app_main</code> 里使能 <code class="language-plaintext highlighter-rouge">PLATFORM_CFG_RTOS_ENH_TICK</code>：</p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">platform_config</span><span class="p">(</span><span class="n">PLATFORM_CFG_RTOS_ENH_TICK</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
 </code></pre></div></div>
@@ -441,8 +441,8 @@ APB 总线上的 SPI1 分配给墨水屏。</p>
             <span class="n">等待用户按键</span>
 </code></pre></div></div>
 
-<p>我们使用一个 <code class="highlighter-rouge">uint8_t prob</code> 表示词汇的学习进度，<code class="highlighter-rouge">0</code> 表示学会了。当用户说<strong>会</strong>一个词汇时，就减小 <code class="highlighter-rouge">prob</code>，反之则增大。
-随机选择词汇时，<code class="highlighter-rouge">prob</code> 越大，这个词汇被选中的概率越大。这个选择函数如下所示。</p>
+<p>我们使用一个 <code class="language-plaintext highlighter-rouge">uint8_t prob</code> 表示词汇的学习进度，<code class="language-plaintext highlighter-rouge">0</code> 表示学会了。当用户说<strong>会</strong>一个词汇时，就减小 <code class="language-plaintext highlighter-rouge">prob</code>，反之则增大。
+随机选择词汇时，<code class="language-plaintext highlighter-rouge">prob</code> 越大，这个词汇被选中的概率越大。这个选择函数如下所示。</p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">select_word</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="o">*</span><span class="n">prob</span><span class="p">,</span> <span class="kt">int</span> <span class="n">wc</span><span class="p">)</span>
 <span class="p">{</span>

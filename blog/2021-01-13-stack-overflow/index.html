@@ -245,9 +245,9 @@
 
 <p>我们以 Gnu Arm Toolchain 为例，移植 SDK 里的“UART GATT Console”示例（这个示例演示了 GATT Client
 各种 API 的使用）。具体移植步骤如下。1) 使用 ingWizard 创建一个全新的 Gnu Arm Toolchain 项目；
-2) 备份 <code class="highlighter-rouge">main.c</code> 里的 <code class="highlighter-rouge">_write</code> 函数；3) 将 UART GATT Console 示例下除 startup_ing91800.s
-外的所有源代码复制到新建项目目录下；4) 用备份的 <code class="highlighter-rouge">_write</code> 函数替换掉 <code class="highlighter-rouge">main.c</code> 里的 <code class="highlighter-rouge">fputc</code> 函数；
-5) 修改 <code class="highlighter-rouge">makefile</code>，将新的源文件 <code class="highlighter-rouge">src/uart_console.c</code> 追加到变量 <code class="highlighter-rouge">PROJECT_FILES</code>:</p>
+2) 备份 <code class="language-plaintext highlighter-rouge">main.c</code> 里的 <code class="language-plaintext highlighter-rouge">_write</code> 函数；3) 将 UART GATT Console 示例下除 startup_ing91800.s
+外的所有源代码复制到新建项目目录下；4) 用备份的 <code class="language-plaintext highlighter-rouge">_write</code> 函数替换掉 <code class="language-plaintext highlighter-rouge">main.c</code> 里的 <code class="language-plaintext highlighter-rouge">fputc</code> 函数；
+5) 修改 <code class="language-plaintext highlighter-rouge">makefile</code>，将新的源文件 <code class="language-plaintext highlighter-rouge">src/uart_console.c</code> 追加到变量 <code class="language-plaintext highlighter-rouge">PROJECT_FILES</code>:</p>
 
 <div class="language-makefile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">PROJECT_FILES</span> <span class="o">=</span> src/main.c
 <span class="nv">PROJECT_FILES</span> <span class="o">+=</span> src/profile.c
@@ -259,10 +259,10 @@
 
 <h3 id="栈溢出分析">栈溢出分析</h3>
 
-<p>找到另外一个 BLE 设备，假设其地址 <code class="highlighter-rouge">c3:32:33:4e:5d:7c</code>。在串口输出 <code class="highlighter-rouge">conn c3:32:33:4e:5d:7c</code>
+<p>找到另外一个 BLE 设备，假设其地址 <code class="language-plaintext highlighter-rouge">c3:32:33:4e:5d:7c</code>。在串口输出 <code class="language-plaintext highlighter-rouge">conn c3:32:33:4e:5d:7c</code>
 命令发起连接后，在串口马上看到以下输出：</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HARDFAULT:
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HARDFAULT:
 PC : 0x0001D734 // &lt;- 位于 platform.bin
 LR : 0x0001D319
 PSR: 0x21000200
@@ -273,27 +273,27 @@ P3 : 0x0000FFFF
 R12: 0x20001CA8
 </code></pre></div></div>
 
-<p><code class="highlighter-rouge">PC</code> 找向 <code class="highlighter-rouge">platform.bin</code> 的某处。由于 Keil 版的示例不存在这个 HardFault，所以我们怀疑跟编译工具链有关。
-在 <code class="highlighter-rouge">platform.bin</code> 内部出现 HardFault 往往是发生了内存溢出。由于这个问题是移植代码时出现，基本可以确认为栈溢出。</p>
+<p><code class="language-plaintext highlighter-rouge">PC</code> 找向 <code class="language-plaintext highlighter-rouge">platform.bin</code> 的某处。由于 Keil 版的示例不存在这个 HardFault，所以我们怀疑跟编译工具链有关。
+在 <code class="language-plaintext highlighter-rouge">platform.bin</code> 内部出现 HardFault 往往是发生了内存溢出。由于这个问题是移植代码时出现，基本可以确认为栈溢出。</p>
 
 <p>Arm 社区的<a href="https://community.arm.com/developer/ip-products/processors/b/processors-ip-blog/posts/how-much-stack-memory-do-i-need-for-my-arm-cortex--m-applications">一篇博客</a> 详细介绍了程序所需栈空间大小的评估方法。
-对于 GCC，编译时模块加上 <code class="highlighter-rouge">-fstack-usage</code> 开关时，除了生成“.obj”目标文件，还会产生一个“.su”栈信息文件。
-将这个开关放到 <code class="highlighter-rouge">CFLAGS</code>，重新编译，发现并未生成“.su”文件。因为 <code class="highlighter-rouge">-fstack-usage</code> 开关在编译时而非链接时生效，
-而 <code class="highlighter-rouge">makefile</code> 里指定了 <code class="highlighter-rouge">-flto</code>，编译时无法获取准确的栈占用信息，所以无法生成“.su”文件。</p>
+对于 GCC，编译时模块加上 <code class="language-plaintext highlighter-rouge">-fstack-usage</code> 开关时，除了生成“.obj”目标文件，还会产生一个“.su”栈信息文件。
+将这个开关放到 <code class="language-plaintext highlighter-rouge">CFLAGS</code>，重新编译，发现并未生成“.su”文件。因为 <code class="language-plaintext highlighter-rouge">-fstack-usage</code> 开关在编译时而非链接时生效，
+而 <code class="language-plaintext highlighter-rouge">makefile</code> 里指定了 <code class="language-plaintext highlighter-rouge">-flto</code>，编译时无法获取准确的栈占用信息，所以无法生成“.su”文件。</p>
 
 <div class="note">
 <strong>说明:</strong> ingWizard 生成 GCC 项目时参考 Gnu Arm Toolchain 附带的示例使用了 `-flto`，用户可以根据实际情况调整。
 </div>
 
-<p>去掉 <code class="highlighter-rouge">-flto</code> “.su” 文件就可以生成了。截取 <code class="highlighter-rouge">uart_console.su</code> 里一段如下，使用的栈空间很小：</p>
+<p>去掉 <code class="language-plaintext highlighter-rouge">-flto</code> “.su” 文件就可以生成了。截取 <code class="language-plaintext highlighter-rouge">uart_console.su</code> 里一段如下，使用的栈空间很小：</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>src/uart_console.c:130:5:parse_addr	24	static
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>src/uart_console.c:130:5:parse_addr	24	static
 src/uart_console.c:148:6:cmd_addr	8	static
 </code></pre></div></div>
 
-<p>由于 <code class="highlighter-rouge">-fstack-usage</code> 工作在编译期，无法统计库函数的栈空间大小。直接下载 Gnu Arm Toolchain
+<p>由于 <code class="language-plaintext highlighter-rouge">-fstack-usage</code> 工作在编译期，无法统计库函数的栈空间大小。直接下载 Gnu Arm Toolchain
 的<a href="https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads">源代码</a>，
-发现 <code class="highlighter-rouge">newlib</code>/<code class="highlighter-rouge">newlib-nano</code> 里 <code class="highlighter-rouge">sscanf</code> 的核心代码需要很多栈空间：</p>
+发现 <code class="language-plaintext highlighter-rouge">newlib</code>/<code class="language-plaintext highlighter-rouge">newlib-nano</code> 里 <code class="language-plaintext highlighter-rouge">sscanf</code> 的核心代码需要很多栈空间：</p>
 
 <pre><code class="language-C">int __SVFSCANF_R (struct _reent *rptr, register FILE *fp,
                   char const *fmt0, va_list ap)
@@ -307,17 +307,17 @@ src/uart_console.c:148:6:cmd_addr	8	static
 </code></pre>
 
 <p>为了获取更全面的栈信息，我们找到了一个名为 <a href="https://github.com/kuopinghsu/callgraph-gen">callgraph-gen</a>
-的工具。先 <code class="highlighter-rouge">objdump</code> 反编译 <code class="highlighter-rouge">axf</code>，然后用这个工具生成函数调用图。查看生成的 VCG 发现很多函数的栈空间占用为 <code class="highlighter-rouge">0</code>，
-对比 <code class="highlighter-rouge">callgraph-gen</code> 里识别栈操作的<a href="https://github.com/kuopinghsu/callgraph-gen/blob/7911711c8362e2483a8ba52a965afa4abeef9401/contrib/default.xml#L21">正则表达式</a> 与反编译结果可发现这个工具无法识别
-<code class="highlighter-rouge">stmdb</code>、<code class="highlighter-rouge">sub.w</code> 等指令，所以报告的栈空间占用为 <code class="highlighter-rouge">0</code>。为了尽快看到一些结果，直接将反汇编里的 <code class="highlighter-rouge">sub.w</code> 替换为
-<code class="highlighter-rouge">sub</code>，再次生成函数调用图，显示这个 <code class="highlighter-rouge">__SVFSCANF_R</code> <strong>至少</strong> 使用了 648 字节：</p>
+的工具。先 <code class="language-plaintext highlighter-rouge">objdump</code> 反编译 <code class="language-plaintext highlighter-rouge">axf</code>，然后用这个工具生成函数调用图。查看生成的 VCG 发现很多函数的栈空间占用为 <code class="language-plaintext highlighter-rouge">0</code>，
+对比 <code class="language-plaintext highlighter-rouge">callgraph-gen</code> 里识别栈操作的<a href="https://github.com/kuopinghsu/callgraph-gen/blob/7911711c8362e2483a8ba52a965afa4abeef9401/contrib/default.xml#L21">正则表达式</a> 与反编译结果可发现这个工具无法识别
+<code class="language-plaintext highlighter-rouge">stmdb</code>、<code class="language-plaintext highlighter-rouge">sub.w</code> 等指令，所以报告的栈空间占用为 <code class="language-plaintext highlighter-rouge">0</code>。为了尽快看到一些结果，直接将反汇编里的 <code class="language-plaintext highlighter-rouge">sub.w</code> 替换为
+<code class="language-plaintext highlighter-rouge">sub</code>，再次生成函数调用图，显示这个 <code class="language-plaintext highlighter-rouge">__SVFSCANF_R</code> <strong>至少</strong> 使用了 648 字节：</p>
 
 <p><img src="../img/cg_stack_sscanf.png" alt="" /></p>
 
 <h3 id="静态分析web-版工具">静态分析：Web 版工具</h3>
 
-<p>鉴于这个 <code class="highlighter-rouge">callgraph-gen</code> 存在上述问题，而且生成的图形 VCG 或者 DOT 图形还需要其它工具才能查看，使用不便，
-我们专门开发了一个全新的 Web 版调用图工具 <a href="/web_apps/callgraph"><code class="highlighter-rouge">callgraph</code></a>。
+<p>鉴于这个 <code class="language-plaintext highlighter-rouge">callgraph-gen</code> 存在上述问题，而且生成的图形 VCG 或者 DOT 图形还需要其它工具才能查看，使用不便，
+我们专门开发了一个全新的 Web 版调用图工具 <a href="/web_apps/callgraph"><code class="language-plaintext highlighter-rouge">callgraph</code></a>。
 用这个工具可以直观看到栈空间占用最大的路径，生成的 Graphviz/DOT 图里对这个路径作了高亮处理，非常直观：</p>
 
 <p><img src="../img/web_callgraph.png" alt="" /></p>
@@ -327,16 +327,16 @@ src/uart_console.c:148:6:cmd_addr	8	static
 所得结果有可能偏小。
 </div>
 
-<p>对比 Keil，整个 <code class="highlighter-rouge">cmd_addr</code> 函数链仅消耗 288 字节，近 700 字节或许就是使用 Gnu Arm Toolchain 所要付出的<strong>“免费”的“代价”</strong>。</p>
+<p>对比 Keil，整个 <code class="language-plaintext highlighter-rouge">cmd_addr</code> 函数链仅消耗 288 字节，近 700 字节或许就是使用 Gnu Arm Toolchain 所要付出的<strong>“免费”的“代价”</strong>。</p>
 
 <h3 id="动态分析栈-api">动态分析：栈 API</h3>
 
-<p>为了更好地支持 Gnu Arm Toolchain，SDK 5.3.0 中将引入一个新的 API  <code class="highlighter-rouge">platform_install_isr_stack</code>，使用这个
-API 可以设置一个更大的 ISR 专用栈。同时提供了一个新的 <code class="highlighter-rouge">platform_tools</code> 模块，利用这个模块，
-开发者可以在程序运行期准确地统计函数使用的栈空间。对于 Task 栈，开放了一个新的 API <code class="highlighter-rouge">uxTaskGetStackHighWaterMark</code>，
+<p>为了更好地支持 Gnu Arm Toolchain，SDK 5.3.0 中将引入一个新的 API  <code class="language-plaintext highlighter-rouge">platform_install_isr_stack</code>，使用这个
+API 可以设置一个更大的 ISR 专用栈。同时提供了一个新的 <code class="language-plaintext highlighter-rouge">platform_tools</code> 模块，利用这个模块，
+开发者可以在程序运行期准确地统计函数使用的栈空间。对于 Task 栈，开放了一个新的 API <code class="language-plaintext highlighter-rouge">uxTaskGetStackHighWaterMark</code>，
 开发者使用这个 API 可以评估各个 Task 运行期时的栈空间使用情况，避免栈溢出。</p>
 
-<p>使用 <code class="highlighter-rouge">platform_tools</code> 模块计算出 <code class="highlighter-rouge">sscanf</code> 运行期间实际使用的栈空间为 872 字节。</p>
+<p>使用 <code class="language-plaintext highlighter-rouge">platform_tools</code> 模块计算出 <code class="language-plaintext highlighter-rouge">sscanf</code> 运行期间实际使用的栈空间为 872 字节。</p>
 
 <pre><code class="language-C">int parse_addr(uint8_t *output, const char *param)
 {

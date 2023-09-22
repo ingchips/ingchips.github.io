@@ -237,8 +237,8 @@
 
 <h2 id="平台补丁">平台补丁</h2>
 
-<p>SDK 提供的 <code class="highlighter-rouge">platform.bin</code> 功能固定、不可更改，某些特殊需求——比如在系统复位之后尽快配置看门狗——无法实现。对此，我们开发了平台补丁工具，
-可以将开发者编写的一段程序作为补丁插入到 <code class="highlighter-rouge">platform</code> 已有的中断服务程序之前。</p>
+<p>SDK 提供的 <code class="language-plaintext highlighter-rouge">platform.bin</code> 功能固定、不可更改，某些特殊需求——比如在系统复位之后尽快配置看门狗——无法实现。对此，我们开发了平台补丁工具，
+可以将开发者编写的一段程序作为补丁插入到 <code class="language-plaintext highlighter-rouge">platform</code> 已有的中断服务程序之前。</p>
 
 <p>对补丁程序存有以下限制和注意事项：</p>
 
@@ -247,15 +247,15 @@
     <p>进入补丁程序时，未配置栈空间。因此需要保证 1) 程序中不存在压、弹栈操作，或者 2) 程序自行配置栈空间；</p>
   </li>
   <li>
-    <p>工具会将补丁程序附加到 <code class="highlighter-rouge">platform.bin</code> 最后一页 eFlash 存储空间的空白处，所以其大小受限；</p>
+    <p>工具会将补丁程序附加到 <code class="language-plaintext highlighter-rouge">platform.bin</code> 最后一页 eFlash 存储空间的空白处，所以其大小受限；</p>
   </li>
   <li>
     <p>补丁程序的加载位置不固定。</p>
   </li>
 </ol>
 
-<p><code class="highlighter-rouge">Reset Handler</code> 示例在系统复位之后立即配置看门狗。这个示例使用汇编开发，未使用栈空间，体积也很小。补丁工具会识别
-<code class="highlighter-rouge">Reset_Handler</code> 函数的最后两行代码，自动调整。</p>
+<p><code class="language-plaintext highlighter-rouge">Reset Handler</code> 示例在系统复位之后立即配置看门狗。这个示例使用汇编开发，未使用栈空间，体积也很小。补丁工具会识别
+<code class="language-plaintext highlighter-rouge">Reset_Handler</code> 函数的最后两行代码，自动调整。</p>
 
 <pre><code class="language-asm">Reset_Handler   PROC
                 EXPORT  Reset_Handler
@@ -268,14 +268,14 @@
                 ENDP
 </code></pre>
 
-<p>补丁程序准备好之后，在 <code class="highlighter-rouge">Wizard</code> 里选择菜单 Tools → More → Patching Platform 打开补丁工具。选择
-<code class="highlighter-rouge">platform.bin</code>、补丁程序，然后点击 “Make Patch” 生成带有补丁程序的新的 <code class="highlighter-rouge">platform.bin</code>，烧录时使用
-用这个文件替换掉原有的 <code class="highlighter-rouge">platform.bin</code> 即可。</p>
+<p>补丁程序准备好之后，在 <code class="language-plaintext highlighter-rouge">Wizard</code> 里选择菜单 Tools → More → Patching Platform 打开补丁工具。选择
+<code class="language-plaintext highlighter-rouge">platform.bin</code>、补丁程序，然后点击 “Make Patch” 生成带有补丁程序的新的 <code class="language-plaintext highlighter-rouge">platform.bin</code>，烧录时使用
+用这个文件替换掉原有的 <code class="language-plaintext highlighter-rouge">platform.bin</code> 即可。</p>
 
 <h2 id="简易频偏测量">简易频偏测量</h2>
 
 <p>支持蓝牙频段的频谱仪普遍价格较高，移动性差。现在只需要使用一块 ING9188xx 开发板就可以测量频偏。
-在 <code class="highlighter-rouge">Wizard</code> 里选择菜单 Tools → More → Frequency Offset Tester 打开频偏测量工具：</p>
+在 <code class="language-plaintext highlighter-rouge">Wizard</code> 里选择菜单 Tools → More → Frequency Offset Tester 打开频偏测量工具：</p>
 
 <p><img src="../img/freq_offset_main.png" alt="freq offset tool" /></p>
 
@@ -318,7 +318,7 @@
 <h2 id="发射功率校准">发射功率校准</h2>
 
 <p>新版的 BQB RF 测试工具在进行连续波发射测试时，可以设置发射功率等级。连接频谱仪校准与功率等级对应的实际功率值，然后
-用 API <code class="highlighter-rouge">platform_set_rf_power_mapping</code> 将校准过的功率对应表传入 <code class="highlighter-rouge">platform</code>，校准完成。</p>
+用 API <code class="language-plaintext highlighter-rouge">platform_set_rf_power_mapping</code> 将校准过的功率对应表传入 <code class="language-plaintext highlighter-rouge">platform</code>，校准完成。</p>
 
 <h2 id="兼容性">兼容性</h2>
 
@@ -346,7 +346,7 @@ DATA LENGTH 更新流程。比如当旧版本（&lt; 5.7.0）的平台软件被 
 <p><img src="../img/nordic_data_len_ok.png" alt="nodic data length ok" /></p>
 
 <p>PS: 虽然 MTU 的大小与 Data Length 两参数没有联系、相互独立，但是图中 Nordic 芯片把两者定义为同一个值，说明开发者在配置
-<code class="highlighter-rouge">sdk_config</code> 时很可能犯了一个错误。</p>
+<code class="language-plaintext highlighter-rouge">sdk_config</code> 时很可能犯了一个错误。</p>
 
       </div><!-- .post-content -->
     </div><!-- .inner-md -->

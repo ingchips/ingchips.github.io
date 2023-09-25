@@ -1,16 +1,24 @@
 function match_fn(line) {
     const r = line.match(/^[0-9a-fA-F]+\s+<(.+)\>:/);
-    return (r != null) && (r.length == 2) ? r[1] : null;
+    if ((r != null) && (r.length == 2))
+    {
+        let n = r[1];
+        if (n.startsWith('.L.str'))
+            return null;
+        return n;
+    }
+    else
+        return null;
 }
 
 function match_instr0(line) {
     var r = line.match(/^\s*[0-9A-Fa-f]+:\s+[0-9A-Fa-f]{4}\s+[0-9A-Fa-f]{4}\s+([a-z]+)\s(.*)/);
     if (r != null) return [r[1], r[2]];
-    var r = line.match(/^\s*[0-9A-Fa-f]+:\s+[0-9A-Fa-f]{4}\s+[0-9A-Fa-f]{4}\s+([a-z]+)\.w\s(.*)/);
+    var r = line.match(/^\s*[0-9A-Fa-f]+:\s+[0-9A-Fa-f]{4}\s+[0-9A-Fa-f]{4}\s+([a-z]+)\.\w+\s(.*)/);
     if (r != null) return [r[1], r[2]];
     var r = line.match(/^\s*[0-9A-Fa-f]+:\s+[0-9A-Fa-f]{4}\s+([a-z]+)\s(.*)/);
     if (r != null) return [r[1], r[2]];
-    var r = line.match(/^\s*[0-9A-Fa-f]+:\s+[0-9A-Fa-f]{4}\s+([a-z]+)\.w\s(.*)/);
+    var r = line.match(/^\s*[0-9A-Fa-f]+:\s+[0-9A-Fa-f]{4}\s+([a-z]+)\.\w+\s(.*)/);
     if (r != null) return [r[1], r[2]];
     return null;
 }
@@ -122,7 +130,8 @@ function load_asm(src) {
 
         t = match_call(s2);
         if ((t != null) && (info.calls.indexOf(t) < 0)) {
-            info.calls = info.calls.concat(t);
+            if (!t.startsWith(name + '+'))
+                info.calls = info.calls.concat(t);
             continue;
         }
 

@@ -69,6 +69,11 @@ function match_stack(line) {
         return parseInt(r[1]);
     }
 
+    r = line.match(/^subw sp,\s*sp,\s*#([0-9]+)/);
+    if (r != null) {
+        return parseInt(r[1]);
+    }
+
     r = line.match(/^sub sp,\s*#([0-9]+)/);
     if (r != null) {
         return parseInt(r[1]);

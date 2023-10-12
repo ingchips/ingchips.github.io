@@ -80,6 +80,18 @@ async function appStart() {
 
     hljs.highlightAll();
 
+    let paramString = window.location.href.split('?');
+    if (paramString.length < 2) return;
+
+    let queryString = new URLSearchParams(paramString[1]);
+    for(let pair of queryString.entries()) {
+        if (pair[0] == 'q') {
+            $('#assertion_info').val(pair[1])
+            explain();
+            break;
+        }
+    }
+
     return;
 }
 

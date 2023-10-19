@@ -476,7 +476,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="21.3.1" data-path="ch-uart.html"><a href="ch-uart.html#uart接收变长字节数据"><i class="fa fa-check"></i><b>21.3.1</b> UART接收变长字节数据</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="22" data-path="ch-usb.html"><a href="ch-usb.html"><i class="fa fa-check"></i><b>22</b> Universal serial bus device (USB)</a>
+<li class="chapter" data-level="22" data-path="ch-usb.html"><a href="ch-usb.html"><i class="fa fa-check"></i><b>22</b> 通用串行总线 (USB)</a>
 <ul>
 <li class="chapter" data-level="22.1" data-path="ch-usb.html"><a href="ch-usb.html#功能概述-11"><i class="fa fa-check"></i><b>22.1</b> 功能概述</a></li>
 <li class="chapter" data-level="22.2" data-path="ch-usb.html"><a href="ch-usb.html#使用说明-12"><i class="fa fa-check"></i><b>22.2</b> 使用说明</a>
@@ -912,63 +912,163 @@ UART0_TX，分别用于触发 DMA 发送请求（通过 DMA 传输接收到的�
 </div>
 <div id="ram-相关" class="section level3 hasAnchor" number="19.2.7">
 <h3><span class="header-section-number">19.2.7</span> RAM 相关<a href="ch-sysctrl.html#ram-相关" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>SoC 内部除了为蓝牙保留的内存外，还包含如表 <a href="ch-sysctrl.html#tab:ch-sysctrl-memory-blocks">19.4</a>
-所示的内存块。</p>
+<p>SoC 内部包含多个内存块，根据用途可分为：仅供 CPU 使用的 SYS RAM，CPU 和蓝牙 Modem 皆可使用的 SHARE RAM
+以及高速缓存（Cache）。部分内存块既可以作为 SYS RAM 也可以作为 SHARE RAM（见表 <a href="ch-sysctrl.html#tab:ch-sysctrl-remapped-ram">19.4</a>），
+在不同的软件包内将被配置为不同用途。</p>
 <table>
-<caption><span id="tab:ch-sysctrl-memory-blocks">表 19.4: </span> SoC 的内存块（不含为蓝牙保留的内存块）</caption>
+<caption><span id="tab:ch-sysctrl-remapped-ram">表 19.4: </span> 可作为 SYS/SHARE RAM 的内存块</caption>
+<colgroup>
+<col width="13%" />
+<col width="11%" />
+<col width="29%" />
+<col width="29%" />
+<col width="16%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="center">名称</th>
-<th align="center">起始地址</th>
 <th align="center">大小 (KiB)</th>
+<th align="center">配置为 SYS RAM 时的起始地址</th>
+<th align="center">配置为 SHARE RAM 时的起始地址</th>
 <th align="left">备注</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="center">BLOCK_0</td>
-<td align="center">0x20000000</td>
+<td align="center">SYS_MEM_BLOCK_0</td>
 <td align="center">16</td>
+<td align="center">0x20000000<br>~<br>0x20003FFF</td>
+<td align="center">不支持</td>
 <td align="left">不可关闭</td>
 </tr>
 <tr class="even">
-<td align="center">BLOCK_1</td>
-<td align="center">0x20004000</td>
+<td align="center">SYS_MEM_BLOCK_1</td>
 <td align="center">16</td>
-<td align="left">可关闭</td>
+<td align="center">0x20004000<br>~<br>0x20007FFF</td>
+<td align="center">0x40128000<br>~<br>0x4012BFFF</td>
+<td align="left"></td>
 </tr>
 <tr class="odd">
-<td align="center">D-Cache-M</td>
-<td align="center">0x2000E000</td>
-<td align="center">8</td>
-<td align="left">可映射为普通 RAM</td>
+<td align="center">REMAPPABLE_BLOCK_0</td>
+<td align="center">16</td>
+<td align="center">0x20008000<br>~<br>0x2000BFFF</td>
+<td align="center">0x40124000<br>~<br>0x40127FFF</td>
+<td align="left"></td>
 </tr>
 <tr class="even">
-<td align="center">I-Cache-M</td>
-<td align="center">0x20010000</td>
+<td align="center">REMAPPABLE_BLOCK_1</td>
 <td align="center">8</td>
-<td align="left">可映射为普通 RAM</td>
+<td align="center">0x2000C000<br>~<br>0x2000DFFF</td>
+<td align="center">0x40122000<br>~<br>0x40123FFF</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="center">SHARE_MEM_BLOCK_0</td>
+<td align="center">8</td>
+<td align="center">不支持</td>
+<td align="center">0x40120000<br>~<br>0x40121FFF</td>
+<td align="left"></td>
 </tr>
 </tbody>
 </table>
-<p>其中，I-Cache-M 和 D-Cache-M 在映射为普通 RAM 后，才可按照表中地址访问。</p>
-<ol style="list-style-type: decimal">
-<li><p>开关内存块</p>
-<p>BLOCK_0 和 BLOCK_1 默认都是开启的。
-通过 <code>SYSCTRL_SelectMemoryBlocks</code> 选择所要使用的内存块，并关闭不使用的内存块：</p>
+<p>在 <em>noos_mini</em>, <em>mini</em> 软件包共配置 56 KiB SYS RAM，8 KiB SHARE RAM；
+在其它软件包里，SYS、SHARE RAM 各 32 KiB。详见表 <a href="ch-sysctrl.html#tab:ch-sysctrl-bundle-mem">19.5</a>。
+注意，虽然 SYS_MEM_BLOCK_1 也可用作 SHARE RAM，但是在所有的软件包里它总是被用作 SYS RAM。</p>
+<table style="width:96%;">
+<caption><span id="tab:ch-sysctrl-bundle-mem">表 19.5: </span> 各软件包里的 SYS/SHARE RAM 配置</caption>
+<colgroup>
+<col width="16%" />
+<col width="14%" />
+<col width="25%" />
+<col width="14%" />
+<col width="25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th rowspan="2">名称</th>
+<th colspan="2" align="center">SYS RAM</th>
+<th colspan="2" align="center">SHARE RAM</th>
+</tr>
+<tr class="odd">
+<th align="center">地址范围</th>
+<th align="left">包含的内存块</th>
+<th align="center">地址范围</th>
+<th align="left">包含的内存块</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><em>mini</em>,
+<em>noos_mini</em></td>
+<td align="center">0x20000000
+~
+0x2000DFFF</td>
+<td align="left">SYS_MEM_BLOCK_0
+SYS_MEM_BLOCK_1
+REMAPPABLE_BLOCK_0
+REMAPPABLE_BLOCK_1</td>
+<td align="center">0x40120000
+~
+0x40121FFF</td>
+<td align="left">SHARE_MEM_BLOCK_0</td>
+</tr>
+<tr class="even">
+<td>其它</td>
+<td align="center">0x20000000
+~
+0x20007FFF</td>
+<td align="left">SYS_MEM_BLOCK_0
+SYS_MEM_BLOCK_1</td>
+<td align="center">0x40120000
+~
+0x40127FFF</td>
+<td align="left">SHARE_MEM_BLOCK_0
+REMAPPABLE_BLOCK_0
+REMAPPABLE_BLOCK_1</td>
+</tr>
+</tbody>
+</table>
+<p>表 <a href="ch-sysctrl.html#tab:ch-sysctrl-remapped-ram">19.4</a> 中的内存块支持低功耗数据保持。
+所有这些内存块默认都是开启的，部分内存块可关闭以节省功耗。如果程序中实际用到的
+SYS RAM 较少，可通过 <code>SYSCTRL_SelectMemoryBlocks</code> 选择所要使用的内存块，并关闭不使用的内存块：</p>
 <div class="sourceCode" id="cb234"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb234-1"><a href="ch-sysctrl.html#cb234-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> SYSCTRL_SelectMemoryBlocks<span class="op">(</span></span>
 <span id="cb234-2"><a href="ch-sysctrl.html#cb234-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> block_map<span class="op">);</span></span></code></pre></div>
-<p>当确认不需要使用 BLOCK_1 时，可关闭它，减少耗电：</p>
+<p>例如在一个使用 <em>mini</em> 软件包的程序里，如果确认只需要 32 KiB 的 SYS RAM，那么为了降低功耗，可关闭
+REMAPPABLE_BLOCK_0 和 REMAPPABLE_BLOCK_1，保留其它内存块：</p>
 <div class="sourceCode" id="cb235"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb235-1"><a href="ch-sysctrl.html#cb235-1" aria-hidden="true" tabindex="-1"></a>SYSCTRL_SelectMemoryBlocks<span class="op">(</span></span>
-<span id="cb235-2"><a href="ch-sysctrl.html#cb235-2" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_MEM_BLOCK_0<span class="op">);</span></span></code></pre></div></li>
-<li><p>将 I-Cache-M 和 D-Cache-M 映射为普通 RAM</p>
-<p>这两个内存块都默认处于 Cache 模式。当确实需要更多的 RAM 时，通过
+<span id="cb235-2"><a href="ch-sysctrl.html#cb235-2" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_SYS_MEM_BLOCK_0 <span class="op">|</span> SYSCTRL_SYS_MEM_BLOCK_1 <span class="op">|</span></span>
+<span id="cb235-3"><a href="ch-sysctrl.html#cb235-3" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_SHARE_MEM_BLOCK_0<span class="op">);</span></span></code></pre></div>
+<p>另有 2 个内存块可配置为 SYS RAM 或者高速缓存，其配置可通过 <code>SYSCTRL_CacheControl</code> 动态修改。
+将其映射为 SYS RAM 后，可按照表 <a href="ch-sysctrl.html#tab:ch-sysctrl-cache-memory-blocks">19.6</a> 中的地址访问。</p>
+<table>
+<caption><span id="tab:ch-sysctrl-cache-memory-blocks">表 19.6: </span> 可用作高速缓存的内存块</caption>
+<thead>
+<tr class="header">
+<th align="center">名称</th>
+<th align="center">大小 (KiB)</th>
+<th align="center">配置为 SYS RAM 时的起始地址</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">D-Cache-M</td>
+<td align="center">8</td>
+<td align="center">0x2000E000~0x2000FFFF</td>
+</tr>
+<tr class="even">
+<td align="center">I-Cache-M</td>
+<td align="center">8</td>
+<td align="center">0x20010000~0x20011FFF</td>
+</tr>
+</tbody>
+</table>
+<p>这两个内存块都默认处于 Cache 模式。当需要更多的 RAM 时，通过
 <code>SYSCTRL_CacheControl</code> 可将这两块内存映射为普通 RAM：</p>
 <div class="sourceCode" id="cb236"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb236-1"><a href="ch-sysctrl.html#cb236-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> SYSCTRL_CacheControl<span class="op">(</span></span>
 <span id="cb236-2"><a href="ch-sysctrl.html#cb236-2" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_CacheMemCtrl i_cache<span class="op">,</span></span>
 <span id="cb236-3"><a href="ch-sysctrl.html#cb236-3" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_CacheMemCtrl d_cache</span>
 <span id="cb236-4"><a href="ch-sysctrl.html#cb236-4" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
-<p><code>SYSCTRL_CacheMemCtrl</code> 包含两个值，对应 Cache 模式和 SYS MEM （即普通 RAM）模式：</p>
+<p><code>SYSCTRL_CacheMemCtrl</code> 包含两个值，对应 Cache 模式和 SYS MEM 模式：</p>
 <div class="sourceCode" id="cb237"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb237-1"><a href="ch-sysctrl.html#cb237-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
 <span id="cb237-2"><a href="ch-sysctrl.html#cb237-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
 <span id="cb237-3"><a href="ch-sysctrl.html#cb237-3" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_MEM_BLOCK_AS_CACHE <span class="op">=</span> <span class="dv">0</span><span class="op">,</span></span>
@@ -984,15 +1084,13 @@ UART0_TX，分别用于触发 DMA 发送请求（通过 DMA 传输接收到的�
 <code>AS_CACHE</code>；
 </li>
 <li>
-低功耗状态时，这两个内存块里的数据（无论处于哪种模式）都会丢失，而
-BLOCK_0、BLOCK_1 里的数据则可以保持；
+低功耗状态时，这两个内存块里的数据（无论处于哪种模式）都会丢失；
 </li>
 <li>
 映射为普通 RAM 后，系统缺少高速缓存，性能有可能明显下降。
 </li>
 </ol>
-</div></li>
-</ol>
+</div>
 
 </div>
 </div>

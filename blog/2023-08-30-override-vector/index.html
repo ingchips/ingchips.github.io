@@ -229,7 +229,8 @@
         <ul id="markdown-toc">
   <li><a href="#1-获取芯片的最大中断号" id="markdown-toc-1-获取芯片的最大中断号">1. 获取芯片的最大中断号</a></li>
   <li><a href="#2-定义完整的中断向量表" id="markdown-toc-2-定义完整的中断向量表">2. 定义完整的中断向量表</a></li>
-  <li><a href="#3-实现-override_handler" id="markdown-toc-3-实现-override_handler">3. 实现 <code class="language-plaintext highlighter-rouge">Override_Handler</code></a></li>
+  <li><a href="#3-用汇编实现-override_handler" id="markdown-toc-3-用汇编实现-override_handler">3. 用汇编实现 <code class="language-plaintext highlighter-rouge">Override_Handler</code></a></li>
+  <li><a href="#4-实现-userhandler" id="markdown-toc-4-实现-userhandler">4. 实现 <code class="language-plaintext highlighter-rouge">UserHandler</code></a></li>
   <li><a href="#4-替换中断向量表" id="markdown-toc-4-替换中断向量表">4. 替换中断向量表</a></li>
 </ul>
 
@@ -248,9 +249,7 @@
 
 <p>打开初始化文件，修改 <code class="language-plaintext highlighter-rouge">__Vectors</code> 的定义：</p>
 
-<pre><code class="language-asm">        IMPORT  Override_Handler
-
-__Vectors       DCD     0                 ; Top of Stack
+<pre><code class="language-asm">__Vectors       DCD     0                 ; Top of Stack
         DCD     Reset_Handler             ; Reset Handler
         DCD     Override_Handler          ; NMI Handler
         DCD     Override_Handler          ; Hard Fault Handler
@@ -275,19 +274,43 @@ __Vectors       DCD     0                 ; Top of Stack
 __Vectors_End
 </code></pre>
 
-<h2 id="3-实现-override_handler">3. 实现 <code class="language-plaintext highlighter-rouge">Override_Handler</code></h2>
+<h2 id="3-用汇编实现-override_handler">3. 用汇编实现 <code class="language-plaintext highlighter-rouge">Override_Handler</code></h2>
 
-<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">Override_Handler</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<pre><code class="language-asm">Override_Handler PROC
+                IMPORT UserHandler
+
+                ; int irq = SCB-&gt;ICSR &amp; SCB_ICSR_VECTACTIVE_Msk;
+                LDR     r0, =0xE000ED04
+                LDR     r1, [r0]
+                BFC     r1,#9,#23
+
+                ; if (irq &gt; 15) call UserHandler; else call default
+                CMP     r1, #0x0F
+                BGT     CALL_USER_ISR
+
+                ; TODO: 响应 Exception
+
+                ; 继续调用 platform 内的 Exception 处理函数
+                ; f_irq_handler isr = (f_irq_handler)io_read(PLATFORM_NVIC_VECT + irq * 4);
+                ; 以 ING916xx 为例，platfrom 内中断向量表起始位置为 0x02002000
+                LDR     r0, =0x02002000
+                LDR     r0, [r0, r1, LSL #2]
+                BX      r0
+
+CALL_USER_ISR
+                MOV     r0, r1
+                LDR     r1, =UserHandler
+                BX      r1
+
+				ENDP
+</code></pre>
+
+<h2 id="4-实现-userhandler">4. 实现 <code class="language-plaintext highlighter-rouge">UserHandler</code></h2>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">UserHandler</span><span class="p">(</span><span class="kt">int</span> <span class="n">irq</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="cp">#if (INGCHIPS_FAMILY == INGCHIPS_FAMILY_918)
-</span>    <span class="cp">#define PLATFORM_NVIC_VECT  FLASH_BASE
-#elif (INGCHIPS_FAMILY == INGCHIPS_FAMILY_916)
-</span>    <span class="cp">#define PLATFORM_NVIC_VECT  (FLASH_BASE + 0x2000)
-#endif
-</span>
     <span class="k">typedef</span> <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">f_irq_handler</span><span class="p">)(</span><span class="kt">void</span><span class="p">);</span>
 
-    <span class="kt">int</span> <span class="n">irq</span> <span class="o">=</span> <span class="n">SCB</span><span class="o">-&gt;</span><span class="n">ICSR</span> <span class="o">&amp;</span> <span class="n">SCB_ICSR_VECTACTIVE_Msk</span><span class="p">;</span>
     <span class="n">f_irq_handler</span> <span class="n">isr</span> <span class="o">=</span> <span class="p">(</span><span class="n">f_irq_handler</span><span class="p">)</span><span class="n">io_read</span><span class="p">(</span><span class="n">PLATFORM_NVIC_VECT</span> <span class="o">+</span> <span class="n">irq</span> <span class="o">*</span> <span class="mi">4</span><span class="p">);</span>
 
     <span class="c1">// TODO: 实现所需功能</span>

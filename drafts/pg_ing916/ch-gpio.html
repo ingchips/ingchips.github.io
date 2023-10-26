@@ -312,7 +312,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="13.2" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#使用说明-6"><i class="fa fa-check"></i><b>13.2</b> 使用说明</a>
 <ul>
 <li class="chapter" data-level="13.2.1" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#为外设配置-io-管脚"><i class="fa fa-check"></i><b>13.2.1</b> 为外设配置 IO 管脚</a></li>
-<li class="chapter" data-level="13.2.2" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#配置上拉下拉"><i class="fa fa-check"></i><b>13.2.2</b> 配置上拉、下拉</a></li>
+<li class="chapter" data-level="13.2.2" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#ch-pinctrl-pull"><i class="fa fa-check"></i><b>13.2.2</b> 配置上拉、下拉</a></li>
 <li class="chapter" data-level="13.2.3" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#配置驱动能力"><i class="fa fa-check"></i><b>13.2.3</b> 配置驱动能力</a></li>
 <li class="chapter" data-level="13.2.4" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#配置天线切换控制管脚"><i class="fa fa-check"></i><b>13.2.4</b> 配置天线切换控制管脚</a></li>
 <li class="chapter" data-level="13.2.5" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#pinctrl-config-analog"><i class="fa fa-check"></i><b>13.2.5</b> 配置模拟模式</a></li>
@@ -1001,8 +1001,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb38"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb38-1"><a href="ch-gpio.html#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> GIO_EnableRetentionGroupA<span class="op">(</span><span class="dt">uint8_t</span> enable<span class="op">);</span></span></code></pre></div></li>
 <li><p>对于 B 型 GPIO</p>
 <p>使用 <code>GIO_EnableRetentionGroupB</code> 使能或禁用 B 型 GPIO 的低功耗状态保持功能。
-使能状态保持功能时，与之相关的配置（以及输出值 —— 对于 IO 方向为输出的 GPIO）都被锁存，即使处于各种低功耗状态下。
+使能状态保持功能时，与之相关的配置（输出值 —— 对于 IO 方向为输出的 GPIO、上下拉）都被锁存，即使处于各种低功耗状态下。
 使能后，对这些 GPIO 的配置再做修改无法生效。只有禁用保持功能后，才会生效。</p>
+<p>说明：对于 IO 方向为输入的 GPIO，使能低功耗状态保持功能并进入低功耗状态后，确实可以保持其 IO 输入功能，
+但是并不能产生实际效果（产生中断或者唤醒系统）。</p>
 <div class="sourceCode" id="cb39"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb39-1"><a href="ch-gpio.html#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> GIO_EnableRetentionGroupB<span class="op">(</span><span class="dt">uint8_t</span> enable<span class="op">);</span></span></code></pre></div>
 <p>使用 <code>GIO_EnableHighZGroupB</code> 使能或禁用 B 型 GPIO 的低功耗高阻功能。使能该功能后，
 IO 方向为输出的 B 型 GPIO 处于高阻状态，对这些 GPIO 的配置再做修改无法生效。只有禁用保持功能后，才会生效。</p>
@@ -1037,8 +1039,12 @@ IO 方向为输出的 B 型 GPIO 处于高阻状态，对这些 GPIO 的配置�
 </ul>
 <p>当使用电平唤醒时，电平与上下拉应该相互配合：高电平唤醒时，使用下拉；低电平唤醒时，使用上拉。
 当使用边沿唤醒时，注意脉冲需要维持至少 100 <span class="math inline">\(\mu s\)</span>。</p>
-<p>对于 B 型 GPIO，这里的上下拉配置仅用于低功耗状态。对于这种 GPIO，
-建议正常状态时的上下拉与这里的配置保持一致，以免由于配置切换产生“毛刺”。</p>
+<p>对于 B 型 GPIO，唤醒源与低功耗保持为两套独立的电路，因此：
+1）上下拉独立于 <a href="ch-pinctrl.html#ch-pinctrl-pull"><code>PINCTRL_Pull</code></a> ，而且一直生效 —— 无论是否处于低功耗状态，
+所以，不要用 <code>PINCTRL_Pull</code> 配置相反的上下拉；2）
+使能或禁用 B 型 GPIO 的低功耗保持或者高阻功能不影响这里的唤醒源设置；3）不要将某 IO 同时设为输出和唤醒源，
+比如将某 IO 同时设为输出高电平、高电平唤醒，使能保持功能并进入低功耗时，
+这个 IO 上保持电路所输出的高电平将传输到唤醒源电路并触发唤醒。</p>
 <div class="sourceCode" id="cb41"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb41-1"><a href="ch-gpio.html#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> GIO_EnableDeepSleepWakeupSource<span class="op">(</span></span>
 <span id="cb41-2"><a href="ch-gpio.html#cb41-2" aria-hidden="true" tabindex="-1"></a>  GIO_Index_t io_index<span class="op">,</span>     <span class="co">// GPIO 编号</span></span>
 <span id="cb41-3"><a href="ch-gpio.html#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> enable<span class="op">,</span>           <span class="co">// 使能(1)/禁用(0)</span></span>

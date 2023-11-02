@@ -229,7 +229,8 @@
         <ul id="markdown-toc">
   <li><a href="#coremark-跑分" id="markdown-toc-coremark-跑分">Coremark 跑分</a></li>
   <li><a href="#用法举例自由使用" id="markdown-toc-用法举例自由使用">用法举例：自由使用</a></li>
-  <li><a href="#用法举例动态分配和使用" id="markdown-toc-用法举例动态分配和使用">用法举例：动态分配和使用</a></li>
+  <li><a href="#用法举例动态分配和使用例-1" id="markdown-toc-用法举例动态分配和使用例-1">用法举例：动态分配和使用（例 1）</a></li>
+  <li><a href="#用法举例动态分配和使用例-2" id="markdown-toc-用法举例动态分配和使用例-2">用法举例：动态分配和使用（例 2）</a></li>
 </ul>
 
 <p>Cache是CPU内部缓存，用于临时存储CPU需要频繁访问的数据和指令，以加快CPU的数据访问速度；而RAM是主存储器，用于存储程序和数据，是CPU和外部设备之间的桥梁，其访问速度相对较慢。</p>
@@ -402,7 +403,7 @@ Reset_Handler   PROC
   </li>
 </ul>
 
-<h2 id="用法举例动态分配和使用">用法举例：动态分配和使用</h2>
+<h2 id="用法举例动态分配和使用例-1">用法举例：动态分配和使用（例 1）</h2>
 
 <p>在程序运行期间根据需要（比如执行复杂数据处理，需要大量缓存时）动态地将 Cache 配置为 RAM，当不再使用时，
 可再切换回 Cache 模式：</p>
@@ -473,6 +474,18 @@ Reset_Handler   PROC
 
     // 使用 var1, var2
     // ...
+}
+SYSCTRL_CacheControl(SYSCTRL_MEM_BLOCK_AS_CACHE, SYSCTRL_MEM_BLOCK_AS_CACHE);
+</code></pre>
+
+<h2 id="用法举例动态分配和使用例-2">用法举例：动态分配和使用（例 2）</h2>
+
+<p>假设要调用一个复杂的、需要很多栈空间的函数 <code class="language-plaintext highlighter-rouge">complex_algorithm_function</code>，可以临时将 Cache 用作栈，
+专门用于调用这个函数：</p>
+
+<pre><code class="language-C">SYSCTRL_CacheControl(SYSCTRL_MEM_BLOCK_AS_CACHE, SYSCTRL_MEM_BLOCK_AS_SYS_MEM);
+{
+    platform_call_on_stack(complex_algorithm_function, NULL, D_CACHE_ADDR, RAM_SIZE);
 }
 SYSCTRL_CacheControl(SYSCTRL_MEM_BLOCK_AS_CACHE, SYSCTRL_MEM_BLOCK_AS_CACHE);
 </code></pre>

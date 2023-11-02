@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>SDK 新工具：Axf Tool - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="SDK 新工具 v8.4.5 加入了一个用来分析可执行文件和 Dump 的工具  Axf Tool。"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+
+      <div id="box">
+        <input id="in_search" type="search" name="search" placeholder="搜索：输入并回车">
+      </div>
+
+      <script>
+        let search_input = document.getElementById('in_search');
+        if (search_input) {
+          search_input.addEventListener("keypress", function(event) {
+          if (event.key === "Enter") {
+            window.open('https://www.bing.com/search?q=' + encodeURIComponent(search_input.value) + '%20site%3A' + window.location.hostname);
+            event.preventDefault();
+            }
+          });
+        }
+      </script>
+
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item has-children">
+
+              
+<a class="" href="/docs/sdk/apps/#web-apps">
+  
+  Web 工具
+  
+</a>
+
+              
+
+                <ul class="submenu">
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/callgraph">
+  
+  Callgraph (调用图)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index_cn.html">
+  
+  ING918/ING916 FOTA (空中升级)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/powerprofiler/">
+  
+  Online Power Profiler
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/air_trace/">
+  
+  Trace Logger
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/assertion_tool/index.html">
+  
+  ING918/ING916 Assertion Tool
+  
+</a>
+
+  </li>
+  
+</ul>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <article class="post post-full">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <header class="post-header has-gradient outer">
+      
+      
+      <div class="inner-sm">
+        <div class="post-meta">
+          <time class="published" datetime="2023-11-02 00:00">November 02, 2023</time>
+        </div>
+        <h1 class="post-title">SDK 新工具：Axf Tool</h1>
+        
+        
+      </div>
+    </header>
+    <div class="inner-md outer">
+      <div class="post-content">
+        <ul id="markdown-toc">
+  <li><a href="#静态分析" id="markdown-toc-静态分析">静态分析</a>    <ul>
+      <li><a href="#stack-usage" id="markdown-toc-stack-usage">stack-usage</a></li>
+      <li><a href="#bt-api-thread-safety" id="markdown-toc-bt-api-thread-safety">bt-api-thread-safety</a></li>
+    </ul>
+  </li>
+  <li><a href="#基于-dump-的动态分析" id="markdown-toc-基于-dump-的动态分析">基于 Dump 的动态分析</a>    <ul>
+      <li><a href="#call-stack" id="markdown-toc-call-stack">call-stack</a></li>
+      <li><a href="#history" id="markdown-toc-history">history</a></li>
+      <li><a href="#check-heap" id="markdown-toc-check-heap">check-heap</a></li>
+      <li><a href="#check-task" id="markdown-toc-check-task">check-task</a></li>
+    </ul>
+  </li>
+  <li><a href="#qa" id="markdown-toc-qa">Q&amp;A</a></li>
+</ul>
+
+<p>Axf Tool 是一个用于分析可执行程序和内存转储的命令行工具。该工具已集成到 Wizard 的项目快捷菜单里：</p>
+
+<p><img src="../img/wizard_axf_tool.png" alt="" /></p>
+
+<p>这个工具包含多种功能：当程序编译成功后，可进行静态分析；出现 HardFault、Assertion 等问题时，
+调用 <code class="language-plaintext highlighter-rouge">trace_full_dump2</code> 生成内存转储，再进行动态分析。从快捷菜单里运行工具虽然方便，
+但是功能受限。通过命令行使用，功能更全面。下面介绍几种主要的功能。
+在命令行下通过 <code class="language-plaintext highlighter-rouge">axf_tool.exe help {function}</code> 可获得每种功能的详细信息。</p>
+
+<p>当工具需要读取编译后的可执行文件时，首先会自动查找，如果未找到，则弹出对话框，要求选择可执行文件。
+对于由 Wizard 生成的 Keil 或者 Gnu 工具链项目，工具一般能够自动找到编译后的可执行文件。</p>
+
+<p>当工具需要读取 Dump 文件时，也会弹出对话框，要求选择 Dump 文件。Dump 文件即
+<code class="language-plaintext highlighter-rouge">trace_full_dump2</code> 的输出。工具对于 Dump 文件的格式要求很低，允许其它内容存在。例如，
+用串口工具长时间保存串口输出到文件，使用本工具时，不需要清理这个文件里所包含其它的日志信息 ——
+除非其它日志也使用了 Intel Hex 格式。</p>
+
+<h2 id="静态分析">静态分析</h2>
+
+<h3 id="stack-usage">stack-usage</h3>
+
+<p>静态分析栈的使用情况，并报告栈空间使用最多前 N 条函数调用链。从快捷菜单调用时，显示前 3 条函数调用链。</p>
+
+<p>借助这个功能统计栈用量，避免栈空间越界。开发者也可以 Web 版调用图工具 <a href="/web_apps/callgraph">callgraph</a>
+图形化地查看栈用量、最大调用链。</p>
+
+<div class="note">
+<strong>局限性说明:</strong>
+<ul>
+<li>该工具不能保证给出的数据 100% 准确；当使用 Keil 时，建议同时参照 Keil 工具给出的统计信息，以较大的数据为准；</li>
+<li>当使用了函数指针时，无法静态确定所要调用的函数（报告中 unknown 标记），从而无法进行统计，导致结果偏小；</li>
+</ul></div>
+
+<h3 id="bt-api-thread-safety">bt-api-thread-safety</h3>
+
+<p>分析对蓝牙 API 的调用，检查是否违反了单线程约定。使用这个功能时，需要“告诉”工具哪些函数肯定是由蓝牙协议栈所调用的。——
+这些函数及只由这些函数所调用的函数就是符合单线程约定的，工具会把其它函数罗列出来供进一步确认。</p>
+
+<p>从快捷菜单调用时，只认为 <code class="language-plaintext highlighter-rouge">setup_profile</code>、<code class="language-plaintext highlighter-rouge">user_packet_handler</code> 和 <code class="language-plaintext highlighter-rouge">att_read_callback att_write_callback</code>
+等 3 个函数肯定是由蓝牙协议栈所调用的，符合单线程约定。如果需要“告诉”工具其它函数也没问题，那么可以使用命令行。比如，
+在一个 GATT 客户端程序里，还有 <code class="language-plaintext highlighter-rouge">characteristic_discovery_callback</code> 等 3 个函数也确认只是协议栈的回调函数，
+就可以把这 3 个也一起作为 <code class="language-plaintext highlighter-rouge">-bt_cb</code> 参数：</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>axf_tool bt-api-thread-safety <span class="nt">-bundle</span> ING9187xx typical v1.9.39 ^
+    <span class="nt">-app</span> path/to/app/executable ^
+    <span class="nt">-bt_cb</span> setup_profile user_packet_handler att_read_callback att_write_callback  ^
+    characteristic_discovery_callback descriptor_discovery_callback service_discovery_callback
+</code></pre></div></div>
+
+<h2 id="基于-dump-的动态分析">基于 Dump 的动态分析</h2>
+
+<h3 id="call-stack">call-stack</h3>
+
+<p>尝试从内存转储中恢复出现问题时的函数调用栈。下面某个 <code class="language-plaintext highlighter-rouge">ble_hcic_eif:766</code> Assertion 的 Dump 分析，
+从中我们看到整个调用栈的最底下是 <code class="language-plaintext highlighter-rouge">prvTaskExitError</code>，这是 FreeRTOS 任务最底部的桩函数，再往上就是
+程序的 <code class="language-plaintext highlighter-rouge">foo</code> 函数，它调用了蓝牙 API <code class="language-plaintext highlighter-rouge">gatt_client_write_value_of_characteristic</code>，这违反了协议桩的单线程约定。</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>....] try to load ...
+<span class="o">[</span>....] linking
+<span class="o">[</span>....] disassembly and loading
+<span class="o">[</span>....] linking
+<span class="o">[</span>....] loading ....
+<span class="o">[</span>INFO] ASSERTION found, more info: https://ingchips.github.io/web_apps/assertion_tool/index.html?q<span class="o">=</span>%5BASSERTION%5D%20%40%20ble_hcic_eif.c%3A766
+<span class="o">[</span> OK <span class="o">]</span> <span class="k">done</span>
+<span class="o">[</span>....] top <span class="k">function</span> @pc is <span class="sb">`</span>trace_full_dump<span class="sb">`</span>
+<span class="o">[</span>....] Call stack:
+<span class="o">[</span>....]  0. ├─ <span class="sb">`</span>trace_full_dump<span class="sb">`</span>
+<span class="o">[</span>....]  1. ├─ <span class="sb">`</span>cb_assertion+36<span class="sb">`</span>                                  <span class="o">(</span>@...<span class="o">)</span>
+<span class="o">[</span>....]  ...
+<span class="o">[</span>....]  ...
+<span class="o">[</span>....]  9. ├─ <span class="sb">`</span>gatt_client_write_value_of_characteristic+46<span class="sb">`</span>     <span class="o">(</span>@...<span class="o">)</span>
+<span class="o">[</span>....] 10. ├─ <span class="sb">`</span>foo+354<span class="sb">`</span>                                          <span class="o">(</span>@...<span class="o">)</span>
+<span class="o">[</span>....] 11. ├─ <span class="sb">`</span>prvTaskExitError<span class="sb">`</span>                                 <span class="o">(</span>bottom of a FreeRTOS task<span class="o">)</span>
+<span class="o">[</span> OK <span class="o">]</span> ────┴───── <span class="o">(</span><span class="k">done</span><span class="o">)</span>
+</code></pre></div></div>
+
+<div class="note">
+<strong>说明:</strong>
+这个问题用 `bt-api-thread-safety` 也可检测出来。
+</div>
+
+<h3 id="history">history</h3>
+
+<p>给出 BLE 活动简史。通过这个功能可以观察出问题的前后一小段时间内 BLE 活动是否正常、是否符合预期。</p>
+
+<p>下面的分析结果里的 <code class="language-plaintext highlighter-rouge">[ OK ] integrity check</code> 说明相关的内存数据基本正常，可以继续分析。
+出问题时，程序大致运行了 12 小时 51 分。目前存在一个连接间隔为 100ms 的连接，以及一个 Legacy 广播。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[....] try to ...
+[....] linking
+[....] loading ...
+[ OK ] integrity check
+current timer (T): 46266487352us (~46266487.352000ms) (~46266.487s) (~12:51:6.487)
+[....] BLE activities (history &amp; future) in descending order:
+┌────┬──────────────┬─────────────────┬────────────┐
+│  # │ Task         │            Time │  Duration  │
+├────┼──────────────┼─────────────────┼────────────┤
+│  0 │ Legacy_ADV   │         T+48420 │       4679 │
+├────┼──────────────┼─────────────────┼────────────┤
+│  1 │ CONN         │         T+40193 │       6250 │
+├────┼──────────────┼─────────────────┼────────────┤
+│  2 │ CONN         │             T+0 │      10306 │ &lt;- current
+├────┼──────────────┼─────────────────┼────────────┤
+│  3 │ CONN         │          T-9807 │       6250 │
+├────┼──────────────┼─────────────────┼────────────┤
+│  4 │ CONN         │         T-19974 │      10167 │
+├────┼──────────────┼─────────────────┼────────────┤
+│  5 │ CONN         │         T-29974 │      10306 │
+├────┼──────────────┼─────────────────┼────────────┤
+...
+</code></pre></div></div>
+
+<h3 id="check-heap">check-heap</h3>
+
+<p>尝试检查堆的健康状态。这项功能支持多种堆：</p>
+
+<ul>
+  <li>
+    <p>FreeRTOS 提供的 <a href="https://github.com/ingchips/ING918XX_SDK_SOURCE/blob/master/examples/peripheral_console_freertos/FreeRTOS/portable/MemMang/heap_4.c"><code class="language-plaintext highlighter-rouge">heap_4</code></a>；</p>
+
+    <p>既支持软件包内置的 FreeRTOS，也支持外置 —— 前提：使用了相同或相近版本的 <code class="language-plaintext highlighter-rouge">heap_4</code>。</p>
+  </li>
+  <li>
+    <p>Link Layer 内的堆。</p>
+  </li>
+</ul>
+
+<h3 id="check-task">check-task</h3>
+
+<p>在内存转储的帮助下动态检查 FreeRTOS 里的各个任务的情况，包含任务状态、栈用量等。
+对于栈用量统计，与 <code class="language-plaintext highlighter-rouge">stack-usage</code> 相比，优点是可以统计出 <code class="language-plaintext highlighter-rouge">stack-usage</code> 无法识别的函数指针等情况，
+缺点是只能统计已执行的代码。</p>
+
+<p>既支持软件包内置的 FreeRTOS，也支持外置 —— 前提：FreeRTOS 版本相同或相近。</p>
+
+<h2 id="qa">Q&amp;A</h2>
+
+<ol>
+  <li>
+    <p>我的程序使用的是旧版本的 SDK，如果使用这个工具？</p>
+
+    <p>可以使用命令行。打开旧版本 Wizard 的 Options 窗口，进入 SDK 页面，确认软件包版本号，
+ 比如 ING9187xx 的 typical v1.7.8。
+ 安装新版 SDK，进入 axf_tool 目录，以命令行方式使用：</p>
+
+    <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code> axf_tool call-stack <span class="nt">-bundle</span> ING9187xx typical v1.7.8 ^
+     <span class="nt">-app</span> path/to/app/executable ^
+     <span class="nt">-dump</span> path/to/dump/file
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+      </div><!-- .post-content -->
+    </div><!-- .inner-md -->
+  </article><!-- .post -->
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2021-2023. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

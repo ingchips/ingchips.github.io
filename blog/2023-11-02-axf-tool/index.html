@@ -272,7 +272,7 @@
 <strong>局限性说明:</strong>
 <ul>
 <li>该工具不能保证给出的数据 100% 准确；当使用 Keil 时，建议同时参照 Keil 工具给出的统计信息，以较大的数据为准；</li>
-<li>当使用了函数指针时，无法静态确定所要调用的函数（报告中 unknown 标记），从而无法进行统计，导致结果偏小；</li>
+<li>当使用了函数指针时，无法静态确定所要调用的函数（报告中标记 unknown），从而无法进行统计，导致结果偏小；</li>
 </ul></div>
 
 <h3 id="bt-api-thread-safety">bt-api-thread-safety</h3>
@@ -280,8 +280,8 @@
 <p>分析对蓝牙 API 的调用，检查是否违反了单线程约定。使用这个功能时，需要“告诉”工具哪些函数肯定是只由蓝牙协议栈所调用的。——
 这些函数及只由这些函数所调用的函数就是符合单线程约定的，工具会把其它函数罗列出来供进一步确认。</p>
 
-<p>从快捷菜单调用时，只认为 <code class="language-plaintext highlighter-rouge">setup_profile</code>、<code class="language-plaintext highlighter-rouge">user_packet_handler</code> 和 <code class="language-plaintext highlighter-rouge">att_read_callback att_write_callback</code>
-等 3 个函数肯定是只由蓝牙协议栈所调用的，符合单线程约定。如果需要“告诉”工具其它函数也没问题，那么可以使用命令行。比如，
+<p>从快捷菜单调用时，只认为 <code class="language-plaintext highlighter-rouge">setup_profile</code>, <code class="language-plaintext highlighter-rouge">user_packet_handler</code>, <code class="language-plaintext highlighter-rouge">att_read_callback</code> 和<code class="language-plaintext highlighter-rouge"> att_write_callback</code>
+等 4 个函数肯定是只由蓝牙协议栈所调用的，符合单线程约定。如果需要“告诉”工具其它函数也没问题，那么可以使用命令行。比如，
 在一个 GATT 客户端程序里，还有 <code class="language-plaintext highlighter-rouge">characteristic_discovery_callback</code> 等 3 个函数也确认只是协议栈的回调函数，
 就可以把这 3 个也一起作为 <code class="language-plaintext highlighter-rouge">-bt_cb</code> 参数：</p>
 
@@ -385,7 +385,7 @@ current timer (T): 46266487352us (~46266487.352000ms) (~46266.487s) (~12:51:6.48
 
     <p>可以使用命令行。打开旧版本 Wizard 的 Options 窗口，进入 SDK 页面，确认软件包版本号，
  比如 ING9187xx 的 typical v1.7.8。
- 安装新版 SDK，进入 axf_tool 目录，以命令行方式使用：</p>
+ 安装新版 SDK，进入 axf_tool 目录，以命令行方式使用，如：</p>
 
     <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code> axf_tool call-stack <span class="nt">-bundle</span> ING9187xx typical v1.7.8 ^
      <span class="nt">-app</span> path/to/app/executable ^

@@ -256,7 +256,7 @@
 
 <p>当工具需要读取 Dump 文件时，也会弹出对话框，要求选择 Dump 文件。Dump 文件即
 <code class="language-plaintext highlighter-rouge">trace_full_dump2</code> 的输出。工具对于 Dump 文件的格式要求很低，允许其它内容存在。例如，
-用串口工具长时间保存串口输出到文件，使用本工具时，不需要清理这个文件里所包含其它的日志信息 ——
+用串口工具长时间保存串口输出到文件，使用本工具时，不需要清理这个文件里所包含的其它日志信息 ——
 除非其它日志也使用了 Intel Hex 格式。</p>
 
 <h2 id="静态分析">静态分析</h2>
@@ -277,11 +277,11 @@
 
 <h3 id="bt-api-thread-safety">bt-api-thread-safety</h3>
 
-<p>分析对蓝牙 API 的调用，检查是否违反了单线程约定。使用这个功能时，需要“告诉”工具哪些函数肯定是由蓝牙协议栈所调用的。——
+<p>分析对蓝牙 API 的调用，检查是否违反了单线程约定。使用这个功能时，需要“告诉”工具哪些函数肯定是只由蓝牙协议栈所调用的。——
 这些函数及只由这些函数所调用的函数就是符合单线程约定的，工具会把其它函数罗列出来供进一步确认。</p>
 
 <p>从快捷菜单调用时，只认为 <code class="language-plaintext highlighter-rouge">setup_profile</code>、<code class="language-plaintext highlighter-rouge">user_packet_handler</code> 和 <code class="language-plaintext highlighter-rouge">att_read_callback att_write_callback</code>
-等 3 个函数肯定是由蓝牙协议栈所调用的，符合单线程约定。如果需要“告诉”工具其它函数也没问题，那么可以使用命令行。比如，
+等 3 个函数肯定是只由蓝牙协议栈所调用的，符合单线程约定。如果需要“告诉”工具其它函数也没问题，那么可以使用命令行。比如，
 在一个 GATT 客户端程序里，还有 <code class="language-plaintext highlighter-rouge">characteristic_discovery_callback</code> 等 3 个函数也确认只是协议栈的回调函数，
 就可以把这 3 个也一起作为 <code class="language-plaintext highlighter-rouge">-bt_cb</code> 参数：</p>
 
@@ -297,7 +297,7 @@
 
 <p>尝试从内存转储中恢复出现问题时的函数调用栈。下面某个 <code class="language-plaintext highlighter-rouge">ble_hcic_eif:766</code> Assertion 的 Dump 分析，
 从中我们看到整个调用栈的最底下是 <code class="language-plaintext highlighter-rouge">prvTaskExitError</code>，这是 FreeRTOS 任务最底部的桩函数，再往上就是
-程序的 <code class="language-plaintext highlighter-rouge">foo</code> 函数，它调用了蓝牙 API <code class="language-plaintext highlighter-rouge">gatt_client_write_value_of_characteristic</code>，这违反了协议桩的单线程约定。</p>
+程序的 <code class="language-plaintext highlighter-rouge">foo</code> 函数，它调用了蓝牙 API <code class="language-plaintext highlighter-rouge">gatt_client_write_value_of_characteristic</code>，这违反了协议栈的单线程约定。</p>
 
 <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>....] try to load ...
 <span class="o">[</span>....] linking
@@ -320,7 +320,7 @@
 
 <div class="note">
 <strong>说明:</strong>
-这个问题用 `bt-api-thread-safety` 也可检测出来。
+这个问题用 bt-api-thread-safety 也可检测出来。
 </div>
 
 <h3 id="history">history</h3>

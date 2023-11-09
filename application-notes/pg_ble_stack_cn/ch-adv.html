@@ -182,7 +182,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="4.5" data-path="ch-features.html"><a href="ch-features.html#新特性-4"><i class="fa fa-check"></i><b>4.5</b> 5.4 新特性</a>
 <ul>
-<li class="chapter" data-level="4.5.1" data-path="ch-features.html"><a href="ch-features.html#有响应的周期广播pawr"><i class="fa fa-check"></i><b>4.5.1</b> 有响应的周期广播（PAwR）</a></li>
+<li class="chapter" data-level="4.5.1" data-path="ch-features.html"><a href="ch-features.html#带响应的周期广播pawr"><i class="fa fa-check"></i><b>4.5.1</b> 带响应的周期广播（PAwR）</a></li>
 <li class="chapter" data-level="4.5.2" data-path="ch-features.html"><a href="ch-features.html#广播数据加密"><i class="fa fa-check"></i><b>4.5.2</b> 广播数据加密</a></li>
 </ul></li>
 <li class="chapter" data-level="4.6" data-path="ch-features.html"><a href="ch-features.html#其它"><i class="fa fa-check"></i><b>4.6</b> 其它</a>
@@ -208,6 +208,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.2.4" data-path="ch-adv.html"><a href="ch-adv.html#起停广播"><i class="fa fa-check"></i><b>5.2.4</b> 起停广播</a></li>
 <li class="chapter" data-level="5.2.5" data-path="ch-adv.html"><a href="ch-adv.html#起停周期广播"><i class="fa fa-check"></i><b>5.2.5</b> 起停周期广播</a></li>
 <li class="chapter" data-level="5.2.6" data-path="ch-adv.html"><a href="ch-adv.html#为周期广播添加-cte"><i class="fa fa-check"></i><b>5.2.6</b> 为周期广播添加 CTE</a></li>
+<li class="chapter" data-level="5.2.7" data-path="ch-adv.html"><a href="ch-adv.html#带响应的周期广播pawr-1"><i class="fa fa-check"></i><b>5.2.7</b> 带响应的周期广播（PAwR）</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="ch-scan.html"><a href="ch-scan.html"><i class="fa fa-check"></i><b>6</b> GAP - 扫描</a>
@@ -225,6 +226,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6.2.2" data-path="ch-scan.html"><a href="ch-scan.html#起停扫描"><i class="fa fa-check"></i><b>6.2.2</b> 起停扫描</a></li>
 <li class="chapter" data-level="6.2.3" data-path="ch-scan.html"><a href="ch-scan.html#处理数据"><i class="fa fa-check"></i><b>6.2.3</b> 处理数据</a></li>
 <li class="chapter" data-level="6.2.4" data-path="ch-scan.html"><a href="ch-scan.html#与周期广播同步"><i class="fa fa-check"></i><b>6.2.4</b> 与周期广播同步</a></li>
+<li class="chapter" data-level="6.2.5" data-path="ch-scan.html"><a href="ch-scan.html#与-pawr-同步"><i class="fa fa-check"></i><b>6.2.5</b> 与 PAwR 同步</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="ch-conn.html"><a href="ch-conn.html"><i class="fa fa-check"></i><b>7</b> GAP - 连接</a>
@@ -232,7 +234,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.1" data-path="ch-conn.html"><a href="ch-conn.html#概览-2"><i class="fa fa-check"></i><b>7.1</b> 概览</a></li>
 <li class="chapter" data-level="7.2" data-path="ch-conn.html"><a href="ch-conn.html#使用说明-2"><i class="fa fa-check"></i><b>7.2</b> 使用说明</a>
 <ul>
-<li class="chapter" data-level="7.2.1" data-path="ch-conn.html"><a href="ch-conn.html#建立连接"><i class="fa fa-check"></i><b>7.2.1</b> 建立连接</a></li>
+<li class="chapter" data-level="7.2.1" data-path="ch-conn.html"><a href="ch-conn.html#ch-scan-create-connection"><i class="fa fa-check"></i><b>7.2.1</b> 建立连接</a></li>
 <li class="chapter" data-level="7.2.2" data-path="ch-conn.html"><a href="ch-conn.html#取消连接"><i class="fa fa-check"></i><b>7.2.2</b> 取消连接</a></li>
 <li class="chapter" data-level="7.2.3" data-path="ch-conn.html"><a href="ch-conn.html#获取对端版本"><i class="fa fa-check"></i><b>7.2.3</b> 获取对端版本</a></li>
 <li class="chapter" data-level="7.2.4" data-path="ch-conn.html"><a href="ch-conn.html#获取对端特性"><i class="fa fa-check"></i><b>7.2.4</b> 获取对端特性</a></li>
@@ -364,7 +366,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p>可连接：接受对方发来的连接建立请求</p></li>
 <li><p>可扫描：接受对方发来的扫描请求，并回复扫描响应</p></li>
 <li><p>定向：只用于可连接广播，只接受特定方发来的连接建立请求</p></li>
-<li><p>高占空比（High Duty）：以更高的频率<a href="#fn16" class="footnote-ref" id="fnref16"><sup>16</sup></a>重复发送广播数据，常用于实现快速重连（定向可连接广播），
+<li><p>高占空比（High Duty）：以更高的频率<a href="#fn17" class="footnote-ref" id="fnref17"><sup>17</sup></a>重复发送广播数据，常用于实现快速重连（定向可连接广播），
 最长只持续 <span class="math inline">\(1.28s\)</span>。从 5.0 开始，高占空比广播也可用于不可连接广播。</p></li>
 </ul>
 <p>对于传统的扫描响应包，其有效载荷最长同样为 <span class="math inline">\(31B\)</span>；扩展的扫描响应包，其有效载荷最长同样为 <span class="math inline">\(1650B\)</span>。
@@ -436,7 +438,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="广播集" class="section level3 hasAnchor" number="5.1.4">
 <h3><span class="header-section-number">5.1.4</span> 广播集<a href="ch-adv.html#广播集" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>从 5.0 开始，BLE 支持并发发送多个广播，每个广播称为一个广播集<a href="#fn17" class="footnote-ref" id="fnref17"><sup>17</sup></a>，由广播集句柄指示。
+<p>从 5.0 开始，BLE 支持并发发送多个广播，每个广播称为一个广播集<a href="#fn18" class="footnote-ref" id="fnref18"><sup>18</sup></a>，由广播集句柄指示。
 每个广播使用各自独立的参数，包括地址、广播类型、PHY、数据等。
 开发者可以为广播集指定一个 4 比特长的 SID。</p>
 </div>
@@ -454,6 +456,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 当未能建立连接高占空比广播超时时，<code>status</code> 置为 <code>0x3C</code>（定向广播超时）。</p></li>
 <li><p><code>HCI_SUBEVENT_LE_SCAN_REQUEST_RECEIVED</code></p>
 <p>开发者使能扫描请求指示后，HCI 回调会收到 <code>HCI_SUBEVENT_LE_SCAN_REQUEST_RECEIVED</code> 事件。</p></li>
+<li><p><code>HCI_SUBEVENT_PRD_ADV_SUBEVT_DATA_REQ</code></p>
+<p>发送 PAwR 时，通过该事件向上层应用请求设置子事件数据。该事件的内容为
+<code>le_mete_event_prd_adv_subevent_data_req_t</code>。应用收到该事件后，可通过
+<code>gap_set_periodic_adv_subevent_data</code> 为子事件设置数据。</p></li>
+<li><p><code>HCI_SUBEVENT_PRD_ADV_RSP_REPORT</code></p>
+<p>收到 PAwR 的响应时，HCI 回调会收到 <code>HCI_SUBEVENT_PRD_ADV_RSP_REPORT</code> 事件，其内容为
+<code>le_mete_event_prd_adv_rsp_report_t</code>。</p></li>
 </ul>
 </div>
 </div>
@@ -515,7 +524,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="ch1-adv-data-edit" class="section level3 hasAnchor" number="5.2.2">
 <h3><span class="header-section-number">5.2.2</span> 广播数据<a href="ch-adv.html#ch1-adv-data-edit" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 Wizard 里的广播数据编辑器可以方便地编辑数据<a href="#fn18" class="footnote-ref" id="fnref18"><sup>18</sup></a>。
+<p>使用 Wizard 里的广播数据编辑器可以方便地编辑数据<a href="#fn19" class="footnote-ref" id="fnref19"><sup>19</sup></a>。
 广播数据编辑器同时可以生成一些常数，方便开发者编程修改广播数据。
 下面的例子把蓝牙地址的最末两个字节填充到设备名称的最后 4 个字符里。</p>
 <ol style="list-style-type: decimal">
@@ -566,7 +575,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb15-4"><a href="ch-adv.html#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 广播周期</span></span>
 <span id="cb15-5"><a href="ch-adv.html#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint16_t</span> interval_min<span class="op">,</span></span>
 <span id="cb15-6"><a href="ch-adv.html#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint16_t</span> interval_max<span class="op">,</span></span>
-<span id="cb15-7"><a href="ch-adv.html#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 属性（仅支持 0 或 PERIODIC_ADV_BIT_INC_TX</span></span>
+<span id="cb15-7"><a href="ch-adv.html#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 属性（仅支持 0 或 PERIODIC_ADV_BIT_INC_TX)</span></span>
 <span id="cb15-8"><a href="ch-adv.html#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> periodic_adv_properties_t properties<span class="op">);</span></span></code></pre></div>
 <p>周期广播的数据通过 <code>gap_set_periodic_adv_data</code> 设置，而不是 <code>gap_set_ext_adv_para</code>。</p>
 </div>
@@ -600,22 +609,97 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb18-2"><a href="ch-adv.html#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> enable<span class="op">,</span></span>
 <span id="cb18-3"><a href="ch-adv.html#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> adv_handle<span class="op">);</span></span></code></pre></div>
 <p>要“完整”地开启周期广播，需要先通过 <code>gap_set_ext_adv_enable</code> 使能关联的扩展广播，再用这个 API 使能周期广播。
-扩展广播可以独立地关闭<a href="#fn19" class="footnote-ref" id="fnref19"><sup>19</sup></a>。</p>
+扩展广播可以独立地关闭<a href="#fn20" class="footnote-ref" id="fnref20"><sup>20</sup></a>。</p>
 </div>
 <div id="为周期广播添加-cte" class="section level3 hasAnchor" number="5.2.6">
 <h3><span class="header-section-number">5.2.6</span> 为周期广播添加 CTE<a href="ch-adv.html#为周期广播添加-cte" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>参考“<a href="ch-misc.html#misc-cte-periodic-adv">基于周期广播的 CTE 接收和发送</a>”一节。</p>
+</div>
+<div id="带响应的周期广播pawr-1" class="section level3 hasAnchor" number="5.2.7">
+<h3><span class="header-section-number">5.2.7</span> 带响应的周期广播（PAwR）<a href="ch-adv.html#带响应的周期广播pawr-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="配置" class="section level4 hasAnchor" number="5.2.7.1">
+<h4><span class="header-section-number">5.2.7.1</span> 配置<a href="ch-adv.html#配置" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>PAwR 广播也总是与一个不可连接、不可扫描的扩展广播绑定。使用 <code>gap_set_ext_adv_para</code> 设置了扩展广播参数后，
+就可以通过 <code>gap_set_periodic_adv_para_v2</code> 创建相关联的 PAwR 广播，与 <code>gap_set_periodic_adv_para</code>
+相比，增加了几个关于 PAwR 的参数：</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb19-1"><a href="ch-adv.html#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_set_periodic_adv_para_v2<span class="op">(</span></span>
+<span id="cb19-2"><a href="ch-adv.html#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 使用同一个广播集句柄</span></span>
+<span id="cb19-3"><a href="ch-adv.html#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> adv_handle<span class="op">,</span></span>
+<span id="cb19-4"><a href="ch-adv.html#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 广播周期</span></span>
+<span id="cb19-5"><a href="ch-adv.html#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint16_t</span> interval_min<span class="op">,</span></span>
+<span id="cb19-6"><a href="ch-adv.html#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint16_t</span> interval_max<span class="op">,</span></span>
+<span id="cb19-7"><a href="ch-adv.html#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 属性（仅支持 0 或 PERIODIC_ADV_BIT_INC_TX)</span></span>
+<span id="cb19-8"><a href="ch-adv.html#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> periodic_adv_properties_t properties<span class="op">,</span></span>
+<span id="cb19-9"><a href="ch-adv.html#cb19-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 子事件个数</span></span>
+<span id="cb19-10"><a href="ch-adv.html#cb19-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> num_subevents<span class="op">,</span></span>
+<span id="cb19-11"><a href="ch-adv.html#cb19-11" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 子事件间隔</span></span>
+<span id="cb19-12"><a href="ch-adv.html#cb19-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> subevent_interval<span class="op">,</span></span>
+<span id="cb19-13"><a href="ch-adv.html#cb19-13" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 第一个响应时隙的延迟</span></span>
+<span id="cb19-14"><a href="ch-adv.html#cb19-14" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> response_slot_delay<span class="op">,</span></span>
+<span id="cb19-15"><a href="ch-adv.html#cb19-15" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 响应时隙的间隔</span></span>
+<span id="cb19-16"><a href="ch-adv.html#cb19-16" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> response_slot_spacing<span class="op">,</span></span>
+<span id="cb19-17"><a href="ch-adv.html#cb19-17" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 每个子事件的响应时隙数</span></span>
+<span id="cb19-18"><a href="ch-adv.html#cb19-18" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> num_response_slots<span class="op">);</span></span></code></pre></div>
+</div>
+<div id="为子事件设置更新数据" class="section level4 hasAnchor" number="5.2.7.2">
+<h4><span class="header-section-number">5.2.7.2</span> 为子事件设置、更新数据<a href="ch-adv.html#为子事件设置更新数据" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>当收到 <code>HCI_SUBEVENT_PRD_ADV_SUBEVT_DATA_REQ</code> 事件时，通过
+<code>gap_set_periodic_adv_subevent_data</code> 为子事件设置数据：</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb20-1"><a href="ch-adv.html#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_set_periodic_adv_subevent_data<span class="op">(</span></span>
+<span id="cb20-2"><a href="ch-adv.html#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// PAwR 的广播集句柄</span></span>
+<span id="cb20-3"><a href="ch-adv.html#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> adv_handle<span class="op">,</span></span>
+<span id="cb20-4"><a href="ch-adv.html#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 要设置的子事件的个数</span></span>
+<span id="cb20-5"><a href="ch-adv.html#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> num_subevents<span class="op">,</span></span>
+<span id="cb20-6"><a href="ch-adv.html#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 每个子事件的数据</span></span>
+<span id="cb20-7"><a href="ch-adv.html#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> gap_prd_adv_subevent_data_t <span class="op">*</span>data<span class="op">);</span></span></code></pre></div>
+<p>每个子事件的数据定义如下：</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb21-1"><a href="ch-adv.html#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span></span>
+<span id="cb21-2"><a href="ch-adv.html#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb21-3"><a href="ch-adv.html#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 子事件序号</span></span>
+<span id="cb21-4"><a href="ch-adv.html#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span>         subevent<span class="op">;</span></span>
+<span id="cb21-5"><a href="ch-adv.html#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 本子事件的第一个响应时隙的序号</span></span>
+<span id="cb21-6"><a href="ch-adv.html#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span>         rsp_slot_start<span class="op">;</span></span>
+<span id="cb21-7"><a href="ch-adv.html#cb21-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 本子事件的响应时隙的个数</span></span>
+<span id="cb21-8"><a href="ch-adv.html#cb21-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span>         rsp_slot_count<span class="op">;</span></span>
+<span id="cb21-9"><a href="ch-adv.html#cb21-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 数据长度</span></span>
+<span id="cb21-10"><a href="ch-adv.html#cb21-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span>         data_len<span class="op">;</span></span>
+<span id="cb21-11"><a href="ch-adv.html#cb21-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 数据</span></span>
+<span id="cb21-12"><a href="ch-adv.html#cb21-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span> data<span class="op">;</span></span>
+<span id="cb21-13"><a href="ch-adv.html#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> gap_prd_adv_subevent_data_t<span class="op">;</span></span></code></pre></div>
+<p>这里设置的响应时隙应为 <code>gap_set_periodic_adv_para_v2</code> 所设置的响应时隙的子集。</p>
+</div>
+<div id="ch-adv-create-connection" class="section level4 hasAnchor" number="5.2.7.3">
+<h4><span class="header-section-number">5.2.7.3</span> 从 PAwR 发起连接<a href="ch-adv.html#ch-adv-create-connection" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>通过 <code>gap_ext_create_connection_v2</code> 在指定的子事件上向指定设备发送连接请求。
+<code>gap_ext_create_connection_v2</code> 是 <a href="ch-conn.html#ch-scan-create-connection"><code>gap_ext_create_connection</code></a>
+的增强版本，增加了 2 个参数：
+<code>adv_handle</code> 和 <code>subevent</code>。当这两个参数都是无效值（0xff）时，<code>gap_ext_create_connection_v2</code>
+的功能等同于 <code>gap_ext_create_connection</code>。从 PAwR 发起连接时，这两个参数应该为有效值，此时， 忽略
+<code>filter_policy</code>，以及 <code>phy_configs</code> 里的 <code>phy</code>、<code>scan_int</code>、<code>scan_win</code>。</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb22-1"><a href="ch-adv.html#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_ext_create_connection_v2<span class="op">(</span></span>
+<span id="cb22-2"><a href="ch-adv.html#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// PAwR 的广播集句柄</span></span>
+<span id="cb22-3"><a href="ch-adv.html#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> adv_handle<span class="op">,</span></span>
+<span id="cb22-4"><a href="ch-adv.html#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 子事件序号</span></span>
+<span id="cb22-5"><a href="ch-adv.html#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> subevent<span class="op">,</span></span>
+<span id="cb22-6"><a href="ch-adv.html#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> initiating_filter_policy_t filter_policy<span class="op">,</span></span>
+<span id="cb22-7"><a href="ch-adv.html#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> bd_addr_type_t own_addr_type<span class="op">,</span></span>
+<span id="cb22-8"><a href="ch-adv.html#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> bd_addr_type_t peer_addr_type<span class="op">,</span></span>
+<span id="cb22-9"><a href="ch-adv.html#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>peer_addr<span class="op">,</span></span>
+<span id="cb22-10"><a href="ch-adv.html#cb22-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> initiating_phy_num<span class="op">,</span></span>
+<span id="cb22-11"><a href="ch-adv.html#cb22-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> initiating_phy_config_t <span class="op">*</span>phy_configs</span>
+<span id="cb22-12"><a href="ch-adv.html#cb22-12" aria-hidden="true" tabindex="-1"></a>  <span class="op">);</span></span></code></pre></div>
 
+</div>
 </div>
 </div>
 </div>
 <div class="footnotes">
 <hr />
-<ol start="16">
-<li id="fn16"><p>广播间隔小于 <span class="math inline">\(3.75ms\)</span>。<a href="ch-adv.html#fnref16" class="footnote-back">↩︎</a></p></li>
-<li id="fn17"><p>在不引起混淆的前提下，本手册混用“广播”、“广播集”这两个名词。<a href="ch-adv.html#fnref17" class="footnote-back">↩︎</a></p></li>
-<li id="fn18"><p>请参阅 SDK 用户手册。<a href="ch-adv.html#fnref18" class="footnote-back">↩︎</a></p></li>
-<li id="fn19"><p>关闭之后，其它设备无法再与该周期广播建立同步。<a href="ch-adv.html#fnref19" class="footnote-back">↩︎</a></p></li>
+<ol start="17">
+<li id="fn17"><p>广播间隔小于 <span class="math inline">\(3.75ms\)</span>。<a href="ch-adv.html#fnref17" class="footnote-back">↩︎</a></p></li>
+<li id="fn18"><p>在不引起混淆的前提下，本手册混用“广播”、“广播集”这两个名词。<a href="ch-adv.html#fnref18" class="footnote-back">↩︎</a></p></li>
+<li id="fn19"><p>请参阅 SDK 用户手册。<a href="ch-adv.html#fnref19" class="footnote-back">↩︎</a></p></li>
+<li id="fn20"><p>关闭之后，其它设备无法再与该周期广播建立同步。<a href="ch-adv.html#fnref20" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

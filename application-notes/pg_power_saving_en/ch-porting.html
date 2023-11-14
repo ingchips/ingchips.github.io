@@ -160,9 +160,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.2.1" data-path="ch-api.html"><a href="ch-api.html#side-note-on-priority"><i class="fa fa-check"></i><b>4.2.1</b> Side Note on Priority</a></li>
 </ul></li>
 <li class="chapter" data-level="4.3" data-path="ch-api.html"><a href="ch-api.html#shutdown-1"><i class="fa fa-check"></i><b>4.3</b> Shutdown</a></li>
-<li class="chapter" data-level="4.4" data-path="ch-api.html"><a href="ch-api.html#k-clock"><i class="fa fa-check"></i><b>4.4</b> 32k Clock</a>
+<li class="chapter" data-level="4.4" data-path="ch-api.html"><a href="ch-api.html#the-real-time-clock"><i class="fa fa-check"></i><b>4.4</b> The Real-time Clock</a>
 <ul>
-<li class="chapter" data-level="4.4.1" data-path="ch-api.html"><a href="ch-api.html#internal-32k-rc-clock"><i class="fa fa-check"></i><b>4.4.1</b> Internal 32k RC Clock</a></li>
+<li class="chapter" data-level="4.4.1" data-path="ch-api.html"><a href="ch-api.html#internal-real-time-rc-clock"><i class="fa fa-check"></i><b>4.4.1</b> Internal real-time RC Clock</a></li>
 </ul></li>
 <li class="chapter" data-level="4.5" data-path="ch-api.html"><a href="ch-api.html#timers"><i class="fa fa-check"></i><b>4.5</b> Timers</a></li>
 <li class="chapter" data-level="4.6" data-path="ch-api.html"><a href="ch-api.html#idle-procedure"><i class="fa fa-check"></i><b>4.6</b> IDLE Procedure</a></li>
@@ -213,25 +213,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>When using NoOS variants of platform bundles, power saving framework needs to
 be ported to other RTOS(es). The main work is to port the idle process to the
 targeting RTOS. The idle process<a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a> looks like this:</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb20-1"><a href="ch-porting.html#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> idle_task<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
-<span id="cb20-2"><a href="ch-porting.html#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb20-3"><a href="ch-porting.html#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(;;)</span></span>
-<span id="cb20-4"><a href="ch-porting.html#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb20-5"><a href="ch-porting.html#cb20-5" aria-hidden="true" tabindex="-1"></a>        timeout_tick <span class="op">=</span> rtos_next_busy_tick<span class="op">();</span></span>
-<span id="cb20-6"><a href="ch-porting.html#cb20-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>platform_pre_suppress_ticks_and_sleep_processing<span class="op">(</span></span>
-<span id="cb20-7"><a href="ch-porting.html#cb20-7" aria-hidden="true" tabindex="-1"></a>          timeout_tick<span class="op">)</span> <span class="op">&gt;</span> some_limit<span class="op">)</span></span>
-<span id="cb20-8"><a href="ch-porting.html#cb20-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span></span>
-<span id="cb20-9"><a href="ch-porting.html#cb20-9" aria-hidden="true" tabindex="-1"></a>            rtos_stop_scheduler<span class="op">();</span></span>
-<span id="cb20-10"><a href="ch-porting.html#cb20-10" aria-hidden="true" tabindex="-1"></a>            platform_pre_sleep_processing<span class="op">();</span></span>
-<span id="cb20-11"><a href="ch-porting.html#cb20-11" aria-hidden="true" tabindex="-1"></a>            platform_post_sleep_processing<span class="op">();</span></span>
-<span id="cb20-12"><a href="ch-porting.html#cb20-12" aria-hidden="true" tabindex="-1"></a>            tick_cnt <span class="op">=</span> how_long_has_I_slept<span class="op">();</span></span>
-<span id="cb20-13"><a href="ch-porting.html#cb20-13" aria-hidden="true" tabindex="-1"></a>            rtos_compensate_system_ticks<span class="op">(</span>tick_cnt<span class="op">);</span></span>
-<span id="cb20-14"><a href="ch-porting.html#cb20-14" aria-hidden="true" tabindex="-1"></a>            restart_system_ticks<span class="op">();</span></span>
-<span id="cb20-15"><a href="ch-porting.html#cb20-15" aria-hidden="true" tabindex="-1"></a>            rtos_resume_scheduler<span class="op">();</span></span>
-<span id="cb20-16"><a href="ch-porting.html#cb20-16" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb20-17"><a href="ch-porting.html#cb20-17" aria-hidden="true" tabindex="-1"></a>        platform_os_idle_resumed_hook<span class="op">();</span></span>
-<span id="cb20-18"><a href="ch-porting.html#cb20-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb20-19"><a href="ch-porting.html#cb20-19" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb21-1"><a href="ch-porting.html#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> idle_task<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb21-2"><a href="ch-porting.html#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb21-3"><a href="ch-porting.html#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(;;)</span></span>
+<span id="cb21-4"><a href="ch-porting.html#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb21-5"><a href="ch-porting.html#cb21-5" aria-hidden="true" tabindex="-1"></a>        timeout_tick <span class="op">=</span> rtos_next_busy_tick<span class="op">();</span></span>
+<span id="cb21-6"><a href="ch-porting.html#cb21-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>platform_pre_suppress_ticks_and_sleep_processing<span class="op">(</span></span>
+<span id="cb21-7"><a href="ch-porting.html#cb21-7" aria-hidden="true" tabindex="-1"></a>          timeout_tick<span class="op">)</span> <span class="op">&gt;</span> some_limit<span class="op">)</span></span>
+<span id="cb21-8"><a href="ch-porting.html#cb21-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span></span>
+<span id="cb21-9"><a href="ch-porting.html#cb21-9" aria-hidden="true" tabindex="-1"></a>            rtos_stop_scheduler<span class="op">();</span></span>
+<span id="cb21-10"><a href="ch-porting.html#cb21-10" aria-hidden="true" tabindex="-1"></a>            platform_pre_sleep_processing<span class="op">();</span></span>
+<span id="cb21-11"><a href="ch-porting.html#cb21-11" aria-hidden="true" tabindex="-1"></a>            platform_post_sleep_processing<span class="op">();</span></span>
+<span id="cb21-12"><a href="ch-porting.html#cb21-12" aria-hidden="true" tabindex="-1"></a>            tick_cnt <span class="op">=</span> how_long_has_I_slept<span class="op">();</span></span>
+<span id="cb21-13"><a href="ch-porting.html#cb21-13" aria-hidden="true" tabindex="-1"></a>            rtos_compensate_system_ticks<span class="op">(</span>tick_cnt<span class="op">);</span></span>
+<span id="cb21-14"><a href="ch-porting.html#cb21-14" aria-hidden="true" tabindex="-1"></a>            restart_system_ticks<span class="op">();</span></span>
+<span id="cb21-15"><a href="ch-porting.html#cb21-15" aria-hidden="true" tabindex="-1"></a>            rtos_resume_scheduler<span class="op">();</span></span>
+<span id="cb21-16"><a href="ch-porting.html#cb21-16" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb21-17"><a href="ch-porting.html#cb21-17" aria-hidden="true" tabindex="-1"></a>        platform_os_idle_resumed_hook<span class="op">();</span></span>
+<span id="cb21-18"><a href="ch-porting.html#cb21-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb21-19"><a href="ch-porting.html#cb21-19" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>What needs to be ported is exactly those <code>rtos_...</code> functionalities:</p>
 <ul>
 <li><p><code>rtos_next_busy_tick</code> returns how many ticks the CPU can be put in sleep modes;</p></li>
@@ -255,21 +255,21 @@ are having the lowest priority.
 <div id="api" class="section level2 hasAnchor" number="5.1">
 <h2><span class="header-section-number">5.1</span> API<a href="ch-porting.html#api" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>NoOS variants of platform bundles provide a collection of APIs to cooperate the porting.</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb21-1"><a href="ch-porting.html#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Pre-suppress ticks and sleep processing</span></span>
-<span id="cb21-2"><a href="ch-porting.html#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co">// @return  adjusted ticks to sleep</span></span>
-<span id="cb21-3"><a href="ch-porting.html#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> platform_pre_suppress_ticks_and_sleep_processing<span class="op">(</span></span>
-<span id="cb21-4"><a href="ch-porting.html#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// expected ticks to sleep</span></span>
-<span id="cb21-5"><a href="ch-porting.html#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> expected_ticks</span>
-<span id="cb21-6"><a href="ch-porting.html#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span>
-<span id="cb21-7"><a href="ch-porting.html#cb21-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-8"><a href="ch-porting.html#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="co">// Preprocessing for tick-less sleep</span></span>
-<span id="cb21-9"><a href="ch-porting.html#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_pre_sleep_processing<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span>
-<span id="cb21-10"><a href="ch-porting.html#cb21-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-11"><a href="ch-porting.html#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="co">// Postprocessing for tick-less sleep</span></span>
-<span id="cb21-12"><a href="ch-porting.html#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_post_sleep_processing<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span>
-<span id="cb21-13"><a href="ch-porting.html#cb21-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-14"><a href="ch-porting.html#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="co">// Hook for idle task got resumed</span></span>
-<span id="cb21-15"><a href="ch-porting.html#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_os_idle_resumed_hook<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb22-1"><a href="ch-porting.html#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Pre-suppress ticks and sleep processing</span></span>
+<span id="cb22-2"><a href="ch-porting.html#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co">// @return  adjusted ticks to sleep</span></span>
+<span id="cb22-3"><a href="ch-porting.html#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> platform_pre_suppress_ticks_and_sleep_processing<span class="op">(</span></span>
+<span id="cb22-4"><a href="ch-porting.html#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// expected ticks to sleep</span></span>
+<span id="cb22-5"><a href="ch-porting.html#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> expected_ticks</span>
+<span id="cb22-6"><a href="ch-porting.html#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span>
+<span id="cb22-7"><a href="ch-porting.html#cb22-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-8"><a href="ch-porting.html#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="co">// Preprocessing for tick-less sleep</span></span>
+<span id="cb22-9"><a href="ch-porting.html#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_pre_sleep_processing<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span>
+<span id="cb22-10"><a href="ch-porting.html#cb22-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-11"><a href="ch-porting.html#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="co">// Postprocessing for tick-less sleep</span></span>
+<span id="cb22-12"><a href="ch-porting.html#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_post_sleep_processing<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span>
+<span id="cb22-13"><a href="ch-porting.html#cb22-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-14"><a href="ch-porting.html#cb22-14" aria-hidden="true" tabindex="-1"></a><span class="co">// Hook for idle task got resumed</span></span>
+<span id="cb22-15"><a href="ch-porting.html#cb22-15" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_os_idle_resumed_hook<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
 </div>
 <div id="port-to-freertos" class="section level2 hasAnchor" number="5.2">
 <h2><span class="header-section-number">5.2</span> Port to FreeRTOS<a href="ch-porting.html#port-to-freertos" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -278,11 +278,11 @@ It is a cross-platform RTOS kernel that is distributed freely under the MIT open
 <p>Platform binaries that has a built-in RTOS bundles FreeRTOS. NoOS variants are
 certainly portable to FreeRTOS. The portable can be done by just defining several macros
 to feed above APIs into FreeRTOS, such as:</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb22-1"><a href="ch-porting.html#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define configPRE_SUPPRESS_TICKS_AND_SLEEP_PROCESSING(xExpectedIdleTime)  \</span></span>
-<span id="cb22-2"><a href="ch-porting.html#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="pp">  do {                                                                    \</span></span>
-<span id="cb22-3"><a href="ch-porting.html#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="pp">    xExpectedIdleTime =                                                   \</span></span>
-<span id="cb22-4"><a href="ch-porting.html#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="pp">      platform_pre_suppress_ticks_and_sleep_processing(xExpectedIdleTime);\</span></span>
-<span id="cb22-5"><a href="ch-porting.html#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="pp">  } while (0)</span></span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb23-1"><a href="ch-porting.html#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define configPRE_SUPPRESS_TICKS_AND_SLEEP_PROCESSING(xExpectedIdleTime)  \</span></span>
+<span id="cb23-2"><a href="ch-porting.html#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="pp">  do {                                                                    \</span></span>
+<span id="cb23-3"><a href="ch-porting.html#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="pp">    xExpectedIdleTime =                                                   \</span></span>
+<span id="cb23-4"><a href="ch-porting.html#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="pp">      platform_pre_suppress_ticks_and_sleep_processing(xExpectedIdleTime);\</span></span>
+<span id="cb23-5"><a href="ch-porting.html#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="pp">  } while (0)</span></span></code></pre></div>
 <p>A complete example can be found in
 SDK repository<a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a>.</p>
 </div>
@@ -406,17 +406,17 @@ A complete example can be found in
 SDK repository<a href="#fn19" class="footnote-ref" id="fnref19"><sup>19</sup></a>.</p>
 <p>In the example, because there are no software timers, and no next busy tick,
 the whole idle process couldn’t be simpler:</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb23-1"><a href="ch-porting.html#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> idle_process<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
-<span id="cb23-2"><a href="ch-porting.html#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb23-3"><a href="ch-porting.html#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> ticks <span class="op">=</span></span>
-<span id="cb23-4"><a href="ch-porting.html#cb23-4" aria-hidden="true" tabindex="-1"></a>      platform_pre_suppress_ticks_and_sleep_processing<span class="op">(</span><span class="bn">0xffffff</span><span class="op">);</span></span>
-<span id="cb23-5"><a href="ch-porting.html#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>ticks <span class="op">&lt;</span> <span class="dv">5</span><span class="op">)</span> <span class="cf">return</span><span class="op">;</span></span>
-<span id="cb23-6"><a href="ch-porting.html#cb23-6" aria-hidden="true" tabindex="-1"></a>    enter_critical<span class="op">();</span></span>
-<span id="cb23-7"><a href="ch-porting.html#cb23-7" aria-hidden="true" tabindex="-1"></a>    platform_pre_sleep_processing<span class="op">();</span></span>
-<span id="cb23-8"><a href="ch-porting.html#cb23-8" aria-hidden="true" tabindex="-1"></a>    platform_post_sleep_processing<span class="op">();</span></span>
-<span id="cb23-9"><a href="ch-porting.html#cb23-9" aria-hidden="true" tabindex="-1"></a>    leave_critical<span class="op">();</span></span>
-<span id="cb23-10"><a href="ch-porting.html#cb23-10" aria-hidden="true" tabindex="-1"></a>    platform_os_idle_resumed_hook<span class="op">();</span></span>
-<span id="cb23-11"><a href="ch-porting.html#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb24-1"><a href="ch-porting.html#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> idle_process<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb24-2"><a href="ch-porting.html#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb24-3"><a href="ch-porting.html#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> ticks <span class="op">=</span></span>
+<span id="cb24-4"><a href="ch-porting.html#cb24-4" aria-hidden="true" tabindex="-1"></a>      platform_pre_suppress_ticks_and_sleep_processing<span class="op">(</span><span class="bn">0xffffff</span><span class="op">);</span></span>
+<span id="cb24-5"><a href="ch-porting.html#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>ticks <span class="op">&lt;</span> <span class="dv">5</span><span class="op">)</span> <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb24-6"><a href="ch-porting.html#cb24-6" aria-hidden="true" tabindex="-1"></a>    enter_critical<span class="op">();</span></span>
+<span id="cb24-7"><a href="ch-porting.html#cb24-7" aria-hidden="true" tabindex="-1"></a>    platform_pre_sleep_processing<span class="op">();</span></span>
+<span id="cb24-8"><a href="ch-porting.html#cb24-8" aria-hidden="true" tabindex="-1"></a>    platform_post_sleep_processing<span class="op">();</span></span>
+<span id="cb24-9"><a href="ch-porting.html#cb24-9" aria-hidden="true" tabindex="-1"></a>    leave_critical<span class="op">();</span></span>
+<span id="cb24-10"><a href="ch-porting.html#cb24-10" aria-hidden="true" tabindex="-1"></a>    platform_os_idle_resumed_hook<span class="op">();</span></span>
+<span id="cb24-11"><a href="ch-porting.html#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 
 </div>
 </div>

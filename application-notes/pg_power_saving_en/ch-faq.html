@@ -160,9 +160,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.2.1" data-path="ch-api.html"><a href="ch-api.html#side-note-on-priority"><i class="fa fa-check"></i><b>4.2.1</b> Side Note on Priority</a></li>
 </ul></li>
 <li class="chapter" data-level="4.3" data-path="ch-api.html"><a href="ch-api.html#shutdown-1"><i class="fa fa-check"></i><b>4.3</b> Shutdown</a></li>
-<li class="chapter" data-level="4.4" data-path="ch-api.html"><a href="ch-api.html#k-clock"><i class="fa fa-check"></i><b>4.4</b> 32k Clock</a>
+<li class="chapter" data-level="4.4" data-path="ch-api.html"><a href="ch-api.html#the-real-time-clock"><i class="fa fa-check"></i><b>4.4</b> The Real-time Clock</a>
 <ul>
-<li class="chapter" data-level="4.4.1" data-path="ch-api.html"><a href="ch-api.html#internal-32k-rc-clock"><i class="fa fa-check"></i><b>4.4.1</b> Internal 32k RC Clock</a></li>
+<li class="chapter" data-level="4.4.1" data-path="ch-api.html"><a href="ch-api.html#internal-real-time-rc-clock"><i class="fa fa-check"></i><b>4.4.1</b> Internal real-time RC Clock</a></li>
 </ul></li>
 <li class="chapter" data-level="4.5" data-path="ch-api.html"><a href="ch-api.html#timers"><i class="fa fa-check"></i><b>4.5</b> Timers</a></li>
 <li class="chapter" data-level="4.6" data-path="ch-api.html"><a href="ch-api.html#idle-procedure"><i class="fa fa-check"></i><b>4.6</b> IDLE Procedure</a></li>
@@ -234,14 +234,14 @@ PLATFORM_CB_EVT_ON_DEEP_SLEEP_WAKEUP, it’s generally not debug-able.</p>
 After everything is OK, re-enable power saving. Or, in the handler of
 PLATFORM_CB_EVT_QUERY_DEEP_SLEEP_ALLOWED, check if debugger is attached, and
 if so, disallow sleep modes of Category B:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb24-1"><a href="ch-faq.html#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> query_deep_sleep_allowed<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>dummy<span class="op">,</span></span>
-<span id="cb24-2"><a href="ch-faq.html#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
-<span id="cb24-3"><a href="ch-faq.html#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb24-4"><a href="ch-faq.html#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>IS_DEBUGGER_ATTACHED<span class="op">())</span></span>
-<span id="cb24-5"><a href="ch-faq.html#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb24-6"><a href="ch-faq.html#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-7"><a href="ch-faq.html#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// ....</span></span>
-<span id="cb24-8"><a href="ch-faq.html#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb25"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb25-1"><a href="ch-faq.html#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> query_deep_sleep_allowed<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>dummy<span class="op">,</span></span>
+<span id="cb25-2"><a href="ch-faq.html#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
+<span id="cb25-3"><a href="ch-faq.html#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb25-4"><a href="ch-faq.html#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>IS_DEBUGGER_ATTACHED<span class="op">())</span></span>
+<span id="cb25-5"><a href="ch-faq.html#cb25-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb25-6"><a href="ch-faq.html#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-7"><a href="ch-faq.html#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// ....</span></span>
+<span id="cb25-8"><a href="ch-faq.html#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 </ul>
 <hr />
 

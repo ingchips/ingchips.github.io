@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>为 ING916 添加二级 Bootloader - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="为 ING916 添加二级 Bootloader，降低升级过程中固件损坏的概率。"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+
+      <div id="box">
+        <input id="in_search" type="search" name="search" placeholder="搜索：输入并回车">
+      </div>
+
+      <script>
+        let search_input = document.getElementById('in_search');
+        if (search_input) {
+          search_input.addEventListener("keypress", function(event) {
+          if (event.key === "Enter") {
+            window.open('https://www.bing.com/search?q=' + encodeURIComponent(search_input.value) + '%20site%3A' + window.location.hostname);
+            event.preventDefault();
+            }
+          });
+        }
+      </script>
+
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item has-children">
+
+              
+<a class="" href="/docs/sdk/apps/#web-apps">
+  
+  Web 工具
+  
+</a>
+
+              
+
+                <ul class="submenu">
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/callgraph">
+  
+  Callgraph (调用图)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index_cn.html">
+  
+  ING918/ING916 FOTA (空中升级)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/powerprofiler/">
+  
+  Online Power Profiler
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/air_trace/">
+  
+  Trace Logger
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/assertion_tool/index.html">
+  
+  ING918/ING916 Assertion Tool
+  
+</a>
+
+  </li>
+  
+</ul>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+      <article class="post post-full">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <header class="post-header has-gradient outer">
+      
+      
+      <div class="inner-sm">
+        <div class="post-meta">
+          <time class="published" datetime="2023-11-23 00:00">November 23, 2023</time>
+        </div>
+        <h1 class="post-title">为 ING916 添加二级 Bootloader</h1>
+        
+        
+      </div>
+    </header>
+    <div class="inner-md outer">
+      <div class="post-content">
+        <ul id="markdown-toc">
+  <li><a href="#升级时固件损坏的概率" id="markdown-toc-升级时固件损坏的概率">升级时固件损坏的概率</a></li>
+  <li><a href="#中断向量表搬移工具" id="markdown-toc-中断向量表搬移工具">中断向量表搬移工具</a></li>
+  <li><a href="#开发二级-bootloader" id="markdown-toc-开发二级-bootloader">开发二级 Bootloader</a>    <ul>
+      <li><a href="#补充中断向量表" id="markdown-toc-补充中断向量表">补充中断向量表</a></li>
+      <li><a href="#实现-reset_handler" id="markdown-toc-实现-reset_handler">实现 <code class="language-plaintext highlighter-rouge">Reset_Handler</code></a></li>
+      <li><a href="#清空-main" id="markdown-toc-清空-main">清空 <code class="language-plaintext highlighter-rouge">main</code></a></li>
+      <li><a href="#用-c-语言实现-do_fota" id="markdown-toc-用-c-语言实现-do_fota">用 C 语言实现 <code class="language-plaintext highlighter-rouge">do_fota</code></a></li>
+      <li><a href="#编译烧录" id="markdown-toc-编译烧录">编译、烧录</a></li>
+    </ul>
+  </li>
+  <li><a href="#应用开发" id="markdown-toc-应用开发">应用开发</a></li>
+  <li><a href="#总结" id="markdown-toc-总结">总结</a></li>
+</ul>
+
+<p>假设固件数据正确，FOTA 升级过程中如果意外掉电，固件是否会损坏并导致设备“变砖”？首先，ING918/ING916
+都不会因为固件损坏而“变砖”，内置于 ROM 的 Bootloader 总是可用的。那么固件损坏的概率是多少？</p>
+
+<h2 id="升级时固件损坏的概率">升级时固件损坏的概率</h2>
+
+<ul>
+  <li>
+    <p>对于 ING918，固件的替换升级由 ROM 内的 Bootloader 完成，最后一个步骤是擦除由 <code class="language-plaintext highlighter-rouge">program_fota_metadata</code>
+  提供的元数据。如果在替换过程中掉电，再次上电后时会重新完成替换升级。
+  在最后一个步骤即擦除元数据的过程中意外掉电，那么元数据被破坏。再次上电时，如果元数据不幸地被 Bootloader
+  识别为有效，再次替换固件，但是元数据里包含的固件起始地址等信息已破坏，那么将导致固件损坏。
+  擦除元数据即擦掉 Flash 里的一个页，
+  以 <code class="language-plaintext highlighter-rouge">erase_flash_page</code> 的执行时间为参考，大约 29ms。也就是说，因为 FOTA
+  过程中电源失效而导致固件损坏的时间窗口是这 29ms。</p>
+
+    <p>Bootloader 通过比对 32 bit <code class="language-plaintext highlighter-rouge">magic_number</code> 是否为既定值 0x5A5A5A5A 判断元数据是否有效，
+  我们假设擦除过程就是其中为 0 的 bit “缓慢”变为 1 的过程，如果意外中断，原来为 0 的比特变为 1 或者维持 0
+  的概率各为 $50 \%$。那么，元数据被破坏，再次上电时元数据里的 <code class="language-plaintext highlighter-rouge">magic_number</code> 仍为 0x5A5A5A5A
+  的概率为 $1/65536$。</p>
+  </li>
+  <li>
+    <p>对于 ING916，固件的替换及系统重启升级由 ROM 内的 <code class="language-plaintext highlighter-rouge">flash_do_update</code> 函数实现。
+如果在这个函数的执行期间意外掉电，将导致固件替换不完整、固件损坏。读取一个扇区再写入另一扇区约需要 42ms，
+只考虑使用内置 Flash，<code class="language-plaintext highlighter-rouge">flash_do_update</code> 最多可能替换约 256KiB 数据，即 64 个扇区，总耗时 2.7s。
+也就是说，因为 FOTA 过程中电源失效而导致固件损坏的时间窗口是这 2.7s。</p>
+  </li>
+</ul>
+
+<p>建立模型以估算概率。用 $X(t)$ 表示直到 $t$ 时刻电源失效事件发生的总数，
+假定 \(X = \{ X(t), t \ge 0 \}\) 是速率为 $\lambda$ 的泊松过程。则第 $n$ 次和下一次电源失效事件的时间间隔的数学期望为 $1/\lambda$。
+<strong>假设</strong>一个很糟糕的情况：<strong>意外掉电事件平均每 20 分钟发生一次</strong>，即 $\lambda = 1/(20 min)$。
+于是，在从 $t$ 开始长度为 $l $ 的时间窗口内至少发生 1 次电源失效事件的概率 $P_f(l)$ 为：</p>
+
+\[P_f(l) = 1 - P\{ X(t + l) - X(t) = 0\} = 1 - e ^{- \lambda l}\]
+
+<p>于是，ING918 上固件损坏的概率为：</p>
+
+\[\frac{P_f(29ms)}{65536} \approx 3.6875 \times 10^{-10}\]
+
+<p>作为对比，体彩大乐透七个球全部选中的概率为 $1/21425712 \approx 4.66729 \times 10^{-8}$，
+福彩双色球七个球全部选中的概率为 $1/17721088 \approx 5.64299 \times 10^{-8}$。</p>
+
+<p>而 ING916 上固件损坏的概率为：</p>
+
+\[P_f(2.7s) \approx 2.24747 \times 10^{-3}\]
+
+<p>这里我们参照 ING918 的做法为 ING916 设计一个二级 Bootloader，因电源失效而导致固件损坏的时间窗口大约为 19ms
+（执行一次 <code class="language-plaintext highlighter-rouge">erase_flash_sector</code>），再结合 <code class="language-plaintext highlighter-rouge">magic_number</code>，固件损坏的概率与 ING918 相近。</p>
+
+<p>设计思路：将 platform.bin 的中断向量表搬走，腾出一个扇区。由于 ROM 内的 Bootloader
+在启动后固定以 0x02002000 作为中断向量表读取栈顶地址和 Reset 入口地址，将二级 Bootloader
+的中断向量表放置到 0x02002000 就可以全面接管芯片的启动流程。二级 Bootloader
+启动时检查是否需要升级，不需要升级时直接跳转到 platform.bin 的 Reset 入口地址正常启动。</p>
+
+<h2 id="中断向量表搬移工具">中断向量表搬移工具</h2>
+
+<p><a href="https://github.com/ingchips/doc_release/releases/download/v1.0/vect_relocate.py">这里</a> 是用 Python 编写的中断向量表搬移工具，
+其功能为：</p>
+
+<ol>
+  <li>将中断向量表从文件的开头移动到末尾；</li>
+  <li>删除 platform.bin 最前面的一个扇区，其下载地址从 0x02002000 改为 0x02003000；</li>
+  <li>更新 <code class="language-plaintext highlighter-rouge">meta.json</code>；</li>
+  <li>向 platform.bin 写入更新后的中断向量表地址。</li>
+</ol>
+
+<h2 id="开发二级-bootloader">开发二级 Bootloader</h2>
+
+<div class="important">
+<strong>注意：</strong>开发时务必遵循以下原则：
+<ul>
+<li>尽快完成判断，并跳转到 platform.bin 的 Reset 入口地址；</li>
+<li>在跳转到 platform.bin 的执行路径上，<strong>不得改写内存</strong>；</li>
+</ul>
+每次从深睡眠等低功耗状态唤醒时，会首先进入二级 Bootloader，复杂的判断流程会增加功耗。在跳转到 platform.bin 的执行路径上，如果必须使用内存，
+则需要避开 platform.bin 占用的地址范围；而执行 FOTA 时，由于完成后会重启，所有内存都可以使用。
+</div>
+
+<p>使用 Wizard 创建一个 ING916 新项目，选择 Blank Project 模板、Secondary App：</p>
+
+<p><img src="../img/create_bootloader.png" alt="" /></p>
+
+<p>打开项目，把 sysdefs 文件、trace 模块等删除，确认项目可以成功编译。</p>
+
+<p>升级用的元数据我们照搬 <a href="https://github.com/ingchips/ING918XX_SDK_SOURCE/blob/e9baee45468094aa75fcbfcb38dccbdd91c8fd6d/src/BSP/eflash.c#L124C16-L124C16">ING918 里的做法</a>，
+从 0x02002000 往下依次存放 N 个 <code class="language-plaintext highlighter-rouge">block_info</code>，升级完成后擦除。<code class="language-plaintext highlighter-rouge">block_info</code> 的定义：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">typedef</span> <span class="k">struct</span> <span class="n">block_info</span>
+<span class="p">{</span>
+    <span class="kt">uint32_t</span> <span class="n">size</span><span class="p">;</span>
+    <span class="kt">uint32_t</span> <span class="n">dst</span><span class="p">;</span>
+    <span class="kt">uint32_t</span> <span class="n">src</span><span class="p">;</span>
+    <span class="kt">uint32_t</span> <span class="n">magic</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">block_info_t</span><span class="p">;</span>
+</code></pre></div></div>
+
+<div class="note">
+<strong>说明：</strong>出厂数据存储于 Flash 内的保留扇区，并复制到从 0x02001000 开始的这一个扇区以便访问。
+这一扇区被擦除后，再次调用出厂数据相关 API （如 flash_get_factory_calib_data ）时，数据可从保留扇区恢复。</div>
+
+<h3 id="补充中断向量表">补充中断向量表</h3>
+
+<p>Wizard 生成的中断向量表将包含 8 个字节，如果需要可以补充。如果二级 Bootloader 足够小，一个扇区就足够存放，
+那么烧录起来就很方便。所以二级 Bootloader 应该尽量简单，中断向量表一般也不要补充。</p>
+
+<h3 id="实现-reset_handler">实现 <code class="language-plaintext highlighter-rouge">Reset_Handler</code></h3>
+
+<pre><code class="language-asm">; Reset Handler
+
+Reset_Handler   PROC
+                EXPORT  Reset_Handler
+				IMPORT  do_fota
+
+                ; 检查 FOTA 标准位
+				LDR     R0, =0x02002000 - 4
+				LDR     R0, [R0]
+				LDR     R1, =DEF_UPDATE_FLAG
+				CMP     R0, R1
+				BEQ		START_FOTA
+
+                ; 正常启动
+				LDR     R0, =0x02003000
+				LDR		R0, [R0]		; R0 = vector address
+				LDR		R1, [R0, #0x0]
+				MSR     MSP, R1
+				LDR		R1, [R0, #0x4]
+				BX		R1
+
+START_FOTA
+				LDR  	R0, =do_fota
+				BX      R0
+
+                ENDP
+</code></pre>
+
+<p>这里的 <code class="language-plaintext highlighter-rouge">DEF_UPDATE_FLAG</code> 即 <code class="language-plaintext highlighter-rouge">block_info_t</code> 里的 <code class="language-plaintext highlighter-rouge">magic</code>。基于上面的讨论取一个二进制下含 1 个数较少的随机数。</p>
+
+<h3 id="清空-main">清空 <code class="language-plaintext highlighter-rouge">main</code></h3>
+
+<p>Bootloader 不需要 <code class="language-plaintext highlighter-rouge">main</code> 函数，清空其函数体：</p>
+
+<pre><code class="language-asm">main            PROC
+                EXPORT  main
+                ENDP
+</code></pre>
+
+<h3 id="用-c-语言实现-do_fota">用 C 语言实现 <code class="language-plaintext highlighter-rouge">do_fota</code></h3>
+
+<p>完整的参考代码如下：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">"eflash.h"</span><span class="cp">
+</span>
+<span class="cp">#define DEF_UPDATE_FLAG     0x.........
+</span>
+<span class="k">typedef</span> <span class="k">struct</span> <span class="n">block_info</span>
+<span class="p">{</span>
+    <span class="kt">uint32_t</span> <span class="n">size</span><span class="p">;</span>
+    <span class="kt">uint32_t</span> <span class="n">dst</span><span class="p">;</span>
+    <span class="kt">uint32_t</span> <span class="n">src</span><span class="p">;</span>
+    <span class="kt">uint32_t</span> <span class="n">magic</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">block_info_t</span><span class="p">;</span>
+
+<span class="c1">// 把数据从 Flash 拷贝到 Flash 的辅助函数：逐扇区读入内存再写入</span>
+<span class="k">static</span> <span class="kt">int</span> <span class="nf">flash_to_flash</span><span class="p">(</span><span class="kt">uint32_t</span> <span class="n">src</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">dst</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">buffer</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">size</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">r</span><span class="p">;</span>
+        <span class="kt">uint32_t</span> <span class="n">block</span> <span class="o">=</span> <span class="n">size</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">block</span> <span class="o">&gt;=</span> <span class="n">EFLASH_ERASABLE_SIZE</span><span class="p">)</span> <span class="n">block</span> <span class="o">=</span> <span class="n">EFLASH_ERASABLE_SIZE</span><span class="p">;</span>
+
+        <span class="n">memcpy</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="p">(</span><span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="n">src</span><span class="p">,</span> <span class="n">block</span><span class="p">);</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">program_flash</span><span class="p">(</span><span class="n">dst</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">block</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">return</span> <span class="n">r</span><span class="p">;</span>
+
+        <span class="n">dst</span> <span class="o">+=</span> <span class="n">block</span><span class="p">;</span>
+        <span class="n">src</span> <span class="o">+=</span> <span class="n">block</span><span class="p">;</span>
+        <span class="n">size</span> <span class="o">-=</span> <span class="n">block</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// 可以在这里做升级前的检查，可酌情设计检查方法</span>
+<span class="c1">// 这里检查了目标地址是否按扇区对齐</span>
+<span class="k">static</span> <span class="kt">int</span> <span class="nf">check_fota_blocks</span><span class="p">(</span><span class="k">const</span> <span class="n">block_info_t</span> <span class="o">*</span><span class="n">p</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">magic</span> <span class="o">==</span> <span class="n">DEF_UPDATE_FLAG</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">dst</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">EFLASH_SECTOR_SIZE</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+        <span class="n">p</span><span class="o">--</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">do_fota</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">const</span> <span class="n">block_info_t</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="k">const</span> <span class="n">block_info_t</span> <span class="o">*</span><span class="p">)(</span><span class="n">FLASH_BASE</span> <span class="o">+</span>
+        <span class="n">EFLASH_SECTOR_SIZE</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">-</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">block_info_t</span><span class="p">));</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">check_fota_blocks</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// 检查通过，逐项拷贝</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">magic</span> <span class="o">==</span> <span class="n">DEF_UPDATE_FLAG</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="c1">// 注意：内存直接使用，不定义变量</span>
+            <span class="n">flash_to_flash</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">src</span><span class="p">,</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">dst</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="mh">0x20002000</span><span class="p">,</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">);</span>
+            <span class="n">p</span><span class="o">--</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="c1">// 擦除元信息</span>
+    <span class="c1">// 只有在这个动作执行期间电源失效，才有可能导致固件损坏</span>
+    <span class="n">erase_flash_sector</span><span class="p">(</span><span class="n">FLASH_BASE</span> <span class="o">+</span> <span class="n">EFLASH_SECTOR_SIZE</span><span class="p">);</span>
+
+    <span class="c1">// 重启</span>
+    <span class="n">NVIC_SystemReset</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="编译烧录">编译、烧录</h3>
+
+<p>编译后，烧录到 0x02002000 位置。</p>
+
+<h2 id="应用开发">应用开发</h2>
+
+<p>应用的开发照常进行，但在创建项目时有几个额外的步骤和注意事项：</p>
+
+<ol>
+  <li>
+    <p>使用 Wizard 创建应用时，选择“COPY to my project”的方式</p>
+  </li>
+  <li>
+    <p>调用 Python 工具搬移向量表</p>
+
+    <p>假设项目目录为 c:\cool_project，使用了 typical 软件包，那么执行命令：</p>
+
+    <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code> python vect_relocate.py c:<span class="se">\c</span>ool_project<span class="se">\s</span>dk<span class="se">\b</span>undles<span class="se">\t</span>ypical<span class="se">\I</span>NG9168xx
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>在项目的快捷菜单里执行“Check &amp; Fix”</p>
+  </li>
+</ol>
+
+<p>打开项目，确认 platform.bin 的下载位置是否已更新为 0x02003000。此后的开发正常进行。
+现在假设应用已具备了 OTA 升级功能，旧版本 SDK (&lt; v8.4.6) 里必须使用 <code class="language-plaintext highlighter-rouge">flash_do_update</code> 完成升级。
+现在编写一个与二级 Bootloader 配套的 <code class="language-plaintext highlighter-rouge">program_fota_metadata</code> 函数，
+功能与 ING918 的 <code class="language-plaintext highlighter-rouge">program_fota_metadata</code> 类似：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">program_fota_metadata</span><span class="p">(</span><span class="k">const</span> <span class="kt">int</span> <span class="n">block_num</span><span class="p">,</span> <span class="k">const</span> <span class="n">fota_update_block_t</span> <span class="o">*</span><span class="n">blocks</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="cp">#define START               (FLASH_BASE + EFLASH_ERASABLE_SIZE)
+</span>
+    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+    <span class="n">block_info_t</span> <span class="n">info</span> <span class="o">=</span>
+    <span class="p">{</span>
+        <span class="p">.</span><span class="n">magic</span> <span class="o">=</span> <span class="n">DEF_UPDATE_FLAG</span><span class="p">,</span>
+    <span class="p">};</span>
+
+    <span class="n">erase_flash_sector</span><span class="p">(</span><span class="n">START</span><span class="p">);</span>
+
+    <span class="kt">uint32_t</span> <span class="n">addr</span> <span class="o">=</span> <span class="n">START</span> <span class="o">+</span> <span class="n">EFLASH_ERASABLE_SIZE</span> <span class="o">-</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">info</span><span class="p">);</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">block_num</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">,</span> <span class="n">addr</span> <span class="o">-=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">info</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="n">info</span><span class="p">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">blocks</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">size</span><span class="p">;</span>
+        <span class="n">info</span><span class="p">.</span><span class="n">dst</span>  <span class="o">=</span> <span class="n">blocks</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">dest</span><span class="p">;</span>
+        <span class="n">info</span><span class="p">.</span><span class="n">src</span>  <span class="o">=</span> <span class="n">blocks</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">src</span><span class="p">;</span>
+        <span class="kt">int</span> <span class="n">r</span> <span class="o">=</span> <span class="n">write_flash</span><span class="p">(</span><span class="n">addr</span><span class="p">,</span> <span class="p">(</span><span class="kt">uint8_t</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">info</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">info</span><span class="p">));</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">return</span> <span class="n">r</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>调用 <code class="language-plaintext highlighter-rouge">program_fota_metadata</code> 写入元数据，然后重启，即可由二级 Bootloader 完成升级。</p>
+
+<h2 id="总结">总结</h2>
+
+<p>以上是二级 Bootloader 的一个参考实现，开发者在此基础上扩展功能，比如为元数据增加完整性保护、
+进一步降低固件损坏概率，也可为新固件增加完整性保护、鉴权等。</p>
+
+      </div><!-- .post-content -->
+    </div><!-- .inner-md -->
+  </article><!-- .post -->
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2021-2023. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

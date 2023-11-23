@@ -388,6 +388,21 @@
 
     <p>示例将在后续版本中提供。</p>
   </li>
+  <li>
+    <p>[<strong>更新</strong>] ING916 platform.bin 结构</p>
+
+    <p>更新之后：</p>
+
+    <ul>
+      <li>platform.bin 的第一个扇区仅用于存放中断向量表和 <code class="language-plaintext highlighter-rouge">struct platform_info</code>，未用的空间由 0xFF 填充；</li>
+      <li>0x02003000 处保存了中断向量表的起始地址，其值为 0x02002000。</li>
+    </ul>
+
+    <p>借助这种结构开发者可以完全接管系统的启动过程，实现 <a href="/blog/2023-11-23-ing916-2nd-bootloader">二级 Bootloader</a> 等功能。</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] ING916：意外地睡眠过长时间</p>
+  </li>
 </ul>
 
 <h3 id="2-外设驱动">2. 外设驱动</h3>
@@ -406,6 +421,9 @@
   <li>
     <p>[<strong>修正</strong>] ING916：<code class="language-plaintext highlighter-rouge">apSSP_SetTransferControlDummyCnt</code></p>
   </li>
+  <li>
+    <p>[<strong>修正</strong>] ING916：QDEC/KeyScan 在某些编译器下的警告</p>
+  </li>
 </ul>
 
 <h3 id="3-库函数">3. 库函数</h3>
@@ -415,6 +433,9 @@
     <p>[<strong>更新</strong>] ING918：伴随 50kHz 实时时钟更新 power control 库</p>
 
     <p>更新后的库兼容 32k 实时时钟。</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] <code class="language-plaintext highlighter-rouge">platform_util.c</code>: 支持新的 ING918 platform.bin 结构</p>
   </li>
 </ul>
 
@@ -426,6 +447,9 @@
   </li>
   <li>
     <p>[<strong>更新</strong>] UART Console：演示了连接的中止和重建。</p>
+  </li>
+  <li>
+    <p>[<strong>新增</strong>] Pairing with OOB: 演示了 OOB 配对的用法</p>
   </li>
 </ul>
 

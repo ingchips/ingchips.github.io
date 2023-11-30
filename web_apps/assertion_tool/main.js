@@ -39,9 +39,15 @@ function explain() {
     if (val == '') alert(msg.need_input);
 
     var m = /([a-zA-Z0-9_\.]+):([0-9]+)/.exec(val);
-    if (m.length == 3)
+    if ((m != null) && (m.length == 3))
     {
         explain0(m[1], m[2]);
+        return;
+    }
+
+    if (val.indexOf('oom') >= 0)
+    {
+        explain0('oom', '');
         return;
     }
 

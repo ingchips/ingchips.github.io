@@ -122,9 +122,20 @@
   <li class="menu-item">
     
     
+<a class="" href="/web_apps/ing918_ota/index.html">
+  
+  ING918/ING916 FOTA
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
 <a class="" href="/web_apps/ing918_ota/index_cn.html">
   
-  ING918/ING916 FOTA (空中升级)
+  ING918/ING916 FOTA (中文版)
   
 </a>
 
@@ -158,6 +169,17 @@
 <a class="" href="/web_apps/assertion_tool/index.html">
   
   ING918/ING916 Assertion Tool
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/assertion_tool/index_cn.html">
+  
+  ING918/ING916 Assertion Tool (中文版)
   
 </a>
 
@@ -202,49 +224,33 @@
 </header><!-- .site-header -->
 
   <main id="content" class="site-content">
-      <article class="post post-full">
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-          tex2jax: {
-            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-            displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
-        }
-      });
-    </script>
-    <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <header class="post-header has-gradient outer">
-      
-      
-      <div class="inner-sm">
-        <div class="post-meta">
-          <time class="published" datetime="2022-09-24 00:00">September 24, 2022</time>
+    <div class="inner outer">
+  <div class="docs-content">
+    <article class="post post-full">
+      <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+              inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+              displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+          }
+        });
+      </script>
+      <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <header class="post-header has-gradient outer">
+        
+        
+        <div class="inner-sm">
+          <div class="post-meta">
+            <time class="published" datetime="2022-09-24 00:00">September 24, 2022</time>
+          </div>
+          <h1 class="post-title">使用 Rust 开发 BLE 应用</h1>
+          
+          
         </div>
-        <h1 class="post-title">使用 Rust 开发 BLE 应用</h1>
-        
-        
-      </div>
-    </header>
-    <div class="inner-md outer">
-      <div class="post-content">
-        <ul id="markdown-toc">
-  <li><a href="#准备-rust" id="markdown-toc-准备-rust">准备 Rust</a></li>
-  <li><a href="#创建使用-gnu-工具链项目" id="markdown-toc-创建使用-gnu-工具链项目">创建使用 Gnu 工具链项目</a></li>
-  <li><a href="#生成-rust-bindings" id="markdown-toc-生成-rust-bindings">生成 Rust Bindings</a>    <ul>
-      <li><a href="#ble_bindingsh" id="markdown-toc-ble_bindingsh"><em>ble_bindings.h</em></a></li>
-      <li><a href="#ble_lib-模块" id="markdown-toc-ble_lib-模块">ble_lib 模块</a></li>
-      <li><a href="#生成-ble_bindingsrs" id="markdown-toc-生成-ble_bindingsrs">生成 <em>ble_bindings.rs</em></a></li>
-    </ul>
-  </li>
-  <li><a href="#替换-mainc" id="markdown-toc-替换-mainc">替换 <em>main.c</em></a></li>
-  <li><a href="#更新-makefile" id="markdown-toc-更新-makefile">更新 <em>makefile</em></a></li>
-  <li><a href="#测试" id="markdown-toc-测试">测试</a></li>
-  <li><a href="#附录" id="markdown-toc-附录">附录</a>    <ul>
-      <li><a href="#ctyrs-文件的内容" id="markdown-toc-ctyrs-文件的内容">cty.rs 文件的内容</a></li>
-    </ul>
-  </li>
-</ul>
-
-<p>Rust 语言原本是 Mozilla 员工 Graydon Hoare 的私人计划，在 2010 年首次公开。Rust 1.0 是第一个稳定版本，于 2015 年 5 月 15 日发布。
+      </header>
+      <div class="inner-md outer">
+        <div class="post-content">
+          <p>Rust 语言原本是 Mozilla 员工 Graydon Hoare 的私人计划，在 2010 年首次公开。Rust 1.0 是第一个稳定版本，于 2015 年 5 月 15 日发布。
 Mozilla 2020 年 8 月裁员波及到 Rust 开发团队，一年后，AWS、华为、Google、微软、Mozilla 等五公司发起 Rust Foundation。</p>
 
 <p>最近，在 Linux 内核维护者峰会上，<a href="https://www.zdnet.com/article/linus-torvalds-rust-will-go-into-linux-6-1/">Linus Torvalds 表示</a>除非有意外发生，Rust 将进入 Linux 6.1；
@@ -492,9 +498,17 @@ Mozilla 2020 年 8 月裁员波及到 Rust 开发团队，一年后，AWS、华�
 <span class="k">pub</span> <span class="k">const</span> <span class="n">null</span><span class="p">:</span> <span class="o">*</span> <span class="k">mut</span> <span class="nb">c_void</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">as</span> <span class="o">*</span> <span class="k">mut</span> <span class="nb">c_void</span><span class="p">;</span>
 </code></pre></div></div>
 
-      </div><!-- .post-content -->
-    </div><!-- .inner-md -->
-  </article><!-- .post -->
+        </div><!-- .post-content -->
+      </div><!-- .inner-md -->
+    </article><!-- .post -->
+
+    <nav id="page-nav" class="page-nav">
+      <div id="page-nav-inside" class="page-nav-inside sticky">
+        <h2 class="page-nav-title">Jump to Section</h2>
+      </div><!-- .page-nav-inside -->
+    </nav><!-- .page-nav -->
+  </div>
+</div>
 
   <!-- Next/previous post navigation TBD -->
   <!--

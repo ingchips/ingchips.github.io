@@ -122,9 +122,20 @@
   <li class="menu-item">
     
     
+<a class="" href="/web_apps/ing918_ota/index.html">
+  
+  ING918/ING916 FOTA
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
 <a class="" href="/web_apps/ing918_ota/index_cn.html">
   
-  ING918/ING916 FOTA (空中升级)
+  ING918/ING916 FOTA (中文版)
   
 </a>
 
@@ -158,6 +169,17 @@
 <a class="" href="/web_apps/assertion_tool/index.html">
   
   ING918/ING916 Assertion Tool
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/assertion_tool/index_cn.html">
+  
+  ING918/ING916 Assertion Tool (中文版)
   
 </a>
 
@@ -202,61 +224,33 @@
 </header><!-- .site-header -->
 
   <main id="content" class="site-content">
-      <article class="post post-full">
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-          tex2jax: {
-            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-            displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
-        }
-      });
-    </script>
-    <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <header class="post-header has-gradient outer">
-      
-      
-      <div class="inner-sm">
-        <div class="post-meta">
-          <time class="published" datetime="2022-08-08 00:00">August 08, 2022</time>
+    <div class="inner outer">
+  <div class="docs-content">
+    <article class="post post-full">
+      <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+              inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+              displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+          }
+        });
+      </script>
+      <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <header class="post-header has-gradient outer">
+        
+        
+        <div class="inner-sm">
+          <div class="post-meta">
+            <time class="published" datetime="2022-08-08 00:00">August 08, 2022</time>
+          </div>
+          <h1 class="post-title">蓝牙开发零门槛之六：蓝牙遥控车</h1>
+          
+          
         </div>
-        <h1 class="post-title">蓝牙开发零门槛之六：蓝牙遥控车</h1>
-        
-        
-      </div>
-    </header>
-    <div class="inner-md outer">
-      <div class="post-content">
-        <ul id="markdown-toc">
-  <li><a href="#蓝牙遥控小车" id="markdown-toc-蓝牙遥控小车">蓝牙遥控小车</a>    <ul>
-      <li><a href="#添加一个customize-service" id="markdown-toc-添加一个customize-service">添加一个Customize Service</a></li>
-      <li><a href="#设置广播数据" id="markdown-toc-设置广播数据">设置广播数据</a></li>
-      <li><a href="#建立gatt配置文件" id="markdown-toc-建立gatt配置文件">建立GATT配置文件</a></li>
-      <li><a href="#代码编写" id="markdown-toc-代码编写">代码编写</a>        <ul>
-          <li><a href="#添加基本服务代码" id="markdown-toc-添加基本服务代码">添加基本服务代码</a></li>
-        </ul>
-      </li>
-      <li><a href="#驱动电机控制" id="markdown-toc-驱动电机控制">驱动电机控制</a>        <ul>
-          <li><a href="#pwm配置" id="markdown-toc-pwm配置">PWM配置</a></li>
-          <li><a href="#驱动轮方向控制" id="markdown-toc-驱动轮方向控制">驱动轮方向控制</a></li>
-        </ul>
-      </li>
-      <li><a href="#方向轮控制" id="markdown-toc-方向轮控制">方向轮控制</a>        <ul>
-          <li><a href="#pwm设置" id="markdown-toc-pwm设置">PWM设置</a></li>
-        </ul>
-      </li>
-    </ul>
-  </li>
-  <li><a href="#蓝牙小车遥控器" id="markdown-toc-蓝牙小车遥控器">蓝牙小车遥控器</a>    <ul>
-      <li><a href="#摇杆控制" id="markdown-toc-摇杆控制">摇杆控制</a>        <ul>
-          <li><a href="#数据采集" id="markdown-toc-数据采集">数据采集</a></li>
-          <li><a href="#数据发送" id="markdown-toc-数据发送">数据发送</a></li>
-        </ul>
-      </li>
-    </ul>
-  </li>
-</ul>
-
-<p>INGChips 为客户提供易用的 SDK，帮助客户便捷、高效地开发蓝牙产品。本文介绍如何通过 INGChips SDK 开发蓝牙遥控车和遥控手柄。</p>
+      </header>
+      <div class="inner-md outer">
+        <div class="post-content">
+          <p>INGChips 为客户提供易用的 SDK，帮助客户便捷、高效地开发蓝牙产品。本文介绍如何通过 INGChips SDK 开发蓝牙遥控车和遥控手柄。</p>
 
 <p>在设计小车之前我们先简单搭建一下系统的框架，如图我们采用两个 <em>ING918xx</em> 分别作为小车主体和遥控器。遥控器（<em>Central</em>）通过 ADC 采集摇杆数据，
 并通过 BLE 将组包后数据指令传递给小车主体，小车主体通过两路 PWM 分别控制转向轮（180° Servo）和驱动轮（DC Motor），并由两路 GPIO 控制驱动轮的转动方向及停止。</p>
@@ -700,9 +694,17 @@ static void XYcordinates_adc_task(void *pdata)
 <strong>注意:</strong> 本教程中只提供部分参考代码，实际开发可根据需求自行调整修改。开发板上还有三轴加速度计，感兴趣的朋友们还可以尝试着给遥控小车添加一个平衡功能。
 </div>
 
-      </div><!-- .post-content -->
-    </div><!-- .inner-md -->
-  </article><!-- .post -->
+        </div><!-- .post-content -->
+      </div><!-- .inner-md -->
+    </article><!-- .post -->
+
+    <nav id="page-nav" class="page-nav">
+      <div id="page-nav-inside" class="page-nav-inside sticky">
+        <h2 class="page-nav-title">Jump to Section</h2>
+      </div><!-- .page-nav-inside -->
+    </nav><!-- .page-nav -->
+  </div>
+</div>
 
   <!-- Next/previous post navigation TBD -->
   <!--

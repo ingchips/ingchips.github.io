@@ -183,7 +183,7 @@ functions that end in "FromISR" can be used in an interrupt.
 
 </pre>
 
-<pre id="md:assertion_sys_port_916">
+<pre id="md:assertion_sys_port_916|assertion_sys_port_918">
 ## FreeRTOS Usage Violation
 
 > Various FreeRTOS usage violations.
@@ -200,26 +200,6 @@ Examples:
   from interrupts that have been assigned a priority at or below
   `configMAX_SYSCALL_INTERRUPT_PRIORITY`, i.e. the value of priority is equal or larger
   than `configMAX_SYSCALL_INTERRUPT_PRIORITY`.
-
-</pre>
-
-<pre id="md:assertion_sys_port_918">
-## FreeRTOS Usage Violation
-
-> Various FreeRTOS usage violations.
-----
-
-Examples:
-
-* Call `vPortExitCritical()` without `vPortEnterCritical()`
-
-* Interrupt priority higher than `configMAX_SYSCALL_INTERRUPT_PRIORITY`, and within the ISR,
-    a "FromISR" function is called.
-
-    ISR safe FreeRTOS API functions must *only* be called
-    from interrupts that have been assigned a priority at or below
-    `configMAX_SYSCALL_INTERRUPT_PRIORITY`, i.e. the value of priority is equal or larger
-    than `configMAX_SYSCALL_INTERRUPT_PRIORITY`.
 
 </pre>
 
@@ -249,7 +229,7 @@ uint8_t gap_set_ext_scan_para(const bd_addr_type_t own_addr_type,
 
 ### How to deal with it?
 
-Check _Programmers' Guide on BLE_, and do not pass invalid parameters to `gap_set_ext_scan_para`,
+Check [_Programmers' Guide on BLE_](/application-notes/pg_ble_stack_cn/index.html), and do not pass invalid parameters to `gap_set_ext_scan_para`,
 `gap_ext_create_connection`, etc.
 </pre>
 
@@ -301,7 +281,7 @@ is unlikely to get exhausted.
 
     Check memory leaks regarding heap usage (`pvPortMalloc`/`vPortFree`) of FreeRTOS;
 
-    If heap size is not enough for the application, use NoOS variant and build FreeRTOS
+    If heap size is not enough for the application, use NoOS variant and build RTOS
     externally.
 
 * Link Layer's heap:
@@ -314,7 +294,7 @@ is unlikely to get exhausted.
 </pre>
 
 <pre id="md:assertion_unknown">
-## Internal Error
+## Internal or Unknown Error
 
 ----
 

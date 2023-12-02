@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="dist/css/uikit.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/vs.min.css">
+    <title>ING918/ING916 Assertion Explainer</title>
+</head>
+<body>
+<!-- UIkit JS -->
+<script src="dist/js/uikit.min.js"></script>
+<script src="dist/js/uikit-icons.min.js"></script>
+<script src="dist/js/jquery-3.5.1.min.js"></script>
+<script src="https://fastly.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+<script src="msg.js"></script>
+<script src="main.js"></script>
+<script>
+
+</script>
+
+<div class="uk-container">
+
+    <div class="uk-margin"> </div>
+
+    <div class="uk-margin">
+        <h2 id="title">解释 ING918/ING916 软件包里的断言 (Assertion)</h2>
+    </div>
+
+    <div class="uk-margin">
+        <form class="uk-form-horizontal">
+            <div class="uk-margin">
+                <label class="uk-form-label" for="form-horizontal-text">Assertion 信息</label>
+                <div class="uk-form-controls">
+                    <input class="uk-input" id="assertion_info" type="text" placeholder="[ASSERTION] @ mss_mem.c:276" value=""></input>
+                    例如: [ASSERTION] @ mss_mem.c:276
+                </div>
+            </div>
+        </form>
+        <div class="uk-margin">
+            <button id="btn_explain" class="uk-button uk-button-primary">解释</button>
+        </div>
+    </div>
+
+    <div class="uk-margin"></div>
+
+    <div id="main_window" >
+
+    </div>
+
+    <div id="all_assertions" hidden>
+<pre id="md:assertion_mss_mem">
+## 堆损坏
+
+> 链路层的堆已损坏。
+
+----
+
+链路层的堆有一个内部完整性检查机制：每个内存块都有一些魔术数字。当这些数字与预期不同时，说明该块必然损坏，
+所以触发断言。
+
+### 如何处理？
+
+* 您是否使用 `ll_malloc` 从链路层的堆中分配缓冲区？检查是否写入了过多的字节。
+
+* 寻找野指针。
+
+* 二分或回退到旧版本，以定位导致问题的代码。
+
+* [转储内存](/user_guide/dive-into-sdk.html#memory-dump)并联系我们以获得进一步的支持。
+        </pre>
+
+<pre id="md:assertion_ble_llc_ctrl|assertion_mss_msg">
+## 内存不足
+
+> 控制器无法分配内存。
+
+----
+
+控制器无法为链路层的控制过程或内部消息分配内存。
+
+### 如何处理？
+
+您是否使用 `ll_malloc` 分配了太多的内存？请减少分配量。
+
+提示：调用 `ll_get_heap_free_size` 来检查链路层的堆的剩余字节数。
+
+</pre>
+
+<pre id="md:assertion_mss_process">
+## 内存损坏
+
+> 进程间通信的变量已损坏。
+
+----
+
+控制器内部的进程间通信的变量已损坏。
+
+这些变量的内存位置：在为 `platform.bin` 保留的 RAM 范围的末尾附近。
+
+### 如何处理？
+
+* 寻找野指针。
+
+* 二分或回退到旧版本，以定位导致问题的代码。
+
+* [转储内存](/user_guide/dive-into-sdk.html#memory-dump)并联系我们以获得进一步的支持。
+
+</pre>
+
+<pre id="md:assertion_mss_task">
+## 内存损坏
+
+> 多任务处理的相关变量已损坏。
+
+----
+
+Controller 内用于多任务处理的变量已损坏。
+
+这些变量的内存位置：在为 `platform.bin` 保留的 RAM 范围的末尾附近。
+
+### 如何处理？
+
+* 寻找野指针。
+
+* 二分或回退到旧版本，以定位导致问题的代码。
+
+* [转储内存](/user_guide/dive-into-sdk.html#memory-dump)并联系我们以获得进一步的支持。
+
+</pre>
+
+<pre id="md:assertion_hci_internal_transport">
+## 内存损坏
+
+> HCI 的变量已损坏。
+----
+
+内部主机控制器接口 (HCI) 的变量已损坏。
+
+### 如何处理？
+
+* 寻找野指针。
+
+* 二分或回退到旧版本，以定位导致问题的代码。
+
+* [转储内存](/user_guide/dive-into-sdk.html#memory-dump)并联系我们以获得进一步的支持。
+
+</pre>
+
+<pre id="md:assertion_exit_0">
+## FreeRTOS 特定：任务函数退出
+
+> 一个实现任务的函数已退出。
+----
+
+一个实现任务的函数不能退出或尝试返回到它的调用者，因为无法返回（无调用者）。
+
+### 如何处理？
+
+如果一个任务想要退出，它应该调用 `vTaskDelete(NULL)`。
+
+</pre>
+
+<pre id="md:assertion_fromisr_0">
+## FreeRTOS 特定：在 ISR 中调用不安全的 API
+
+> 一个不是中断安全的函数在 ISR 中被调用。
+----
+
+一个不是进入临界区的中断安全版本的函数，在中断上下文中被调用了。
+只有以 "FromISR" 结尾的 API 函数才能在中断中使用。
+
+### 如何处理？
+
+* 调用以 "FromISR" 结尾的对应函数；
+
+* 使用 `IS_IN_INTERRUPT()` 来测试是否在中断中，并调用正确的 API 变体。
+
+</pre>
+
+<pre id="md:assertion_sys_port_916|assertion_sys_port_918">
+## FreeRTOS 使用违规
+
+> 各种 FreeRTOS 使用违规的情况。
+----
+
+示例：
+
+* 在没有调用 `vPortEnterCritical()` 的情况下，调用 `vPortExitCritical()`
+
+* 中断优先级高于 `configMAX_SYSCALL_INTERRUPT_PRIORITY`，并且在 ISR 中， 调用了一个 “FromISR” 函数。
+
+  ISR 安全的 FreeRTOS API 函数必须只从分配了等于或低于 `configMAX_SYSCALL_INTERRUPT_PRIORITY` 的优先级的中断中调用，
+  即优先级的值等于或大于 `configMAX_SYSCALL_INTERRUPT_PRIORITY`。
+
+</pre>
+
+<pre id="md:assertion_ble_hcic_eif_828|assertion_ble_hcic_eif_798">
+## 格式错误的 HCI 命令
+
+> 参数过长
+----
+
+HCI 命令的参数超过了最大长度。有些 HCI 命令有一个可变的参数个数，但有一个上限。
+以 _LE Set Extended Scan Parameters_ 为例。它最多接受两种主广播信道上的 PHY 类型。
+相应的 GAP API 是 `gap_set_ext_scan_para`，如果传递了一个大于 2 的值作为 `config_num`，就会触发这个断言。
+
+```c
+/**
+ * ...
+ * @param config_num           配置数量最多为 2。它表示主机将配置多少种 PHY
+ * ...
+ */
+uint8_t gap_set_ext_scan_para(const bd_addr_type_t own_addr_type,
+                              const scan_filter_policy_t filter,
+                              const uint8_t config_num,
+                              const scan_phy_config_t *configs);
+```
+
+### 如何处理？
+
+查看 [BLE 编程指南](/application-notes/pg_ble_stack_cn/index.html)，不要向 `gap_set_ext_scan_para`、`gap_ext_create_connection` 等传递无效的参数。
+
+</pre>
+
+<pre id="md:assertion_ble_hcic_eif_766|assertion_ble_hcic_eif_736">
+## 无效的内部ACL数据包长度
+
+> 分配的ACL数据包长度比数据短
+----
+
+发送ACL数据（任何L2CAP数据或信令）时，首先在链路层分配内部数据包，然后填充数据。填充数据时，发现内部数据包的总长度实际上比数据短。
+
+这个断言的**最可能的原因**是栈API的线程安全性被破坏，即栈API从另一个线程（任务）调用。
+
+### 如何处理？
+
+确保栈API的线程安全性没有被破坏。查看 [BLE 编程指南](/application-notes/pg_ble_stack_cn/index.html) 以了解更多细节。
+
+提示：
+
+* 使用 _Afx Tool_ 自动检查；或者，
+* 在由 Keil 生成的 _静态调用图_ 中手动搜索这种情况。
+
+</pre>
+
+<pre id="md:assertion_oom">
+## 内存不足
+
+> 从一个内部堆中分配内存失败
+----
+
+当堆上的分配失败时（堆内存不足），会触发事件 `PLATFORM_CB_EVT_HEAP_OOM`。 参数 `(void *data)` 是从一个整数转换而来，用于标识哪个项目OOM。
+
+| #Id    |    堆类项目            |
+|:------:|:--------------------- |
+| 0      | FreeRTOS 的堆           |
+| 1      | 链路层的堆               |
+| 2      | 链路层的任务池           |
+
+堆 #0 上的 OOM 只发生在内置 FreeRTOS 的包中。链路层的任务池不太可能耗尽。
+
+### 如何处理？
+
+* FreeRTOS 的堆：
+
+    检查与 FreeRTOS 的堆使用（`pvPortMalloc`/`vPortFree`）相关的内存泄漏；
+
+    如果堆大小不足以满足应用程序的需求，使用 NoOS 变体并外部构建 RTOS。
+
+* 链路层的堆：
+
+    检查与链路层的堆使用（`ll_malloc`/`ll_free`）相关的内存泄漏；
+
+    利用 `ll_get_heap_free_size` 避免将过多的数据（`att_server_notify`/`gatt_client_write_value_of_characteristic`/…）送入
+    BLE 协议栈中。
+
+</pre>
+
+<pre id="md:assertion_unknown">
+## 内部错误或未识别的错误
+
+----
+
+联系我们以获得进一步的支持。
+</pre>
+    </div>
+
+</div>
+
+</body>
+</html>

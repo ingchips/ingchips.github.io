@@ -122,9 +122,20 @@
   <li class="menu-item">
     
     
+<a class="" href="/web_apps/ing918_ota/index.html">
+  
+  ING918/ING916 FOTA
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
 <a class="" href="/web_apps/ing918_ota/index_cn.html">
   
-  ING918/ING916 FOTA (空中升级)
+  ING918/ING916 FOTA (中文版)
   
 </a>
 
@@ -158,6 +169,17 @@
 <a class="" href="/web_apps/assertion_tool/index.html">
   
   ING918/ING916 Assertion Tool
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/assertion_tool/index_cn.html">
+  
+  ING918/ING916 Assertion Tool (中文版)
   
 </a>
 
@@ -202,46 +224,33 @@
 </header><!-- .site-header -->
 
   <main id="content" class="site-content">
-      <article class="post post-full">
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-          tex2jax: {
-            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-            displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
-        }
-      });
-    </script>
-    <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <header class="post-header has-gradient outer">
-      
-      
-      <div class="inner-sm">
-        <div class="post-meta">
-          <time class="published" datetime="2023-11-23 00:00">November 23, 2023</time>
+    <div class="inner outer">
+  <div class="docs-content">
+    <article class="post post-full">
+      <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+              inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+              displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+          }
+        });
+      </script>
+      <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <header class="post-header has-gradient outer">
+        
+        
+        <div class="inner-sm">
+          <div class="post-meta">
+            <time class="published" datetime="2023-11-23 00:00">November 23, 2023</time>
+          </div>
+          <h1 class="post-title">为 ING916 添加二级 Bootloader</h1>
+          
+          
         </div>
-        <h1 class="post-title">为 ING916 添加二级 Bootloader</h1>
-        
-        
-      </div>
-    </header>
-    <div class="inner-md outer">
-      <div class="post-content">
-        <ul id="markdown-toc">
-  <li><a href="#升级时固件损坏的概率" id="markdown-toc-升级时固件损坏的概率">升级时固件损坏的概率</a></li>
-  <li><a href="#中断向量表搬移工具" id="markdown-toc-中断向量表搬移工具">中断向量表搬移工具</a></li>
-  <li><a href="#开发二级-bootloader" id="markdown-toc-开发二级-bootloader">开发二级 Bootloader</a>    <ul>
-      <li><a href="#补充中断向量表" id="markdown-toc-补充中断向量表">补充中断向量表</a></li>
-      <li><a href="#实现-reset_handler" id="markdown-toc-实现-reset_handler">实现 <code class="language-plaintext highlighter-rouge">Reset_Handler</code></a></li>
-      <li><a href="#清空-main" id="markdown-toc-清空-main">清空 <code class="language-plaintext highlighter-rouge">main</code></a></li>
-      <li><a href="#用-c-语言实现-do_fota" id="markdown-toc-用-c-语言实现-do_fota">用 C 语言实现 <code class="language-plaintext highlighter-rouge">do_fota</code></a></li>
-      <li><a href="#编译烧录" id="markdown-toc-编译烧录">编译、烧录</a></li>
-    </ul>
-  </li>
-  <li><a href="#应用开发" id="markdown-toc-应用开发">应用开发</a></li>
-  <li><a href="#总结" id="markdown-toc-总结">总结</a></li>
-</ul>
-
-<p>假设固件数据正确，FOTA 升级过程中如果意外掉电，固件是否会损坏并导致设备“变砖”？首先，ING918/ING916
+      </header>
+      <div class="inner-md outer">
+        <div class="post-content">
+          <p>假设固件数据正确，FOTA 升级过程中如果意外掉电，固件是否会损坏并导致设备“变砖”？首先，ING918/ING916
 都不会因为固件损坏而“变砖”，内置于 ROM 的 Bootloader 总是可用的。那么固件损坏的概率是多少？</p>
 
 <h2 id="升级时固件损坏的概率">升级时固件损坏的概率</h2>
@@ -526,9 +535,17 @@ START_FOTA
 <p>以上是二级 Bootloader 的一个参考实现，开发者在此基础上扩展功能，比如为元数据增加完整性保护、
 进一步降低固件损坏概率，也可为新固件增加完整性保护、鉴权等。</p>
 
-      </div><!-- .post-content -->
-    </div><!-- .inner-md -->
-  </article><!-- .post -->
+        </div><!-- .post-content -->
+      </div><!-- .inner-md -->
+    </article><!-- .post -->
+
+    <nav id="page-nav" class="page-nav">
+      <div id="page-nav-inside" class="page-nav-inside sticky">
+        <h2 class="page-nav-title">Jump to Section</h2>
+      </div><!-- .page-nav-inside -->
+    </nav><!-- .page-nav -->
+  </div>
+</div>
 
   <!-- Next/previous post navigation TBD -->
   <!--

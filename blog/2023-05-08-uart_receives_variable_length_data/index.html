@@ -122,9 +122,20 @@
   <li class="menu-item">
     
     
+<a class="" href="/web_apps/ing918_ota/index.html">
+  
+  ING918/ING916 FOTA
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
 <a class="" href="/web_apps/ing918_ota/index_cn.html">
   
-  ING918/ING916 FOTA (空中升级)
+  ING918/ING916 FOTA (中文版)
   
 </a>
 
@@ -158,6 +169,17 @@
 <a class="" href="/web_apps/assertion_tool/index.html">
   
   ING918/ING916 Assertion Tool
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/assertion_tool/index_cn.html">
+  
+  ING918/ING916 Assertion Tool (中文版)
   
 </a>
 
@@ -202,50 +224,33 @@
 </header><!-- .site-header -->
 
   <main id="content" class="site-content">
-      <article class="post post-full">
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-          tex2jax: {
-            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-            displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
-        }
-      });
-    </script>
-    <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <header class="post-header has-gradient outer">
-      
-      
-      <div class="inner-sm">
-        <div class="post-meta">
-          <time class="published" datetime="2023-05-08 00:00">May 08, 2023</time>
+    <div class="inner outer">
+  <div class="docs-content">
+    <article class="post post-full">
+      <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+              inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+              displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+          }
+        });
+      </script>
+      <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <header class="post-header has-gradient outer">
+        
+        
+        <div class="inner-sm">
+          <div class="post-meta">
+            <time class="published" datetime="2023-05-08 00:00">May 08, 2023</time>
+          </div>
+          <h1 class="post-title">UART接收变长字节数据</h1>
+          
+          
         </div>
-        <h1 class="post-title">UART接收变长字节数据</h1>
-        
-        
-      </div>
-    </header>
-    <div class="inner-md outer">
-      <div class="post-content">
-        <ul id="markdown-toc">
-  <li><a href="#优势分析" id="markdown-toc-优势分析">优势分析</a></li>
-  <li><a href="#实现方式" id="markdown-toc-实现方式">实现方式</a></li>
-  <li><a href="#桃芯可实现方案" id="markdown-toc-桃芯可实现方案">桃芯可实现方案</a>    <ul>
-      <li><a href="#uart-fifo-mode-only方式" id="markdown-toc-uart-fifo-mode-only方式">UART FIFO Mode Only方式</a>        <ul>
-          <li><a href="#方案简介" id="markdown-toc-方案简介">方案简介</a></li>
-          <li><a href="#配置流程" id="markdown-toc-配置流程">配置流程</a></li>
-        </ul>
-      </li>
-      <li><a href="#uart-fifo-mode--dma方式" id="markdown-toc-uart-fifo-mode--dma方式">UART FIFO Mode + DMA方式</a>        <ul>
-          <li><a href="#方案简介-1" id="markdown-toc-方案简介-1">方案简介</a></li>
-          <li><a href="#配置流程-1" id="markdown-toc-配置流程-1">配置流程</a></li>
-        </ul>
-      </li>
-      <li><a href="#总结" id="markdown-toc-总结">总结</a></li>
-    </ul>
-  </li>
-</ul>
-
-<p>当今，串行通信协议在各种嵌入式系统和物联网设备中被广泛应用。其中，UART作为最基础的串行通信协议之一，被广泛应用于微控制器、传感器、通信模块等设备之间的数据传输。在UART通信中，数据的传输方式通常是定长字节，即每次传输的字节数是固定的。然而，在一些特殊的应用场景中，变长字节数据的传输方式则更加适用。</p>
+      </header>
+      <div class="inner-md outer">
+        <div class="post-content">
+          <p>当今，串行通信协议在各种嵌入式系统和物联网设备中被广泛应用。其中，UART作为最基础的串行通信协议之一，被广泛应用于微控制器、传感器、通信模块等设备之间的数据传输。在UART通信中，数据的传输方式通常是定长字节，即每次传输的字节数是固定的。然而，在一些特殊的应用场景中，变长字节数据的传输方式则更加适用。</p>
 
 <p>在这篇博客中，我将介绍UART接收变长字节数据的优势和实现方法，以及与定长字节数据传输方式的区别，并探讨两种<strong>桃芯可实现</strong>的方法————<em>UART FIFO Mode + DMA方式</em>和<em>UART FIFO Mode Only方式</em>。</p>
 
@@ -350,9 +355,17 @@
 <p>上述两种<strong>桃芯可实现</strong>的方案已经完全实现，具体的代码可以查看<a href="https://ingchips.github.io/drafts/pg_ing916/ch-uart.html">《ING916XXx系列芯片开发者手册》</a>的UART部分。</p>
 
 
-      </div><!-- .post-content -->
-    </div><!-- .inner-md -->
-  </article><!-- .post -->
+        </div><!-- .post-content -->
+      </div><!-- .inner-md -->
+    </article><!-- .post -->
+
+    <nav id="page-nav" class="page-nav">
+      <div id="page-nav-inside" class="page-nav-inside sticky">
+        <h2 class="page-nav-title">Jump to Section</h2>
+      </div><!-- .page-nav-inside -->
+    </nav><!-- .page-nav -->
+  </div>
+</div>
 
   <!-- Next/previous post navigation TBD -->
   <!--

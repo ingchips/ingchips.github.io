@@ -155,6 +155,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.10" data-path="ch-overview.html"><a href="ch-overview.html#异步特性"><i class="fa fa-check"></i><b>3.10</b> 异步特性</a></li>
 <li class="chapter" data-level="3.11" data-path="ch-overview.html"><a href="ch-overview.html#线程安全性"><i class="fa fa-check"></i><b>3.11</b> 线程安全性</a></li>
 <li class="chapter" data-level="3.12" data-path="ch-overview.html"><a href="ch-overview.html#ch-overview-ble-addr"><i class="fa fa-check"></i><b>3.12</b> BLE 设备地址</a></li>
+<li class="chapter" data-level="3.13" data-path="ch-overview.html"><a href="ch-overview.html#解析列表与隐私"><i class="fa fa-check"></i><b>3.13</b> 解析列表与隐私</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="ch-features.html"><a href="ch-features.html"><i class="fa fa-check"></i><b>4</b> 特性简析</a>
 <ul>
@@ -322,6 +323,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="12.7.2" data-path="ch-misc.html"><a href="ch-misc.html#gatt-客户端同步-api"><i class="fa fa-check"></i><b>12.7.2</b> GATT 客户端同步 API</a></li>
 </ul></li>
 <li class="chapter" data-level="12.8" data-path="ch-misc.html"><a href="ch-misc.html#ch-misc-thread-safe-api"><i class="fa fa-check"></i><b>12.8</b> 线程安全的 API</a></li>
+<li class="chapter" data-level="12.9" data-path="ch-misc.html"><a href="ch-misc.html#ch-misc-privacy"><i class="fa fa-check"></i><b>12.9</b> 链路层隐私</a>
+<ul>
+<li class="chapter" data-level="12.9.1" data-path="ch-misc.html"><a href="ch-misc.html#将已配对设备添加到解析列表"><i class="fa fa-check"></i><b>12.9.1</b> 将已配对设备添加到解析列表</a></li>
+<li class="chapter" data-level="12.9.2" data-path="ch-misc.html"><a href="ch-misc.html#广播"><i class="fa fa-check"></i><b>12.9.2</b> 广播</a></li>
+<li class="chapter" data-level="12.9.3" data-path="ch-misc.html"><a href="ch-misc.html#扫描"><i class="fa fa-check"></i><b>12.9.3</b> 扫描</a></li>
+<li class="chapter" data-level="12.9.4" data-path="ch-misc.html"><a href="ch-misc.html#建立连接"><i class="fa fa-check"></i><b>12.9.4</b> 建立连接</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="13" data-path="ch-cap.html"><a href="ch-cap.html"><i class="fa fa-check"></i><b>13</b> 协议栈能力</a>
 <ul>
@@ -1043,6 +1051,26 @@ API，即便发现功能正常，也仅是偶然现象，无法保证总是正�
 <span id="cb7-3"><a href="ch-overview.html#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>src<span class="op">,</span></span>
 <span id="cb7-4"><a href="ch-overview.html#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 输出（不能与 src 相同）</span></span>
 <span id="cb7-5"><a href="ch-overview.html#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> <span class="op">*</span> dest<span class="op">);</span></span></code></pre></div>
+</div>
+<div id="解析列表与隐私" class="section level2 hasAnchor" number="3.13">
+<h2><span class="header-section-number">3.13</span> 解析列表与隐私<a href="ch-overview.html#解析列表与隐私" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>当使用链路层隐私（LL Privacy）特性<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a>时，需要用到解析列表。与之相关的 API 如下：</p>
+<ol style="list-style-type: decimal">
+<li><p><code>gap_add_dev_to_resolving_list</code>：向列表中添加一条记录。一条记录包含 4 项数据：对端设备身份地址及地址类型，本端及对端的 IRK；</p></li>
+<li><p><code>gap_remove_dev_from_resolving_list</code>：删除列表中的一条记录；</p></li>
+<li><p><code>gap_clear_resolving_list</code>：清空列表；</p></li>
+<li><p><code>gap_read_peer_resolving_addr</code>：读取与某条记录关联的对端设备的可解析地址；</p></li>
+<li><p><code>gap_read_local_resolving_addr</code>：读取与某条记录关联的本端设备的可解析地址；</p></li>
+<li><p><code>gap_set_addr_resolution_enable</code>：使能或禁用地址解析功能；</p></li>
+<li><p><code>gap_set_resolvable_private_addr_timeout</code>：设置可解析地址超时时间。超过此时间后，Controller 会重新随机生成可解析地址；</p></li>
+<li><p><code>gap_set_privacy_mode</code>：设置某对端设备的隐私模式。</p></li>
+</ol>
+<p>设备要保护自己的隐私，就必须保证不在任何广播 PDU 里发送其身份地址。使用解析列表里的某个记录时，如果本端 IRK 有效（即不是全部为 0），
+则本端使用可解析地址，隐私得到保护，反之则只能使用身份地址，泄露隐私；如果对端 IRK 有效，则只接受可解析地址，
+对端可在保护了隐私的前提下与本端正常通信，反之则只能接受、识别对端的身份地址，对端为了与本端通信必须泄露隐私。
+如果将隐私模式设置为 <code>PRIVACY_MODE_DEVICE</code>，那么当对端 IRK 有效时，Controller 仍会接受对端的身份地址。</p>
+<p>也就是说，保证地址解析列表每条记录里的本端和对端的 IRK 都是有效的，并使能地址解析，可有效地保护隐私，详见 <a href="ch-misc.html#ch-misc-privacy">链路层隐私</a>。
+<code>PRIVACY_MODE_DEVICE</code> 仅可用于对端设备完全无法支持可解析地址的情况。</p>
 
 </div>
 </div>
@@ -1057,6 +1085,7 @@ API，即便发现功能正常，也仅是偶然现象，无法保证总是正�
 <li id="fn8"><p><a href="https://ingchips.github.io/blog/2021-01-25-zig-async/" class="uri">https://ingchips.github.io/blog/2021-01-25-zig-async/</a><a href="ch-overview.html#fnref8" class="footnote-back">↩︎</a></p></li>
 <li id="fn9"><p>地址改变后，曾与之配对的设备无法自动重连。<a href="ch-overview.html#fnref9" class="footnote-back">↩︎</a></p></li>
 <li id="fn10"><p>参照蓝牙核心规范。<a href="ch-overview.html#fnref10" class="footnote-back">↩︎</a></p></li>
+<li id="fn11"><p>ING918 芯片家族不支持此特性。<a href="ch-overview.html#fnref11" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

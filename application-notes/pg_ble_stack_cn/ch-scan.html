@@ -155,6 +155,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.10" data-path="ch-overview.html"><a href="ch-overview.html#异步特性"><i class="fa fa-check"></i><b>3.10</b> 异步特性</a></li>
 <li class="chapter" data-level="3.11" data-path="ch-overview.html"><a href="ch-overview.html#线程安全性"><i class="fa fa-check"></i><b>3.11</b> 线程安全性</a></li>
 <li class="chapter" data-level="3.12" data-path="ch-overview.html"><a href="ch-overview.html#ch-overview-ble-addr"><i class="fa fa-check"></i><b>3.12</b> BLE 设备地址</a></li>
+<li class="chapter" data-level="3.13" data-path="ch-overview.html"><a href="ch-overview.html#解析列表与隐私"><i class="fa fa-check"></i><b>3.13</b> 解析列表与隐私</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="ch-features.html"><a href="ch-features.html"><i class="fa fa-check"></i><b>4</b> 特性简析</a>
 <ul>
@@ -322,6 +323,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="12.7.2" data-path="ch-misc.html"><a href="ch-misc.html#gatt-客户端同步-api"><i class="fa fa-check"></i><b>12.7.2</b> GATT 客户端同步 API</a></li>
 </ul></li>
 <li class="chapter" data-level="12.8" data-path="ch-misc.html"><a href="ch-misc.html#ch-misc-thread-safe-api"><i class="fa fa-check"></i><b>12.8</b> 线程安全的 API</a></li>
+<li class="chapter" data-level="12.9" data-path="ch-misc.html"><a href="ch-misc.html#ch-misc-privacy"><i class="fa fa-check"></i><b>12.9</b> 链路层隐私</a>
+<ul>
+<li class="chapter" data-level="12.9.1" data-path="ch-misc.html"><a href="ch-misc.html#将已配对设备添加到解析列表"><i class="fa fa-check"></i><b>12.9.1</b> 将已配对设备添加到解析列表</a></li>
+<li class="chapter" data-level="12.9.2" data-path="ch-misc.html"><a href="ch-misc.html#广播"><i class="fa fa-check"></i><b>12.9.2</b> 广播</a></li>
+<li class="chapter" data-level="12.9.3" data-path="ch-misc.html"><a href="ch-misc.html#扫描"><i class="fa fa-check"></i><b>12.9.3</b> 扫描</a></li>
+<li class="chapter" data-level="12.9.4" data-path="ch-misc.html"><a href="ch-misc.html#建立连接"><i class="fa fa-check"></i><b>12.9.4</b> 建立连接</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="13" data-path="ch-cap.html"><a href="ch-cap.html"><i class="fa fa-check"></i><b>13</b> 协议栈能力</a>
 <ul>
@@ -373,10 +381,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb23-5"><a href="ch-scan.html#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 只接收来自白名单内的设备的广播（定向到其它设备的除外）</span></span>
 <span id="cb23-6"><a href="ch-scan.html#cb23-6" aria-hidden="true" tabindex="-1"></a>    SCAN_ACCEPT_WLIST_EXCEPT_NOT_DIRECTED<span class="op">,</span></span>
 <span id="cb23-7"><a href="ch-scan.html#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 接收所有广播（所定向的设备与本设备身份地址不同的除外）</span></span>
-<span id="cb23-8"><a href="ch-scan.html#cb23-8" aria-hidden="true" tabindex="-1"></a>    SCAN_ACCEPT_ALL_EXCEPT_IDENTITY_NOT_MATCH<span class="op">,</span></span>
+<span id="cb23-8"><a href="ch-scan.html#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// SCAN_ACCEPT_ALL_EXCEPT_IDENTITY_NOT_MATCH,</span></span>
 <span id="cb23-9"><a href="ch-scan.html#cb23-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 只接收来自白名单内的设备的广播（所定向的设备与本设备身份地址不同的除外）</span></span>
-<span id="cb23-10"><a href="ch-scan.html#cb23-10" aria-hidden="true" tabindex="-1"></a>    SCAN_ACCEPT_WLIST_EXCEPT_IDENTITY_NOT_MATCH</span>
+<span id="cb23-10"><a href="ch-scan.html#cb23-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// SCAN_ACCEPT_WLIST_EXCEPT_IDENTITY_NOT_MATCH</span></span>
 <span id="cb23-11"><a href="ch-scan.html#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> scan_filter_policy_t<span class="op">;</span></span></code></pre></div>
+<p>后两种策略<a href="#fn22" class="footnote-ref" id="fnref22"><sup>22</sup></a>与前两种策略的区别在于判断是否接受定向广播的方法不同。前两种策略只接受满足以下两者之一的定向广播：</p>
+<ol style="list-style-type: decimal">
+<li>TargetA 与本设备的地址一致，</li>
+<li>TargetA 是可解析地址，且可由本设备的 IRK 解析。</li>
+</ol>
+<p>而后两种策略接受满足以下两者之一的定向广播：</p>
+<ol style="list-style-type: decimal">
+<li>TargetA 与本设备的地址一致，</li>
+<li>TargetA 是可解析地址。</li>
+</ol>
+<p>可见后两种策略对 TargetA 的要求略微宽松。</p>
 </div>
 <div id="主动与被动" class="section level3 hasAnchor" number="6.1.3">
 <h3><span class="header-section-number">6.1.3</span> 主动与被动<a href="ch-scan.html#主动与被动" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -483,7 +502,7 @@ Controller
 </div>
 <div id="与周期广播同步" class="section level3 hasAnchor" number="6.2.4">
 <h3><span class="header-section-number">6.2.4</span> 与周期广播同步<a href="ch-scan.html#与周期广播同步" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>发现周期广播后，可以通过 <code>gap_periodic_adv_create_sync</code> 与周期广播同步<a href="#fn21" class="footnote-ref" id="fnref21"><sup>21</sup></a>：</p>
+<p>发现周期广播后，可以通过 <code>gap_periodic_adv_create_sync</code> 与周期广播同步<a href="#fn23" class="footnote-ref" id="fnref23"><sup>23</sup></a>：</p>
 <div class="sourceCode" id="cb29"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb29-1"><a href="ch-scan.html#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_periodic_adv_create_sync<span class="op">(</span></span>
 <span id="cb29-2"><a href="ch-scan.html#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 过滤策略：目标地址来自白名单还是参数</span></span>
 <span id="cb29-3"><a href="ch-scan.html#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> periodic_adv_filter_policy_t filter_policy<span class="op">,</span></span>
@@ -546,8 +565,9 @@ Controller
 </div>
 <div class="footnotes">
 <hr />
-<ol start="21">
-<li id="fn21"><p>即周期性地接收周期广播。<a href="ch-scan.html#fnref21" class="footnote-back">↩︎</a></p></li>
+<ol start="22">
+<li id="fn22"><p>后两种策略在规范中称为 Extended filter policy。ING916 和 ING918 不支持后两种策略。<a href="ch-scan.html#fnref22" class="footnote-back">↩︎</a></p></li>
+<li id="fn23"><p>即周期性地接收周期广播。<a href="ch-scan.html#fnref23" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

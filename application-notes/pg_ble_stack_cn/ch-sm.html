@@ -155,6 +155,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.10" data-path="ch-overview.html"><a href="ch-overview.html#异步特性"><i class="fa fa-check"></i><b>3.10</b> 异步特性</a></li>
 <li class="chapter" data-level="3.11" data-path="ch-overview.html"><a href="ch-overview.html#线程安全性"><i class="fa fa-check"></i><b>3.11</b> 线程安全性</a></li>
 <li class="chapter" data-level="3.12" data-path="ch-overview.html"><a href="ch-overview.html#ch-overview-ble-addr"><i class="fa fa-check"></i><b>3.12</b> BLE 设备地址</a></li>
+<li class="chapter" data-level="3.13" data-path="ch-overview.html"><a href="ch-overview.html#解析列表与隐私"><i class="fa fa-check"></i><b>3.13</b> 解析列表与隐私</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="ch-features.html"><a href="ch-features.html"><i class="fa fa-check"></i><b>4</b> 特性简析</a>
 <ul>
@@ -322,6 +323,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="12.7.2" data-path="ch-misc.html"><a href="ch-misc.html#gatt-客户端同步-api"><i class="fa fa-check"></i><b>12.7.2</b> GATT 客户端同步 API</a></li>
 </ul></li>
 <li class="chapter" data-level="12.8" data-path="ch-misc.html"><a href="ch-misc.html#ch-misc-thread-safe-api"><i class="fa fa-check"></i><b>12.8</b> 线程安全的 API</a></li>
+<li class="chapter" data-level="12.9" data-path="ch-misc.html"><a href="ch-misc.html#ch-misc-privacy"><i class="fa fa-check"></i><b>12.9</b> 链路层隐私</a>
+<ul>
+<li class="chapter" data-level="12.9.1" data-path="ch-misc.html"><a href="ch-misc.html#将已配对设备添加到解析列表"><i class="fa fa-check"></i><b>12.9.1</b> 将已配对设备添加到解析列表</a></li>
+<li class="chapter" data-level="12.9.2" data-path="ch-misc.html"><a href="ch-misc.html#广播"><i class="fa fa-check"></i><b>12.9.2</b> 广播</a></li>
+<li class="chapter" data-level="12.9.3" data-path="ch-misc.html"><a href="ch-misc.html#扫描"><i class="fa fa-check"></i><b>12.9.3</b> 扫描</a></li>
+<li class="chapter" data-level="12.9.4" data-path="ch-misc.html"><a href="ch-misc.html#建立连接"><i class="fa fa-check"></i><b>12.9.4</b> 建立连接</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="13" data-path="ch-cap.html"><a href="ch-cap.html"><i class="fa fa-check"></i><b>13</b> 协议栈能力</a>
 <ul>
@@ -354,8 +362,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>安全管理（Security Manager）协议负责配对、认证及加密。
 连接的主角色在 SM 里扮演发起者（Initiator），从角色扮演应答者（Responder）。
 SM 涉及多个密钥，其层次关系如图 <a href="ch-sm.html#fig:ch6-ble-keys">11.1</a>，位于顶层的是 ER 和 IR，
-长度都是 <span class="math inline">\(128 bits\)</span><a href="#fn37" class="footnote-ref" id="fnref37"><sup>37</sup></a>，<span class="math inline">\(d1\)</span> 是加解密工具箱里的一个工具，
-DIV 是一个随机数<a href="#fn38" class="footnote-ref" id="fnref38"><sup>38</sup></a>。</p>
+长度都是 <span class="math inline">\(128 bits\)</span><a href="#fn39" class="footnote-ref" id="fnref39"><sup>39</sup></a>，<span class="math inline">\(d1\)</span> 是加解密工具箱里的一个工具，
+DIV 是一个随机数<a href="#fn40" class="footnote-ref" id="fnref40"><sup>40</sup></a>。</p>
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch6-ble-keys"></span>
 <img src="img/ble_keys.png" alt="BLE 密钥层次结构" width="85%" />
 <p class="caption">
@@ -399,7 +407,7 @@ DIV 是一个随机数<a href="#fn38" class="footnote-ref" id="fnref38"><sup>38<
 <span id="cb83-6"><a href="ch-sm.html#cb83-6" aria-hidden="true" tabindex="-1"></a>  IO_CAPABILITY_NO_INPUT_NO_OUTPUT<span class="op">,</span> <span class="co">// 无输入、输出能力</span></span>
 <span id="cb83-7"><a href="ch-sm.html#cb83-7" aria-hidden="true" tabindex="-1"></a>  IO_CAPABILITY_KEYBOARD_DISPLAY<span class="op">,</span>   <span class="co">// 可显示，能输入</span></span>
 <span id="cb83-8"><a href="ch-sm.html#cb83-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> io_capability_t<span class="op">;</span></span></code></pre></div>
-<p>这里的输入能力指可以输入 <span class="math inline">\(0-9\)</span> 等 <span class="math inline">\(10\)</span> 个数字，以及 YES、NO；显示能力是指可以显示 6 位十进制识别码（<span class="math inline">\(000000-999999\)</span>）<a href="#fn39" class="footnote-ref" id="fnref39"><sup>39</sup></a>。</p>
+<p>这里的输入能力指可以输入 <span class="math inline">\(0-9\)</span> 等 <span class="math inline">\(10\)</span> 个数字，以及 YES、NO；显示能力是指可以显示 6 位十进制识别码（<span class="math inline">\(000000-999999\)</span>）<a href="#fn41" class="footnote-ref" id="fnref41"><sup>41</sup></a>。</p>
 <p>持久化数据的定义如下：</p>
 <div class="sourceCode" id="cb84"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb84-1"><a href="ch-sm.html#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> sm_persistent</span>
 <span id="cb84-2"><a href="ch-sm.html#cb84-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
@@ -439,7 +447,7 @@ DIV 是一个随机数<a href="#fn38" class="footnote-ref" id="fnref38"><sup>38<
 <span id="cb87-5"><a href="ch-sm.html#cb87-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> gap_random_address_type_t<span class="op">;</span></span></code></pre></div>
 <p>启动后 SM 模块将尽快产生一个新的地址并弹出 <code>SM_EVENT_PRIVATE_RANDOM_ADDR_UPDATE</code> 事件，
 之后周期性地重新产生并弹出事件。周期默认为 15 分钟，可通过 <code>sm_private_random_address_generation_set_update_period</code>
-修改<a href="#fn40" class="footnote-ref" id="fnref40"><sup>40</sup></a>：</p>
+修改<a href="#fn42" class="footnote-ref" id="fnref42"><sup>42</sup></a>：</p>
 <div class="sourceCode" id="cb88"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb88-1"><a href="ch-sm.html#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sm_private_random_address_generation_set_update_period<span class="op">(</span></span>
 <span id="cb88-2"><a href="ch-sm.html#cb88-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> period_ms<span class="op">);</span></span></code></pre></div>
 </div>
@@ -448,7 +456,7 @@ DIV 是一个随机数<a href="#fn38" class="footnote-ref" id="fnref38"><sup>38<
 <p>SM 模块的事件回调函数将收到一系列事件，App 的主要工作就在于响应这些事件。</p>
 <ul>
 <li><p><code>SM_EVENT_PRIVATE_RANDOM_ADDR_UPDATE</code></p>
-<p>SM 生成了一个新的私有随机地址。App 此时可以更新广播地址<a href="#fn41" class="footnote-ref" id="fnref41"><sup>41</sup></a>，比如：</p>
+<p>SM 生成了一个新的私有随机地址。App 此时可以更新广播地址<a href="#fn43" class="footnote-ref" id="fnref43"><sup>43</sup></a>，比如：</p>
 <div class="sourceCode" id="cb89"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb89-1"><a href="ch-sm.html#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 更新广播集 0 的随机地址</span></span>
 <span id="cb89-2"><a href="ch-sm.html#cb89-2" aria-hidden="true" tabindex="-1"></a>gap_set_adv_set_random_addr<span class="op">(</span><span class="dv">0</span><span class="op">,</span></span>
 <span id="cb89-3"><a href="ch-sm.html#cb89-3" aria-hidden="true" tabindex="-1"></a>  sm_private_random_addr_update_get_address<span class="op">(</span>packet<span class="op">));</span></span></code></pre></div></li>
@@ -556,12 +564,12 @@ SM_EVENT_IDENTITY_RESOLVING_SUCCEEDED 等事件上报。</p>
 </div>
 <div class="footnotes">
 <hr />
-<ol start="37">
-<li id="fn37"><p>生成时需要保证具有足够高的熵。<a href="ch-sm.html#fnref37" class="footnote-back">↩︎</a></p></li>
-<li id="fn38"><p>IRK、DHK、LTK、CSRK 等的具体含义及作用请参考蓝牙核心规范。<a href="ch-sm.html#fnref38" class="footnote-back">↩︎</a></p></li>
-<li id="fn39"><p>以及给予用户必要的提示的能力。<a href="ch-sm.html#fnref39" class="footnote-back">↩︎</a></p></li>
-<li id="fn40"><p>没必要过于频繁地更新地址。尤其是对于可解析地址，每更新一次，就意味着泄露了一点关于 IRK 的消息。<a href="ch-sm.html#fnref40" class="footnote-back">↩︎</a></p></li>
-<li id="fn41"><p>注意：当该广播是可连接的并且正在广播时，不允许修改地址。<a href="ch-sm.html#fnref41" class="footnote-back">↩︎</a></p></li>
+<ol start="39">
+<li id="fn39"><p>生成时需要保证具有足够高的熵。<a href="ch-sm.html#fnref39" class="footnote-back">↩︎</a></p></li>
+<li id="fn40"><p>IRK、DHK、LTK、CSRK 等的具体含义及作用请参考蓝牙核心规范。<a href="ch-sm.html#fnref40" class="footnote-back">↩︎</a></p></li>
+<li id="fn41"><p>以及给予用户必要的提示的能力。<a href="ch-sm.html#fnref41" class="footnote-back">↩︎</a></p></li>
+<li id="fn42"><p>没必要过于频繁地更新地址。尤其是对于可解析地址，每更新一次，就意味着泄露了一点关于 IRK 的消息。<a href="ch-sm.html#fnref42" class="footnote-back">↩︎</a></p></li>
+<li id="fn43"><p>注意：当该广播是可连接的并且正在广播时，不允许修改地址。<a href="ch-sm.html#fnref43" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

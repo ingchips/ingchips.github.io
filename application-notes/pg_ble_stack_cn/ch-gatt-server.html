@@ -155,6 +155,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.10" data-path="ch-overview.html"><a href="ch-overview.html#异步特性"><i class="fa fa-check"></i><b>3.10</b> 异步特性</a></li>
 <li class="chapter" data-level="3.11" data-path="ch-overview.html"><a href="ch-overview.html#线程安全性"><i class="fa fa-check"></i><b>3.11</b> 线程安全性</a></li>
 <li class="chapter" data-level="3.12" data-path="ch-overview.html"><a href="ch-overview.html#ch-overview-ble-addr"><i class="fa fa-check"></i><b>3.12</b> BLE 设备地址</a></li>
+<li class="chapter" data-level="3.13" data-path="ch-overview.html"><a href="ch-overview.html#解析列表与隐私"><i class="fa fa-check"></i><b>3.13</b> 解析列表与隐私</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="ch-features.html"><a href="ch-features.html"><i class="fa fa-check"></i><b>4</b> 特性简析</a>
 <ul>
@@ -322,6 +323,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="12.7.2" data-path="ch-misc.html"><a href="ch-misc.html#gatt-客户端同步-api"><i class="fa fa-check"></i><b>12.7.2</b> GATT 客户端同步 API</a></li>
 </ul></li>
 <li class="chapter" data-level="12.8" data-path="ch-misc.html"><a href="ch-misc.html#ch-misc-thread-safe-api"><i class="fa fa-check"></i><b>12.8</b> 线程安全的 API</a></li>
+<li class="chapter" data-level="12.9" data-path="ch-misc.html"><a href="ch-misc.html#ch-misc-privacy"><i class="fa fa-check"></i><b>12.9</b> 链路层隐私</a>
+<ul>
+<li class="chapter" data-level="12.9.1" data-path="ch-misc.html"><a href="ch-misc.html#将已配对设备添加到解析列表"><i class="fa fa-check"></i><b>12.9.1</b> 将已配对设备添加到解析列表</a></li>
+<li class="chapter" data-level="12.9.2" data-path="ch-misc.html"><a href="ch-misc.html#广播"><i class="fa fa-check"></i><b>12.9.2</b> 广播</a></li>
+<li class="chapter" data-level="12.9.3" data-path="ch-misc.html"><a href="ch-misc.html#扫描"><i class="fa fa-check"></i><b>12.9.3</b> 扫描</a></li>
+<li class="chapter" data-level="12.9.4" data-path="ch-misc.html"><a href="ch-misc.html#建立连接"><i class="fa fa-check"></i><b>12.9.4</b> 建立连接</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="13" data-path="ch-cap.html"><a href="ch-cap.html"><i class="fa fa-check"></i><b>13</b> 协议栈能力</a>
 <ul>
@@ -351,11 +359,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1><span class="header-section-number">8</span> GATT - 服务器<a href="ch-gatt-server.html#ch-gatt-server" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <div id="概览-3" class="section level2 hasAnchor" number="8.1">
 <h2><span class="header-section-number">8.1</span> 概览<a href="ch-gatt-server.html#概览-3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>GATT 服务器<a href="#fn26" class="footnote-ref" id="fnref26"><sup>26</sup></a>为客户端提供服务。
+<p>GATT 服务器<a href="#fn28" class="footnote-ref" id="fnref28"><sup>28</sup></a>为客户端提供服务。
 协议栈支持多个连接，每个连接的配置（Profile）可以独立设置。
 需要注意，GATT 服务器和客户端这两个角色与主、从两个角色没有任何关联：一个连接的主角色既可以充当 GATT 的客户端，也可以充当服务器，
 还可以两种角色一起扮演；一个连接的从角色也是如此。</p>
-<p>要使用 GATT 服务器，开发者需要做三件事<a href="#fn27" class="footnote-ref" id="fnref27"><sup>27</sup></a>：</p>
+<p>要使用 GATT 服务器，开发者需要做三件事<a href="#fn29" class="footnote-ref" id="fnref29"><sup>29</sup></a>：</p>
 <ol style="list-style-type: decimal">
 <li><p>初试化：设置事件回调</p>
 <div class="sourceCode" id="cb47"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb47-1"><a href="ch-gatt-server.html#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> att_server_register_packet_handler<span class="op">(</span></span>
@@ -481,7 +489,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">8.2</span> 使用说明<a href="ch-gatt-server.html#使用说明-3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <div id="profile-数据" class="section level3 hasAnchor" number="8.2.1">
 <h3><span class="header-section-number">8.2.1</span> Profile 数据<a href="ch-gatt-server.html#profile-数据" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>Profile 数据<a href="#fn28" class="footnote-ref" id="fnref28"><sup>28</sup></a> 使用了协议栈自定义的数据结构。
+<p>Profile 数据<a href="#fn30" class="footnote-ref" id="fnref30"><sup>30</sup></a> 使用了协议栈自定义的数据结构。
 开发者不需要了解这个数据结构的定义，而是借助图形化工具或者编程地生成。</p>
 <ol style="list-style-type: decimal">
 <li><p>使用图形化的 Profile 编辑器。</p>
@@ -548,7 +556,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="实现写回调" class="section level3 hasAnchor" number="8.2.3">
 <h3><span class="header-section-number">8.2.3</span> 实现写回调<a href="ch-gatt-server.html#实现写回调" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>当写特性时，可能触发服务器执行某个动作。BLE 为了精度控制动作的执行引入了会话<a href="#fn29" class="footnote-ref" id="fnref29"><sup>29</sup></a>概念：
+<p>当写特性时，可能触发服务器执行某个动作。BLE 为了精度控制动作的执行引入了会话<a href="#fn31" class="footnote-ref" id="fnref31"><sup>31</sup></a>概念：
 一个会话包含对 1 个或多个特性的写入，最后是一个显式的“执行”命令通知服务器开始执行。此外还有一个“取消”命令，通知服务器会话不要执行动作、直接终止。相应地，
 写回调的会话模式 <code>transaction_mode</code> 参数包含四种值：</p>
 <div class="sourceCode" id="cb55"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb55-1"><a href="ch-gatt-server.html#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 无会话的普通写入</span></span>
@@ -580,7 +588,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb56-16"><a href="ch-gatt-server.html#cb56-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
 <span id="cb56-17"><a href="ch-gatt-server.html#cb56-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
 <span id="cb56-18"><a href="ch-gatt-server.html#cb56-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>如果发现错误，可以返回非 0 值告知客户端<a href="#fn30" class="footnote-ref" id="fnref30"><sup>30</sup></a>。</p>
+<p>如果发现错误，可以返回非 0 值告知客户端<a href="#fn32" class="footnote-ref" id="fnref32"><sup>32</sup></a>。</p>
 </div>
 <div id="发送通知notification" class="section level3 hasAnchor" number="8.2.4">
 <h3><span class="header-section-number">8.2.4</span> 发送通知（Notification）<a href="ch-gatt-server.html#发送通知notification" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -655,12 +663,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="footnotes">
 <hr />
-<ol start="26">
-<li id="fn26"><p>在不引起混淆的前提下，本手册混用 ATT 服务器、GATT 服务器，代码里也用 <code>att_server</code> 代指 <code>gatt_server</code>。<a href="ch-gatt-server.html#fnref26" class="footnote-back">↩︎</a></p></li>
-<li id="fn27"><p>事实上，这几件事已由 Wizard 工具代劳。<a href="ch-gatt-server.html#fnref27" class="footnote-back">↩︎</a></p></li>
-<li id="fn28"><p>在手册、工具、代码的不同位置可能使用了不同的名词，如 Profile 数据库、GATT 数据库、GATT 数据等。<a href="ch-gatt-server.html#fnref28" class="footnote-back">↩︎</a></p></li>
-<li id="fn29"><p>协议栈里称为“会话”，规范里称为“队列”。<a href="ch-gatt-server.html#fnref29" class="footnote-back">↩︎</a></p></li>
-<li id="fn30"><p>仅适用于有响应的写入，无响应的写入无效。<a href="ch-gatt-server.html#fnref30" class="footnote-back">↩︎</a></p></li>
+<ol start="28">
+<li id="fn28"><p>在不引起混淆的前提下，本手册混用 ATT 服务器、GATT 服务器，代码里也用 <code>att_server</code> 代指 <code>gatt_server</code>。<a href="ch-gatt-server.html#fnref28" class="footnote-back">↩︎</a></p></li>
+<li id="fn29"><p>事实上，这几件事已由 Wizard 工具代劳。<a href="ch-gatt-server.html#fnref29" class="footnote-back">↩︎</a></p></li>
+<li id="fn30"><p>在手册、工具、代码的不同位置可能使用了不同的名词，如 Profile 数据库、GATT 数据库、GATT 数据等。<a href="ch-gatt-server.html#fnref30" class="footnote-back">↩︎</a></p></li>
+<li id="fn31"><p>协议栈里称为“会话”，规范里称为“队列”。<a href="ch-gatt-server.html#fnref31" class="footnote-back">↩︎</a></p></li>
+<li id="fn32"><p>仅适用于有响应的写入，无响应的写入无效。<a href="ch-gatt-server.html#fnref32" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

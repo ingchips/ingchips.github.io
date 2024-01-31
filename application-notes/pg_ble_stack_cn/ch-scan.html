@@ -376,17 +376,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="过滤策略" class="section level3 hasAnchor" number="6.1.2">
 <h3><span class="header-section-number">6.1.2</span> 过滤策略<a href="ch-scan.html#过滤策略" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>与广播的“<a href="ch-adv.html#ch1-adv-filter">过滤策略</a>”类似，扫描也有几种过滤策略：</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb23-1"><a href="ch-scan.html#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">enum</span> scan_filter_policy</span>
-<span id="cb23-2"><a href="ch-scan.html#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb23-3"><a href="ch-scan.html#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 接收所有广播（定向到其它设备的除外）</span></span>
-<span id="cb23-4"><a href="ch-scan.html#cb23-4" aria-hidden="true" tabindex="-1"></a>    SCAN_ACCEPT_ALL_EXCEPT_NOT_DIRECTED<span class="op">,</span></span>
-<span id="cb23-5"><a href="ch-scan.html#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 只接收来自白名单内的设备的广播（定向到其它设备的除外）</span></span>
-<span id="cb23-6"><a href="ch-scan.html#cb23-6" aria-hidden="true" tabindex="-1"></a>    SCAN_ACCEPT_WLIST_EXCEPT_NOT_DIRECTED<span class="op">,</span></span>
-<span id="cb23-7"><a href="ch-scan.html#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 接收所有广播（所定向的设备与本设备身份地址不同的除外）</span></span>
-<span id="cb23-8"><a href="ch-scan.html#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// SCAN_ACCEPT_ALL_EXCEPT_IDENTITY_NOT_MATCH,</span></span>
-<span id="cb23-9"><a href="ch-scan.html#cb23-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 只接收来自白名单内的设备的广播（所定向的设备与本设备身份地址不同的除外）</span></span>
-<span id="cb23-10"><a href="ch-scan.html#cb23-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// SCAN_ACCEPT_WLIST_EXCEPT_IDENTITY_NOT_MATCH</span></span>
-<span id="cb23-11"><a href="ch-scan.html#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> scan_filter_policy_t<span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb25-1"><a href="ch-scan.html#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">enum</span> scan_filter_policy</span>
+<span id="cb25-2"><a href="ch-scan.html#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb25-3"><a href="ch-scan.html#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 接收所有广播（定向到其它设备的除外）</span></span>
+<span id="cb25-4"><a href="ch-scan.html#cb25-4" aria-hidden="true" tabindex="-1"></a>    SCAN_ACCEPT_ALL_EXCEPT_NOT_DIRECTED<span class="op">,</span></span>
+<span id="cb25-5"><a href="ch-scan.html#cb25-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 只接收来自白名单内的设备的广播（定向到其它设备的除外）</span></span>
+<span id="cb25-6"><a href="ch-scan.html#cb25-6" aria-hidden="true" tabindex="-1"></a>    SCAN_ACCEPT_WLIST_EXCEPT_NOT_DIRECTED<span class="op">,</span></span>
+<span id="cb25-7"><a href="ch-scan.html#cb25-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 接收所有广播（所定向的设备与本设备身份地址不同的除外）</span></span>
+<span id="cb25-8"><a href="ch-scan.html#cb25-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// SCAN_ACCEPT_ALL_EXCEPT_IDENTITY_NOT_MATCH,</span></span>
+<span id="cb25-9"><a href="ch-scan.html#cb25-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 只接收来自白名单内的设备的广播（所定向的设备与本设备身份地址不同的除外）</span></span>
+<span id="cb25-10"><a href="ch-scan.html#cb25-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// SCAN_ACCEPT_WLIST_EXCEPT_IDENTITY_NOT_MATCH</span></span>
+<span id="cb25-11"><a href="ch-scan.html#cb25-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> scan_filter_policy_t<span class="op">;</span></span></code></pre></div>
 <p>后两种策略<a href="#fn22" class="footnote-ref" id="fnref22"><sup>22</sup></a>与前两种策略的区别在于判断是否接受定向广播的方法不同。前两种策略只接受满足以下两者之一的定向广播：</p>
 <ol style="list-style-type: decimal">
 <li>TargetA 与本设备的地址一致，</li>
@@ -415,44 +415,44 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3><span class="header-section-number">6.2.1</span> 配置参数<a href="ch-scan.html#配置参数" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>在开始扫描之前，需要先通过 <code>gap_set_random_device_address</code> 为设备配置地址，这个地址用于扫描、发起连接等场景。
 使用 <code>gap_set_ext_scan_para</code> 配置扫描参数：</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb24-1"><a href="ch-scan.html#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_set_ext_scan_para<span class="op">(</span></span>
-<span id="cb24-2"><a href="ch-scan.html#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 本设备地址类型</span></span>
-<span id="cb24-3"><a href="ch-scan.html#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> bd_addr_type_t own_addr_type<span class="op">,</span></span>
-<span id="cb24-4"><a href="ch-scan.html#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 过滤策略</span></span>
-<span id="cb24-5"><a href="ch-scan.html#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> scan_filter_policy_t filter<span class="op">,</span></span>
-<span id="cb24-6"><a href="ch-scan.html#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// PHY 配置个数</span></span>
-<span id="cb24-7"><a href="ch-scan.html#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> config_num<span class="op">,</span></span>
-<span id="cb24-8"><a href="ch-scan.html#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 关于每种 PHY 的参数配置</span></span>
-<span id="cb24-9"><a href="ch-scan.html#cb24-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> scan_phy_config_t <span class="op">*</span>configs<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb26-1"><a href="ch-scan.html#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_set_ext_scan_para<span class="op">(</span></span>
+<span id="cb26-2"><a href="ch-scan.html#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 本设备地址类型</span></span>
+<span id="cb26-3"><a href="ch-scan.html#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> bd_addr_type_t own_addr_type<span class="op">,</span></span>
+<span id="cb26-4"><a href="ch-scan.html#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 过滤策略</span></span>
+<span id="cb26-5"><a href="ch-scan.html#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> scan_filter_policy_t filter<span class="op">,</span></span>
+<span id="cb26-6"><a href="ch-scan.html#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// PHY 配置个数</span></span>
+<span id="cb26-7"><a href="ch-scan.html#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> config_num<span class="op">,</span></span>
+<span id="cb26-8"><a href="ch-scan.html#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 关于每种 PHY 的参数配置</span></span>
+<span id="cb26-9"><a href="ch-scan.html#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> scan_phy_config_t <span class="op">*</span>configs<span class="op">);</span></span></code></pre></div>
 <p>这里的 PHY 指的是主广播信道所使用的 PHY，只能为 1M 或 Coded。辅广播信道上所有的 PHY 类型全部支持，不需要配置。
 每种 PHY 的参数配置如下：</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb25-1"><a href="ch-scan.html#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> scan_phy_config</span>
-<span id="cb25-2"><a href="ch-scan.html#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb25-3"><a href="ch-scan.html#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// PHY</span></span>
-<span id="cb25-4"><a href="ch-scan.html#cb25-4" aria-hidden="true" tabindex="-1"></a>    phy_type_t phy<span class="op">;</span></span>
-<span id="cb25-5"><a href="ch-scan.html#cb25-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 扫描方式：主动或被动</span></span>
-<span id="cb25-6"><a href="ch-scan.html#cb25-6" aria-hidden="true" tabindex="-1"></a>    scan_type_t type<span class="op">;</span></span>
-<span id="cb25-7"><a href="ch-scan.html#cb25-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 扫描间隔，单位是 625us</span></span>
-<span id="cb25-8"><a href="ch-scan.html#cb25-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> interval<span class="op">;</span></span>
-<span id="cb25-9"><a href="ch-scan.html#cb25-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 扫描窗口，单位是 625us</span></span>
-<span id="cb25-10"><a href="ch-scan.html#cb25-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> window<span class="op">;</span></span>
-<span id="cb25-11"><a href="ch-scan.html#cb25-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> scan_phy_config_t<span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb27-1"><a href="ch-scan.html#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> scan_phy_config</span>
+<span id="cb27-2"><a href="ch-scan.html#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb27-3"><a href="ch-scan.html#cb27-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// PHY</span></span>
+<span id="cb27-4"><a href="ch-scan.html#cb27-4" aria-hidden="true" tabindex="-1"></a>    phy_type_t phy<span class="op">;</span></span>
+<span id="cb27-5"><a href="ch-scan.html#cb27-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 扫描方式：主动或被动</span></span>
+<span id="cb27-6"><a href="ch-scan.html#cb27-6" aria-hidden="true" tabindex="-1"></a>    scan_type_t type<span class="op">;</span></span>
+<span id="cb27-7"><a href="ch-scan.html#cb27-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 扫描间隔，单位是 625us</span></span>
+<span id="cb27-8"><a href="ch-scan.html#cb27-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> interval<span class="op">;</span></span>
+<span id="cb27-9"><a href="ch-scan.html#cb27-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 扫描窗口，单位是 625us</span></span>
+<span id="cb27-10"><a href="ch-scan.html#cb27-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> window<span class="op">;</span></span>
+<span id="cb27-11"><a href="ch-scan.html#cb27-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> scan_phy_config_t<span class="op">;</span></span></code></pre></div>
 </div>
 <div id="起停扫描" class="section level3 hasAnchor" number="6.2.2">
 <h3><span class="header-section-number">6.2.2</span> 起停扫描<a href="ch-scan.html#起停扫描" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>使用 <code>gap_set_ext_scan_enable</code> 起停扫描：</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb26-1"><a href="ch-scan.html#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_set_ext_scan_enable<span class="op">(</span></span>
-<span id="cb26-2"><a href="ch-scan.html#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 开始或者停止扫描</span></span>
-<span id="cb26-3"><a href="ch-scan.html#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> enable<span class="op">,</span></span>
-<span id="cb26-4"><a href="ch-scan.html#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 是否对数据做去重处理：</span></span>
-<span id="cb26-5"><a href="ch-scan.html#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 0 - 不去重；</span></span>
-<span id="cb26-6"><a href="ch-scan.html#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 1 - 去重；</span></span>
-<span id="cb26-7"><a href="ch-scan.html#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 2 - 去重，但是每个周期复位过滤器</span></span>
-<span id="cb26-8"><a href="ch-scan.html#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> filter<span class="op">,</span></span>
-<span id="cb26-9"><a href="ch-scan.html#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 持续时间，单位为 10ms</span></span>
-<span id="cb26-10"><a href="ch-scan.html#cb26-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint16_t</span> duration<span class="op">,</span></span>
-<span id="cb26-11"><a href="ch-scan.html#cb26-11" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 周期，单位为 1.28s</span></span>
-<span id="cb26-12"><a href="ch-scan.html#cb26-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint16_t</span> period<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb28-1"><a href="ch-scan.html#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_set_ext_scan_enable<span class="op">(</span></span>
+<span id="cb28-2"><a href="ch-scan.html#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 开始或者停止扫描</span></span>
+<span id="cb28-3"><a href="ch-scan.html#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> enable<span class="op">,</span></span>
+<span id="cb28-4"><a href="ch-scan.html#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 是否对数据做去重处理：</span></span>
+<span id="cb28-5"><a href="ch-scan.html#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 0 - 不去重；</span></span>
+<span id="cb28-6"><a href="ch-scan.html#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 1 - 去重；</span></span>
+<span id="cb28-7"><a href="ch-scan.html#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 2 - 去重，但是每个周期复位过滤器</span></span>
+<span id="cb28-8"><a href="ch-scan.html#cb28-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> filter<span class="op">,</span></span>
+<span id="cb28-9"><a href="ch-scan.html#cb28-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 持续时间，单位为 10ms</span></span>
+<span id="cb28-10"><a href="ch-scan.html#cb28-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint16_t</span> duration<span class="op">,</span></span>
+<span id="cb28-11"><a href="ch-scan.html#cb28-11" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 周期，单位为 1.28s</span></span>
+<span id="cb28-12"><a href="ch-scan.html#cb28-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint16_t</span> period<span class="op">);</span></span></code></pre></div>
 <p><code>duration</code> 和 <code>period</code> 两个参数的目的是实现每个 <code>period</code> 里扫描 <code>duration</code> 长的时间。另有两种特殊情况，从开发者的角度总结如下：</p>
 <ol style="list-style-type: decimal">
 <li>持续、一直地扫描：<code>duration</code> 和 <code>period</code> 两个参数皆置为 <span class="math inline">\(0\)</span></li>
@@ -469,58 +469,58 @@ Controller
 <h3><span class="header-section-number">6.2.3</span> 处理数据<a href="ch-scan.html#处理数据" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>收到广播包后，HCI 回调函数将收到 <code>HCI_SUBEVENT_LE_EXTENDED_ADVERTISING_REPORT</code> 事件。利用 <code>decode_hci_le_meta_event</code>
 宏可将事件转换为 <code>le_ext_adv_report_t</code> 结构体指针：</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb27-1"><a href="ch-scan.html#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> le_ext_adv_report_t <span class="op">*</span>report <span class="op">=</span></span>
-<span id="cb27-2"><a href="ch-scan.html#cb27-2" aria-hidden="true" tabindex="-1"></a>  decode_hci_le_meta_event<span class="op">(</span>packet<span class="op">,</span> le_meta_event_ext_adv_report_t<span class="op">)-&gt;</span>reports<span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb29-1"><a href="ch-scan.html#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> le_ext_adv_report_t <span class="op">*</span>report <span class="op">=</span></span>
+<span id="cb29-2"><a href="ch-scan.html#cb29-2" aria-hidden="true" tabindex="-1"></a>  decode_hci_le_meta_event<span class="op">(</span>packet<span class="op">,</span> le_meta_event_ext_adv_report_t<span class="op">)-&gt;</span>reports<span class="op">;</span></span></code></pre></div>
 <p>这个结构体的定义如下：</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb28-1"><a href="ch-scan.html#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> le_ext_adv_report</span>
-<span id="cb28-2"><a href="ch-scan.html#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb28-3"><a href="ch-scan.html#cb28-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 事件类型比特位组合</span></span>
-<span id="cb28-4"><a href="ch-scan.html#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span>        evt_type<span class="op">;</span></span>
-<span id="cb28-5"><a href="ch-scan.html#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 广播者地址类型</span></span>
-<span id="cb28-6"><a href="ch-scan.html#cb28-6" aria-hidden="true" tabindex="-1"></a>    bd_addr_type_t  addr_type<span class="op">;</span></span>
-<span id="cb28-7"><a href="ch-scan.html#cb28-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 广播者地址</span></span>
-<span id="cb28-8"><a href="ch-scan.html#cb28-8" aria-hidden="true" tabindex="-1"></a>    bd_addr_t       address<span class="op">;</span></span>
-<span id="cb28-9"><a href="ch-scan.html#cb28-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 主信道上用的 PHY</span></span>
-<span id="cb28-10"><a href="ch-scan.html#cb28-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span>         p_phy<span class="op">;</span></span>
-<span id="cb28-11"><a href="ch-scan.html#cb28-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 辅信道上用的 PHY</span></span>
-<span id="cb28-12"><a href="ch-scan.html#cb28-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span>         s_phy<span class="op">;</span></span>
-<span id="cb28-13"><a href="ch-scan.html#cb28-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">// SID</span></span>
-<span id="cb28-14"><a href="ch-scan.html#cb28-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span>         sid<span class="op">;</span></span>
-<span id="cb28-15"><a href="ch-scan.html#cb28-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 发射功率（单位 dBm）</span></span>
-<span id="cb28-16"><a href="ch-scan.html#cb28-16" aria-hidden="true" tabindex="-1"></a>     <span class="dt">int8_t</span>         tx_power<span class="op">;</span></span>
-<span id="cb28-17"><a href="ch-scan.html#cb28-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">// RSSI （单位 dBm）</span></span>
-<span id="cb28-18"><a href="ch-scan.html#cb28-18" aria-hidden="true" tabindex="-1"></a>     <span class="dt">int8_t</span>         rssi<span class="op">;</span></span>
-<span id="cb28-19"><a href="ch-scan.html#cb28-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 周期广播的间隔（仅对周期广播有效）</span></span>
-<span id="cb28-20"><a href="ch-scan.html#cb28-20" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span>        prd_adv_interval<span class="op">;</span></span>
-<span id="cb28-21"><a href="ch-scan.html#cb28-21" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 定向广播的目的地址类型</span></span>
-<span id="cb28-22"><a href="ch-scan.html#cb28-22" aria-hidden="true" tabindex="-1"></a>    bd_addr_type_t  direct_addr_type<span class="op">;</span></span>
-<span id="cb28-23"><a href="ch-scan.html#cb28-23" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 定向广播的目的地址</span></span>
-<span id="cb28-24"><a href="ch-scan.html#cb28-24" aria-hidden="true" tabindex="-1"></a>    bd_addr_t       direct_addr<span class="op">;</span></span>
-<span id="cb28-25"><a href="ch-scan.html#cb28-25" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 广播数据长度</span></span>
-<span id="cb28-26"><a href="ch-scan.html#cb28-26" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span>         data_len<span class="op">;</span></span>
-<span id="cb28-27"><a href="ch-scan.html#cb28-27" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 广播数据</span></span>
-<span id="cb28-28"><a href="ch-scan.html#cb28-28" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span>         data<span class="op">[</span><span class="dv">0</span><span class="op">];</span></span>
-<span id="cb28-29"><a href="ch-scan.html#cb28-29" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> le_ext_adv_report_t<span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb30-1"><a href="ch-scan.html#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> le_ext_adv_report</span>
+<span id="cb30-2"><a href="ch-scan.html#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb30-3"><a href="ch-scan.html#cb30-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 事件类型比特位组合</span></span>
+<span id="cb30-4"><a href="ch-scan.html#cb30-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span>        evt_type<span class="op">;</span></span>
+<span id="cb30-5"><a href="ch-scan.html#cb30-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 广播者地址类型</span></span>
+<span id="cb30-6"><a href="ch-scan.html#cb30-6" aria-hidden="true" tabindex="-1"></a>    bd_addr_type_t  addr_type<span class="op">;</span></span>
+<span id="cb30-7"><a href="ch-scan.html#cb30-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 广播者地址</span></span>
+<span id="cb30-8"><a href="ch-scan.html#cb30-8" aria-hidden="true" tabindex="-1"></a>    bd_addr_t       address<span class="op">;</span></span>
+<span id="cb30-9"><a href="ch-scan.html#cb30-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 主信道上用的 PHY</span></span>
+<span id="cb30-10"><a href="ch-scan.html#cb30-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span>         p_phy<span class="op">;</span></span>
+<span id="cb30-11"><a href="ch-scan.html#cb30-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 辅信道上用的 PHY</span></span>
+<span id="cb30-12"><a href="ch-scan.html#cb30-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span>         s_phy<span class="op">;</span></span>
+<span id="cb30-13"><a href="ch-scan.html#cb30-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">// SID</span></span>
+<span id="cb30-14"><a href="ch-scan.html#cb30-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span>         sid<span class="op">;</span></span>
+<span id="cb30-15"><a href="ch-scan.html#cb30-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 发射功率（单位 dBm）</span></span>
+<span id="cb30-16"><a href="ch-scan.html#cb30-16" aria-hidden="true" tabindex="-1"></a>     <span class="dt">int8_t</span>         tx_power<span class="op">;</span></span>
+<span id="cb30-17"><a href="ch-scan.html#cb30-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">// RSSI （单位 dBm）</span></span>
+<span id="cb30-18"><a href="ch-scan.html#cb30-18" aria-hidden="true" tabindex="-1"></a>     <span class="dt">int8_t</span>         rssi<span class="op">;</span></span>
+<span id="cb30-19"><a href="ch-scan.html#cb30-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 周期广播的间隔（仅对周期广播有效）</span></span>
+<span id="cb30-20"><a href="ch-scan.html#cb30-20" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span>        prd_adv_interval<span class="op">;</span></span>
+<span id="cb30-21"><a href="ch-scan.html#cb30-21" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 定向广播的目的地址类型</span></span>
+<span id="cb30-22"><a href="ch-scan.html#cb30-22" aria-hidden="true" tabindex="-1"></a>    bd_addr_type_t  direct_addr_type<span class="op">;</span></span>
+<span id="cb30-23"><a href="ch-scan.html#cb30-23" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 定向广播的目的地址</span></span>
+<span id="cb30-24"><a href="ch-scan.html#cb30-24" aria-hidden="true" tabindex="-1"></a>    bd_addr_t       direct_addr<span class="op">;</span></span>
+<span id="cb30-25"><a href="ch-scan.html#cb30-25" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 广播数据长度</span></span>
+<span id="cb30-26"><a href="ch-scan.html#cb30-26" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span>         data_len<span class="op">;</span></span>
+<span id="cb30-27"><a href="ch-scan.html#cb30-27" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 广播数据</span></span>
+<span id="cb30-28"><a href="ch-scan.html#cb30-28" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span>         data<span class="op">[</span><span class="dv">0</span><span class="op">];</span></span>
+<span id="cb30-29"><a href="ch-scan.html#cb30-29" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> le_ext_adv_report_t<span class="op">;</span></span></code></pre></div>
 </div>
 <div id="与周期广播同步" class="section level3 hasAnchor" number="6.2.4">
 <h3><span class="header-section-number">6.2.4</span> 与周期广播同步<a href="ch-scan.html#与周期广播同步" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>发现周期广播后，可以通过 <code>gap_periodic_adv_create_sync</code> 与周期广播同步<a href="#fn23" class="footnote-ref" id="fnref23"><sup>23</sup></a>：</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb29-1"><a href="ch-scan.html#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_periodic_adv_create_sync<span class="op">(</span></span>
-<span id="cb29-2"><a href="ch-scan.html#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 过滤策略：目标地址来自白名单还是参数</span></span>
-<span id="cb29-3"><a href="ch-scan.html#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> periodic_adv_filter_policy_t filter_policy<span class="op">,</span></span>
-<span id="cb29-4"><a href="ch-scan.html#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// SID</span></span>
-<span id="cb29-5"><a href="ch-scan.html#cb29-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> adv_sid<span class="op">,</span></span>
-<span id="cb29-6"><a href="ch-scan.html#cb29-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 目标地址类型</span></span>
-<span id="cb29-7"><a href="ch-scan.html#cb29-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> bd_addr_type_t addr_type<span class="op">,</span></span>
-<span id="cb29-8"><a href="ch-scan.html#cb29-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 目标地址</span></span>
-<span id="cb29-9"><a href="ch-scan.html#cb29-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>addr<span class="op">,</span></span>
-<span id="cb29-10"><a href="ch-scan.html#cb29-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 成功接收一次之后，可跳过的数目</span></span>
-<span id="cb29-11"><a href="ch-scan.html#cb29-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint16_t</span> skip<span class="op">,</span></span>
-<span id="cb29-12"><a href="ch-scan.html#cb29-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 同步超时（单位 100ms）</span></span>
-<span id="cb29-13"><a href="ch-scan.html#cb29-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint16_t</span> sync_timeout<span class="op">,</span></span>
-<span id="cb29-14"><a href="ch-scan.html#cb29-14" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 周期广播里的 CTE 类型（如果存在）</span></span>
-<span id="cb29-15"><a href="ch-scan.html#cb29-15" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> sync_cte_type</span>
-<span id="cb29-16"><a href="ch-scan.html#cb29-16" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb31-1"><a href="ch-scan.html#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_periodic_adv_create_sync<span class="op">(</span></span>
+<span id="cb31-2"><a href="ch-scan.html#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 过滤策略：目标地址来自白名单还是参数</span></span>
+<span id="cb31-3"><a href="ch-scan.html#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> periodic_adv_filter_policy_t filter_policy<span class="op">,</span></span>
+<span id="cb31-4"><a href="ch-scan.html#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// SID</span></span>
+<span id="cb31-5"><a href="ch-scan.html#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> adv_sid<span class="op">,</span></span>
+<span id="cb31-6"><a href="ch-scan.html#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 目标地址类型</span></span>
+<span id="cb31-7"><a href="ch-scan.html#cb31-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> bd_addr_type_t addr_type<span class="op">,</span></span>
+<span id="cb31-8"><a href="ch-scan.html#cb31-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 目标地址</span></span>
+<span id="cb31-9"><a href="ch-scan.html#cb31-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>addr<span class="op">,</span></span>
+<span id="cb31-10"><a href="ch-scan.html#cb31-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 成功接收一次之后，可跳过的数目</span></span>
+<span id="cb31-11"><a href="ch-scan.html#cb31-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint16_t</span> skip<span class="op">,</span></span>
+<span id="cb31-12"><a href="ch-scan.html#cb31-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 同步超时（单位 100ms）</span></span>
+<span id="cb31-13"><a href="ch-scan.html#cb31-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint16_t</span> sync_timeout<span class="op">,</span></span>
+<span id="cb31-14"><a href="ch-scan.html#cb31-14" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 周期广播里的 CTE 类型（如果存在）</span></span>
+<span id="cb31-15"><a href="ch-scan.html#cb31-15" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> sync_cte_type</span>
+<span id="cb31-16"><a href="ch-scan.html#cb31-16" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
 <p>成功建立同步后，HCI 回调会收到 <code>HCI_SUBEVENT_LE_PERIODIC_ADVERTISING_SYNC_ESTABLISHED</code> 事件。接收到的周期广播通过
 <code>HCI_SUBEVENT_LE_PERIODIC_ADVERTISING_REPORT</code> 事件上报，其内容与 <code>le_ext_adv_report_t</code> 类似。</p>
 <p>对于 5.4，HCI 回调会收到 <code>HCI_SUBEVENT_LE_PERIODIC_ADVERTISING_SYNC_ESTABLISHED_V2</code> 事件。
@@ -531,36 +531,36 @@ Controller
 <h3><span class="header-section-number">6.2.5</span> 与 PAwR 同步<a href="ch-scan.html#与-pawr-同步" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>当 <code>HCI_SUBEVENT_LE_PERIODIC_ADVERTISING_SYNC_ESTABLISHED_V2</code> 携带的子事件信息显示存在存在子事件时，可通过
 <code>gap_set_periodic_sync_subevent</code> 与指定的子事件同步：</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb30-1"><a href="ch-scan.html#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_set_periodic_sync_subevent<span class="op">(</span></span>
-<span id="cb30-2"><a href="ch-scan.html#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 同步</span></span>
-<span id="cb30-3"><a href="ch-scan.html#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> sync_handle<span class="op">,</span></span>
-<span id="cb30-4"><a href="ch-scan.html#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 发送响应时的属性</span></span>
-<span id="cb30-5"><a href="ch-scan.html#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 只能为 0 或者 PERIODIC_ADV_BIT_INC_TX</span></span>
-<span id="cb30-6"><a href="ch-scan.html#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> periodic_adv_properties<span class="op">,</span></span>
-<span id="cb30-7"><a href="ch-scan.html#cb30-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 要同步的子事件数</span></span>
-<span id="cb30-8"><a href="ch-scan.html#cb30-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> num_subevents<span class="op">,</span></span>
-<span id="cb30-9"><a href="ch-scan.html#cb30-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 要同步的每个子事件的序号</span></span>
-<span id="cb30-10"><a href="ch-scan.html#cb30-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>subevents<span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb32-1"><a href="ch-scan.html#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_set_periodic_sync_subevent<span class="op">(</span></span>
+<span id="cb32-2"><a href="ch-scan.html#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 同步</span></span>
+<span id="cb32-3"><a href="ch-scan.html#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> sync_handle<span class="op">,</span></span>
+<span id="cb32-4"><a href="ch-scan.html#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 发送响应时的属性</span></span>
+<span id="cb32-5"><a href="ch-scan.html#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 只能为 0 或者 PERIODIC_ADV_BIT_INC_TX</span></span>
+<span id="cb32-6"><a href="ch-scan.html#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> periodic_adv_properties<span class="op">,</span></span>
+<span id="cb32-7"><a href="ch-scan.html#cb32-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 要同步的子事件数</span></span>
+<span id="cb32-8"><a href="ch-scan.html#cb32-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> num_subevents<span class="op">,</span></span>
+<span id="cb32-9"><a href="ch-scan.html#cb32-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 要同步的每个子事件的序号</span></span>
+<span id="cb32-10"><a href="ch-scan.html#cb32-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>subevents<span class="op">)</span></span></code></pre></div>
 <p>与子事件同步后，接收到的每个子事件的数据将通过 <code>HCI_SUBEVENT_LE_PERIODIC_ADVERTISING_REPORT_V2</code> 事件上报，
 其内容与 <code>HCI_SUBEVENT_LE_PERIODIC_ADVERTISING_REPORT</code> 类似，只是增加了关于子事件的信息。</p>
 <div id="设置发送响应" class="section level4 hasAnchor" number="6.2.5.1">
 <h4><span class="header-section-number">6.2.5.1</span> 设置、发送响应<a href="ch-scan.html#设置发送响应" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>通过 <code>gap_set_periodic_adv_rsp_data</code> 在指定的子事件、响应时隙发送响应数据：</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb31-1"><a href="ch-scan.html#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_set_periodic_adv_rsp_data<span class="op">(</span></span>
-<span id="cb31-2"><a href="ch-scan.html#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 同步句柄</span></span>
-<span id="cb31-3"><a href="ch-scan.html#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> sync_handle<span class="op">,</span></span>
-<span id="cb31-4"><a href="ch-scan.html#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 所要响应的 PAwR 所在的周期广播事件序号</span></span>
-<span id="cb31-5"><a href="ch-scan.html#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> request_event<span class="op">,</span></span>
-<span id="cb31-6"><a href="ch-scan.html#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 所要响应的 PAwR 所在的子事件序号</span></span>
-<span id="cb31-7"><a href="ch-scan.html#cb31-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> request_subevent<span class="op">,</span></span>
-<span id="cb31-8"><a href="ch-scan.html#cb31-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 发送响应的子事件序号</span></span>
-<span id="cb31-9"><a href="ch-scan.html#cb31-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> rsp_subevent<span class="op">,</span></span>
-<span id="cb31-10"><a href="ch-scan.html#cb31-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 发送响应的时隙序号</span></span>
-<span id="cb31-11"><a href="ch-scan.html#cb31-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> rsp_slot<span class="op">,</span></span>
-<span id="cb31-12"><a href="ch-scan.html#cb31-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 响应的长度</span></span>
-<span id="cb31-13"><a href="ch-scan.html#cb31-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> rsp_data_len<span class="op">,</span></span>
-<span id="cb31-14"><a href="ch-scan.html#cb31-14" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 响应数据</span></span>
-<span id="cb31-15"><a href="ch-scan.html#cb31-15" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>rsp_data<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb33-1"><a href="ch-scan.html#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_set_periodic_adv_rsp_data<span class="op">(</span></span>
+<span id="cb33-2"><a href="ch-scan.html#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 同步句柄</span></span>
+<span id="cb33-3"><a href="ch-scan.html#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> sync_handle<span class="op">,</span></span>
+<span id="cb33-4"><a href="ch-scan.html#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 所要响应的 PAwR 所在的周期广播事件序号</span></span>
+<span id="cb33-5"><a href="ch-scan.html#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> request_event<span class="op">,</span></span>
+<span id="cb33-6"><a href="ch-scan.html#cb33-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 所要响应的 PAwR 所在的子事件序号</span></span>
+<span id="cb33-7"><a href="ch-scan.html#cb33-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> request_subevent<span class="op">,</span></span>
+<span id="cb33-8"><a href="ch-scan.html#cb33-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 发送响应的子事件序号</span></span>
+<span id="cb33-9"><a href="ch-scan.html#cb33-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> rsp_subevent<span class="op">,</span></span>
+<span id="cb33-10"><a href="ch-scan.html#cb33-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 发送响应的时隙序号</span></span>
+<span id="cb33-11"><a href="ch-scan.html#cb33-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> rsp_slot<span class="op">,</span></span>
+<span id="cb33-12"><a href="ch-scan.html#cb33-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 响应的长度</span></span>
+<span id="cb33-13"><a href="ch-scan.html#cb33-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> rsp_data_len<span class="op">,</span></span>
+<span id="cb33-14"><a href="ch-scan.html#cb33-14" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 响应数据</span></span>
+<span id="cb33-15"><a href="ch-scan.html#cb33-15" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>rsp_data<span class="op">);</span></span></code></pre></div>
 </div>
 </div>
 </div>

@@ -486,24 +486,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p>允许广播最小间隔小于 <span class="math inline">\(20ms\)</span>，最小间隔取决于数据包空口时长；</p></li>
 <li><p>允许连接间隔小于 <span class="math inline">\(7.5ms\)</span>，最小间隔取决于时间单位（默认 <span class="math inline">\(1.25ms\)</span>）、芯片处理能力及数据包空口时长；</p></li>
 <li><p>自定义连接间隔的时间单位；</p>
-<div class="sourceCode" id="cb153"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb153-1"><a href="ch-cap.html#cb153-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_set_conn_interval_unit<span class="op">(</span></span>
-<span id="cb153-2"><a href="ch-cap.html#cb153-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> unit<span class="op">);</span>   <span class="co">// 自定义的时间单位（微秒）</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb155"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb155-1"><a href="ch-cap.html#cb155-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_set_conn_interval_unit<span class="op">(</span></span>
+<span id="cb155-2"><a href="ch-cap.html#cb155-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> unit<span class="op">);</span>   <span class="co">// 自定义的时间单位（微秒）</span></span></code></pre></div></li>
 <li><p>在扩展广播上附着 CTE<a href="#fn59" class="footnote-ref" id="fnref59"><sup>59</sup></a>；</p>
-<div class="sourceCode" id="cb154"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb154-1"><a href="ch-cap.html#cb154-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_attach_cte_to_adv_set<span class="op">(</span></span>
-<span id="cb154-2"><a href="ch-cap.html#cb154-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> adv_hdl<span class="op">,</span>  <span class="co">// 广播集句柄</span></span>
-<span id="cb154-3"><a href="ch-cap.html#cb154-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> cte_type<span class="op">,</span> <span class="co">// CTE 类型（0 为 AoA）</span></span>
-<span id="cb154-4"><a href="ch-cap.html#cb154-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> cte_len<span class="op">,</span>  <span class="co">// CTE 长度</span></span>
-<span id="cb154-5"><a href="ch-cap.html#cb154-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 用于 AoD 发送的天线切换模板的长度</span></span>
-<span id="cb154-6"><a href="ch-cap.html#cb154-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> switching_pattern_len<span class="op">,</span></span>
-<span id="cb154-7"><a href="ch-cap.html#cb154-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 用于 AoD 发送的天线切换模板</span></span>
-<span id="cb154-8"><a href="ch-cap.html#cb154-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>switching_pattern<span class="op">);</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb156"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb156-1"><a href="ch-cap.html#cb156-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_attach_cte_to_adv_set<span class="op">(</span></span>
+<span id="cb156-2"><a href="ch-cap.html#cb156-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> adv_hdl<span class="op">,</span>  <span class="co">// 广播集句柄</span></span>
+<span id="cb156-3"><a href="ch-cap.html#cb156-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> cte_type<span class="op">,</span> <span class="co">// CTE 类型（0 为 AoA）</span></span>
+<span id="cb156-4"><a href="ch-cap.html#cb156-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> cte_len<span class="op">,</span>  <span class="co">// CTE 长度</span></span>
+<span id="cb156-5"><a href="ch-cap.html#cb156-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 用于 AoD 发送的天线切换模板的长度</span></span>
+<span id="cb156-6"><a href="ch-cap.html#cb156-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> switching_pattern_len<span class="op">,</span></span>
+<span id="cb156-7"><a href="ch-cap.html#cb156-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 用于 AoD 发送的天线切换模板</span></span>
+<span id="cb156-8"><a href="ch-cap.html#cb156-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>switching_pattern<span class="op">);</span></span></code></pre></div></li>
 <li><p>锁频<a href="#fn60" class="footnote-ref" id="fnref60"><sup>60</sup></a>；</p>
-<div class="sourceCode" id="cb155"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb155-1"><a href="ch-cap.html#cb155-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 锁频</span></span>
-<span id="cb155-2"><a href="ch-cap.html#cb155-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_lock_frequency<span class="op">(</span></span>
-<span id="cb155-3"><a href="ch-cap.html#cb155-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> freq_mhz<span class="op">);</span>    <span class="co">// 频点（单位：MHz）</span></span>
-<span id="cb155-4"><a href="ch-cap.html#cb155-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb155-5"><a href="ch-cap.html#cb155-5" aria-hidden="true" tabindex="-1"></a><span class="co">// 解锁</span></span>
-<span id="cb155-6"><a href="ch-cap.html#cb155-6" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_unlock_frequency<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb157"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb157-1"><a href="ch-cap.html#cb157-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 锁频</span></span>
+<span id="cb157-2"><a href="ch-cap.html#cb157-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_lock_frequency<span class="op">(</span></span>
+<span id="cb157-3"><a href="ch-cap.html#cb157-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> freq_mhz<span class="op">);</span>    <span class="co">// 频点（单位：MHz）</span></span>
+<span id="cb157-4"><a href="ch-cap.html#cb157-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb157-5"><a href="ch-cap.html#cb157-5" aria-hidden="true" tabindex="-1"></a><span class="co">// 解锁</span></span>
+<span id="cb157-6"><a href="ch-cap.html#cb157-6" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_unlock_frequency<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div></li>
 <li><p>Raw Packet；</p>
 <p>详见 Controller API Reference。</p></li>
 </ol>
@@ -511,16 +511,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ol style="list-style-type: decimal">
 <li><p>允许传统广播数据长度超过 <span class="math inline">\(31\)</span> 字节，最大 <span class="math inline">\(249\)</span> 字节；</p></li>
 <li><p>自定义数据白化初值；</p>
-<div class="sourceCode" id="cb156"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb156-1"><a href="ch-cap.html#cb156-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_override_whitening_init_value<span class="op">(</span></span>
-<span id="cb156-2"><a href="ch-cap.html#cb156-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> override<span class="op">,</span> <span class="co">// 是否启用</span></span>
-<span id="cb156-3"><a href="ch-cap.html#cb156-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> value<span class="op">);</span>   <span class="co">// 自定义的初值</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb158"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb158-1"><a href="ch-cap.html#cb158-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_override_whitening_init_value<span class="op">(</span></span>
+<span id="cb158-2"><a href="ch-cap.html#cb158-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> override<span class="op">,</span> <span class="co">// 是否启用</span></span>
+<span id="cb158-3"><a href="ch-cap.html#cb158-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> value<span class="op">);</span>   <span class="co">// 自定义的初值</span></span></code></pre></div></li>
 <li><p>自定义广播数据包 PDU 类型；</p>
-<div class="sourceCode" id="cb157"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb157-1"><a href="ch-cap.html#cb157-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_allow_nonstandard_adv_type<span class="op">(</span></span>
-<span id="cb157-2"><a href="ch-cap.html#cb157-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> allowed<span class="op">,</span>  <span class="co">// 是否允许</span></span>
-<span id="cb157-3"><a href="ch-cap.html#cb157-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> type<span class="op">);</span>    <span class="co">// 自定义的PDU 类型</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb159"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb159-1"><a href="ch-cap.html#cb159-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_allow_nonstandard_adv_type<span class="op">(</span></span>
+<span id="cb159-2"><a href="ch-cap.html#cb159-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> allowed<span class="op">,</span>  <span class="co">// 是否允许</span></span>
+<span id="cb159-3"><a href="ch-cap.html#cb159-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> type<span class="op">);</span>    <span class="co">// 自定义的PDU 类型</span></span></code></pre></div></li>
 <li><p>自定义 CTE 比特。</p>
-<div class="sourceCode" id="cb158"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb158-1"><a href="ch-cap.html#cb158-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_set_cte_bit<span class="op">(</span></span>
-<span id="cb158-2"><a href="ch-cap.html#cb158-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> bit<span class="op">);</span>     <span class="co">// CTE 比特（默认为 1）</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb160"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb160-1"><a href="ch-cap.html#cb160-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_set_cte_bit<span class="op">(</span></span>
+<span id="cb160-2"><a href="ch-cap.html#cb160-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> bit<span class="op">);</span>     <span class="co">// CTE 比特（默认为 1）</span></span></code></pre></div></li>
 </ol>
 
 </div>

@@ -371,43 +371,43 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 建立连接前要先停止扫描，反之亦然。</p>
 <p>在建立连接之前，需要先通过 <code>gap_set_random_device_address</code> 为设备配置地址，这个地址用于扫描、发起连接等场景。
 通过 <code>gap_ext_create_connection</code> 建立连接。所连接的目标可以是一个特定的地址，也可以是白名单中的任意一个地址<a href="#fn24" class="footnote-ref" id="fnref24"><sup>24</sup></a>。</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb32-1"><a href="ch-conn.html#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_ext_create_connection<span class="op">(</span></span>
-<span id="cb32-2"><a href="ch-conn.html#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 过滤策略：目标地址来自参数还是白名单？</span></span>
-<span id="cb32-3"><a href="ch-conn.html#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> initiating_filter_policy_t filter_policy<span class="op">,</span></span>
-<span id="cb32-4"><a href="ch-conn.html#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 本设备地址类型</span></span>
-<span id="cb32-5"><a href="ch-conn.html#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> bd_addr_type_t own_addr_type<span class="op">,</span></span>
-<span id="cb32-6"><a href="ch-conn.html#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 目标地址来自参数时，指定目标地址类型</span></span>
-<span id="cb32-7"><a href="ch-conn.html#cb32-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> bd_addr_type_t peer_addr_type<span class="op">,</span></span>
-<span id="cb32-8"><a href="ch-conn.html#cb32-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 目标地址来自参数时，指定目标地址</span></span>
-<span id="cb32-9"><a href="ch-conn.html#cb32-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>peer_addr<span class="op">,</span></span>
-<span id="cb32-10"><a href="ch-conn.html#cb32-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 主广播信道的配置个数</span></span>
-<span id="cb32-11"><a href="ch-conn.html#cb32-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> initiating_phy_num<span class="op">,</span></span>
-<span id="cb32-12"><a href="ch-conn.html#cb32-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 主广播信道的配置</span></span>
-<span id="cb32-13"><a href="ch-conn.html#cb32-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> initiating_phy_config_t <span class="op">*</span>phy_configs<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb34-1"><a href="ch-conn.html#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_ext_create_connection<span class="op">(</span></span>
+<span id="cb34-2"><a href="ch-conn.html#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 过滤策略：目标地址来自参数还是白名单？</span></span>
+<span id="cb34-3"><a href="ch-conn.html#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> initiating_filter_policy_t filter_policy<span class="op">,</span></span>
+<span id="cb34-4"><a href="ch-conn.html#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 本设备地址类型</span></span>
+<span id="cb34-5"><a href="ch-conn.html#cb34-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> bd_addr_type_t own_addr_type<span class="op">,</span></span>
+<span id="cb34-6"><a href="ch-conn.html#cb34-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 目标地址来自参数时，指定目标地址类型</span></span>
+<span id="cb34-7"><a href="ch-conn.html#cb34-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> bd_addr_type_t peer_addr_type<span class="op">,</span></span>
+<span id="cb34-8"><a href="ch-conn.html#cb34-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 目标地址来自参数时，指定目标地址</span></span>
+<span id="cb34-9"><a href="ch-conn.html#cb34-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>peer_addr<span class="op">,</span></span>
+<span id="cb34-10"><a href="ch-conn.html#cb34-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 主广播信道的配置个数</span></span>
+<span id="cb34-11"><a href="ch-conn.html#cb34-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> initiating_phy_num<span class="op">,</span></span>
+<span id="cb34-12"><a href="ch-conn.html#cb34-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 主广播信道的配置</span></span>
+<span id="cb34-13"><a href="ch-conn.html#cb34-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> initiating_phy_config_t <span class="op">*</span>phy_configs<span class="op">);</span></span></code></pre></div>
 <p>另见 <a href="ch-adv.html#ch-adv-create-connection">从 PAwR 发起连接</a>。</p>
 <p>主广播信道的配置 <code>initiating_phy_config_t</code> 指定了每种主广播信道 PHY 的扫描参数（此部分与扫描参数 <code>scan_phy_config_t</code> 相同）及连接参数：</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb33-1"><a href="ch-conn.html#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
-<span id="cb33-2"><a href="ch-conn.html#cb33-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 同 scan_phy_config_t</span></span>
-<span id="cb33-3"><a href="ch-conn.html#cb33-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> scan_int<span class="op">;</span></span>
-<span id="cb33-4"><a href="ch-conn.html#cb33-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> scan_win<span class="op">;</span></span>
-<span id="cb33-5"><a href="ch-conn.html#cb33-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 最小连接间隔，单位 1.25ms</span></span>
-<span id="cb33-6"><a href="ch-conn.html#cb33-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> interval_min<span class="op">;</span></span>
-<span id="cb33-7"><a href="ch-conn.html#cb33-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 最大连接间隔，单位 1.25ms</span></span>
-<span id="cb33-8"><a href="ch-conn.html#cb33-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> interval_max<span class="op">;</span></span>
-<span id="cb33-9"><a href="ch-conn.html#cb33-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 从机延迟（即允许从机跳过多少个连接间隔）</span></span>
-<span id="cb33-10"><a href="ch-conn.html#cb33-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> latency<span class="op">;</span></span>
-<span id="cb33-11"><a href="ch-conn.html#cb33-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">// LE 链路超时时间，单位 10ms</span></span>
-<span id="cb33-12"><a href="ch-conn.html#cb33-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> supervision_timeout<span class="op">;</span></span>
-<span id="cb33-13"><a href="ch-conn.html#cb33-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 关于每个连接间隔内连接事件长度的提示信息，单位 0.625ms</span></span>
-<span id="cb33-14"><a href="ch-conn.html#cb33-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> min_ce_len<span class="op">;</span></span>
-<span id="cb33-15"><a href="ch-conn.html#cb33-15" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> max_ce_len<span class="op">;</span></span>
-<span id="cb33-16"><a href="ch-conn.html#cb33-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> conn_para_t<span class="op">;</span></span>
-<span id="cb33-17"><a href="ch-conn.html#cb33-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-18"><a href="ch-conn.html#cb33-18" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> initiating_phy_config</span>
-<span id="cb33-19"><a href="ch-conn.html#cb33-19" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb33-20"><a href="ch-conn.html#cb33-20" aria-hidden="true" tabindex="-1"></a>    phy_type_t phy<span class="op">;</span></span>
-<span id="cb33-21"><a href="ch-conn.html#cb33-21" aria-hidden="true" tabindex="-1"></a>    conn_para_t conn_param<span class="op">;</span></span>
-<span id="cb33-22"><a href="ch-conn.html#cb33-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> initiating_phy_config_t<span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb35-1"><a href="ch-conn.html#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb35-2"><a href="ch-conn.html#cb35-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 同 scan_phy_config_t</span></span>
+<span id="cb35-3"><a href="ch-conn.html#cb35-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> scan_int<span class="op">;</span></span>
+<span id="cb35-4"><a href="ch-conn.html#cb35-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> scan_win<span class="op">;</span></span>
+<span id="cb35-5"><a href="ch-conn.html#cb35-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 最小连接间隔，单位 1.25ms</span></span>
+<span id="cb35-6"><a href="ch-conn.html#cb35-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> interval_min<span class="op">;</span></span>
+<span id="cb35-7"><a href="ch-conn.html#cb35-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 最大连接间隔，单位 1.25ms</span></span>
+<span id="cb35-8"><a href="ch-conn.html#cb35-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> interval_max<span class="op">;</span></span>
+<span id="cb35-9"><a href="ch-conn.html#cb35-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 从机延迟（即允许从机跳过多少个连接间隔）</span></span>
+<span id="cb35-10"><a href="ch-conn.html#cb35-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> latency<span class="op">;</span></span>
+<span id="cb35-11"><a href="ch-conn.html#cb35-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">// LE 链路超时时间，单位 10ms</span></span>
+<span id="cb35-12"><a href="ch-conn.html#cb35-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> supervision_timeout<span class="op">;</span></span>
+<span id="cb35-13"><a href="ch-conn.html#cb35-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 关于每个连接间隔内连接事件长度的提示信息，单位 0.625ms</span></span>
+<span id="cb35-14"><a href="ch-conn.html#cb35-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> min_ce_len<span class="op">;</span></span>
+<span id="cb35-15"><a href="ch-conn.html#cb35-15" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> max_ce_len<span class="op">;</span></span>
+<span id="cb35-16"><a href="ch-conn.html#cb35-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> conn_para_t<span class="op">;</span></span>
+<span id="cb35-17"><a href="ch-conn.html#cb35-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-18"><a href="ch-conn.html#cb35-18" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> initiating_phy_config</span>
+<span id="cb35-19"><a href="ch-conn.html#cb35-19" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb35-20"><a href="ch-conn.html#cb35-20" aria-hidden="true" tabindex="-1"></a>    phy_type_t phy<span class="op">;</span></span>
+<span id="cb35-21"><a href="ch-conn.html#cb35-21" aria-hidden="true" tabindex="-1"></a>    conn_para_t conn_param<span class="op">;</span></span>
+<span id="cb35-22"><a href="ch-conn.html#cb35-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> initiating_phy_config_t<span class="op">;</span></span></code></pre></div>
 <p>关于每个连接间隔内连接事件长度的提示信息（<code>min_ce_len</code> 和 <code>max_ce_len</code>）不会被传递给从端。Controller 可以借助这个信息更好地调度多种任务。
 从端 App 可调用 LL API <code>ll_hint_on_ce_len</code><a href="#fn25" class="footnote-ref" id="fnref25"><sup>25</sup></a> 将提示信息告知 Controller。</p>
 <p>收到对应的 <code>HCI_EVENT_COMMAND_STATUS</code> 事件，并且 <code>status</code> 为 <span class="math inline">\(0\)</span>，标志着开始执行连接建立任务。
@@ -449,19 +449,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3><span class="header-section-number">7.2.5</span> 设置 PHY<a href="ch-conn.html#设置-phy" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>通过 <code>gap_set_phy</code> 可以设置偏好的 PHY。经过与对方的协商生效后，Controller 上报 <code>HCI_SUBEVENT_LE_PHY_UPDATE_COMPLETE</code> 事件。</p>
 <p><code>gap_set_phy</code> 参数详解：</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb34-1"><a href="ch-conn.html#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_set_phy<span class="op">(</span></span>
-<span id="cb34-2"><a href="ch-conn.html#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 连接句柄</span></span>
-<span id="cb34-3"><a href="ch-conn.html#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint16_t</span> con_handle<span class="op">,</span></span>
-<span id="cb34-4"><a href="ch-conn.html#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 置起比特 0 表示在发送方向无偏好</span></span>
-<span id="cb34-5"><a href="ch-conn.html#cb34-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 置起比特 1 表示在接收方向无偏好</span></span>
-<span id="cb34-6"><a href="ch-conn.html#cb34-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 其它比特保留</span></span>
-<span id="cb34-7"><a href="ch-conn.html#cb34-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> all_phys<span class="op">,</span></span>
-<span id="cb34-8"><a href="ch-conn.html#cb34-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 发送方向上的 PHY 偏好（比特 0 为 0 有效）</span></span>
-<span id="cb34-9"><a href="ch-conn.html#cb34-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> phy_bittypes_t tx_phys<span class="op">,</span></span>
-<span id="cb34-10"><a href="ch-conn.html#cb34-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 接收方向上的 PHY 偏好（比特 1 为 0 有效）</span></span>
-<span id="cb34-11"><a href="ch-conn.html#cb34-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> phy_bittypes_t rx_phys<span class="op">,</span></span>
-<span id="cb34-12"><a href="ch-conn.html#cb34-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">// PHY 的其它选项</span></span>
-<span id="cb34-13"><a href="ch-conn.html#cb34-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> phy_option_t phy_opt<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb36-1"><a href="ch-conn.html#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_set_phy<span class="op">(</span></span>
+<span id="cb36-2"><a href="ch-conn.html#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 连接句柄</span></span>
+<span id="cb36-3"><a href="ch-conn.html#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint16_t</span> con_handle<span class="op">,</span></span>
+<span id="cb36-4"><a href="ch-conn.html#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 置起比特 0 表示在发送方向无偏好</span></span>
+<span id="cb36-5"><a href="ch-conn.html#cb36-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 置起比特 1 表示在接收方向无偏好</span></span>
+<span id="cb36-6"><a href="ch-conn.html#cb36-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 其它比特保留</span></span>
+<span id="cb36-7"><a href="ch-conn.html#cb36-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> all_phys<span class="op">,</span></span>
+<span id="cb36-8"><a href="ch-conn.html#cb36-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 发送方向上的 PHY 偏好（比特 0 为 0 有效）</span></span>
+<span id="cb36-9"><a href="ch-conn.html#cb36-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> phy_bittypes_t tx_phys<span class="op">,</span></span>
+<span id="cb36-10"><a href="ch-conn.html#cb36-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 接收方向上的 PHY 偏好（比特 1 为 0 有效）</span></span>
+<span id="cb36-11"><a href="ch-conn.html#cb36-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> phy_bittypes_t rx_phys<span class="op">,</span></span>
+<span id="cb36-12"><a href="ch-conn.html#cb36-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">// PHY 的其它选项</span></span>
+<span id="cb36-13"><a href="ch-conn.html#cb36-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> phy_option_t phy_opt<span class="op">);</span></span></code></pre></div>
 <p>PHY 偏好 <code>phy_bittypes_t</code> 是几个比特的组合：</p>
 <table>
 <caption><span id="tab:ch2-phy-bit-types">表 7.1: </span> PHY 比特组合</caption>
@@ -493,20 +493,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3><span class="header-section-number">7.2.6</span> 更新连接参数<a href="ch-conn.html#更新连接参数" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>连接中的主从角色都可以使用 <code>gap_update_connection_parameters</code><a href="#fn26" class="footnote-ref" id="fnref26"><sup>26</sup></a>：主角色使用这个函数可以更新连接参数；
 从角色使用这个函数则是请求主端更新连接参数：</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb35-1"><a href="ch-conn.html#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> gap_update_connection_parameters<span class="op">(</span></span>
-<span id="cb35-2"><a href="ch-conn.html#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 连接句柄</span></span>
-<span id="cb35-3"><a href="ch-conn.html#cb35-3" aria-hidden="true" tabindex="-1"></a>  hci_con_handle_t con_handle<span class="op">,</span></span>
-<span id="cb35-4"><a href="ch-conn.html#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 建议的最小连接间隔（单位 1.25ms）</span></span>
-<span id="cb35-5"><a href="ch-conn.html#cb35-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> conn_interval_min<span class="op">,</span></span>
-<span id="cb35-6"><a href="ch-conn.html#cb35-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 建议的最大连接间隔（单位 1.25ms）</span></span>
-<span id="cb35-7"><a href="ch-conn.html#cb35-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> conn_interval_max<span class="op">,</span></span>
-<span id="cb35-8"><a href="ch-conn.html#cb35-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 建议的从机延迟</span></span>
-<span id="cb35-9"><a href="ch-conn.html#cb35-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> conn_latency<span class="op">,</span></span>
-<span id="cb35-10"><a href="ch-conn.html#cb35-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 建议的超时时间（单位 10ms）</span></span>
-<span id="cb35-11"><a href="ch-conn.html#cb35-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> supervision_timeout<span class="op">,</span></span>
-<span id="cb35-12"><a href="ch-conn.html#cb35-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 关于每个连接间隔内连接事件长度的提示信息，单位 0.625ms</span></span>
-<span id="cb35-13"><a href="ch-conn.html#cb35-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> min_ce_len<span class="op">,</span></span>
-<span id="cb35-14"><a href="ch-conn.html#cb35-14" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> max_ce_len<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb37-1"><a href="ch-conn.html#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> gap_update_connection_parameters<span class="op">(</span></span>
+<span id="cb37-2"><a href="ch-conn.html#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 连接句柄</span></span>
+<span id="cb37-3"><a href="ch-conn.html#cb37-3" aria-hidden="true" tabindex="-1"></a>  hci_con_handle_t con_handle<span class="op">,</span></span>
+<span id="cb37-4"><a href="ch-conn.html#cb37-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 建议的最小连接间隔（单位 1.25ms）</span></span>
+<span id="cb37-5"><a href="ch-conn.html#cb37-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> conn_interval_min<span class="op">,</span></span>
+<span id="cb37-6"><a href="ch-conn.html#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 建议的最大连接间隔（单位 1.25ms）</span></span>
+<span id="cb37-7"><a href="ch-conn.html#cb37-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> conn_interval_max<span class="op">,</span></span>
+<span id="cb37-8"><a href="ch-conn.html#cb37-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 建议的从机延迟</span></span>
+<span id="cb37-9"><a href="ch-conn.html#cb37-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> conn_latency<span class="op">,</span></span>
+<span id="cb37-10"><a href="ch-conn.html#cb37-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 建议的超时时间（单位 10ms）</span></span>
+<span id="cb37-11"><a href="ch-conn.html#cb37-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> supervision_timeout<span class="op">,</span></span>
+<span id="cb37-12"><a href="ch-conn.html#cb37-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 关于每个连接间隔内连接事件长度的提示信息，单位 0.625ms</span></span>
+<span id="cb37-13"><a href="ch-conn.html#cb37-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> min_ce_len<span class="op">,</span></span>
+<span id="cb37-14"><a href="ch-conn.html#cb37-14" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> max_ce_len<span class="op">);</span></span></code></pre></div>
 <p>事件 <code>HCI_SUBEVENT_LE_CONNECTION_UPDATE_COMPLETE</code> 标志着参数更新完成。</p>
 </div>
 <div id="ch-conn-subrating" class="section level3 hasAnchor" number="7.2.7">
@@ -514,22 +514,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>减速模式的使用方法可参考 SDK <em>UART GATT Console</em>。</p>
 <p>减速（Subrating）模式为中心设备和外围设备定义了一种统一的节奏，在保证通信的持续性前提下跳过若干连接间隔，减少射频占用、降低功耗。
 调用 <code>gap_subrate_request</code><a href="#fn27" class="footnote-ref" id="fnref27"><sup>27</sup></a> 即可在主从两端协商启动减速模式。</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb36-1"><a href="ch-conn.html#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_subrate_request<span class="op">(</span></span>
-<span id="cb36-2"><a href="ch-conn.html#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 连接句柄</span></span>
-<span id="cb36-3"><a href="ch-conn.html#cb36-3" aria-hidden="true" tabindex="-1"></a>  hci_con_handle_t con_handle<span class="op">,</span></span>
-<span id="cb36-4"><a href="ch-conn.html#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 最小减速比</span></span>
-<span id="cb36-5"><a href="ch-conn.html#cb36-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> subrate_min<span class="op">,</span></span>
-<span id="cb36-6"><a href="ch-conn.html#cb36-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 最大减速比</span></span>
-<span id="cb36-7"><a href="ch-conn.html#cb36-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> subrate_max<span class="op">,</span></span>
-<span id="cb36-8"><a href="ch-conn.html#cb36-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 最大从延迟（单位：减速后连接间隔）</span></span>
-<span id="cb36-9"><a href="ch-conn.html#cb36-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> max_latency<span class="op">,</span></span>
-<span id="cb36-10"><a href="ch-conn.html#cb36-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 最小连续传输次数</span></span>
-<span id="cb36-11"><a href="ch-conn.html#cb36-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> continuation_number<span class="op">,</span></span>
-<span id="cb36-12"><a href="ch-conn.html#cb36-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 超时时间（单位 10ms）</span></span>
-<span id="cb36-13"><a href="ch-conn.html#cb36-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> supervision_timeout<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb38-1"><a href="ch-conn.html#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_subrate_request<span class="op">(</span></span>
+<span id="cb38-2"><a href="ch-conn.html#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 连接句柄</span></span>
+<span id="cb38-3"><a href="ch-conn.html#cb38-3" aria-hidden="true" tabindex="-1"></a>  hci_con_handle_t con_handle<span class="op">,</span></span>
+<span id="cb38-4"><a href="ch-conn.html#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 最小减速比</span></span>
+<span id="cb38-5"><a href="ch-conn.html#cb38-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> subrate_min<span class="op">,</span></span>
+<span id="cb38-6"><a href="ch-conn.html#cb38-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 最大减速比</span></span>
+<span id="cb38-7"><a href="ch-conn.html#cb38-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> subrate_max<span class="op">,</span></span>
+<span id="cb38-8"><a href="ch-conn.html#cb38-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 最大从延迟（单位：减速后连接间隔）</span></span>
+<span id="cb38-9"><a href="ch-conn.html#cb38-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> max_latency<span class="op">,</span></span>
+<span id="cb38-10"><a href="ch-conn.html#cb38-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 最小连续传输次数</span></span>
+<span id="cb38-11"><a href="ch-conn.html#cb38-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> continuation_number<span class="op">,</span></span>
+<span id="cb38-12"><a href="ch-conn.html#cb38-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 超时时间（单位 10ms）</span></span>
+<span id="cb38-13"><a href="ch-conn.html#cb38-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> supervision_timeout<span class="op">);</span></span></code></pre></div>
 <p>例如，将连接 0 的减速比设置为 8，在双方无数据传输时，每 8 个连接间隔对发 1 次空包维持连接：</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb37-1"><a href="ch-conn.html#cb37-1" aria-hidden="true" tabindex="-1"></a>gap_subrate_request<span class="op">(</span><span class="dv">0</span><span class="op">,</span> <span class="dv">8</span><span class="op">,</span> <span class="dv">8</span><span class="op">,</span></span>
-<span id="cb37-2"><a href="ch-conn.html#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="dv">0</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">2000</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb39-1"><a href="ch-conn.html#cb39-1" aria-hidden="true" tabindex="-1"></a>gap_subrate_request<span class="op">(</span><span class="dv">0</span><span class="op">,</span> <span class="dv">8</span><span class="op">,</span> <span class="dv">8</span><span class="op">,</span></span>
+<span id="cb39-2"><a href="ch-conn.html#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="dv">0</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">2000</span><span class="op">);</span></span></code></pre></div>
 <p>使用 BLE 空口抓包工具或者高端电流表可观察到这种减速行为，见图 <a href="ch-conn.html#fig:ch2-subrate-8-start">7.1</a>。</p>
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch2-subrate-8-start"></span>
 <img src="img/subrate_start.png" alt="减速比为 8 时的行为" width="85%" />
@@ -549,12 +549,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </p>
 </div>
 <p>通过 <code>gap_set_default_subrate</code> 设置 Controller 所接受的减速模式参数范围。</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb38-1"><a href="ch-conn.html#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_set_default_subrate<span class="op">(</span></span>
-<span id="cb38-2"><a href="ch-conn.html#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> subrate_min<span class="op">,</span></span>
-<span id="cb38-3"><a href="ch-conn.html#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> subrate_max<span class="op">,</span></span>
-<span id="cb38-4"><a href="ch-conn.html#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> max_latency<span class="op">,</span></span>
-<span id="cb38-5"><a href="ch-conn.html#cb38-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> continuation_number<span class="op">,</span></span>
-<span id="cb38-6"><a href="ch-conn.html#cb38-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> supervision_timeout<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb40-1"><a href="ch-conn.html#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_set_default_subrate<span class="op">(</span></span>
+<span id="cb40-2"><a href="ch-conn.html#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> subrate_min<span class="op">,</span></span>
+<span id="cb40-3"><a href="ch-conn.html#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> subrate_max<span class="op">,</span></span>
+<span id="cb40-4"><a href="ch-conn.html#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> max_latency<span class="op">,</span></span>
+<span id="cb40-5"><a href="ch-conn.html#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> continuation_number<span class="op">,</span></span>
+<span id="cb40-6"><a href="ch-conn.html#cb40-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> supervision_timeout<span class="op">);</span></span></code></pre></div>
 </div>
 <div id="ch-conn-pathloss" class="section level3 hasAnchor" number="7.2.8">
 <h3><span class="header-section-number">7.2.8</span> 路损检测与上报<a href="ch-conn.html#ch-conn-pathloss" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -568,20 +568,20 @@ Controller 监控损耗情况，当损耗分类发生改变时（图 <a href="ch
 </div>
 <ul>
 <li><p>配置路损分类参数：</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb39-1"><a href="ch-conn.html#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_set_path_loss_reporting_param<span class="op">(</span></span>
-<span id="cb39-2"><a href="ch-conn.html#cb39-2" aria-hidden="true" tabindex="-1"></a>  hci_con_handle_t con_handle<span class="op">,</span>  <span class="co">// 连接句柄</span></span>
-<span id="cb39-3"><a href="ch-conn.html#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> high_threshold<span class="op">,</span>       <span class="co">// 高路损门限</span></span>
-<span id="cb39-4"><a href="ch-conn.html#cb39-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> high_hysteresis<span class="op">,</span>      <span class="co">// 高路损迟滞</span></span>
-<span id="cb39-5"><a href="ch-conn.html#cb39-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> low_threshold<span class="op">,</span>        <span class="co">// 低路损门限</span></span>
-<span id="cb39-6"><a href="ch-conn.html#cb39-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> low_hysteresis<span class="op">,</span>       <span class="co">// 低路损迟滞</span></span>
-<span id="cb39-7"><a href="ch-conn.html#cb39-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> min_time_spent<span class="op">);</span>      <span class="co">// 最小停留时间（单位连接间隔）</span></span></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb41-1"><a href="ch-conn.html#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_set_path_loss_reporting_param<span class="op">(</span></span>
+<span id="cb41-2"><a href="ch-conn.html#cb41-2" aria-hidden="true" tabindex="-1"></a>  hci_con_handle_t con_handle<span class="op">,</span>  <span class="co">// 连接句柄</span></span>
+<span id="cb41-3"><a href="ch-conn.html#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> high_threshold<span class="op">,</span>       <span class="co">// 高路损门限</span></span>
+<span id="cb41-4"><a href="ch-conn.html#cb41-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> high_hysteresis<span class="op">,</span>      <span class="co">// 高路损迟滞</span></span>
+<span id="cb41-5"><a href="ch-conn.html#cb41-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> low_threshold<span class="op">,</span>        <span class="co">// 低路损门限</span></span>
+<span id="cb41-6"><a href="ch-conn.html#cb41-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> low_hysteresis<span class="op">,</span>       <span class="co">// 低路损迟滞</span></span>
+<span id="cb41-7"><a href="ch-conn.html#cb41-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> min_time_spent<span class="op">);</span>      <span class="co">// 最小停留时间（单位连接间隔）</span></span></code></pre></div>
 <p>图 <a href="ch-conn.html#fig:ch2-path-loss-notification">7.3</a> 中的 <em>upwards boundary</em> 为 (threshold + hysteresis)，
 <em>downwards boundary</em> 为 (threshold - hysteresis)。</p></li>
 <li><p>使能上报：</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb40-1"><a href="ch-conn.html#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_set_path_loss_reporting_enable<span class="op">(</span></span>
-<span id="cb40-2"><a href="ch-conn.html#cb40-2" aria-hidden="true" tabindex="-1"></a>  hci_con_handle_t con_handle<span class="op">,</span>  <span class="co">// 连接句柄</span></span>
-<span id="cb40-3"><a href="ch-conn.html#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> enable                <span class="co">// 使能</span></span>
-<span id="cb40-4"><a href="ch-conn.html#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb42"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb42-1"><a href="ch-conn.html#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_set_path_loss_reporting_enable<span class="op">(</span></span>
+<span id="cb42-2"><a href="ch-conn.html#cb42-2" aria-hidden="true" tabindex="-1"></a>  hci_con_handle_t con_handle<span class="op">,</span>  <span class="co">// 连接句柄</span></span>
+<span id="cb42-3"><a href="ch-conn.html#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> enable                <span class="co">// 使能</span></span>
+<span id="cb42-4"><a href="ch-conn.html#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div></li>
 </ul>
 </div>
 <div id="ch-conn-power-ctrl" class="section level3 hasAnchor" number="7.2.9">
@@ -590,40 +590,40 @@ Controller 监控损耗情况，当损耗分类发生改变时（图 <a href="ch
 <ul>
 <li><p>读取发射功率</p>
 <p>读取本端发射功率：</p>
-<div class="sourceCode" id="cb41"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb41-1"><a href="ch-conn.html#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_read_local_tx_power_level<span class="op">(</span></span>
-<span id="cb41-2"><a href="ch-conn.html#cb41-2" aria-hidden="true" tabindex="-1"></a>  hci_con_handle_t con_handle<span class="op">,</span> <span class="co">// 连接句柄</span></span>
-<span id="cb41-3"><a href="ch-conn.html#cb41-3" aria-hidden="true" tabindex="-1"></a>  unified_phy_type_t phy       <span class="co">// PHY</span></span>
-<span id="cb41-4"><a href="ch-conn.html#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
-<p>从对应的 <code>HCI_EVENT_COMMAND_COMPLETE</code> 事件的返回参数中取得发射功率值：</p>
-<div class="sourceCode" id="cb42"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb42-1"><a href="ch-conn.html#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> Status<span class="op">,</span>                 <span class="co">// 状态码</span></span>
-<span id="cb42-2"><a href="ch-conn.html#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> Connection_Handle<span class="op">,</span>      <span class="co">// 连接句柄</span></span>
-<span id="cb42-3"><a href="ch-conn.html#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> PHY<span class="op">,</span></span>
-<span id="cb42-4"><a href="ch-conn.html#cb42-4" aria-hidden="true" tabindex="-1"></a> <span class="dt">int8_t</span> Current_TX_Power_Level<span class="op">,</span> <span class="co">// 当前发射功率（dBm）</span></span>
-<span id="cb42-5"><a href="ch-conn.html#cb42-5" aria-hidden="true" tabindex="-1"></a> <span class="dt">int8_t</span> Max_TX_Power_Level      <span class="co">// 最大发射功率（dBm）</span></span></code></pre></div>
-<p>读取对端发射功率：</p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb43-1"><a href="ch-conn.html#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_read_remote_tx_power_level<span class="op">(</span></span>
+<div class="sourceCode" id="cb43"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb43-1"><a href="ch-conn.html#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_read_local_tx_power_level<span class="op">(</span></span>
 <span id="cb43-2"><a href="ch-conn.html#cb43-2" aria-hidden="true" tabindex="-1"></a>  hci_con_handle_t con_handle<span class="op">,</span> <span class="co">// 连接句柄</span></span>
 <span id="cb43-3"><a href="ch-conn.html#cb43-3" aria-hidden="true" tabindex="-1"></a>  unified_phy_type_t phy       <span class="co">// PHY</span></span>
 <span id="cb43-4"><a href="ch-conn.html#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
+<p>从对应的 <code>HCI_EVENT_COMMAND_COMPLETE</code> 事件的返回参数中取得发射功率值：</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb44-1"><a href="ch-conn.html#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> Status<span class="op">,</span>                 <span class="co">// 状态码</span></span>
+<span id="cb44-2"><a href="ch-conn.html#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> Connection_Handle<span class="op">,</span>      <span class="co">// 连接句柄</span></span>
+<span id="cb44-3"><a href="ch-conn.html#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> PHY<span class="op">,</span></span>
+<span id="cb44-4"><a href="ch-conn.html#cb44-4" aria-hidden="true" tabindex="-1"></a> <span class="dt">int8_t</span> Current_TX_Power_Level<span class="op">,</span> <span class="co">// 当前发射功率（dBm）</span></span>
+<span id="cb44-5"><a href="ch-conn.html#cb44-5" aria-hidden="true" tabindex="-1"></a> <span class="dt">int8_t</span> Max_TX_Power_Level      <span class="co">// 最大发射功率（dBm）</span></span></code></pre></div>
+<p>读取对端发射功率：</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb45-1"><a href="ch-conn.html#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_read_remote_tx_power_level<span class="op">(</span></span>
+<span id="cb45-2"><a href="ch-conn.html#cb45-2" aria-hidden="true" tabindex="-1"></a>  hci_con_handle_t con_handle<span class="op">,</span> <span class="co">// 连接句柄</span></span>
+<span id="cb45-3"><a href="ch-conn.html#cb45-3" aria-hidden="true" tabindex="-1"></a>  unified_phy_type_t phy       <span class="co">// PHY</span></span>
+<span id="cb45-4"><a href="ch-conn.html#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
 <p>从 <code>HCI_SUBEVENT_LE_TRANSMIT_POWER_REPORTING</code> 事件中取得发射功率值。</p></li>
 <li><p>设置发射功率</p>
 <p>设置本端发射功率：</p>
-<div class="sourceCode" id="cb44"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb44-1"><a href="ch-conn.html#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_set_conn_tx_power<span class="op">(</span></span>
-<span id="cb44-2"><a href="ch-conn.html#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> conn_handle<span class="op">,</span> <span class="co">// 连接句柄</span></span>
-<span id="cb44-3"><a href="ch-conn.html#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int16_t</span> tx_power      <span class="co">// 发射功率（dBm）</span></span>
-<span id="cb44-4"><a href="ch-conn.html#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb46-1"><a href="ch-conn.html#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_set_conn_tx_power<span class="op">(</span></span>
+<span id="cb46-2"><a href="ch-conn.html#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> conn_handle<span class="op">,</span> <span class="co">// 连接句柄</span></span>
+<span id="cb46-3"><a href="ch-conn.html#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int16_t</span> tx_power      <span class="co">// 发射功率（dBm）</span></span>
+<span id="cb46-4"><a href="ch-conn.html#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
 <p>调整对端发射功率：</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb45-1"><a href="ch-conn.html#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_adjust_conn_peer_tx_power<span class="op">(</span></span>
-<span id="cb45-2"><a href="ch-conn.html#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> conn_handle<span class="op">,</span> <span class="co">// 连接句柄</span></span>
-<span id="cb45-3"><a href="ch-conn.html#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int8_t</span> delta          <span class="co">// 调整量，正值为增大，负值为减小（dB）</span></span>
-<span id="cb45-4"><a href="ch-conn.html#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb47"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb47-1"><a href="ch-conn.html#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_adjust_conn_peer_tx_power<span class="op">(</span></span>
+<span id="cb47-2"><a href="ch-conn.html#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> conn_handle<span class="op">,</span> <span class="co">// 连接句柄</span></span>
+<span id="cb47-3"><a href="ch-conn.html#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int8_t</span> delta          <span class="co">// 调整量，正值为增大，负值为减小（dB）</span></span>
+<span id="cb47-4"><a href="ch-conn.html#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div></li>
 <li><p>发射功率自动上报</p>
-<div class="sourceCode" id="cb46"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb46-1"><a href="ch-conn.html#cb46-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-2"><a href="ch-conn.html#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_set_tx_power_reporting_enable<span class="op">(</span></span>
-<span id="cb46-3"><a href="ch-conn.html#cb46-3" aria-hidden="true" tabindex="-1"></a>  hci_con_handle_t con_handle<span class="op">,</span>  <span class="co">// 连接句柄</span></span>
-<span id="cb46-4"><a href="ch-conn.html#cb46-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> local_enable<span class="op">,</span>         <span class="co">// 使能本端上报</span></span>
-<span id="cb46-5"><a href="ch-conn.html#cb46-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> remote_enable         <span class="co">// 使能对端上报</span></span>
-<span id="cb46-6"><a href="ch-conn.html#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb48"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb48-1"><a href="ch-conn.html#cb48-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-2"><a href="ch-conn.html#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_set_tx_power_reporting_enable<span class="op">(</span></span>
+<span id="cb48-3"><a href="ch-conn.html#cb48-3" aria-hidden="true" tabindex="-1"></a>  hci_con_handle_t con_handle<span class="op">,</span>  <span class="co">// 连接句柄</span></span>
+<span id="cb48-4"><a href="ch-conn.html#cb48-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> local_enable<span class="op">,</span>         <span class="co">// 使能本端上报</span></span>
+<span id="cb48-5"><a href="ch-conn.html#cb48-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> remote_enable         <span class="co">// 使能对端上报</span></span>
+<span id="cb48-6"><a href="ch-conn.html#cb48-6" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div></li>
 </ul>
 
 </div>

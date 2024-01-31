@@ -56,9 +56,21 @@ function explain() {
     return false;
 }
 
+function switch_to_ch() {
+    window.location.href = window.location.href.replace('index.html', 'index_cn.html');
+    return false;
+}
+
+function switch_to_en() {
+    window.location.href = window.location.href.replace('index_cn.html', 'index.html');
+    return false;
+}
+
 async function appStart() {
 
     $('#btn_explain').click(explain);
+    $('#btn_ch_version').click(switch_to_ch);
+    $('#btn_en_version').click(switch_to_en);
 
     let main = $('#main_window');
 

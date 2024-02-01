@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>23 看门狗（WATCHDOG） | ING916XX 系列芯片外设开发者手册</title>
+  <title>14 PTE简介 | ING916XX 系列芯片外设开发者手册</title>
   <meta name="description" content="ING916XX 系列芯片开发者手册." />
   <meta name="generator" content="bookdown 0.32 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="23 看门狗（WATCHDOG） | ING916XX 系列芯片外设开发者手册" />
+  <meta property="og:title" content="14 PTE简介 | ING916XX 系列芯片外设开发者手册" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="ING916XX 系列芯片开发者手册." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="23 看门狗（WATCHDOG） | ING916XX 系列芯片外设开发者手册" />
+  <meta name="twitter:title" content="14 PTE简介 | ING916XX 系列芯片外设开发者手册" />
   
   <meta name="twitter:description" content="ING916XX 系列芯片开发者手册." />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="ch-usb.html"/>
-<link rel="next" href="ch-eflash.html"/>
+<link rel="prev" href="ch-pinctrl.html"/>
+<link rel="next" href="ch-pwm.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -535,123 +535,165 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="ch-watchdog" class="section level1 hasAnchor" number="23">
-<h1><span class="header-section-number">23</span> 看门狗（WATCHDOG）<a href="ch-watchdog.html#ch-watchdog" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div id="功能概述-12" class="section level2 hasAnchor" number="23.1">
-<h2><span class="header-section-number">23.1</span> 功能概述<a href="ch-watchdog.html#功能概述-12" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>看门狗的本质就是一个定时器，其功能主要是防止程序跑飞，同时也能防止程序在线运行时出现死循环，
-一旦发生错误就向芯片内部发出重启信号。</p>
-<p>特性：</p>
+<div id="ch-pte" class="section level1 hasAnchor" number="14">
+<h1><span class="header-section-number">14</span> PTE简介<a href="ch-pte.html#ch-pte" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>PTE全称Peripheral trigger engine，即外设触发引擎。</p>
+<p>其主要作用是使外围设备可以通过其他外围设备或事件独立于CPU进行自主交互。PTE允许外围设备之间可以精确触发。</p>
+<div id="功能描述-4" class="section level2 hasAnchor" number="14.1">
+<h2><span class="header-section-number">14.1</span> 功能描述<a href="ch-pte.html#功能描述-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="特点-4" class="section level3 hasAnchor" number="14.1.1">
+<h3><span class="header-section-number">14.1.1</span> 特点<a href="ch-pte.html#特点-4" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <ul>
-<li>支持AMBA 2.0 APB总线</li>
-<li>当看门狗超时时，提供中断和重启的组合</li>
-<li>为控制/重启寄存器提供写保护机制</li>
-<li>可编程定时器时钟源</li>
-<li>可配置的用于寄存器写保护和定时器重启的魔数</li>
-<li>看门狗定时器可外部暂停</li>
+<li><p>支持APB总线触发</p></li>
+<li><p>支持4通道PTE</p></li>
+<li><p>支持复用触发源或复用触发地址</p></li>
+<li><p>支持产生CPU中断</p></li>
 </ul>
-<p>ING916XX的看门狗定时器提供了一个两级机制，如下图所示（图 <a href="ch-watchdog.html#fig:Stages-of-the-WDT">23.1</a>）。：</p>
-<div class="figure" style="text-align: center"><span style="display:block;" id="fig:Stages-of-the-WDT"></span>
-<img src="img/WDT/Stages_of_the_WDT.png" alt="WDT阶段图" width="70%" />
+</div>
+<div id="pte原理图" class="section level3 hasAnchor" number="14.1.2">
+<h3><span class="header-section-number">14.1.2</span> PTE原理图<a href="ch-pte.html#pte原理图" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:PTE"></span>
+<img src="img/PTE/PTE_structure.png" alt="PTE原理图" width="100%" />
 <p class="caption">
-图 23.1: WDT阶段图
+图 14.1: PTE原理图
 </p>
 </div>
+</div>
+<div id="功能" class="section level3 hasAnchor" number="14.1.3">
+<h3><span class="header-section-number">14.1.3</span> 功能<a href="ch-pte.html#功能" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>PTE具有不同外设之间的可编程内部通道，可以从src外设触发dst外设。PTE可以不依赖CPU而通过硬件的方式触发任务，因此任务可以在同步DFF所占用的周期内启动。</p>
+<p>src外设通过pte_in_mask配置，dst外设通过pte_out_mask配置。在SOC中集成了4个PTE通道，每个通道可以通过通道使能信号启用或禁用。</p>
+<p>当DFF为高时PTE中断将挂起。在清除PTE中断之前，src外设中断必须被清除，否则另一个启动脉冲将发送到dst外设，这可能会产生未知的错误。</p>
+</div>
+</div>
+<div id="使用方法-4" class="section level2 hasAnchor" number="14.2">
+<h2><span class="header-section-number">14.2</span> 使用方法<a href="ch-pte.html#使用方法-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="方法概述-3" class="section level3 hasAnchor" number="14.2.1">
+<h3><span class="header-section-number">14.2.1</span> 方法概述<a href="ch-pte.html#方法概述-3" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>建议不使用PTE中断，在dst外设中断里清PTE中断（或关闭PTE通道）。</p>
+<p><strong>1.</strong> 配置触发外设和被触发外设以及相应中断（被触发外设中断一定要有）</p>
+<p><strong>2.</strong> 配置要使用的PTE通道寄存器以及中断（建议不使用PTE中断）</p>
+<p><strong>3.</strong> 使能触发外设，等待PTE中断（如定义）和被触发外设来中断</p>
+<p><strong>4.</strong> 在PTE中断中清PTE mask（如定义）</p>
+<p><strong>5.</strong> 在被触发外设中断中清PTE中断（如定义），如果只触发一次则直接关闭PTE通道</p>
+</div>
+<div id="注意点-3" class="section level3 hasAnchor" number="14.2.2">
+<h3><span class="header-section-number">14.2.2</span> 注意点<a href="ch-pte.html#注意点-3" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <ul>
-<li>1）第一阶段 <code>中断阶段</code>：若watchdog中断启用，则在中断计时结束时会产生中断信号wdt_int；</li>
-<li>2）第二阶段 <code>复位阶段</code>：若watchdog复位启用，并且在复位超时时间结束前watchdog未重启，则会产生复位信号wdt_rst使得系统复位。</li>
+<li><p>未被清空的 src 中断会循环通过 PTE 触发 dst 外设，使程序陷入死循环</p></li>
+<li><p>未被清空的 PTE 中断会循环触发 dst 外设，使程序陷入死循环</p></li>
+<li><p>使用PTE中断会占用CPU资源并增加触发过程操作复杂度、增加出错风险，中断处理程序完全可以在src和dst中断中完成，所以强烈建议不要使用PTE中断</p></li>
 </ul>
 </div>
-<div id="使用说明-13" class="section level2 hasAnchor" number="23.2">
-<h2><span class="header-section-number">23.2</span> 使用说明<a href="ch-watchdog.html#使用说明-13" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="配置看门狗" class="section level3 hasAnchor" number="23.2.1">
-<h3><span class="header-section-number">23.2.1</span> 配置看门狗<a href="ch-watchdog.html#配置看门狗" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>TMR_WatchDogEnable3</code> 配置并启用看门狗。</p>
-<div class="sourceCode" id="cb306"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb306-1"><a href="ch-watchdog.html#cb306-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> TMR_WatchDogEnable3<span class="op">(</span></span>
-<span id="cb306-2"><a href="ch-watchdog.html#cb306-2" aria-hidden="true" tabindex="-1"></a>  wdt_inttime_interval_t int_timeout<span class="op">,</span> <span class="op">,</span>  <span class="co">//中断阶段时间</span></span>
-<span id="cb306-3"><a href="ch-watchdog.html#cb306-3" aria-hidden="true" tabindex="-1"></a>  wdt_rsttime_interval_t rst_timeout<span class="op">,</span>  <span class="co">//复位阶段时间</span></span>
-<span id="cb306-4"><a href="ch-watchdog.html#cb306-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> enable_int          <span class="co">//中断使能(1)/禁用(0)</span></span>
-<span id="cb306-5"><a href="ch-watchdog.html#cb306-5" aria-hidden="true" tabindex="-1"></a>  <span class="op">);</span></span></code></pre></div>
-<p>其中中断阶段时间和复位阶段的时间设置分别支持16种和8种，分别如下述的枚举变量 <code>wdt_inttime_interval_t</code> 和 <code>wdt_rsttime_interval_t</code>所示。
-默认使用的PCLK=32.768MHz，所以对应 <code>int_timeout == WDT_INTTIME_INTERVAL_1S</code> 时，对应的中断阶段时间为1s，其余时间以及复位阶段的超时时间以此类推。</p>
-<div class="sourceCode" id="cb307"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb307-1"><a href="ch-watchdog.html#cb307-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb307-2"><a href="ch-watchdog.html#cb307-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb307-3"><a href="ch-watchdog.html#cb307-3" aria-hidden="true" tabindex="-1"></a>    WDT_INTTIME_INTERVAL_2MS          <span class="op">=</span> <span class="dv">0</span><span class="op">,</span>    <span class="co">//0.001953125s</span></span>
-<span id="cb307-4"><a href="ch-watchdog.html#cb307-4" aria-hidden="true" tabindex="-1"></a>    WDT_INTTIME_INTERVAL_8MS          <span class="op">=</span> <span class="dv">1</span><span class="op">,</span>    <span class="co">//0.0078125s</span></span>
-<span id="cb307-5"><a href="ch-watchdog.html#cb307-5" aria-hidden="true" tabindex="-1"></a>    WDT_INTTIME_INTERVAL_31MS         <span class="op">=</span> <span class="dv">2</span><span class="op">,</span>    <span class="co">//0.03125s</span></span>
-<span id="cb307-6"><a href="ch-watchdog.html#cb307-6" aria-hidden="true" tabindex="-1"></a>    WDT_INTTIME_INTERVAL_62MS         <span class="op">=</span> <span class="dv">3</span><span class="op">,</span>    <span class="co">//0.0625s</span></span>
-<span id="cb307-7"><a href="ch-watchdog.html#cb307-7" aria-hidden="true" tabindex="-1"></a>    WDT_INTTIME_INTERVAL_125MS        <span class="op">=</span> <span class="dv">4</span><span class="op">,</span></span>
-<span id="cb307-8"><a href="ch-watchdog.html#cb307-8" aria-hidden="true" tabindex="-1"></a>    WDT_INTTIME_INTERVAL_250MS        <span class="op">=</span> <span class="dv">5</span><span class="op">,</span></span>
-<span id="cb307-9"><a href="ch-watchdog.html#cb307-9" aria-hidden="true" tabindex="-1"></a>    WDT_INTTIME_INTERVAL_500MS        <span class="op">=</span> <span class="dv">6</span><span class="op">,</span></span>
-<span id="cb307-10"><a href="ch-watchdog.html#cb307-10" aria-hidden="true" tabindex="-1"></a>    WDT_INTTIME_INTERVAL_1S           <span class="op">=</span> <span class="dv">7</span><span class="op">,</span></span>
-<span id="cb307-11"><a href="ch-watchdog.html#cb307-11" aria-hidden="true" tabindex="-1"></a>    WDT_INTTIME_INTERVAL_4S           <span class="op">=</span> <span class="dv">8</span><span class="op">,</span></span>
-<span id="cb307-12"><a href="ch-watchdog.html#cb307-12" aria-hidden="true" tabindex="-1"></a>    WDT_INTTIME_INTERVAL_16S          <span class="op">=</span> <span class="dv">9</span><span class="op">,</span></span>
-<span id="cb307-13"><a href="ch-watchdog.html#cb307-13" aria-hidden="true" tabindex="-1"></a>    WDT_INTTIME_INTERVAL_1M_4S        <span class="op">=</span> <span class="dv">10</span><span class="op">,</span>   <span class="co">//64s</span></span>
-<span id="cb307-14"><a href="ch-watchdog.html#cb307-14" aria-hidden="true" tabindex="-1"></a>    WDT_INTTIME_INTERVAL_4M_16S       <span class="op">=</span> <span class="dv">11</span><span class="op">,</span>   <span class="co">//256s</span></span>
-<span id="cb307-15"><a href="ch-watchdog.html#cb307-15" aria-hidden="true" tabindex="-1"></a>    WDT_INTTIME_INTERVAL_17M_4S       <span class="op">=</span> <span class="dv">12</span><span class="op">,</span>   <span class="co">//1024s</span></span>
-<span id="cb307-16"><a href="ch-watchdog.html#cb307-16" aria-hidden="true" tabindex="-1"></a>    WDT_INTTIME_INTERVAL_1H_8M_16S    <span class="op">=</span> <span class="dv">13</span><span class="op">,</span>   <span class="co">//4096s</span></span>
-<span id="cb307-17"><a href="ch-watchdog.html#cb307-17" aria-hidden="true" tabindex="-1"></a>    WDT_INTTIME_INTERVAL_4H_33M_6S    <span class="op">=</span> <span class="dv">14</span><span class="op">,</span>   <span class="co">//16384s</span></span>
-<span id="cb307-18"><a href="ch-watchdog.html#cb307-18" aria-hidden="true" tabindex="-1"></a>    WDT_INTTIME_INTERVAL_18H_12M_16S  <span class="op">=</span> <span class="dv">15</span>    <span class="co">//65536s</span></span>
-<span id="cb307-19"><a href="ch-watchdog.html#cb307-19" aria-hidden="true" tabindex="-1"></a><span class="op">}</span>wdt_inttime_interval_t<span class="op">;</span></span>
-<span id="cb307-20"><a href="ch-watchdog.html#cb307-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb307-21"><a href="ch-watchdog.html#cb307-21" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
-<span id="cb307-22"><a href="ch-watchdog.html#cb307-22" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb307-23"><a href="ch-watchdog.html#cb307-23" aria-hidden="true" tabindex="-1"></a>    WDT_RSTTIME_INTERVAL_4MS          <span class="op">=</span> <span class="dv">0</span><span class="op">,</span>    <span class="co">//3.90625ms</span></span>
-<span id="cb307-24"><a href="ch-watchdog.html#cb307-24" aria-hidden="true" tabindex="-1"></a>    WDT_RSTTIME_INTERVAL_8MS          <span class="op">=</span> <span class="dv">1</span><span class="op">,</span>    <span class="co">//7.8125ms</span></span>
-<span id="cb307-25"><a href="ch-watchdog.html#cb307-25" aria-hidden="true" tabindex="-1"></a>    WDT_RSTTIME_INTERVAL_15MS         <span class="op">=</span> <span class="dv">2</span><span class="op">,</span>    <span class="co">//15.625ms</span></span>
-<span id="cb307-26"><a href="ch-watchdog.html#cb307-26" aria-hidden="true" tabindex="-1"></a>    WDT_RSTTIME_INTERVAL_31MS         <span class="op">=</span> <span class="dv">3</span><span class="op">,</span>    <span class="co">//31.25ms</span></span>
-<span id="cb307-27"><a href="ch-watchdog.html#cb307-27" aria-hidden="true" tabindex="-1"></a>    WDT_RSTTIME_INTERVAL_62MS         <span class="op">=</span> <span class="dv">4</span><span class="op">,</span>    <span class="co">//62.5ms</span></span>
-<span id="cb307-28"><a href="ch-watchdog.html#cb307-28" aria-hidden="true" tabindex="-1"></a>    WDT_RSTTIME_INTERVAL_125MS        <span class="op">=</span> <span class="dv">5</span><span class="op">,</span></span>
-<span id="cb307-29"><a href="ch-watchdog.html#cb307-29" aria-hidden="true" tabindex="-1"></a>    WDT_RSTTIME_INTERVAL_250MS        <span class="op">=</span> <span class="dv">6</span><span class="op">,</span></span>
-<span id="cb307-30"><a href="ch-watchdog.html#cb307-30" aria-hidden="true" tabindex="-1"></a>    WDT_RSTTIME_INTERVAL_500MS        <span class="op">=</span> <span class="dv">7</span> </span>
-<span id="cb307-31"><a href="ch-watchdog.html#cb307-31" aria-hidden="true" tabindex="-1"></a><span class="op">}</span>wdt_rsttime_interval_t<span class="op">;</span></span></code></pre></div>
-<p>为了方便使用，通过宏定义将ING916xx和ING918xx接口统一为 <code>TMR_WatchDogEnable</code> 。</p>
-<div class="sourceCode" id="cb308"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb308-1"><a href="ch-watchdog.html#cb308-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define TMR_WatchDogEnable(timeout) do { uint64_t TMR_CLK_FREQ = OSC_CLK_FREQ;uint32_t cnt = (uint64_t)(timeout) / OSC_CLK_FREQ;uint8_t mode = 7;\</span></span>
-<span id="cb308-2"><a href="ch-watchdog.html#cb308-2" aria-hidden="true" tabindex="-1"></a><span class="pp">                                            for (uint8_t i = 1; i &lt; 10; i++,mode++) { if (cnt &lt; (1UL &lt;&lt; (i * 2))) {break;}} \</span></span>
-<span id="cb308-3"><a href="ch-watchdog.html#cb308-3" aria-hidden="true" tabindex="-1"></a><span class="pp">                                            TMR_WatchDogEnable3(mode, WDT_RSTTIME_INTERVAL_500MS, 1); } while (0)   \</span></span></code></pre></div>
-<p>代码中会将设置的时间映射到结构体 <code>wdt_inttime_interval_t</code> 中 ，但是由于 <em>ING916XX</em> 的WDT能设置的时间是离散的，所以为了方便使用，
-我们只选取从 <code>WDT_INTTIME_INTERVAL_1S</code> 到 <code>WDT_INTTIME_INTERVAL_18H_12M_16S</code> 。</p>
-<div class="rmdcaution">
-<p>
-由于 <em>ING916XX</em> 和 <em>ING918XX</em>
-的看门狗在机制上有差别，所以使用 <em>ING916XX</em> 时推荐使用
-<code>TMR_WatchDogEnable3</code> 。 若要在 <em>ING916XX</em> 中使用
-<code>TMR_WatchDogEnable</code> 需注意：<em>ING918XX</em>
-<strong>的看门狗没有中断机制，实际的复位超时时间为设定时间的两倍；</strong>
-<strong>而在</strong> <em>ING916XX</em>
-<strong>中的中断阶段和复位阶段的超时时间都是可以设置的，复位时间我们默认0.5s。所以若用</strong>
-<code>TMR_WatchDogEnable(OSC_CLK_FREQ * 1)</code>
-<strong>设置的时间在918和916上分别是2s和1.5s。</strong>
-</p>
 </div>
+<div id="编程指南-5" class="section level2 hasAnchor" number="14.3">
+<h2><span class="header-section-number">14.3</span> 编程指南<a href="ch-pte.html#编程指南-5" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="srcdst外设" class="section level3 hasAnchor" number="14.3.1">
+<h3><span class="header-section-number">14.3.1</span> src&amp;dst外设<a href="ch-pte.html#srcdst外设" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>当前PTE支持的src外设定义在SYSCTRL_PTE_SRC_INT中：</p>
+<div class="sourceCode" id="cb129"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb129-1"><a href="ch-pte.html#cb129-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
+<span id="cb129-2"><a href="ch-pte.html#cb129-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb129-3"><a href="ch-pte.html#cb129-3" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_I2C0_INT       <span class="op">=</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb129-4"><a href="ch-pte.html#cb129-4" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_I2C1_INT       <span class="op">=</span> <span class="dv">1</span><span class="op">,</span></span>
+<span id="cb129-5"><a href="ch-pte.html#cb129-5" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_SARADC_INT     <span class="op">=</span> <span class="dv">2</span><span class="op">,</span></span>
+<span id="cb129-6"><a href="ch-pte.html#cb129-6" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_I2S_INT        <span class="op">=</span> <span class="dv">3</span><span class="op">,</span></span>
+<span id="cb129-7"><a href="ch-pte.html#cb129-7" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_DMA_INT        <span class="op">=</span> <span class="dv">4</span><span class="op">,</span></span>
+<span id="cb129-8"><a href="ch-pte.html#cb129-8" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_IR_INT         <span class="op">=</span> <span class="dv">5</span><span class="op">,</span></span>
+<span id="cb129-9"><a href="ch-pte.html#cb129-9" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_KEYSCANNER_INT <span class="op">=</span> <span class="dv">6</span><span class="op">,</span></span>
+<span id="cb129-10"><a href="ch-pte.html#cb129-10" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_PWMC0_INT      <span class="op">=</span> <span class="dv">7</span><span class="op">,</span></span>
+<span id="cb129-11"><a href="ch-pte.html#cb129-11" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_PWMC1_INT      <span class="op">=</span> <span class="dv">8</span><span class="op">,</span></span>
+<span id="cb129-12"><a href="ch-pte.html#cb129-12" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_PWMC2_INT      <span class="op">=</span> <span class="dv">9</span><span class="op">,</span></span>
+<span id="cb129-13"><a href="ch-pte.html#cb129-13" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_TIMER0_INT     <span class="op">=</span> <span class="dv">10</span><span class="op">,</span></span>
+<span id="cb129-14"><a href="ch-pte.html#cb129-14" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_TIMER1_INT     <span class="op">=</span> <span class="dv">11</span><span class="op">,</span></span>
+<span id="cb129-15"><a href="ch-pte.html#cb129-15" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_TIMER2_INT     <span class="op">=</span> <span class="dv">12</span><span class="op">,</span></span>
+<span id="cb129-16"><a href="ch-pte.html#cb129-16" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_GPIO0_INT      <span class="op">=</span> <span class="dv">13</span><span class="op">,</span></span>
+<span id="cb129-17"><a href="ch-pte.html#cb129-17" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_GPIO1_INT      <span class="op">=</span> <span class="dv">14</span><span class="op">,</span></span>
+<span id="cb129-18"><a href="ch-pte.html#cb129-18" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_UART0_INT      <span class="op">=</span> <span class="dv">15</span><span class="op">,</span></span>
+<span id="cb129-19"><a href="ch-pte.html#cb129-19" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_UART1_INT      <span class="op">=</span> <span class="dv">16</span><span class="op">,</span></span>
+<span id="cb129-20"><a href="ch-pte.html#cb129-20" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_SPI0_INT       <span class="op">=</span> <span class="dv">17</span><span class="op">,</span></span>
+<span id="cb129-21"><a href="ch-pte.html#cb129-21" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_SPI1_INT       <span class="op">=</span> <span class="dv">18</span><span class="op">,</span></span>
+<span id="cb129-22"><a href="ch-pte.html#cb129-22" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_SPIFLASH       <span class="op">=</span> <span class="dv">19</span><span class="op">,</span></span>
+<span id="cb129-23"><a href="ch-pte.html#cb129-23" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_RCT_CNT        <span class="op">=</span> <span class="dv">20</span><span class="op">,</span></span>
+<span id="cb129-24"><a href="ch-pte.html#cb129-24" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_IR_WAKEUP      <span class="op">=</span> <span class="dv">21</span><span class="op">,</span></span>
+<span id="cb129-25"><a href="ch-pte.html#cb129-25" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_USB_INT        <span class="op">=</span> <span class="dv">22</span><span class="op">,</span></span>
+<span id="cb129-26"><a href="ch-pte.html#cb129-26" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_QDEC_INT       <span class="op">=</span> <span class="dv">23</span><span class="op">,</span></span>
+<span id="cb129-27"><a href="ch-pte.html#cb129-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb129-28"><a href="ch-pte.html#cb129-28" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_SRC_INT_MAX    <span class="op">=</span> <span class="dv">24</span><span class="op">,</span></span>
+<span id="cb129-29"><a href="ch-pte.html#cb129-29" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> SYSCTRL_PTE_SRC_INT<span class="op">;</span></span></code></pre></div>
+<p>dst外设定义在SYSCTRL_PTE_DST_EN中：</p>
+<div class="sourceCode" id="cb130"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb130-1"><a href="ch-pte.html#cb130-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
+<span id="cb130-2"><a href="ch-pte.html#cb130-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb130-3"><a href="ch-pte.html#cb130-3" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_I2C0_EN        <span class="op">=</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb130-4"><a href="ch-pte.html#cb130-4" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_I2C1_EN        <span class="op">=</span> <span class="dv">1</span><span class="op">,</span></span>
+<span id="cb130-5"><a href="ch-pte.html#cb130-5" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_SARADC_EN      <span class="op">=</span> <span class="dv">2</span><span class="op">,</span></span>
+<span id="cb130-6"><a href="ch-pte.html#cb130-6" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_I2S_TX_EN      <span class="op">=</span> <span class="dv">3</span><span class="op">,</span></span>
+<span id="cb130-7"><a href="ch-pte.html#cb130-7" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_I2S_RX_EN      <span class="op">=</span> <span class="dv">4</span><span class="op">,</span></span>
+<span id="cb130-8"><a href="ch-pte.html#cb130-8" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_IR_EN          <span class="op">=</span> <span class="dv">5</span><span class="op">,</span></span>
+<span id="cb130-9"><a href="ch-pte.html#cb130-9" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_KEYSCANNER_EN  <span class="op">=</span> <span class="dv">6</span><span class="op">,</span></span>
+<span id="cb130-10"><a href="ch-pte.html#cb130-10" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_PWMC0_EN       <span class="op">=</span> <span class="dv">7</span><span class="op">,</span></span>
+<span id="cb130-11"><a href="ch-pte.html#cb130-11" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_PWMC1_EN       <span class="op">=</span> <span class="dv">8</span><span class="op">,</span></span>
+<span id="cb130-12"><a href="ch-pte.html#cb130-12" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_PWMC2_EN       <span class="op">=</span> <span class="dv">9</span><span class="op">,</span></span>
+<span id="cb130-13"><a href="ch-pte.html#cb130-13" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_TIMER0_CH0_EN  <span class="op">=</span> <span class="dv">10</span><span class="op">,</span></span>
+<span id="cb130-14"><a href="ch-pte.html#cb130-14" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_TIMER0_CH1_EN  <span class="op">=</span> <span class="dv">11</span><span class="op">,</span></span>
+<span id="cb130-15"><a href="ch-pte.html#cb130-15" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_TIMER1_CH0_EN  <span class="op">=</span> <span class="dv">12</span><span class="op">,</span></span>
+<span id="cb130-16"><a href="ch-pte.html#cb130-16" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_TIMER1_CH1_EN  <span class="op">=</span> <span class="dv">13</span><span class="op">,</span></span>
+<span id="cb130-17"><a href="ch-pte.html#cb130-17" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_TIMER2_CH0_EN  <span class="op">=</span> <span class="dv">14</span><span class="op">,</span></span>
+<span id="cb130-18"><a href="ch-pte.html#cb130-18" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_TIMER2_CH1_EN  <span class="op">=</span> <span class="dv">15</span><span class="op">,</span></span>
+<span id="cb130-19"><a href="ch-pte.html#cb130-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb130-20"><a href="ch-pte.html#cb130-20" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_PTE_DST_EN_MAX     <span class="op">=</span> <span class="dv">16</span><span class="op">,</span></span>
+<span id="cb130-21"><a href="ch-pte.html#cb130-21" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> SYSCTRL_PTE_DST_EN<span class="op">;</span></span></code></pre></div>
 </div>
-<div id="重启看门狗" class="section level3 hasAnchor" number="23.2.2">
-<h3><span class="header-section-number">23.2.2</span> 重启看门狗<a href="ch-watchdog.html#重启看门狗" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>TMR_WatchDogRestart</code> 重启看门狗，也就是我们俗称的 <code>喂狗</code>。</p>
-<div class="sourceCode" id="cb309"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb309-1"><a href="ch-watchdog.html#cb309-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> TMR_WatchDogRestart<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<div id="驱动接口-4" class="section level3 hasAnchor" number="14.3.2">
+<h3><span class="header-section-number">14.3.2</span> 驱动接口<a href="ch-pte.html#驱动接口-4" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>PTE_ConnectPeripheral：PTE外设连接接口</p></li>
+<li><p>PTE_EnableChannel：PTE通道使能接口</p></li>
+<li><p>PTE_ChannelClose：PTE通道关闭接口</p></li>
+<li><p>PTE_IrqProcess：PTE标准中断程序接口</p></li>
+<li><p>PTE_OutPeripheralContinueProcess：dst外设中断标准PTE中继触发接口</p></li>
+<li><p>PTE_OutPeripheralEndProcess：dst外设中断标准PTE结束接口</p></li>
+</ul>
 </div>
-<div id="清除中断-1" class="section level3 hasAnchor" number="23.2.3">
-<h3><span class="header-section-number">23.2.3</span> 清除中断<a href="ch-watchdog.html#清除中断-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>TMR_WatchDogClearInt</code> 清除看门狗的中断。</p>
-<div class="sourceCode" id="cb310"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb310-1"><a href="ch-watchdog.html#cb310-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> TMR_WatchDogClearInt<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
-</div>
-<div id="禁用看门狗" class="section level3 hasAnchor" number="23.2.4">
-<h3><span class="header-section-number">23.2.4</span> 禁用看门狗<a href="ch-watchdog.html#禁用看门狗" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>在使用<code>TMR_WatchDogEnable</code> 启用或 <code>TMR_WatchDogRestart</code> 重启看门狗之后，
-需要使用 <code>TMR_WatchDogDisable</code> 才能将其禁用。</p>
-<div class="sourceCode" id="cb311"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb311-1"><a href="ch-watchdog.html#cb311-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> TMR_WatchDogDisable<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
-</div>
-<div id="暂停看门狗" class="section level3 hasAnchor" number="23.2.5">
-<h3><span class="header-section-number">23.2.5</span> 暂停看门狗<a href="ch-watchdog.html#暂停看门狗" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>TMR_WatchDogPauseEnable()</code> 可以暂停看门狗。</p>
-<div class="sourceCode" id="cb312"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb312-1"><a href="ch-watchdog.html#cb312-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> TMR_WatchDogPauseEnable<span class="op">(</span></span>
-<span id="cb312-2"><a href="ch-watchdog.html#cb312-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> enable</span>
-<span id="cb312-3"><a href="ch-watchdog.html#cb312-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">);</span></span></code></pre></div>
-</div>
-<div id="处理中断状态-4" class="section level3 hasAnchor" number="23.2.6">
-<h3><span class="header-section-number">23.2.6</span> 处理中断状态<a href="ch-watchdog.html#处理中断状态-4" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>当调用 <code>TMR_WatchDogEnable</code> 或者在 <code>TMR_WatchDogEnable3</code>的参数中使能中断，就会在WDT上产生中断，
-此时需要调用 <code>TMR_WatchDogClearInt</code> 清除看门狗中断之后才能再次触发中断。</p>
+<div id="代码示例-4" class="section level3 hasAnchor" number="14.3.3">
+<h3><span class="header-section-number">14.3.3</span> 代码示例<a href="ch-pte.html#代码示例-4" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>下面以Timer0通过PTE通道0触发Timer1为例展示PTE的具体使用方法。</p>
+<p>src外设和dst外设配置方法不在本文档介绍范围内，我们默认Timer0和Timer1已经配置好并注册好中断。</p>
+<div class="sourceCode" id="cb131"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb131-1"><a href="ch-pte.html#cb131-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define PTE_CH0    SYSCTRL_PTE_CHANNEL_0</span></span>
+<span id="cb131-2"><a href="ch-pte.html#cb131-2" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> Timer0Isr<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
+<span id="cb131-3"><a href="ch-pte.html#cb131-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb131-4"><a href="ch-pte.html#cb131-4" aria-hidden="true" tabindex="-1"></a>    TMR_IntClr<span class="op">(</span>APB_TMR0<span class="op">);</span></span>
+<span id="cb131-5"><a href="ch-pte.html#cb131-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb131-6"><a href="ch-pte.html#cb131-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb131-7"><a href="ch-pte.html#cb131-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb131-8"><a href="ch-pte.html#cb131-8" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> Timer1Isr<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
+<span id="cb131-9"><a href="ch-pte.html#cb131-9" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb131-10"><a href="ch-pte.html#cb131-10" aria-hidden="true" tabindex="-1"></a>    TMR_IntClr<span class="op">(</span>APB_TMR1<span class="op">);</span></span>
+<span id="cb131-11"><a href="ch-pte.html#cb131-11" aria-hidden="true" tabindex="-1"></a>    PTE_OutPeripheralContinueProcess<span class="op">(</span>PTE_CH0<span class="op">);</span></span>
+<span id="cb131-12"><a href="ch-pte.html#cb131-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb131-13"><a href="ch-pte.html#cb131-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb131-14"><a href="ch-pte.html#cb131-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb131-15"><a href="ch-pte.html#cb131-15" aria-hidden="true" tabindex="-1"></a><span class="co">// 仅供参考，不建议注册PTE中断</span></span>
+<span id="cb131-16"><a href="ch-pte.html#cb131-16" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> PTE0Isr<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
+<span id="cb131-17"><a href="ch-pte.html#cb131-17" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb131-18"><a href="ch-pte.html#cb131-18" aria-hidden="true" tabindex="-1"></a>    PTE_IrqProcess<span class="op">(</span>PTE_CH0<span class="op">);</span></span>
+<span id="cb131-19"><a href="ch-pte.html#cb131-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb131-20"><a href="ch-pte.html#cb131-20" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb131-21"><a href="ch-pte.html#cb131-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb131-22"><a href="ch-pte.html#cb131-22" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> PTE_Test<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb131-23"><a href="ch-pte.html#cb131-23" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb131-24"><a href="ch-pte.html#cb131-24" aria-hidden="true" tabindex="-1"></a>    PTE_ConnectPeripheral<span class="op">(</span>PTE_CH0<span class="op">,</span></span>
+<span id="cb131-25"><a href="ch-pte.html#cb131-25" aria-hidden="true" tabindex="-1"></a>                          SYSCTRL_PTE_TIMER0_INT<span class="op">,</span></span>
+<span id="cb131-26"><a href="ch-pte.html#cb131-26" aria-hidden="true" tabindex="-1"></a>                          SYSCTRL_PTE_TIMER1_CH0_EN<span class="op">);</span></span>
+<span id="cb131-27"><a href="ch-pte.html#cb131-27" aria-hidden="true" tabindex="-1"></a>    TMR_Enable<span class="op">(</span>APB_TMR0<span class="op">);</span></span>
+<span id="cb131-28"><a href="ch-pte.html#cb131-28" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>上面示例会保留PTE通道0并等待下一次触发。如果想要触发之后直接关闭通道代码如下：</p>
+<div class="sourceCode" id="cb132"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb132-1"><a href="ch-pte.html#cb132-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> Timer1Isr<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
+<span id="cb132-2"><a href="ch-pte.html#cb132-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb132-3"><a href="ch-pte.html#cb132-3" aria-hidden="true" tabindex="-1"></a>    TMR_IntClr<span class="op">(</span>APB_TMR1<span class="op">);</span></span>
+<span id="cb132-4"><a href="ch-pte.html#cb132-4" aria-hidden="true" tabindex="-1"></a>    PTE_OutPeripheralEndProcess<span class="op">(</span>PTE_CH0<span class="op">);</span></span>
+<span id="cb132-5"><a href="ch-pte.html#cb132-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb132-6"><a href="ch-pte.html#cb132-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>关闭通道会断开Timer0和Timer1的连接，再次触发需要重新建立连接。</p>
 
 </div>
 </div>
@@ -661,8 +703,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="ch-usb.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="ch-eflash.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="ch-pinctrl.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ch-pwm.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

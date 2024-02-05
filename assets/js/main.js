@@ -9,7 +9,7 @@ let videoEmbeds = [
 reframe(videoEmbeds.join(','));
 
 // Remove nav related classes on page load
-document.body.classList.remove('menu--opened', 'toc--opened'); 
+document.body.classList.remove('menu--opened', 'toc--opened');
 
 // Menu on small screens
 let menuToggle = document.querySelectorAll('.menu-toggle');
@@ -110,6 +110,8 @@ if (pageNav) {
 
 function getElementsByTagNames(root, tagNames) {
   let elements = [];
+  if (root == null)
+    return elements;
   for (let i = 0; i < root.children.length; i++) {
     let element = root.children[i];
     let tagName = element.nodeName.toLowerCase();

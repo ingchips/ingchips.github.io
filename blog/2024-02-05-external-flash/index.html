@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>为 ING916 添加外部 Flash 扩充容量 - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="ING916 可以外接 Flash，以存储映射方式只读访问，支持 XIP。"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+
+      <div id="box">
+        <input id="in_search" type="search" name="search" placeholder="搜索：输入并回车">
+      </div>
+
+      <script>
+        let search_input = document.getElementById('in_search');
+        if (search_input) {
+          search_input.addEventListener("keypress", function(event) {
+          if (event.key === "Enter") {
+            window.open('https://www.bing.com/search?q=' + encodeURIComponent(search_input.value) + '%20site%3A' + window.location.hostname);
+            event.preventDefault();
+            }
+          });
+        }
+      </script>
+
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item has-children">
+
+              
+<a class="" href="/docs/sdk/apps/#web-apps">
+  
+  Web 工具
+  
+</a>
+
+              
+
+                <ul class="submenu">
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/callgraph">
+  
+  Callgraph (调用图)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index.html">
+  
+  ING918/ING916 FOTA
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index_cn.html">
+  
+  ING918/ING916 FOTA (中文版)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/powerprofiler/">
+  
+  Online Power Profiler
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/air_trace/">
+  
+  Trace Logger
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/assertion_tool/index.html">
+  
+  ING918/ING916 Assertion Tool
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/assertion_tool/index_cn.html">
+  
+  ING918/ING916 Assertion Tool (中文版)
+  
+</a>
+
+  </li>
+  
+</ul>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+    <div class="inner outer">
+  <div class="docs-content">
+    <article class="post post-full">
+      <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+              inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+              displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+          }
+        });
+      </script>
+      <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <header class="post-header has-gradient outer">
+        
+        
+        <div class="inner-sm">
+          <div class="post-meta">
+            <time class="published" datetime="2024-02-05 00:00">February 05, 2024</time>
+          </div>
+          <h1 class="post-title">为 ING916 添加外部 Flash 扩充容量</h1>
+          
+          
+        </div>
+      </header>
+      <div class="inner-md outer">
+        <div class="post-content">
+          <p>ING916 的 SPI0 通过 AHB 总线连接到处理器，支持 4 线模式，以 <a href="https://ingchips.github.io/drafts/pg_ing916/ch-spi.html#qspi-%E8%AF%BB%E5%8F%96%E5%92%8Cxip">存储映射方式只读访问</a> 时支持 XIP。
+通过 SPI0 外挂串行 NOR Flash，处理器就可以通过映射方式读取 NOR Flash 里的内容。对于开发者而言，
+这块外挂 NOR Flash 可存放程序、只读数据等，可被 Cache “加速”，像内置 Flash 一样，使用方便。</p>
+
+<p><a href="/files/ING91600_EXT.zip">这里</a> 是适用于普冉 SPI NOR Flash 的完整烧写算法项目（Keil）。
+设 Keil 安装目录为 <em>C:\Keil_v5</em>，可解压到 <em>C:\Keil_v5\ARM\Flash\ING91600_EXT</em> 目录下直接编译。</p>
+
+<h2 id="0-芯片选型">0. 芯片选型</h2>
+
+<p>SPI0 配置到专门的高速管脚可获得最高的传输速率。建议结合项目需要，确定 ING916 和 NOR Flash 的选型。</p>
+
+<h2 id="1-用程序读写外部-flash">1. 用程序读写外部 Flash</h2>
+
+<p>下一步是为 NOR Flash 开发烧写算法。由于烧写算法不便调试，我们可以先在一个“普通”程序里实现相关的函数，
+测试正常后再转换为烧写算法。</p>
+
+<div class="important">
+<strong>注意:</strong> 必须使用 SDK v8.4.10 或更高版本的 Cube。对于较低版本的 SDK，
+请使用外设驱动。
+</div>
+
+<p>先用 Wizard 创建一个 ING916 项目，打开 Cube。假设我们决定选用 ING91682C，在 Cube 里把封装切换为 ING91682C，
+然后直接点击 “Set to High Speed Pins” 为 SPI0 配置高速管脚：</p>
+
+<p><img src="../img/cube_spi0_pins.png" alt="" /></p>
+
+<p>切换到时钟树界面，确认 SPI0 时钟为 24MHz 慢时钟（注：开发调试阶段先使用较低的时钟频率。），回到 SPI0 的设置页面，
+将 Basic Settings 的 “Clock frequency” 设置为 24MHz。</p>
+
+<p>说明：时钟树界面的 SPI0 时钟为 SPI0 硬件模块的驱动；而 Basic Settings 的 “Clock frequency” 为 SPI0 （主模式下）
+输出的 CLK 信号的频率，由驱动分频得来。</p>
+
+<p>参考 NOR Flash 数据手册，开发、调试相关的操作函数，如擦除、写入、设置模式等。</p>
+
+<p>以 <code class="language-plaintext highlighter-rouge">AHB_QSPI_MEM_BASE</code> 为起始地址可直接以存储映射方式读取 NOR Flash 里的数据。读取时，SPI0 不需要任何特殊设置。</p>
+
+<p>待功能验证正常后，可酌情优化传输速率：提供 SPI0 时钟、设置 NOR Flash 的 4 线模式等。
+如果需要以 2 线或者 4 线模式读取 NOR Flash，需要配置 SPI0 的 <code class="language-plaintext highlighter-rouge">MemAccessCmd</code> 参数。请参考 NOR Flash 数据手册，
+选择合适的命令和时序。<code class="language-plaintext highlighter-rouge">MemAccessCmd</code> 默认为 <code class="language-plaintext highlighter-rouge">SPI_MEMRD_CMD_03</code>，单线模式。</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 示例：设置为使用 EB 命令（4 线模式）</span>
+<span class="n">apSSP_SetMemAccessCmd</span><span class="p">(</span><span class="n">AHB_SSP0</span><span class="p">,</span> <span class="n">SPI_MEMRD_CMD_EB</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h2 id="2-将程序转换为-flash-烧写算法">2. 将程序转换为 Flash 烧写算法</h2>
+
+<p>下一步是通过上面的 NOR Flash 操作函数实现下载工具或者 IDE 要求的 Flash 烧写接口。以 Keil 为例，
+需要实现 4 个必备的接口：</p>
+
+<ul>
+  <li><strong>Init</strong>: 初始化</li>
+  <li><strong>UnInit</strong>: 反初始化</li>
+  <li><strong>EraseSector</strong>: 擦除一个扇区</li>
+  <li><strong>ProgramPage</strong>: 写入一页</li>
+</ul>
+
+<p>Flash 的特性、地址范围等在 <code class="language-plaintext highlighter-rouge">FlashDev.c</code> 的定义，如示例中：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">FlashDevice</span> <span class="k">const</span> <span class="n">FlashDevice</span>  <span class="o">=</span>  <span class="p">{</span>
+   <span class="n">FLASH_DRV_VERS</span><span class="p">,</span>             <span class="c1">// Driver Version, do not modify!</span>
+   <span class="s">"INGCHIPS 91600 EXT Flash"</span><span class="p">,</span> <span class="c1">// Device Name</span>
+   <span class="n">EXTSPI</span><span class="p">,</span>                     <span class="c1">// Device Type</span>
+   <span class="mh">0x04000000</span><span class="p">,</span>                 <span class="c1">// Device Start Address  (A)</span>
+   <span class="mh">0x00200000</span><span class="p">,</span>                 <span class="c1">// Device Size in Bytes  (B)</span>
+   <span class="mi">4096</span><span class="p">,</span>                       <span class="c1">// Programming Page Size (C)</span>
+   <span class="mi">0</span><span class="p">,</span>                          <span class="c1">// Reserved, must be 0</span>
+   <span class="mh">0xFF</span><span class="p">,</span>                       <span class="c1">// Initial Content of Erased Memory</span>
+   <span class="mi">800</span><span class="p">,</span>                        <span class="c1">// Program Page Timeout 100 mSec</span>
+   <span class="mi">3000</span><span class="p">,</span>                       <span class="c1">// Erase Sector Timeout 3000 mSec</span>
+
+<span class="c1">// Specify Size and Address of Sectors</span>
+   <span class="mh">0x1000</span><span class="p">,</span> <span class="mh">0x000000</span><span class="p">,</span>          <span class="c1">// Sector Size 4kB        (D)</span>
+   <span class="n">SECTOR_END</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>其中，名称可任意填写；起始地址 A 为固定值（<code class="language-plaintext highlighter-rouge">AHB_QSPI_MEM_BASE</code>），不可修改；
+B 既可根据实际情况填写，也可以填写一个较大的值，当以后更换容量更大的 Flash 型号时，不需要更改烧写算法；
+D 务必根据实际情况填写扇区大小；C 为烧录时一页的大小，这里把它设置为与扇区大小相同。</p>
+
+<h2 id="3-使用外部-flash">3. 使用外部 Flash</h2>
+
+<p>用 Wizard 创建一个 ING916 项目（假设名为 <em>use_ext_flash</em>）。打开 Cube，切换到所选用的封装，打开 SPI0 的时钟，并为 SPI0 配置管脚。
+在 Keil 里打开项目的 Target 设置，添加一块外部 Flash，起始地址为 <code class="language-plaintext highlighter-rouge">AHB_QSPI_MEM_BASE</code>：</p>
+
+<p><img src="../img/keil_ext_flash.png" alt="" /></p>
+
+<p>进入烧写算法设置页面，添加外部 Flash 烧写算法，添加完成后，这个项目存在两个烧写算法：</p>
+
+<p><img src="../img/keil_dual_algo.png" alt="" /></p>
+
+<p>为项目添加一个新的文件 <code class="language-plaintext highlighter-rouge">demo.c</code>，写一个测试函数：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">"platform_api.h"</span><span class="cp">
+</span>
+<span class="kt">void</span> <span class="nf">hello_world</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">platform_printf</span><span class="p">(</span><span class="s">"hello from EXT flash</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>在 <code class="language-plaintext highlighter-rouge">set_profile()</code> 里调用这个函数：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">extern</span> <span class="kt">void</span> <span class="nf">hello_world</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+
+<span class="kt">uint32_t</span> <span class="nf">setup_profile</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">user_data</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">platform_printf</span><span class="p">(</span><span class="s">"setup profile</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="n">platform_printf</span><span class="p">(</span><span class="s">"func @ %p</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">hello_world</span><span class="p">);</span>
+    <span class="n">hello_world</span><span class="p">();</span>
+    <span class="c1">//...</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>打开 <code class="language-plaintext highlighter-rouge">demo.c</code> 的选项窗口，将 “Code/Const” 指派到 ROM1：</p>
+
+<p><img src="../img/keil_file_flash_opt.png" alt="" /></p>
+
+<p>检查项目目录下是否存在 <em>use_ext_flash.bin</em> 文件，如有则删除。编译，此时可发现项目目录下生成了
+一个名为 <em>use_ext_flash.bin</em> 的文件夹，里面存放了两个分别对应于 ROM1 和 IROM1 数据的两个文件。
+打开下载工具，不勾选 “Burn Bin #2”（注意：下载工具可以下载 ER_IROM1，但无法下载 ER_ROM1。），只下载 platform.bin。回到 Keil，点击 Download (F8) 按钮下载 app。
+运行程序，用串口工具可看到如下输出：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>setup profile
+func @ 04000001
+hello from EXT flash
+</code></pre></div></div>
+
+<p>可见 <code class="language-plaintext highlighter-rouge">hello_world</code> 函数已被存放于外挂 NOR Flash，使用上与内置 Flash 没有区别。</p>
+
+        </div><!-- .post-content -->
+      </div><!-- .inner-md -->
+    </article><!-- .post -->
+
+    <nav id="page-nav" class="page-nav">
+      <div id="page-nav-inside" class="page-nav-inside sticky">
+        <h2 class="page-nav-title">Jump to Section</h2>
+      </div><!-- .page-nav-inside -->
+    </nav><!-- .page-nav -->
+  </div>
+</div>
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2021-2023. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

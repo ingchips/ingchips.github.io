@@ -261,10 +261,12 @@
 
 <p>SPI0 配置到专门的高速管脚可获得最高的传输速率。建议结合项目需要，确定 ING916 和 NOR Flash 的选型。</p>
 
-<h2 id="1-用程序读写外部-flash">1. 用程序读写外部 Flash</h2>
+<h2 id="1-开发-flash-烧写算法">1. 开发 Flash 烧写算法</h2>
 
 <p>下一步是为 NOR Flash 开发烧写算法。由于烧写算法不便调试，我们可以先在一个“普通”程序里实现相关的函数，
 测试正常后再转换为烧写算法。</p>
+
+<h3 id="用程序读写外部-flash">用程序读写外部 Flash</h3>
 
 <div class="important">
 <strong>注意:</strong> 必须使用 SDK v8.4.10 或更高版本的 Cube。对于较低版本的 SDK，
@@ -294,7 +296,7 @@
 <span class="n">apSSP_SetMemAccessCmd</span><span class="p">(</span><span class="n">AHB_SSP0</span><span class="p">,</span> <span class="n">SPI_MEMRD_CMD_EB</span><span class="p">);</span>
 </code></pre></div></div>
 
-<h2 id="2-将程序转换为-flash-烧写算法">2. 将程序转换为 Flash 烧写算法</h2>
+<h3 id="将程序转换为-flash-烧写算法">将程序转换为 Flash 烧写算法</h3>
 
 <p>下一步是通过上面的 NOR Flash 操作函数实现下载工具或者 IDE 要求的 Flash 烧写接口。以 Keil 为例，
 需要实现 4 个必备的接口：</p>
@@ -330,7 +332,7 @@
 B 既可根据实际情况填写，也可以填写一个较大的值，当以后更换容量更大的 Flash 型号时，不需要更改烧写算法；
 D 务必根据实际情况填写扇区大小；C 为烧录时一页的大小，这里把它设置为与扇区大小相同。</p>
 
-<h2 id="3-使用外部-flash">3. 使用外部 Flash</h2>
+<h2 id="2-使用外部-flash">2. 使用外部 Flash</h2>
 
 <p>用 Wizard 创建一个 ING916 项目（假设名为 <em>use_ext_flash</em>）。打开 Cube，切换到所选用的封装，打开 SPI0 的时钟，并为 SPI0 配置管脚。
 在 Keil 里打开项目的 Target 设置，添加一块外部 Flash，起始地址为 <code class="language-plaintext highlighter-rouge">AHB_QSPI_MEM_BASE</code>：</p>

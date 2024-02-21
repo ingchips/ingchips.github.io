@@ -1006,12 +1006,18 @@ Controller 版本号由 Controller 厂家自行指定。</p></li>
 </div>
 <div id="广播" class="section level3 hasAnchor" number="12.9.2">
 <h3><span class="header-section-number">12.9.2</span> 广播<a href="ch-misc.html#广播" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>当设备未配对或者期望被新的设备连接时，可事生成不可解析随机地址或用 IRK 生成可解析地址，将其配置为广播集的随机地址，并使用这个随机地址发送广播，
+<div id="未配对时" class="section level4 hasAnchor" number="12.9.2.1">
+<h4><span class="header-section-number">12.9.2.1</span> 未配对时<a href="ch-misc.html#未配对时" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>当设备未配对或者期望被新的设备连接时，可事先生成不可解析随机地址或用 IRK 生成可解析地址，将其配置为广播集的随机地址，并使用这个随机地址发送广播，
 即：</p>
-<div class="sourceCode" id="cb148"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb148-1"><a href="ch-misc.html#cb148-1" aria-hidden="true" tabindex="-1"></a>gap_set_ext_adv_para<span class="op">(</span></span>
-<span id="cb148-2"><a href="ch-misc.html#cb148-2" aria-hidden="true" tabindex="-1"></a>  <span class="op">...</span></span>
-<span id="cb148-3"><a href="ch-misc.html#cb148-3" aria-hidden="true" tabindex="-1"></a>  BD_ADDR_TYPE_LE_RANDOM<span class="op">,</span> <span class="co">// own_addr_type</span></span>
-<span id="cb148-4"><a href="ch-misc.html#cb148-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">...);</span></span></code></pre></div>
+<div class="sourceCode" id="cb148"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb148-1"><a href="ch-misc.html#cb148-1" aria-hidden="true" tabindex="-1"></a>gap_set_adv_set_random_addr<span class="op">(...,</span> 生成的地址<span class="op">);</span></span>
+<span id="cb148-2"><a href="ch-misc.html#cb148-2" aria-hidden="true" tabindex="-1"></a>gap_set_ext_adv_para<span class="op">(</span></span>
+<span id="cb148-3"><a href="ch-misc.html#cb148-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">...</span></span>
+<span id="cb148-4"><a href="ch-misc.html#cb148-4" aria-hidden="true" tabindex="-1"></a>  BD_ADDR_TYPE_LE_RANDOM<span class="op">,</span> <span class="co">// own_addr_type</span></span>
+<span id="cb148-5"><a href="ch-misc.html#cb148-5" aria-hidden="true" tabindex="-1"></a>  <span class="op">...);</span></span></code></pre></div>
+</div>
+<div id="已配对时" class="section level4 hasAnchor" number="12.9.2.2">
+<h4><span class="header-section-number">12.9.2.2</span> 已配对时<a href="ch-misc.html#已配对时" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>当设备已与唯一的对端设备配对，发送广播等待与其建立连接时，将对端设备的身份地址填入 <code>gap_set_ext_adv_para</code> 的 <code>peer_addr</code> 参数，
 Controller 从解析列表中查到对应的本端 IRK，使用与之对应的可解析地址（如地址不存在，会自动生成）发送广播：</p>
 <div class="sourceCode" id="cb149"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb149-1"><a href="ch-misc.html#cb149-1" aria-hidden="true" tabindex="-1"></a>gap_set_ext_adv_para<span class="op">(</span></span>
@@ -1036,9 +1042,10 @@ Controller 从解析列表中查到对应的本端 IRK，使用与之对应的�
 将会是 <code>BD_ADDR_TYPE_LE_RESOLVED_RAN</code> 或者 <code>BD_ADDR_TYPE_LE_RESOLVED_PUB</code>，
 <code>scanner_addr</code> 是解析出的扫描者的身份地址。</p>
 </div>
+</div>
 <div id="扫描" class="section level3 hasAnchor" number="12.9.3">
 <h3><span class="header-section-number">12.9.3</span> 扫描<a href="ch-misc.html#扫描" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>事先生成不可解析随机地址或用 IRK 生成可解析地址，并调用 <code>gap_set_random_device_address</code>。</p>
+<p>可以生成不同于身份地址（如不可解析随机地址或用 IRK 生成可解析地址）的随机地址，并调用 <code>gap_set_random_device_address</code>。</p>
 <p>如果需要扫描周围全部设备的广播信息，可如下配置扫描参数：</p>
 <div class="sourceCode" id="cb150"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb150-1"><a href="ch-misc.html#cb150-1" aria-hidden="true" tabindex="-1"></a>gap_set_ext_scan_para<span class="op">(</span></span>
 <span id="cb150-2"><a href="ch-misc.html#cb150-2" aria-hidden="true" tabindex="-1"></a>  BD_ADDR_TYPE_LE_RANDOM<span class="op">,</span>               <span class="co">// own_addr_type</span></span>
@@ -1046,7 +1053,7 @@ Controller 从解析列表中查到对应的本端 IRK，使用与之对应的�
 <span id="cb150-4"><a href="ch-misc.html#cb150-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">...);</span></span></code></pre></div>
 <p>如果只扫描白名单内设备的广播信息，可如下配置扫描参数：</p>
 <div class="sourceCode" id="cb151"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb151-1"><a href="ch-misc.html#cb151-1" aria-hidden="true" tabindex="-1"></a>gap_set_ext_scan_para<span class="op">(</span></span>
-<span id="cb151-2"><a href="ch-misc.html#cb151-2" aria-hidden="true" tabindex="-1"></a>  BD_ADDR_TYPE_LE_RESOLVED_RAN<span class="op">,</span>          <span class="co">// own_addr_type</span></span>
+<span id="cb151-2"><a href="ch-misc.html#cb151-2" aria-hidden="true" tabindex="-1"></a>  BD_ADDR_TYPE_LE_RANDOM<span class="op">,</span>                <span class="co">// own_addr_type</span></span>
 <span id="cb151-3"><a href="ch-misc.html#cb151-3" aria-hidden="true" tabindex="-1"></a>  SCAN_ACCEPT_WLIST_EXCEPT_NOT_DIRECTED<span class="op">,</span> <span class="co">// filter_policy</span></span>
 <span id="cb151-4"><a href="ch-misc.html#cb151-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">...);</span></span></code></pre></div>
 <p>此时，Controller 扫描到某设备的广播时，尝试解析地址。对于主动扫描，如果解析成功且通过了白名单，
@@ -1058,6 +1065,8 @@ Controller 从解析列表中查到对应的本端 IRK，使用与之对应的�
 <div id="建立连接" class="section level3 hasAnchor" number="12.9.4">
 <h3><span class="header-section-number">12.9.4</span> 建立连接<a href="ch-misc.html#建立连接" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>事先生成不可解析随机地址或用 IRK 生成可解析地址，并调用 <code>gap_set_random_device_address</code>。</p>
+<div id="未配对时-1" class="section level4 hasAnchor" number="12.9.4.1">
+<h4><span class="header-section-number">12.9.4.1</span> 未配对时<a href="ch-misc.html#未配对时-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>如果需要连接一个未配对的设备，可如下配置：</p>
 <div class="sourceCode" id="cb152"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb152-1"><a href="ch-misc.html#cb152-1" aria-hidden="true" tabindex="-1"></a>gap_ext_create_connection<span class="op">(</span></span>
 <span id="cb152-2"><a href="ch-misc.html#cb152-2" aria-hidden="true" tabindex="-1"></a>  INITIATING_ADVERTISER_FROM_PARAM<span class="op">,</span>   <span class="co">// filter_policy</span></span>
@@ -1065,6 +1074,9 @@ Controller 从解析列表中查到对应的本端 IRK，使用与之对应的�
 <span id="cb152-4"><a href="ch-misc.html#cb152-4" aria-hidden="true" tabindex="-1"></a>  peer_addr_type<span class="op">,</span> <span class="co">// peer_addr_type</span></span>
 <span id="cb152-5"><a href="ch-misc.html#cb152-5" aria-hidden="true" tabindex="-1"></a>  peer_addr<span class="op">,</span>      <span class="co">// peer_addr</span></span>
 <span id="cb152-6"><a href="ch-misc.html#cb152-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">...);</span></span></code></pre></div>
+</div>
+<div id="已配对时-1" class="section level4 hasAnchor" number="12.9.4.2">
+<h4><span class="header-section-number">12.9.4.2</span> 已配对时<a href="ch-misc.html#已配对时-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>如果需要连接单一的确定的已配对设备，可如下配置：</p>
 <div class="sourceCode" id="cb153"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb153-1"><a href="ch-misc.html#cb153-1" aria-hidden="true" tabindex="-1"></a>gap_ext_create_connection<span class="op">(</span></span>
 <span id="cb153-2"><a href="ch-misc.html#cb153-2" aria-hidden="true" tabindex="-1"></a>  INITIATING_ADVERTISER_FROM_PARAM<span class="op">,</span>   <span class="co">// filter_policy</span></span>
@@ -1081,6 +1093,7 @@ Controller 从解析列表中查到对应的本端 IRK，使用与之对应的�
 将会是 <code>BD_ADDR_TYPE_LE_RESOLVED_RAN</code> 或者 <code>BD_ADDR_TYPE_LE_RESOLVED_PUB</code>，
 <code>peer_addr</code> 是解析出的对端的身份地址。</p>
 
+</div>
 </div>
 </div>
 </div>

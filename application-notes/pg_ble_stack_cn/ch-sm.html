@@ -296,6 +296,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="11.2.3" data-path="ch-sm.html"><a href="ch-sm.html#sm-事件回调"><i class="fa fa-check"></i><b>11.2.3</b> SM 事件回调</a></li>
 <li class="chapter" data-level="11.2.4" data-path="ch-sm.html"><a href="ch-sm.html#每个连接的个性化设置"><i class="fa fa-check"></i><b>11.2.4</b> 每个连接的个性化设置</a></li>
 <li class="chapter" data-level="11.2.5" data-path="ch-sm.html"><a href="ch-sm.html#地址解析查找"><i class="fa fa-check"></i><b>11.2.5</b> 地址解析、查找</a></li>
+<li class="chapter" data-level="11.2.6" data-path="ch-sm.html"><a href="ch-sm.html#p-256-椭圆曲线"><i class="fa fa-check"></i><b>11.2.6</b> P-256 椭圆曲线</a></li>
+<li class="chapter" data-level="11.2.7" data-path="ch-sm.html"><a href="ch-sm.html#基于-oob-数据的配对"><i class="fa fa-check"></i><b>11.2.7</b> 基于 OOB 数据的配对</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="12" data-path="ch-misc.html"><a href="ch-misc.html"><i class="fa fa-check"></i><b>12</b> 杂项</a>
@@ -432,7 +434,9 @@ DIV 是一个随机数<a href="#fn43" class="footnote-ref" id="fnref43"><sup>43<
 <span id="cb88-7"><a href="ch-sm.html#cb88-7" aria-hidden="true" tabindex="-1"></a><span class="co">// 可绑定</span></span>
 <span id="cb88-8"><a href="ch-sm.html#cb88-8" aria-hidden="true" tabindex="-1"></a><span class="pp">#define SM_AUTHREQ_BONDING          ...</span></span>
 <span id="cb88-9"><a href="ch-sm.html#cb88-9" aria-hidden="true" tabindex="-1"></a><span class="co">// 使能 MITM 保护</span></span>
-<span id="cb88-10"><a href="ch-sm.html#cb88-10" aria-hidden="true" tabindex="-1"></a><span class="pp">#define SM_AUTHREQ_MITM_PROTECTION  ...</span></span></code></pre></div></li>
+<span id="cb88-10"><a href="ch-sm.html#cb88-10" aria-hidden="true" tabindex="-1"></a><span class="pp">#define SM_AUTHREQ_MITM_PROTECTION  ...</span></span>
+<span id="cb88-11"><a href="ch-sm.html#cb88-11" aria-hidden="true" tabindex="-1"></a><span class="co">// 使能 基于 LE 安全连接的配对</span></span>
+<span id="cb88-12"><a href="ch-sm.html#cb88-12" aria-hidden="true" tabindex="-1"></a><span class="pp">#define SM_AUTHREQ_SC               ...</span></span></code></pre></div></li>
 </ol>
 </div>
 <div id="使用私有随机地址" class="section level3 hasAnchor" number="11.2.2">
@@ -499,7 +503,7 @@ DIV 是一个随机数<a href="#fn43" class="footnote-ref" id="fnref43"><sup>43<
 <span id="cb93-9"><a href="ch-sm.html#cb93-9" aria-hidden="true" tabindex="-1"></a>    printf<span class="op">(</span><span class="st">&quot;ERROR: should not happen&quot;</span><span class="op">);</span></span>
 <span id="cb93-10"><a href="ch-sm.html#cb93-10" aria-hidden="true" tabindex="-1"></a>printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span></code></pre></div></li>
 </ul>
-<p>与配对有关的 6 个事件：</p>
+<p>与配对有关的事件：</p>
 <ul>
 <li><p><code>SM_EVENT_JUST_WORKS_REQUEST</code>：JUST_WORKS 请求，等待用户接收或拒绝</p>
 <p>调用 <code>sm_just_works_confirm</code> 接受，<code>sm_bonding_decline</code> 拒绝。</p></li>
@@ -510,6 +514,16 @@ DIV 是一个随机数<a href="#fn43" class="footnote-ref" id="fnref43"><sup>43<
 <li><p><code>SM_EVENT_PASSKEY_INPUT_NUMBER</code>：提示用户输入识别码</p>
 <p>App 收到此事件后提示用户输入识别码，然后调用 <code>sm_passkey_input</code> 把用户的输入传递到协议栈。
 调用 <code>sm_bonding_decline</code> 可中止配对。</p></li>
+<li><p><code>SM_EVENT_NUMERIC_COMPARISON_REQUEST</code>：提示用户对比数字识别码</p>
+<p>仅在基于 LE 安全连接的配对时出现。调用 <code>sm_numeric_comparison_confirm</code> 确认数字无误，
+<code>sm_bonding_decline</code> 否认。</p>
+<p>请注意区分两类涉及数字识别码的配对事件，并了解 Bluetooth SIG
+的安全说明<a href="#fn47" class="footnote-ref" id="fnref47"><sup>47</sup></a>：</p>
+<ul>
+<li><p>对于基于 LE 安全连接的配对，配对双方同时显示数字（SM_EVENT_NUMERIC_COMPARISON_REQUEST），用户确认两端显示的数字是否一致；</p></li>
+<li><p>对于不使用 LE 安全连接的配对（即 LE 传统方式），会在具备显示能力一方显示识别码（SM_EVENT_PASSKEY_DISPLAY_NUMBER），
+另一方具备输入的设备会提示用户输入（SM_EVENT_PASSKEY_INPUT_NUMBER）这个数字完成配对。</p></li>
+</ul></li>
 </ul>
 <p>SM 状态改变事件：</p>
 <ul>
@@ -544,7 +558,7 @@ DIV 是一个随机数<a href="#fn43" class="footnote-ref" id="fnref43"><sup>43<
 <span id="cb96-3"><a href="ch-sm.html#cb96-3" aria-hidden="true" tabindex="-1"></a>  hci_con_handle_t con_handle<span class="op">,</span></span>
 <span id="cb96-4"><a href="ch-sm.html#cb96-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// IO 能力</span></span>
 <span id="cb96-5"><a href="ch-sm.html#cb96-5" aria-hidden="true" tabindex="-1"></a>  io_capability_t io_capability<span class="op">,</span></span>
-<span id="cb96-6"><a href="ch-sm.html#cb96-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// SM_AUTHREQ_... 的组合：是否绑定、是否需要 MITM 保护</span></span>
+<span id="cb96-6"><a href="ch-sm.html#cb96-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// SM_AUTHREQ_... 的组合：是否绑定、是否需要 MITM 保护等</span></span>
 <span id="cb96-7"><a href="ch-sm.html#cb96-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> auth_req<span class="op">);</span></span></code></pre></div>
 <p>注意，这个 API 只允许在 HCI 事件 <code>HCI_SUBEVENT_LE_ENHANCED_CONNECTION_COMPLETE</code> 的回调里调用。即使 SM 为禁用状态，
 也可以使用这个 API 为单个连接使能 SM。</p>
@@ -560,6 +574,72 @@ DIV 是一个随机数<a href="#fn43" class="footnote-ref" id="fnref43"><sup>43<
 <p>这个函数将待查地址加入一个处理队列，如果成功加入，返回值为 0；反之返回非 0 值。
 解析、查找的结果通过 SM_EVENT_IDENTITY_RESOLVING_FAILED、
 SM_EVENT_IDENTITY_RESOLVING_SUCCEEDED 等事件上报。</p>
+</div>
+<div id="p-256-椭圆曲线" class="section level3 hasAnchor" number="11.2.6">
+<h3><span class="header-section-number">11.2.6</span> P-256 椭圆曲线<a href="ch-sm.html#p-256-椭圆曲线" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>要在 ING916、ING918 上使用基于 LE 安全连接的配对，需要先为 Controller 安装 FIPS 186-4<a href="#fn48" class="footnote-ref" id="fnref48"><sup>48</sup></a>
+P-256 椭圆曲线计算引擎：</p>
+<div class="sourceCode" id="cb98"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb98-1"><a href="ch-sm.html#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_install_ecc_engine<span class="op">(</span></span>
+<span id="cb98-2"><a href="ch-sm.html#cb98-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 用于生成一对新的公钥和私钥的回调函数</span></span>
+<span id="cb98-3"><a href="ch-sm.html#cb98-3" aria-hidden="true" tabindex="-1"></a>  f_start_generate_p256_key_pair start_generate_p256_key_pair<span class="op">,</span></span>
+<span id="cb98-4"><a href="ch-sm.html#cb98-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 用于计算 DH 交换密钥的回调</span></span>
+<span id="cb98-5"><a href="ch-sm.html#cb98-5" aria-hidden="true" tabindex="-1"></a>  f_start_generate_dhkey start_generate_dhkey<span class="op">);</span></span></code></pre></div>
+<p>回调函数的实现方法可参考 SDK 里的相关示例。</p>
+<p>当不使用 OOB 时，SM 层自动管理公钥、私钥的生成：对于每个基于 LE 安全连接的配对流程都会重新生成私钥。
+当使用 OOB 时，考虑到可能存在与多个设备配对的情况，私钥的更新由开发者控制：
+每次调用 <code>sm_sc_generate_oob_data</code> 时，重新生成私钥和 OOB 数据，该私钥（及对应的公钥）
+将应用于后续所有的基于 LE 安全连接的配对流程。此时，为了保护设备的私钥，开发者需要及时重新调用
+<code>sm_sc_generate_oob_data</code> 刷新私钥和 OOB 数据。参照蓝牙核心规范<a href="#fn49" class="footnote-ref" id="fnref49"><sup>49</sup></a>，
+最迟应该在 <span class="math inline">\(S + 3 F &gt; 8\)</span> 时刷新私钥，其中 S 表示当前私钥参与的配对成功的次数，F 表示当前私钥参与的配对失败的次数。</p>
+</div>
+<div id="基于-oob-数据的配对" class="section level3 hasAnchor" number="11.2.7">
+<h3><span class="header-section-number">11.2.7</span> 基于 OOB 数据的配对<a href="ch-sm.html#基于-oob-数据的配对" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>对于 LE 传统 OOB 配对：</p>
+<p>通过 <code>sm_register_oob_data_callback</code> 注册回调函数来为 SM 提供 OOB 数据：</p>
+<div class="sourceCode" id="cb99"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb99-1"><a href="ch-sm.html#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sm_register_oob_data_callback<span class="op">(</span></span>
+<span id="cb99-2"><a href="ch-sm.html#cb99-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> <span class="op">(*</span>get_oob_data_callback<span class="op">)(</span></span>
+<span id="cb99-3"><a href="ch-sm.html#cb99-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> address_type<span class="op">,</span></span>
+<span id="cb99-4"><a href="ch-sm.html#cb99-4" aria-hidden="true" tabindex="-1"></a>    bd_addr_t addr<span class="op">,</span></span>
+<span id="cb99-5"><a href="ch-sm.html#cb99-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> <span class="op">*</span> oob_data<span class="op">));</span></span></code></pre></div>
+<p>这个回调函数的签名为：</p>
+<div class="sourceCode" id="cb100"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb100-1"><a href="ch-sm.html#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 存在与该对端设备关联的 OOB 数据时返回 1；否则返回 0.</span></span>
+<span id="cb100-2"><a href="ch-sm.html#cb100-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="op">(*</span>get_oob_data_callback<span class="op">)(</span></span>
+<span id="cb100-3"><a href="ch-sm.html#cb100-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 对端设备的地址类型</span></span>
+<span id="cb100-4"><a href="ch-sm.html#cb100-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> address_type<span class="op">,</span></span>
+<span id="cb100-5"><a href="ch-sm.html#cb100-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 对端设备的地址</span></span>
+<span id="cb100-6"><a href="ch-sm.html#cb100-6" aria-hidden="true" tabindex="-1"></a>    bd_addr_t addr<span class="op">,</span></span>
+<span id="cb100-7"><a href="ch-sm.html#cb100-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 输出：OOB 数据（长度与 sm_key_t 相同）</span></span>
+<span id="cb100-8"><a href="ch-sm.html#cb100-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> <span class="op">*</span> oob_data<span class="op">)</span></span></code></pre></div>
+<p>此 OOB 数据为随机生成。</p></li>
+<li><p>基于 LE 安全连接的 OOB 配对</p></li>
+</ul>
+<p>通过 <code>sm_register_sc_oob_data_callback</code> 注册回调函数来为 SM 提供 OOB 数据：</p>
+<div class="sourceCode" id="cb101"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb101-1"><a href="ch-sm.html#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sm_register_sc_oob_data_callback<span class="op">(</span></span>
+<span id="cb101-2"><a href="ch-sm.html#cb101-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> <span class="op">(*</span>get_sc_oob_data_callback<span class="op">)(</span></span>
+<span id="cb101-3"><a href="ch-sm.html#cb101-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> address_type<span class="op">,</span></span>
+<span id="cb101-4"><a href="ch-sm.html#cb101-4" aria-hidden="true" tabindex="-1"></a>    bd_addr_t addr<span class="op">,</span></span>
+<span id="cb101-5"><a href="ch-sm.html#cb101-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> <span class="op">*</span>peer_confirm<span class="op">,</span></span>
+<span id="cb101-6"><a href="ch-sm.html#cb101-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> <span class="op">*</span>peer_random<span class="op">));</span></span></code></pre></div>
+<p>这个回调函数的签名为：</p>
+<div class="sourceCode" id="cb102"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb102-1"><a href="ch-sm.html#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 存在与该对端设备关联的 OOB 数据时返回 1；否则返回 0.</span></span>
+<span id="cb102-2"><a href="ch-sm.html#cb102-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="op">(*</span>get_sc_oob_data_callback<span class="op">)(</span></span>
+<span id="cb102-3"><a href="ch-sm.html#cb102-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 对端设备的地址类型</span></span>
+<span id="cb102-4"><a href="ch-sm.html#cb102-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> address_type<span class="op">,</span></span>
+<span id="cb102-5"><a href="ch-sm.html#cb102-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 对端设备的地址</span></span>
+<span id="cb102-6"><a href="ch-sm.html#cb102-6" aria-hidden="true" tabindex="-1"></a>    bd_addr_t addr<span class="op">,</span></span>
+<span id="cb102-7"><a href="ch-sm.html#cb102-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 输出：OOB 数据 confirm（长度与 sm_key_t 相同）</span></span>
+<span id="cb102-8"><a href="ch-sm.html#cb102-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> <span class="op">*</span>peer_confirm<span class="op">,</span></span>
+<span id="cb102-9"><a href="ch-sm.html#cb102-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 输出：OOB 数据 random （长度与 sm_key_t 相同）</span></span>
+<span id="cb102-10"><a href="ch-sm.html#cb102-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> <span class="op">*</span>peer_random<span class="op">)</span></span></code></pre></div>
+<p>confirm 是从 random 和公钥等数据中推算得出，通过调用 <code>sm_sc_generate_oob_data</code>
+可生成一组新的 random、confirm 数据：</p>
+<div class="sourceCode" id="cb103"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb103-1"><a href="ch-sm.html#cb103-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> sm_sc_generate_oob_data<span class="op">(</span></span>
+<span id="cb103-2"><a href="ch-sm.html#cb103-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">void</span> <span class="op">(*</span>callback<span class="op">)(</span></span>
+<span id="cb103-3"><a href="ch-sm.html#cb103-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>confirm<span class="op">,</span></span>
+<span id="cb103-4"><a href="ch-sm.html#cb103-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>random<span class="op">));</span></span></code></pre></div>
+<p>新的 random、confirm 数据生成后，会调用这个回调告知结果。通过带外传输将这组数据传递到对端，
+对端在 <code>get_sc_oob_data_callback</code> 里将这组数据再传递到 SM 完成 OOB 配对。</p>
 
 </div>
 </div>
@@ -572,6 +652,9 @@ SM_EVENT_IDENTITY_RESOLVING_SUCCEEDED 等事件上报。</p>
 <li id="fn44"><p>以及给予用户必要的提示的能力。<a href="ch-sm.html#fnref44" class="footnote-back">↩︎</a></p></li>
 <li id="fn45"><p>没必要过于频繁地更新地址。尤其是对于可解析地址，每更新一次，就意味着泄露了一点关于 IRK 的消息。<a href="ch-sm.html#fnref45" class="footnote-back">↩︎</a></p></li>
 <li id="fn46"><p>注意：当该广播是可连接的并且正在广播时，不允许修改地址。<a href="ch-sm.html#fnref46" class="footnote-back">↩︎</a></p></li>
+<li id="fn47"><p><a href="https://www.bluetooth.com/learn-about-bluetooth/key-attributes/bluetooth-security/method-vulnerability/" class="uri">https://www.bluetooth.com/learn-about-bluetooth/key-attributes/bluetooth-security/method-vulnerability/</a><a href="ch-sm.html#fnref47" class="footnote-back">↩︎</a></p></li>
+<li id="fn48"><p>dx.doi.org/10.6028/NIST.FIPS.186-4<a href="ch-sm.html#fnref48" class="footnote-back">↩︎</a></p></li>
+<li id="fn49"><p>BLUETOOTH CORE SPECIFICATION Version 5.4 | Vol 3, Part H, 2.3.6<a href="ch-sm.html#fnref49" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

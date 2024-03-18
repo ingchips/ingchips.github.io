@@ -29,6 +29,7 @@ def convert(p: str) -> None:
     meta['rom']['base'] = PLATFORM_BASE + EFLASH_ERASABLE_SIZE
     meta['rom']['size'] = aligned + len(vector)
     meta['app']['base'] = (meta['rom']['base'] + meta['rom']['size'] + EFLASH_ERASABLE_SIZE - 1) // EFLASH_ERASABLE_SIZE * EFLASH_ERASABLE_SIZE
+    vector = vector[:-4] + struct.pack('<I', meta['app']['base'])
 
     platform = platform + b'\x00' * (aligned - len(platform)) + vector
     platform = struct.pack('<I', PLATFORM_BASE + EFLASH_ERASABLE_SIZE + aligned) + platform[4:]

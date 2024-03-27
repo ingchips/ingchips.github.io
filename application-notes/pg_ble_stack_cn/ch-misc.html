@@ -320,7 +320,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="12.3.1" data-path="ch-misc.html"><a href="ch-misc.html#data-length-与-mtu"><i class="fa fa-check"></i><b>12.3.1</b> Data Length 与 MTU</a></li>
 </ul></li>
 <li class="chapter" data-level="12.4" data-path="ch-misc.html"><a href="ch-misc.html#api-返回值"><i class="fa fa-check"></i><b>12.4</b> API 返回值</a></li>
-<li class="chapter" data-level="12.5" data-path="ch-misc.html"><a href="ch-misc.html#键值存储"><i class="fa fa-check"></i><b>12.5</b> 键值存储</a></li>
+<li class="chapter" data-level="12.5" data-path="ch-misc.html"><a href="ch-misc.html#键值存储接口与实现"><i class="fa fa-check"></i><b>12.5</b> 键值存储接口与实现</a>
+<ul>
+<li class="chapter" data-level="12.5.1" data-path="ch-misc.html"><a href="ch-misc.html#键值存储接口"><i class="fa fa-check"></i><b>12.5.1</b> 键值存储接口</a></li>
+<li class="chapter" data-level="12.5.2" data-path="ch-misc.html"><a href="ch-misc.html#默认的键值存储实现"><i class="fa fa-check"></i><b>12.5.2</b> 默认的键值存储实现</a></li>
+<li class="chapter" data-level="12.5.3" data-path="ch-misc.html"><a href="ch-misc.html#自定义键值存储实现"><i class="fa fa-check"></i><b>12.5.3</b> 自定义键值存储实现</a></li>
+</ul></li>
 <li class="chapter" data-level="12.6" data-path="ch-misc.html"><a href="ch-misc.html#ch98-le-dev-db"><i class="fa fa-check"></i><b>12.6</b> 设备数据库</a></li>
 <li class="chapter" data-level="12.7" data-path="ch-misc.html"><a href="ch-misc.html#ch-misc-synced-api"><i class="fa fa-check"></i><b>12.7</b> 同步版 API</a>
 <ul>
@@ -674,38 +679,29 @@ DATA LENGTH 更新流程<a href="#fn55" class="footnote-ref" id="fnref55"><sup>5
 </ul></li>
 </ul>
 </div>
-<div id="键值存储" class="section level2 hasAnchor" number="12.5">
-<h2><span class="header-section-number">12.5</span> 键值存储<a href="ch-misc.html#键值存储" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>协议包含了一个简单的键值存储模块（<em>kv_storage</em>），其键（<em>key</em>） 为 <code>uint8_t</code>，值（<em>value</em>） 为长度不超过 <code>KV_VALUE_MAX_LEN</code>
-的数组。</p>
-<p>开发者可以在 App 里使用这个模块，<em>key</em> 的取值范围应该在 <code>KV_USER_KEY_START</code> 和 <code>KV_USER_KEY_END</code> 之间。需要注意以下几点：</p>
-<ol style="list-style-type: decimal">
-<li>该模块查找一个 <em>key</em> 的时间复杂度为 <span class="math inline">\(\mathcal{O}(n)\)</span>；</li>
-<li>该模块不是线程安全的。</li>
-</ol>
-<p>这个模块本身没有数据持久化。持久化需要开发者通过 <code>kv_init</code><a href="#fn56" class="footnote-ref" id="fnref56"><sup>56</sup></a> 提供回调来实现：</p>
-<div class="sourceCode" id="cb129"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb129-1"><a href="ch-misc.html#cb129-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> kv_init<span class="op">(</span></span>
-<span id="cb129-2"><a href="ch-misc.html#cb129-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 用来保存数据的回调</span></span>
-<span id="cb129-3"><a href="ch-misc.html#cb129-3" aria-hidden="true" tabindex="-1"></a>  f_kv_write_to_nvm f_write<span class="op">,</span></span>
-<span id="cb129-4"><a href="ch-misc.html#cb129-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 用来读取（恢复）数据的回调</span></span>
-<span id="cb129-5"><a href="ch-misc.html#cb129-5" aria-hidden="true" tabindex="-1"></a>  f_kv_read_from_nvm f_read<span class="op">);</span></span></code></pre></div>
-<p>当键值存储模块初始化时，会调用 <code>f_read</code> 恢复之前的数据状态；当存储里的数据更新后，键值存储模块会自动调用 <code>f_write</code> 回调。
-考虑到 Flash 不宜频繁擦写，键值存储模块通过定时器超时来触发写入。每当数据更新时，复位定时器。整个储存的总大小为
-<code>DB_CAPACITY_SIZE</code>。</p>
-<p>这个存储模块的增、删、改、查等接口如下。</p>
+<div id="键值存储接口与实现" class="section level2 hasAnchor" number="12.5">
+<h2><span class="header-section-number">12.5</span> 键值存储接口与实现<a href="ch-misc.html#键值存储接口与实现" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="键值存储接口" class="section level3 hasAnchor" number="12.5.1">
+<h3><span class="header-section-number">12.5.1</span> 键值存储接口<a href="ch-misc.html#键值存储接口" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>协议栈定义了一个简单的键值存储接口（<em>kv_storage</em>），其键（<em>key</em>） 为 <code>uint8_t</code>，值（<em>value</em>） 为长度不超过 <code>KV_VALUE_MAX_LEN</code>
+的数组。
+开发者可以在 App 里使用这个接口，<em>key</em> 的取值范围应该在 <code>KV_USER_KEY_START</code> 和 <code>KV_USER_KEY_END</code> 之间。
+这个存储模块的增、删、改、查等功能如下。</p>
 <ul>
 <li><p>增/改：<code>kv_put</code></p>
-<div class="sourceCode" id="cb130"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb130-1"><a href="ch-misc.html#cb130-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 如果 key 不存在，为“增”；如果 key 存在，为“改”</span></span>
-<span id="cb130-2"><a href="ch-misc.html#cb130-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> kv_put<span class="op">(</span></span>
-<span id="cb130-3"><a href="ch-misc.html#cb130-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> kvkey_t key<span class="op">,</span></span>
-<span id="cb130-4"><a href="ch-misc.html#cb130-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 值</span></span>
-<span id="cb130-5"><a href="ch-misc.html#cb130-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>data<span class="op">,</span></span>
-<span id="cb130-6"><a href="ch-misc.html#cb130-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 值的长度</span></span>
-<span id="cb130-7"><a href="ch-misc.html#cb130-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int16_t</span> len<span class="op">);</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb129"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb129-1"><a href="ch-misc.html#cb129-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 如果 key 不存在，为“增”；如果 key 存在，为“改”</span></span>
+<span id="cb129-2"><a href="ch-misc.html#cb129-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> kv_put<span class="op">(</span></span>
+<span id="cb129-3"><a href="ch-misc.html#cb129-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> kvkey_t key<span class="op">,</span></span>
+<span id="cb129-4"><a href="ch-misc.html#cb129-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 值</span></span>
+<span id="cb129-5"><a href="ch-misc.html#cb129-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>data<span class="op">,</span></span>
+<span id="cb129-6"><a href="ch-misc.html#cb129-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 值的长度</span></span>
+<span id="cb129-7"><a href="ch-misc.html#cb129-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int16_t</span> len<span class="op">);</span></span></code></pre></div></li>
 <li><p>删：<code>kv_remove</code></p>
-<div class="sourceCode" id="cb131"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb131-1"><a href="ch-misc.html#cb131-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> kv_remove<span class="op">(</span></span>
-<span id="cb131-2"><a href="ch-misc.html#cb131-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 键</span></span>
-<span id="cb131-3"><a href="ch-misc.html#cb131-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> kvkey_t key<span class="op">)</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb130"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb130-1"><a href="ch-misc.html#cb130-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> kv_remove<span class="op">(</span></span>
+<span id="cb130-2"><a href="ch-misc.html#cb130-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 键</span></span>
+<span id="cb130-3"><a href="ch-misc.html#cb130-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> kvkey_t key<span class="op">)</span></span></code></pre></div></li>
+<li><p>清空：<code>kv_remove_all</code></p>
+<div class="sourceCode" id="cb131"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb131-1"><a href="ch-misc.html#cb131-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> kv_remove_all<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div></li>
 <li><p>查：<code>kv_get</code></p>
 <div class="sourceCode" id="cb132"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb132-1"><a href="ch-misc.html#cb132-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 返回：指向值的指针</span></span>
 <span id="cb132-2"><a href="ch-misc.html#cb132-2" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> <span class="op">*</span>kv_get<span class="op">(</span></span>
@@ -722,41 +718,89 @@ DATA LENGTH 更新流程<a href="#fn55" class="footnote-ref" id="fnref55"><sup>5
 <span id="cb133-4"><a href="ch-misc.html#cb133-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 传递给回调的用户参数</span></span>
 <span id="cb133-5"><a href="ch-misc.html#cb133-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">void</span> <span class="op">*</span>user_data<span class="op">);</span></span></code></pre></div>
 <p>使用这个 API 可以遍历存储内所有的键值对。</p></li>
+<li><p>数据已被修改</p>
+<div class="sourceCode" id="cb134"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb134-1"><a href="ch-misc.html#cb134-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> kv_value_modified_of_key<span class="op">(</span></span>
+<span id="cb134-2"><a href="ch-misc.html#cb134-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 键</span></span>
+<span id="cb134-3"><a href="ch-misc.html#cb134-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> kvkey_t key<span class="op">);</span></span></code></pre></div></li>
 </ul>
+<p>协议栈内实现了这个接口。开发者既可以使用内置的默认实现，也可以自定义实现。</p>
+</div>
+<div id="默认的键值存储实现" class="section level3 hasAnchor" number="12.5.2">
+<h3><span class="header-section-number">12.5.2</span> 默认的键值存储实现<a href="ch-misc.html#默认的键值存储实现" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>默认的键值存储实现的总储存大小为 1024 字节。这个实现本身没有数据持久化。
+持久化需要开发者通过 <code>kv_init</code><a href="#fn56" class="footnote-ref" id="fnref56"><sup>56</sup></a> 提供回调来实现：</p>
+<div class="sourceCode" id="cb135"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb135-1"><a href="ch-misc.html#cb135-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> kv_init<span class="op">(</span></span>
+<span id="cb135-2"><a href="ch-misc.html#cb135-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 用来保存数据的回调</span></span>
+<span id="cb135-3"><a href="ch-misc.html#cb135-3" aria-hidden="true" tabindex="-1"></a>  f_kv_write_to_nvm f_write<span class="op">,</span></span>
+<span id="cb135-4"><a href="ch-misc.html#cb135-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 用来读取（恢复）数据的回调</span></span>
+<span id="cb135-5"><a href="ch-misc.html#cb135-5" aria-hidden="true" tabindex="-1"></a>  f_kv_read_from_nvm f_read<span class="op">);</span></span></code></pre></div>
+<p>当键值存储模块初始化时，会调用 <code>f_read</code> 恢复之前的数据状态；当存储里的数据更新后，键值存储模块会自动调用 <code>f_write</code> 回调。
+考虑到 Flash 不宜频繁擦写，键值存储模块通过定时器超时来触发写入。每当数据更新时，复位定时器。</p>
+<p>使用这种实现时需要注意以下几点：</p>
+<ol style="list-style-type: decimal">
+<li>该模块查找一个 <em>key</em> 的时间复杂度为 <span class="math inline">\(\mathcal{O}(n)\)</span>；</li>
+<li>该模块不是线程安全的。</li>
+</ol>
+</div>
+<div id="自定义键值存储实现" class="section level3 hasAnchor" number="12.5.3">
+<h3><span class="header-section-number">12.5.3</span> 自定义键值存储实现<a href="ch-misc.html#自定义键值存储实现" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>通过在 <code>app_main</code> 里调用 <code>kv_init_backend</code> 可以自定义键值存储实现：</p>
+<div class="sourceCode" id="cb136"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb136-1"><a href="ch-misc.html#cb136-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> kv_init_backend<span class="op">(</span></span>
+<span id="cb136-2"><a href="ch-misc.html#cb136-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> kv_backend_t <span class="op">*</span>backend<span class="op">);</span></span></code></pre></div>
+<p>其中 <code>kv_backend_t</code> 包含以下回调接口：</p>
+<div class="sourceCode" id="cb137"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb137-1"><a href="ch-misc.html#cb137-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> kv_backend</span>
+<span id="cb137-2"><a href="ch-misc.html#cb137-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb137-3"><a href="ch-misc.html#cb137-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 清空</span></span>
+<span id="cb137-4"><a href="ch-misc.html#cb137-4" aria-hidden="true" tabindex="-1"></a>    f_kv_remove_all kv_remove_all<span class="op">;</span></span>
+<span id="cb137-5"><a href="ch-misc.html#cb137-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 删除</span></span>
+<span id="cb137-6"><a href="ch-misc.html#cb137-6" aria-hidden="true" tabindex="-1"></a>    f_kv_remove     kv_remove<span class="op">;</span></span>
+<span id="cb137-7"><a href="ch-misc.html#cb137-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 增/改</span></span>
+<span id="cb137-8"><a href="ch-misc.html#cb137-8" aria-hidden="true" tabindex="-1"></a>    f_kv_put        kv_put<span class="op">;</span></span>
+<span id="cb137-9"><a href="ch-misc.html#cb137-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 查</span></span>
+<span id="cb137-10"><a href="ch-misc.html#cb137-10" aria-hidden="true" tabindex="-1"></a>    f_kv_get        kv_get<span class="op">;</span></span>
+<span id="cb137-11"><a href="ch-misc.html#cb137-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 遍历</span></span>
+<span id="cb137-12"><a href="ch-misc.html#cb137-12" aria-hidden="true" tabindex="-1"></a>    f_kv_visit      kv_visit<span class="op">;</span></span>
+<span id="cb137-13"><a href="ch-misc.html#cb137-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 数据已被修改</span></span>
+<span id="cb137-14"><a href="ch-misc.html#cb137-14" aria-hidden="true" tabindex="-1"></a>    f_kv_value_modified_of_key kv_value_modified_of_key<span class="op">;</span></span>
+<span id="cb137-15"><a href="ch-misc.html#cb137-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> kv_backend_t<span class="op">;</span></span></code></pre></div>
+<p>注意 <code>app_main</code> 里不能既调用 <code>kv_init</code> 又调用 <code>kv_init_backend</code>，会导致混乱。
+当 <code>app_main</code> 里既没有调用 <code>kv_init</code> 也没有调用 <code>kv_init_backend</code> 时，
+会使用默认的键值存储实现，且不支持数据持久化。</p>
+</div>
 </div>
 <div id="ch98-le-dev-db" class="section level2 hasAnchor" number="12.6">
 <h2><span class="header-section-number">12.6</span> 设备数据库<a href="ch-misc.html#ch98-le-dev-db" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>设备数据库模块（<em>le_device_db</em>）负责存储、管理设备的绑定信息。这个模块是基于键值存储模块实现的，
-所能存储的设备个数等于软件包所支持的连接数目。删、查等接口如下。</p>
+所能存储的设备个数等于 max(软件包所支持的连接数目, 10)<a href="#fn57" class="footnote-ref" id="fnref57"><sup>57</sup></a>。删、查等接口如下。</p>
 <ul>
 <li><p>查：<code>le_device_db_find</code></p>
-<div class="sourceCode" id="cb134"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb134-1"><a href="ch-misc.html#cb134-1" aria-hidden="true" tabindex="-1"></a>le_device_memory_db_t <span class="op">*</span>le_device_db_find<span class="op">(</span></span>
-<span id="cb134-2"><a href="ch-misc.html#cb134-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 待查设备的地址类型</span></span>
-<span id="cb134-3"><a href="ch-misc.html#cb134-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">int</span> addr_type<span class="op">,</span></span>
-<span id="cb134-4"><a href="ch-misc.html#cb134-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 待查设备的地址</span></span>
-<span id="cb134-5"><a href="ch-misc.html#cb134-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> bd_addr_t addr<span class="op">,</span></span>
-<span id="cb134-6"><a href="ch-misc.html#cb134-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 输出：在数据库里的序号</span></span>
-<span id="cb134-7"><a href="ch-misc.html#cb134-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> <span class="op">*</span>index<span class="op">);</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb138"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb138-1"><a href="ch-misc.html#cb138-1" aria-hidden="true" tabindex="-1"></a>le_device_memory_db_t <span class="op">*</span>le_device_db_find<span class="op">(</span></span>
+<span id="cb138-2"><a href="ch-misc.html#cb138-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 待查设备的地址类型</span></span>
+<span id="cb138-3"><a href="ch-misc.html#cb138-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">int</span> addr_type<span class="op">,</span></span>
+<span id="cb138-4"><a href="ch-misc.html#cb138-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 待查设备的地址</span></span>
+<span id="cb138-5"><a href="ch-misc.html#cb138-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> bd_addr_t addr<span class="op">,</span></span>
+<span id="cb138-6"><a href="ch-misc.html#cb138-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 输出：在数据库里的序号</span></span>
+<span id="cb138-7"><a href="ch-misc.html#cb138-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> <span class="op">*</span>index<span class="op">);</span></span></code></pre></div></li>
 <li><p>删</p>
 <p>直接按地址删除：</p>
-<div class="sourceCode" id="cb135"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb135-1"><a href="ch-misc.html#cb135-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> le_device_db_remove<span class="op">(</span></span>
-<span id="cb135-2"><a href="ch-misc.html#cb135-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 待删设备的地址类型</span></span>
-<span id="cb135-3"><a href="ch-misc.html#cb135-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">int</span> addr_type<span class="op">,</span></span>
-<span id="cb135-4"><a href="ch-misc.html#cb135-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 待删设备的地址</span></span>
-<span id="cb135-5"><a href="ch-misc.html#cb135-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> bd_addr_t addr<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb139"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb139-1"><a href="ch-misc.html#cb139-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> le_device_db_remove<span class="op">(</span></span>
+<span id="cb139-2"><a href="ch-misc.html#cb139-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 待删设备的地址类型</span></span>
+<span id="cb139-3"><a href="ch-misc.html#cb139-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">int</span> addr_type<span class="op">,</span></span>
+<span id="cb139-4"><a href="ch-misc.html#cb139-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 待删设备的地址</span></span>
+<span id="cb139-5"><a href="ch-misc.html#cb139-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> bd_addr_t addr<span class="op">);</span></span></code></pre></div>
 <p>根据在数据库里的编号删除：</p>
-<div class="sourceCode" id="cb136"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb136-1"><a href="ch-misc.html#cb136-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> le_device_db_remove_key<span class="op">(</span></span>
-<span id="cb136-2"><a href="ch-misc.html#cb136-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 待删设备在数据库里的编号</span></span>
-<span id="cb136-3"><a href="ch-misc.html#cb136-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> index<span class="op">);</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb140"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb140-1"><a href="ch-misc.html#cb140-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> le_device_db_remove_key<span class="op">(</span></span>
+<span id="cb140-2"><a href="ch-misc.html#cb140-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 待删设备在数据库里的编号</span></span>
+<span id="cb140-3"><a href="ch-misc.html#cb140-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> index<span class="op">);</span></span></code></pre></div></li>
 <li><p>遍历</p>
 <p>这个模块支持迭代器遍历：</p>
-<div class="sourceCode" id="cb137"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb137-1"><a href="ch-misc.html#cb137-1" aria-hidden="true" tabindex="-1"></a>le_device_memory_db_iter_t iter<span class="op">;</span></span>
-<span id="cb137-2"><a href="ch-misc.html#cb137-2" aria-hidden="true" tabindex="-1"></a>le_device_db_iter_init<span class="op">(&amp;</span>iter<span class="op">);</span></span>
-<span id="cb137-3"><a href="ch-misc.html#cb137-3" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="op">(</span>le_device_db_iter_next<span class="op">(&amp;</span>iter<span class="op">))</span></span>
-<span id="cb137-4"><a href="ch-misc.html#cb137-4" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb137-5"><a href="ch-misc.html#cb137-5" aria-hidden="true" tabindex="-1"></a>    le_device_memory_db_t <span class="op">*</span>cur <span class="op">=</span> le_device_db_iter_cur<span class="op">(&amp;</span>iter<span class="op">);</span></span>
-<span id="cb137-6"><a href="ch-misc.html#cb137-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
-<span id="cb137-7"><a href="ch-misc.html#cb137-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb141"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb141-1"><a href="ch-misc.html#cb141-1" aria-hidden="true" tabindex="-1"></a>le_device_memory_db_iter_t iter<span class="op">;</span></span>
+<span id="cb141-2"><a href="ch-misc.html#cb141-2" aria-hidden="true" tabindex="-1"></a>le_device_db_iter_init<span class="op">(&amp;</span>iter<span class="op">);</span></span>
+<span id="cb141-3"><a href="ch-misc.html#cb141-3" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="op">(</span>le_device_db_iter_next<span class="op">(&amp;</span>iter<span class="op">))</span></span>
+<span id="cb141-4"><a href="ch-misc.html#cb141-4" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb141-5"><a href="ch-misc.html#cb141-5" aria-hidden="true" tabindex="-1"></a>    le_device_memory_db_t <span class="op">*</span>cur <span class="op">=</span> le_device_db_iter_cur<span class="op">(&amp;</span>iter<span class="op">);</span></span>
+<span id="cb141-6"><a href="ch-misc.html#cb141-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
+<span id="cb141-7"><a href="ch-misc.html#cb141-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 </ul>
 </div>
 <div id="ch-misc-synced-api" class="section level2 hasAnchor" number="12.7">
@@ -766,8 +810,8 @@ DATA LENGTH 更新流程<a href="#fn55" class="footnote-ref" id="fnref55"><sup>5
 <ul>
 <li><p>v8.2 及以上版本（基于 <code>btstack_push_user_runnable</code> 实现）</p>
 <p>如下创建同步执行器对象：</p>
-<div class="sourceCode" id="cb138"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb138-1"><a href="ch-misc.html#cb138-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> gatt_client_synced_runner <span class="op">*</span>synced_runner <span class="op">=</span></span>
-<span id="cb138-2"><a href="ch-misc.html#cb138-2" aria-hidden="true" tabindex="-1"></a>    gatt_client_create_sync_runner<span class="op">(</span>enable_gap_api<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb142"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb142-1"><a href="ch-misc.html#cb142-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> gatt_client_synced_runner <span class="op">*</span>synced_runner <span class="op">=</span></span>
+<span id="cb142-2"><a href="ch-misc.html#cb142-2" aria-hidden="true" tabindex="-1"></a>    gatt_client_create_sync_runner<span class="op">(</span>enable_gap_api<span class="op">);</span></span></code></pre></div>
 <p>这里的 <code>enable_gap_api</code> 表示是否使能 GAP 同步版 API。</p></li>
 <li><p>v8.2 以下版本（基于 <code>btstack_push_user_msg</code> 实现）</p>
 <div class="rmdcaution">
@@ -779,142 +823,142 @@ v8.2 以下版本的 <em>gatt_client_util</em> 模块仅提供 GATT
 </div>
 <ol style="list-style-type: decimal">
 <li><p>基于 <code>btstack_push_user_msg</code> 实现一个消息传递函数，</p>
-<div class="sourceCode" id="cb139"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb139-1"><a href="ch-misc.html#cb139-1" aria-hidden="true" tabindex="-1"></a><span class="co">// runner 为同步执行器</span></span>
-<span id="cb139-2"><a href="ch-misc.html#cb139-2" aria-hidden="true" tabindex="-1"></a><span class="co">// msg_id 为同步执行器内部的消息，从其数据类型可看出最多只有 256 种 ID，</span></span>
-<span id="cb139-3"><a href="ch-misc.html#cb139-3" aria-hidden="true" tabindex="-1"></a><span class="co">// 可以映射到 btstack_push_user_msg 的 uint32_t 型消息 ID 的一个子集里。</span></span>
-<span id="cb139-4"><a href="ch-misc.html#cb139-4" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> synced_push_user_msg<span class="op">(</span></span>
-<span id="cb139-5"><a href="ch-misc.html#cb139-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> gatt_client_synced_runner <span class="op">*</span>runner<span class="op">,</span></span>
-<span id="cb139-6"><a href="ch-misc.html#cb139-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> msg_id<span class="op">)</span></span>
-<span id="cb139-7"><a href="ch-misc.html#cb139-7" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb139-8"><a href="ch-misc.html#cb139-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 把同步执行器消息映射到 USER_MSG_SYNC_MSG_START 以上</span></span>
-<span id="cb139-9"><a href="ch-misc.html#cb139-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// App 可以使用的消息 ID 范围是 [0..USER_MSG_SYNC_MSG_START - 1]</span></span>
-<span id="cb139-10"><a href="ch-misc.html#cb139-10" aria-hidden="true" tabindex="-1"></a>    btstack_push_user_msg<span class="op">(</span>USER_MSG_SYNC_MSG_START <span class="op">+</span> msg_id<span class="op">,</span></span>
-<span id="cb139-11"><a href="ch-misc.html#cb139-11" aria-hidden="true" tabindex="-1"></a>        runner<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
-<span id="cb139-12"><a href="ch-misc.html#cb139-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb143"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb143-1"><a href="ch-misc.html#cb143-1" aria-hidden="true" tabindex="-1"></a><span class="co">// runner 为同步执行器</span></span>
+<span id="cb143-2"><a href="ch-misc.html#cb143-2" aria-hidden="true" tabindex="-1"></a><span class="co">// msg_id 为同步执行器内部的消息，从其数据类型可看出最多只有 256 种 ID，</span></span>
+<span id="cb143-3"><a href="ch-misc.html#cb143-3" aria-hidden="true" tabindex="-1"></a><span class="co">// 可以映射到 btstack_push_user_msg 的 uint32_t 型消息 ID 的一个子集里。</span></span>
+<span id="cb143-4"><a href="ch-misc.html#cb143-4" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> synced_push_user_msg<span class="op">(</span></span>
+<span id="cb143-5"><a href="ch-misc.html#cb143-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> gatt_client_synced_runner <span class="op">*</span>runner<span class="op">,</span></span>
+<span id="cb143-6"><a href="ch-misc.html#cb143-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> msg_id<span class="op">)</span></span>
+<span id="cb143-7"><a href="ch-misc.html#cb143-7" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb143-8"><a href="ch-misc.html#cb143-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 把同步执行器消息映射到 USER_MSG_SYNC_MSG_START 以上</span></span>
+<span id="cb143-9"><a href="ch-misc.html#cb143-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// App 可以使用的消息 ID 范围是 [0..USER_MSG_SYNC_MSG_START - 1]</span></span>
+<span id="cb143-10"><a href="ch-misc.html#cb143-10" aria-hidden="true" tabindex="-1"></a>    btstack_push_user_msg<span class="op">(</span>USER_MSG_SYNC_MSG_START <span class="op">+</span> msg_id<span class="op">,</span></span>
+<span id="cb143-11"><a href="ch-misc.html#cb143-11" aria-hidden="true" tabindex="-1"></a>        runner<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb143-12"><a href="ch-misc.html#cb143-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 <li><p>更新 <code>user_msg_handler</code> 把同步执行器内部的消息交给 <code>gatt_client_sync_handle_msg</code></p>
-<div class="sourceCode" id="cb140"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb140-1"><a href="ch-misc.html#cb140-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> user_msg_handler<span class="op">(</span><span class="dt">uint32_t</span> msg_id<span class="op">,</span> <span class="dt">void</span> <span class="op">*</span>data<span class="op">,</span></span>
-<span id="cb140-2"><a href="ch-misc.html#cb140-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> size<span class="op">)</span></span>
-<span id="cb140-3"><a href="ch-misc.html#cb140-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb140-4"><a href="ch-misc.html#cb140-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">switch</span> <span class="op">(</span>msg_id<span class="op">)</span></span>
-<span id="cb140-5"><a href="ch-misc.html#cb140-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb140-6"><a href="ch-misc.html#cb140-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">//...</span></span>
-<span id="cb140-7"><a href="ch-misc.html#cb140-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">default</span><span class="op">:</span></span>
-<span id="cb140-8"><a href="ch-misc.html#cb140-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>msg_id <span class="op">&gt;=</span> USER_MSG_SYNC_MSG_START<span class="op">)</span></span>
-<span id="cb140-9"><a href="ch-misc.html#cb140-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span></span>
-<span id="cb140-10"><a href="ch-misc.html#cb140-10" aria-hidden="true" tabindex="-1"></a>            <span class="kw">struct</span> gatt_client_synced_runner <span class="op">*</span>runner <span class="op">=</span></span>
-<span id="cb140-11"><a href="ch-misc.html#cb140-11" aria-hidden="true" tabindex="-1"></a>                <span class="op">(</span><span class="kw">struct</span> gatt_client_synced_runner <span class="op">*)</span>data<span class="op">;</span></span>
-<span id="cb140-12"><a href="ch-misc.html#cb140-12" aria-hidden="true" tabindex="-1"></a>            gatt_client_sync_handle_msg<span class="op">(</span>runner<span class="op">,</span></span>
-<span id="cb140-13"><a href="ch-misc.html#cb140-13" aria-hidden="true" tabindex="-1"></a>                msg_id <span class="op">-</span> USER_MSG_SYNC_MSG_START<span class="op">);</span></span>
-<span id="cb140-14"><a href="ch-misc.html#cb140-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb140-15"><a href="ch-misc.html#cb140-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb140-16"><a href="ch-misc.html#cb140-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb144"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb144-1"><a href="ch-misc.html#cb144-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> user_msg_handler<span class="op">(</span><span class="dt">uint32_t</span> msg_id<span class="op">,</span> <span class="dt">void</span> <span class="op">*</span>data<span class="op">,</span></span>
+<span id="cb144-2"><a href="ch-misc.html#cb144-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> size<span class="op">)</span></span>
+<span id="cb144-3"><a href="ch-misc.html#cb144-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb144-4"><a href="ch-misc.html#cb144-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">switch</span> <span class="op">(</span>msg_id<span class="op">)</span></span>
+<span id="cb144-5"><a href="ch-misc.html#cb144-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb144-6"><a href="ch-misc.html#cb144-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">//...</span></span>
+<span id="cb144-7"><a href="ch-misc.html#cb144-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">default</span><span class="op">:</span></span>
+<span id="cb144-8"><a href="ch-misc.html#cb144-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>msg_id <span class="op">&gt;=</span> USER_MSG_SYNC_MSG_START<span class="op">)</span></span>
+<span id="cb144-9"><a href="ch-misc.html#cb144-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span></span>
+<span id="cb144-10"><a href="ch-misc.html#cb144-10" aria-hidden="true" tabindex="-1"></a>            <span class="kw">struct</span> gatt_client_synced_runner <span class="op">*</span>runner <span class="op">=</span></span>
+<span id="cb144-11"><a href="ch-misc.html#cb144-11" aria-hidden="true" tabindex="-1"></a>                <span class="op">(</span><span class="kw">struct</span> gatt_client_synced_runner <span class="op">*)</span>data<span class="op">;</span></span>
+<span id="cb144-12"><a href="ch-misc.html#cb144-12" aria-hidden="true" tabindex="-1"></a>            gatt_client_sync_handle_msg<span class="op">(</span>runner<span class="op">,</span></span>
+<span id="cb144-13"><a href="ch-misc.html#cb144-13" aria-hidden="true" tabindex="-1"></a>                msg_id <span class="op">-</span> USER_MSG_SYNC_MSG_START<span class="op">);</span></span>
+<span id="cb144-14"><a href="ch-misc.html#cb144-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb144-15"><a href="ch-misc.html#cb144-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb144-16"><a href="ch-misc.html#cb144-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 <li><p>创建同步执行器对象</p>
-<div class="sourceCode" id="cb141"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb141-1"><a href="ch-misc.html#cb141-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> gatt_client_synced_runner <span class="op">*</span>synced_runner <span class="op">=</span></span>
-<span id="cb141-2"><a href="ch-misc.html#cb141-2" aria-hidden="true" tabindex="-1"></a>    gatt_client_create_sync_runner<span class="op">(</span>synced_push_user_msg<span class="op">);</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb145"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb145-1"><a href="ch-misc.html#cb145-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> gatt_client_synced_runner <span class="op">*</span>synced_runner <span class="op">=</span></span>
+<span id="cb145-2"><a href="ch-misc.html#cb145-2" aria-hidden="true" tabindex="-1"></a>    gatt_client_create_sync_runner<span class="op">(</span>synced_push_user_msg<span class="op">);</span></span></code></pre></div></li>
 </ol></li>
 </ul>
-<p>注意：对于一个连接，最多只能存在一个与之关联的同步执行器。最简单的用法是在初始化时创建唯一一个同步执行器对象<a href="#fn57" class="footnote-ref" id="fnref57"><sup>57</sup></a>。创建多个同步执行器时，最多只能有一个使能了 GAP 同步版 API。</p>
+<p>注意：对于一个连接，最多只能存在一个与之关联的同步执行器。最简单的用法是在初始化时创建唯一一个同步执行器对象<a href="#fn58" class="footnote-ref" id="fnref58"><sup>58</sup></a>。创建多个同步执行器时，最多只能有一个使能了 GAP 同步版 API。</p>
 <p>上述准备工作做完，就可以使用同步 API 了。下面这个函数 —— 称为一个同步执行体 —— 使用同步 API 多次读取某个特征的值并打印：</p>
-<div class="sourceCode" id="cb142"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb142-1"><a href="ch-misc.html#cb142-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 用 user_data 表示 value_handle</span></span>
-<span id="cb142-2"><a href="ch-misc.html#cb142-2" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> demo_synced_api<span class="op">(</span></span>
-<span id="cb142-3"><a href="ch-misc.html#cb142-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> gatt_client_synced_runner <span class="op">*</span>synced_runner<span class="op">,</span></span>
-<span id="cb142-4"><a href="ch-misc.html#cb142-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
-<span id="cb142-5"><a href="ch-misc.html#cb142-5" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb142-6"><a href="ch-misc.html#cb142-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> handle <span class="op">=</span> <span class="op">(</span><span class="dt">uint16_t</span><span class="op">)(</span><span class="dt">uintptr_t</span><span class="op">)</span>user_data<span class="op">;</span></span>
-<span id="cb142-7"><a href="ch-misc.html#cb142-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">static</span> <span class="dt">uint8_t</span> data<span class="op">[</span><span class="dv">255</span><span class="op">];</span></span>
-<span id="cb142-8"><a href="ch-misc.html#cb142-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> n <span class="op">=</span> <span class="dv">5</span><span class="op">;</span></span>
-<span id="cb142-9"><a href="ch-misc.html#cb142-9" aria-hidden="true" tabindex="-1"></a>    printf<span class="op">(</span><span class="st">&quot;synced read value for %d times:</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> n<span class="op">);</span></span>
-<span id="cb142-10"><a href="ch-misc.html#cb142-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb142-11"><a href="ch-misc.html#cb142-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(;</span> n <span class="op">&gt;</span> <span class="dv">0</span><span class="op">;</span> n<span class="op">--)</span></span>
-<span id="cb142-12"><a href="ch-misc.html#cb142-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb142-13"><a href="ch-misc.html#cb142-13" aria-hidden="true" tabindex="-1"></a>        <span class="dt">uint16_t</span> length <span class="op">=</span> <span class="kw">sizeof</span><span class="op">(</span>data<span class="op">);</span></span>
-<span id="cb142-14"><a href="ch-misc.html#cb142-14" aria-hidden="true" tabindex="-1"></a>        <span class="co">// 注意：这个函数返回后，数据就读取完成了</span></span>
-<span id="cb142-15"><a href="ch-misc.html#cb142-15" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> err <span class="op">=</span> gatt_client_sync_read_value_of_characteristic<span class="op">(</span></span>
-<span id="cb142-16"><a href="ch-misc.html#cb142-16" aria-hidden="true" tabindex="-1"></a>                synced_runner<span class="op">,</span> mas_conn_handle<span class="op">,</span> handle<span class="op">,</span></span>
-<span id="cb142-17"><a href="ch-misc.html#cb142-17" aria-hidden="true" tabindex="-1"></a>                data<span class="op">,</span> <span class="op">&amp;</span>length<span class="op">);</span></span>
-<span id="cb142-18"><a href="ch-misc.html#cb142-18" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;[%d]: err = %d:</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> n<span class="op">,</span> err<span class="op">);</span></span>
-<span id="cb142-19"><a href="ch-misc.html#cb142-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>err<span class="op">)</span> <span class="cf">break</span><span class="op">;</span></span>
-<span id="cb142-20"><a href="ch-misc.html#cb142-20" aria-hidden="true" tabindex="-1"></a>        <span class="co">// print_value(data, length);</span></span>
-<span id="cb142-21"><a href="ch-misc.html#cb142-21" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;wait for 200ms...</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> n<span class="op">,</span> err<span class="op">);</span></span>
-<span id="cb142-22"><a href="ch-misc.html#cb142-22" aria-hidden="true" tabindex="-1"></a>        vTaskDelay<span class="op">(</span>pdMS_TO_TICKS<span class="op">(</span><span class="dv">200</span><span class="op">));</span></span>
-<span id="cb142-23"><a href="ch-misc.html#cb142-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb142-24"><a href="ch-misc.html#cb142-24" aria-hidden="true" tabindex="-1"></a>    printf<span class="op">(</span><span class="st">&quot;done</span><span class="sc">\n\n</span><span class="st">&quot;</span><span class="op">);</span></span>
-<span id="cb142-25"><a href="ch-misc.html#cb142-25" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb146"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb146-1"><a href="ch-misc.html#cb146-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 用 user_data 表示 value_handle</span></span>
+<span id="cb146-2"><a href="ch-misc.html#cb146-2" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> demo_synced_api<span class="op">(</span></span>
+<span id="cb146-3"><a href="ch-misc.html#cb146-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> gatt_client_synced_runner <span class="op">*</span>synced_runner<span class="op">,</span></span>
+<span id="cb146-4"><a href="ch-misc.html#cb146-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
+<span id="cb146-5"><a href="ch-misc.html#cb146-5" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb146-6"><a href="ch-misc.html#cb146-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> handle <span class="op">=</span> <span class="op">(</span><span class="dt">uint16_t</span><span class="op">)(</span><span class="dt">uintptr_t</span><span class="op">)</span>user_data<span class="op">;</span></span>
+<span id="cb146-7"><a href="ch-misc.html#cb146-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">static</span> <span class="dt">uint8_t</span> data<span class="op">[</span><span class="dv">255</span><span class="op">];</span></span>
+<span id="cb146-8"><a href="ch-misc.html#cb146-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> n <span class="op">=</span> <span class="dv">5</span><span class="op">;</span></span>
+<span id="cb146-9"><a href="ch-misc.html#cb146-9" aria-hidden="true" tabindex="-1"></a>    printf<span class="op">(</span><span class="st">&quot;synced read value for %d times:</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> n<span class="op">);</span></span>
+<span id="cb146-10"><a href="ch-misc.html#cb146-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb146-11"><a href="ch-misc.html#cb146-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(;</span> n <span class="op">&gt;</span> <span class="dv">0</span><span class="op">;</span> n<span class="op">--)</span></span>
+<span id="cb146-12"><a href="ch-misc.html#cb146-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb146-13"><a href="ch-misc.html#cb146-13" aria-hidden="true" tabindex="-1"></a>        <span class="dt">uint16_t</span> length <span class="op">=</span> <span class="kw">sizeof</span><span class="op">(</span>data<span class="op">);</span></span>
+<span id="cb146-14"><a href="ch-misc.html#cb146-14" aria-hidden="true" tabindex="-1"></a>        <span class="co">// 注意：这个函数返回后，数据就读取完成了</span></span>
+<span id="cb146-15"><a href="ch-misc.html#cb146-15" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> err <span class="op">=</span> gatt_client_sync_read_value_of_characteristic<span class="op">(</span></span>
+<span id="cb146-16"><a href="ch-misc.html#cb146-16" aria-hidden="true" tabindex="-1"></a>                synced_runner<span class="op">,</span> mas_conn_handle<span class="op">,</span> handle<span class="op">,</span></span>
+<span id="cb146-17"><a href="ch-misc.html#cb146-17" aria-hidden="true" tabindex="-1"></a>                data<span class="op">,</span> <span class="op">&amp;</span>length<span class="op">);</span></span>
+<span id="cb146-18"><a href="ch-misc.html#cb146-18" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;[%d]: err = %d:</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> n<span class="op">,</span> err<span class="op">);</span></span>
+<span id="cb146-19"><a href="ch-misc.html#cb146-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>err<span class="op">)</span> <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb146-20"><a href="ch-misc.html#cb146-20" aria-hidden="true" tabindex="-1"></a>        <span class="co">// print_value(data, length);</span></span>
+<span id="cb146-21"><a href="ch-misc.html#cb146-21" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;wait for 200ms...</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> n<span class="op">,</span> err<span class="op">);</span></span>
+<span id="cb146-22"><a href="ch-misc.html#cb146-22" aria-hidden="true" tabindex="-1"></a>        vTaskDelay<span class="op">(</span>pdMS_TO_TICKS<span class="op">(</span><span class="dv">200</span><span class="op">));</span></span>
+<span id="cb146-23"><a href="ch-misc.html#cb146-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb146-24"><a href="ch-misc.html#cb146-24" aria-hidden="true" tabindex="-1"></a>    printf<span class="op">(</span><span class="st">&quot;done</span><span class="sc">\n\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb146-25"><a href="ch-misc.html#cb146-25" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>这种同步执行体不能直接使用，而要交给同步执行器去执行：</p>
-<div class="sourceCode" id="cb143"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb143-1"><a href="ch-misc.html#cb143-1" aria-hidden="true" tabindex="-1"></a>gatt_client_sync_run<span class="op">(</span>synced_runner<span class="op">,</span> demo_synced_api<span class="op">,</span></span>
-<span id="cb143-2"><a href="ch-misc.html#cb143-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span><span class="dt">void</span> <span class="op">*)(</span><span class="dt">uintptr_t</span><span class="op">)</span>value_handle<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb147"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb147-1"><a href="ch-misc.html#cb147-1" aria-hidden="true" tabindex="-1"></a>gatt_client_sync_run<span class="op">(</span>synced_runner<span class="op">,</span> demo_synced_api<span class="op">,</span></span>
+<span id="cb147-2"><a href="ch-misc.html#cb147-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span><span class="dt">void</span> <span class="op">*)(</span><span class="dt">uintptr_t</span><span class="op">)</span>value_handle<span class="op">);</span></span></code></pre></div>
 <p>这里，<code>demo_synced_api</code> 函数运行于同步执行器内的线程。<code>gatt_client_sync_run</code> 可以从任意线程调用。</p>
 <div id="gap-同步-api" class="section level3 hasAnchor" number="12.7.1">
 <h3><span class="header-section-number">12.7.1</span> GAP 同步 API<a href="ch-misc.html#gap-同步-api" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <ul>
 <li><p><code>gap_sync_ext_create_connection</code>：建立连接</p>
-<div class="sourceCode" id="cb144"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb144-1"><a href="ch-misc.html#cb144-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> gap_sync_ext_create_connection<span class="op">(</span></span>
-<span id="cb144-2"><a href="ch-misc.html#cb144-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> btstack_synced_runner <span class="op">*</span>runner<span class="op">,</span></span>
-<span id="cb144-3"><a href="ch-misc.html#cb144-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> initiating_filter_policy_t filter_policy<span class="op">,</span></span>
-<span id="cb144-4"><a href="ch-misc.html#cb144-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> bd_addr_type_t own_addr_type<span class="op">,</span></span>
-<span id="cb144-5"><a href="ch-misc.html#cb144-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> bd_addr_type_t peer_addr_type<span class="op">,</span></span>
-<span id="cb144-6"><a href="ch-misc.html#cb144-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>peer_addr<span class="op">,</span></span>
-<span id="cb144-7"><a href="ch-misc.html#cb144-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> initiating_phy_num<span class="op">,</span></span>
-<span id="cb144-8"><a href="ch-misc.html#cb144-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> initiating_phy_config_t <span class="op">*</span>phy_configs<span class="op">,</span></span>
-<span id="cb144-9"><a href="ch-misc.html#cb144-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> timeout_ms<span class="op">,</span></span>
-<span id="cb144-10"><a href="ch-misc.html#cb144-10" aria-hidden="true" tabindex="-1"></a>    le_meta_event_enh_create_conn_complete_t <span class="op">*</span>complete<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb148"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb148-1"><a href="ch-misc.html#cb148-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> gap_sync_ext_create_connection<span class="op">(</span></span>
+<span id="cb148-2"><a href="ch-misc.html#cb148-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> btstack_synced_runner <span class="op">*</span>runner<span class="op">,</span></span>
+<span id="cb148-3"><a href="ch-misc.html#cb148-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> initiating_filter_policy_t filter_policy<span class="op">,</span></span>
+<span id="cb148-4"><a href="ch-misc.html#cb148-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> bd_addr_type_t own_addr_type<span class="op">,</span></span>
+<span id="cb148-5"><a href="ch-misc.html#cb148-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> bd_addr_type_t peer_addr_type<span class="op">,</span></span>
+<span id="cb148-6"><a href="ch-misc.html#cb148-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>peer_addr<span class="op">,</span></span>
+<span id="cb148-7"><a href="ch-misc.html#cb148-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> initiating_phy_num<span class="op">,</span></span>
+<span id="cb148-8"><a href="ch-misc.html#cb148-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> initiating_phy_config_t <span class="op">*</span>phy_configs<span class="op">,</span></span>
+<span id="cb148-9"><a href="ch-misc.html#cb148-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> timeout_ms<span class="op">,</span></span>
+<span id="cb148-10"><a href="ch-misc.html#cb148-10" aria-hidden="true" tabindex="-1"></a>    le_meta_event_enh_create_conn_complete_t <span class="op">*</span>complete<span class="op">);</span></span></code></pre></div>
 <p>与 <code>gap_ext_create_connection</code> 相比，这个函数是“阻塞”的：函数直到连接成功或者超时才返回。
 如果调用 <code>gap_create_connection</code> 时出错，则 <code>gap_ext_create_connection</code> 会返回其错误码；
 其它情况下返回的值即 <code>le_meta_event_enh_create_conn_complete_t</code> 里的 <code>status</code> 字段。
-也就是说，连接建立成功时返回值为 0 时，超时时返回值为 0x02<a href="#fn58" class="footnote-ref" id="fnref58"><sup>58</sup></a> (未知的连接句柄)。</p>
+也就是说，连接建立成功时返回值为 0 时，超时时返回值为 0x02<a href="#fn59" class="footnote-ref" id="fnref59"><sup>59</sup></a> (未知的连接句柄)。</p>
 <p><code>complete</code> 参数为输出，保存了<code>HCI_SUBEVENT_LE_ENHANCED_CONNECTION_COMPLETE</code> 事件的数据。
 同使用 <code>gap_ext_create_connection</code> 一样，已有的 HCI 事件回调函数也会收到
 这个 <code>HCI_SUBEVENT_LE_ENHANCED_CONNECTION_COMPLETE</code> 事件。</p></li>
 <li><p><code>gap_sync_le_read_channel_map</code>：读取某连接所使用的信道集合</p>
 <p>函数原型如下：</p>
-<div class="sourceCode" id="cb145"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb145-1"><a href="ch-misc.html#cb145-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> gap_sync_le_read_channel_map<span class="op">(</span></span>
-<span id="cb145-2"><a href="ch-misc.html#cb145-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">struct</span> btstack_synced_runner <span class="op">*</span>runner<span class="op">,</span></span>
-<span id="cb145-3"><a href="ch-misc.html#cb145-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 连接句柄</span></span>
-<span id="cb145-4"><a href="ch-misc.html#cb145-4" aria-hidden="true" tabindex="-1"></a>  hci_con_handle_t con_handle<span class="op">,</span></span>
-<span id="cb145-5"><a href="ch-misc.html#cb145-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 用前 37 个比特表示的信道集合</span></span>
-<span id="cb145-6"><a href="ch-misc.html#cb145-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> channel_map<span class="op">[</span><span class="dv">5</span><span class="op">]);</span></span></code></pre></div></li>
-<li><p><code>gap_sync_read_rssi</code>：读取某连接的 RSSI</p>
-<p>函数原型如下：</p>
-<div class="sourceCode" id="cb146"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb146-1"><a href="ch-misc.html#cb146-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> gap_sync_read_rssi<span class="op">(</span></span>
-<span id="cb146-2"><a href="ch-misc.html#cb146-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">struct</span> btstack_synced_runner <span class="op">*</span>runner<span class="op">,</span></span>
-<span id="cb146-3"><a href="ch-misc.html#cb146-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 连接句柄</span></span>
-<span id="cb146-4"><a href="ch-misc.html#cb146-4" aria-hidden="true" tabindex="-1"></a>  hci_con_handle_t con_handle<span class="op">,</span></span>
-<span id="cb146-5"><a href="ch-misc.html#cb146-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// RSSI 输出</span></span>
-<span id="cb146-6"><a href="ch-misc.html#cb146-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int8_t</span> <span class="op">*</span>rssi<span class="op">);</span></span></code></pre></div></li>
-<li><p><code>gap_sync_read_phy</code>：读取某连接的 PHY</p>
-<p>函数原型如下：</p>
-<div class="sourceCode" id="cb147"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb147-1"><a href="ch-misc.html#cb147-1" aria-hidden="true" tabindex="-1"></a>gap_sync_read_phy<span class="op">(</span></span>
-<span id="cb147-2"><a href="ch-misc.html#cb147-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">struct</span> btstack_synced_runner <span class="op">*</span>runner<span class="op">,</span></span>
-<span id="cb147-3"><a href="ch-misc.html#cb147-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 连接句柄</span></span>
-<span id="cb147-4"><a href="ch-misc.html#cb147-4" aria-hidden="true" tabindex="-1"></a>  hci_con_handle_t con_handle<span class="op">,</span></span>
-<span id="cb147-5"><a href="ch-misc.html#cb147-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 本设备发送方向使用的 PHY</span></span>
-<span id="cb147-6"><a href="ch-misc.html#cb147-6" aria-hidden="true" tabindex="-1"></a>  phy_type_t <span class="op">*</span>tx_phy<span class="op">,</span></span>
-<span id="cb147-7"><a href="ch-misc.html#cb147-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 本设备接收方向使用的 PHY</span></span>
-<span id="cb147-8"><a href="ch-misc.html#cb147-8" aria-hidden="true" tabindex="-1"></a>  phy_type_t <span class="op">*</span>rx_phy<span class="op">);</span></span></code></pre></div></li>
-<li><p><code>gap_sync_read_remote_version</code>：读取某连接对端设备的版本</p>
-<p>函数原型如下：</p>
-<div class="sourceCode" id="cb148"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb148-1"><a href="ch-misc.html#cb148-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> gap_sync_read_remote_version<span class="op">(</span></span>
-<span id="cb148-2"><a href="ch-misc.html#cb148-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">struct</span> btstack_synced_runner <span class="op">*</span>runner<span class="op">,</span></span>
-<span id="cb148-3"><a href="ch-misc.html#cb148-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 连接句柄</span></span>
-<span id="cb148-4"><a href="ch-misc.html#cb148-4" aria-hidden="true" tabindex="-1"></a>  hci_con_handle_t con_handle<span class="op">,</span></span>
-<span id="cb148-5"><a href="ch-misc.html#cb148-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 蓝牙链路层协议版本编号</span></span>
-<span id="cb148-6"><a href="ch-misc.html#cb148-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> <span class="op">*</span>version<span class="op">,</span></span>
-<span id="cb148-7"><a href="ch-misc.html#cb148-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 厂家编号</span></span>
-<span id="cb148-8"><a href="ch-misc.html#cb148-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> <span class="op">*</span>manufacturer_name<span class="op">,</span></span>
-<span id="cb148-9"><a href="ch-misc.html#cb148-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Controller 版本号</span></span>
-<span id="cb148-10"><a href="ch-misc.html#cb148-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> <span class="op">*</span>subversion<span class="op">);</span></span></code></pre></div>
-<p>蓝牙链路层协议版本号由 Bluethooth SIG 指定，部分编号与版本号的对应关系如表
-<a href="ch-overview.html#tab:ch-overview-ble-version">3.4</a> 所示；
-厂家编号由厂家申请、Bluethooth SIG 指定<a href="#fn59" class="footnote-ref" id="fnref59"><sup>59</sup></a>；
-Controller 版本号由 Controller 厂家自行指定。</p></li>
-<li><p><code>gap_sync_read_remote_used_features</code>：读取某连接对端设备使用的蓝牙特性</p>
-<p>函数原型如下：</p>
-<div class="sourceCode" id="cb149"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb149-1"><a href="ch-misc.html#cb149-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> gap_sync_read_remote_used_features<span class="op">(</span></span>
+<div class="sourceCode" id="cb149"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb149-1"><a href="ch-misc.html#cb149-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> gap_sync_le_read_channel_map<span class="op">(</span></span>
 <span id="cb149-2"><a href="ch-misc.html#cb149-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">struct</span> btstack_synced_runner <span class="op">*</span>runner<span class="op">,</span></span>
 <span id="cb149-3"><a href="ch-misc.html#cb149-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 连接句柄</span></span>
 <span id="cb149-4"><a href="ch-misc.html#cb149-4" aria-hidden="true" tabindex="-1"></a>  hci_con_handle_t con_handle<span class="op">,</span></span>
-<span id="cb149-5"><a href="ch-misc.html#cb149-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 蓝牙特性比特图</span></span>
-<span id="cb149-6"><a href="ch-misc.html#cb149-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> features<span class="op">[</span><span class="dv">8</span><span class="op">]);</span></span></code></pre></div>
+<span id="cb149-5"><a href="ch-misc.html#cb149-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 用前 37 个比特表示的信道集合</span></span>
+<span id="cb149-6"><a href="ch-misc.html#cb149-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> channel_map<span class="op">[</span><span class="dv">5</span><span class="op">]);</span></span></code></pre></div></li>
+<li><p><code>gap_sync_read_rssi</code>：读取某连接的 RSSI</p>
+<p>函数原型如下：</p>
+<div class="sourceCode" id="cb150"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb150-1"><a href="ch-misc.html#cb150-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> gap_sync_read_rssi<span class="op">(</span></span>
+<span id="cb150-2"><a href="ch-misc.html#cb150-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">struct</span> btstack_synced_runner <span class="op">*</span>runner<span class="op">,</span></span>
+<span id="cb150-3"><a href="ch-misc.html#cb150-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 连接句柄</span></span>
+<span id="cb150-4"><a href="ch-misc.html#cb150-4" aria-hidden="true" tabindex="-1"></a>  hci_con_handle_t con_handle<span class="op">,</span></span>
+<span id="cb150-5"><a href="ch-misc.html#cb150-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// RSSI 输出</span></span>
+<span id="cb150-6"><a href="ch-misc.html#cb150-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int8_t</span> <span class="op">*</span>rssi<span class="op">);</span></span></code></pre></div></li>
+<li><p><code>gap_sync_read_phy</code>：读取某连接的 PHY</p>
+<p>函数原型如下：</p>
+<div class="sourceCode" id="cb151"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb151-1"><a href="ch-misc.html#cb151-1" aria-hidden="true" tabindex="-1"></a>gap_sync_read_phy<span class="op">(</span></span>
+<span id="cb151-2"><a href="ch-misc.html#cb151-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">struct</span> btstack_synced_runner <span class="op">*</span>runner<span class="op">,</span></span>
+<span id="cb151-3"><a href="ch-misc.html#cb151-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 连接句柄</span></span>
+<span id="cb151-4"><a href="ch-misc.html#cb151-4" aria-hidden="true" tabindex="-1"></a>  hci_con_handle_t con_handle<span class="op">,</span></span>
+<span id="cb151-5"><a href="ch-misc.html#cb151-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 本设备发送方向使用的 PHY</span></span>
+<span id="cb151-6"><a href="ch-misc.html#cb151-6" aria-hidden="true" tabindex="-1"></a>  phy_type_t <span class="op">*</span>tx_phy<span class="op">,</span></span>
+<span id="cb151-7"><a href="ch-misc.html#cb151-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 本设备接收方向使用的 PHY</span></span>
+<span id="cb151-8"><a href="ch-misc.html#cb151-8" aria-hidden="true" tabindex="-1"></a>  phy_type_t <span class="op">*</span>rx_phy<span class="op">);</span></span></code></pre></div></li>
+<li><p><code>gap_sync_read_remote_version</code>：读取某连接对端设备的版本</p>
+<p>函数原型如下：</p>
+<div class="sourceCode" id="cb152"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb152-1"><a href="ch-misc.html#cb152-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> gap_sync_read_remote_version<span class="op">(</span></span>
+<span id="cb152-2"><a href="ch-misc.html#cb152-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">struct</span> btstack_synced_runner <span class="op">*</span>runner<span class="op">,</span></span>
+<span id="cb152-3"><a href="ch-misc.html#cb152-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 连接句柄</span></span>
+<span id="cb152-4"><a href="ch-misc.html#cb152-4" aria-hidden="true" tabindex="-1"></a>  hci_con_handle_t con_handle<span class="op">,</span></span>
+<span id="cb152-5"><a href="ch-misc.html#cb152-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 蓝牙链路层协议版本编号</span></span>
+<span id="cb152-6"><a href="ch-misc.html#cb152-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> <span class="op">*</span>version<span class="op">,</span></span>
+<span id="cb152-7"><a href="ch-misc.html#cb152-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 厂家编号</span></span>
+<span id="cb152-8"><a href="ch-misc.html#cb152-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> <span class="op">*</span>manufacturer_name<span class="op">,</span></span>
+<span id="cb152-9"><a href="ch-misc.html#cb152-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Controller 版本号</span></span>
+<span id="cb152-10"><a href="ch-misc.html#cb152-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> <span class="op">*</span>subversion<span class="op">);</span></span></code></pre></div>
+<p>蓝牙链路层协议版本号由 Bluethooth SIG 指定，部分编号与版本号的对应关系如表
+<a href="ch-overview.html#tab:ch-overview-ble-version">3.4</a> 所示；
+厂家编号由厂家申请、Bluethooth SIG 指定<a href="#fn60" class="footnote-ref" id="fnref60"><sup>60</sup></a>；
+Controller 版本号由 Controller 厂家自行指定。</p></li>
+<li><p><code>gap_sync_read_remote_used_features</code>：读取某连接对端设备使用的蓝牙特性</p>
+<p>函数原型如下：</p>
+<div class="sourceCode" id="cb153"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb153-1"><a href="ch-misc.html#cb153-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> gap_sync_read_remote_used_features<span class="op">(</span></span>
+<span id="cb153-2"><a href="ch-misc.html#cb153-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">struct</span> btstack_synced_runner <span class="op">*</span>runner<span class="op">,</span></span>
+<span id="cb153-3"><a href="ch-misc.html#cb153-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 连接句柄</span></span>
+<span id="cb153-4"><a href="ch-misc.html#cb153-4" aria-hidden="true" tabindex="-1"></a>  hci_con_handle_t con_handle<span class="op">,</span></span>
+<span id="cb153-5"><a href="ch-misc.html#cb153-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 蓝牙特性比特图</span></span>
+<span id="cb153-6"><a href="ch-misc.html#cb153-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> features<span class="op">[</span><span class="dv">8</span><span class="op">]);</span></span></code></pre></div>
 <p>蓝牙特性的定义参见表 <a href="ch-overview.html#tab:ch-overview-ble-features">3.3</a>。</p></li>
 </ul>
 </div>
@@ -926,7 +970,7 @@ Controller 版本号由 Controller 厂家自行指定。</p></li>
 <li><p><code>gatt_client_sync_read_value_of_characteristic</code>：同步读取特征的值</p></li>
 <li><p><code>gatt_client_sync_read_characteristic_descriptor</code>：同步读取特征描述符</p></li>
 <li><p><code>gatt_client_sync_write_value_of_characteristic</code>：同步有响应地写入特征的值</p></li>
-<li><p><code>gatt_client_sync_write_value_of_characteristic_without_response</code>：同步无响应地写入特征的值<a href="#fn60" class="footnote-ref" id="fnref60"><sup>60</sup></a></p></li>
+<li><p><code>gatt_client_sync_write_value_of_characteristic_without_response</code>：同步无响应地写入特征的值<a href="#fn61" class="footnote-ref" id="fnref61"><sup>61</sup></a></p></li>
 <li><p><code>gatt_client_sync_write_characteristic_descriptor</code>：同步写入特征描述符</p></li>
 </ul>
 </div>
@@ -938,44 +982,44 @@ Controller 版本号由 Controller 厂家自行指定。</p></li>
 每个 API 与原始 API 参数完全一致，得到的返回值也相同，只是函数名称增加了表示多线程的 <code>mt_</code> 前辍。</p>
 <p>每个 <code>mt_foo</code> 函数都有一个 <code>f_btstack_user_runnable</code> 类型的辅助函数 <code>foo_0</code>，调用背后的
 <code>foo</code> 所需要的参数及保存返回值的变量等都通过第一个参数 <code>ctx</code> 传入，伪代码如下：</p>
-<div class="sourceCode" id="cb150"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb150-1"><a href="ch-misc.html#cb150-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> foo_0<span class="op">(*</span>ctx<span class="op">,</span> <span class="dt">uint16_t</span> _<span class="op">)</span></span>
-<span id="cb150-2"><a href="ch-misc.html#cb150-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb150-3"><a href="ch-misc.html#cb150-3" aria-hidden="true" tabindex="-1"></a>  ctx<span class="op">-&gt;</span>_ret <span class="op">=</span> foo<span class="op">(</span>ctx<span class="op">-&gt;</span>param<span class="op">);</span></span>
-<span id="cb150-4"><a href="ch-misc.html#cb150-4" aria-hidden="true" tabindex="-1"></a>  event_set<span class="op">(</span>ctx<span class="op">-&gt;</span>_event<span class="op">);</span></span>
-<span id="cb150-5"><a href="ch-misc.html#cb150-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb154"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb154-1"><a href="ch-misc.html#cb154-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> foo_0<span class="op">(*</span>ctx<span class="op">,</span> <span class="dt">uint16_t</span> _<span class="op">)</span></span>
+<span id="cb154-2"><a href="ch-misc.html#cb154-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb154-3"><a href="ch-misc.html#cb154-3" aria-hidden="true" tabindex="-1"></a>  ctx<span class="op">-&gt;</span>_ret <span class="op">=</span> foo<span class="op">(</span>ctx<span class="op">-&gt;</span>param<span class="op">);</span></span>
+<span id="cb154-4"><a href="ch-misc.html#cb154-4" aria-hidden="true" tabindex="-1"></a>  event_set<span class="op">(</span>ctx<span class="op">-&gt;</span>_event<span class="op">);</span></span>
+<span id="cb154-5"><a href="ch-misc.html#cb154-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p><code>mt_foo</code> 的伪代码如下：</p>
-<div class="sourceCode" id="cb151"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb151-1"><a href="ch-misc.html#cb151-1" aria-hidden="true" tabindex="-1"></a>type mt_foo<span class="op">(</span>param<span class="op">)</span></span>
-<span id="cb151-2"><a href="ch-misc.html#cb151-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb151-3"><a href="ch-misc.html#cb151-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>in Host task<span class="op">)</span></span>
-<span id="cb151-4"><a href="ch-misc.html#cb151-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> foo<span class="op">(</span>param<span class="op">);</span></span>
-<span id="cb151-5"><a href="ch-misc.html#cb151-5" aria-hidden="true" tabindex="-1"></a>  ctx<span class="op">-&gt;</span>param <span class="op">=</span> param<span class="op">;</span></span>
-<span id="cb151-6"><a href="ch-misc.html#cb151-6" aria-hidden="true" tabindex="-1"></a>  ctx<span class="op">-&gt;</span>_event <span class="op">=</span> event_create<span class="op">();</span></span>
-<span id="cb151-7"><a href="ch-misc.html#cb151-7" aria-hidden="true" tabindex="-1"></a>  btstack_push_user_runnable<span class="op">(</span>foo_0<span class="op">,</span> <span class="op">&amp;</span>ctx<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
-<span id="cb151-8"><a href="ch-misc.html#cb151-8" aria-hidden="true" tabindex="-1"></a>  event_wait<span class="op">(</span>ctx<span class="op">-&gt;</span>_event<span class="op">);</span></span>
-<span id="cb151-9"><a href="ch-misc.html#cb151-9" aria-hidden="true" tabindex="-1"></a>  event_free<span class="op">(</span>ctx<span class="op">-&gt;</span>_event<span class="op">);</span></span>
-<span id="cb151-10"><a href="ch-misc.html#cb151-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> ctx<span class="op">-&gt;</span>_ret<span class="op">;</span></span>
-<span id="cb151-11"><a href="ch-misc.html#cb151-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb155"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb155-1"><a href="ch-misc.html#cb155-1" aria-hidden="true" tabindex="-1"></a>type mt_foo<span class="op">(</span>param<span class="op">)</span></span>
+<span id="cb155-2"><a href="ch-misc.html#cb155-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb155-3"><a href="ch-misc.html#cb155-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>in Host task<span class="op">)</span></span>
+<span id="cb155-4"><a href="ch-misc.html#cb155-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> foo<span class="op">(</span>param<span class="op">);</span></span>
+<span id="cb155-5"><a href="ch-misc.html#cb155-5" aria-hidden="true" tabindex="-1"></a>  ctx<span class="op">-&gt;</span>param <span class="op">=</span> param<span class="op">;</span></span>
+<span id="cb155-6"><a href="ch-misc.html#cb155-6" aria-hidden="true" tabindex="-1"></a>  ctx<span class="op">-&gt;</span>_event <span class="op">=</span> event_create<span class="op">();</span></span>
+<span id="cb155-7"><a href="ch-misc.html#cb155-7" aria-hidden="true" tabindex="-1"></a>  btstack_push_user_runnable<span class="op">(</span>foo_0<span class="op">,</span> <span class="op">&amp;</span>ctx<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb155-8"><a href="ch-misc.html#cb155-8" aria-hidden="true" tabindex="-1"></a>  event_wait<span class="op">(</span>ctx<span class="op">-&gt;</span>_event<span class="op">);</span></span>
+<span id="cb155-9"><a href="ch-misc.html#cb155-9" aria-hidden="true" tabindex="-1"></a>  event_free<span class="op">(</span>ctx<span class="op">-&gt;</span>_event<span class="op">);</span></span>
+<span id="cb155-10"><a href="ch-misc.html#cb155-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> ctx<span class="op">-&gt;</span>_ret<span class="op">;</span></span>
+<span id="cb155-11"><a href="ch-misc.html#cb155-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>由于通用 OS 接口未提供释放的接口，所以这个模块实现了一个事件对象池以模拟事件的释放（伪代码里的 <code>event_free</code>）。</p>
 <p>用上述“阻塞”方式实现的线程安全 API，既可以获取实际的返回值，也可以避免复制内存数据。
 允许这样的用法：</p>
-<div class="sourceCode" id="cb152"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb152-1"><a href="ch-misc.html#cb152-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> do_some_thing<span class="op">()</span></span>
-<span id="cb152-2"><a href="ch-misc.html#cb152-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb152-3"><a href="ch-misc.html#cb152-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> data<span class="op">[</span><span class="dv">10</span><span class="op">];</span></span>
-<span id="cb152-4"><a href="ch-misc.html#cb152-4" aria-hidden="true" tabindex="-1"></a>  向 data 写入数据<span class="op">;</span></span>
-<span id="cb152-5"><a href="ch-misc.html#cb152-5" aria-hidden="true" tabindex="-1"></a>  mt_att_server_notify<span class="op">(</span>con_handle<span class="op">,</span></span>
-<span id="cb152-6"><a href="ch-misc.html#cb152-6" aria-hidden="true" tabindex="-1"></a>    att_handle<span class="op">,</span> data<span class="op">,</span> <span class="kw">sizeof</span><span class="op">(</span>data<span class="op">));</span></span>
-<span id="cb152-7"><a href="ch-misc.html#cb152-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb152-8"><a href="ch-misc.html#cb152-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb152-9"><a href="ch-misc.html#cb152-9" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> any_thread<span class="op">()</span></span>
-<span id="cb152-10"><a href="ch-misc.html#cb152-10" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb152-11"><a href="ch-misc.html#cb152-11" aria-hidden="true" tabindex="-1"></a>  do_some_thing<span class="op">();</span></span>
-<span id="cb152-12"><a href="ch-misc.html#cb152-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 此时 do_some_thing 里的 data 已被释放</span></span>
-<span id="cb152-13"><a href="ch-misc.html#cb152-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb156"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb156-1"><a href="ch-misc.html#cb156-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> do_some_thing<span class="op">()</span></span>
+<span id="cb156-2"><a href="ch-misc.html#cb156-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb156-3"><a href="ch-misc.html#cb156-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> data<span class="op">[</span><span class="dv">10</span><span class="op">];</span></span>
+<span id="cb156-4"><a href="ch-misc.html#cb156-4" aria-hidden="true" tabindex="-1"></a>  向 data 写入数据<span class="op">;</span></span>
+<span id="cb156-5"><a href="ch-misc.html#cb156-5" aria-hidden="true" tabindex="-1"></a>  mt_att_server_notify<span class="op">(</span>con_handle<span class="op">,</span></span>
+<span id="cb156-6"><a href="ch-misc.html#cb156-6" aria-hidden="true" tabindex="-1"></a>    att_handle<span class="op">,</span> data<span class="op">,</span> <span class="kw">sizeof</span><span class="op">(</span>data<span class="op">));</span></span>
+<span id="cb156-7"><a href="ch-misc.html#cb156-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb156-8"><a href="ch-misc.html#cb156-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb156-9"><a href="ch-misc.html#cb156-9" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> any_thread<span class="op">()</span></span>
+<span id="cb156-10"><a href="ch-misc.html#cb156-10" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb156-11"><a href="ch-misc.html#cb156-11" aria-hidden="true" tabindex="-1"></a>  do_some_thing<span class="op">();</span></span>
+<span id="cb156-12"><a href="ch-misc.html#cb156-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 此时 do_some_thing 里的 data 已被释放</span></span>
+<span id="cb156-13"><a href="ch-misc.html#cb156-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>注意事项：</p>
 <ul>
 <li>这个模块依赖于一个真正的 RTOS。使用 NoOS 软件包时，必需提供真正的队列及事件支持。</li>
 <li>封装必然存在开销。对于高性能、高实时性的应用，不推荐使用。反之，对于相对简单的应用，则推荐使用，可以简化代码；</li>
-<li>不要在中断服务程序内使用这些 API<a href="#fn61" class="footnote-ref" id="fnref61"><sup>61</sup></a>。</li>
+<li>不要在中断服务程序内使用这些 API<a href="#fn62" class="footnote-ref" id="fnref62"><sup>62</sup></a>。</li>
 </ul>
 </div>
 <div id="ch-misc-privacy" class="section level2 hasAnchor" number="12.9">
@@ -984,22 +1028,22 @@ Controller 版本号由 Controller 厂家自行指定。</p></li>
 <div id="将已配对设备添加到解析列表" class="section level3 hasAnchor" number="12.9.1">
 <h3><span class="header-section-number">12.9.1</span> 将已配对设备添加到解析列表<a href="ch-misc.html#将已配对设备添加到解析列表" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>同白名单类似，地址解析列表也完全由开发者管理。下面的代码演示了如何将设备数据库里的信息添加到解析列表和白名单。</p>
-<div class="sourceCode" id="cb153"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb153-1"><a href="ch-misc.html#cb153-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> populate_pairing_data<span class="op">(</span><span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>local_irk<span class="op">)</span></span>
-<span id="cb153-2"><a href="ch-misc.html#cb153-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb153-3"><a href="ch-misc.html#cb153-3" aria-hidden="true" tabindex="-1"></a>    gap_clear_resolving_list<span class="op">();</span></span>
-<span id="cb153-4"><a href="ch-misc.html#cb153-4" aria-hidden="true" tabindex="-1"></a>    gap_clear_white_lists<span class="op">();</span></span>
-<span id="cb153-5"><a href="ch-misc.html#cb153-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb153-6"><a href="ch-misc.html#cb153-6" aria-hidden="true" tabindex="-1"></a>    le_device_memory_db_iter_t device_db_iter<span class="op">;</span></span>
-<span id="cb153-7"><a href="ch-misc.html#cb153-7" aria-hidden="true" tabindex="-1"></a>    le_device_db_iter_init<span class="op">(&amp;</span>device_db_iter<span class="op">);</span></span>
-<span id="cb153-8"><a href="ch-misc.html#cb153-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="op">(</span>le_device_db_iter_next<span class="op">(&amp;</span>device_db_iter<span class="op">))</span></span>
-<span id="cb153-9"><a href="ch-misc.html#cb153-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb153-10"><a href="ch-misc.html#cb153-10" aria-hidden="true" tabindex="-1"></a>        <span class="dt">const</span> le_device_memory_db_t <span class="op">*</span>dev <span class="op">=</span></span>
-<span id="cb153-11"><a href="ch-misc.html#cb153-11" aria-hidden="true" tabindex="-1"></a>            le_device_db_iter_cur<span class="op">(&amp;</span>device_db_iter<span class="op">);</span></span>
-<span id="cb153-12"><a href="ch-misc.html#cb153-12" aria-hidden="true" tabindex="-1"></a>        gap_add_dev_to_resolving_list<span class="op">(</span>dev<span class="op">-&gt;</span>addr<span class="op">,</span></span>
-<span id="cb153-13"><a href="ch-misc.html#cb153-13" aria-hidden="true" tabindex="-1"></a>            dev<span class="op">-&gt;</span>addr_type<span class="op">,</span> dev<span class="op">-&gt;</span>irk<span class="op">,</span> local_irk<span class="op">);</span></span>
-<span id="cb153-14"><a href="ch-misc.html#cb153-14" aria-hidden="true" tabindex="-1"></a>        gap_add_whitelist<span class="op">(</span>dev<span class="op">-&gt;</span>addr<span class="op">,</span> dev<span class="op">-&gt;</span>addr_type<span class="op">);</span></span>
-<span id="cb153-15"><a href="ch-misc.html#cb153-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb153-16"><a href="ch-misc.html#cb153-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb157"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb157-1"><a href="ch-misc.html#cb157-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> populate_pairing_data<span class="op">(</span><span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>local_irk<span class="op">)</span></span>
+<span id="cb157-2"><a href="ch-misc.html#cb157-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb157-3"><a href="ch-misc.html#cb157-3" aria-hidden="true" tabindex="-1"></a>    gap_clear_resolving_list<span class="op">();</span></span>
+<span id="cb157-4"><a href="ch-misc.html#cb157-4" aria-hidden="true" tabindex="-1"></a>    gap_clear_white_lists<span class="op">();</span></span>
+<span id="cb157-5"><a href="ch-misc.html#cb157-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb157-6"><a href="ch-misc.html#cb157-6" aria-hidden="true" tabindex="-1"></a>    le_device_memory_db_iter_t device_db_iter<span class="op">;</span></span>
+<span id="cb157-7"><a href="ch-misc.html#cb157-7" aria-hidden="true" tabindex="-1"></a>    le_device_db_iter_init<span class="op">(&amp;</span>device_db_iter<span class="op">);</span></span>
+<span id="cb157-8"><a href="ch-misc.html#cb157-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="op">(</span>le_device_db_iter_next<span class="op">(&amp;</span>device_db_iter<span class="op">))</span></span>
+<span id="cb157-9"><a href="ch-misc.html#cb157-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb157-10"><a href="ch-misc.html#cb157-10" aria-hidden="true" tabindex="-1"></a>        <span class="dt">const</span> le_device_memory_db_t <span class="op">*</span>dev <span class="op">=</span></span>
+<span id="cb157-11"><a href="ch-misc.html#cb157-11" aria-hidden="true" tabindex="-1"></a>            le_device_db_iter_cur<span class="op">(&amp;</span>device_db_iter<span class="op">);</span></span>
+<span id="cb157-12"><a href="ch-misc.html#cb157-12" aria-hidden="true" tabindex="-1"></a>        gap_add_dev_to_resolving_list<span class="op">(</span>dev<span class="op">-&gt;</span>addr<span class="op">,</span></span>
+<span id="cb157-13"><a href="ch-misc.html#cb157-13" aria-hidden="true" tabindex="-1"></a>            dev<span class="op">-&gt;</span>addr_type<span class="op">,</span> dev<span class="op">-&gt;</span>irk<span class="op">,</span> local_irk<span class="op">);</span></span>
+<span id="cb157-14"><a href="ch-misc.html#cb157-14" aria-hidden="true" tabindex="-1"></a>        gap_add_whitelist<span class="op">(</span>dev<span class="op">-&gt;</span>addr<span class="op">,</span> dev<span class="op">-&gt;</span>addr_type<span class="op">);</span></span>
+<span id="cb157-15"><a href="ch-misc.html#cb157-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb157-16"><a href="ch-misc.html#cb157-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <div class="rmdcaution">
 <p>
 上面的演示代码假定对于所有的配对设备，本端使用的 IRK
@@ -1013,23 +1057,23 @@ Controller 版本号由 Controller 厂家自行指定。</p></li>
 <h4><span class="header-section-number">12.9.2.1</span> 未配对时<a href="ch-misc.html#未配对时" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>当设备未配对或者期望被新的设备连接时，可事先生成不可解析随机地址或用 IRK 生成可解析地址，将其配置为广播集的随机地址，并使用这个随机地址发送广播，
 即：</p>
-<div class="sourceCode" id="cb154"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb154-1"><a href="ch-misc.html#cb154-1" aria-hidden="true" tabindex="-1"></a>gap_set_adv_set_random_addr<span class="op">(...,</span> 生成的地址<span class="op">);</span></span>
-<span id="cb154-2"><a href="ch-misc.html#cb154-2" aria-hidden="true" tabindex="-1"></a>gap_set_ext_adv_para<span class="op">(</span></span>
-<span id="cb154-3"><a href="ch-misc.html#cb154-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">...</span></span>
-<span id="cb154-4"><a href="ch-misc.html#cb154-4" aria-hidden="true" tabindex="-1"></a>  BD_ADDR_TYPE_LE_RANDOM<span class="op">,</span> <span class="co">// own_addr_type</span></span>
-<span id="cb154-5"><a href="ch-misc.html#cb154-5" aria-hidden="true" tabindex="-1"></a>  <span class="op">...);</span></span></code></pre></div>
+<div class="sourceCode" id="cb158"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb158-1"><a href="ch-misc.html#cb158-1" aria-hidden="true" tabindex="-1"></a>gap_set_adv_set_random_addr<span class="op">(...,</span> 生成的地址<span class="op">);</span></span>
+<span id="cb158-2"><a href="ch-misc.html#cb158-2" aria-hidden="true" tabindex="-1"></a>gap_set_ext_adv_para<span class="op">(</span></span>
+<span id="cb158-3"><a href="ch-misc.html#cb158-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">...</span></span>
+<span id="cb158-4"><a href="ch-misc.html#cb158-4" aria-hidden="true" tabindex="-1"></a>  BD_ADDR_TYPE_LE_RANDOM<span class="op">,</span> <span class="co">// own_addr_type</span></span>
+<span id="cb158-5"><a href="ch-misc.html#cb158-5" aria-hidden="true" tabindex="-1"></a>  <span class="op">...);</span></span></code></pre></div>
 </div>
 <div id="已配对时" class="section level4 hasAnchor" number="12.9.2.2">
 <h4><span class="header-section-number">12.9.2.2</span> 已配对时<a href="ch-misc.html#已配对时" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>当设备已与唯一的对端设备配对，发送广播等待与其建立连接时，将对端设备的身份地址填入 <code>gap_set_ext_adv_para</code> 的 <code>peer_addr</code> 参数，
 Controller 从解析列表中查到对应的本端 IRK，使用与之对应的可解析地址（如地址不存在，会自动生成）发送广播：</p>
-<div class="sourceCode" id="cb155"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb155-1"><a href="ch-misc.html#cb155-1" aria-hidden="true" tabindex="-1"></a>gap_set_ext_adv_para<span class="op">(</span></span>
-<span id="cb155-2"><a href="ch-misc.html#cb155-2" aria-hidden="true" tabindex="-1"></a>  <span class="op">...</span></span>
-<span id="cb155-3"><a href="ch-misc.html#cb155-3" aria-hidden="true" tabindex="-1"></a>  BD_ADDR_TYPE_LE_RESOLVED_RAN<span class="op">,</span> <span class="co">// own_addr_type</span></span>
-<span id="cb155-4"><a href="ch-misc.html#cb155-4" aria-hidden="true" tabindex="-1"></a>  peer_addr_type<span class="op">,</span>               <span class="co">// peer_addr_type</span></span>
-<span id="cb155-5"><a href="ch-misc.html#cb155-5" aria-hidden="true" tabindex="-1"></a>  peer_addr<span class="op">,</span>                    <span class="co">// peer_addr</span></span>
-<span id="cb155-6"><a href="ch-misc.html#cb155-6" aria-hidden="true" tabindex="-1"></a>  ADV_FILTER_ALLOW_SCAN_WLST_CON_WLST<span class="op">,</span> <span class="co">// adv_filter_policy</span></span>
-<span id="cb155-7"><a href="ch-misc.html#cb155-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">...);</span></span></code></pre></div>
+<div class="sourceCode" id="cb159"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb159-1"><a href="ch-misc.html#cb159-1" aria-hidden="true" tabindex="-1"></a>gap_set_ext_adv_para<span class="op">(</span></span>
+<span id="cb159-2"><a href="ch-misc.html#cb159-2" aria-hidden="true" tabindex="-1"></a>  <span class="op">...</span></span>
+<span id="cb159-3"><a href="ch-misc.html#cb159-3" aria-hidden="true" tabindex="-1"></a>  BD_ADDR_TYPE_LE_RESOLVED_RAN<span class="op">,</span> <span class="co">// own_addr_type</span></span>
+<span id="cb159-4"><a href="ch-misc.html#cb159-4" aria-hidden="true" tabindex="-1"></a>  peer_addr_type<span class="op">,</span>               <span class="co">// peer_addr_type</span></span>
+<span id="cb159-5"><a href="ch-misc.html#cb159-5" aria-hidden="true" tabindex="-1"></a>  peer_addr<span class="op">,</span>                    <span class="co">// peer_addr</span></span>
+<span id="cb159-6"><a href="ch-misc.html#cb159-6" aria-hidden="true" tabindex="-1"></a>  ADV_FILTER_ALLOW_SCAN_WLST_CON_WLST<span class="op">,</span> <span class="co">// adv_filter_policy</span></span>
+<span id="cb159-7"><a href="ch-misc.html#cb159-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">...);</span></span></code></pre></div>
 <p>当设备已与多个对端设备配对，发送广播等待与任意对端建立连接时，分为两种情况：</p>
 <ol style="list-style-type: decimal">
 <li><p>使用了相同的本端 IRK</p>
@@ -1050,15 +1094,15 @@ Controller 从解析列表中查到对应的本端 IRK，使用与之对应的�
 <h3><span class="header-section-number">12.9.3</span> 扫描<a href="ch-misc.html#扫描" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>可以生成不同于身份地址（如不可解析随机地址或用 IRK 生成可解析地址）的随机地址，并调用 <code>gap_set_random_device_address</code>。</p>
 <p>如果需要扫描周围全部设备的广播信息，可如下配置扫描参数：</p>
-<div class="sourceCode" id="cb156"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb156-1"><a href="ch-misc.html#cb156-1" aria-hidden="true" tabindex="-1"></a>gap_set_ext_scan_para<span class="op">(</span></span>
-<span id="cb156-2"><a href="ch-misc.html#cb156-2" aria-hidden="true" tabindex="-1"></a>  BD_ADDR_TYPE_LE_RANDOM<span class="op">,</span>               <span class="co">// own_addr_type</span></span>
-<span id="cb156-3"><a href="ch-misc.html#cb156-3" aria-hidden="true" tabindex="-1"></a>  SCAN_ACCEPT_ALL_EXCEPT_NOT_DIRECTED<span class="op">,</span>  <span class="co">// filter_policy</span></span>
-<span id="cb156-4"><a href="ch-misc.html#cb156-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">...);</span></span></code></pre></div>
+<div class="sourceCode" id="cb160"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb160-1"><a href="ch-misc.html#cb160-1" aria-hidden="true" tabindex="-1"></a>gap_set_ext_scan_para<span class="op">(</span></span>
+<span id="cb160-2"><a href="ch-misc.html#cb160-2" aria-hidden="true" tabindex="-1"></a>  BD_ADDR_TYPE_LE_RANDOM<span class="op">,</span>               <span class="co">// own_addr_type</span></span>
+<span id="cb160-3"><a href="ch-misc.html#cb160-3" aria-hidden="true" tabindex="-1"></a>  SCAN_ACCEPT_ALL_EXCEPT_NOT_DIRECTED<span class="op">,</span>  <span class="co">// filter_policy</span></span>
+<span id="cb160-4"><a href="ch-misc.html#cb160-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">...);</span></span></code></pre></div>
 <p>如果只扫描白名单内设备的广播信息，可如下配置扫描参数：</p>
-<div class="sourceCode" id="cb157"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb157-1"><a href="ch-misc.html#cb157-1" aria-hidden="true" tabindex="-1"></a>gap_set_ext_scan_para<span class="op">(</span></span>
-<span id="cb157-2"><a href="ch-misc.html#cb157-2" aria-hidden="true" tabindex="-1"></a>  BD_ADDR_TYPE_LE_RANDOM<span class="op">,</span>                <span class="co">// own_addr_type</span></span>
-<span id="cb157-3"><a href="ch-misc.html#cb157-3" aria-hidden="true" tabindex="-1"></a>  SCAN_ACCEPT_WLIST_EXCEPT_NOT_DIRECTED<span class="op">,</span> <span class="co">// filter_policy</span></span>
-<span id="cb157-4"><a href="ch-misc.html#cb157-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">...);</span></span></code></pre></div>
+<div class="sourceCode" id="cb161"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb161-1"><a href="ch-misc.html#cb161-1" aria-hidden="true" tabindex="-1"></a>gap_set_ext_scan_para<span class="op">(</span></span>
+<span id="cb161-2"><a href="ch-misc.html#cb161-2" aria-hidden="true" tabindex="-1"></a>  BD_ADDR_TYPE_LE_RANDOM<span class="op">,</span>                <span class="co">// own_addr_type</span></span>
+<span id="cb161-3"><a href="ch-misc.html#cb161-3" aria-hidden="true" tabindex="-1"></a>  SCAN_ACCEPT_WLIST_EXCEPT_NOT_DIRECTED<span class="op">,</span> <span class="co">// filter_policy</span></span>
+<span id="cb161-4"><a href="ch-misc.html#cb161-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">...);</span></span></code></pre></div>
 <p>此时，Controller 扫描到某设备的广播时，尝试解析地址。对于主动扫描，如果解析成功且通过了白名单，
 就使用对应于本端 IRK 的可解析地址发送扫描请求。</p>
 <p>如果地址解析成功，<code>HCI_SUBEVENT_LE_EXTENDED_ADVERTISING_REPORT</code> 事件里的 <code>addr_type</code>
@@ -1071,27 +1115,27 @@ Controller 从解析列表中查到对应的本端 IRK，使用与之对应的�
 <div id="未配对时-1" class="section level4 hasAnchor" number="12.9.4.1">
 <h4><span class="header-section-number">12.9.4.1</span> 未配对时<a href="ch-misc.html#未配对时-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>如果需要连接一个未配对的设备，可如下配置：</p>
-<div class="sourceCode" id="cb158"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb158-1"><a href="ch-misc.html#cb158-1" aria-hidden="true" tabindex="-1"></a>gap_ext_create_connection<span class="op">(</span></span>
-<span id="cb158-2"><a href="ch-misc.html#cb158-2" aria-hidden="true" tabindex="-1"></a>  INITIATING_ADVERTISER_FROM_PARAM<span class="op">,</span>   <span class="co">// filter_policy</span></span>
-<span id="cb158-3"><a href="ch-misc.html#cb158-3" aria-hidden="true" tabindex="-1"></a>  BD_ADDR_TYPE_LE_RANDOM<span class="op">,</span>             <span class="co">// own_addr_type</span></span>
-<span id="cb158-4"><a href="ch-misc.html#cb158-4" aria-hidden="true" tabindex="-1"></a>  peer_addr_type<span class="op">,</span> <span class="co">// peer_addr_type</span></span>
-<span id="cb158-5"><a href="ch-misc.html#cb158-5" aria-hidden="true" tabindex="-1"></a>  peer_addr<span class="op">,</span>      <span class="co">// peer_addr</span></span>
-<span id="cb158-6"><a href="ch-misc.html#cb158-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">...);</span></span></code></pre></div>
+<div class="sourceCode" id="cb162"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb162-1"><a href="ch-misc.html#cb162-1" aria-hidden="true" tabindex="-1"></a>gap_ext_create_connection<span class="op">(</span></span>
+<span id="cb162-2"><a href="ch-misc.html#cb162-2" aria-hidden="true" tabindex="-1"></a>  INITIATING_ADVERTISER_FROM_PARAM<span class="op">,</span>   <span class="co">// filter_policy</span></span>
+<span id="cb162-3"><a href="ch-misc.html#cb162-3" aria-hidden="true" tabindex="-1"></a>  BD_ADDR_TYPE_LE_RANDOM<span class="op">,</span>             <span class="co">// own_addr_type</span></span>
+<span id="cb162-4"><a href="ch-misc.html#cb162-4" aria-hidden="true" tabindex="-1"></a>  peer_addr_type<span class="op">,</span> <span class="co">// peer_addr_type</span></span>
+<span id="cb162-5"><a href="ch-misc.html#cb162-5" aria-hidden="true" tabindex="-1"></a>  peer_addr<span class="op">,</span>      <span class="co">// peer_addr</span></span>
+<span id="cb162-6"><a href="ch-misc.html#cb162-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">...);</span></span></code></pre></div>
 </div>
 <div id="已配对时-1" class="section level4 hasAnchor" number="12.9.4.2">
 <h4><span class="header-section-number">12.9.4.2</span> 已配对时<a href="ch-misc.html#已配对时-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>如果需要连接单一的确定的已配对设备，可如下配置：</p>
-<div class="sourceCode" id="cb159"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb159-1"><a href="ch-misc.html#cb159-1" aria-hidden="true" tabindex="-1"></a>gap_ext_create_connection<span class="op">(</span></span>
-<span id="cb159-2"><a href="ch-misc.html#cb159-2" aria-hidden="true" tabindex="-1"></a>  INITIATING_ADVERTISER_FROM_PARAM<span class="op">,</span>   <span class="co">// filter_policy</span></span>
-<span id="cb159-3"><a href="ch-misc.html#cb159-3" aria-hidden="true" tabindex="-1"></a>  BD_ADDR_TYPE_LE_RESOLVED_RAN<span class="op">,</span>       <span class="co">// own_addr_type</span></span>
-<span id="cb159-4"><a href="ch-misc.html#cb159-4" aria-hidden="true" tabindex="-1"></a>  peer_addr_type<span class="op">,</span> <span class="co">// peer_addr_type</span></span>
-<span id="cb159-5"><a href="ch-misc.html#cb159-5" aria-hidden="true" tabindex="-1"></a>  peer_addr<span class="op">,</span>      <span class="co">// peer_addr</span></span>
-<span id="cb159-6"><a href="ch-misc.html#cb159-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">...);</span></span></code></pre></div>
+<div class="sourceCode" id="cb163"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb163-1"><a href="ch-misc.html#cb163-1" aria-hidden="true" tabindex="-1"></a>gap_ext_create_connection<span class="op">(</span></span>
+<span id="cb163-2"><a href="ch-misc.html#cb163-2" aria-hidden="true" tabindex="-1"></a>  INITIATING_ADVERTISER_FROM_PARAM<span class="op">,</span>   <span class="co">// filter_policy</span></span>
+<span id="cb163-3"><a href="ch-misc.html#cb163-3" aria-hidden="true" tabindex="-1"></a>  BD_ADDR_TYPE_LE_RESOLVED_RAN<span class="op">,</span>       <span class="co">// own_addr_type</span></span>
+<span id="cb163-4"><a href="ch-misc.html#cb163-4" aria-hidden="true" tabindex="-1"></a>  peer_addr_type<span class="op">,</span> <span class="co">// peer_addr_type</span></span>
+<span id="cb163-5"><a href="ch-misc.html#cb163-5" aria-hidden="true" tabindex="-1"></a>  peer_addr<span class="op">,</span>      <span class="co">// peer_addr</span></span>
+<span id="cb163-6"><a href="ch-misc.html#cb163-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">...);</span></span></code></pre></div>
 <p>如果需要连接白名单内的任一已知设备，可如下配置：</p>
-<div class="sourceCode" id="cb160"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb160-1"><a href="ch-misc.html#cb160-1" aria-hidden="true" tabindex="-1"></a>gap_ext_create_connection<span class="op">(</span></span>
-<span id="cb160-2"><a href="ch-misc.html#cb160-2" aria-hidden="true" tabindex="-1"></a>  INITIATING_ADVERTISER_FROM_LIST<span class="op">,</span>   <span class="co">// filter_policy</span></span>
-<span id="cb160-3"><a href="ch-misc.html#cb160-3" aria-hidden="true" tabindex="-1"></a>  BD_ADDR_TYPE_LE_RESOLVED_RAN<span class="op">,</span>      <span class="co">// own_addr_type</span></span>
-<span id="cb160-4"><a href="ch-misc.html#cb160-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">...);</span></span></code></pre></div>
+<div class="sourceCode" id="cb164"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb164-1"><a href="ch-misc.html#cb164-1" aria-hidden="true" tabindex="-1"></a>gap_ext_create_connection<span class="op">(</span></span>
+<span id="cb164-2"><a href="ch-misc.html#cb164-2" aria-hidden="true" tabindex="-1"></a>  INITIATING_ADVERTISER_FROM_LIST<span class="op">,</span>   <span class="co">// filter_policy</span></span>
+<span id="cb164-3"><a href="ch-misc.html#cb164-3" aria-hidden="true" tabindex="-1"></a>  BD_ADDR_TYPE_LE_RESOLVED_RAN<span class="op">,</span>      <span class="co">// own_addr_type</span></span>
+<span id="cb164-4"><a href="ch-misc.html#cb164-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">...);</span></span></code></pre></div>
 <p>如果地址解析成功，<code>HCI_SUBEVENT_LE_ENHANCED_CONNECTION_COMPLETE_..</code> 事件里的 <code>peer_addr_type</code>
 将会是 <code>BD_ADDR_TYPE_LE_RESOLVED_RAN</code> 或者 <code>BD_ADDR_TYPE_LE_RESOLVED_PUB</code>，
 <code>peer_addr</code> 是解析出的对端的身份地址。</p>
@@ -1109,12 +1153,13 @@ Controller 从解析列表中查到对应的本端 IRK，使用与之对应的�
 <li id="fn54"><p>为防止与 Media Access Controller 混淆，蓝牙规范使用 MIC 代替 MAC。<a href="ch-misc.html#fnref54" class="footnote-back">↩︎</a></p></li>
 <li id="fn55"><p><a href="https://ingchips.github.io/blog/2021-06-02-sdk-6/#%E5%85%BC%E5%AE%B9%E6%80%A7" class="uri">https://ingchips.github.io/blog/2021-06-02-sdk-6/#%E5%85%BC%E5%AE%B9%E6%80%A7</a><a href="ch-misc.html#fnref55" class="footnote-back">↩︎</a></p></li>
 <li id="fn56"><p>只能在 <code>app_main</code> 就调用。<a href="ch-misc.html#fnref56" class="footnote-back">↩︎</a></p></li>
-<li id="fn57"><p>为多个连接创建多个同步执行器的优势在于多个
-GATT 客户端上的会话可以并发。<a href="ch-misc.html#fnref57" class="footnote-back">↩︎</a></p></li>
-<li id="fn58"><p>由规范规定。<a href="ch-misc.html#fnref58" class="footnote-back">↩︎</a></p></li>
-<li id="fn59"><p><a href="https://www.bluetooth.com/specifications/assigned-numbers/" class="uri">https://www.bluetooth.com/specifications/assigned-numbers/</a><a href="ch-misc.html#fnref59" class="footnote-back">↩︎</a></p></li>
-<li id="fn60"><p>这个函数的原始版本不是严格意义上的异步操作。考虑到在一个同步执行体内可能既会用到有响应的写入，也会用到无响应的写入，加入这个 API 可以带来便利。<a href="ch-misc.html#fnref60" class="footnote-back">↩︎</a></p></li>
-<li id="fn61"><p>可以使用 <code>btstack_push_user_runnable</code>。<a href="ch-misc.html#fnref61" class="footnote-back">↩︎</a></p></li>
+<li id="fn57"><p>对于 v8.4.12 或更旧的版本，所能存储的设备个数等于软件包所支持的连接数目。<a href="ch-misc.html#fnref57" class="footnote-back">↩︎</a></p></li>
+<li id="fn58"><p>为多个连接创建多个同步执行器的优势在于多个
+GATT 客户端上的会话可以并发。<a href="ch-misc.html#fnref58" class="footnote-back">↩︎</a></p></li>
+<li id="fn59"><p>由规范规定。<a href="ch-misc.html#fnref59" class="footnote-back">↩︎</a></p></li>
+<li id="fn60"><p><a href="https://www.bluetooth.com/specifications/assigned-numbers/" class="uri">https://www.bluetooth.com/specifications/assigned-numbers/</a><a href="ch-misc.html#fnref60" class="footnote-back">↩︎</a></p></li>
+<li id="fn61"><p>这个函数的原始版本不是严格意义上的异步操作。考虑到在一个同步执行体内可能既会用到有响应的写入，也会用到无响应的写入，加入这个 API 可以带来便利。<a href="ch-misc.html#fnref61" class="footnote-back">↩︎</a></p></li>
+<li id="fn62"><p>可以使用 <code>btstack_push_user_runnable</code>。<a href="ch-misc.html#fnref62" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

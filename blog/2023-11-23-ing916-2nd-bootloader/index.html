@@ -402,7 +402,7 @@ START_FOTA
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp">
 #include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
-#include</span> <span class="cpf">"eflash.h"</span><span class="cp">
+#include</span> <span class="cpf">"eflash.c"</span><span class="c1"> // 这里将用到 eflash 的私有函数</span><span class="cp">
 </span>
 <span class="cp">#define DEF_UPDATE_FLAG     0x.........
 </span>
@@ -447,8 +447,37 @@ START_FOTA
     <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
 
+<span class="c1">// 提升执行效率</span>
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">init_chip</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">SYSCTRL_GetHClk</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1000000</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
+        <span class="k">return</span><span class="p">;</span>
+
+    <span class="c1">// 保证使用 4 线模式</span>
+    <span class="p">{</span>
+        <span class="n">ROM_FlashDisableContinuousMode</span><span class="p">();</span>
+        <span class="kt">uint16_t</span> <span class="n">status</span> <span class="o">=</span> <span class="n">ROM_FlashGetStatusReg</span><span class="p">();</span>
+        <span class="k">if</span> <span class="p">((</span><span class="n">status</span> <span class="o">&amp;</span> <span class="mh">0x0200</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">ROM_FlashSetStatusReg</span><span class="p">(</span><span class="n">status</span> <span class="o">|</span> <span class="mh">0x0200</span><span class="p">);</span>
+        <span class="n">ROM_DCacheFlush</span><span class="p">();</span>
+        <span class="n">ROM_FlashEnableContinuousMode</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="c1">// 提升工作频率</span>
+    <span class="n">SYSCTRL_EnableConfigClocksAfterWakeup</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">PLL_BOOT_DEF_LOOP</span><span class="p">,</span>
+        <span class="n">SYSCTRL_CLK_PLL_DIV_3</span><span class="p">,</span>
+        <span class="n">SYSCTRL_CLK_PLL_DIV_2</span><span class="p">,</span>
+        <span class="mi">0</span><span class="p">);</span>
+
+    <span class="c1">// 重启以生效</span>
+    <span class="n">NVIC_SystemReset</span><span class="p">();</span>
+<span class="p">}</span>
+
 <span class="kt">void</span> <span class="nf">do_fota</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
 <span class="p">{</span>
+    <span class="n">init_chip</span><span class="p">();</span>
+
     <span class="k">const</span> <span class="n">block_info_t</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="k">const</span> <span class="n">block_info_t</span> <span class="o">*</span><span class="p">)(</span><span class="n">FLASH_BASE</span> <span class="o">+</span>
         <span class="n">EFLASH_SECTOR_SIZE</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">-</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">block_info_t</span><span class="p">));</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">check_fota_blocks</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
@@ -477,7 +506,7 @@ START_FOTA
 
 <h2 id="应用开发">应用开发</h2>
 
-<p>应用的开发照常进行，但在创建项目时有几个额外的步骤和注意事项：</p>
+<p>参照以下步骤创建项目：</p>
 
 <ol>
   <li>
@@ -496,10 +525,12 @@ START_FOTA
   </li>
 </ol>
 
-<p>打开项目，确认 platform.bin 的下载位置是否已更新为 0x02003000。此后的开发正常进行。
-现在假设应用已具备了 OTA 升级功能，旧版本 SDK (&lt; v8.4.6) 里必须使用 <code class="language-plaintext highlighter-rouge">flash_do_update</code> 完成升级。
-现在编写一个与二级 Bootloader 配套的 <code class="language-plaintext highlighter-rouge">program_fota_metadata</code> 函数，
-功能与 ING918 的 <code class="language-plaintext highlighter-rouge">program_fota_metadata</code> 类似：</p>
+<p>打开项目，确认 platform.bin 的下载位置是否已更新为 0x02003000。编译下载，观察程序是否可以正常启动。
+此后的开发照常进行。</p>
+
+<p>假设应用已具备了 OTA 升级功能，对于旧版本 SDK (&lt; v8.4.6) ，只能使用 <code class="language-plaintext highlighter-rouge">flash_do_update</code> 完成升级。
+现在编写一个与二级 Bootloader 配套的 <code class="language-plaintext highlighter-rouge">program_fota_metadata</code> 函数，从而使用二级 Bootloader 完成升级。
+这个函数功能与 ING918 的 <code class="language-plaintext highlighter-rouge">program_fota_metadata</code> 类似：</p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">program_fota_metadata</span><span class="p">(</span><span class="k">const</span> <span class="kt">int</span> <span class="n">block_num</span><span class="p">,</span> <span class="k">const</span> <span class="n">fota_update_block_t</span> <span class="o">*</span><span class="n">blocks</span><span class="p">)</span>
 <span class="p">{</span>
@@ -528,7 +559,25 @@ START_FOTA
 <span class="p">}</span>
 </code></pre></div></div>
 
+<div class="important">
+<strong>注意:</strong> ING916 内置的 Flash 不能同时读、写，所以 'blocks' 必须位于 RAM。
+</div>
+
 <p>调用 <code class="language-plaintext highlighter-rouge">program_fota_metadata</code> 写入元数据，然后重启，即可由二级 Bootloader 完成升级。</p>
+
+<h2 id="应用调试">应用调试</h2>
+
+<p>调试时需要设置 MSP 和 PC。以 Keil 例，如果需要从二级 Bootloader 开始调试，可修改 <code class="language-plaintext highlighter-rouge">init.ini</code> 如下:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">msp</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="o">*</span><span class="p">)(</span><span class="mh">0x02002000</span><span class="p">)</span>
+<span class="n">pc</span>  <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="o">*</span><span class="p">)(</span><span class="mh">0x02002000</span> <span class="o">+</span> <span class="mi">4</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>如果直接调试应用，可修改 <code class="language-plaintext highlighter-rouge">init.ini</code> 如下:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">msp</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="o">*</span><span class="p">)(</span><span class="o">*</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="o">*</span><span class="p">)(</span><span class="mh">0x02003000</span><span class="p">))</span>
+<span class="n">pc</span>  <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="o">*</span><span class="p">)(</span><span class="o">*</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="o">*</span><span class="p">)(</span><span class="mh">0x02003000</span><span class="p">)</span> <span class="o">+</span> <span class="mi">4</span><span class="p">)</span>
+</code></pre></div></div>
 
 <h2 id="总结">总结</h2>
 

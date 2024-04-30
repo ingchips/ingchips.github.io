@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>为 ING916 搭建 Zephyr 开发环境 - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="为 ING916 搭建一套 Zephyr 开发环境。在这个环境下，开发者可以使用 Zephyr RTOS 及其 BLE 协议栈。"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+
+      <div id="box">
+        <input id="in_search" type="search" name="search" placeholder="搜索：输入并回车">
+      </div>
+
+      <script>
+        let search_input = document.getElementById('in_search');
+        if (search_input) {
+          search_input.addEventListener("keypress", function(event) {
+          if (event.key === "Enter") {
+            window.open('https://www.bing.com/search?q=' + encodeURIComponent(search_input.value) + '%20site%3A' + window.location.hostname);
+            event.preventDefault();
+            }
+          });
+        }
+      </script>
+
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item has-children">
+
+              
+<a class="" href="/docs/sdk/apps/#web-apps">
+  
+  Web 工具
+  
+</a>
+
+              
+
+                <ul class="submenu">
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/callgraph">
+  
+  Callgraph (调用图)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index.html">
+  
+  ING918/ING916 FOTA
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index_cn.html">
+  
+  ING918/ING916 FOTA (中文版)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/powerprofiler/">
+  
+  Online Power Profiler
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/air_trace/">
+  
+  Trace Logger
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/assertion_tool/index.html">
+  
+  ING918/ING916 Assertion Tool
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/assertion_tool/index_cn.html">
+  
+  ING918/ING916 Assertion Tool (中文版)
+  
+</a>
+
+  </li>
+  
+</ul>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+    <div class="inner outer">
+  <div class="docs-content">
+    <article class="post post-full">
+      <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+              inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+              displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+          }
+        });
+      </script>
+      <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <header class="post-header has-gradient outer">
+        
+        
+        <div class="inner-sm">
+          <div class="post-meta">
+            <time class="published" datetime="2024-04-26 00:00">April 26, 2024</time>
+          </div>
+          <h1 class="post-title">为 ING916 搭建 Zephyr 开发环境</h1>
+          
+          
+        </div>
+      </header>
+      <div class="inner-md outer">
+        <div class="post-content">
+          <p>对于 ING916/ING918 的 NoOS 软件包，可以使用 <a href="https://docs.zephyrproject.org/latest/index.html">Zephyr OS</a>
+作为实时内核。SDK v8.4.1 提供了完整的 Controller 接口，可以对接 Zephyr BLE Host 协议栈。这里我们将为 ING916
+搭建 Zephyr 开发环境。在这个环境下，开发者可以使用 Zephyr RTOS 及其 BLE 协议栈。Zephyr BLE 协议栈占用的 RAM 较多，
+所以这里我们使用 ING916 的 <code class="language-plaintext highlighter-rouge">noos_mini</code> 软件包。</p>
+
+<h3 id="开发环境配置">开发环境配置</h3>
+
+<p>请参考 <a href="https://docs.zephyrproject.org/latest/develop/getting_started/index.html">Getting Started</a> 文档。</p>
+
+<p>需要安装的工具最低版本要求：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>tool</th>
+      <th>Min. Version</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>CMake</td>
+      <td>3.20.5</td>
+    </tr>
+    <tr>
+      <td>Python</td>
+      <td>3.8</td>
+    </tr>
+    <tr>
+      <td>Devicetree Compiler</td>
+      <td>1.4.6</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>以 Ubuntu 为例，如果版本低于 22.04，至少需要安装以下配置：</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  wget https://apt.kitware.com/kitware-archive.sh
+  <span class="nb">sudo </span>bash kitware-archive.sh
+  <span class="nb">sudo </span>apt <span class="nb">install</span> <span class="nt">--no-install-recommends</span> git cmake ninja-build gperf <span class="se">\</span>
+    ccache dfu-util device-tree-compiler wget <span class="se">\</span>
+    python3-dev python3-pip python3-setuptools python3-tk python3-wheel xz-utils file <span class="se">\</span>
+    make gcc gcc-multilib g++-multilib libsdl2-dev libmagic1
+  pip <span class="nb">install </span>west
+</code></pre></div></div>
+
+<h3 id="代码同步">代码同步</h3>
+
+<ul>
+  <li>
+    <p><a href="https://github.com/ingchips/zephyr.git">https://github.com/ingchips/zephyr.git</a></p>
+
+    <p>这是 Zephyr 工程代码，用户开发应用的主要仓库。</p>
+  </li>
+  <li>
+    <p><a href="https://github.com/ingchips/ING918XX_SDK_SOURCE.git">https://github.com/ingchips/ING918XX_SDK_SOURCE.git</a></p>
+
+    <p>SDK 相关代码，驱动程序。</p>
+  </li>
+</ul>
+
+<p>执行以下命令拉取仓库：</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># zephyr 仓库</span>
+west init <span class="nt">-m</span> https://github.com/ingchips/zephyr.git
+west update
+<span class="c"># ingchips sdk</span>
+git clone https://github.com/ingchips/ING918XX_SDK_SOURCE.git ./modules/hal/ingchips
+</code></pre></div></div>
+
+<h3 id="生成符号文件">生成符号文件</h3>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nim c <span class="nt">-r</span> gen_files.nim          <span class="c"># gen_files.nim位于sdk/tools</span>
+gen_files /path/to/sdk/bundles  <span class="c"># 生成符号文件</span>
+</code></pre></div></div>
+
+<h3 id="添加链接选项">添加链接选项</h3>
+
+<p>增加 <code class="language-plaintext highlighter-rouge">target_link_options</code> 指定 <code class="language-plaintext highlighter-rouge">platform.bin</code> 内的符号地址。
+以 Helloword 为例，在目录下 <code class="language-plaintext highlighter-rouge">CMakeLists</code> 文件增加 <code class="language-plaintext highlighter-rouge">target_link_options</code>，指向 <code class="language-plaintext highlighter-rouge">noos_mini</code> 的符合文件：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># SPDX-License-Identifier: Apache-2.0
+
+cmake_minimum_required(VERSION 3.20.0)
+
+find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
+project(hello_world)
+
+target_sources(app PRIVATE src/main.c)
+
+# 链接选项
+target_link_options(app PUBLIC -Wl,--just-symbols=${ZEPHYR_BASE}/../modules/hal/ingchips/bundles/noos_mini/ING9168xx/symdefs.g)
+</code></pre></div></div>
+
+<h3 id="代码结构">代码结构</h3>
+
+<ul>
+  <li>
+    <p>Zephyr 提供应用实例</p>
+  </li>
+  <li>
+    <p>samples/application_development/external_ingchips_ing916 是新建的示例</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>samples
+├── application_development
+│   ├── application_development.rst
+│   ├── code_relocation_nocopy
+│   ├── external_ingchips
+│   ├── external_ingchips_916
+│   ├── external_lib
+│   └── sysbuild
+├── arch
+│   ├── index.rst
+│   ├── mpu
+│   └── smp
+├── basic
+│   ├── basic.rst
+│   ├── blinky
+│   ├── blinky_pwm
+│   ├── button
+│   ├── custom_dts_binding
+│   ├── fade_led
+│   ├── hash_map
+│   ├── minimal
+│   ├── rgb_led
+│   ├── servo_motor
+│   ├── sys_heap
+│   └── threads
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>开发板相关代码</p>
+
+    <p>这里把开发板称为 <code class="language-plaintext highlighter-rouge">ing9168_mini</code>，<em>mini</em> 来自软件包名称。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ing9168_mini
+├── Kconfig.board
+├── Kconfig.defconfig
+├── board.cmake
+├── doc
+│   └── index.rst
+├── ing9168_mini.dts
+├── ing9168_mini.yaml
+└── ing9168_mini_defconfig
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>HCI 驱动层代码</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bluetooth
+├── CMakeLists.txt
+├── Kconfig
+├── hci
+│   ├── CMakeLists.txt
+│   ├── Kconfig
+│   ├── Kconfig.infineon
+│   ├── cyw43xxx.c
+│   ├── h4.c
+│   ├── h4_ingchips.c
+│   ├── h5.c
+│   ├── hci_b91.c
+│   ├── hci_esp32.c
+│   ├── hci_psoc6_bless.c
+│   ├── ipc.c
+│   ├── ipm_stm32wb.c
+│   ├── nrf53_support.c
+│   ├── slz_hci.c
+│   ├── spi.c
+│   └── userchan.c
+└── util.h
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>适配层代码</p>
+
+    <p>部分代码可用 Wizard 工具生成的文件覆盖：</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 代码位于 modules/hal/ingchips/hal_zephyr</span>
+<span class="c"># 部分文件需要替换 main.c -&gt; main_ingchips.c</span>
+hal_zephyr
+├── data
+│   ├── advertising.adv
+│   ├── advertising.const
+│   ├── advertising.const.tmpl
+│   ├── cube_ING9168xx.dat
+│   ├── cube_ING9187xx.dat
+│   ├── cube_ING9188xx.dat
+│   ├── gatt.const
+│   ├── gatt.const.tmpl
+│   ├── gatt.profile
+│   ├── scan_response.adv
+│   ├── scan_response.const
+│   ├── scan_response.const.tmpl
+│   └── setup_soc.cgen
+├── module.yml
+├── portable
+│   └── gen_os_impl.c
+└── src
+    ├── main_ingchips.c
+    ├── main_ingchips.h
+    ├── profile.c
+    ├── profile.h
+    ├── service_console.c
+    ├── service_console.h
+    ├── uart_console.c
+    └── uart_console.h
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h3 id="代码编译">代码编译</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 运行 Zephyr 现有 demo
+west build -b ing9168_mini samples/hellp_world
+# 建立自己的应用开发代码
+west build -b ing9168_mini samples/application_development/external_ingchips_916/
+</code></pre></div></div>
+
+<h3 id="代码烧录">代码烧录</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python download_hex_916.hex
+</code></pre></div></div>
+
+        </div><!-- .post-content -->
+      </div><!-- .inner-md -->
+    </article><!-- .post -->
+
+    <nav id="page-nav" class="page-nav">
+      <div id="page-nav-inside" class="page-nav-inside sticky">
+        <h2 class="page-nav-title">Jump to Section</h2>
+      </div><!-- .page-nav-inside -->
+    </nav><!-- .page-nav -->
+  </div>
+</div>
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2021-2023. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

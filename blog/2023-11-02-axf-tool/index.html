@@ -250,22 +250,21 @@
       </header>
       <div class="inner-md outer">
         <div class="post-content">
-          <p>Axf Tool 是一个用于分析可执行程序和内存转储的命令行工具。该工具已集成到 Wizard 的项目快捷菜单里：</p>
+          <p>Axf Tool 是一个用于分析可执行程序和内存转储的命令行工具。这个工具包含多种功能：当程序编译成功后，可进行静态分析；出现 HardFault、Assertion 等问题时，
+调用 <code class="language-plaintext highlighter-rouge">trace_full_dump2</code> 生成内存转储（即 Dump 文件），然后进行动态分析。这个工具对于 Dump 文件的格式要求很低，允许其它内容存在。例如，
+用串口工具长时间保存串口输出到文件，在使用本工具时，不需要清理这个文件里所包含的其它日志信息 —— 除非其它日志也使用了 Intel Hex 格式。</p>
+
+<p>该工具已集成到 Wizard 的项目快捷菜单里：</p>
 
 <p><img src="../img/wizard_axf_tool.png" alt="" /></p>
 
-<p>这个工具包含多种功能：当程序编译成功后，可进行静态分析；出现 HardFault、Assertion 等问题时，
-调用 <code class="language-plaintext highlighter-rouge">trace_full_dump2</code> 生成内存转储，再进行动态分析。从快捷菜单里运行工具虽然方便，
-但是功能受限。通过命令行使用，功能更全面。下面介绍几种主要的功能。
-在命令行下通过 <code class="language-plaintext highlighter-rouge">axf_tool.exe help {function}</code> 可获得每种功能的详细信息。</p>
+<p>当工具需要读取编译后的可执行文件时，Wizard 首先会自动查找，如果未找到，则弹出对话框，要求选择可执行文件。
+对于由 Wizard 生成的 Keil 或者 Gnu 工具链项目，工具一般能够自动找到编译后的可执行文件。
+当工具需要读取 Dump 文件时，也会弹出对话框，要求选择 Dump 文件。</p>
 
-<p>当工具需要读取编译后的可执行文件时，首先会自动查找，如果未找到，则弹出对话框，要求选择可执行文件。
-对于由 Wizard 生成的 Keil 或者 Gnu 工具链项目，工具一般能够自动找到编译后的可执行文件。</p>
-
-<p>当工具需要读取 Dump 文件时，也会弹出对话框，要求选择 Dump 文件。Dump 文件即
-<code class="language-plaintext highlighter-rouge">trace_full_dump2</code> 的输出。工具对于 Dump 文件的格式要求很低，允许其它内容存在。例如，
-用串口工具长时间保存串口输出到文件，使用本工具时，不需要清理这个文件里所包含的其它日志信息 ——
-除非其它日志也使用了 Intel Hex 格式。</p>
+<p>从快捷菜单里运行工具虽然方便，但是功能受限。通过命令行使用，功能更全面。下面介绍几种主要的功能。
+在命令行下通过 <code class="language-plaintext highlighter-rouge">axf_tool.exe help {function}</code> 可获得每种功能的详细信息。请注意，每个命令都需要传入
+<code class="language-plaintext highlighter-rouge">-db latest.db</code> 参数以指定使用名为 <code class="language-plaintext highlighter-rouge">latest.db</code> 的数据库。</p>
 
 <h2 id="静态分析">静态分析</h2>
 
@@ -293,7 +292,7 @@
 在一个 GATT 客户端程序里，还有 <code class="language-plaintext highlighter-rouge">characteristic_discovery_callback</code> 等 3 个函数也确认只是协议栈的回调函数，
 就可以把这 3 个也一起作为 <code class="language-plaintext highlighter-rouge">-bt_cb</code> 参数：</p>
 
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>axf_tool bt-api-thread-safety <span class="nt">-bundle</span> ING9187xx typical v1.9.39 ^
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>axf_tool bt-api-thread-safety <span class="nt">-db</span> latest.db <span class="nt">-bundle</span> ING9187xx typical v1.9.39 ^
     <span class="nt">-app</span> path/to/app/executable ^
     <span class="nt">-bt_cb</span> setup_profile user_packet_handler att_read_callback att_write_callback  ^
     characteristic_discovery_callback descriptor_discovery_callback service_discovery_callback
@@ -393,7 +392,7 @@ current timer (T): 46266487352us (~46266487.352000ms) (~46266.487s) (~12:51:6.48
 
     <p>可以使用命令行。打开旧版本 Wizard 的 Options 窗口，进入 SDK 页面，确认软件包版本号，
  比如 ING9187xx 的 typical v1.7.8。
- 安装 SDK v8.4.5 或 v8.4.6，进入 axf_tool 目录，以命令行方式使用，如：</p>
+ 安装 SDK v8.4.5 或 v8.4.6，进入 axf_tool 目录，以命令行方式使用（这两个版本的 SDK 不需要添加 <code class="language-plaintext highlighter-rouge">-db ..</code> 参数），如：</p>
 
     <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code> axf_tool call-stack <span class="nt">-bundle</span> ING9187xx typical v1.7.8 ^
      <span class="nt">-app</span> path/to/app/executable ^

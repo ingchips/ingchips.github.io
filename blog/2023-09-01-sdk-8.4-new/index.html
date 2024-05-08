@@ -265,9 +265,67 @@
 <li>ING916XX 使用内部 RC 为主时钟时，如果要使用省电模式，则 RC 频率暂时只能配置为 24MHz。</li>
 </ul></div>
 
-<h2 id="v8414">v8.4.14</h2>
+<h2 id="v8415">v8.4.15</h2>
 
 <h3 id="1-软件包">1. 软件包</h3>
+
+<ul>
+  <li>
+    <p>[<strong>修正</strong>] SM: 若设置为 <code class="language-plaintext highlighter-rouge">SM_AUTHREQ_NO_BONDING</code>，配对时总是上报 <code class="language-plaintext highlighter-rouge">SM_FINAL_FAIL_OUT_OF_STORAGE</code></p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] ING916: 配对流程意外中断 （涉及 <code class="language-plaintext highlighter-rouge">typical</code>, <code class="language-plaintext highlighter-rouge">mass_conn</code>, <code class="language-plaintext highlighter-rouge">mini</code> 及相应的 NoOS 软件包）</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] 当开启扫描时，可能出现 0x3D 为错误码的连接断开</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] SM 主角色端：发送的 AUTH_REQ 总是为 <code class="language-plaintext highlighter-rouge">BONDING</code></p>
+
+    <p>旧版本里通过 <code class="language-plaintext highlighter-rouge">sm_set_authentication_requirements</code> 或者 <code class="language-plaintext highlighter-rouge">sm_config_conn</code> 设置的 <code class="language-plaintext highlighter-rouge">auth_req</code>
+  对于SM 主角色不生效。现已正常生效。</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] ING918: 在第 1 个 BLE 活动之前，射频时钟未门控，电流偏大</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] ATT: 当发送的 Indication 未收到确认时连接断开，将出现内存泄露</p>
+
+    <p>此问题将进一步导致 HardFault 等其它问题。</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] SM: 开启可解析地址或不可解析地址生成功能时，存在内存泄露</p>
+
+    <p>长时间运行，最终会导致操作系统的 Heap 耗尽。</p>
+  </li>
+</ul>
+
+<h3 id="2-库函数">2. 库函数</h3>
+
+<ul>
+  <li>[<strong>新增</strong>] 为支持 Zephyr 而增加了一些必要的文件</li>
+</ul>
+
+<h3 id="3-工具">3. 工具</h3>
+
+<ul>
+  <li>
+    <p>[<strong>修正</strong>] Cube: 编辑 ING916 SPI 时程序卡死</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] <code class="language-plaintext highlighter-rouge">icsdw.py</code>: 支持通过 J-Link 下载</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] 为 Keil 更新了 SVD 文件，包含了所有外设的寄存器</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] Axf Tool: 改善 dump 文件的解析；分析 FreeRTOS 定时器</p>
+  </li>
+</ul>
+
+<h2 id="v8414">v8.4.14</h2>
+
+<h3 id="1-软件包-1">1. 软件包</h3>
 
 <ul>
   <li>
@@ -288,7 +346,7 @@
   </li>
 </ul>
 
-<h3 id="2-库函数">2. 库函数</h3>
+<h3 id="2-库函数-1">2. 库函数</h3>
 
 <ul>
   <li>
@@ -305,7 +363,7 @@
   </li>
 </ul>
 
-<h3 id="3-工具">3. 工具</h3>
+<h3 id="3-工具-1">3. 工具</h3>
 
 <ul>
   <li>
@@ -318,7 +376,7 @@
 
 <h2 id="v8413">v8.4.13</h2>
 
-<h3 id="1-软件包-1">1. 软件包</h3>
+<h3 id="1-软件包-2">1. 软件包</h3>
 
 <ul>
   <li>
@@ -361,7 +419,7 @@
 
 <h2 id="v8412">v8.4.12</h2>
 
-<h3 id="1-软件包-2">1. 软件包</h3>
+<h3 id="1-软件包-3">1. 软件包</h3>
 
 <ul>
   <li>
@@ -398,7 +456,7 @@
 
 <h2 id="v8411">v8.4.11</h2>
 
-<h3 id="1-软件包-3">1. 软件包</h3>
+<h3 id="1-软件包-4">1. 软件包</h3>
 
 <ul>
   <li>
@@ -442,7 +500,7 @@
   </li>
 </ul>
 
-<h3 id="2-库函数-1">2. 库函数</h3>
+<h3 id="2-库函数-2">2. 库函数</h3>
 
 <ul>
   <li>
@@ -466,7 +524,7 @@
 
 <h2 id="v8410">v8.4.10</h2>
 
-<h3 id="1-软件包-4">1. 软件包</h3>
+<h3 id="1-软件包-5">1. 软件包</h3>
 
 <ul>
   <li>
@@ -511,7 +569,7 @@
 
 <h2 id="v849">v8.4.9</h2>
 
-<h3 id="1-软件包-5">1. 软件包</h3>
+<h3 id="1-软件包-6">1. 软件包</h3>
 
 <ul>
   <li>
@@ -558,7 +616,7 @@
 
 <h2 id="v848">v8.4.8</h2>
 
-<h3 id="1-软件包-6">1. 软件包</h3>
+<h3 id="1-软件包-7">1. 软件包</h3>
 
 <ul>
   <li>
@@ -600,7 +658,7 @@
 
 <h2 id="v847">v8.4.7</h2>
 
-<h3 id="1-软件包-7">1. 软件包</h3>
+<h3 id="1-软件包-8">1. 软件包</h3>
 
 <ul>
   <li>
@@ -650,7 +708,7 @@
 
 <h2 id="v846">v8.4.6</h2>
 
-<h3 id="1-软件包-8">1. 软件包</h3>
+<h3 id="1-软件包-9">1. 软件包</h3>
 
 <ul>
   <li>
@@ -828,7 +886,7 @@
 
 <h2 id="v845">v8.4.5</h2>
 
-<h3 id="1-软件包-9">1. 软件包</h3>
+<h3 id="1-软件包-10">1. 软件包</h3>
 
 <ul>
   <li>
@@ -910,7 +968,7 @@
 
 <h2 id="v844">v8.4.4</h2>
 
-<h3 id="1-软件包-10">1. 软件包</h3>
+<h3 id="1-软件包-11">1. 软件包</h3>
 
 <ul>
   <li>
@@ -948,7 +1006,7 @@
 
 <h2 id="v843">v8.4.3</h2>
 
-<h3 id="1-软件包-11">1. 软件包</h3>
+<h3 id="1-软件包-12">1. 软件包</h3>
 
 <ul>
   <li>[<strong>修正</strong>] v8.4.1~v8.4.2 ING916 睡眠状态下底电流时大时小的问题 (涉及 <em>mini</em> 和 <em>noos_mini</em> 软件包)</li>
@@ -956,7 +1014,7 @@
 
 <h2 id="v842">v8.4.2</h2>
 
-<h3 id="1-软件包-12">1. 软件包</h3>
+<h3 id="1-软件包-13">1. 软件包</h3>
 
 <ul>
   <li>
@@ -1015,7 +1073,7 @@
 
 <h2 id="v841">v8.4.1</h2>
 
-<h3 id="1-软件包-13">1. 软件包</h3>
+<h3 id="1-软件包-14">1. 软件包</h3>
 
 <ul>
   <li>
@@ -1060,7 +1118,7 @@
   </li>
 </ul>
 
-<h3 id="3-工具-1">3. 工具</h3>
+<h3 id="3-工具-2">3. 工具</h3>
 
 <ul>
   <li>
@@ -1081,7 +1139,7 @@
 
 <h2 id="v840">v8.4.0</h2>
 
-<h3 id="1-软件包-14">1. 软件包</h3>
+<h3 id="1-软件包-15">1. 软件包</h3>
 
 <ul>
   <li>

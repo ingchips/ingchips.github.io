@@ -710,7 +710,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li>I2C_STATUS_FIFO_FULL：读取数据，并通过<code>I2C_FifoEmpty()</code>判断FIFO状态。</li>
 <li>I2C_STATUS_FIFO_EMPTY： 填充数据，并通过<code>I2C_FifoFull()</code>判断FIFO状态。</li>
-<li>I2C_STATUS_CMPL：判断FIFO中是否有剩余数据并读取。</li>
+<li>I2C_STATUS_CMPL：一次传输数据结束，判断FIFO中是否有剩余数据并读取。</li>
 <li>I2C_STATUS_ADDRHIT：地址匹配，在该中断中通过<code>I2C_GetTransactionDir()</code>判断传输的方向。
 <ul>
 <li>I2C_TRANSACTION_MASTER2SLAVE：代表Master发送，Slave则需要读取数据。</li>
@@ -746,30 +746,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>中断中通过I2C_STATUS_FIFO_FULL来读取接收到的数据。当I2C_STATUS_CMPL触发时，当前传输结束，需要判断FIFO中有没有剩余数据。</p>
 <div class="sourceCode" id="cb51"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb51-1"><a href="ch-iic.html#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> peripherals_i2c_isr<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
 <span id="cb51-2"><a href="ch-iic.html#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb51-3"><a href="ch-iic.html#cb51-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> i<span class="op">;</span></span>
-<span id="cb51-4"><a href="ch-iic.html#cb51-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> status <span class="op">=</span> I2C_GetIntState<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
-<span id="cb51-5"><a href="ch-iic.html#cb51-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-6"><a href="ch-iic.html#cb51-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_FIFO_FULL<span class="op">))</span></span>
-<span id="cb51-7"><a href="ch-iic.html#cb51-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
-<span id="cb51-8"><a href="ch-iic.html#cb51-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(;</span> read_data_cnt <span class="op">&lt;</span> DATA_CNT<span class="op">;</span> read_data_cnt<span class="op">++)</span></span>
-<span id="cb51-9"><a href="ch-iic.html#cb51-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb51-10"><a href="ch-iic.html#cb51-10" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span><span class="op">(</span>I2C_FifoEmpty<span class="op">(</span>APB_I2C0<span class="op">)){</span> <span class="cf">break</span><span class="op">;</span> <span class="op">}</span></span>
-<span id="cb51-11"><a href="ch-iic.html#cb51-11" aria-hidden="true" tabindex="-1"></a>      read_data<span class="op">[</span>read_data_cnt<span class="op">]</span> <span class="op">=</span> I2C_DataRead<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
-<span id="cb51-12"><a href="ch-iic.html#cb51-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb51-13"><a href="ch-iic.html#cb51-13" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb51-14"><a href="ch-iic.html#cb51-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-15"><a href="ch-iic.html#cb51-15" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">))</span></span>
-<span id="cb51-16"><a href="ch-iic.html#cb51-16" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
-<span id="cb51-17"><a href="ch-iic.html#cb51-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(;</span> read_data_cnt <span class="op">&lt;</span> DATA_CNT<span class="op">;</span> read_data_cnt<span class="op">++)</span></span>
-<span id="cb51-18"><a href="ch-iic.html#cb51-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb51-19"><a href="ch-iic.html#cb51-19" aria-hidden="true" tabindex="-1"></a>      read_data<span class="op">[</span>read_data_cnt<span class="op">]</span> <span class="op">=</span> I2C_DataRead<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
-<span id="cb51-20"><a href="ch-iic.html#cb51-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb51-21"><a href="ch-iic.html#cb51-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-22"><a href="ch-iic.html#cb51-22" aria-hidden="true" tabindex="-1"></a>    I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">));</span></span>
-<span id="cb51-23"><a href="ch-iic.html#cb51-23" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb51-24"><a href="ch-iic.html#cb51-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-25"><a href="ch-iic.html#cb51-25" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb51-26"><a href="ch-iic.html#cb51-26" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<span id="cb51-3"><a href="ch-iic.html#cb51-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> status <span class="op">=</span> I2C_GetIntState<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
+<span id="cb51-4"><a href="ch-iic.html#cb51-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-5"><a href="ch-iic.html#cb51-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_FIFO_FULL<span class="op">))</span></span>
+<span id="cb51-6"><a href="ch-iic.html#cb51-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb51-7"><a href="ch-iic.html#cb51-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(;</span> read_data_cnt <span class="op">&lt;</span> DATA_CNT<span class="op">;</span> read_data_cnt<span class="op">++)</span></span>
+<span id="cb51-8"><a href="ch-iic.html#cb51-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb51-9"><a href="ch-iic.html#cb51-9" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span><span class="op">(</span>I2C_FifoEmpty<span class="op">(</span>APB_I2C0<span class="op">)){</span> <span class="cf">break</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb51-10"><a href="ch-iic.html#cb51-10" aria-hidden="true" tabindex="-1"></a>      read_data<span class="op">[</span>read_data_cnt<span class="op">]</span> <span class="op">=</span> I2C_DataRead<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
+<span id="cb51-11"><a href="ch-iic.html#cb51-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb51-12"><a href="ch-iic.html#cb51-12" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb51-13"><a href="ch-iic.html#cb51-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-14"><a href="ch-iic.html#cb51-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">))</span></span>
+<span id="cb51-15"><a href="ch-iic.html#cb51-15" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb51-16"><a href="ch-iic.html#cb51-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(;</span> read_data_cnt <span class="op">&lt;</span> DATA_CNT<span class="op">;</span> read_data_cnt<span class="op">++)</span></span>
+<span id="cb51-17"><a href="ch-iic.html#cb51-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb51-18"><a href="ch-iic.html#cb51-18" aria-hidden="true" tabindex="-1"></a>      read_data<span class="op">[</span>read_data_cnt<span class="op">]</span> <span class="op">=</span> I2C_DataRead<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
+<span id="cb51-19"><a href="ch-iic.html#cb51-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb51-20"><a href="ch-iic.html#cb51-20" aria-hidden="true" tabindex="-1"></a>    I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">));</span></span>
+<span id="cb51-21"><a href="ch-iic.html#cb51-21" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb51-22"><a href="ch-iic.html#cb51-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-23"><a href="ch-iic.html#cb51-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb51-24"><a href="ch-iic.html#cb51-24" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 <li><p>Master触发传输</p>
 <p>首先需要设置传输方向，此处是I2C_TRANSACTION_SLAVE2MASTER，即代表Slave发送数据，Master读取数据。</p>
 <div class="sourceCode" id="cb52"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb52-1"><a href="ch-iic.html#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> peripheral_i2c_send_data<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
@@ -815,53 +813,51 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ol>
 <div class="sourceCode" id="cb55"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb55-1"><a href="ch-iic.html#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> peripherals_i2c_isr<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
 <span id="cb55-2"><a href="ch-iic.html#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb55-3"><a href="ch-iic.html#cb55-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> i<span class="op">;</span></span>
-<span id="cb55-4"><a href="ch-iic.html#cb55-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">static</span> <span class="dt">uint8_t</span> dir <span class="op">=</span> <span class="dv">2</span><span class="op">;</span></span>
-<span id="cb55-5"><a href="ch-iic.html#cb55-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> status <span class="op">=</span> I2C_GetIntState<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
-<span id="cb55-6"><a href="ch-iic.html#cb55-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb55-7"><a href="ch-iic.html#cb55-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_ADDRHIT<span class="op">))</span></span>
-<span id="cb55-8"><a href="ch-iic.html#cb55-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
-<span id="cb55-9"><a href="ch-iic.html#cb55-9" aria-hidden="true" tabindex="-1"></a>    dir <span class="op">=</span> I2C_GetTransactionDir<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
-<span id="cb55-10"><a href="ch-iic.html#cb55-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>dir <span class="op">==</span> I2C_TRANSACTION_MASTER2SLAVE<span class="op">)</span></span>
-<span id="cb55-11"><a href="ch-iic.html#cb55-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb55-12"><a href="ch-iic.html#cb55-12" aria-hidden="true" tabindex="-1"></a>        I2C_IntEnable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_FULL<span class="op">));</span></span>
-<span id="cb55-13"><a href="ch-iic.html#cb55-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb55-14"><a href="ch-iic.html#cb55-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> <span class="cf">if</span><span class="op">(</span>dir <span class="op">==</span> I2C_TRANSACTION_SLAVE2MASTER<span class="op">)</span></span>
-<span id="cb55-15"><a href="ch-iic.html#cb55-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb55-16"><a href="ch-iic.html#cb55-16" aria-hidden="true" tabindex="-1"></a>        I2C_IntEnable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_EMPTY<span class="op">));</span></span>
-<span id="cb55-17"><a href="ch-iic.html#cb55-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb55-18"><a href="ch-iic.html#cb55-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb55-19"><a href="ch-iic.html#cb55-19" aria-hidden="true" tabindex="-1"></a>    I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_ADDRHIT<span class="op">));</span></span>
-<span id="cb55-20"><a href="ch-iic.html#cb55-20" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb55-21"><a href="ch-iic.html#cb55-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb55-22"><a href="ch-iic.html#cb55-22" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_FIFO_EMPTY<span class="op">))</span></span>
-<span id="cb55-23"><a href="ch-iic.html#cb55-23" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
-<span id="cb55-24"><a href="ch-iic.html#cb55-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(;</span> write_data_cnt <span class="op">&lt;</span> DATA_CNT<span class="op">;</span> write_data_cnt<span class="op">++)</span></span>
-<span id="cb55-25"><a href="ch-iic.html#cb55-25" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb55-26"><a href="ch-iic.html#cb55-26" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span><span class="op">(</span>I2C_FifoFull<span class="op">(</span>APB_I2C0<span class="op">)){</span> <span class="cf">break</span><span class="op">;</span> <span class="op">}</span></span>
-<span id="cb55-27"><a href="ch-iic.html#cb55-27" aria-hidden="true" tabindex="-1"></a>      I2C_DataWrite<span class="op">(</span>APB_I2C0<span class="op">,</span>write_data<span class="op">[</span>write_data_cnt<span class="op">]);</span></span>
-<span id="cb55-28"><a href="ch-iic.html#cb55-28" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb55-29"><a href="ch-iic.html#cb55-29" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb55-30"><a href="ch-iic.html#cb55-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb55-31"><a href="ch-iic.html#cb55-31" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">))</span></span>
-<span id="cb55-32"><a href="ch-iic.html#cb55-32" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
-<span id="cb55-33"><a href="ch-iic.html#cb55-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb55-34"><a href="ch-iic.html#cb55-34" aria-hidden="true" tabindex="-1"></a>    I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">));</span></span>
-<span id="cb55-35"><a href="ch-iic.html#cb55-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb55-36"><a href="ch-iic.html#cb55-36" aria-hidden="true" tabindex="-1"></a>    <span class="co">// prepare for next</span></span>
-<span id="cb55-37"><a href="ch-iic.html#cb55-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>dir <span class="op">==</span> I2C_TRANSACTION_MASTER2SLAVE<span class="op">)</span></span>
-<span id="cb55-38"><a href="ch-iic.html#cb55-38" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb55-39"><a href="ch-iic.html#cb55-39" aria-hidden="true" tabindex="-1"></a>        I2C_IntDisable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_FULL<span class="op">));</span></span>
-<span id="cb55-40"><a href="ch-iic.html#cb55-40" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb55-41"><a href="ch-iic.html#cb55-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> <span class="cf">if</span><span class="op">(</span>dir <span class="op">==</span> I2C_TRANSACTION_SLAVE2MASTER<span class="op">)</span></span>
-<span id="cb55-42"><a href="ch-iic.html#cb55-42" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb55-43"><a href="ch-iic.html#cb55-43" aria-hidden="true" tabindex="-1"></a>        I2C_IntDisable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_EMPTY<span class="op">));</span></span>
-<span id="cb55-44"><a href="ch-iic.html#cb55-44" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb55-3"><a href="ch-iic.html#cb55-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">static</span> <span class="dt">uint8_t</span> dir <span class="op">=</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb55-4"><a href="ch-iic.html#cb55-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> status <span class="op">=</span> I2C_GetIntState<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
+<span id="cb55-5"><a href="ch-iic.html#cb55-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-6"><a href="ch-iic.html#cb55-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_ADDRHIT<span class="op">))</span></span>
+<span id="cb55-7"><a href="ch-iic.html#cb55-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb55-8"><a href="ch-iic.html#cb55-8" aria-hidden="true" tabindex="-1"></a>    dir <span class="op">=</span> I2C_GetTransactionDir<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
+<span id="cb55-9"><a href="ch-iic.html#cb55-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>dir <span class="op">==</span> I2C_TRANSACTION_MASTER2SLAVE<span class="op">)</span></span>
+<span id="cb55-10"><a href="ch-iic.html#cb55-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb55-11"><a href="ch-iic.html#cb55-11" aria-hidden="true" tabindex="-1"></a>        I2C_IntEnable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_FULL<span class="op">));</span></span>
+<span id="cb55-12"><a href="ch-iic.html#cb55-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb55-13"><a href="ch-iic.html#cb55-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> <span class="cf">if</span><span class="op">(</span>dir <span class="op">==</span> I2C_TRANSACTION_SLAVE2MASTER<span class="op">)</span></span>
+<span id="cb55-14"><a href="ch-iic.html#cb55-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb55-15"><a href="ch-iic.html#cb55-15" aria-hidden="true" tabindex="-1"></a>        I2C_IntEnable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_EMPTY<span class="op">));</span></span>
+<span id="cb55-16"><a href="ch-iic.html#cb55-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb55-17"><a href="ch-iic.html#cb55-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-18"><a href="ch-iic.html#cb55-18" aria-hidden="true" tabindex="-1"></a>    I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_ADDRHIT<span class="op">));</span></span>
+<span id="cb55-19"><a href="ch-iic.html#cb55-19" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb55-20"><a href="ch-iic.html#cb55-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-21"><a href="ch-iic.html#cb55-21" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_FIFO_EMPTY<span class="op">))</span></span>
+<span id="cb55-22"><a href="ch-iic.html#cb55-22" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb55-23"><a href="ch-iic.html#cb55-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(;</span> write_data_cnt <span class="op">&lt;</span> DATA_CNT<span class="op">;</span> write_data_cnt<span class="op">++)</span></span>
+<span id="cb55-24"><a href="ch-iic.html#cb55-24" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb55-25"><a href="ch-iic.html#cb55-25" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span><span class="op">(</span>I2C_FifoFull<span class="op">(</span>APB_I2C0<span class="op">)){</span> <span class="cf">break</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb55-26"><a href="ch-iic.html#cb55-26" aria-hidden="true" tabindex="-1"></a>      I2C_DataWrite<span class="op">(</span>APB_I2C0<span class="op">,</span>write_data<span class="op">[</span>write_data_cnt<span class="op">]);</span></span>
+<span id="cb55-27"><a href="ch-iic.html#cb55-27" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb55-28"><a href="ch-iic.html#cb55-28" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb55-29"><a href="ch-iic.html#cb55-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-30"><a href="ch-iic.html#cb55-30" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">))</span></span>
+<span id="cb55-31"><a href="ch-iic.html#cb55-31" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb55-32"><a href="ch-iic.html#cb55-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-33"><a href="ch-iic.html#cb55-33" aria-hidden="true" tabindex="-1"></a>    I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">));</span></span>
+<span id="cb55-34"><a href="ch-iic.html#cb55-34" aria-hidden="true" tabindex="-1"></a>    <span class="co">// prepare for next</span></span>
+<span id="cb55-35"><a href="ch-iic.html#cb55-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>dir <span class="op">==</span> I2C_TRANSACTION_MASTER2SLAVE<span class="op">)</span></span>
+<span id="cb55-36"><a href="ch-iic.html#cb55-36" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb55-37"><a href="ch-iic.html#cb55-37" aria-hidden="true" tabindex="-1"></a>        I2C_IntDisable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_FULL<span class="op">));</span></span>
+<span id="cb55-38"><a href="ch-iic.html#cb55-38" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb55-39"><a href="ch-iic.html#cb55-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> <span class="cf">if</span><span class="op">(</span>dir <span class="op">==</span> I2C_TRANSACTION_SLAVE2MASTER<span class="op">)</span></span>
+<span id="cb55-40"><a href="ch-iic.html#cb55-40" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb55-41"><a href="ch-iic.html#cb55-41" aria-hidden="true" tabindex="-1"></a>        I2C_IntDisable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_EMPTY<span class="op">));</span></span>
+<span id="cb55-42"><a href="ch-iic.html#cb55-42" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb55-43"><a href="ch-iic.html#cb55-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-44"><a href="ch-iic.html#cb55-44" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
 <span id="cb55-45"><a href="ch-iic.html#cb55-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb55-46"><a href="ch-iic.html#cb55-46" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb55-47"><a href="ch-iic.html#cb55-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb55-48"><a href="ch-iic.html#cb55-48" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb55-49"><a href="ch-iic.html#cb55-49" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<span id="cb55-46"><a href="ch-iic.html#cb55-46" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb55-47"><a href="ch-iic.html#cb55-47" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 <li><p>使用流程：</p>
 <ul>
 <li>设置IO，setup_peripherals_i2c_pin()。</li>
@@ -898,35 +894,36 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ol>
 <div class="sourceCode" id="cb58"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb58-1"><a href="ch-iic.html#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> peripherals_i2c_isr<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
 <span id="cb58-2"><a href="ch-iic.html#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb58-3"><a href="ch-iic.html#cb58-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> i<span class="op">;</span></span>
-<span id="cb58-4"><a href="ch-iic.html#cb58-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> status <span class="op">=</span> I2C_GetIntState<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
-<span id="cb58-5"><a href="ch-iic.html#cb58-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-6"><a href="ch-iic.html#cb58-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">))</span></span>
-<span id="cb58-7"><a href="ch-iic.html#cb58-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
-<span id="cb58-8"><a href="ch-iic.html#cb58-8" aria-hidden="true" tabindex="-1"></a>    I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">));</span></span>
-<span id="cb58-9"><a href="ch-iic.html#cb58-9" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb58-10"><a href="ch-iic.html#cb58-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-11"><a href="ch-iic.html#cb58-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_FIFO_EMPTY<span class="op">))</span></span>
-<span id="cb58-12"><a href="ch-iic.html#cb58-12" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
-<span id="cb58-13"><a href="ch-iic.html#cb58-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">// push data until fifo is full</span></span>
-<span id="cb58-14"><a href="ch-iic.html#cb58-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(;</span> write_data_cnt <span class="op">&lt;</span> DATA_CNT<span class="op">;</span> write_data_cnt<span class="op">++)</span></span>
-<span id="cb58-15"><a href="ch-iic.html#cb58-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb58-16"><a href="ch-iic.html#cb58-16" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span><span class="op">(</span>I2C_FifoFull<span class="op">(</span>APB_I2C0<span class="op">)){</span> <span class="cf">break</span><span class="op">;</span> <span class="op">}</span></span>
-<span id="cb58-17"><a href="ch-iic.html#cb58-17" aria-hidden="true" tabindex="-1"></a>      I2C_DataWrite<span class="op">(</span>APB_I2C0<span class="op">,</span>write_data<span class="op">[</span>write_data_cnt<span class="op">]);</span></span>
-<span id="cb58-18"><a href="ch-iic.html#cb58-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb58-19"><a href="ch-iic.html#cb58-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-20"><a href="ch-iic.html#cb58-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">// if its the last, disable empty int</span></span>
-<span id="cb58-21"><a href="ch-iic.html#cb58-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>write_data_cnt <span class="op">==</span> DATA_CNT<span class="op">)</span></span>
-<span id="cb58-22"><a href="ch-iic.html#cb58-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb58-23"><a href="ch-iic.html#cb58-23" aria-hidden="true" tabindex="-1"></a>      I2C_IntDisable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_EMPTY<span class="op">));</span></span>
-<span id="cb58-24"><a href="ch-iic.html#cb58-24" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb58-25"><a href="ch-iic.html#cb58-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-26"><a href="ch-iic.html#cb58-26" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb58-27"><a href="ch-iic.html#cb58-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-28"><a href="ch-iic.html#cb58-28" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb58-29"><a href="ch-iic.html#cb58-29" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<span id="cb58-3"><a href="ch-iic.html#cb58-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> status <span class="op">=</span> I2C_GetIntState<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
+<span id="cb58-4"><a href="ch-iic.html#cb58-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-5"><a href="ch-iic.html#cb58-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">))</span></span>
+<span id="cb58-6"><a href="ch-iic.html#cb58-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb58-7"><a href="ch-iic.html#cb58-7" aria-hidden="true" tabindex="-1"></a>    I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">));</span></span>
+<span id="cb58-8"><a href="ch-iic.html#cb58-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb58-9"><a href="ch-iic.html#cb58-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-10"><a href="ch-iic.html#cb58-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_FIFO_EMPTY<span class="op">))</span></span>
+<span id="cb58-11"><a href="ch-iic.html#cb58-11" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb58-12"><a href="ch-iic.html#cb58-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">// push data until fifo is full</span></span>
+<span id="cb58-13"><a href="ch-iic.html#cb58-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(;</span> write_data_cnt <span class="op">&lt;</span> DATA_CNT<span class="op">;</span> write_data_cnt<span class="op">++)</span></span>
+<span id="cb58-14"><a href="ch-iic.html#cb58-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb58-15"><a href="ch-iic.html#cb58-15" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span><span class="op">(</span>I2C_FifoFull<span class="op">(</span>APB_I2C0<span class="op">)){</span> <span class="cf">break</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb58-16"><a href="ch-iic.html#cb58-16" aria-hidden="true" tabindex="-1"></a>      I2C_DataWrite<span class="op">(</span>APB_I2C0<span class="op">,</span>write_data<span class="op">[</span>write_data_cnt<span class="op">]);</span></span>
+<span id="cb58-17"><a href="ch-iic.html#cb58-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb58-18"><a href="ch-iic.html#cb58-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-19"><a href="ch-iic.html#cb58-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">// if its the last, disable empty int</span></span>
+<span id="cb58-20"><a href="ch-iic.html#cb58-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>write_data_cnt <span class="op">==</span> DATA_CNT<span class="op">)</span></span>
+<span id="cb58-21"><a href="ch-iic.html#cb58-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb58-22"><a href="ch-iic.html#cb58-22" aria-hidden="true" tabindex="-1"></a>      I2C_IntDisable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_EMPTY<span class="op">));</span></span>
+<span id="cb58-23"><a href="ch-iic.html#cb58-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb58-24"><a href="ch-iic.html#cb58-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-25"><a href="ch-iic.html#cb58-25" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb58-26"><a href="ch-iic.html#cb58-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-27"><a href="ch-iic.html#cb58-27" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb58-28"><a href="ch-iic.html#cb58-28" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 <li><p>Master触发传输</p>
-<p>首先需要设置传输方向，I2C_TRANSACTION_MASTER2SLAVE，即代表Master发送数据，Slave读取数据。</p>
+<p>首先需要设置传输方向，I2C_TRANSACTION_MASTER2SLAVE，即代表Master发送数据，Slave读取数据。
+注意！！！中断发送数据完成后关闭了I2C_INT_FIFO_EMPTY（FIFO空）中断，如果需要开始新一次传输需要打开中断。
+打开I2C_INT_FIFO_EMPTY：I2C_IntEnable(APB_I2C0,(1 &lt;&lt; I2C_INT_FIFO_EMPTY));</p>
 <div class="sourceCode" id="cb59"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb59-1"><a href="ch-iic.html#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> peripheral_i2c_send_data<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
 <span id="cb59-2"><a href="ch-iic.html#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
 <span id="cb59-3"><a href="ch-iic.html#cb59-3" aria-hidden="true" tabindex="-1"></a>  I2C_CtrlUpdateDirection<span class="op">(</span>APB_I2C0<span class="op">,</span>I2C_TRANSACTION_MASTER2SLAVE<span class="op">);</span></span>
@@ -970,57 +967,55 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ol>
 <div class="sourceCode" id="cb62"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb62-1"><a href="ch-iic.html#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> peripherals_i2c_isr<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
 <span id="cb62-2"><a href="ch-iic.html#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb62-3"><a href="ch-iic.html#cb62-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> i<span class="op">;</span></span>
-<span id="cb62-4"><a href="ch-iic.html#cb62-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">static</span> <span class="dt">uint8_t</span> dir <span class="op">=</span> <span class="dv">2</span><span class="op">;</span></span>
-<span id="cb62-5"><a href="ch-iic.html#cb62-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> status <span class="op">=</span> I2C_GetIntState<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
-<span id="cb62-6"><a href="ch-iic.html#cb62-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-7"><a href="ch-iic.html#cb62-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_ADDRHIT<span class="op">))</span></span>
-<span id="cb62-8"><a href="ch-iic.html#cb62-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
-<span id="cb62-9"><a href="ch-iic.html#cb62-9" aria-hidden="true" tabindex="-1"></a>    dir <span class="op">=</span> I2C_GetTransactionDir<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
-<span id="cb62-10"><a href="ch-iic.html#cb62-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>dir <span class="op">==</span> I2C_TRANSACTION_MASTER2SLAVE<span class="op">)</span></span>
-<span id="cb62-11"><a href="ch-iic.html#cb62-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb62-12"><a href="ch-iic.html#cb62-12" aria-hidden="true" tabindex="-1"></a>        I2C_IntEnable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_FULL<span class="op">));</span></span>
-<span id="cb62-13"><a href="ch-iic.html#cb62-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb62-14"><a href="ch-iic.html#cb62-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> <span class="cf">if</span><span class="op">(</span>dir <span class="op">==</span> I2C_TRANSACTION_SLAVE2MASTER<span class="op">)</span></span>
-<span id="cb62-15"><a href="ch-iic.html#cb62-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb62-16"><a href="ch-iic.html#cb62-16" aria-hidden="true" tabindex="-1"></a>        I2C_IntEnable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_EMPTY<span class="op">));</span></span>
-<span id="cb62-17"><a href="ch-iic.html#cb62-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb62-18"><a href="ch-iic.html#cb62-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-19"><a href="ch-iic.html#cb62-19" aria-hidden="true" tabindex="-1"></a>    I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_ADDRHIT<span class="op">));</span></span>
-<span id="cb62-20"><a href="ch-iic.html#cb62-20" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb62-21"><a href="ch-iic.html#cb62-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-22"><a href="ch-iic.html#cb62-22" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_FIFO_FULL<span class="op">))</span></span>
-<span id="cb62-23"><a href="ch-iic.html#cb62-23" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
-<span id="cb62-24"><a href="ch-iic.html#cb62-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(;</span> read_data_cnt <span class="op">&lt;</span> DATA_CNT<span class="op">;</span> read_data_cnt<span class="op">++)</span></span>
-<span id="cb62-25"><a href="ch-iic.html#cb62-25" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb62-26"><a href="ch-iic.html#cb62-26" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span><span class="op">(</span>I2C_FifoEmpty<span class="op">(</span>APB_I2C0<span class="op">)){</span> <span class="cf">break</span><span class="op">;</span> <span class="op">}</span></span>
-<span id="cb62-27"><a href="ch-iic.html#cb62-27" aria-hidden="true" tabindex="-1"></a>      read_data<span class="op">[</span>read_data_cnt<span class="op">]</span> <span class="op">=</span> I2C_DataRead<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
-<span id="cb62-28"><a href="ch-iic.html#cb62-28" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb62-29"><a href="ch-iic.html#cb62-29" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb62-30"><a href="ch-iic.html#cb62-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-31"><a href="ch-iic.html#cb62-31" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">))</span></span>
-<span id="cb62-32"><a href="ch-iic.html#cb62-32" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
-<span id="cb62-33"><a href="ch-iic.html#cb62-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(;</span>read_data_cnt <span class="op">&lt;</span> DATA_CNT<span class="op">;</span> read_data_cnt<span class="op">++)</span></span>
-<span id="cb62-34"><a href="ch-iic.html#cb62-34" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb62-35"><a href="ch-iic.html#cb62-35" aria-hidden="true" tabindex="-1"></a>      read_data<span class="op">[</span>read_data_cnt<span class="op">]</span> <span class="op">=</span> I2C_DataRead<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
-<span id="cb62-36"><a href="ch-iic.html#cb62-36" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb62-3"><a href="ch-iic.html#cb62-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">static</span> <span class="dt">uint8_t</span> dir <span class="op">=</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb62-4"><a href="ch-iic.html#cb62-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> status <span class="op">=</span> I2C_GetIntState<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
+<span id="cb62-5"><a href="ch-iic.html#cb62-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-6"><a href="ch-iic.html#cb62-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_ADDRHIT<span class="op">))</span></span>
+<span id="cb62-7"><a href="ch-iic.html#cb62-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb62-8"><a href="ch-iic.html#cb62-8" aria-hidden="true" tabindex="-1"></a>    dir <span class="op">=</span> I2C_GetTransactionDir<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
+<span id="cb62-9"><a href="ch-iic.html#cb62-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>dir <span class="op">==</span> I2C_TRANSACTION_MASTER2SLAVE<span class="op">)</span></span>
+<span id="cb62-10"><a href="ch-iic.html#cb62-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb62-11"><a href="ch-iic.html#cb62-11" aria-hidden="true" tabindex="-1"></a>        I2C_IntEnable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_FULL<span class="op">));</span></span>
+<span id="cb62-12"><a href="ch-iic.html#cb62-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb62-13"><a href="ch-iic.html#cb62-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> <span class="cf">if</span><span class="op">(</span>dir <span class="op">==</span> I2C_TRANSACTION_SLAVE2MASTER<span class="op">)</span></span>
+<span id="cb62-14"><a href="ch-iic.html#cb62-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb62-15"><a href="ch-iic.html#cb62-15" aria-hidden="true" tabindex="-1"></a>        I2C_IntEnable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_EMPTY<span class="op">));</span></span>
+<span id="cb62-16"><a href="ch-iic.html#cb62-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb62-17"><a href="ch-iic.html#cb62-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-18"><a href="ch-iic.html#cb62-18" aria-hidden="true" tabindex="-1"></a>    I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_ADDRHIT<span class="op">));</span></span>
+<span id="cb62-19"><a href="ch-iic.html#cb62-19" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb62-20"><a href="ch-iic.html#cb62-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-21"><a href="ch-iic.html#cb62-21" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_FIFO_FULL<span class="op">))</span></span>
+<span id="cb62-22"><a href="ch-iic.html#cb62-22" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb62-23"><a href="ch-iic.html#cb62-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(;</span> read_data_cnt <span class="op">&lt;</span> DATA_CNT<span class="op">;</span> read_data_cnt<span class="op">++)</span></span>
+<span id="cb62-24"><a href="ch-iic.html#cb62-24" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb62-25"><a href="ch-iic.html#cb62-25" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span><span class="op">(</span>I2C_FifoEmpty<span class="op">(</span>APB_I2C0<span class="op">)){</span> <span class="cf">break</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb62-26"><a href="ch-iic.html#cb62-26" aria-hidden="true" tabindex="-1"></a>      read_data<span class="op">[</span>read_data_cnt<span class="op">]</span> <span class="op">=</span> I2C_DataRead<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
+<span id="cb62-27"><a href="ch-iic.html#cb62-27" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb62-28"><a href="ch-iic.html#cb62-28" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb62-29"><a href="ch-iic.html#cb62-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-30"><a href="ch-iic.html#cb62-30" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">))</span></span>
+<span id="cb62-31"><a href="ch-iic.html#cb62-31" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb62-32"><a href="ch-iic.html#cb62-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(;</span>read_data_cnt <span class="op">&lt;</span> DATA_CNT<span class="op">;</span> read_data_cnt<span class="op">++)</span></span>
+<span id="cb62-33"><a href="ch-iic.html#cb62-33" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb62-34"><a href="ch-iic.html#cb62-34" aria-hidden="true" tabindex="-1"></a>      read_data<span class="op">[</span>read_data_cnt<span class="op">]</span> <span class="op">=</span> I2C_DataRead<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
+<span id="cb62-35"><a href="ch-iic.html#cb62-35" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb62-36"><a href="ch-iic.html#cb62-36" aria-hidden="true" tabindex="-1"></a>    I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">));</span></span>
 <span id="cb62-37"><a href="ch-iic.html#cb62-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-38"><a href="ch-iic.html#cb62-38" aria-hidden="true" tabindex="-1"></a>    I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">));</span></span>
-<span id="cb62-39"><a href="ch-iic.html#cb62-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-40"><a href="ch-iic.html#cb62-40" aria-hidden="true" tabindex="-1"></a>    <span class="co">// prepare for next</span></span>
-<span id="cb62-41"><a href="ch-iic.html#cb62-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>dir <span class="op">==</span> I2C_TRANSACTION_MASTER2SLAVE<span class="op">)</span></span>
-<span id="cb62-42"><a href="ch-iic.html#cb62-42" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb62-43"><a href="ch-iic.html#cb62-43" aria-hidden="true" tabindex="-1"></a>        I2C_IntDisable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_FULL<span class="op">));</span></span>
-<span id="cb62-44"><a href="ch-iic.html#cb62-44" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb62-45"><a href="ch-iic.html#cb62-45" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> <span class="cf">if</span><span class="op">(</span>dir <span class="op">==</span> I2C_TRANSACTION_SLAVE2MASTER<span class="op">)</span></span>
-<span id="cb62-46"><a href="ch-iic.html#cb62-46" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb62-47"><a href="ch-iic.html#cb62-47" aria-hidden="true" tabindex="-1"></a>        I2C_IntDisable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_EMPTY<span class="op">));</span></span>
-<span id="cb62-48"><a href="ch-iic.html#cb62-48" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb62-38"><a href="ch-iic.html#cb62-38" aria-hidden="true" tabindex="-1"></a>    <span class="co">// prepare for next</span></span>
+<span id="cb62-39"><a href="ch-iic.html#cb62-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>dir <span class="op">==</span> I2C_TRANSACTION_MASTER2SLAVE<span class="op">)</span></span>
+<span id="cb62-40"><a href="ch-iic.html#cb62-40" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb62-41"><a href="ch-iic.html#cb62-41" aria-hidden="true" tabindex="-1"></a>        I2C_IntDisable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_FULL<span class="op">));</span></span>
+<span id="cb62-42"><a href="ch-iic.html#cb62-42" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb62-43"><a href="ch-iic.html#cb62-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> <span class="cf">if</span><span class="op">(</span>dir <span class="op">==</span> I2C_TRANSACTION_SLAVE2MASTER<span class="op">)</span></span>
+<span id="cb62-44"><a href="ch-iic.html#cb62-44" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb62-45"><a href="ch-iic.html#cb62-45" aria-hidden="true" tabindex="-1"></a>        I2C_IntDisable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_EMPTY<span class="op">));</span></span>
+<span id="cb62-46"><a href="ch-iic.html#cb62-46" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb62-47"><a href="ch-iic.html#cb62-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-48"><a href="ch-iic.html#cb62-48" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
 <span id="cb62-49"><a href="ch-iic.html#cb62-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-50"><a href="ch-iic.html#cb62-50" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb62-51"><a href="ch-iic.html#cb62-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-52"><a href="ch-iic.html#cb62-52" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb62-53"><a href="ch-iic.html#cb62-53" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<span id="cb62-50"><a href="ch-iic.html#cb62-50" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb62-51"><a href="ch-iic.html#cb62-51" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 <li><p>使用流程</p>
 <ul>
 <li>设置IO，setup_peripherals_i2c_pin()。</li>
@@ -1037,8 +1032,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h6><span class="header-section-number">8.2.2.5.3.1</span> Master配置<a href="ch-iic.html#master配置-2" class="anchor-section" aria-label="Anchor link to header"></a></h6>
 <p>测试数据，每次传输23个字节（FIFO深度是8字节），每个传输单元必须是1字节。</p>
 <div class="sourceCode" id="cb63"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb63-1"><a href="ch-iic.html#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define DATA_CNT (23)</span></span>
-<span id="cb63-2"><a href="ch-iic.html#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> read_data<span class="op">[</span>DATA_CNT<span class="op">]</span> <span class="op">=</span> <span class="op">{</span><span class="dv">0</span><span class="op">,};</span></span>
-<span id="cb63-3"><a href="ch-iic.html#cb63-3" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> read_data_cnt <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span></code></pre></div>
+<span id="cb63-2"><a href="ch-iic.html#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> read_data<span class="op">[</span>DATA_CNT<span class="op">]</span> <span class="op">=</span> <span class="op">{</span><span class="dv">0</span><span class="op">,};</span></span></code></pre></div>
 <ul>
 <li><p>初始化I2C模块</p>
 <p>此处配置为Master, 7bit地址，并打开了传输结束中断，由于使用DMA传输，因此不需要打开FIFO相关中断。其余配置和场景1相同。</p>
@@ -1062,16 +1056,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>等待I2C_STATUS_CMPL中断的触发，该中断代表传输结束。</p>
 <div class="sourceCode" id="cb66"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb66-1"><a href="ch-iic.html#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> peripherals_i2c_isr<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
 <span id="cb66-2"><a href="ch-iic.html#cb66-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb66-3"><a href="ch-iic.html#cb66-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> i<span class="op">;</span></span>
-<span id="cb66-4"><a href="ch-iic.html#cb66-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> status <span class="op">=</span> I2C_GetIntState<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
-<span id="cb66-5"><a href="ch-iic.html#cb66-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb66-6"><a href="ch-iic.html#cb66-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">))</span></span>
-<span id="cb66-7"><a href="ch-iic.html#cb66-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
-<span id="cb66-8"><a href="ch-iic.html#cb66-8" aria-hidden="true" tabindex="-1"></a>    I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">));</span></span>
-<span id="cb66-9"><a href="ch-iic.html#cb66-9" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb66-10"><a href="ch-iic.html#cb66-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb66-11"><a href="ch-iic.html#cb66-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb66-12"><a href="ch-iic.html#cb66-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<span id="cb66-3"><a href="ch-iic.html#cb66-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> status <span class="op">=</span> I2C_GetIntState<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
+<span id="cb66-4"><a href="ch-iic.html#cb66-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-5"><a href="ch-iic.html#cb66-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">))</span></span>
+<span id="cb66-6"><a href="ch-iic.html#cb66-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb66-7"><a href="ch-iic.html#cb66-7" aria-hidden="true" tabindex="-1"></a>    I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">));</span></span>
+<span id="cb66-8"><a href="ch-iic.html#cb66-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb66-9"><a href="ch-iic.html#cb66-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-10"><a href="ch-iic.html#cb66-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb66-11"><a href="ch-iic.html#cb66-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 <li><p>Master DMA设置</p>
 <p>该API实现了I2C0 RXFIFO到DMA的配置，细节请参考DMA文档。</p>
 <div class="sourceCode" id="cb67"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb67-1"><a href="ch-iic.html#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> peripherals_i2c_rxfifo_to_dma<span class="op">(</span><span class="dt">int</span> channel_id<span class="op">,</span> <span class="dt">void</span> <span class="op">*</span>dst<span class="op">,</span> <span class="dt">int</span> size<span class="op">)</span></span>
@@ -1117,8 +1110,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h6><span class="header-section-number">8.2.2.5.3.2</span> Slave配置<a href="ch-iic.html#slave配置-2" class="anchor-section" aria-label="Anchor link to header"></a></h6>
 <p>测试数据，每次传输23个字节（FIFO深度是8字节），每个传输单元必须是1字节。</p>
 <div class="sourceCode" id="cb69"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb69-1"><a href="ch-iic.html#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define DATA_CNT (23)</span></span>
-<span id="cb69-2"><a href="ch-iic.html#cb69-2" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> write_data<span class="op">[</span>DATA_CNT<span class="op">]</span> <span class="op">=</span> <span class="op">{</span><span class="dv">0</span><span class="op">,};</span></span>
-<span id="cb69-3"><a href="ch-iic.html#cb69-3" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> write_data_cnt <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span></code></pre></div>
+<span id="cb69-2"><a href="ch-iic.html#cb69-2" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> write_data<span class="op">[</span>DATA_CNT<span class="op">]</span> <span class="op">=</span> <span class="op">{</span><span class="dv">0</span><span class="op">,};</span></span></code></pre></div>
 <ul>
 <li><p>初始化I2C模块</p>
 <p>对于Slave，需要打开I2C_INT_ADDR_HIT，此中断的触发代表收到了匹配的地址。</p>
@@ -1147,28 +1139,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ol>
 <div class="sourceCode" id="cb72"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb72-1"><a href="ch-iic.html#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> peripherals_i2c_isr<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
 <span id="cb72-2"><a href="ch-iic.html#cb72-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb72-3"><a href="ch-iic.html#cb72-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> i<span class="op">;</span></span>
-<span id="cb72-4"><a href="ch-iic.html#cb72-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">static</span> <span class="dt">uint8_t</span> dir <span class="op">=</span> <span class="dv">2</span><span class="op">;</span></span>
-<span id="cb72-5"><a href="ch-iic.html#cb72-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> status <span class="op">=</span> I2C_GetIntState<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
-<span id="cb72-6"><a href="ch-iic.html#cb72-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb72-7"><a href="ch-iic.html#cb72-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_ADDRHIT<span class="op">))</span></span>
-<span id="cb72-8"><a href="ch-iic.html#cb72-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
-<span id="cb72-9"><a href="ch-iic.html#cb72-9" aria-hidden="true" tabindex="-1"></a>    dir <span class="op">=</span> I2C_GetTransactionDir<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
-<span id="cb72-10"><a href="ch-iic.html#cb72-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>dir <span class="op">==</span> I2C_TRANSACTION_SLAVE2MASTER<span class="op">)</span></span>
-<span id="cb72-11"><a href="ch-iic.html#cb72-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb72-12"><a href="ch-iic.html#cb72-12" aria-hidden="true" tabindex="-1"></a>      peripherals_i2c_write_data_dma_setup<span class="op">();</span></span>
-<span id="cb72-13"><a href="ch-iic.html#cb72-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb72-14"><a href="ch-iic.html#cb72-14" aria-hidden="true" tabindex="-1"></a>    I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_ADDRHIT<span class="op">));</span></span>
-<span id="cb72-15"><a href="ch-iic.html#cb72-15" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb72-16"><a href="ch-iic.html#cb72-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb72-17"><a href="ch-iic.html#cb72-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">))</span></span>
-<span id="cb72-18"><a href="ch-iic.html#cb72-18" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
-<span id="cb72-19"><a href="ch-iic.html#cb72-19" aria-hidden="true" tabindex="-1"></a>    I2C_DmaEnable<span class="op">(</span>APB_I2C0<span class="op">,</span><span class="dv">0</span><span class="op">);</span></span>
-<span id="cb72-20"><a href="ch-iic.html#cb72-20" aria-hidden="true" tabindex="-1"></a>    I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">));</span></span>
-<span id="cb72-21"><a href="ch-iic.html#cb72-21" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb72-22"><a href="ch-iic.html#cb72-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb72-23"><a href="ch-iic.html#cb72-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb72-24"><a href="ch-iic.html#cb72-24" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<span id="cb72-3"><a href="ch-iic.html#cb72-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">static</span> <span class="dt">uint8_t</span> dir <span class="op">=</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb72-4"><a href="ch-iic.html#cb72-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> status <span class="op">=</span> I2C_GetIntState<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
+<span id="cb72-5"><a href="ch-iic.html#cb72-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-6"><a href="ch-iic.html#cb72-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_ADDRHIT<span class="op">))</span></span>
+<span id="cb72-7"><a href="ch-iic.html#cb72-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb72-8"><a href="ch-iic.html#cb72-8" aria-hidden="true" tabindex="-1"></a>    dir <span class="op">=</span> I2C_GetTransactionDir<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
+<span id="cb72-9"><a href="ch-iic.html#cb72-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>dir <span class="op">==</span> I2C_TRANSACTION_SLAVE2MASTER<span class="op">)</span></span>
+<span id="cb72-10"><a href="ch-iic.html#cb72-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb72-11"><a href="ch-iic.html#cb72-11" aria-hidden="true" tabindex="-1"></a>      peripherals_i2c_write_data_dma_setup<span class="op">();</span></span>
+<span id="cb72-12"><a href="ch-iic.html#cb72-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb72-13"><a href="ch-iic.html#cb72-13" aria-hidden="true" tabindex="-1"></a>    I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_ADDRHIT<span class="op">));</span></span>
+<span id="cb72-14"><a href="ch-iic.html#cb72-14" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb72-15"><a href="ch-iic.html#cb72-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-16"><a href="ch-iic.html#cb72-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">))</span></span>
+<span id="cb72-17"><a href="ch-iic.html#cb72-17" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb72-18"><a href="ch-iic.html#cb72-18" aria-hidden="true" tabindex="-1"></a>    I2C_DmaEnable<span class="op">(</span>APB_I2C0<span class="op">,</span><span class="dv">0</span><span class="op">);</span></span>
+<span id="cb72-19"><a href="ch-iic.html#cb72-19" aria-hidden="true" tabindex="-1"></a>    I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">));</span></span>
+<span id="cb72-20"><a href="ch-iic.html#cb72-20" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb72-21"><a href="ch-iic.html#cb72-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-22"><a href="ch-iic.html#cb72-22" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb72-23"><a href="ch-iic.html#cb72-23" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 <li><p>Slave发送数据以及DMA设置</p>
 <p>该API实现了DMA传输数据到I2C0 FIFO的配置，细节请参考DMA文档。</p>
 <div class="sourceCode" id="cb73"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb73-1"><a href="ch-iic.html#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> peripherals_i2c_dma_to_txfifo<span class="op">(</span><span class="dt">int</span> channel_id<span class="op">,</span> <span class="dt">void</span> <span class="op">*</span>src<span class="op">,</span> <span class="dt">int</span> size<span class="op">)</span></span>
@@ -1208,8 +1199,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h6><span class="header-section-number">8.2.2.5.4.1</span> Master配置<a href="ch-iic.html#master配置-3" class="anchor-section" aria-label="Anchor link to header"></a></h6>
 <p>测试数据，每次传输23个字节（FIFO深度是8字节），每个传输单元必须是1字节。</p>
 <div class="sourceCode" id="cb75"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb75-1"><a href="ch-iic.html#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define DATA_CNT (23)</span></span>
-<span id="cb75-2"><a href="ch-iic.html#cb75-2" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> write_data<span class="op">[</span>DATA_CNT<span class="op">]</span> <span class="op">=</span> <span class="op">{</span><span class="dv">0</span><span class="op">,};</span></span>
-<span id="cb75-3"><a href="ch-iic.html#cb75-3" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> write_data_cnt <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span></code></pre></div>
+<span id="cb75-2"><a href="ch-iic.html#cb75-2" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> write_data<span class="op">[</span>DATA_CNT<span class="op">]</span> <span class="op">=</span> <span class="op">{</span><span class="dv">0</span><span class="op">,};</span></span></code></pre></div>
 <ul>
 <li><p>初始化I2C模块</p>
 <p>请参考场景3中Master配置的<code>初始化I2C模块</code>。</p></li>
@@ -1262,8 +1252,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h6><span class="header-section-number">8.2.2.5.4.2</span> Slave配置<a href="ch-iic.html#slave配置-3" class="anchor-section" aria-label="Anchor link to header"></a></h6>
 <p>测试数据，每次传输23个字节（FIFO深度是8字节），每个传输单元必须是1字节。</p>
 <div class="sourceCode" id="cb78"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb78-1"><a href="ch-iic.html#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define DATA_CNT (23)</span></span>
-<span id="cb78-2"><a href="ch-iic.html#cb78-2" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> read_data<span class="op">[</span>DATA_CNT<span class="op">]</span> <span class="op">=</span> <span class="op">{</span><span class="dv">0</span><span class="op">,};</span></span>
-<span id="cb78-3"><a href="ch-iic.html#cb78-3" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> read_data_cnt <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span></code></pre></div>
+<span id="cb78-2"><a href="ch-iic.html#cb78-2" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> read_data<span class="op">[</span>DATA_CNT<span class="op">]</span> <span class="op">=</span> <span class="op">{</span><span class="dv">0</span><span class="op">,};</span></span></code></pre></div>
 <ul>
 <li><p>初始化I2C模块</p>
 <p>请参考场景3中Slave配置的<code>初始化I2C模块</code>。</p></li>
@@ -1279,29 +1268,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ol>
 <div class="sourceCode" id="cb79"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb79-1"><a href="ch-iic.html#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> peripherals_i2c_isr<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
 <span id="cb79-2"><a href="ch-iic.html#cb79-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb79-3"><a href="ch-iic.html#cb79-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> i<span class="op">;</span></span>
-<span id="cb79-4"><a href="ch-iic.html#cb79-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">static</span> <span class="dt">uint8_t</span> dir <span class="op">=</span> <span class="dv">2</span><span class="op">;</span></span>
-<span id="cb79-5"><a href="ch-iic.html#cb79-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> status <span class="op">=</span> I2C_GetIntState<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
-<span id="cb79-6"><a href="ch-iic.html#cb79-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb79-7"><a href="ch-iic.html#cb79-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_ADDRHIT<span class="op">))</span></span>
-<span id="cb79-8"><a href="ch-iic.html#cb79-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
-<span id="cb79-9"><a href="ch-iic.html#cb79-9" aria-hidden="true" tabindex="-1"></a>    dir <span class="op">=</span> I2C_GetTransactionDir<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
-<span id="cb79-10"><a href="ch-iic.html#cb79-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>dir <span class="op">==</span> I2C_TRANSACTION_MASTER2SLAVE<span class="op">)</span></span>
-<span id="cb79-11"><a href="ch-iic.html#cb79-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb79-12"><a href="ch-iic.html#cb79-12" aria-hidden="true" tabindex="-1"></a>      peripherals_i2c_read_data_dma_setup<span class="op">();</span></span>
-<span id="cb79-13"><a href="ch-iic.html#cb79-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb79-14"><a href="ch-iic.html#cb79-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb79-15"><a href="ch-iic.html#cb79-15" aria-hidden="true" tabindex="-1"></a>    I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_ADDRHIT<span class="op">));</span></span>
-<span id="cb79-16"><a href="ch-iic.html#cb79-16" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb79-17"><a href="ch-iic.html#cb79-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb79-18"><a href="ch-iic.html#cb79-18" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">))</span></span>
-<span id="cb79-19"><a href="ch-iic.html#cb79-19" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
-<span id="cb79-20"><a href="ch-iic.html#cb79-20" aria-hidden="true" tabindex="-1"></a>    I2C_DmaEnable<span class="op">(</span>APB_I2C0<span class="op">,</span><span class="dv">0</span><span class="op">);</span></span>
-<span id="cb79-21"><a href="ch-iic.html#cb79-21" aria-hidden="true" tabindex="-1"></a>    I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">));</span></span>
-<span id="cb79-22"><a href="ch-iic.html#cb79-22" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb79-23"><a href="ch-iic.html#cb79-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb79-24"><a href="ch-iic.html#cb79-24" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb79-25"><a href="ch-iic.html#cb79-25" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<span id="cb79-3"><a href="ch-iic.html#cb79-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">static</span> <span class="dt">uint8_t</span> dir <span class="op">=</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb79-4"><a href="ch-iic.html#cb79-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> status <span class="op">=</span> I2C_GetIntState<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
+<span id="cb79-5"><a href="ch-iic.html#cb79-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-6"><a href="ch-iic.html#cb79-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_ADDRHIT<span class="op">))</span></span>
+<span id="cb79-7"><a href="ch-iic.html#cb79-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb79-8"><a href="ch-iic.html#cb79-8" aria-hidden="true" tabindex="-1"></a>    dir <span class="op">=</span> I2C_GetTransactionDir<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
+<span id="cb79-9"><a href="ch-iic.html#cb79-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>dir <span class="op">==</span> I2C_TRANSACTION_MASTER2SLAVE<span class="op">)</span></span>
+<span id="cb79-10"><a href="ch-iic.html#cb79-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb79-11"><a href="ch-iic.html#cb79-11" aria-hidden="true" tabindex="-1"></a>      peripherals_i2c_read_data_dma_setup<span class="op">();</span></span>
+<span id="cb79-12"><a href="ch-iic.html#cb79-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb79-13"><a href="ch-iic.html#cb79-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-14"><a href="ch-iic.html#cb79-14" aria-hidden="true" tabindex="-1"></a>    I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_ADDRHIT<span class="op">));</span></span>
+<span id="cb79-15"><a href="ch-iic.html#cb79-15" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb79-16"><a href="ch-iic.html#cb79-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-17"><a href="ch-iic.html#cb79-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">))</span></span>
+<span id="cb79-18"><a href="ch-iic.html#cb79-18" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb79-19"><a href="ch-iic.html#cb79-19" aria-hidden="true" tabindex="-1"></a>    I2C_DmaEnable<span class="op">(</span>APB_I2C0<span class="op">,</span><span class="dv">0</span><span class="op">);</span></span>
+<span id="cb79-20"><a href="ch-iic.html#cb79-20" aria-hidden="true" tabindex="-1"></a>    I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">));</span></span>
+<span id="cb79-21"><a href="ch-iic.html#cb79-21" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb79-22"><a href="ch-iic.html#cb79-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-23"><a href="ch-iic.html#cb79-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb79-24"><a href="ch-iic.html#cb79-24" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 <li><p>Slave 发送数据以及DMA设置</p>
 <p>该API实现了I2C0 RXFIFO到DMA的配置，细节请参考DMA文档。</p>
 <div class="sourceCode" id="cb80"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb80-1"><a href="ch-iic.html#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> peripherals_i2c_rxfifo_to_dma<span class="op">(</span><span class="dt">int</span> channel_id<span class="op">,</span> <span class="dt">void</span> <span class="op">*</span>dst<span class="op">,</span> <span class="dt">int</span> size<span class="op">)</span></span>
@@ -1378,98 +1366,103 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb84"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb84-1"><a href="ch-iic.html#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> master_write_flag <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
 <span id="cb84-2"><a href="ch-iic.html#cb84-2" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> peripherals_i2c_isr<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
 <span id="cb84-3"><a href="ch-iic.html#cb84-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb84-4"><a href="ch-iic.html#cb84-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> i<span class="op">;</span></span>
-<span id="cb84-5"><a href="ch-iic.html#cb84-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> status <span class="op">=</span> I2C_GetIntState<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
-<span id="cb84-6"><a href="ch-iic.html#cb84-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb84-7"><a href="ch-iic.html#cb84-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 传输结束中断，代表DATA_CNT个字节接收或者发射完成</span></span>
-<span id="cb84-8"><a href="ch-iic.html#cb84-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">))</span></span>
-<span id="cb84-9"><a href="ch-iic.html#cb84-9" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
-<span id="cb84-10"><a href="ch-iic.html#cb84-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>master_write_flag<span class="op">)</span></span>
-<span id="cb84-11"><a href="ch-iic.html#cb84-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb84-12"><a href="ch-iic.html#cb84-12" aria-hidden="true" tabindex="-1"></a>      I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">));</span></span>
-<span id="cb84-13"><a href="ch-iic.html#cb84-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb84-14"><a href="ch-iic.html#cb84-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span></span>
-<span id="cb84-15"><a href="ch-iic.html#cb84-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb84-16"><a href="ch-iic.html#cb84-16" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span><span class="op">(;</span> read_data_cnt <span class="op">&lt;</span> DATA_CNT<span class="op">;</span> read_data_cnt<span class="op">++)</span></span>
-<span id="cb84-17"><a href="ch-iic.html#cb84-17" aria-hidden="true" tabindex="-1"></a>      <span class="op">{</span></span>
-<span id="cb84-18"><a href="ch-iic.html#cb84-18" aria-hidden="true" tabindex="-1"></a>        read_data<span class="op">[</span>read_data_cnt<span class="op">]</span> <span class="op">=</span> I2C_DataRead<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
-<span id="cb84-19"><a href="ch-iic.html#cb84-19" aria-hidden="true" tabindex="-1"></a>      <span class="op">}</span></span>
+<span id="cb84-4"><a href="ch-iic.html#cb84-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> status <span class="op">=</span> I2C_GetIntState<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
+<span id="cb84-5"><a href="ch-iic.html#cb84-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-6"><a href="ch-iic.html#cb84-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_ADDRHIT<span class="op">))</span></span>
+<span id="cb84-7"><a href="ch-iic.html#cb84-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb84-8"><a href="ch-iic.html#cb84-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>master_write_flag<span class="op">)</span></span>
+<span id="cb84-9"><a href="ch-iic.html#cb84-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb84-10"><a href="ch-iic.html#cb84-10" aria-hidden="true" tabindex="-1"></a>      I2C_IntDisable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_FULL<span class="op">));</span></span>
+<span id="cb84-11"><a href="ch-iic.html#cb84-11" aria-hidden="true" tabindex="-1"></a>      I2C_IntEnable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span><span class="op">&lt;&lt;</span>I2C_INT_CMPL<span class="op">)|(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_EMPTY<span class="op">));</span></span>
+<span id="cb84-12"><a href="ch-iic.html#cb84-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb84-13"><a href="ch-iic.html#cb84-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span></span>
+<span id="cb84-14"><a href="ch-iic.html#cb84-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb84-15"><a href="ch-iic.html#cb84-15" aria-hidden="true" tabindex="-1"></a>      I2C_IntDisable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_EMPTY<span class="op">));</span></span>
+<span id="cb84-16"><a href="ch-iic.html#cb84-16" aria-hidden="true" tabindex="-1"></a>      I2C_IntEnable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span><span class="op">&lt;&lt;</span>I2C_INT_CMPL<span class="op">)|(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_FULL<span class="op">));</span></span>
+<span id="cb84-17"><a href="ch-iic.html#cb84-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb84-18"><a href="ch-iic.html#cb84-18" aria-hidden="true" tabindex="-1"></a>    I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_ADDRHIT<span class="op">));</span></span>
+<span id="cb84-19"><a href="ch-iic.html#cb84-19" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
 <span id="cb84-20"><a href="ch-iic.html#cb84-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb84-21"><a href="ch-iic.html#cb84-21" aria-hidden="true" tabindex="-1"></a>      I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">));</span></span>
-<span id="cb84-22"><a href="ch-iic.html#cb84-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb84-23"><a href="ch-iic.html#cb84-23" aria-hidden="true" tabindex="-1"></a>      <span class="co">// prepare for next</span></span>
-<span id="cb84-24"><a href="ch-iic.html#cb84-24" aria-hidden="true" tabindex="-1"></a>      read_data_cnt <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb84-25"><a href="ch-iic.html#cb84-25" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb84-26"><a href="ch-iic.html#cb84-26" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb84-27"><a href="ch-iic.html#cb84-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb84-28"><a href="ch-iic.html#cb84-28" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_ADDRHIT<span class="op">))</span></span>
-<span id="cb84-29"><a href="ch-iic.html#cb84-29" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
-<span id="cb84-30"><a href="ch-iic.html#cb84-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>master_write_flag<span class="op">)</span></span>
-<span id="cb84-31"><a href="ch-iic.html#cb84-31" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb84-32"><a href="ch-iic.html#cb84-32" aria-hidden="true" tabindex="-1"></a>      I2C_IntDisable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_FULL<span class="op">));</span></span>
-<span id="cb84-33"><a href="ch-iic.html#cb84-33" aria-hidden="true" tabindex="-1"></a>      I2C_IntEnable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span><span class="op">&lt;&lt;</span>I2C_INT_CMPL<span class="op">)|(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_EMPTY<span class="op">));</span></span>
-<span id="cb84-34"><a href="ch-iic.html#cb84-34" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb84-35"><a href="ch-iic.html#cb84-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span></span>
-<span id="cb84-36"><a href="ch-iic.html#cb84-36" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb84-37"><a href="ch-iic.html#cb84-37" aria-hidden="true" tabindex="-1"></a>      I2C_IntDisable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_EMPTY<span class="op">));</span></span>
-<span id="cb84-38"><a href="ch-iic.html#cb84-38" aria-hidden="true" tabindex="-1"></a>      I2C_IntEnable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span><span class="op">&lt;&lt;</span>I2C_INT_CMPL<span class="op">)|(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_FULL<span class="op">));</span></span>
-<span id="cb84-39"><a href="ch-iic.html#cb84-39" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb84-40"><a href="ch-iic.html#cb84-40" aria-hidden="true" tabindex="-1"></a>    I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_ADDRHIT<span class="op">));</span></span>
-<span id="cb84-41"><a href="ch-iic.html#cb84-41" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb84-42"><a href="ch-iic.html#cb84-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb84-43"><a href="ch-iic.html#cb84-43" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_FIFO_EMPTY<span class="op">))</span></span>
-<span id="cb84-44"><a href="ch-iic.html#cb84-44" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
-<span id="cb84-45"><a href="ch-iic.html#cb84-45" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>master_write_flag<span class="op">)</span></span>
-<span id="cb84-46"><a href="ch-iic.html#cb84-46" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb84-47"><a href="ch-iic.html#cb84-47" aria-hidden="true" tabindex="-1"></a>      <span class="co">// push data until fifo is full</span></span>
-<span id="cb84-48"><a href="ch-iic.html#cb84-48" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span><span class="op">(;</span> write_data_cnt <span class="op">&lt;</span> DATA_CNT<span class="op">;</span> write_data_cnt<span class="op">++)</span></span>
-<span id="cb84-49"><a href="ch-iic.html#cb84-49" aria-hidden="true" tabindex="-1"></a>      <span class="op">{</span></span>
-<span id="cb84-50"><a href="ch-iic.html#cb84-50" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span><span class="op">(</span>I2C_FifoFull<span class="op">(</span>APB_I2C0<span class="op">)){</span> <span class="cf">break</span><span class="op">;</span> <span class="op">}</span></span>
-<span id="cb84-51"><a href="ch-iic.html#cb84-51" aria-hidden="true" tabindex="-1"></a>        I2C_DataWrite<span class="op">(</span>APB_I2C0<span class="op">,</span>write_data<span class="op">[</span>write_data_cnt<span class="op">]);</span></span>
-<span id="cb84-52"><a href="ch-iic.html#cb84-52" aria-hidden="true" tabindex="-1"></a>      <span class="op">}</span></span>
-<span id="cb84-53"><a href="ch-iic.html#cb84-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb84-54"><a href="ch-iic.html#cb84-54" aria-hidden="true" tabindex="-1"></a>      <span class="co">// if its the last, disable empty int</span></span>
-<span id="cb84-55"><a href="ch-iic.html#cb84-55" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span><span class="op">(</span>write_data_cnt <span class="op">==</span> DATA_CNT<span class="op">)</span></span>
-<span id="cb84-56"><a href="ch-iic.html#cb84-56" aria-hidden="true" tabindex="-1"></a>      <span class="op">{</span></span>
-<span id="cb84-57"><a href="ch-iic.html#cb84-57" aria-hidden="true" tabindex="-1"></a>        I2C_IntDisable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_EMPTY<span class="op">));</span></span>
-<span id="cb84-58"><a href="ch-iic.html#cb84-58" aria-hidden="true" tabindex="-1"></a>      <span class="op">}</span></span>
-<span id="cb84-59"><a href="ch-iic.html#cb84-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb84-60"><a href="ch-iic.html#cb84-60" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb84-61"><a href="ch-iic.html#cb84-61" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb84-62"><a href="ch-iic.html#cb84-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb84-63"><a href="ch-iic.html#cb84-63" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_FIFO_FULL<span class="op">))</span></span>
-<span id="cb84-64"><a href="ch-iic.html#cb84-64" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
-<span id="cb84-65"><a href="ch-iic.html#cb84-65" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(!</span>master_write_flag<span class="op">)</span></span>
-<span id="cb84-66"><a href="ch-iic.html#cb84-66" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb84-67"><a href="ch-iic.html#cb84-67" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span><span class="op">(;</span> read_data_cnt <span class="op">&lt;</span> DATA_CNT<span class="op">;</span> read_data_cnt<span class="op">++)</span></span>
-<span id="cb84-68"><a href="ch-iic.html#cb84-68" aria-hidden="true" tabindex="-1"></a>      <span class="op">{</span></span>
-<span id="cb84-69"><a href="ch-iic.html#cb84-69" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span><span class="op">(</span>I2C_FifoEmpty<span class="op">(</span>APB_I2C0<span class="op">)){</span> <span class="cf">break</span><span class="op">;</span> <span class="op">}</span></span>
-<span id="cb84-70"><a href="ch-iic.html#cb84-70" aria-hidden="true" tabindex="-1"></a>        read_data<span class="op">[</span>read_data_cnt<span class="op">]</span> <span class="op">=</span> I2C_DataRead<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
-<span id="cb84-71"><a href="ch-iic.html#cb84-71" aria-hidden="true" tabindex="-1"></a>      <span class="op">}</span></span>
-<span id="cb84-72"><a href="ch-iic.html#cb84-72" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb84-73"><a href="ch-iic.html#cb84-73" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb84-74"><a href="ch-iic.html#cb84-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb84-75"><a href="ch-iic.html#cb84-75" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb84-76"><a href="ch-iic.html#cb84-76" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<span id="cb84-21"><a href="ch-iic.html#cb84-21" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_FIFO_EMPTY<span class="op">))</span></span>
+<span id="cb84-22"><a href="ch-iic.html#cb84-22" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb84-23"><a href="ch-iic.html#cb84-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>master_write_flag<span class="op">)</span></span>
+<span id="cb84-24"><a href="ch-iic.html#cb84-24" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb84-25"><a href="ch-iic.html#cb84-25" aria-hidden="true" tabindex="-1"></a>      <span class="co">// push data until fifo is full</span></span>
+<span id="cb84-26"><a href="ch-iic.html#cb84-26" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span><span class="op">(;</span> write_data_cnt <span class="op">&lt;</span> DATA_CNT<span class="op">;</span> write_data_cnt<span class="op">++)</span></span>
+<span id="cb84-27"><a href="ch-iic.html#cb84-27" aria-hidden="true" tabindex="-1"></a>      <span class="op">{</span></span>
+<span id="cb84-28"><a href="ch-iic.html#cb84-28" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span><span class="op">(</span>I2C_FifoFull<span class="op">(</span>APB_I2C0<span class="op">)){</span> <span class="cf">break</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb84-29"><a href="ch-iic.html#cb84-29" aria-hidden="true" tabindex="-1"></a>        I2C_DataWrite<span class="op">(</span>APB_I2C0<span class="op">,</span>write_data<span class="op">[</span>write_data_cnt<span class="op">]);</span></span>
+<span id="cb84-30"><a href="ch-iic.html#cb84-30" aria-hidden="true" tabindex="-1"></a>      <span class="op">}</span></span>
+<span id="cb84-31"><a href="ch-iic.html#cb84-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-32"><a href="ch-iic.html#cb84-32" aria-hidden="true" tabindex="-1"></a>      <span class="co">// if its the last, disable empty int</span></span>
+<span id="cb84-33"><a href="ch-iic.html#cb84-33" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span><span class="op">(</span>write_data_cnt <span class="op">==</span> DATA_CNT<span class="op">)</span></span>
+<span id="cb84-34"><a href="ch-iic.html#cb84-34" aria-hidden="true" tabindex="-1"></a>      <span class="op">{</span></span>
+<span id="cb84-35"><a href="ch-iic.html#cb84-35" aria-hidden="true" tabindex="-1"></a>        I2C_IntDisable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_EMPTY<span class="op">));</span></span>
+<span id="cb84-36"><a href="ch-iic.html#cb84-36" aria-hidden="true" tabindex="-1"></a>      <span class="op">}</span></span>
+<span id="cb84-37"><a href="ch-iic.html#cb84-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-38"><a href="ch-iic.html#cb84-38" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb84-39"><a href="ch-iic.html#cb84-39" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb84-40"><a href="ch-iic.html#cb84-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-41"><a href="ch-iic.html#cb84-41" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_FIFO_FULL<span class="op">))</span></span>
+<span id="cb84-42"><a href="ch-iic.html#cb84-42" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb84-43"><a href="ch-iic.html#cb84-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(!</span>master_write_flag<span class="op">)</span></span>
+<span id="cb84-44"><a href="ch-iic.html#cb84-44" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb84-45"><a href="ch-iic.html#cb84-45" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span><span class="op">(;</span> read_data_cnt <span class="op">&lt;</span> DATA_CNT<span class="op">;</span> read_data_cnt<span class="op">++)</span></span>
+<span id="cb84-46"><a href="ch-iic.html#cb84-46" aria-hidden="true" tabindex="-1"></a>      <span class="op">{</span></span>
+<span id="cb84-47"><a href="ch-iic.html#cb84-47" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span><span class="op">(</span>I2C_FifoEmpty<span class="op">(</span>APB_I2C0<span class="op">)){</span> <span class="cf">break</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb84-48"><a href="ch-iic.html#cb84-48" aria-hidden="true" tabindex="-1"></a>        read_data<span class="op">[</span>read_data_cnt<span class="op">]</span> <span class="op">=</span> I2C_DataRead<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
+<span id="cb84-49"><a href="ch-iic.html#cb84-49" aria-hidden="true" tabindex="-1"></a>      <span class="op">}</span></span>
+<span id="cb84-50"><a href="ch-iic.html#cb84-50" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb84-51"><a href="ch-iic.html#cb84-51" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb84-52"><a href="ch-iic.html#cb84-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-53"><a href="ch-iic.html#cb84-53" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 传输结束中断，代表DATA_CNT个字节接收或者发射完成</span></span>
+<span id="cb84-54"><a href="ch-iic.html#cb84-54" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">))</span></span>
+<span id="cb84-55"><a href="ch-iic.html#cb84-55" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb84-56"><a href="ch-iic.html#cb84-56" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>master_write_flag<span class="op">)</span></span>
+<span id="cb84-57"><a href="ch-iic.html#cb84-57" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb84-58"><a href="ch-iic.html#cb84-58" aria-hidden="true" tabindex="-1"></a>      I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">));</span></span>
+<span id="cb84-59"><a href="ch-iic.html#cb84-59" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb84-60"><a href="ch-iic.html#cb84-60" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span></span>
+<span id="cb84-61"><a href="ch-iic.html#cb84-61" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb84-62"><a href="ch-iic.html#cb84-62" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span><span class="op">(;</span> read_data_cnt <span class="op">&lt;</span> DATA_CNT<span class="op">;</span> read_data_cnt<span class="op">++)</span></span>
+<span id="cb84-63"><a href="ch-iic.html#cb84-63" aria-hidden="true" tabindex="-1"></a>      <span class="op">{</span></span>
+<span id="cb84-64"><a href="ch-iic.html#cb84-64" aria-hidden="true" tabindex="-1"></a>        read_data<span class="op">[</span>read_data_cnt<span class="op">]</span> <span class="op">=</span> I2C_DataRead<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
+<span id="cb84-65"><a href="ch-iic.html#cb84-65" aria-hidden="true" tabindex="-1"></a>      <span class="op">}</span></span>
+<span id="cb84-66"><a href="ch-iic.html#cb84-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-67"><a href="ch-iic.html#cb84-67" aria-hidden="true" tabindex="-1"></a>      I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">));</span></span>
+<span id="cb84-68"><a href="ch-iic.html#cb84-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-69"><a href="ch-iic.html#cb84-69" aria-hidden="true" tabindex="-1"></a>      <span class="co">// prepare for next</span></span>
+<span id="cb84-70"><a href="ch-iic.html#cb84-70" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb84-71"><a href="ch-iic.html#cb84-71" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb84-72"><a href="ch-iic.html#cb84-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-73"><a href="ch-iic.html#cb84-73" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb84-74"><a href="ch-iic.html#cb84-74" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 <li><p>Master写传输</p>
 <p>首先需要设置传输方向，I2C_TRANSACTION_MASTER2SLAVE，即代表Master发送数据，Slave读取数据。</p>
 <div class="sourceCode" id="cb85"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb85-1"><a href="ch-iic.html#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> peripheral_i2c_write_data<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
 <span id="cb85-2"><a href="ch-iic.html#cb85-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
 <span id="cb85-3"><a href="ch-iic.html#cb85-3" aria-hidden="true" tabindex="-1"></a>  master_write_flag <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
 <span id="cb85-4"><a href="ch-iic.html#cb85-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-5"><a href="ch-iic.html#cb85-5" aria-hidden="true" tabindex="-1"></a>  I2C_CtrlUpdateDirection<span class="op">(</span>APB_I2C0<span class="op">,</span>I2C_TRANSACTION_MASTER2SLAVE<span class="op">);</span></span>
-<span id="cb85-6"><a href="ch-iic.html#cb85-6" aria-hidden="true" tabindex="-1"></a>  I2C_CtrlUpdateDataCnt<span class="op">(</span>APB_I2C0<span class="op">,</span> DATA_CNT<span class="op">);</span></span>
-<span id="cb85-7"><a href="ch-iic.html#cb85-7" aria-hidden="true" tabindex="-1"></a>  I2C_CommandWrite<span class="op">(</span>APB_I2C0<span class="op">,</span> I2C_COMMAND_ISSUE_DATA_TRANSACTION<span class="op">);</span></span>
-<span id="cb85-8"><a href="ch-iic.html#cb85-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<span id="cb85-5"><a href="ch-iic.html#cb85-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">//write data use fifo empty Interrupt,so disable I2C_INT_FIFO_FULL,enable I2C_INT_FIFO_EMPTY.</span></span>
+<span id="cb85-6"><a href="ch-iic.html#cb85-6" aria-hidden="true" tabindex="-1"></a>  I2C_IntDisable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_FULL<span class="op">));</span></span>
+<span id="cb85-7"><a href="ch-iic.html#cb85-7" aria-hidden="true" tabindex="-1"></a>  I2C_IntEnable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_EMPTY<span class="op">));</span></span>
+<span id="cb85-8"><a href="ch-iic.html#cb85-8" aria-hidden="true" tabindex="-1"></a>  I2C_CtrlUpdateDirection<span class="op">(</span>APB_I2C0<span class="op">,</span>I2C_TRANSACTION_MASTER2SLAVE<span class="op">);</span></span>
+<span id="cb85-9"><a href="ch-iic.html#cb85-9" aria-hidden="true" tabindex="-1"></a>  I2C_CtrlUpdateDataCnt<span class="op">(</span>APB_I2C0<span class="op">,</span> DATA_CNT<span class="op">);</span></span>
+<span id="cb85-10"><a href="ch-iic.html#cb85-10" aria-hidden="true" tabindex="-1"></a>  I2C_CommandWrite<span class="op">(</span>APB_I2C0<span class="op">,</span> I2C_COMMAND_ISSUE_DATA_TRANSACTION<span class="op">);</span></span>
+<span id="cb85-11"><a href="ch-iic.html#cb85-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 <li><p>Master读传输</p>
 <p>首先需要设置传输方向，此处是I2C_TRANSACTION_SLAVE2MASTER，即代表Slave发送数据，Master读取数据。</p>
 <div class="sourceCode" id="cb86"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb86-1"><a href="ch-iic.html#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> peripheral_i2c_read_data<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
 <span id="cb86-2"><a href="ch-iic.html#cb86-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
 <span id="cb86-3"><a href="ch-iic.html#cb86-3" aria-hidden="true" tabindex="-1"></a>  master_write_flag <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb86-4"><a href="ch-iic.html#cb86-4" aria-hidden="true" tabindex="-1"></a>  I2C_CtrlUpdateDirection<span class="op">(</span>APB_I2C0<span class="op">,</span>I2C_TRANSACTION_SLAVE2MASTER<span class="op">);</span></span>
-<span id="cb86-5"><a href="ch-iic.html#cb86-5" aria-hidden="true" tabindex="-1"></a>  I2C_CtrlUpdateDataCnt<span class="op">(</span>APB_I2C0<span class="op">,</span> DATA_CNT<span class="op">);</span></span>
-<span id="cb86-6"><a href="ch-iic.html#cb86-6" aria-hidden="true" tabindex="-1"></a>  I2C_CommandWrite<span class="op">(</span>APB_I2C0<span class="op">,</span> I2C_COMMAND_ISSUE_DATA_TRANSACTION<span class="op">);</span></span>
-<span id="cb86-7"><a href="ch-iic.html#cb86-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<span id="cb86-4"><a href="ch-iic.html#cb86-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-5"><a href="ch-iic.html#cb86-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">//read data use fifo full Interrupt,so disable I2C_INT_FIFO_EMPTY,enable I2C_INT_FIFO_FULL.</span></span>
+<span id="cb86-6"><a href="ch-iic.html#cb86-6" aria-hidden="true" tabindex="-1"></a>  I2C_IntDisable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_EMPTY<span class="op">));</span></span>
+<span id="cb86-7"><a href="ch-iic.html#cb86-7" aria-hidden="true" tabindex="-1"></a>  I2C_IntEnable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_FULL<span class="op">));</span></span>
+<span id="cb86-8"><a href="ch-iic.html#cb86-8" aria-hidden="true" tabindex="-1"></a>  I2C_CtrlUpdateDirection<span class="op">(</span>APB_I2C0<span class="op">,</span>I2C_TRANSACTION_SLAVE2MASTER<span class="op">);</span></span>
+<span id="cb86-9"><a href="ch-iic.html#cb86-9" aria-hidden="true" tabindex="-1"></a>  I2C_CtrlUpdateDataCnt<span class="op">(</span>APB_I2C0<span class="op">,</span> DATA_CNT<span class="op">);</span></span>
+<span id="cb86-10"><a href="ch-iic.html#cb86-10" aria-hidden="true" tabindex="-1"></a>  I2C_CommandWrite<span class="op">(</span>APB_I2C0<span class="op">,</span> I2C_COMMAND_ISSUE_DATA_TRANSACTION<span class="op">);</span></span>
+<span id="cb86-11"><a href="ch-iic.html#cb86-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 <li><p>使用流程</p>
 <ul>
 <li>设置IO，setup_peripherals_i2c_pin()。</li>
@@ -1512,88 +1505,84 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ol>
 <div class="sourceCode" id="cb88"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb88-1"><a href="ch-iic.html#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> peripherals_i2c_isr<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
 <span id="cb88-2"><a href="ch-iic.html#cb88-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb88-3"><a href="ch-iic.html#cb88-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> i<span class="op">;</span></span>
-<span id="cb88-4"><a href="ch-iic.html#cb88-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">static</span> <span class="dt">uint8_t</span> dir <span class="op">=</span> <span class="dv">2</span><span class="op">;</span></span>
-<span id="cb88-5"><a href="ch-iic.html#cb88-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> status <span class="op">=</span> I2C_GetIntState<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
-<span id="cb88-6"><a href="ch-iic.html#cb88-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-7"><a href="ch-iic.html#cb88-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_ADDRHIT<span class="op">))</span></span>
-<span id="cb88-8"><a href="ch-iic.html#cb88-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
-<span id="cb88-9"><a href="ch-iic.html#cb88-9" aria-hidden="true" tabindex="-1"></a>    dir <span class="op">=</span> I2C_GetTransactionDir<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
-<span id="cb88-10"><a href="ch-iic.html#cb88-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>dir <span class="op">==</span> I2C_TRANSACTION_MASTER2SLAVE<span class="op">)</span></span>
-<span id="cb88-11"><a href="ch-iic.html#cb88-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb88-12"><a href="ch-iic.html#cb88-12" aria-hidden="true" tabindex="-1"></a>        master_write_flag <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
-<span id="cb88-13"><a href="ch-iic.html#cb88-13" aria-hidden="true" tabindex="-1"></a>        I2C_IntEnable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_FULL<span class="op">));</span></span>
-<span id="cb88-14"><a href="ch-iic.html#cb88-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb88-15"><a href="ch-iic.html#cb88-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> <span class="cf">if</span><span class="op">(</span>dir <span class="op">==</span> I2C_TRANSACTION_SLAVE2MASTER<span class="op">)</span></span>
-<span id="cb88-16"><a href="ch-iic.html#cb88-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb88-17"><a href="ch-iic.html#cb88-17" aria-hidden="true" tabindex="-1"></a>        master_write_flag <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb88-18"><a href="ch-iic.html#cb88-18" aria-hidden="true" tabindex="-1"></a>        I2C_IntEnable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_EMPTY<span class="op">));</span></span>
-<span id="cb88-19"><a href="ch-iic.html#cb88-19" aria-hidden="true" tabindex="-1"></a>        write_data_cnt <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb88-20"><a href="ch-iic.html#cb88-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb88-3"><a href="ch-iic.html#cb88-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">static</span> <span class="dt">uint8_t</span> dir <span class="op">=</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb88-4"><a href="ch-iic.html#cb88-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> status <span class="op">=</span> I2C_GetIntState<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
+<span id="cb88-5"><a href="ch-iic.html#cb88-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-6"><a href="ch-iic.html#cb88-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_ADDRHIT<span class="op">))</span></span>
+<span id="cb88-7"><a href="ch-iic.html#cb88-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb88-8"><a href="ch-iic.html#cb88-8" aria-hidden="true" tabindex="-1"></a>    dir <span class="op">=</span> I2C_GetTransactionDir<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
+<span id="cb88-9"><a href="ch-iic.html#cb88-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>dir <span class="op">==</span> I2C_TRANSACTION_MASTER2SLAVE<span class="op">)</span></span>
+<span id="cb88-10"><a href="ch-iic.html#cb88-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb88-11"><a href="ch-iic.html#cb88-11" aria-hidden="true" tabindex="-1"></a>        master_write_flag <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb88-12"><a href="ch-iic.html#cb88-12" aria-hidden="true" tabindex="-1"></a>        I2C_IntEnable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_FULL<span class="op">));</span></span>
+<span id="cb88-13"><a href="ch-iic.html#cb88-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb88-14"><a href="ch-iic.html#cb88-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> <span class="cf">if</span><span class="op">(</span>dir <span class="op">==</span> I2C_TRANSACTION_SLAVE2MASTER<span class="op">)</span></span>
+<span id="cb88-15"><a href="ch-iic.html#cb88-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb88-16"><a href="ch-iic.html#cb88-16" aria-hidden="true" tabindex="-1"></a>        master_write_flag <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb88-17"><a href="ch-iic.html#cb88-17" aria-hidden="true" tabindex="-1"></a>        I2C_IntEnable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_EMPTY<span class="op">));</span></span>
+<span id="cb88-18"><a href="ch-iic.html#cb88-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb88-19"><a href="ch-iic.html#cb88-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-20"><a href="ch-iic.html#cb88-20" aria-hidden="true" tabindex="-1"></a>    I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_ADDRHIT<span class="op">));</span></span>
 <span id="cb88-21"><a href="ch-iic.html#cb88-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-22"><a href="ch-iic.html#cb88-22" aria-hidden="true" tabindex="-1"></a>    I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_ADDRHIT<span class="op">));</span></span>
+<span id="cb88-22"><a href="ch-iic.html#cb88-22" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
 <span id="cb88-23"><a href="ch-iic.html#cb88-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-24"><a href="ch-iic.html#cb88-24" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb88-25"><a href="ch-iic.html#cb88-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-26"><a href="ch-iic.html#cb88-26" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_FIFO_EMPTY<span class="op">))</span></span>
-<span id="cb88-27"><a href="ch-iic.html#cb88-27" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
-<span id="cb88-28"><a href="ch-iic.html#cb88-28" aria-hidden="true" tabindex="-1"></a>    <span class="co">// master read</span></span>
-<span id="cb88-29"><a href="ch-iic.html#cb88-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(!</span>master_write_flag<span class="op">)</span></span>
-<span id="cb88-30"><a href="ch-iic.html#cb88-30" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb88-31"><a href="ch-iic.html#cb88-31" aria-hidden="true" tabindex="-1"></a>      <span class="co">// push data until fifo is full</span></span>
-<span id="cb88-32"><a href="ch-iic.html#cb88-32" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span><span class="op">(;</span> write_data_cnt <span class="op">&lt;</span> DATA_CNT<span class="op">;</span> write_data_cnt<span class="op">++)</span></span>
-<span id="cb88-33"><a href="ch-iic.html#cb88-33" aria-hidden="true" tabindex="-1"></a>      <span class="op">{</span></span>
-<span id="cb88-34"><a href="ch-iic.html#cb88-34" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span><span class="op">(</span>I2C_FifoFull<span class="op">(</span>APB_I2C0<span class="op">)){</span><span class="cf">break</span><span class="op">;}</span></span>
-<span id="cb88-35"><a href="ch-iic.html#cb88-35" aria-hidden="true" tabindex="-1"></a>        I2C_DataWrite<span class="op">(</span>APB_I2C0<span class="op">,</span>write_data<span class="op">[</span>write_data_cnt<span class="op">]);</span></span>
-<span id="cb88-36"><a href="ch-iic.html#cb88-36" aria-hidden="true" tabindex="-1"></a>      <span class="op">}</span></span>
-<span id="cb88-37"><a href="ch-iic.html#cb88-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-38"><a href="ch-iic.html#cb88-38" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb88-39"><a href="ch-iic.html#cb88-39" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb88-40"><a href="ch-iic.html#cb88-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-41"><a href="ch-iic.html#cb88-41" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_FIFO_FULL<span class="op">))</span></span>
-<span id="cb88-42"><a href="ch-iic.html#cb88-42" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
-<span id="cb88-43"><a href="ch-iic.html#cb88-43" aria-hidden="true" tabindex="-1"></a>    <span class="co">// master write</span></span>
-<span id="cb88-44"><a href="ch-iic.html#cb88-44" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>master_write_flag<span class="op">)</span></span>
-<span id="cb88-45"><a href="ch-iic.html#cb88-45" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb88-46"><a href="ch-iic.html#cb88-46" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span><span class="op">(;</span> read_data_cnt <span class="op">&lt;</span> DATA_CNT<span class="op">;</span> read_data_cnt<span class="op">++)</span></span>
-<span id="cb88-47"><a href="ch-iic.html#cb88-47" aria-hidden="true" tabindex="-1"></a>      <span class="op">{</span></span>
-<span id="cb88-48"><a href="ch-iic.html#cb88-48" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span><span class="op">(</span>I2C_FifoEmpty<span class="op">(</span>APB_I2C0<span class="op">)){</span><span class="cf">break</span><span class="op">;}</span></span>
-<span id="cb88-49"><a href="ch-iic.html#cb88-49" aria-hidden="true" tabindex="-1"></a>        read_data<span class="op">[</span>read_data_cnt<span class="op">]</span> <span class="op">=</span> I2C_DataRead<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
-<span id="cb88-50"><a href="ch-iic.html#cb88-50" aria-hidden="true" tabindex="-1"></a>      <span class="op">}</span></span>
-<span id="cb88-51"><a href="ch-iic.html#cb88-51" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb88-52"><a href="ch-iic.html#cb88-52" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb88-53"><a href="ch-iic.html#cb88-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-54"><a href="ch-iic.html#cb88-54" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">))</span></span>
-<span id="cb88-55"><a href="ch-iic.html#cb88-55" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
-<span id="cb88-56"><a href="ch-iic.html#cb88-56" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>master_write_flag<span class="op">)</span></span>
-<span id="cb88-57"><a href="ch-iic.html#cb88-57" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb88-58"><a href="ch-iic.html#cb88-58" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span><span class="op">(;</span>read_data_cnt <span class="op">&lt;</span> DATA_CNT<span class="op">;</span> read_data_cnt<span class="op">++)</span></span>
-<span id="cb88-59"><a href="ch-iic.html#cb88-59" aria-hidden="true" tabindex="-1"></a>      <span class="op">{</span></span>
-<span id="cb88-60"><a href="ch-iic.html#cb88-60" aria-hidden="true" tabindex="-1"></a>        read_data<span class="op">[</span>read_data_cnt<span class="op">]</span> <span class="op">=</span> I2C_DataRead<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
-<span id="cb88-61"><a href="ch-iic.html#cb88-61" aria-hidden="true" tabindex="-1"></a>      <span class="op">}</span></span>
-<span id="cb88-62"><a href="ch-iic.html#cb88-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-63"><a href="ch-iic.html#cb88-63" aria-hidden="true" tabindex="-1"></a>      I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">));</span></span>
-<span id="cb88-64"><a href="ch-iic.html#cb88-64" aria-hidden="true" tabindex="-1"></a>      read_data_cnt <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb88-65"><a href="ch-iic.html#cb88-65" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb88-66"><a href="ch-iic.html#cb88-66" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span></span>
-<span id="cb88-67"><a href="ch-iic.html#cb88-67" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb88-68"><a href="ch-iic.html#cb88-68" aria-hidden="true" tabindex="-1"></a>      I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">));</span></span>
-<span id="cb88-69"><a href="ch-iic.html#cb88-69" aria-hidden="true" tabindex="-1"></a>      write_data_cnt <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb88-70"><a href="ch-iic.html#cb88-70" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb88-71"><a href="ch-iic.html#cb88-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-72"><a href="ch-iic.html#cb88-72" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>dir <span class="op">==</span> I2C_TRANSACTION_MASTER2SLAVE<span class="op">)</span></span>
+<span id="cb88-24"><a href="ch-iic.html#cb88-24" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_FIFO_EMPTY<span class="op">))</span></span>
+<span id="cb88-25"><a href="ch-iic.html#cb88-25" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb88-26"><a href="ch-iic.html#cb88-26" aria-hidden="true" tabindex="-1"></a>    <span class="co">// master read</span></span>
+<span id="cb88-27"><a href="ch-iic.html#cb88-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(!</span>master_write_flag<span class="op">)</span></span>
+<span id="cb88-28"><a href="ch-iic.html#cb88-28" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb88-29"><a href="ch-iic.html#cb88-29" aria-hidden="true" tabindex="-1"></a>      <span class="co">// push data until fifo is full</span></span>
+<span id="cb88-30"><a href="ch-iic.html#cb88-30" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span><span class="op">(;</span> write_data_cnt <span class="op">&lt;</span> DATA_CNT<span class="op">;</span> write_data_cnt<span class="op">++)</span></span>
+<span id="cb88-31"><a href="ch-iic.html#cb88-31" aria-hidden="true" tabindex="-1"></a>      <span class="op">{</span></span>
+<span id="cb88-32"><a href="ch-iic.html#cb88-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span><span class="op">(</span>I2C_FifoFull<span class="op">(</span>APB_I2C0<span class="op">)){</span><span class="cf">break</span><span class="op">;}</span></span>
+<span id="cb88-33"><a href="ch-iic.html#cb88-33" aria-hidden="true" tabindex="-1"></a>        I2C_DataWrite<span class="op">(</span>APB_I2C0<span class="op">,</span>write_data<span class="op">[</span>write_data_cnt<span class="op">]);</span></span>
+<span id="cb88-34"><a href="ch-iic.html#cb88-34" aria-hidden="true" tabindex="-1"></a>      <span class="op">}</span></span>
+<span id="cb88-35"><a href="ch-iic.html#cb88-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-36"><a href="ch-iic.html#cb88-36" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb88-37"><a href="ch-iic.html#cb88-37" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb88-38"><a href="ch-iic.html#cb88-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-39"><a href="ch-iic.html#cb88-39" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_FIFO_FULL<span class="op">))</span></span>
+<span id="cb88-40"><a href="ch-iic.html#cb88-40" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb88-41"><a href="ch-iic.html#cb88-41" aria-hidden="true" tabindex="-1"></a>    <span class="co">// master write</span></span>
+<span id="cb88-42"><a href="ch-iic.html#cb88-42" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>master_write_flag<span class="op">)</span></span>
+<span id="cb88-43"><a href="ch-iic.html#cb88-43" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb88-44"><a href="ch-iic.html#cb88-44" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span><span class="op">(;</span> read_data_cnt <span class="op">&lt;</span> DATA_CNT<span class="op">;</span> read_data_cnt<span class="op">++)</span></span>
+<span id="cb88-45"><a href="ch-iic.html#cb88-45" aria-hidden="true" tabindex="-1"></a>      <span class="op">{</span></span>
+<span id="cb88-46"><a href="ch-iic.html#cb88-46" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span><span class="op">(</span>I2C_FifoEmpty<span class="op">(</span>APB_I2C0<span class="op">)){</span><span class="cf">break</span><span class="op">;}</span></span>
+<span id="cb88-47"><a href="ch-iic.html#cb88-47" aria-hidden="true" tabindex="-1"></a>        read_data<span class="op">[</span>read_data_cnt<span class="op">]</span> <span class="op">=</span> I2C_DataRead<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
+<span id="cb88-48"><a href="ch-iic.html#cb88-48" aria-hidden="true" tabindex="-1"></a>      <span class="op">}</span></span>
+<span id="cb88-49"><a href="ch-iic.html#cb88-49" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb88-50"><a href="ch-iic.html#cb88-50" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb88-51"><a href="ch-iic.html#cb88-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-52"><a href="ch-iic.html#cb88-52" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">))</span></span>
+<span id="cb88-53"><a href="ch-iic.html#cb88-53" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb88-54"><a href="ch-iic.html#cb88-54" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>master_write_flag<span class="op">)</span></span>
+<span id="cb88-55"><a href="ch-iic.html#cb88-55" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb88-56"><a href="ch-iic.html#cb88-56" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span><span class="op">(;</span>read_data_cnt <span class="op">&lt;</span> DATA_CNT<span class="op">;</span> read_data_cnt<span class="op">++)</span></span>
+<span id="cb88-57"><a href="ch-iic.html#cb88-57" aria-hidden="true" tabindex="-1"></a>      <span class="op">{</span></span>
+<span id="cb88-58"><a href="ch-iic.html#cb88-58" aria-hidden="true" tabindex="-1"></a>        read_data<span class="op">[</span>read_data_cnt<span class="op">]</span> <span class="op">=</span> I2C_DataRead<span class="op">(</span>APB_I2C0<span class="op">);</span></span>
+<span id="cb88-59"><a href="ch-iic.html#cb88-59" aria-hidden="true" tabindex="-1"></a>      <span class="op">}</span></span>
+<span id="cb88-60"><a href="ch-iic.html#cb88-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-61"><a href="ch-iic.html#cb88-61" aria-hidden="true" tabindex="-1"></a>      I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">));</span></span>
+<span id="cb88-62"><a href="ch-iic.html#cb88-62" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb88-63"><a href="ch-iic.html#cb88-63" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span></span>
+<span id="cb88-64"><a href="ch-iic.html#cb88-64" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb88-65"><a href="ch-iic.html#cb88-65" aria-hidden="true" tabindex="-1"></a>      I2C_ClearIntState<span class="op">(</span>APB_I2C0<span class="op">,</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_STATUS_CMPL<span class="op">));</span></span>
+<span id="cb88-66"><a href="ch-iic.html#cb88-66" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb88-67"><a href="ch-iic.html#cb88-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-68"><a href="ch-iic.html#cb88-68" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>dir <span class="op">==</span> I2C_TRANSACTION_MASTER2SLAVE<span class="op">)</span></span>
+<span id="cb88-69"><a href="ch-iic.html#cb88-69" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb88-70"><a href="ch-iic.html#cb88-70" aria-hidden="true" tabindex="-1"></a>        I2C_IntDisable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_FULL<span class="op">));</span></span>
+<span id="cb88-71"><a href="ch-iic.html#cb88-71" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb88-72"><a href="ch-iic.html#cb88-72" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> <span class="cf">if</span><span class="op">(</span>dir <span class="op">==</span> I2C_TRANSACTION_SLAVE2MASTER<span class="op">)</span></span>
 <span id="cb88-73"><a href="ch-iic.html#cb88-73" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb88-74"><a href="ch-iic.html#cb88-74" aria-hidden="true" tabindex="-1"></a>        I2C_IntDisable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_FULL<span class="op">));</span></span>
+<span id="cb88-74"><a href="ch-iic.html#cb88-74" aria-hidden="true" tabindex="-1"></a>        I2C_IntDisable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_EMPTY<span class="op">));</span></span>
 <span id="cb88-75"><a href="ch-iic.html#cb88-75" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb88-76"><a href="ch-iic.html#cb88-76" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> <span class="cf">if</span><span class="op">(</span>dir <span class="op">==</span> I2C_TRANSACTION_SLAVE2MASTER<span class="op">)</span></span>
-<span id="cb88-77"><a href="ch-iic.html#cb88-77" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb88-78"><a href="ch-iic.html#cb88-78" aria-hidden="true" tabindex="-1"></a>        I2C_IntDisable<span class="op">(</span>APB_I2C0<span class="op">,(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> I2C_INT_FIFO_EMPTY<span class="op">));</span></span>
-<span id="cb88-79"><a href="ch-iic.html#cb88-79" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb88-80"><a href="ch-iic.html#cb88-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-81"><a href="ch-iic.html#cb88-81" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb88-82"><a href="ch-iic.html#cb88-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-83"><a href="ch-iic.html#cb88-83" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb88-84"><a href="ch-iic.html#cb88-84" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<span id="cb88-76"><a href="ch-iic.html#cb88-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-77"><a href="ch-iic.html#cb88-77" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb88-78"><a href="ch-iic.html#cb88-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-79"><a href="ch-iic.html#cb88-79" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb88-80"><a href="ch-iic.html#cb88-80" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 <li><p>使用流程</p>
 <ul>
 <li>设置IO，setup_peripherals_i2c_pin()。</li>

@@ -154,6 +154,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="4.1.1" data-path="ch-api.html"><a href="ch-api.html#platform_cb_evt_query_deep_sleep_allowed"><i class="fa fa-check"></i><b>4.1.1</b> <strong>PLATFORM_CB_EVT_QUERY_DEEP_SLEEP_ALLOWED</strong></a></li>
 <li class="chapter" data-level="4.1.2" data-path="ch-api.html"><a href="ch-api.html#platform_cb_evt_on_deep_sleep_wakeup"><i class="fa fa-check"></i><b>4.1.2</b> <strong>PLATFORM_CB_EVT_ON_DEEP_SLEEP_WAKEUP</strong></a></li>
+<li class="chapter" data-level="4.1.3" data-path="ch-api.html"><a href="ch-api.html#platform_cb_evt_on_idle_task_resumed"><i class="fa fa-check"></i><b>4.1.3</b> <strong>PLATFORM_CB_EVT_ON_IDLE_TASK_RESUMED</strong></a></li>
 </ul></li>
 <li class="chapter" data-level="4.2" data-path="ch-api.html"><a href="ch-api.html#interrupts"><i class="fa fa-check"></i><b>4.2</b> Interrupts</a>
 <ul>
@@ -269,6 +270,22 @@ APIs or their <em>FromISR</em> variants are allowed, with only a few exceptions,
 <ul>
 <li>Use <code>xSemaphoreGiveFromISR</code> on a binary semaphore.</li>
 </ul>
+<p>Some platform APIs might be unavailable, either. For example, <code>platform_get_us_time()</code> on
+ING918 would not get reliable value, while on ING916, it would hang.</p>
+</div>
+<div id="platform_cb_evt_on_idle_task_resumed" class="section level3 hasAnchor" number="4.1.3">
+<h3><span class="header-section-number">4.1.3</span> <strong>PLATFORM_CB_EVT_ON_IDLE_TASK_RESUMED</strong><a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a><a href="ch-api.html#platform_cb_evt_on_idle_task_resumed" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>After event <em>PLATFORM_CB_EVT_ON_DEEP_SLEEP_WAKEUP</em> with reason <em>PLATFORM_WAKEUP_REASON_NORMAL</em>,
+and the idle process is fully resumed from power saving, this event is emitted.</p>
+<p>Input parameter <code>void *data</code> is always 0.</p>
+<p>Comparing with <em>PLATFORM_CB_EVT_ON_DEEP_SLEEP_WAKEUP</em>, in this event:</p>
+<ul>
+<li><p>All OS functionalities are resumed;</p>
+<p>For NoOS variants, the callback is invoked by <code>platform_os_idle_resumed_hook()</code>.
+Therefore, <code>platform_os_idle_resumed_hook()</code> must be properly used.</p></li>
+<li><p>All platform APIs are functional;</p></li>
+<li><p>Event callback function is invoked in the idle process.</p></li>
+</ul>
 <hr />
 <p>The prototype of event handles should be compatible of:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb6-1"><a href="ch-api.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="dt">uint32_t</span> <span class="op">(*</span>f_platform_evt_cb<span class="op">)(</span><span class="dt">void</span> <span class="op">*</span>data<span class="op">,</span> <span class="dt">void</span> <span class="op">*</span>user_data<span class="op">);</span></span></code></pre></div>
@@ -290,7 +307,7 @@ from CPU’s point of view, interrupts should be re-enabled.</p>
 <p>For example, an UART port is used the App with both Rx and Tx interrupts are enabled.
 Then, in the waken up event handle, not only the peripheral itself should be re-initialized,
 its Rx and Tx interrupts enabled, but also the corresponding position in interrupt
-vector table. In the case of ARM Cortex-M processors, it is called NVIC<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>.</p>
+vector table. In the case of ARM Cortex-M processors, it is called NVIC<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>.</p>
 <p>If the ISR is registered by <code>platform_set_irq_callback</code>, then there are two options to
 re-enable the interrupt:</p>
 <ol style="list-style-type: decimal">
@@ -307,7 +324,7 @@ use <code>platform_enable_irq</code>, too.</p>
 <p>In the case of ARM Cortex-M processors, the priority of an interrupt is identified
 by an unsigned integer whose width is <code>__NVIC_PRIO_BITS</code>, where a higher value represents a lower priority.
 Therefore, the highest priority is <span class="math inline">\(0\)</span> and the lowest is (1 &lt;&lt; __NVIC_PRIO_BITS) - 1.
-Note that, <span class="math inline">\(0\)</span> is not allowed here<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>,
+Note that, <span class="math inline">\(0\)</span> is not allowed here<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>,
 so the highest priority shall be <span class="math inline">\(1\)</span>.
 When using FreeRTOS, the value for highest priority is defined by and can be got from
 <code>configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY</code>.</p>
@@ -344,7 +361,7 @@ For hard real-time, there are deadlines that must be met each and every time.
 In such cases, developers might need to change those priorities and will assign
 the highest priorities to those interrupts that look like to the most important.
 However, that is not the optimal algorithm. Rate Monotonic
-Algorithm<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>
+Algorithm<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a>
 is a classic algorithm that should be considered firstly.</p>
 <p>To modify priority, call <code>platform_read_info</code> to get the underlying IRQ number,
 then use corresponding API of CPU to modify it. For example, change the priority
@@ -406,7 +423,7 @@ For ING918: both clocks must be running; To ensure a clock is running:</p>
 <li><p><strong>PLATFORM_CFG_RT_CLK_ACC</strong></p>
 <p>Configure Real-time clock accuracy in <em>ppm</em>.</p></li>
 <li><p><strong>PLATFORM_CFG_RT_CLK_CALI_PERIOD</strong></p>
-<p>Real-time clock auto-calibration<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a> period in seconds.
+<p>Real-time clock auto-calibration<a href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a> period in seconds.
 Default: <span class="math inline">\(3600 \times 2 = 2 (\mathit{hours})\)</span>.</p>
 <p>Beside auto-calibration, it can also be started manually by:</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb12-1"><a href="ch-api.html#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> platform_calibrate_rt_clk<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div></li>
@@ -471,7 +488,7 @@ better accuracy.
 <p>There is an internal counter increased by <span class="math inline">\(1\)</span> per <span class="math inline">\(1 \mu s\)</span>, which wraps after
 <span class="math inline">\(7953.64 \mathit{days} (\approx 21.79 \mathit{years})\)</span>. Therefore, this timer can
 be treated as never wrapping practically. This counter is carefully recovered
-during waking up<a href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a>. It is reset to zero when power up again from
+during waking up<a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a>. It is reset to zero when power up again from
 shutdown. Use <code>platform_get_us_time</code> to read this counter:</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb16-1"><a href="ch-api.html#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint64_t</span> platform_get_us_time<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
 <p>System tick is disabled and restarted when entering and leaving sleep modes.
@@ -635,13 +652,14 @@ Table <a href="ch-api.html#tab:ch-api-default-timing">4.3</a> lists reference va
 <div class="footnotes">
 <hr />
 <ol start="5">
-<li id="fn5"><p>Nested Vectored Interrupt Controller<a href="ch-api.html#fnref5" class="footnote-back">↩︎</a></p></li>
-<li id="fn6"><p>This is required by software bundles.<a href="ch-api.html#fnref6" class="footnote-back">↩︎</a></p></li>
-<li id="fn7"><p>Liu and Leyland, 1973, <em>Scheduling Algorithms for Multiprogramming in a Hard Real-Time Environment</em>.<a href="ch-api.html#fnref7" class="footnote-back">↩︎</a></p></li>
-<li id="fn8"><p><em>Calibration</em> means to measure the frequency of
-this clock with another high frequency and high precision clock.<a href="ch-api.html#fnref8" class="footnote-back">↩︎</a></p></li>
-<li id="fn9"><p>For DEEPER SLEEP mode of ING916, it is coarsely recovered
-comparing to other modes.<a href="ch-api.html#fnref9" class="footnote-back">↩︎</a></p></li>
+<li id="fn5"><p>Available from SDK v8.4.16.<a href="ch-api.html#fnref5" class="footnote-back">↩︎</a></p></li>
+<li id="fn6"><p>Nested Vectored Interrupt Controller<a href="ch-api.html#fnref6" class="footnote-back">↩︎</a></p></li>
+<li id="fn7"><p>This is required by software bundles.<a href="ch-api.html#fnref7" class="footnote-back">↩︎</a></p></li>
+<li id="fn8"><p>Liu and Leyland, 1973, <em>Scheduling Algorithms for Multiprogramming in a Hard Real-Time Environment</em>.<a href="ch-api.html#fnref8" class="footnote-back">↩︎</a></p></li>
+<li id="fn9"><p><em>Calibration</em> means to measure the frequency of
+this clock with another high frequency and high precision clock.<a href="ch-api.html#fnref9" class="footnote-back">↩︎</a></p></li>
+<li id="fn10"><p>For DEEPER SLEEP mode of ING916, it is coarsely recovered
+comparing to other modes.<a href="ch-api.html#fnref10" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

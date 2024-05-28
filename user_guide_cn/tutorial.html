@@ -1163,15 +1163,11 @@ Duplex)拓扑结构，该结构要求同一时刻的数据发送在一个方向�
 <div id="通知指示" class="section level2 hasAnchor" number="3.6">
 <h2><span class="header-section-number">3.6</span> 通知&amp;指示<a href="tutorial.html#通知指示" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>服务器可以使用通知或指示过程来通知(不需要确认)或指示(需要确认)一个特征值。现在，让我们将通知和指示功能添加到我们在之前教程中创建的温度计中。</p>
-<p>我们分别使用 <code>att_server_notify</code> 和 <code>att_server_indicate</code>
-来通知或指示一个特征值。这两个函数只允许在 <code>ATT</code> 模块的
-<code>ATT_EVENT_CAN_SEND_NOW</code> 事件中调用，这个事件是由
-<code>att_server_request_can_send_now_event</code> 请求的。这些 <code>API</code>
-接口必须在蓝牙协议栈 (<code>Host</code>) 任务中调用。</p>
-<p>自动获取的通知和指示可以由定时器或中断触发，例如蓝牙任务栈之外的源。提供有一种基于RTOS消息的任务间通信机制来调用这些蓝牙协议栈API接口。</p>
+<p>我们分别使用 <code>att_server_notify</code> 和 <code>att_server_indicate</code> 来通知或指示一个特征值。这些 <code>API</code> 必须在蓝牙协议栈 (<code>Host</code>) 任务中调用。</p>
+<p>主动产生的通知和指示可以由定时器或中断触发，例如蓝牙任务栈之外的源。SDK 提供了基于 RTOS 消息的任务间通信机制以便调用这些蓝牙协议栈 API。</p>
 <div id="inter-task-comm" class="section level3 hasAnchor" number="3.6.1">
 <h3><span class="header-section-number">3.6.1</span> 任务间通信<a href="tutorial.html#inter-task-comm" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>使用 <code>btstack_push_user_msg</code> 发送消息到蓝牙协议栈:</p>
+<p>可使用 <code>btstack_push_user_msg</code> 发送消息到蓝牙协议栈:</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb17-1"><a href="tutorial.html#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span>  btstack_push_user_msg<span class="op">(</span><span class="dt">uint32_t</span> msg_id<span class="op">,</span> <span class="dt">void</span> <span class="op">*</span>data<span class="op">,</span> <span class="dt">const</span> <span class="dt">uint16_t</span> len<span class="op">);</span></span></code></pre></div>
 <p>这个消息将被传递到你的 <code>user_packet_handler</code> 下的事件ID
 <code>BTSTACK_EVENT_USER_MSG</code> :</p>

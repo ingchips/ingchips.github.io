@@ -281,6 +281,10 @@
       <td>Devicetree Compiler</td>
       <td>1.4.6</td>
     </tr>
+    <tr>
+      <td>Zephyr SDK</td>
+      <td> </td>
+    </tr>
   </tbody>
 </table>
 
@@ -293,6 +297,7 @@
     python3-dev python3-pip python3-setuptools python3-tk python3-wheel xz-utils file <span class="se">\</span>
     make gcc gcc-multilib g++-multilib libsdl2-dev libmagic1
   pip <span class="nb">install </span>west
+  pip <span class="nb">install </span>pyelftools
 </code></pre></div></div>
 
 <h3 id="代码同步">代码同步</h3>
@@ -321,26 +326,8 @@ git clone https://github.com/ingchips/ING918XX_SDK_SOURCE.git ./modules/hal/ingc
 
 <h3 id="生成符号文件">生成符号文件</h3>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nim c <span class="nt">-r</span> gen_files.nim          <span class="c"># gen_files.nim位于sdk/tools</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nim c <span class="nt">-r</span> gen_files.nim          <span class="c"># gen_files.nim 位于 sdk/tools</span>
 gen_files /path/to/sdk/bundles  <span class="c"># 生成符号文件</span>
-</code></pre></div></div>
-
-<h3 id="添加链接选项">添加链接选项</h3>
-
-<p>增加 <code class="language-plaintext highlighter-rouge">target_link_options</code> 指定 <code class="language-plaintext highlighter-rouge">platform.bin</code> 内的符号地址。
-以 Helloword 为例，在目录下 <code class="language-plaintext highlighter-rouge">CMakeLists</code> 文件增加 <code class="language-plaintext highlighter-rouge">target_link_options</code>，指向 <code class="language-plaintext highlighter-rouge">noos_mini</code> 的符合文件：</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># SPDX-License-Identifier: Apache-2.0
-
-cmake_minimum_required(VERSION 3.20.0)
-
-find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
-project(hello_world)
-
-target_sources(app PRIVATE src/main.c)
-
-# 链接选项
-target_link_options(app PUBLIC -Wl,--just-symbols=${ZEPHYR_BASE}/../modules/hal/ingchips/bundles/noos_mini/ING9168xx/symdefs.g)
 </code></pre></div></div>
 
 <h3 id="代码结构">代码结构</h3>
@@ -462,14 +449,12 @@ hal_zephyr
 <h3 id="代码编译">代码编译</h3>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 运行 Zephyr 现有 demo
-west build -b ing9168_mini samples/hellp_world
-# 建立自己的应用开发代码
-west build -b ing9168_mini samples/application_development/external_ingchips_916/
+west build -b ing9168_mini samples/bluetooth/direct_adv
 </code></pre></div></div>
 
 <h3 id="代码烧录">代码烧录</h3>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python download_hex_916.hex
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python download_hex_916.py
 </code></pre></div></div>
 
         </div><!-- .post-content -->

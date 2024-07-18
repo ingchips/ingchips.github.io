@@ -252,20 +252,31 @@
         <div class="post-content">
           <p>对于 ING916/ING918 的 NoOS 软件包，可以使用 <a href="https://docs.zephyrproject.org/latest/index.html">Zephyr OS</a>
 作为实时内核。SDK v8.4.1 提供了完整的 Controller 接口，可以对接 Zephyr BLE Host 协议栈。这里我们将为 ING916
-搭建 Zephyr 开发环境。在这个环境下，开发者可以使用 Zephyr RTOS 及其 BLE 协议栈。Zephyr BLE 协议栈占用的 RAM 较多，
-所以这里我们使用 ING916 的 <code class="language-plaintext highlighter-rouge">noos_mini</code> 软件包。</p>
+搭建 Zephyr 开发环境。在这个环境下，开发者可以使用 Zephyr RTOS 及其 BLE 协议栈。</p>
 
-<h3 id="开发环境配置">开发环境配置</h3>
+<h2 id="1-开发环境配置">1. 开发环境配置</h2>
 
-<p>请参考 <a href="https://docs.zephyrproject.org/latest/develop/getting_started/index.html">Getting Started</a> 文档。</p>
+<p>请参考 Zephyr <a href="https://docs.zephyrproject.org/latest/develop/getting_started/index.html">Getting Started</a> 文档，
+大致了解配置步骤。</p>
 
-<p>需要安装的工具最低版本要求：</p>
+<p>对于 Windows，与 Zephyr 文档相反，我们推荐在 WSL 1 + Ubuntu 中配置开发环境。在 WSL 1 中配置具有下列优点：</p>
+
+<ul>
+  <li>无阻碍的跨系统文件访问，可使用 SDK 里的各种 Windows 工具；</li>
+  <li>比 Windows 本地安装相比，在 WSL 1+ Ubuntu 里安装步骤更简单。</li>
+</ul>
+
+<p>下面介绍安装步骤时，<strong>都以 Ubuntu 为例</strong>，其它操作系统请参考 Zephyr 文档相应修改。</p>
+
+<h3 id="11-安装依赖">1.1 安装依赖</h3>
+
+<p>安装依赖这一步骤主要是把保证以下几项工具满足最低版本要求：</p>
 
 <table>
   <thead>
     <tr>
-      <th>tool</th>
-      <th>Min. Version</th>
+      <th>工具</th>
+      <th>最低版本</th>
     </tr>
   </thead>
   <tbody>
@@ -281,181 +292,200 @@
       <td>Devicetree Compiler</td>
       <td>1.4.6</td>
     </tr>
-    <tr>
-      <td>Zephyr SDK</td>
-      <td> </td>
-    </tr>
   </tbody>
 </table>
 
-<p>以 Ubuntu 为例，如果版本低于 22.04，至少需要安装以下配置：</p>
+<p>请参考 <a href="https://docs.zephyrproject.org/latest/develop/getting_started/index.html#install-dependencies">Zephyr 文档</a> 完成。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  wget https://apt.kitware.com/kitware-archive.sh
-  <span class="nb">sudo </span>bash kitware-archive.sh
-  <span class="nb">sudo </span>apt <span class="nb">install</span> <span class="nt">--no-install-recommends</span> git cmake ninja-build gperf <span class="se">\</span>
-    ccache dfu-util device-tree-compiler wget <span class="se">\</span>
-    python3-dev python3-pip python3-setuptools python3-tk python3-wheel xz-utils file <span class="se">\</span>
-    make gcc gcc-multilib g++-multilib libsdl2-dev libmagic1
-  pip <span class="nb">install </span>west
-  pip <span class="nb">install </span>pyelftools
+<h3 id="12-安装-zephyr-sdk-工具">1.2 安装 Zephyr SDK 工具</h3>
+
+<p>Zephyr SDK 包含 Zephyr 工具链。<a href="">这里</a> 是针对 Ubuntu 的剪裁版，删除了不必要的工具，体积小。
+也可以下载<a href="https://docs.zephyrproject.org/latest/develop/getting_started/index.html#install-the-zephyr-sdk">完整版</a>。
+两种版本在使用上没有任何区别。</p>
+
+<p>将 Zephyr SDK 解压到<a href="https://docs.zephyrproject.org/latest/develop/getting_started/index.html#install-the-zephyr-sdk">推荐的目录</a>下，
+执行 <code class="language-plaintext highlighter-rouge">setup.sh</code> 完成安装。</p>
+
+<p>从现在开始，假设工作目录为  <code class="language-plaintext highlighter-rouge">~/zephyrproject</code>。Zephyr 代码仓库、外部模仓库等都将克隆到这个目录，代码开发、程序编译也发生在这里。
+对于 WSL 1 + Ubuntu 的情况，建议将 <code class="language-plaintext highlighter-rouge">zephyrproject</code> 创建在 Windows 文件系统内。</p>
+
+<h3 id="13-安装-python-包">1.3 安装 Python 包</h3>
+
+<p>这一步只安装 <code class="language-plaintext highlighter-rouge">west</code>，其它的 Python 包需要在获取代码后再安装。</p>
+
+<p>Python 包有两种安装方式：全局安装；借助 <code class="language-plaintext highlighter-rouge">venv</code> 只为单个项目安装。</p>
+
+<h4 id="131-全局安装">1.3.1 全局安装</h4>
+
+<p>安装 <code class="language-plaintext highlighter-rouge">west</code>：<code class="language-plaintext highlighter-rouge">pip install west</code></p>
+
+<h4 id="132-使用-venv">1.3.2 使用 <code class="language-plaintext highlighter-rouge">venv</code></h4>
+
+<p>对于 Ubuntu，此时需要安装 <code class="language-plaintext highlighter-rouge">venv</code> 包：</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt <span class="nb">install </span>python3-venv
 </code></pre></div></div>
 
-<h3 id="代码同步">代码同步</h3>
+<p>创建并激活虚拟环境，然后安装 <code class="language-plaintext highlighter-rouge">west</code>：</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python3 <span class="nt">-m</span> venv ~/zephyrproject/.venv
+<span class="nb">source</span> ~/zephyrproject/.venv/bin/activate
+pip <span class="nb">install </span>west
+</code></pre></div></div>
+
+<h3 id="14-获取-ingchips-sdk">1.4 获取 INGCHIPS SDK</h3>
 
 <ul>
   <li>
-    <p><a href="https://github.com/ingchips/zephyr.git">https://github.com/ingchips/zephyr.git</a></p>
+    <p>Windows</p>
 
-    <p>这是 Zephyr 工程代码，用户开发应用的主要仓库。</p>
+    <p>对于 Windows 系统，如果尚未安装 <a href="https://ingchips.github.io/docs/sdk/download/">SDK</a>，请下载安装。</p>
   </li>
   <li>
-    <p><a href="https://github.com/ingchips/ING918XX_SDK_SOURCE.git">https://github.com/ingchips/ING918XX_SDK_SOURCE.git</a></p>
+    <p>其它操作系统</p>
 
-    <p>SDK 相关代码，驱动程序。</p>
+    <p>对于其它操作系统，请克隆 <a href="https://github.com/ingchips/ING918XX_SDK_SOURCE">SDK 代码仓库</a>，参考
+<a href="https://github.com/ingchips/ING918XX_SDK_SOURCE/blob/master/tools/README.md#file-generator">说明</a> 生成必要的文件。</p>
   </li>
 </ul>
 
-<p>执行以下命令拉取仓库：</p>
+<h2 id="2-获取代码">2. 获取代码</h2>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># zephyr 仓库</span>
-west init <span class="nt">-m</span> https://github.com/ingchips/zephyr.git
+<h3 id="21-获取代码仓库">2.1 获取代码仓库</h3>
+
+<p><img src="../img/logo_breezing.png" alt="" /></p>
+
+<p><a href="https://github.com/ingchips/breezing">Breezing</a> 是 Zephyr 剪裁适配版，删除了不必要的芯片型号、代码，
+以及所有的版本历史记录，克隆更快捷。开发者也可以使用 <a href="https://github.com/ingchips/zephyr">完整版</a>。
+两种版本在使用上没有任何区别。</p>
+
+<p>选用 Breezing，克隆所有的代码仓库：</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>west init <span class="nt">-m</span> https://github.com/ingchips/breezing.git ~/zephyrproject
+<span class="nb">cd</span> ~/zephyrproject
 west update
-<span class="c"># ingchips sdk</span>
-git clone https://github.com/ingchips/ING918XX_SDK_SOURCE.git ./modules/hal/ingchips
 </code></pre></div></div>
 
-<h3 id="生成符号文件">生成符号文件</h3>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nim c <span class="nt">-r</span> gen_files.nim          <span class="c"># gen_files.nim 位于 sdk/tools</span>
-gen_files /path/to/sdk/bundles  <span class="c"># 生成符号文件</span>
-</code></pre></div></div>
-
-<h3 id="代码结构">代码结构</h3>
+<h3 id="22-继续安装-python-包">2.2 继续安装 Python 包</h3>
 
 <ul>
   <li>
-    <p>Zephyr 提供应用实例</p>
+    <p>自动安装其它包：</p>
+
+    <p><code class="language-plaintext highlighter-rouge">pip install -r ~/zephyrproject/zephyr/scripts/requirements.txt</code></p>
   </li>
   <li>
-    <p>samples/application_development/external_ingchips_ing916 是新建的示例</p>
+    <p>或者只安装必要的包：</p>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>samples
-├── application_development
-│   ├── application_development.rst
-│   ├── code_relocation_nocopy
-│   ├── external_ingchips
-│   ├── external_ingchips_916
-│   ├── external_lib
-│   └── sysbuild
-├── arch
-│   ├── index.rst
-│   ├── mpu
-│   └── smp
-├── basic
-│   ├── basic.rst
-│   ├── blinky
-│   ├── blinky_pwm
-│   ├── button
-│   ├── custom_dts_binding
-│   ├── fade_led
-│   ├── hash_map
-│   ├── minimal
-│   ├── rgb_led
-│   ├── servo_motor
-│   ├── sys_heap
-│   └── threads
+    <p><code class="language-plaintext highlighter-rouge">pip install pyelftools</code></p>
+  </li>
+</ul>
+
+<p>对于全局安装方式，Python 包安装已完成，后续不再需要任何操作。对于 <code class="language-plaintext highlighter-rouge">venv</code> 安装方式：</p>
+
+<ul>
+  <li>如果再次克隆了代码仓库，需要在新的目录下重新执行上述步骤；</li>
+  <li>调用 Python 工具时，注意检查项目里的虚拟环境是否已激活。</li>
+</ul>
+
+<h3 id="23-链接到-ingchips-sdk">2.3 链接到 INGCHIPS SDK</h3>
+
+<ul>
+  <li>
+    <p>对于 SDK 安装到 Windows 的情况</p>
+
+    <p>假设安装目录为 <code class="language-plaintext highlighter-rouge">C:\Programs\ING_SDK</code>。如果 Zephyr 配置在 WSL 1 + Ubuntu 里，那么执行这个命令将 Zephyr 链路到该目录：</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python3 ~/zephyrproject/zephyr/scripts/utils/select_sdk.py /mnt/c/Programs/ING_SDK/sdk
 </code></pre></div>    </div>
-  </li>
-  <li>
-    <p>开发板相关代码</p>
 
-    <p>这里把开发板称为 <code class="language-plaintext highlighter-rouge">ing9168_mini</code>，<em>mini</em> 来自软件包名称。</p>
+    <p>如果 Zephyr 配置在 Windows 里，那么执行这个命令将 Zephyr 链路到该目录：</p>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ing9168_mini
-├── Kconfig.board
-├── Kconfig.defconfig
-├── board.cmake
-├── doc
-│   └── index.rst
-├── ing9168_mini.dts
-├── ing9168_mini.yaml
-└── ing9168_mini_defconfig
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python path\to\zephyrproject\zephyr\scripts\utils\select_sdk.py C:\Programs\ING_SDK\sdk
 </code></pre></div>    </div>
+
+    <p>请将 <code class="language-plaintext highlighter-rouge">path\to\zephyrproject</code> 替换为 <code class="language-plaintext highlighter-rouge">zephyrproject</code> 的实际路径。</p>
   </li>
   <li>
-    <p>HCI 驱动层代码</p>
+    <p>其它情况</p>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bluetooth
-├── CMakeLists.txt
-├── Kconfig
-├── hci
-│   ├── CMakeLists.txt
-│   ├── Kconfig
-│   ├── Kconfig.infineon
-│   ├── cyw43xxx.c
-│   ├── h4.c
-│   ├── h4_ingchips.c
-│   ├── h5.c
-│   ├── hci_b91.c
-│   ├── hci_esp32.c
-│   ├── hci_psoc6_bless.c
-│   ├── ipc.c
-│   ├── ipm_stm32wb.c
-│   ├── nrf53_support.c
-│   ├── slz_hci.c
-│   ├── spi.c
-│   └── userchan.c
-└── util.h
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>适配层代码</p>
+    <p>假设克隆到目录 <code class="language-plaintext highlighter-rouge">~/ING_SDK</code>，执行命令将 Zephyr 链路到该目录：</p>
 
-    <p>部分代码可用 Wizard 工具生成的文件覆盖：</p>
-
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 代码位于 modules/hal/ingchips/hal_zephyr</span>
-<span class="c"># 部分文件需要替换 main.c -&gt; main_ingchips.c</span>
-hal_zephyr
-├── data
-│   ├── advertising.adv
-│   ├── advertising.const
-│   ├── advertising.const.tmpl
-│   ├── cube_ING9168xx.dat
-│   ├── cube_ING9187xx.dat
-│   ├── cube_ING9188xx.dat
-│   ├── gatt.const
-│   ├── gatt.const.tmpl
-│   ├── gatt.profile
-│   ├── scan_response.adv
-│   ├── scan_response.const
-│   ├── scan_response.const.tmpl
-│   └── setup_soc.cgen
-├── module.yml
-├── portable
-│   └── gen_os_impl.c
-└── src
-    ├── main_ingchips.c
-    ├── main_ingchips.h
-    ├── profile.c
-    ├── profile.h
-    ├── service_console.c
-    ├── service_console.h
-    ├── uart_console.c
-    └── uart_console.h
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python3 ~/zephyrproject/zephyr/scripts/utils/select_sdk.py ~/ING_SDK
 </code></pre></div>    </div>
   </li>
 </ul>
 
-<h3 id="代码编译">代码编译</h3>
+<div class="note">
+<strong>注意:</strong> 每次更新 INGCHIPS SDK 后，请重新运行 <code>select_sdk.py</code> 脚本。
+</div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 运行 Zephyr 现有 demo
-west build -b ing9168_mini samples/bluetooth/direct_adv
+<h2 id="3-编译运行">3. 编译、运行</h2>
+
+<h3 id="31-代码编译">3.1 代码编译</h3>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> ~/zephyrproject/zephyr
+west build <span class="nt">-b</span> ing9168_mini samples/bluetooth/direct_adv
 </code></pre></div></div>
 
-<h3 id="代码烧录">代码烧录</h3>
+<p>当需要完全重新编译（如修改设备树、更新 INGCHIPS SDK 时），可添加 <code class="language-plaintext highlighter-rouge">-p</code> 选项。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python download_hex_916.py
+<h3 id="32-代码烧录">3.2 代码烧录</h3>
+
+<p>根据使用的操作系统不同，代码烧录方法也不尽相同。</p>
+
+<h4 id="321-wsl-1--ubuntu">3.2.1 WSL 1 + Ubuntu</h4>
+
+<ul>
+  <li>
+    <p>用图形界面版本的 Flash Downloader 烧录</p>
+
+    <p>用 Flash Downloader 打开 <code class="language-plaintext highlighter-rouge">~/zephyrproject/zephyr/flash_download.ini</code>。如果 bin 路径非法，请手动更正。</p>
+  </li>
+  <li>
+    <p>使用 Windows 下的 <code class="language-plaintext highlighter-rouge">icsdw.py</code> 脚本</p>
+
+    <p>同样使用 <code class="language-plaintext highlighter-rouge">~/zephyrproject/zephyr/flash_download.ini</code> 作为项目文件（第 1 个参数）。如果 bin 路径非法，请手动更正。</p>
+  </li>
+</ul>
+
+<h4 id="322-其它情况">3.2.2 其它情况</h4>
+
+<p>在宿主操作系统上运行 <code class="language-plaintext highlighter-rouge">icsdw.py</code> 下载：</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python3 icsdw.py ~/zephyrproject/zephyr/flash_download.ini
 </code></pre></div></div>
+
+<h4 id="323-远程下载">3.2.3 远程下载</h4>
+
+<p>还可以在非 Zephyr 所在的机器上使用  <code class="language-plaintext highlighter-rouge">icsdw.py</code> 进行远程下载。比如 Zephyr 在 MacOS 或 Ubuntu 上开发、编译，
+下载则在 Windows 上完成。</p>
+
+<ol>
+  <li>
+    <p>在开发机上启动 HTTP 服务器，比如</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">cd</span> ~/zephyrproject/zephyr/build/zephyr<span class="sb">`</span>
+ python3 <span class="nt">-m</span> http.server
+</code></pre></div>    </div>
+
+    <p>假设服务器 IP 地址为 <code class="language-plaintext highlighter-rouge">192.168.206.128</code>。</p>
+  </li>
+  <li>
+    <p>在 Windows 远程读取文件并下载</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> python icsdw.py http://192.168.206.128:8000/zephyr.bin --addr 0x02027000 --loop
+</code></pre></div>    </div>
+
+    <p>这里 <code class="language-plaintext highlighter-rouge">--addr</code> 指定下载地址；<code class="language-plaintext highlighter-rouge">--loop</code> 表示多次下载，根据屏幕提示可重复多次下载，适合开发阶段频繁更新程序的场景。</p>
+  </li>
+</ol>
+
+<h2 id="4-代码说明">4. 代码说明</h2>
+
+<p>SoC 相关代码位于 <code class="language-plaintext highlighter-rouge">zephyr/soc/arm/ingXXXX</code> 目录下，实现了 <code class="language-plaintext highlighter-rouge">gen_os_driver</code> 接口和低功耗。</p>
+
+<p>BLE HCI 相关代码位于 <code class="language-plaintext highlighter-rouge">zephyr\drivers\bluetooth\hci\h4_ingchips.c</code>，对接了 <code class="language-plaintext highlighter-rouge">platform</code> 内的 Controller 和 Zephyr Host。</p>
 
         </div><!-- .post-content -->
       </div><!-- .inner-md -->

@@ -708,179 +708,174 @@ UART对接收的数据执行串并转换，对发送的数据执行并串转换�
 <ol style="list-style-type: decimal">
 <li><strong>UART+FIFO方式</strong></li>
 </ol>
-<div class="sourceCode" id="cb271"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb271-1"><a href="ch-uart.html#cb271-1" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> dst<span class="op">[</span><span class="dv">256</span><span class="op">];</span></span>
-<span id="cb271-2"><a href="ch-uart.html#cb271-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> index <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb271-3"><a href="ch-uart.html#cb271-3" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> setup_peripheral_uart<span class="op">()</span></span>
-<span id="cb271-4"><a href="ch-uart.html#cb271-4" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb271-5"><a href="ch-uart.html#cb271-5" aria-hidden="true" tabindex="-1"></a>    APB_UART0<span class="op">-&gt;</span>FifoSelect <span class="op">=</span> <span class="op">(</span><span class="dv">0</span> <span class="op">&lt;&lt;</span> bsUART_TRANS_INT_LEVEL <span class="op">)</span> <span class="op">|</span></span>
-<span id="cb271-6"><a href="ch-uart.html#cb271-6" aria-hidden="true" tabindex="-1"></a>                    <span class="op">(</span><span class="bn">0X10</span> <span class="op">&lt;&lt;</span> bsUART_RECV_INT_LEVEL  <span class="op">)</span> <span class="op">;</span></span>
-<span id="cb271-7"><a href="ch-uart.html#cb271-7" aria-hidden="true" tabindex="-1"></a>    APB_UART0<span class="op">-&gt;</span>IntMask <span class="op">=</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> bsUART_RECEIVE_INTENAB<span class="op">)</span> <span class="op">|</span> <span class="op">(</span><span class="dv">0</span> <span class="op">&lt;&lt;</span> bsUART_TRANSMIT_INTENAB<span class="op">)</span> <span class="op">|</span></span>
-<span id="cb271-8"><a href="ch-uart.html#cb271-8" aria-hidden="true" tabindex="-1"></a>                        <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> bsUART_TIMEOUT_INTENAB<span class="op">);</span></span>
-<span id="cb271-9"><a href="ch-uart.html#cb271-9" aria-hidden="true" tabindex="-1"></a>    APB_UART0<span class="op">-&gt;</span>Control <span class="op">=</span> <span class="dv">1</span> <span class="op">&lt;&lt;</span> bsUART_RECEIVE_ENABLE <span class="op">|</span></span>
-<span id="cb271-10"><a href="ch-uart.html#cb271-10" aria-hidden="true" tabindex="-1"></a>                <span class="dv">1</span> <span class="op">&lt;&lt;</span> bsUART_TRANSMIT_ENABLE <span class="op">|</span></span>
-<span id="cb271-11"><a href="ch-uart.html#cb271-11" aria-hidden="true" tabindex="-1"></a>                <span class="dv">1</span> <span class="op">&lt;&lt;</span> bsUART_ENABLE          <span class="op">|</span></span>
-<span id="cb271-12"><a href="ch-uart.html#cb271-12" aria-hidden="true" tabindex="-1"></a>                <span class="dv">0</span> <span class="op">&lt;&lt;</span> bsUART_CTS_ENA         <span class="op">|</span></span>
-<span id="cb271-13"><a href="ch-uart.html#cb271-13" aria-hidden="true" tabindex="-1"></a>                <span class="dv">0</span> <span class="op">&lt;&lt;</span> bsUART_RTS_ENA<span class="op">;</span></span>
-<span id="cb271-14"><a href="ch-uart.html#cb271-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb271-15"><a href="ch-uart.html#cb271-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb271-16"><a href="ch-uart.html#cb271-16" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> uart_isr<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
-<span id="cb271-17"><a href="ch-uart.html#cb271-17" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb271-18"><a href="ch-uart.html#cb271-18" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> status<span class="op">;</span></span>
-<span id="cb271-19"><a href="ch-uart.html#cb271-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb271-20"><a href="ch-uart.html#cb271-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span><span class="op">(</span><span class="dv">1</span><span class="op">)</span></span>
-<span id="cb271-21"><a href="ch-uart.html#cb271-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb271-22"><a href="ch-uart.html#cb271-22" aria-hidden="true" tabindex="-1"></a>        status <span class="op">=</span> apUART_Get_all_raw_int_stat<span class="op">(</span>APB_UART0<span class="op">);</span></span>
-<span id="cb271-23"><a href="ch-uart.html#cb271-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb271-24"><a href="ch-uart.html#cb271-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>status <span class="op">==</span> <span class="dv">0</span><span class="op">)</span></span>
-<span id="cb271-25"><a href="ch-uart.html#cb271-25" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span><span class="op">;</span></span>
-<span id="cb271-26"><a href="ch-uart.html#cb271-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb271-27"><a href="ch-uart.html#cb271-27" aria-hidden="true" tabindex="-1"></a>        APB_UART0<span class="op">-&gt;</span>IntClear <span class="op">=</span> status<span class="op">;</span></span>
-<span id="cb271-28"><a href="ch-uart.html#cb271-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb271-29"><a href="ch-uart.html#cb271-29" aria-hidden="true" tabindex="-1"></a>        <span class="co">// rx int</span></span>
-<span id="cb271-30"><a href="ch-uart.html#cb271-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> bsUART_RECEIVE_INTENAB<span class="op">))</span></span>
-<span id="cb271-31"><a href="ch-uart.html#cb271-31" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span></span>
-<span id="cb271-32"><a href="ch-uart.html#cb271-32" aria-hidden="true" tabindex="-1"></a>            <span class="cf">while</span> <span class="op">(</span>apUART_Check_RXFIFO_EMPTY<span class="op">(</span>APB_UART0<span class="op">)</span> <span class="op">!=</span> <span class="dv">1</span><span class="op">)</span></span>
-<span id="cb271-33"><a href="ch-uart.html#cb271-33" aria-hidden="true" tabindex="-1"></a>            <span class="op">{</span></span>
-<span id="cb271-34"><a href="ch-uart.html#cb271-34" aria-hidden="true" tabindex="-1"></a>                <span class="dt">char</span> c <span class="op">=</span> APB_UART0<span class="op">-&gt;</span>DataRead<span class="op">;</span></span>
-<span id="cb271-35"><a href="ch-uart.html#cb271-35" aria-hidden="true" tabindex="-1"></a>                dst<span class="op">[</span>index<span class="op">]</span> <span class="op">=</span> c<span class="op">;</span></span>
-<span id="cb271-36"><a href="ch-uart.html#cb271-36" aria-hidden="true" tabindex="-1"></a>                index<span class="op">++;</span></span>
-<span id="cb271-37"><a href="ch-uart.html#cb271-37" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
-<span id="cb271-38"><a href="ch-uart.html#cb271-38" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<div class="sourceCode" id="cb271"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb271-1"><a href="ch-uart.html#cb271-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define RX_FIFO_WATER_LEVEL     0x10</span></span>
+<span id="cb271-2"><a href="ch-uart.html#cb271-2" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> dst<span class="op">[</span><span class="dv">256</span><span class="op">];</span></span>
+<span id="cb271-3"><a href="ch-uart.html#cb271-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb271-4"><a href="ch-uart.html#cb271-4" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> config_uart<span class="op">(</span><span class="dt">uint32_t</span> freq<span class="op">,</span> <span class="dt">uint32_t</span> BaudRate<span class="op">)</span></span>
+<span id="cb271-5"><a href="ch-uart.html#cb271-5" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb271-6"><a href="ch-uart.html#cb271-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">//config uarts parameter</span></span>
+<span id="cb271-7"><a href="ch-uart.html#cb271-7" aria-hidden="true" tabindex="-1"></a>    UART_sStateStruct config<span class="op">;</span></span>
+<span id="cb271-8"><a href="ch-uart.html#cb271-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb271-9"><a href="ch-uart.html#cb271-9" aria-hidden="true" tabindex="-1"></a>    config<span class="op">.</span>word_length       <span class="op">=</span> UART_WLEN_8_BITS<span class="op">;</span></span>
+<span id="cb271-10"><a href="ch-uart.html#cb271-10" aria-hidden="true" tabindex="-1"></a>    config<span class="op">.</span>parity            <span class="op">=</span> UART_PARITY_NOT_CHECK<span class="op">;</span></span>
+<span id="cb271-11"><a href="ch-uart.html#cb271-11" aria-hidden="true" tabindex="-1"></a>    config<span class="op">.</span>fifo_enable       <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb271-12"><a href="ch-uart.html#cb271-12" aria-hidden="true" tabindex="-1"></a>    config<span class="op">.</span>two_stop_bits     <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb271-13"><a href="ch-uart.html#cb271-13" aria-hidden="true" tabindex="-1"></a>    config<span class="op">.</span>receive_en        <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb271-14"><a href="ch-uart.html#cb271-14" aria-hidden="true" tabindex="-1"></a>    config<span class="op">.</span>transmit_en       <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb271-15"><a href="ch-uart.html#cb271-15" aria-hidden="true" tabindex="-1"></a>    config<span class="op">.</span>UART_en           <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb271-16"><a href="ch-uart.html#cb271-16" aria-hidden="true" tabindex="-1"></a>    config<span class="op">.</span>cts_en            <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb271-17"><a href="ch-uart.html#cb271-17" aria-hidden="true" tabindex="-1"></a>    config<span class="op">.</span>rts_en            <span class="op">=</span> <span class="dv">0</span><span class="op">;</span>   </span>
+<span id="cb271-18"><a href="ch-uart.html#cb271-18" aria-hidden="true" tabindex="-1"></a>    config<span class="op">.</span>rxfifo_waterlevel <span class="op">=</span> RX_FIFO_WATER_LEVEL<span class="op">;</span></span>
+<span id="cb271-19"><a href="ch-uart.html#cb271-19" aria-hidden="true" tabindex="-1"></a>    config<span class="op">.</span>txfifo_waterlevel <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb271-20"><a href="ch-uart.html#cb271-20" aria-hidden="true" tabindex="-1"></a>    config<span class="op">.</span>ClockFrequency    <span class="op">=</span> freq<span class="op">;</span></span>
+<span id="cb271-21"><a href="ch-uart.html#cb271-21" aria-hidden="true" tabindex="-1"></a>    config<span class="op">.</span>BaudRate          <span class="op">=</span> BaudRate<span class="op">;</span></span>
+<span id="cb271-22"><a href="ch-uart.html#cb271-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb271-23"><a href="ch-uart.html#cb271-23" aria-hidden="true" tabindex="-1"></a>    apUART_Initialize<span class="op">(</span>APB_UART0<span class="op">,</span> <span class="op">&amp;</span>config<span class="op">,</span> UART_INTBIT_TIMEOUT <span class="op">|</span> UART_INTBIT_RECEIVE<span class="op">);</span></span>
+<span id="cb271-24"><a href="ch-uart.html#cb271-24" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb271-25"><a href="ch-uart.html#cb271-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb271-26"><a href="ch-uart.html#cb271-26" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> uart_isr<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
+<span id="cb271-27"><a href="ch-uart.html#cb271-27" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb271-28"><a href="ch-uart.html#cb271-28" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> status<span class="op">;</span></span>
+<span id="cb271-29"><a href="ch-uart.html#cb271-29" aria-hidden="true" tabindex="-1"></a>    <span class="dt">static</span> <span class="dt">int</span> index <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb271-30"><a href="ch-uart.html#cb271-30" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> cnt <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb271-31"><a href="ch-uart.html#cb271-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span><span class="op">(</span><span class="dv">1</span><span class="op">)</span></span>
+<span id="cb271-32"><a href="ch-uart.html#cb271-32" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb271-33"><a href="ch-uart.html#cb271-33" aria-hidden="true" tabindex="-1"></a>        status <span class="op">=</span> apUART_Get_all_raw_int_stat<span class="op">(</span>APB_UART0<span class="op">);</span></span>
+<span id="cb271-34"><a href="ch-uart.html#cb271-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb271-35"><a href="ch-uart.html#cb271-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>status <span class="op">==</span> <span class="dv">0</span><span class="op">)</span></span>
+<span id="cb271-36"><a href="ch-uart.html#cb271-36" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb271-37"><a href="ch-uart.html#cb271-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb271-38"><a href="ch-uart.html#cb271-38" aria-hidden="true" tabindex="-1"></a>        APB_UART0<span class="op">-&gt;</span>IntClear <span class="op">=</span> status<span class="op">;</span></span>
 <span id="cb271-39"><a href="ch-uart.html#cb271-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb271-40"><a href="ch-uart.html#cb271-40" aria-hidden="true" tabindex="-1"></a>        <span class="co">// rx timeout_int</span></span>
-<span id="cb271-41"><a href="ch-uart.html#cb271-41" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> bsUART_TIMEOUT_INTENAB<span class="op">))</span></span>
+<span id="cb271-40"><a href="ch-uart.html#cb271-40" aria-hidden="true" tabindex="-1"></a>        <span class="co">// rx int</span></span>
+<span id="cb271-41"><a href="ch-uart.html#cb271-41" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> bsUART_RECEIVE_INTENAB<span class="op">))</span></span>
 <span id="cb271-42"><a href="ch-uart.html#cb271-42" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span></span>
 <span id="cb271-43"><a href="ch-uart.html#cb271-43" aria-hidden="true" tabindex="-1"></a>            <span class="cf">while</span> <span class="op">(</span>apUART_Check_RXFIFO_EMPTY<span class="op">(</span>APB_UART0<span class="op">)</span> <span class="op">!=</span> <span class="dv">1</span><span class="op">)</span></span>
 <span id="cb271-44"><a href="ch-uart.html#cb271-44" aria-hidden="true" tabindex="-1"></a>            <span class="op">{</span></span>
 <span id="cb271-45"><a href="ch-uart.html#cb271-45" aria-hidden="true" tabindex="-1"></a>                <span class="dt">char</span> c <span class="op">=</span> APB_UART0<span class="op">-&gt;</span>DataRead<span class="op">;</span></span>
-<span id="cb271-46"><a href="ch-uart.html#cb271-46" aria-hidden="true" tabindex="-1"></a>                dst<span class="op">[</span>index<span class="op">]</span> <span class="op">=</span> c<span class="op">;</span></span>
-<span id="cb271-47"><a href="ch-uart.html#cb271-47" aria-hidden="true" tabindex="-1"></a>                index<span class="op">++;</span></span>
-<span id="cb271-48"><a href="ch-uart.html#cb271-48" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
-<span id="cb271-49"><a href="ch-uart.html#cb271-49" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb271-50"><a href="ch-uart.html#cb271-50" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">dst = %s</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span>dst<span class="op">);</span></span>
-<span id="cb271-51"><a href="ch-uart.html#cb271-51" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb271-52"><a href="ch-uart.html#cb271-52" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb271-53"><a href="ch-uart.html#cb271-53" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb271-54"><a href="ch-uart.html#cb271-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb271-55"><a href="ch-uart.html#cb271-55" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> uart_peripherals_read_data<span class="op">()</span></span>
-<span id="cb271-56"><a href="ch-uart.html#cb271-56" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb271-57"><a href="ch-uart.html#cb271-57" aria-hidden="true" tabindex="-1"></a>    <span class="co">//注册uart0中断</span></span>
-<span id="cb271-58"><a href="ch-uart.html#cb271-58" aria-hidden="true" tabindex="-1"></a>    platform_set_irq_callback<span class="op">(</span>PLATFORM_CB_IRQ_UART0<span class="op">,</span> uart_isr<span class="op">,</span> NULL<span class="op">);</span></span>
-<span id="cb271-59"><a href="ch-uart.html#cb271-59" aria-hidden="true" tabindex="-1"></a>    setup_peripheral_uart<span class="op">();</span></span>
-<span id="cb271-60"><a href="ch-uart.html#cb271-60" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<span id="cb271-46"><a href="ch-uart.html#cb271-46" aria-hidden="true" tabindex="-1"></a>                dst<span class="op">[</span>index<span class="op">++]</span> <span class="op">=</span> c<span class="op">;</span></span>
+<span id="cb271-47"><a href="ch-uart.html#cb271-47" aria-hidden="true" tabindex="-1"></a>                cnt<span class="op">++;</span></span>
+<span id="cb271-48"><a href="ch-uart.html#cb271-48" aria-hidden="true" tabindex="-1"></a>                <span class="co">/* To avoid the situation where the RX FIFO data length is the same as that </span></span>
+<span id="cb271-49"><a href="ch-uart.html#cb271-49" aria-hidden="true" tabindex="-1"></a><span class="co">                   of the RX_FIFO_WATER_LEVEL, the rx timeout interrupt cannot be generated.*/</span></span>
+<span id="cb271-50"><a href="ch-uart.html#cb271-50" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span><span class="op">(</span>cnt <span class="op">&gt;=</span> RX_FIFO_WATER_LEVEL <span class="op">-</span> <span class="dv">1</span><span class="op">)</span> </span>
+<span id="cb271-51"><a href="ch-uart.html#cb271-51" aria-hidden="true" tabindex="-1"></a>                <span class="op">{</span></span>
+<span id="cb271-52"><a href="ch-uart.html#cb271-52" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb271-53"><a href="ch-uart.html#cb271-53" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb271-54"><a href="ch-uart.html#cb271-54" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb271-55"><a href="ch-uart.html#cb271-55" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb271-56"><a href="ch-uart.html#cb271-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb271-57"><a href="ch-uart.html#cb271-57" aria-hidden="true" tabindex="-1"></a>        <span class="co">// rx timeout_int</span></span>
+<span id="cb271-58"><a href="ch-uart.html#cb271-58" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> bsUART_TIMEOUT_INTENAB<span class="op">))</span></span>
+<span id="cb271-59"><a href="ch-uart.html#cb271-59" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span></span>
+<span id="cb271-60"><a href="ch-uart.html#cb271-60" aria-hidden="true" tabindex="-1"></a>            <span class="cf">while</span> <span class="op">(</span>apUART_Check_RXFIFO_EMPTY<span class="op">(</span>APB_UART0<span class="op">)</span> <span class="op">!=</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb271-61"><a href="ch-uart.html#cb271-61" aria-hidden="true" tabindex="-1"></a>            <span class="op">{</span></span>
+<span id="cb271-62"><a href="ch-uart.html#cb271-62" aria-hidden="true" tabindex="-1"></a>                <span class="dt">char</span> c <span class="op">=</span> APB_UART0<span class="op">-&gt;</span>DataRead<span class="op">;</span></span>
+<span id="cb271-63"><a href="ch-uart.html#cb271-63" aria-hidden="true" tabindex="-1"></a>                dst<span class="op">[</span>index<span class="op">++]</span> <span class="op">=</span> c<span class="op">;</span></span>
+<span id="cb271-64"><a href="ch-uart.html#cb271-64" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb271-65"><a href="ch-uart.html#cb271-65" aria-hidden="true" tabindex="-1"></a>            dst<span class="op">[</span>index<span class="op">]</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb271-66"><a href="ch-uart.html#cb271-66" aria-hidden="true" tabindex="-1"></a>            <span class="co">// 一包数据接收完毕，可在此进行数据处理</span></span>
+<span id="cb271-67"><a href="ch-uart.html#cb271-67" aria-hidden="true" tabindex="-1"></a>            index <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb271-68"><a href="ch-uart.html#cb271-68" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb271-69"><a href="ch-uart.html#cb271-69" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb271-70"><a href="ch-uart.html#cb271-70" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb271-71"><a href="ch-uart.html#cb271-71" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb271-72"><a href="ch-uart.html#cb271-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb271-73"><a href="ch-uart.html#cb271-73" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> uart_peripherals_read_data<span class="op">()</span></span>
+<span id="cb271-74"><a href="ch-uart.html#cb271-74" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb271-75"><a href="ch-uart.html#cb271-75" aria-hidden="true" tabindex="-1"></a>    <span class="co">//注册uart0中断</span></span>
+<span id="cb271-76"><a href="ch-uart.html#cb271-76" aria-hidden="true" tabindex="-1"></a>    platform_set_irq_callback<span class="op">(</span>PLATFORM_CB_IRQ_UART0<span class="op">,</span> uart_isr<span class="op">,</span> NULL<span class="op">);</span></span>
+<span id="cb271-77"><a href="ch-uart.html#cb271-77" aria-hidden="true" tabindex="-1"></a>    config_uart<span class="op">(</span>OSC_CLK_FREQ<span class="op">,</span> <span class="dv">115200</span><span class="op">);</span></span>
+<span id="cb271-78"><a href="ch-uart.html#cb271-78" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <ol start="2" style="list-style-type: decimal">
 <li><strong>UART+FIFO+DMA方式</strong></li>
 </ol>
-<div class="sourceCode" id="cb272"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb272-1"><a href="ch-uart.html#cb272-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define bsDMA_INT_C_MASK         1    </span></span>
-<span id="cb272-2"><a href="ch-uart.html#cb272-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#define bsDMA_DST_REQ_SEL        4</span></span>
-<span id="cb272-3"><a href="ch-uart.html#cb272-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#define bsDMA_SRC_REQ_SEL        8</span></span>
-<span id="cb272-4"><a href="ch-uart.html#cb272-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#define bsDMA_DST_ADDR_CTRL      12</span></span>
-<span id="cb272-5"><a href="ch-uart.html#cb272-5" aria-hidden="true" tabindex="-1"></a><span class="pp">#define bsDMA_SRC_ADDR_CTRL      14</span></span>
-<span id="cb272-6"><a href="ch-uart.html#cb272-6" aria-hidden="true" tabindex="-1"></a><span class="pp">#define bsDMA_DST_MODE           16</span></span>
-<span id="cb272-7"><a href="ch-uart.html#cb272-7" aria-hidden="true" tabindex="-1"></a><span class="pp">#define bsDMA_SRC_MODE           17</span></span>
-<span id="cb272-8"><a href="ch-uart.html#cb272-8" aria-hidden="true" tabindex="-1"></a><span class="pp">#define bsDMA_DST_WIDTH          18</span></span>
-<span id="cb272-9"><a href="ch-uart.html#cb272-9" aria-hidden="true" tabindex="-1"></a><span class="pp">#define bsDMA_SRC_WIDTH          21</span></span>
-<span id="cb272-10"><a href="ch-uart.html#cb272-10" aria-hidden="true" tabindex="-1"></a><span class="pp">#define bsDMA_SRC_BURST_SIZE     24</span></span>
+<div class="sourceCode" id="cb272"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb272-1"><a href="ch-uart.html#cb272-1" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> dst<span class="op">[</span><span class="dv">256</span><span class="op">];</span></span>
+<span id="cb272-2"><a href="ch-uart.html#cb272-2" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> src<span class="op">[]</span> <span class="op">=</span> <span class="st">&quot;Finished to receive a frame!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span>
+<span id="cb272-3"><a href="ch-uart.html#cb272-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb272-4"><a href="ch-uart.html#cb272-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#define DMA_RX_CHANNEL_ID  1</span></span>
+<span id="cb272-5"><a href="ch-uart.html#cb272-5" aria-hidden="true" tabindex="-1"></a><span class="pp">#define DMA_TX_CHANNEL_ID  0</span></span>
+<span id="cb272-6"><a href="ch-uart.html#cb272-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb272-7"><a href="ch-uart.html#cb272-7" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> config_uart<span class="op">(</span><span class="dt">uint32_t</span> freq<span class="op">,</span> <span class="dt">uint32_t</span> BaudRate<span class="op">)</span></span>
+<span id="cb272-8"><a href="ch-uart.html#cb272-8" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb272-9"><a href="ch-uart.html#cb272-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">//config uarts parameter</span></span>
+<span id="cb272-10"><a href="ch-uart.html#cb272-10" aria-hidden="true" tabindex="-1"></a>    UART_sStateStruct config<span class="op">;</span></span>
 <span id="cb272-11"><a href="ch-uart.html#cb272-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb272-12"><a href="ch-uart.html#cb272-12" aria-hidden="true" tabindex="-1"></a><span class="pp">#define DMA_RX_CHANNEL_ID  1</span></span>
-<span id="cb272-13"><a href="ch-uart.html#cb272-13" aria-hidden="true" tabindex="-1"></a><span class="pp">#define DMA_TX_CHANNEL_ID  0</span></span>
-<span id="cb272-14"><a href="ch-uart.html#cb272-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb272-15"><a href="ch-uart.html#cb272-15" aria-hidden="true" tabindex="-1"></a>DMA_Descriptor test __attribute__<span class="op">((</span>aligned <span class="op">(</span><span class="dv">8</span><span class="op">)));</span></span>
-<span id="cb272-16"><a href="ch-uart.html#cb272-16" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> dst<span class="op">[</span><span class="dv">256</span><span class="op">];</span></span>
-<span id="cb272-17"><a href="ch-uart.html#cb272-17" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> src<span class="op">[]</span> <span class="op">=</span> <span class="st">&quot;Finished to receive a frame!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span>
-<span id="cb272-18"><a href="ch-uart.html#cb272-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb272-19"><a href="ch-uart.html#cb272-19" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> setup_peripheral_dma<span class="op">()</span></span>
-<span id="cb272-20"><a href="ch-uart.html#cb272-20" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb272-21"><a href="ch-uart.html#cb272-21" aria-hidden="true" tabindex="-1"></a>    printf<span class="op">(</span><span class="st">&quot;setup_peripheral_dma</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
-<span id="cb272-22"><a href="ch-uart.html#cb272-22" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGate<span class="op">(</span>SYSCTRL_ITEM_APB_DMA<span class="op">);</span> </span>
-<span id="cb272-23"><a href="ch-uart.html#cb272-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb272-24"><a href="ch-uart.html#cb272-24" aria-hidden="true" tabindex="-1"></a>    <span class="co">//配置DMA接收</span></span>
-<span id="cb272-25"><a href="ch-uart.html#cb272-25" aria-hidden="true" tabindex="-1"></a>    APB_DMA<span class="op">-&gt;</span>Channels<span class="op">[</span><span class="dv">1</span><span class="op">].</span>Descriptor<span class="op">.</span>Ctrl <span class="op">=</span> <span class="op">((</span><span class="dt">uint32_t</span><span class="op">)</span><span class="bn">0x0</span> <span class="op">&lt;&lt;</span> bsDMA_INT_C_MASK<span class="op">)</span></span>
-<span id="cb272-26"><a href="ch-uart.html#cb272-26" aria-hidden="true" tabindex="-1"></a>                                            <span class="op">|</span> <span class="op">((</span><span class="dt">uint32_t</span><span class="op">)</span><span class="bn">0x0</span> <span class="op">&lt;&lt;</span>bsDMA_DST_REQ_SEL<span class="op">)</span></span>
-<span id="cb272-27"><a href="ch-uart.html#cb272-27" aria-hidden="true" tabindex="-1"></a>                                            <span class="op">|</span> <span class="op">((</span><span class="dt">uint32_t</span><span class="op">)</span><span class="bn">0x0</span> <span class="op">&lt;&lt;</span> bsDMA_SRC_REQ_SEL<span class="op">)</span></span>
-<span id="cb272-28"><a href="ch-uart.html#cb272-28" aria-hidden="true" tabindex="-1"></a>                                            <span class="op">|</span> <span class="op">((</span><span class="dt">uint32_t</span><span class="op">)</span><span class="bn">0x0</span> <span class="op">&lt;&lt;</span> bsDMA_DST_ADDR_CTRL<span class="op">)</span></span>
-<span id="cb272-29"><a href="ch-uart.html#cb272-29" aria-hidden="true" tabindex="-1"></a>                                            <span class="op">|</span> <span class="op">((</span><span class="dt">uint32_t</span><span class="op">)</span><span class="bn">0x2</span> <span class="op">&lt;&lt;</span> bsDMA_SRC_ADDR_CTRL<span class="op">)</span>   <span class="co">//DMA_ADDRESS_FIXED</span></span>
-<span id="cb272-30"><a href="ch-uart.html#cb272-30" aria-hidden="true" tabindex="-1"></a>                                            <span class="op">|</span> <span class="op">((</span><span class="dt">uint32_t</span><span class="op">)</span><span class="bn">0x0</span> <span class="op">&lt;&lt;</span> bsDMA_DST_MODE<span class="op">)</span></span>
-<span id="cb272-31"><a href="ch-uart.html#cb272-31" aria-hidden="true" tabindex="-1"></a>                                            <span class="op">|</span> <span class="op">((</span><span class="dt">uint32_t</span><span class="op">)</span><span class="bn">0x1</span> <span class="op">&lt;&lt;</span> bsDMA_SRC_MODE<span class="op">)</span>     <span class="co">//</span></span>
-<span id="cb272-32"><a href="ch-uart.html#cb272-32" aria-hidden="true" tabindex="-1"></a>                                            <span class="op">|</span> <span class="op">((</span><span class="dt">uint32_t</span><span class="op">)</span><span class="bn">0x0</span> <span class="op">&lt;&lt;</span> bsDMA_DST_WIDTH<span class="op">)</span></span>
-<span id="cb272-33"><a href="ch-uart.html#cb272-33" aria-hidden="true" tabindex="-1"></a>                                            <span class="op">|</span> <span class="op">((</span><span class="dt">uint32_t</span><span class="op">)</span><span class="bn">0x0</span> <span class="op">&lt;&lt;</span> bsDMA_SRC_WIDTH<span class="op">)</span></span>
-<span id="cb272-34"><a href="ch-uart.html#cb272-34" aria-hidden="true" tabindex="-1"></a>                                            <span class="op">|</span> <span class="op">((</span><span class="dt">uint32_t</span><span class="op">)</span><span class="bn">0x2</span> <span class="op">&lt;&lt;</span> bsDMA_SRC_BURST_SIZE<span class="op">);</span> <span class="co">//4 transefers</span></span>
-<span id="cb272-35"><a href="ch-uart.html#cb272-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb272-36"><a href="ch-uart.html#cb272-36" aria-hidden="true" tabindex="-1"></a>    APB_DMA<span class="op">-&gt;</span>Channels<span class="op">[</span><span class="dv">1</span><span class="op">].</span>Descriptor<span class="op">.</span>SrcAddr <span class="op">=</span> <span class="op">(</span><span class="dt">uint32_t</span><span class="op">)&amp;</span>APB_UART0<span class="op">-&gt;</span>DataRead<span class="op">;</span></span>
-<span id="cb272-37"><a href="ch-uart.html#cb272-37" aria-hidden="true" tabindex="-1"></a>    APB_DMA<span class="op">-&gt;</span>Channels<span class="op">[</span><span class="dv">1</span><span class="op">].</span>Descriptor<span class="op">.</span>DstAddr <span class="op">=</span> <span class="op">(</span><span class="dt">uint32_t</span><span class="op">)</span>dst<span class="op">;</span></span>
-<span id="cb272-38"><a href="ch-uart.html#cb272-38" aria-hidden="true" tabindex="-1"></a>    APB_DMA<span class="op">-&gt;</span>Channels<span class="op">[</span><span class="dv">1</span><span class="op">].</span>Descriptor<span class="op">.</span>TranSize <span class="op">=</span> <span class="dv">48</span><span class="op">;</span></span>
-<span id="cb272-39"><a href="ch-uart.html#cb272-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb272-40"><a href="ch-uart.html#cb272-40" aria-hidden="true" tabindex="-1"></a>    DMA_EnableChannel<span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="op">&amp;</span>APB_DMA<span class="op">-&gt;</span>Channels<span class="op">[</span><span class="dv">1</span><span class="op">].</span>Descriptor<span class="op">);</span></span>
-<span id="cb272-41"><a href="ch-uart.html#cb272-41" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb272-42"><a href="ch-uart.html#cb272-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb272-43"><a href="ch-uart.html#cb272-43" aria-hidden="true" tabindex="-1"></a><span class="co">//添加UART通过DMA发送的配置</span></span>
-<span id="cb272-44"><a href="ch-uart.html#cb272-44" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> UART_trigger_DmaSend<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
-<span id="cb272-45"><a href="ch-uart.html#cb272-45" aria-hidden="true" tabindex="-1"></a><span class="op">{</span> </span>
-<span id="cb272-46"><a href="ch-uart.html#cb272-46" aria-hidden="true" tabindex="-1"></a>    DMA_PrepareMem2Peripheral<span class="op">(</span>  <span class="op">&amp;</span>test<span class="op">,</span></span>
-<span id="cb272-47"><a href="ch-uart.html#cb272-47" aria-hidden="true" tabindex="-1"></a>                                SYSCTRL_DMA_UART0_TX<span class="op">,</span></span>
-<span id="cb272-48"><a href="ch-uart.html#cb272-48" aria-hidden="true" tabindex="-1"></a>                                src<span class="op">,</span> strlen<span class="op">(</span>src<span class="op">),</span></span>
-<span id="cb272-49"><a href="ch-uart.html#cb272-49" aria-hidden="true" tabindex="-1"></a>                                DMA_ADDRESS_INC<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
-<span id="cb272-50"><a href="ch-uart.html#cb272-50" aria-hidden="true" tabindex="-1"></a>    DMA_EnableChannel<span class="op">(</span>DMA_TX_CHANNEL_ID<span class="op">,</span> <span class="op">&amp;</span>test<span class="op">);</span></span>
-<span id="cb272-51"><a href="ch-uart.html#cb272-51" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb272-52"><a href="ch-uart.html#cb272-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb272-53"><a href="ch-uart.html#cb272-53" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> setup_peripheral_uart<span class="op">()</span></span>
-<span id="cb272-54"><a href="ch-uart.html#cb272-54" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb272-55"><a href="ch-uart.html#cb272-55" aria-hidden="true" tabindex="-1"></a>    APB_UART0<span class="op">-&gt;</span>FifoSelect <span class="op">=</span> <span class="op">(</span><span class="dv">0</span> <span class="op">&lt;&lt;</span> bsUART_TRANS_INT_LEVEL <span class="op">)</span> <span class="op">|</span></span>
-<span id="cb272-56"><a href="ch-uart.html#cb272-56" aria-hidden="true" tabindex="-1"></a>                    <span class="op">(</span><span class="bn">0X7</span> <span class="op">&lt;&lt;</span> bsUART_RECV_INT_LEVEL  <span class="op">)</span> <span class="op">;</span></span>
-<span id="cb272-57"><a href="ch-uart.html#cb272-57" aria-hidden="true" tabindex="-1"></a>    APB_UART0<span class="op">-&gt;</span>IntMask <span class="op">=</span> <span class="op">(</span><span class="dv">0</span> <span class="op">&lt;&lt;</span> bsUART_RECEIVE_INTENAB<span class="op">)</span> <span class="op">|</span> <span class="op">(</span><span class="dv">0</span> <span class="op">&lt;&lt;</span> bsUART_TRANSMIT_INTENAB<span class="op">)</span> <span class="op">|</span></span>
-<span id="cb272-58"><a href="ch-uart.html#cb272-58" aria-hidden="true" tabindex="-1"></a>                        <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> bsUART_TIMEOUT_INTENAB<span class="op">);</span></span>
-<span id="cb272-59"><a href="ch-uart.html#cb272-59" aria-hidden="true" tabindex="-1"></a>    APB_UART0<span class="op">-&gt;</span>Control <span class="op">=</span> <span class="dv">1</span> <span class="op">&lt;&lt;</span> bsUART_RECEIVE_ENABLE <span class="op">|</span></span>
-<span id="cb272-60"><a href="ch-uart.html#cb272-60" aria-hidden="true" tabindex="-1"></a>                <span class="dv">1</span> <span class="op">&lt;&lt;</span> bsUART_TRANSMIT_ENABLE <span class="op">|</span></span>
-<span id="cb272-61"><a href="ch-uart.html#cb272-61" aria-hidden="true" tabindex="-1"></a>                <span class="dv">1</span> <span class="op">&lt;&lt;</span> bsUART_ENABLE          <span class="op">|</span></span>
-<span id="cb272-62"><a href="ch-uart.html#cb272-62" aria-hidden="true" tabindex="-1"></a>                <span class="dv">0</span> <span class="op">&lt;&lt;</span> bsUART_CTS_ENA         <span class="op">|</span></span>
-<span id="cb272-63"><a href="ch-uart.html#cb272-63" aria-hidden="true" tabindex="-1"></a>                <span class="dv">0</span> <span class="op">&lt;&lt;</span> bsUART_RTS_ENA<span class="op">;</span></span>
-<span id="cb272-64"><a href="ch-uart.html#cb272-64" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb272-65"><a href="ch-uart.html#cb272-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb272-66"><a href="ch-uart.html#cb272-66" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> uart_isr<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
-<span id="cb272-67"><a href="ch-uart.html#cb272-67" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb272-68"><a href="ch-uart.html#cb272-68" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> status<span class="op">;</span></span>
-<span id="cb272-69"><a href="ch-uart.html#cb272-69" aria-hidden="true" tabindex="-1"></a>    printf<span class="op">(</span><span class="st">&quot;@%x #%x #%x</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span>APB_UART0<span class="op">-&gt;</span>IntMask<span class="op">,</span>APB_UART0<span class="op">-&gt;</span>IntRaw<span class="op">,</span>APB_UART0<span class="op">-&gt;</span>Interrupt<span class="op">);</span></span>
-<span id="cb272-70"><a href="ch-uart.html#cb272-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb272-71"><a href="ch-uart.html#cb272-71" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span><span class="op">(</span><span class="dv">1</span><span class="op">)</span></span>
-<span id="cb272-72"><a href="ch-uart.html#cb272-72" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb272-73"><a href="ch-uart.html#cb272-73" aria-hidden="true" tabindex="-1"></a>        status <span class="op">=</span> apUART_Get_all_raw_int_stat<span class="op">(</span>APB_UART0<span class="op">);</span></span>
-<span id="cb272-74"><a href="ch-uart.html#cb272-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb272-75"><a href="ch-uart.html#cb272-75" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>status <span class="op">==</span> <span class="dv">0</span><span class="op">)</span></span>
-<span id="cb272-76"><a href="ch-uart.html#cb272-76" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span><span class="op">;</span></span>
-<span id="cb272-77"><a href="ch-uart.html#cb272-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb272-78"><a href="ch-uart.html#cb272-78" aria-hidden="true" tabindex="-1"></a>        APB_UART0<span class="op">-&gt;</span>IntClear <span class="op">=</span> status<span class="op">;</span></span>
-<span id="cb272-79"><a href="ch-uart.html#cb272-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb272-80"><a href="ch-uart.html#cb272-80" aria-hidden="true" tabindex="-1"></a>        <span class="co">// rx timeout_int</span></span>
-<span id="cb272-81"><a href="ch-uart.html#cb272-81" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> bsUART_TIMEOUT_INTENAB<span class="op">))</span></span>
-<span id="cb272-82"><a href="ch-uart.html#cb272-82" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span></span>
-<span id="cb272-83"><a href="ch-uart.html#cb272-83" aria-hidden="true" tabindex="-1"></a>            <span class="cf">while</span> <span class="op">(</span>apUART_Check_RXFIFO_EMPTY<span class="op">(</span>APB_UART0<span class="op">)</span> <span class="op">!=</span> <span class="dv">1</span><span class="op">)</span></span>
-<span id="cb272-84"><a href="ch-uart.html#cb272-84" aria-hidden="true" tabindex="-1"></a>            <span class="op">{</span></span>
-<span id="cb272-85"><a href="ch-uart.html#cb272-85" aria-hidden="true" tabindex="-1"></a>                <span class="dt">char</span> c <span class="op">=</span> APB_UART0<span class="op">-&gt;</span>DataRead<span class="op">;</span></span>
-<span id="cb272-86"><a href="ch-uart.html#cb272-86" aria-hidden="true" tabindex="-1"></a>                <span class="dt">int</span> index <span class="op">=</span> APB_DMA<span class="op">-&gt;</span>Channels<span class="op">[</span><span class="dv">1</span><span class="op">].</span>Descriptor<span class="op">.</span>DstAddr <span class="op">-</span> <span class="op">(</span><span class="dt">uint32_t</span><span class="op">)</span>dst<span class="op">;</span></span>
-<span id="cb272-87"><a href="ch-uart.html#cb272-87" aria-hidden="true" tabindex="-1"></a>                dst<span class="op">[</span>index<span class="op">]</span> <span class="op">=</span> c<span class="op">;</span></span>
-<span id="cb272-88"><a href="ch-uart.html#cb272-88" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>index <span class="op">==</span> <span class="dv">255</span><span class="op">)</span> </span>
-<span id="cb272-89"><a href="ch-uart.html#cb272-89" aria-hidden="true" tabindex="-1"></a>                <span class="op">{</span></span>
-<span id="cb272-90"><a href="ch-uart.html#cb272-90" aria-hidden="true" tabindex="-1"></a>                    APB_DMA<span class="op">-&gt;</span>Channels<span class="op">[</span><span class="dv">1</span><span class="op">].</span>Descriptor<span class="op">.</span>DstAddr <span class="op">=</span> <span class="op">(</span><span class="dt">uint32_t</span><span class="op">)</span>dst<span class="op">;</span></span>
-<span id="cb272-91"><a href="ch-uart.html#cb272-91" aria-hidden="true" tabindex="-1"></a>                    UART_trigger_DmaSend<span class="op">();</span></span>
-<span id="cb272-92"><a href="ch-uart.html#cb272-92" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
-<span id="cb272-93"><a href="ch-uart.html#cb272-93" aria-hidden="true" tabindex="-1"></a>                <span class="cf">else</span></span>
-<span id="cb272-94"><a href="ch-uart.html#cb272-94" aria-hidden="true" tabindex="-1"></a>                    APB_DMA<span class="op">-&gt;</span>Channels<span class="op">[</span><span class="dv">1</span><span class="op">].</span>Descriptor<span class="op">.</span>DstAddr<span class="op">++;</span></span>
-<span id="cb272-95"><a href="ch-uart.html#cb272-95" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb272-96"><a href="ch-uart.html#cb272-96" aria-hidden="true" tabindex="-1"></a>                APB_DMA<span class="op">-&gt;</span>Channels<span class="op">[</span><span class="dv">1</span><span class="op">].</span>Descriptor<span class="op">.</span>TranSize <span class="op">=</span> <span class="dv">48</span><span class="op">;</span></span>
-<span id="cb272-97"><a href="ch-uart.html#cb272-97" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
-<span id="cb272-98"><a href="ch-uart.html#cb272-98" aria-hidden="true" tabindex="-1"></a>            printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">len=%d, dst = %s</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span>APB_DMA<span class="op">-&gt;</span>Channels<span class="op">[</span><span class="dv">1</span><span class="op">].</span>Descriptor<span class="op">.</span>TranSize<span class="op">,</span>dst<span class="op">);</span></span>
-<span id="cb272-99"><a href="ch-uart.html#cb272-99" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb272-100"><a href="ch-uart.html#cb272-100" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb272-101"><a href="ch-uart.html#cb272-101" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb272-102"><a href="ch-uart.html#cb272-102" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb272-103"><a href="ch-uart.html#cb272-103" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb272-104"><a href="ch-uart.html#cb272-104" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> uart_peripherals_read_data<span class="op">()</span></span>
-<span id="cb272-105"><a href="ch-uart.html#cb272-105" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb272-106"><a href="ch-uart.html#cb272-106" aria-hidden="true" tabindex="-1"></a>    <span class="co">//注册uart0中断</span></span>
-<span id="cb272-107"><a href="ch-uart.html#cb272-107" aria-hidden="true" tabindex="-1"></a>    platform_set_irq_callback<span class="op">(</span>PLATFORM_CB_IRQ_UART0<span class="op">,</span> uart_isr<span class="op">,</span> NULL<span class="op">);</span></span>
-<span id="cb272-108"><a href="ch-uart.html#cb272-108" aria-hidden="true" tabindex="-1"></a>    setup_peripheral_uart<span class="op">();</span></span>
-<span id="cb272-109"><a href="ch-uart.html#cb272-109" aria-hidden="true" tabindex="-1"></a>    setup_peripheral_dma<span class="op">();</span></span>
-<span id="cb272-110"><a href="ch-uart.html#cb272-110" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<span id="cb272-12"><a href="ch-uart.html#cb272-12" aria-hidden="true" tabindex="-1"></a>    config<span class="op">.</span>word_length       <span class="op">=</span> UART_WLEN_8_BITS<span class="op">;</span></span>
+<span id="cb272-13"><a href="ch-uart.html#cb272-13" aria-hidden="true" tabindex="-1"></a>    config<span class="op">.</span>parity            <span class="op">=</span> UART_PARITY_NOT_CHECK<span class="op">;</span></span>
+<span id="cb272-14"><a href="ch-uart.html#cb272-14" aria-hidden="true" tabindex="-1"></a>    config<span class="op">.</span>fifo_enable       <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb272-15"><a href="ch-uart.html#cb272-15" aria-hidden="true" tabindex="-1"></a>    config<span class="op">.</span>two_stop_bits     <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb272-16"><a href="ch-uart.html#cb272-16" aria-hidden="true" tabindex="-1"></a>    config<span class="op">.</span>receive_en        <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb272-17"><a href="ch-uart.html#cb272-17" aria-hidden="true" tabindex="-1"></a>    config<span class="op">.</span>transmit_en       <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb272-18"><a href="ch-uart.html#cb272-18" aria-hidden="true" tabindex="-1"></a>    config<span class="op">.</span>UART_en           <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb272-19"><a href="ch-uart.html#cb272-19" aria-hidden="true" tabindex="-1"></a>    config<span class="op">.</span>cts_en            <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb272-20"><a href="ch-uart.html#cb272-20" aria-hidden="true" tabindex="-1"></a>    config<span class="op">.</span>rts_en            <span class="op">=</span> <span class="dv">0</span><span class="op">;</span>   </span>
+<span id="cb272-21"><a href="ch-uart.html#cb272-21" aria-hidden="true" tabindex="-1"></a>    config<span class="op">.</span>rxfifo_waterlevel <span class="op">=</span> <span class="dv">7</span><span class="op">;</span></span>
+<span id="cb272-22"><a href="ch-uart.html#cb272-22" aria-hidden="true" tabindex="-1"></a>    config<span class="op">.</span>txfifo_waterlevel <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb272-23"><a href="ch-uart.html#cb272-23" aria-hidden="true" tabindex="-1"></a>    config<span class="op">.</span>ClockFrequency    <span class="op">=</span> freq<span class="op">;</span></span>
+<span id="cb272-24"><a href="ch-uart.html#cb272-24" aria-hidden="true" tabindex="-1"></a>    config<span class="op">.</span>BaudRate          <span class="op">=</span> BaudRate<span class="op">;</span></span>
+<span id="cb272-25"><a href="ch-uart.html#cb272-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb272-26"><a href="ch-uart.html#cb272-26" aria-hidden="true" tabindex="-1"></a>    apUART_Initialize<span class="op">(</span>APB_UART0<span class="op">,</span> <span class="op">&amp;</span>config<span class="op">,</span> UART_INTBIT_TIMEOUT<span class="op">);</span></span>
+<span id="cb272-27"><a href="ch-uart.html#cb272-27" aria-hidden="true" tabindex="-1"></a>    UART_DmaEnable<span class="op">(</span>APB_UART0<span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb272-28"><a href="ch-uart.html#cb272-28" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb272-29"><a href="ch-uart.html#cb272-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb272-30"><a href="ch-uart.html#cb272-30" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripheral_dma<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb272-31"><a href="ch-uart.html#cb272-31" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb272-32"><a href="ch-uart.html#cb272-32" aria-hidden="true" tabindex="-1"></a>    DMA_Descriptor descriptor __attribute__<span class="op">((</span>aligned <span class="op">(</span><span class="dv">8</span><span class="op">)))</span> <span class="op">=</span> <span class="op">{</span><span class="dv">0</span><span class="op">};</span></span>
+<span id="cb272-33"><a href="ch-uart.html#cb272-33" aria-hidden="true" tabindex="-1"></a>    DMA_PreparePeripheral2Mem<span class="op">(</span>  <span class="op">&amp;</span>descriptor<span class="op">,</span> </span>
+<span id="cb272-34"><a href="ch-uart.html#cb272-34" aria-hidden="true" tabindex="-1"></a>                                dst<span class="op">,</span> SYSCTRL_DMA_UART0_RX<span class="op">,</span> </span>
+<span id="cb272-35"><a href="ch-uart.html#cb272-35" aria-hidden="true" tabindex="-1"></a>                                <span class="kw">sizeof</span><span class="op">(</span>dst<span class="op">),</span> DMA_ADDRESS_INC<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb272-36"><a href="ch-uart.html#cb272-36" aria-hidden="true" tabindex="-1"></a>    DMA_EnableChannel<span class="op">(</span>DMA_RX_CHANNEL_ID<span class="op">,</span> <span class="op">&amp;</span>descriptor<span class="op">);</span></span>
+<span id="cb272-37"><a href="ch-uart.html#cb272-37" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb272-38"><a href="ch-uart.html#cb272-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb272-39"><a href="ch-uart.html#cb272-39" aria-hidden="true" tabindex="-1"></a><span class="co">//添加UART通过DMA发送的配置</span></span>
+<span id="cb272-40"><a href="ch-uart.html#cb272-40" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> UART_trigger_DmaSend<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb272-41"><a href="ch-uart.html#cb272-41" aria-hidden="true" tabindex="-1"></a><span class="op">{</span> </span>
+<span id="cb272-42"><a href="ch-uart.html#cb272-42" aria-hidden="true" tabindex="-1"></a>    DMA_Descriptor descriptor __attribute__<span class="op">((</span>aligned <span class="op">(</span><span class="dv">8</span><span class="op">)))</span> <span class="op">=</span> <span class="op">{</span><span class="dv">0</span><span class="op">};</span></span>
+<span id="cb272-43"><a href="ch-uart.html#cb272-43" aria-hidden="true" tabindex="-1"></a>    DMA_PrepareMem2Peripheral<span class="op">(</span>  <span class="op">&amp;</span>descriptor<span class="op">,</span></span>
+<span id="cb272-44"><a href="ch-uart.html#cb272-44" aria-hidden="true" tabindex="-1"></a>                                SYSCTRL_DMA_UART0_TX<span class="op">,</span></span>
+<span id="cb272-45"><a href="ch-uart.html#cb272-45" aria-hidden="true" tabindex="-1"></a>                                src<span class="op">,</span> strlen<span class="op">(</span>src<span class="op">),</span></span>
+<span id="cb272-46"><a href="ch-uart.html#cb272-46" aria-hidden="true" tabindex="-1"></a>                                DMA_ADDRESS_INC<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb272-47"><a href="ch-uart.html#cb272-47" aria-hidden="true" tabindex="-1"></a>    DMA_EnableChannel<span class="op">(</span>DMA_TX_CHANNEL_ID<span class="op">,</span> <span class="op">&amp;</span>descriptor<span class="op">);</span></span>
+<span id="cb272-48"><a href="ch-uart.html#cb272-48" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb272-49"><a href="ch-uart.html#cb272-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb272-50"><a href="ch-uart.html#cb272-50" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> uart_isr<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
+<span id="cb272-51"><a href="ch-uart.html#cb272-51" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb272-52"><a href="ch-uart.html#cb272-52" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> status<span class="op">;</span></span>
+<span id="cb272-53"><a href="ch-uart.html#cb272-53" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> index <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb272-54"><a href="ch-uart.html#cb272-54" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span><span class="op">(</span><span class="dv">1</span><span class="op">)</span></span>
+<span id="cb272-55"><a href="ch-uart.html#cb272-55" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb272-56"><a href="ch-uart.html#cb272-56" aria-hidden="true" tabindex="-1"></a>        status <span class="op">=</span> apUART_Get_all_raw_int_stat<span class="op">(</span>APB_UART0<span class="op">);</span></span>
+<span id="cb272-57"><a href="ch-uart.html#cb272-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb272-58"><a href="ch-uart.html#cb272-58" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>status <span class="op">==</span> <span class="dv">0</span><span class="op">)</span></span>
+<span id="cb272-59"><a href="ch-uart.html#cb272-59" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb272-60"><a href="ch-uart.html#cb272-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb272-61"><a href="ch-uart.html#cb272-61" aria-hidden="true" tabindex="-1"></a>        APB_UART0<span class="op">-&gt;</span>IntClear <span class="op">=</span> status<span class="op">;</span></span>
+<span id="cb272-62"><a href="ch-uart.html#cb272-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb272-63"><a href="ch-uart.html#cb272-63" aria-hidden="true" tabindex="-1"></a>        <span class="co">// rx timeout_int</span></span>
+<span id="cb272-64"><a href="ch-uart.html#cb272-64" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>status <span class="op">&amp;</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> bsUART_TIMEOUT_INTENAB<span class="op">))</span></span>
+<span id="cb272-65"><a href="ch-uart.html#cb272-65" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span></span>
+<span id="cb272-66"><a href="ch-uart.html#cb272-66" aria-hidden="true" tabindex="-1"></a>            index <span class="op">=</span> APB_DMA<span class="op">-&gt;</span>Channels<span class="op">[</span>DMA_RX_CHANNEL_ID<span class="op">].</span>Descriptor<span class="op">.</span>DstAddr <span class="op">-</span> <span class="op">(</span><span class="dt">uint32_t</span><span class="op">)</span>rx_buffer<span class="op">;</span></span>
+<span id="cb272-67"><a href="ch-uart.html#cb272-67" aria-hidden="true" tabindex="-1"></a>            <span class="cf">while</span> <span class="op">(</span>apUART_Check_RXFIFO_EMPTY<span class="op">(</span>APB_UART0<span class="op">)</span> <span class="op">!=</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb272-68"><a href="ch-uart.html#cb272-68" aria-hidden="true" tabindex="-1"></a>            <span class="op">{</span></span>
+<span id="cb272-69"><a href="ch-uart.html#cb272-69" aria-hidden="true" tabindex="-1"></a>                <span class="dt">char</span> c <span class="op">=</span> APB_UART0<span class="op">-&gt;</span>DataRead<span class="op">;</span></span>
+<span id="cb272-70"><a href="ch-uart.html#cb272-70" aria-hidden="true" tabindex="-1"></a>                dst<span class="op">[</span>index<span class="op">++]</span> <span class="op">=</span> c<span class="op">;</span></span>
+<span id="cb272-71"><a href="ch-uart.html#cb272-71" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb272-72"><a href="ch-uart.html#cb272-72" aria-hidden="true" tabindex="-1"></a>            dst<span class="op">[</span>index<span class="op">]</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb272-73"><a href="ch-uart.html#cb272-73" aria-hidden="true" tabindex="-1"></a>            <span class="co">// 一包数据接收完毕，可在此进行数据处理</span></span>
+<span id="cb272-74"><a href="ch-uart.html#cb272-74" aria-hidden="true" tabindex="-1"></a>            UART_trigger_DmaSend<span class="op">();</span></span>
+<span id="cb272-75"><a href="ch-uart.html#cb272-75" aria-hidden="true" tabindex="-1"></a>            setup_peripheral_dma<span class="op">();</span></span>
+<span id="cb272-76"><a href="ch-uart.html#cb272-76" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb272-77"><a href="ch-uart.html#cb272-77" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb272-78"><a href="ch-uart.html#cb272-78" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb272-79"><a href="ch-uart.html#cb272-79" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb272-80"><a href="ch-uart.html#cb272-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb272-81"><a href="ch-uart.html#cb272-81" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> uart_peripherals_read_data<span class="op">()</span></span>
+<span id="cb272-82"><a href="ch-uart.html#cb272-82" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb272-83"><a href="ch-uart.html#cb272-83" aria-hidden="true" tabindex="-1"></a>    <span class="co">//注册uart0中断</span></span>
+<span id="cb272-84"><a href="ch-uart.html#cb272-84" aria-hidden="true" tabindex="-1"></a>    platform_set_irq_callback<span class="op">(</span>PLATFORM_CB_IRQ_UART0<span class="op">,</span> uart_isr<span class="op">,</span> NULL<span class="op">);</span></span>
+<span id="cb272-85"><a href="ch-uart.html#cb272-85" aria-hidden="true" tabindex="-1"></a>    config_uart<span class="op">(</span>OSC_CLK_FREQ<span class="op">,</span> <span class="dv">115200</span><span class="op">);</span></span>
+<span id="cb272-86"><a href="ch-uart.html#cb272-86" aria-hidden="true" tabindex="-1"></a>    setup_peripheral_dma<span class="op">();</span></span>
+<span id="cb272-87"><a href="ch-uart.html#cb272-87" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 
 </div>
 </div>

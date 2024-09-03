@@ -588,8 +588,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb177-3"><a href="ch-spi.html#cb177-3" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGateMulti<span class="op">(</span>    <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_SPI1<span class="op">)</span></span>
 <span id="cb177-4"><a href="ch-spi.html#cb177-4" aria-hidden="true" tabindex="-1"></a>                                <span class="op">|</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_PinCtrl<span class="op">)));</span></span>
 <span id="cb177-5"><a href="ch-spi.html#cb177-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb177-6"><a href="ch-spi.html#cb177-6" aria-hidden="true" tabindex="-1"></a>    PINCTRL_Pull<span class="op">(</span>IO_SOURCE_SPI1_CLK_IN<span class="op">,</span>PINCTRL_PULL_DOWN<span class="op">);</span></span>
-<span id="cb177-7"><a href="ch-spi.html#cb177-7" aria-hidden="true" tabindex="-1"></a>    PINCTRL_Pull<span class="op">(</span>IO_SOURCE_SPI1_CSN_IN<span class="op">,</span>PINCTRL_PULL_UP<span class="op">);</span></span>
+<span id="cb177-6"><a href="ch-spi.html#cb177-6" aria-hidden="true" tabindex="-1"></a>    PINCTRL_Pull<span class="op">(</span>SPI_MIC_CLK<span class="op">,</span>PINCTRL_PULL_DOWN<span class="op">);</span></span>
+<span id="cb177-7"><a href="ch-spi.html#cb177-7" aria-hidden="true" tabindex="-1"></a>    PINCTRL_Pull<span class="op">(</span>SPI_MIC_CS<span class="op">,</span>PINCTRL_PULL_UP<span class="op">);</span></span>
 <span id="cb177-8"><a href="ch-spi.html#cb177-8" aria-hidden="true" tabindex="-1"></a>    PINCTRL_SelSpiIn<span class="op">(</span>SPI_PORT_1<span class="op">,</span> SPI_MIC_CLK<span class="op">,</span> SPI_MIC_CS<span class="op">,</span> SPI_MIC_HOLD<span class="op">,</span></span>
 <span id="cb177-9"><a href="ch-spi.html#cb177-9" aria-hidden="true" tabindex="-1"></a>                     SPI_MIC_WP<span class="op">,</span> SPI_MIC_MISO<span class="op">,</span> SPI_MIC_MOSI<span class="op">);</span></span>
 <span id="cb177-10"><a href="ch-spi.html#cb177-10" aria-hidden="true" tabindex="-1"></a>    PINCTRL_SetPadMux<span class="op">(</span>SPI_MIC_CLK<span class="op">,</span> IO_SOURCE_SPI1_CLK_OUT<span class="op">);</span></span>
@@ -1006,8 +1006,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb203-7"><a href="ch-spi.html#cb203-7" aria-hidden="true" tabindex="-1"></a>    PINCTRL_SetPadMux<span class="op">(</span>SPI_MIC_WP<span class="op">,</span> IO_SOURCE_SPI1_WP_OUT<span class="op">);</span></span>
 <span id="cb203-8"><a href="ch-spi.html#cb203-8" aria-hidden="true" tabindex="-1"></a>    PINCTRL_SetPadMux<span class="op">(</span>SPI_MIC_HOLD<span class="op">,</span> IO_SOURCE_SPI1_HOLD_OUT<span class="op">);</span></span></code></pre></div>
 <p>对于Slave，则还需要额外配置CS的内部上拉：</p>
-<div class="sourceCode" id="cb204"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb204-1"><a href="ch-spi.html#cb204-1" aria-hidden="true" tabindex="-1"></a>    PINCTRL_Pull<span class="op">(</span>IO_SOURCE_SPI1_CLK_IN<span class="op">,</span>PINCTRL_PULL_DOWN<span class="op">);</span></span>
-<span id="cb204-2"><a href="ch-spi.html#cb204-2" aria-hidden="true" tabindex="-1"></a>    PINCTRL_Pull<span class="op">(</span>IO_SOURCE_SPI1_CSN_IN<span class="op">,</span>PINCTRL_PULL_UP<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb204"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb204-1"><a href="ch-spi.html#cb204-1" aria-hidden="true" tabindex="-1"></a>    PINCTRL_Pull<span class="op">(</span>SPI_MIC_CLK<span class="op">,</span>PINCTRL_PULL_DOWN<span class="op">);</span></span>
+<span id="cb204-2"><a href="ch-spi.html#cb204-2" aria-hidden="true" tabindex="-1"></a>    PINCTRL_Pull<span class="op">(</span>SPI_MIC_CS<span class="op">,</span>PINCTRL_PULL_UP<span class="op">);</span></span></code></pre></div>
 </div>
 <div id="qspi-master" class="section level5 hasAnchor" number="18.2.5.2.2">
 <h5><span class="header-section-number">18.2.5.2.2</span> QSPI Master<a href="ch-spi.html#qspi-master" class="anchor-section" aria-label="Anchor link to header"></a></h5>

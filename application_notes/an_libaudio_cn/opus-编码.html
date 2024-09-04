@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>6 Opus 编码 | 应用指南：音频处理库</title>
+  <meta name="description" content="6 Opus 编码 | 应用指南：音频处理库." />
+  <meta name="generator" content="bookdown 0.32 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="6 Opus 编码 | 应用指南：音频处理库" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="6 Opus 编码 | 应用指南：音频处理库." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="6 Opus 编码 | 应用指南：音频处理库" />
+  
+  <meta name="twitter:description" content="6 Opus 编码 | 应用指南：音频处理库." />
+  
+
+<meta name="author" content="Ingchips Technology Co., Ltd." />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="sbcmsbc-编解码.html"/>
+<link rel="next" href="致谢.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">应用指南：音频处理库</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> 版本历史</a></li>
+<li class="chapter" data-level="2" data-path="ch-overview.html"><a href="ch-overview.html"><i class="fa fa-check"></i><b>2</b> 概览</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="ch-overview.html"><a href="ch-overview.html#模块设计原则"><i class="fa fa-check"></i><b>2.1</b> 模块设计原则</a></li>
+<li class="chapter" data-level="2.2" data-path="ch-overview.html"><a href="ch-overview.html#缩略语及术语"><i class="fa fa-check"></i><b>2.2</b> 缩略语及术语</a></li>
+<li class="chapter" data-level="2.3" data-path="ch-overview.html"><a href="ch-overview.html#参考文档"><i class="fa fa-check"></i><b>2.3</b> 参考文档</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="降噪.html"><a href="降噪.html"><i class="fa fa-check"></i><b>3</b> 降噪</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="降噪.html"><a href="降噪.html#使用方法"><i class="fa fa-check"></i><b>3.1</b> 使用方法</a></li>
+<li class="chapter" data-level="3.2" data-path="降噪.html"><a href="降噪.html#性能"><i class="fa fa-check"></i><b>3.2</b> 性能</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="降噪.html"><a href="降噪.html#ing916xx"><i class="fa fa-check"></i><b>3.2.1</b> ING916XX</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="降噪.html"><a href="降噪.html#应用建议"><i class="fa fa-check"></i><b>3.3</b> 应用建议</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="adpcm-编解码.html"><a href="adpcm-编解码.html"><i class="fa fa-check"></i><b>4</b> ADPCM 编解码</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="adpcm-编解码.html"><a href="adpcm-编解码.html#使用方法-1"><i class="fa fa-check"></i><b>4.1</b> 使用方法</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="adpcm-编解码.html"><a href="adpcm-编解码.html#编码"><i class="fa fa-check"></i><b>4.1.1</b> 编码</a></li>
+<li class="chapter" data-level="4.1.2" data-path="adpcm-编解码.html"><a href="adpcm-编解码.html#解码"><i class="fa fa-check"></i><b>4.1.2</b> 解码</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="adpcm-编解码.html"><a href="adpcm-编解码.html#性能-1"><i class="fa fa-check"></i><b>4.2</b> 性能</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="adpcm-编解码.html"><a href="adpcm-编解码.html#ing916xx-1"><i class="fa fa-check"></i><b>4.2.1</b> ING916XX</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="sbcmsbc-编解码.html"><a href="sbcmsbc-编解码.html"><i class="fa fa-check"></i><b>5</b> SBC/mSBC 编解码</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="sbcmsbc-编解码.html"><a href="sbcmsbc-编解码.html#帧描述参数"><i class="fa fa-check"></i><b>5.1</b> 帧描述参数</a></li>
+<li class="chapter" data-level="5.2" data-path="sbcmsbc-编解码.html"><a href="sbcmsbc-编解码.html#使用方法-2"><i class="fa fa-check"></i><b>5.2</b> 使用方法</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="sbcmsbc-编解码.html"><a href="sbcmsbc-编解码.html#编码-1"><i class="fa fa-check"></i><b>5.2.1</b> 编码</a></li>
+<li class="chapter" data-level="5.2.2" data-path="sbcmsbc-编解码.html"><a href="sbcmsbc-编解码.html#解码-1"><i class="fa fa-check"></i><b>5.2.2</b> 解码</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="sbcmsbc-编解码.html"><a href="sbcmsbc-编解码.html#性能-2"><i class="fa fa-check"></i><b>5.3</b> 性能</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="sbcmsbc-编解码.html"><a href="sbcmsbc-编解码.html#ing916xx-2"><i class="fa fa-check"></i><b>5.3.1</b> ING916XX</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="opus-编码.html"><a href="opus-编码.html"><i class="fa fa-check"></i><b>6</b> Opus 编码</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="opus-编码.html"><a href="opus-编码.html#使用方法-3"><i class="fa fa-check"></i><b>6.1</b> 使用方法</a></li>
+<li class="chapter" data-level="6.2" data-path="opus-编码.html"><a href="opus-编码.html#参数选择与评估"><i class="fa fa-check"></i><b>6.2</b> 参数选择与评估</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="opus-编码.html"><a href="opus-编码.html#临时内存评估"><i class="fa fa-check"></i><b>6.2.1</b> 临时内存评估</a></li>
+<li class="chapter" data-level="6.2.2" data-path="opus-编码.html"><a href="opus-编码.html#性能评估"><i class="fa fa-check"></i><b>6.2.2</b> 性能评估</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="opus-编码.html"><a href="opus-编码.html#性能-3"><i class="fa fa-check"></i><b>6.3</b> 性能</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="opus-编码.html"><a href="opus-编码.html#ing916xx-3"><i class="fa fa-check"></i><b>6.3.1</b> ING916XX</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="opus-编码.html"><a href="opus-编码.html#线程安全性"><i class="fa fa-check"></i><b>6.4</b> 线程安全性</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="致谢.html"><a href="致谢.html"><i class="fa fa-check"></i><b>7</b> 致谢</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">应用指南：音频处理库</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="opus-编码" class="section level1 hasAnchor" number="6">
+<h1><span class="header-section-number">6</span> Opus 编码<a href="opus-编码.html#opus-编码" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Opus 支持窄带（4 kHz）、中等带宽（6 kHz）、宽带（8 kHz）、超宽带（12 kHz）、全带宽（24 kHz）等多种音频带宽，
+支持 2.5 ms、5 ms、10 ms、20 ms、40 ms、60 ms、80 ms、100 ms、120 ms 等 9 种帧长。
+Opus 兼具较好的音质和较高的压缩率，计算复杂度也较高。音频处理库裁剪了 Opus 编码器，使其能运行于嵌入式系统。</p>
+<div id="使用方法-3" class="section level2 hasAnchor" number="6.1">
+<h2><span class="header-section-number">6.1</span> 使用方法<a href="opus-编码.html#使用方法-3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ol style="list-style-type: decimal">
+<li><p>初始化</p>
+<p>使用 <code>opus_encoder_init</code> 初始化编码器对象：</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb23-1"><a href="opus-编码.html#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> opus_encoder_init<span class="op">(</span></span>
+<span id="cb23-2"><a href="opus-编码.html#cb23-2" aria-hidden="true" tabindex="-1"></a>    OpusEncoder <span class="op">*</span>st<span class="op">,</span>  <span class="co">// 编码器对象</span></span>
+<span id="cb23-3"><a href="opus-编码.html#cb23-3" aria-hidden="true" tabindex="-1"></a>    opus_int32 Fs<span class="op">,</span>    <span class="co">// 采样率</span></span>
+<span id="cb23-4"><a href="opus-编码.html#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> channels<span class="op">,</span>     <span class="co">// 声道数</span></span>
+<span id="cb23-5"><a href="opus-编码.html#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> application   <span class="co">// 应用类型</span></span>
+<span id="cb23-6"><a href="opus-编码.html#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
+<p>通过 <code>opus_encoder_get_size()</code> 获得编码器对象的大小。采样率只能是 8000，
+12000，16000，24000 或者 48000。声道数只能是 1 或者 2。应用类型及适用场景如下。</p>
+<ul>
+<li><p><code>OPUS_APPLICATION_VOIP</code>：适用于大多数 VoIP、视频会议等注重声音质量和可懂性的场景；</p></li>
+<li><p><code>OPUS_APPLICATION_AUDIO</code>：适用于广播或 Hi-Fi 等要求解码输出尽量贴近原始输入的场景；</p></li>
+<li><p><code>OPUS_APPLICATION_RESTRICTED_LOWDELAY</code>：仅用于需要最低延迟的场景。</p></li>
+</ul>
+<p>下面的代码演示了如何从堆上分配用来存放编码器对象内存，并初始化编码器对象：</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb24-1"><a href="opus-编码.html#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> size <span class="op">=</span> opus_encoder_get_size<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb24-2"><a href="opus-编码.html#cb24-2" aria-hidden="true" tabindex="-1"></a>OpusEncoder <span class="op">*</span>enc <span class="op">=</span> malloc<span class="op">(</span>size<span class="op">);</span></span>
+<span id="cb24-3"><a href="opus-编码.html#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>NULL <span class="op">==</span> enc<span class="op">)</span></span>
+<span id="cb24-4"><a href="opus-编码.html#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb24-5"><a href="opus-编码.html#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">...</span> <span class="co">// error handling</span></span>
+<span id="cb24-6"><a href="opus-编码.html#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb24-7"><a href="opus-编码.html#cb24-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-8"><a href="opus-编码.html#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> error <span class="op">=</span> opus_encoder_init<span class="op">(</span>enc<span class="op">,</span> Fs<span class="op">,</span></span>
+<span id="cb24-9"><a href="opus-编码.html#cb24-9" aria-hidden="true" tabindex="-1"></a>    channels<span class="op">,</span> application<span class="op">);</span></span>
+<span id="cb24-10"><a href="opus-编码.html#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>error<span class="op">)</span></span>
+<span id="cb24-11"><a href="opus-编码.html#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb24-12"><a href="opus-编码.html#cb24-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">...</span> <span class="co">// error handling</span></span>
+<span id="cb24-13"><a href="opus-编码.html#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<li><p>设置参数</p>
+<p>使用 <code>opus_encoder_ctl()</code> 设置编码参数。 <code>opus_defines.h</code> 里列出了所有可设置的参数。
+例如，将比特率设为 80 kbps：</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb25-1"><a href="opus-编码.html#cb25-1" aria-hidden="true" tabindex="-1"></a>opus_encoder_ctl<span class="op">(</span>enc<span class="op">,</span> OPUS_SET_BITRATE<span class="op">(</span><span class="dv">80000</span><span class="op">));</span></span></code></pre></div></li>
+<li><p>设置临时内存</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb26-1"><a href="opus-编码.html#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> opus_set_scratch_mem<span class="op">(</span></span>
+<span id="cb26-2"><a href="opus-编码.html#cb26-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">void</span> <span class="op">*</span>buf<span class="op">,</span> <span class="co">// 起始位置</span></span>
+<span id="cb26-3"><a href="opus-编码.html#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> size<span class="op">);</span>       <span class="co">// 临时内存的大小（单位：字节）</span></span></code></pre></div>
+<p>在程序运行过程中，如果发现临时内存空间不足，会调用 <code>opus_on_run_of_out_scratch_mem</code>。
+音频库里包含了该函数的弱定义，开发者可以重新定义这个函数以自定义处理方法。这个函数的弱定义大致为：</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb27-1"><a href="opus-编码.html#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> __attribute<span class="op">((</span>weak<span class="op">))</span> opus_on_run_of_out_scratch_mem<span class="op">(</span></span>
+<span id="cb27-2"><a href="opus-编码.html#cb27-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>fn<span class="op">,</span> <span class="dt">int</span> line_no<span class="op">)</span></span>
+<span id="cb27-3"><a href="opus-编码.html#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb27-4"><a href="opus-编码.html#cb27-4" aria-hidden="true" tabindex="-1"></a>    platform_raise_assertion<span class="op">(</span>fn<span class="op">,</span> line_no<span class="op">);</span></span>
+<span id="cb27-5"><a href="opus-编码.html#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>请参考“<a href="opus-编码.html#参数选择与评估">参数选择与评估</a>”了解如何确定临时内存的大小。</p></li>
+<li><p>编码</p>
+<p>调用 <code>opus_encode</code> 编码一个音频帧。</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb28-1"><a href="opus-编码.html#cb28-1" aria-hidden="true" tabindex="-1"></a>opus_int32 opus_encode<span class="op">(</span></span>
+<span id="cb28-2"><a href="opus-编码.html#cb28-2" aria-hidden="true" tabindex="-1"></a>    OpusEncoder <span class="op">*</span>st<span class="op">,</span>           <span class="co">// 编码器对象</span></span>
+<span id="cb28-3"><a href="opus-编码.html#cb28-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> opus_int16 <span class="op">*</span>pcm<span class="op">,</span>     <span class="co">// PCM 输入</span></span>
+<span id="cb28-4"><a href="opus-编码.html#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> frame_size<span class="op">,</span>            <span class="co">// 这一帧的每个声道所包含的采样数</span></span>
+<span id="cb28-5"><a href="opus-编码.html#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">unsigned</span> <span class="dt">char</span> <span class="op">*</span>data<span class="op">,</span>       <span class="co">// 编码输出（载荷）</span></span>
+<span id="cb28-6"><a href="opus-编码.html#cb28-6" aria-hidden="true" tabindex="-1"></a>    opus_int32 max_data_bytes  <span class="co">// 编码输出的最大长度</span></span>
+<span id="cb28-7"><a href="opus-编码.html#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
+<p>当编码两个声道时，左右声道在 <code>pcm</code> 里交织排列。
+<code>frame_size</code> 参数结合采样率可推算出音频帧的时长，这个音频帧的时长必须是合法，否则函数将返回一个错误码。
+各种采样率所允许的 <code>frame_size</code> 如表 <a href="opus-编码.html#tab:ch4-opus-frame-size">6.1</a> 所示。</p>
+<table style="width:100%;">
+<caption><span id="tab:ch4-opus-frame-size">表 6.1: </span> Opus 采样率与帧长</caption>
+<colgroup>
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">采样率 (Hz)</th>
+<th align="center">2.5 ms</th>
+<th align="center">5 ms</th>
+<th align="center">10 ms</th>
+<th align="center">20 ms</th>
+<th align="center">40 ms</th>
+<th align="center">60 ms</th>
+<th align="center">80 ms</th>
+<th align="center">100 ms</th>
+<th align="center">120 ms</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">8 k</td>
+<td align="center">20</td>
+<td align="center">40</td>
+<td align="center">80</td>
+<td align="center">160</td>
+<td align="center">320</td>
+<td align="center">480</td>
+<td align="center">640</td>
+<td align="center">800</td>
+<td align="center">960</td>
+</tr>
+<tr class="even">
+<td align="center">12 k</td>
+<td align="center">30</td>
+<td align="center">60</td>
+<td align="center">120</td>
+<td align="center">240</td>
+<td align="center">480</td>
+<td align="center">720</td>
+<td align="center">960</td>
+<td align="center">1200</td>
+<td align="center">1440</td>
+</tr>
+<tr class="odd">
+<td align="center">16 k</td>
+<td align="center">40</td>
+<td align="center">80</td>
+<td align="center">160</td>
+<td align="center">320</td>
+<td align="center">640</td>
+<td align="center">960</td>
+<td align="center">1280</td>
+<td align="center">1600</td>
+<td align="center">1920</td>
+</tr>
+<tr class="even">
+<td align="center">24 k</td>
+<td align="center">60</td>
+<td align="center">120</td>
+<td align="center">240</td>
+<td align="center">480</td>
+<td align="center">960</td>
+<td align="center">1440</td>
+<td align="center">1920</td>
+<td align="center">2400</td>
+<td align="center">2880</td>
+</tr>
+<tr class="odd">
+<td align="center">48 k</td>
+<td align="center">120</td>
+<td align="center">240</td>
+<td align="center">480</td>
+<td align="center">960</td>
+<td align="center">1920</td>
+<td align="center">2880</td>
+<td align="center">3840</td>
+<td align="center">4800</td>
+<td align="center">5760</td>
+</tr>
+</tbody>
+</table>
+<p><code>max_data_bytes</code> 是这一帧所允许的最大编码长度，建议预留足够大的空间，不建议用此参数进行比特率调整或控制。</p>
+<p>如果编码成功，这个函数将返回编码输出（载荷）的实际长度，否则返回错误码（负值）。</p></li>
+<li><p>音频帧打包</p>
+<p><code>opus_encode</code> 所输出的 <code>data</code> 仅为载荷部分，还需要附加帧长信息才能组成可解码的音频流。<code>opus_demo</code>
+所使用的帧头结构为：</p>
+<ul>
+<li>帧长：4 字节，大端模式</li>
+<li>FINAL_RANGE：4 字节，大端模式</li>
+</ul>
+<p><code>test_opus_data</code> 函数演示了如何将编码结果保存为 <code>opus_demo</code> 所支持的帧格式。将 <code>save_bytes()</code>
+收到的字节流保存到文件，就可以用 <code>opus_demo</code> 解码，回听效果。</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb29-1"><a href="opus-编码.html#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> test_opus_data<span class="op">(</span>OpusEncoder <span class="op">*</span>enc<span class="op">,</span></span>
+<span id="cb29-2"><a href="opus-编码.html#cb29-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">int16_t</span> <span class="op">*</span>in<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> total_samples<span class="op">,</span></span>
+<span id="cb29-3"><a href="opus-编码.html#cb29-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">int</span> sample_rate<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> samples_per_frame<span class="op">,</span></span>
+<span id="cb29-4"><a href="opus-编码.html#cb29-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> <span class="op">*</span>output<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> max_output_bytes<span class="op">)</span></span>
+<span id="cb29-5"><a href="opus-编码.html#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb29-6"><a href="opus-编码.html#cb29-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">unsigned</span> <span class="dt">char</span> int_field<span class="op">[</span><span class="dv">4</span><span class="op">];</span></span>
+<span id="cb29-7"><a href="opus-编码.html#cb29-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> enc_final_range<span class="op">;</span></span>
+<span id="cb29-8"><a href="opus-编码.html#cb29-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> i<span class="op">;</span></span>
+<span id="cb29-9"><a href="opus-编码.html#cb29-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> total_samples <span class="op">-</span> samples_per_frame<span class="op">;</span></span>
+<span id="cb29-10"><a href="opus-编码.html#cb29-10" aria-hidden="true" tabindex="-1"></a>         i <span class="op">+=</span> samples_per_frame<span class="op">)</span></span>
+<span id="cb29-11"><a href="opus-编码.html#cb29-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb29-12"><a href="opus-编码.html#cb29-12" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> r <span class="op">=</span> opus_encode<span class="op">(</span>enc<span class="op">,</span> in <span class="op">+</span> i<span class="op">,</span> samples_per_frame<span class="op">,</span></span>
+<span id="cb29-13"><a href="opus-编码.html#cb29-13" aria-hidden="true" tabindex="-1"></a>            output<span class="op">,</span> max_output_bytes<span class="op">);</span></span>
+<span id="cb29-14"><a href="opus-编码.html#cb29-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>r <span class="op">&lt;</span> <span class="dv">0</span><span class="op">)</span> platform_raise_assertion<span class="op">(</span><span class="st">&quot;opus_encode&quot;</span><span class="op">,</span> r<span class="op">);</span></span>
+<span id="cb29-15"><a href="opus-编码.html#cb29-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-16"><a href="opus-编码.html#cb29-16" aria-hidden="true" tabindex="-1"></a>        big_endian_store_32<span class="op">(</span>int_field<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="op">(</span><span class="dt">uint32_t</span><span class="op">)</span>r<span class="op">);</span></span>
+<span id="cb29-17"><a href="opus-编码.html#cb29-17" aria-hidden="true" tabindex="-1"></a>        save_bytes<span class="op">(</span>int_field<span class="op">,</span> <span class="kw">sizeof</span><span class="op">(</span>int_field<span class="op">));</span></span>
+<span id="cb29-18"><a href="opus-编码.html#cb29-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-19"><a href="opus-编码.html#cb29-19" aria-hidden="true" tabindex="-1"></a>        opus_encoder_ctl<span class="op">(</span>enc<span class="op">,</span> OPUS_GET_FINAL_RANGE<span class="op">(&amp;</span>enc_final_range<span class="op">));</span></span>
+<span id="cb29-20"><a href="opus-编码.html#cb29-20" aria-hidden="true" tabindex="-1"></a>        big_endian_store_32<span class="op">(</span>int_field<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> enc_final_range<span class="op">);</span></span>
+<span id="cb29-21"><a href="opus-编码.html#cb29-21" aria-hidden="true" tabindex="-1"></a>        save_bytes<span class="op">(</span>int_field<span class="op">,</span> <span class="kw">sizeof</span><span class="op">(</span>int_field<span class="op">));</span></span>
+<span id="cb29-22"><a href="opus-编码.html#cb29-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-23"><a href="opus-编码.html#cb29-23" aria-hidden="true" tabindex="-1"></a>        save_bytes<span class="op">(</span>output<span class="op">,</span> r<span class="op">);</span></span>
+<span id="cb29-24"><a href="opus-编码.html#cb29-24" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb29-25"><a href="opus-编码.html#cb29-25" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+</ol>
+</div>
+<div id="参数选择与评估" class="section level2 hasAnchor" number="6.2">
+<h2><span class="header-section-number">6.2</span> 参数选择与评估<a href="opus-编码.html#参数选择与评估" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="临时内存评估" class="section level3 hasAnchor" number="6.2.1">
+<h3><span class="header-section-number">6.2.1</span> 临时内存评估<a href="opus-编码.html#临时内存评估" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>不同的参数将显著影响所需要的临时内存的大小。音频处理库附带了一个 Windows 测试程序 <code>opus_demo</code>，
+这个程序包含了完整版的解码器和裁剪过的编码器。运行这个编码器，可以得到需要的临时内存。</p>
+<p>这里使用 Audacity<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> 辅助转换和播放 PCM 数据。</p>
+<ol style="list-style-type: decimal">
+<li><p>准备测试数据</p>
+<p>准备一个音频文件（比如一首歌曲或一段录音），使用 Audacity 按 Opus
+支持的某一采样率（例如 16 kHz）导出<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>为单声道无格式的
+16-bit PCM 文件（例如保存为 <code>data_16k.raw</code>）。</p></li>
+<li><p>编码测试</p>
+<p>运行 <code>opus_demo</code>，编码测试数据。</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb30-1"><a href="opus-编码.html#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="ex">opus_demo</span> <span class="at">-e</span> audio 16000 1 100000 data_16k.raw result.enc</span></code></pre></div>
+<p>这里以 100 kpbs 的比特率转换为 <code>result.enc</code>。程序会打印出所需要的临时空间的大小（单位：字节）：</p>
+<pre><code>stack_max_usage = 12345</code></pre></li>
+<li><p>解码测试</p>
+<p>如有必要，可再运行 <code>opus_demo</code> 解码 <code>result.enc</code>：</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb32-1"><a href="opus-编码.html#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="ex">opus_demo</span> <span class="at">-d</span> 16000 1 result.enc result.dec</span></code></pre></div>
+<p>在 Audacity 里导入<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>无格式的
+PCM 文件 <code>result.dec</code>，采样率 16 kHz，回听编解码效果。</p></li>
+</ol>
+<p>重复上述步骤，确定应用中所要使用的采样率、比特率等关键参数，根据工具报告的 <code>stack_max_usage</code>
+确定临时空间大小。</p>
+</div>
+<div id="性能评估" class="section level3 hasAnchor" number="6.2.2">
+<h3><span class="header-section-number">6.2.2</span> 性能评估<a href="opus-编码.html#性能评估" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><code>test_opus_performance</code> 函数演示了如何评估编码所消耗的时间。</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb33-1"><a href="opus-编码.html#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> test_opus_performance<span class="op">(</span>OpusEncoder <span class="op">*</span>enc<span class="op">,</span></span>
+<span id="cb33-2"><a href="opus-编码.html#cb33-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">int16_t</span> <span class="op">*</span>in<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> total_samples<span class="op">,</span></span>
+<span id="cb33-3"><a href="opus-编码.html#cb33-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">int</span> sample_rate<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> samples_per_frame<span class="op">,</span></span>
+<span id="cb33-4"><a href="opus-编码.html#cb33-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> <span class="op">*</span>output<span class="op">,</span> <span class="dt">const</span> <span class="dt">int</span> max_output_bytes<span class="op">)</span></span>
+<span id="cb33-5"><a href="opus-编码.html#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb33-6"><a href="opus-编码.html#cb33-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb33-7"><a href="opus-编码.html#cb33-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> frame_cnt <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb33-8"><a href="opus-编码.html#cb33-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> total_time <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb33-9"><a href="opus-编码.html#cb33-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-10"><a href="opus-编码.html#cb33-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> total_samples <span class="op">-</span> samples_per_frame<span class="op">;</span></span>
+<span id="cb33-11"><a href="opus-编码.html#cb33-11" aria-hidden="true" tabindex="-1"></a>         i <span class="op">+=</span> samples_per_frame<span class="op">,</span> frame_cnt<span class="op">++)</span></span>
+<span id="cb33-12"><a href="opus-编码.html#cb33-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb33-13"><a href="opus-编码.html#cb33-13" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int64_t</span> t <span class="op">=</span> platform_get_us_time<span class="op">();</span></span>
+<span id="cb33-14"><a href="opus-编码.html#cb33-14" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> r <span class="op">=</span> opus_encode<span class="op">(</span>enc<span class="op">,</span> in <span class="op">+</span> i<span class="op">,</span> samples_per_frame<span class="op">,</span></span>
+<span id="cb33-15"><a href="opus-编码.html#cb33-15" aria-hidden="true" tabindex="-1"></a>            output<span class="op">,</span> max_output_bytes<span class="op">);</span></span>
+<span id="cb33-16"><a href="opus-编码.html#cb33-16" aria-hidden="true" tabindex="-1"></a>        <span class="dt">uint32_t</span> tt <span class="op">=</span> <span class="op">(</span><span class="dt">uint32_t</span><span class="op">)(</span>platform_get_us_time<span class="op">()</span> <span class="op">-</span> t<span class="op">);</span></span>
+<span id="cb33-17"><a href="opus-编码.html#cb33-17" aria-hidden="true" tabindex="-1"></a>        platform_printf<span class="op">(</span><span class="st">&quot;%d: len = %d, %u</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> frame_cnt<span class="op">,</span> r<span class="op">,</span> tt<span class="op">);</span></span>
+<span id="cb33-18"><a href="opus-编码.html#cb33-18" aria-hidden="true" tabindex="-1"></a>        total_time <span class="op">+=</span> tt<span class="op">;</span></span>
+<span id="cb33-19"><a href="opus-编码.html#cb33-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb33-20"><a href="opus-编码.html#cb33-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-21"><a href="opus-编码.html#cb33-21" aria-hidden="true" tabindex="-1"></a>    platform_printf<span class="op">(</span><span class="st">&quot;average time per frame = %d us</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span></span>
+<span id="cb33-22"><a href="opus-编码.html#cb33-22" aria-hidden="true" tabindex="-1"></a>        total_time <span class="op">/</span> frame_cnt<span class="op">);</span></span>
+<span id="cb33-23"><a href="opus-编码.html#cb33-23" aria-hidden="true" tabindex="-1"></a>    platform_printf<span class="op">(</span><span class="st">&quot;scratch max used       = %d bytes</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span></span>
+<span id="cb33-24"><a href="opus-编码.html#cb33-24" aria-hidden="true" tabindex="-1"></a>        opus_scratch_get_max_used_size<span class="op">());</span></span>
+<span id="cb33-25"><a href="opus-编码.html#cb33-25" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</div>
+</div>
+<div id="性能-3" class="section level2 hasAnchor" number="6.3">
+<h2><span class="header-section-number">6.3</span> 性能<a href="opus-编码.html#性能-3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>以下数据仅供参考。实际表现受 Cache、RTOS、中断、音频数据等因素影响。</p>
+<p>使用如下参数：</p>
+<ul>
+<li>采样率：16 kHz</li>
+<li>单声道</li>
+<li>使用 OPUS_APPLICATION_AUDIO</li>
+<li>比特率：80 kpbs</li>
+<li>帧长：10 ms</li>
+</ul>
+<div id="ing916xx-3" class="section level3 hasAnchor" number="6.3.1">
+<h3><span class="header-section-number">6.3.1</span> ING916XX<a href="opus-编码.html#ing916xx-3" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>当 CPU 主频为 112 MHz 时，<code>sbc_encode2</code> 编码一帧平均约需要 5 ms，或者说
+消耗的 CPU 频率约为 56 MHz。</p>
+<p>需要的临时内存为 8944 字节。<code>opus_encoder_get_size(1)</code> <code>= 7196</code>，所以总计需要约 16 kB 内存。</p>
+</div>
+</div>
+<div id="线程安全性" class="section level2 hasAnchor" number="6.4">
+<h2><span class="header-section-number">6.4</span> 线程安全性<a href="opus-编码.html#线程安全性" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>编译时定义了 <code>NONTHREADSAFE_PSEUDOSTACK</code>，所以只允许单线程使用。</p>
+
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="5">
+<li id="fn5"><p><a href="https://www.audacityteam.org/" class="uri">https://www.audacityteam.org/</a><a href="opus-编码.html#fnref5" class="footnote-back">↩︎</a></p></li>
+<li id="fn6"><p><a href="https://manual.audacityteam.org/man/other_uncompressed_files_export_options.html" class="uri">https://manual.audacityteam.org/man/other_uncompressed_files_export_options.html</a><a href="opus-编码.html#fnref6" class="footnote-back">↩︎</a></p></li>
+<li id="fn7"><p><a href="https://manual.audacityteam.org/man/file_menu_import.html#raw_data" class="uri">https://manual.audacityteam.org/man/file_menu_import.html#raw_data</a><a href="opus-编码.html#fnref7" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="sbcmsbc-编解码.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="致谢.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["an_libaudio.pdf", "an_libaudio.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection",
+"scroll_highlight": true
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

@@ -139,8 +139,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2" data-path="ch-overview.html"><a href="ch-overview.html"><i class="fa fa-check"></i><b>2</b> 概览</a>
 <ul>
 <li class="chapter" data-level="2.1" data-path="ch-overview.html"><a href="ch-overview.html#模块设计原则"><i class="fa fa-check"></i><b>2.1</b> 模块设计原则</a></li>
-<li class="chapter" data-level="2.2" data-path="ch-overview.html"><a href="ch-overview.html#缩略语及术语"><i class="fa fa-check"></i><b>2.2</b> 缩略语及术语</a></li>
-<li class="chapter" data-level="2.3" data-path="ch-overview.html"><a href="ch-overview.html#参考文档"><i class="fa fa-check"></i><b>2.3</b> 参考文档</a></li>
+<li class="chapter" data-level="2.2" data-path="ch-overview.html"><a href="ch-overview.html#依赖关系"><i class="fa fa-check"></i><b>2.2</b> 依赖关系</a></li>
+<li class="chapter" data-level="2.3" data-path="ch-overview.html"><a href="ch-overview.html#缩略语及术语"><i class="fa fa-check"></i><b>2.3</b> 缩略语及术语</a></li>
+<li class="chapter" data-level="2.4" data-path="ch-overview.html"><a href="ch-overview.html#参考文档"><i class="fa fa-check"></i><b>2.4</b> 参考文档</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="降噪.html"><a href="降噪.html"><i class="fa fa-check"></i><b>3</b> 降噪</a>
 <ul>
@@ -411,11 +412,11 @@ Opus 兼具较好的音质和较高的压缩率，计算复杂度也较高。音
 <h3><span class="header-section-number">6.2.1</span> 临时内存评估<a href="opus-编码.html#临时内存评估" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>不同的参数将显著影响所需要的临时内存的大小。音频处理库附带了一个 Windows 测试程序 <code>opus_demo</code>，
 这个程序包含了完整版的解码器和裁剪过的编码器。运行这个编码器，可以得到需要的临时内存。</p>
-<p>这里使用 Audacity<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> 辅助转换和播放 PCM 数据。</p>
+<p>这里使用 Audacity<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a> 辅助转换和播放 PCM 数据。</p>
 <ol style="list-style-type: decimal">
 <li><p>准备测试数据</p>
 <p>准备一个音频文件（比如一首歌曲或一段录音），使用 Audacity 按 Opus
-支持的某一采样率（例如 16 kHz）导出<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>为单声道无格式的
+支持的某一采样率（例如 16 kHz）导出<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>为单声道无格式的
 16-bit PCM 文件（例如保存为 <code>data_16k.raw</code>）。</p></li>
 <li><p>编码测试</p>
 <p>运行 <code>opus_demo</code>，编码测试数据。</p>
@@ -425,7 +426,7 @@ Opus 兼具较好的音质和较高的压缩率，计算复杂度也较高。音
 <li><p>解码测试</p>
 <p>如有必要，可再运行 <code>opus_demo</code> 解码 <code>result.enc</code>：</p>
 <div class="sourceCode" id="cb32"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb32-1"><a href="opus-编码.html#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="ex">opus_demo</span> <span class="at">-d</span> 16000 1 result.enc result.dec</span></code></pre></div>
-<p>在 Audacity 里导入<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>无格式的
+<p>在 Audacity 里导入<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a>无格式的
 PCM 文件 <code>result.dec</code>，采样率 16 kHz，回听编解码效果。</p></li>
 </ol>
 <p>重复上述步骤，确定应用中所要使用的采样率、比特率等关键参数，根据工具报告的 <code>stack_max_usage</code>
@@ -487,10 +488,10 @@ PCM 文件 <code>result.dec</code>，采样率 16 kHz，回听编解码效果。
 </div>
 <div class="footnotes">
 <hr />
-<ol start="5">
-<li id="fn5"><p><a href="https://www.audacityteam.org/" class="uri">https://www.audacityteam.org/</a><a href="opus-编码.html#fnref5" class="footnote-back">↩︎</a></p></li>
-<li id="fn6"><p><a href="https://manual.audacityteam.org/man/other_uncompressed_files_export_options.html" class="uri">https://manual.audacityteam.org/man/other_uncompressed_files_export_options.html</a><a href="opus-编码.html#fnref6" class="footnote-back">↩︎</a></p></li>
-<li id="fn7"><p><a href="https://manual.audacityteam.org/man/file_menu_import.html#raw_data" class="uri">https://manual.audacityteam.org/man/file_menu_import.html#raw_data</a><a href="opus-编码.html#fnref7" class="footnote-back">↩︎</a></p></li>
+<ol start="6">
+<li id="fn6"><p><a href="https://www.audacityteam.org/" class="uri">https://www.audacityteam.org/</a><a href="opus-编码.html#fnref6" class="footnote-back">↩︎</a></p></li>
+<li id="fn7"><p><a href="https://manual.audacityteam.org/man/other_uncompressed_files_export_options.html" class="uri">https://manual.audacityteam.org/man/other_uncompressed_files_export_options.html</a><a href="opus-编码.html#fnref7" class="footnote-back">↩︎</a></p></li>
+<li id="fn8"><p><a href="https://manual.audacityteam.org/man/file_menu_import.html#raw_data" class="uri">https://manual.audacityteam.org/man/file_menu_import.html#raw_data</a><a href="opus-编码.html#fnref8" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

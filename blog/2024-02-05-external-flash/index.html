@@ -254,7 +254,7 @@
 通过 SPI0 外挂串行 NOR Flash，处理器就可以通过映射方式读取 NOR Flash 里的内容。对于开发者而言，
 这块外挂 NOR Flash 可存放程序、只读数据等，可被 Cache “加速”，像内置 Flash 一样，使用方便。</p>
 
-<p><a href="/files/ING91600_EXT.zip">这里</a> 是适用于普冉 SPI NOR Flash 的完整烧写算法项目（Keil）。
+<p><a href="/files/ING91600_EXT.zip">这里</a> 是适用于 Winbond W25Q SPI Nor Flash 的完整烧写算法项目（Keil）。
 设 Keil 安装目录为 <em>C:\Keil_v5</em>，可解压到 <em>C:\Keil_v5\ARM\Flash\ING91600_EXT</em> 目录下直接编译。</p>
 
 <h2 id="0-芯片选型">0. 芯片选型</h2>
@@ -312,10 +312,10 @@
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">FlashDevice</span> <span class="k">const</span> <span class="n">FlashDevice</span>  <span class="o">=</span>  <span class="p">{</span>
    <span class="n">FLASH_DRV_VERS</span><span class="p">,</span>             <span class="c1">// Driver Version, do not modify!</span>
-   <span class="s">"INGCHIPS 91600 EXT Flash"</span><span class="p">,</span> <span class="c1">// Device Name</span>
+   <span class="s">"INGCHIPS 91600 EXT W25Q"</span><span class="p">,</span>  <span class="c1">// Device Name</span>
    <span class="n">EXTSPI</span><span class="p">,</span>                     <span class="c1">// Device Type</span>
    <span class="mh">0x04000000</span><span class="p">,</span>                 <span class="c1">// Device Start Address  (A)</span>
-   <span class="mh">0x02000000</span><span class="p">,</span>                 <span class="c1">// Device Size in Bytes  (B)</span>
+   <span class="mh">0x01000000</span><span class="p">,</span>                 <span class="c1">// Device Size in Bytes  (B)</span>
    <span class="mi">4096</span><span class="p">,</span>                       <span class="c1">// Programming Page Size (C)</span>
    <span class="mi">0</span><span class="p">,</span>                          <span class="c1">// Reserved, must be 0</span>
    <span class="mh">0xFF</span><span class="p">,</span>                       <span class="c1">// Initial Content of Erased Memory</span>
@@ -329,7 +329,7 @@
 </code></pre></div></div>
 
 <p>其中，名称可任意填写；起始地址 A 为固定值（<code class="language-plaintext highlighter-rouge">AHB_QSPI_MEM_BASE</code>），不可修改；
-B 既可根据实际情况填写，也可以填写一个 ING916 所支持的最大容量 32MB，当以后更换容量更大的 Flash 型号时，不需要更改烧写算法；
+B 既可根据实际情况填写，也可以填写一个 Flash 同系列型号所支持的最大容量（W25Q 地址 24bit，最大支持 16MiB），当以后更换容量更大的 Flash 型号时，不需要更改烧写算法；
 D 务必根据实际情况填写扇区大小；C 为烧录时一页的大小，由于 Flash 可能不支持按页擦除、却一定支持按扇区擦除，
 所以这里把它设置为一个扇区的大小。</p>
 

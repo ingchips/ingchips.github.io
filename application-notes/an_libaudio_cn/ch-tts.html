@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>8 语音合成 | 应用指南：音频处理库</title>
+  <meta name="description" content="8 语音合成 | 应用指南：音频处理库." />
+  <meta name="generator" content="bookdown 0.32 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="8 语音合成 | 应用指南：音频处理库" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="8 语音合成 | 应用指南：音频处理库." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="8 语音合成 | 应用指南：音频处理库" />
+  
+  <meta name="twitter:description" content="8 语音合成 | 应用指南：音频处理库." />
+  
+
+<meta name="author" content="Ingchips Technology Co., Ltd." />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="ch-amr-wb.html"/>
+<link rel="next" href="ch-stretch.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">应用指南：音频处理库</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> 版本历史</a></li>
+<li class="chapter" data-level="2" data-path="ch-overview.html"><a href="ch-overview.html"><i class="fa fa-check"></i><b>2</b> 概览</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="ch-overview.html"><a href="ch-overview.html#模块设计原则"><i class="fa fa-check"></i><b>2.1</b> 模块设计原则</a></li>
+<li class="chapter" data-level="2.2" data-path="ch-overview.html"><a href="ch-overview.html#依赖关系"><i class="fa fa-check"></i><b>2.2</b> 依赖关系</a></li>
+<li class="chapter" data-level="2.3" data-path="ch-overview.html"><a href="ch-overview.html#缩略语及术语"><i class="fa fa-check"></i><b>2.3</b> 缩略语及术语</a></li>
+<li class="chapter" data-level="2.4" data-path="ch-overview.html"><a href="ch-overview.html#参考文档"><i class="fa fa-check"></i><b>2.4</b> 参考文档</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="ch-denoise.html"><a href="ch-denoise.html"><i class="fa fa-check"></i><b>3</b> 降噪</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="ch-denoise.html"><a href="ch-denoise.html#使用方法"><i class="fa fa-check"></i><b>3.1</b> 使用方法</a></li>
+<li class="chapter" data-level="3.2" data-path="ch-denoise.html"><a href="ch-denoise.html#资源消耗"><i class="fa fa-check"></i><b>3.2</b> 资源消耗</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="ch-denoise.html"><a href="ch-denoise.html#ing916xx"><i class="fa fa-check"></i><b>3.2.1</b> ING916XX</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="ch-denoise.html"><a href="ch-denoise.html#应用建议"><i class="fa fa-check"></i><b>3.3</b> 应用建议</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="ch-adpcm.html"><a href="ch-adpcm.html"><i class="fa fa-check"></i><b>4</b> ADPCM 编解码</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="ch-adpcm.html"><a href="ch-adpcm.html#使用方法-1"><i class="fa fa-check"></i><b>4.1</b> 使用方法</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="ch-adpcm.html"><a href="ch-adpcm.html#编码"><i class="fa fa-check"></i><b>4.1.1</b> 编码</a></li>
+<li class="chapter" data-level="4.1.2" data-path="ch-adpcm.html"><a href="ch-adpcm.html#解码"><i class="fa fa-check"></i><b>4.1.2</b> 解码</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="ch-adpcm.html"><a href="ch-adpcm.html#资源消耗-1"><i class="fa fa-check"></i><b>4.2</b> 资源消耗</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="ch-adpcm.html"><a href="ch-adpcm.html#ing916xx-1"><i class="fa fa-check"></i><b>4.2.1</b> ING916XX</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="ch-sbc.html"><a href="ch-sbc.html"><i class="fa fa-check"></i><b>5</b> SBC/mSBC 编解码</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="ch-sbc.html"><a href="ch-sbc.html#帧描述参数"><i class="fa fa-check"></i><b>5.1</b> 帧描述参数</a></li>
+<li class="chapter" data-level="5.2" data-path="ch-sbc.html"><a href="ch-sbc.html#使用方法-2"><i class="fa fa-check"></i><b>5.2</b> 使用方法</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="ch-sbc.html"><a href="ch-sbc.html#编码-1"><i class="fa fa-check"></i><b>5.2.1</b> 编码</a></li>
+<li class="chapter" data-level="5.2.2" data-path="ch-sbc.html"><a href="ch-sbc.html#解码-1"><i class="fa fa-check"></i><b>5.2.2</b> 解码</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="ch-sbc.html"><a href="ch-sbc.html#资源消耗-2"><i class="fa fa-check"></i><b>5.3</b> 资源消耗</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="ch-sbc.html"><a href="ch-sbc.html#ing916xx-2"><i class="fa fa-check"></i><b>5.3.1</b> ING916XX</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="ch-opus.html"><a href="ch-opus.html"><i class="fa fa-check"></i><b>6</b> Opus 编码</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="ch-opus.html"><a href="ch-opus.html#使用方法-3"><i class="fa fa-check"></i><b>6.1</b> 使用方法</a></li>
+<li class="chapter" data-level="6.2" data-path="ch-opus.html"><a href="ch-opus.html#参数选择与评估"><i class="fa fa-check"></i><b>6.2</b> 参数选择与评估</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="ch-opus.html"><a href="ch-opus.html#临时内存评估"><i class="fa fa-check"></i><b>6.2.1</b> 临时内存评估</a></li>
+<li class="chapter" data-level="6.2.2" data-path="ch-opus.html"><a href="ch-opus.html#性能评估"><i class="fa fa-check"></i><b>6.2.2</b> 性能评估</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="ch-opus.html"><a href="ch-opus.html#资源消耗-3"><i class="fa fa-check"></i><b>6.3</b> 资源消耗</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="ch-opus.html"><a href="ch-opus.html#ing916xx-3"><i class="fa fa-check"></i><b>6.3.1</b> ING916XX</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="ch-opus.html"><a href="ch-opus.html#线程安全性"><i class="fa fa-check"></i><b>6.4</b> 线程安全性</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="ch-amr-wb.html"><a href="ch-amr-wb.html"><i class="fa fa-check"></i><b>7</b> AMR-WB 编解码</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="ch-amr-wb.html"><a href="ch-amr-wb.html#使用方法-4"><i class="fa fa-check"></i><b>7.1</b> 使用方法</a>
+<ul>
+<li class="chapter" data-level="7.1.1" data-path="ch-amr-wb.html"><a href="ch-amr-wb.html#编码-2"><i class="fa fa-check"></i><b>7.1.1</b> 编码</a></li>
+<li class="chapter" data-level="7.1.2" data-path="ch-amr-wb.html"><a href="ch-amr-wb.html#解码-2"><i class="fa fa-check"></i><b>7.1.2</b> 解码</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="ch-amr-wb.html"><a href="ch-amr-wb.html#ch-amr-wb-resources"><i class="fa fa-check"></i><b>7.2</b> 资源消耗</a>
+<ul>
+<li class="chapter" data-level="7.2.1" data-path="ch-amr-wb.html"><a href="ch-amr-wb.html#ing916xx-4"><i class="fa fa-check"></i><b>7.2.1</b> ING916XX</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="ch-tts.html"><a href="ch-tts.html"><i class="fa fa-check"></i><b>8</b> 语音合成</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="ch-tts.html"><a href="ch-tts.html#特性"><i class="fa fa-check"></i><b>8.1</b> 特性</a>
+<ul>
+<li class="chapter" data-level="8.1.1" data-path="ch-tts.html"><a href="ch-tts.html#工具软件"><i class="fa fa-check"></i><b>8.1.1</b> 工具软件</a></li>
+</ul></li>
+<li class="chapter" data-level="8.2" data-path="ch-tts.html"><a href="ch-tts.html#使用方法-5"><i class="fa fa-check"></i><b>8.2</b> 使用方法</a></li>
+<li class="chapter" data-level="8.3" data-path="ch-tts.html"><a href="ch-tts.html#ch-tts-voice-def"><i class="fa fa-check"></i><b>8.3</b> 语音库</a>
+<ul>
+<li class="chapter" data-level="8.3.1" data-path="ch-tts.html"><a href="ch-tts.html#ch-tts-voice-def-builtin"><i class="fa fa-check"></i><b>8.3.1</b> 内置语音库</a></li>
+<li class="chapter" data-level="8.3.2" data-path="ch-tts.html"><a href="ch-tts.html#ch-tts-customize-voice-def"><i class="fa fa-check"></i><b>8.3.2</b> 自定义语音库</a></li>
+</ul></li>
+<li class="chapter" data-level="8.4" data-path="ch-tts.html"><a href="ch-tts.html#ch-tts-resources"><i class="fa fa-check"></i><b>8.4</b> 资源消耗</a></li>
+<li class="chapter" data-level="8.5" data-path="ch-tts.html"><a href="ch-tts.html#演示"><i class="fa fa-check"></i><b>8.5</b> 演示</a>
+<ul>
+<li class="chapter" data-level="8.5.1" data-path="ch-tts.html"><a href="ch-tts.html#windows"><i class="fa fa-check"></i><b>8.5.1</b> Windows</a></li>
+<li class="chapter" data-level="8.5.2" data-path="ch-tts.html"><a href="ch-tts.html#ing916xx-5"><i class="fa fa-check"></i><b>8.5.2</b> ING916XX</a></li>
+</ul></li>
+<li class="chapter" data-level="8.6" data-path="ch-tts.html"><a href="ch-tts.html#局限与建议"><i class="fa fa-check"></i><b>8.6</b> 局限与建议</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="ch-stretch.html"><a href="ch-stretch.html"><i class="fa fa-check"></i><b>9</b> 语音变速</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="ch-stretch.html"><a href="ch-stretch.html#使用方法-6"><i class="fa fa-check"></i><b>9.1</b> 使用方法</a></li>
+<li class="chapter" data-level="9.2" data-path="ch-stretch.html"><a href="ch-stretch.html#ch-stretch-resources"><i class="fa fa-check"></i><b>9.2</b> 资源消耗</a>
+<ul>
+<li class="chapter" data-level="9.2.1" data-path="ch-stretch.html"><a href="ch-stretch.html#ing916xx-6"><i class="fa fa-check"></i><b>9.2.1</b> ING916XX</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="ch-acknowledgement.html"><a href="ch-acknowledgement.html"><i class="fa fa-check"></i><b>10</b> 致谢</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">应用指南：音频处理库</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="ch-tts" class="section level1 hasAnchor" number="8">
+<h1><span class="header-section-number">8</span> 语音合成<a href="ch-tts.html#ch-tts" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="特性" class="section level2 hasAnchor" number="8.1">
+<h2><span class="header-section-number">8.1</span> 特性<a href="ch-tts.html#特性" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>音频处理库包含一个为嵌入式系统设计的轻量化语音合成引擎，具有如下主要特性：</p>
+<ul>
+<li><p>仅支持中文</p>
+<ul>
+<li>覆盖 Unicode CJK 统一表意符号基础区字符 20992 个<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a>（4E00 - 9FFF），</li>
+<li>支持少量不在 Unicode 基础区范围内的汉字（例如：〇）</li>
+<li>遇到无法识别的内容时输出短暂的静音</li>
+<li>输入文本采用 UTF-8 编码</li>
+</ul></li>
+<li><p>支持拼音</p></li>
+<li><p>英文逐个字母发音</p></li>
+<li><p>整数、小数优化播报</p></li>
+<li><p>流式输出</p></li>
+<li><p>多音字发音自动识别</p></li>
+<li><p>支持自定义语音库</p></li>
+</ul>
+<p>当前版本基于波形拼接法，主要组成部分包括（图 <a href="ch-tts.html#fig:ch-tts-overview">8.1</a>）：</p>
+<ul>
+<li><p><strong>解析器</strong>（Parser）：根据词典与语法规则，将输入的内容片断（中文、英文、数字等）按顺序转换为音节列表。</p></li>
+<li><p><strong>合成器</strong>（Synthesizer）：根据解析器输出的音节列表，结合预定义的语音库，合成波形。输出格式为单声道 16 bit，16kHz 采样。</p></li>
+</ul>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch-tts-overview"></span>
+<img src="img/tts_overview.png" alt="TTS 引擎" width="85%" />
+<p class="caption">
+图 8.1: TTS 引擎
+</p>
+</div>
+<div id="工具软件" class="section level3 hasAnchor" number="8.1.1">
+<h3><span class="header-section-number">8.1.1</span> 工具软件<a href="ch-tts.html#工具软件" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>音频处理库附带了几个程序和 Python 脚本：</p>
+<ul>
+<li><p><code>tts_demo</code>：在 Windows 上快速测试、演示合成效果</p></li>
+<li><p><code>tts_firmware</code> 和 <code>tts_demo.py</code>：演示用固件程序，及测试脚本（通过串口发送文本、接收合成结果并回放）</p></li>
+<li><p><code>tts_gen</code>：由于自定义语音库</p></li>
+</ul>
+<div class="rmdnote">
+<p>
+本章文档用到的文本文件，如无特殊说明，都必须使用<strong>无
+BOM</strong> UTF-8 编码格式。
+</p>
+</div>
+</div>
+</div>
+<div id="使用方法-5" class="section level2 hasAnchor" number="8.2">
+<h2><span class="header-section-number">8.2</span> 使用方法<a href="ch-tts.html#使用方法-5" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ol style="list-style-type: decimal">
+<li><p>初始化</p>
+<p>使用 <code>tts_init</code> 初始化 TTS 引擎对象：</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb43-1"><a href="ch-tts.html#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> tts_context <span class="op">*</span>tts_init<span class="op">(</span></span>
+<span id="cb43-2"><a href="ch-tts.html#cb43-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="kw">struct</span> voice_definition <span class="op">*</span>voice<span class="op">,</span> <span class="co">// 语音库</span></span>
+<span id="cb43-3"><a href="ch-tts.html#cb43-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> max_syllables<span class="op">,</span>  <span class="co">// 最大音节数</span></span>
+<span id="cb43-4"><a href="ch-tts.html#cb43-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>buf<span class="op">);</span>         <span class="co">// 用于存放上下文的内存</span></span></code></pre></div>
+<p>语音库以 .bin 文件提供，详见“<a href="ch-tts.html#ch-tts-voice-def">语音库</a>”。
+开发者需要预估一次合成可能存在的最大音节数 <code>max_syllables</code>，可以文本字数为参考，
+并保留一定的余量（如 50%）。
+<code>buf</code> 的大小与 <code>max_syllables</code> 有关，可通过 <code>tts_get_context_size</code> 获得。</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb44-1"><a href="ch-tts.html#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> tts_get_context_size<span class="op">(</span></span>
+<span id="cb44-2"><a href="ch-tts.html#cb44-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> max_syllables<span class="op">);</span> <span class="co">// 最大音节数</span></span></code></pre></div>
+<div class="rmdnote">
+<p>
+本章文档里的“音节”是广义的，对应语音库里的一段录音。一段录音可能只有一个音节，也可能包含多个音节。
+</p>
+</div></li>
+<li><p>添加内容</p>
+<p>TTS 引擎支持添加多种内容：文本、数字、元角分。分别通过不同的接口添加。</p>
+<ul>
+<li><p>添加文本</p>
+<p>使用 <code>tts_push_utf8_str</code> 添加一段文本。</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb45-1"><a href="ch-tts.html#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> tts_push_utf8_str<span class="op">(</span></span>
+<span id="cb45-2"><a href="ch-tts.html#cb45-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> tts_context <span class="op">*</span>ctx<span class="op">,</span>    <span class="co">// TTS 引擎对象</span></span>
+<span id="cb45-3"><a href="ch-tts.html#cb45-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>utf8_str<span class="op">);</span>      <span class="co">// UTF-8 编码的字符串</span></span></code></pre></div>
+<p>文本支持中文、拼音、数字，以及个别符号。对于中文，解析器会尝试自动分词并判断多音字。
+开发者可以通过两种方式干预中文解析，一为填加空格辅助分词<a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a>，
+如例 1<a href="#fn13" class="footnote-ref" id="fnref13"><sup>13</sup></a>；
+一为使用“[]”手动组词，如例 2。</p>
+<p>例 1：<code>您有新的美团外卖订单，请及时 处理。</code></p>
+<p>例 2：<code>介绍[锺书]做[这份工作]的是清华同学[乔冠华]同志。</code></p>
+<p>空格不但可用来干预分词，还可以用来添加停顿。</p>
+<p>如果存在英文，则按照字母逐个发音。</p>
+<p>拼音使用 ASCII 码，用一对“[]”包围，表示一个词语。四种声调分别使用 1（阴平）、2（阳平）、3（上声）、4（去声）表示。几个示例：</p>
+<ul>
+<li>măn: man3（调号放在末尾）</li>
+<li>le: le （轻声无调号）</li>
+<li>lǜ: lv4（以 v 代替 ü）</li>
+<li>jú: ju2（j/q/x 后的 ü 仍写作 u）</li>
+<li>完整示例：迎着朝阳区的[zhao1 yang2]去上学。</li>
+</ul>
+<p>另外可以识别 <code>+</code>、<code>-</code>、<code>=</code>、<code>*</code>、<code>#</code>、<code>@</code> 等半角符号。其它无法识别的内容（如标点符号）一律做停顿处理。</p>
+<p>文本中的数字（整数或小数）默认按照繁读法合成。如果数字前面是“\”，则使用简读法，如“<code>在\2024年</code>”。
+对于需要使用简读法的数字，也可以替换为对应的汉字再合成，如“<code>在二零二四年</code>”。</p></li>
+<li><p>添加整数</p>
+<p>使用 <code>tts_push_integer</code> 添加一个整数。<code>tts_push_integer(ctx, 123)</code> 等效于
+<code>tts_push_utf8_str(ctx, "123")</code>。</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb46-1"><a href="ch-tts.html#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> tts_push_integer<span class="op">(</span></span>
+<span id="cb46-2"><a href="ch-tts.html#cb46-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> tts_context <span class="op">*</span>ctx<span class="op">,</span>    <span class="co">// TTS 引擎对象</span></span>
+<span id="cb46-3"><a href="ch-tts.html#cb46-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int64_t</span> value<span class="op">);</span>             <span class="co">// UTF-8 编码的字符串</span></span></code></pre></div></li>
+<li><p>添加元角分</p>
+<p>使用 <code>tts_push_yuan_jiao_fen</code> 添加元角分。<code>tts_push_yuan_jiao_fen(ctx, x, y, z)</code> 等效于
+<code>tts_push_utf8_str(ctx, "x 元 y 角 z 分")</code>。</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb47-1"><a href="ch-tts.html#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> tts_push_yuan_jiao_fen<span class="op">(</span></span>
+<span id="cb47-2"><a href="ch-tts.html#cb47-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> tts_context <span class="op">*</span>ctx<span class="op">,</span>    <span class="co">// TTS 引擎对象</span></span>
+<span id="cb47-3"><a href="ch-tts.html#cb47-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int64_t</span> yuan<span class="op">,</span>               <span class="co">// 元</span></span>
+<span id="cb47-4"><a href="ch-tts.html#cb47-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> jiao<span class="op">,</span>               <span class="co">// 角</span></span>
+<span id="cb47-5"><a href="ch-tts.html#cb47-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> fen<span class="op">);</span>               <span class="co">// 分</span></span></code></pre></div></li>
+</ul>
+<p>以上几个接口如果成功，都将返回 0。当音节数超过 <code>max_syllables</code> 时，返回负值。</p></li>
+<li><p>合成</p>
+<p>提供两套 API，以两种不同的方式合成语音。</p>
+<ul>
+<li><p>方式 1：被动接收波形数据</p>
+<p>使用 <code>tts_synthesize</code> 将所有添加的内容按顺序一并合成语音。</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb48-1"><a href="ch-tts.html#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> tts_synthesize<span class="op">(</span></span>
+<span id="cb48-2"><a href="ch-tts.html#cb48-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> tts_context <span class="op">*</span>ctx<span class="op">,</span>    <span class="co">// TTS 引擎对象</span></span>
+<span id="cb48-3"><a href="ch-tts.html#cb48-3" aria-hidden="true" tabindex="-1"></a>    f_tts_receive_pcm_samples rx_samples<span class="op">,</span></span>
+<span id="cb48-4"><a href="ch-tts.html#cb48-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>user_data<span class="op">,</span>            <span class="co">// 传递到回调函数的用户数据</span></span>
+<span id="cb48-5"><a href="ch-tts.html#cb48-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>scratch1<span class="op">,</span>             <span class="co">// 临时内存 1</span></span>
+<span id="cb48-6"><a href="ch-tts.html#cb48-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>scratch2<span class="op">);</span>            <span class="co">// 临时内存 2</span></span></code></pre></div>
+<p>临时内存 <code>scratch1</code> 和 <code>scratch2</code> 的大小分别通过 <code>tts_get_scratch_mem1_size()</code>
+和 <code>tts_get_scratch_mem2_size()</code> 获得。<code>scratch1</code> 在 <code>tts_synthesize</code>
+结束前不做他用，而 <code>scratch2</code> 可在 <code>rx_samples</code> 里任意使用。
+回调函数 <code>rx_samples</code> 用以接收合成出的波形数据，其签名为：</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb49-1"><a href="ch-tts.html#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="dt">int</span> <span class="op">(*</span>f_tts_receive_pcm_samples<span class="op">)(</span></span>
+<span id="cb49-2"><a href="ch-tts.html#cb49-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> tts_context <span class="op">*</span>ctx<span class="op">,</span>    <span class="co">// TTS 引擎对象</span></span>
+<span id="cb49-3"><a href="ch-tts.html#cb49-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">int16_t</span> <span class="op">*</span>pcm_samples<span class="op">,</span> <span class="co">// 本次合成出的 PCM 采样</span></span>
+<span id="cb49-4"><a href="ch-tts.html#cb49-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> number<span class="op">,</span>                 <span class="co">// 本次合成出的 PCM 采样的个数</span></span>
+<span id="cb49-5"><a href="ch-tts.html#cb49-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> acc_number<span class="op">,</span>             <span class="co">// 已经合成出的 PCM 采样总数（不含本次）</span></span>
+<span id="cb49-6"><a href="ch-tts.html#cb49-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>user_data<span class="op">);</span>           <span class="co">// 用户数据</span></span></code></pre></div>
+<p><code>tts_synthesize</code> 每次合成少量 PCM 数据，调用 <code>rx_samples</code>，循环往复，直到合成完成。
+如果 <code>rx_samples</code> 返回非 0 值，则中止。其伪代码如下：</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb50-1"><a href="ch-tts.html#cb50-1" aria-hidden="true" tabindex="-1"></a>tts_synthesize<span class="op">()</span></span>
+<span id="cb50-2"><a href="ch-tts.html#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb50-3"><a href="ch-tts.html#cb50-3" aria-hidden="true" tabindex="-1"></a>    acc_number <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb50-4"><a href="ch-tts.html#cb50-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="op">(!</span>aborted <span class="op">&amp;&amp;</span> <span class="op">!</span>done<span class="op">)</span></span>
+<span id="cb50-5"><a href="ch-tts.html#cb50-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb50-6"><a href="ch-tts.html#cb50-6" aria-hidden="true" tabindex="-1"></a>        合成 n 个 samples<span class="op">;</span></span>
+<span id="cb50-7"><a href="ch-tts.html#cb50-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> r <span class="op">=</span> rx_samples<span class="op">(</span>samples<span class="op">,</span> n<span class="op">,</span> acc_number<span class="op">);</span></span>
+<span id="cb50-8"><a href="ch-tts.html#cb50-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>r <span class="op">!=</span> <span class="dv">0</span><span class="op">)</span> <span class="cf">return</span> r<span class="op">;</span></span>
+<span id="cb50-9"><a href="ch-tts.html#cb50-9" aria-hidden="true" tabindex="-1"></a>        acc_number <span class="op">+=</span> n<span class="op">;</span></span>
+<span id="cb50-10"><a href="ch-tts.html#cb50-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb50-11"><a href="ch-tts.html#cb50-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><code>rx_samples</code> 可以阻塞。由于合成需要一定的处理时间，当用 <code>rx_samples</code> 回放音频时，为了保证回放连续，必须缓存一定的数据量，
+待缓存数据低于某门限时，函数返回，解除阻塞。请参考“<a href="#ch-tts-resources%7D">资源消耗</a>”并结合时延确定缓存数据门限。</p>
+<p><code>abort</code> 标志可通过 <code>tts_abort</code> 异步设置。</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb51-1"><a href="ch-tts.html#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> tts_abort<span class="op">(</span></span>
+<span id="cb51-2"><a href="ch-tts.html#cb51-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> tts_context <span class="op">*</span>ctx<span class="op">);</span>   <span class="co">// TTS 引擎对象</span></span></code></pre></div></li>
+<li><p>方式 2：主动调用获取波形数据</p>
+<p>使用 <code>tts_synthesizer_run</code> 将所有添加的内容按顺序一并合成语音。</p>
+<div class="sourceCode" id="cb52"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb52-1"><a href="ch-tts.html#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> tts_synthesizer_run<span class="op">(</span></span>
+<span id="cb52-2"><a href="ch-tts.html#cb52-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> tts_context <span class="op">*</span>ctx<span class="op">,</span>    <span class="co">// TTS 引擎对象</span></span>
+<span id="cb52-3"><a href="ch-tts.html#cb52-3" aria-hidden="true" tabindex="-1"></a>    f_tts_synthesizer_callback callback<span class="op">,</span></span>
+<span id="cb52-4"><a href="ch-tts.html#cb52-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>user_data<span class="op">,</span>            <span class="co">// 传递到回调函数的用户数据</span></span>
+<span id="cb52-5"><a href="ch-tts.html#cb52-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>scratch1<span class="op">,</span>             <span class="co">// 临时内存 1</span></span>
+<span id="cb52-6"><a href="ch-tts.html#cb52-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>scratch2<span class="op">);</span>            <span class="co">// 临时内存 2</span></span></code></pre></div>
+<p>临时内存 <code>scratch1</code> 和 <code>scratch2</code> 的大小分别通过 <code>tts_get_scratch_mem1_size()</code>
+和 <code>tts_get_scratch_mem2_size()</code> 获得。<code>scratch1</code> 在 <code>tts_synthesize</code>
+结束前不做他用，而 <code>scratch2</code> 可在 <code>callback</code> 里任意使用。这个函数返回 <code>callback</code> 的返回值。</p>
+<p>回调函数 <code>callback</code> 的签名为：</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb53-1"><a href="ch-tts.html#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="dt">int</span> <span class="op">(*</span>f_tts_synthesizer_callback<span class="op">)(</span></span>
+<span id="cb53-2"><a href="ch-tts.html#cb53-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> tts_synthesizer <span class="op">*</span>synthesizer<span class="op">,</span> <span class="co">// 合成引擎对象</span></span>
+<span id="cb53-3"><a href="ch-tts.html#cb53-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>user_data<span class="op">);</span>                    <span class="co">// 用户数据</span></span></code></pre></div>
+<p>回调函数返回值的含义由开发者定义。在这个回调函数里，可调用合成引擎对象的接口来主动获取波形数据。合成引擎对象的接口有两个，
+一为继续合成少量数据（<code>tts_synthesizer_continue</code>）；一为重新开始（<code>tts_synthesizer_restart</code>）。</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb54-1"><a href="ch-tts.html#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> <span class="dt">int16_t</span> <span class="op">*</span>tts_synthesizer_continue<span class="op">(</span></span>
+<span id="cb54-2"><a href="ch-tts.html#cb54-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> tts_synthesizer <span class="op">*</span>synthesizer<span class="op">,</span> <span class="co">// 合成引擎对象</span></span>
+<span id="cb54-3"><a href="ch-tts.html#cb54-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="op">*</span>number<span class="op">);</span>                        <span class="co">// 本次合成出的 PCM 采样的个数</span></span></code></pre></div>
+<p><code>tts_synthesizer_continue</code> 返回的指针指向本次合成出的 PCM 采样。当合成结束时，返回空指针，
+同时 <code>number</code> 为 0。下面的回调函数演示了如何多次调用 <code>tts_synthesizer_continue</code> 获得所有数据。</p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb55-1"><a href="ch-tts.html#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> tts_synthesizer_callback<span class="op">(</span></span>
+<span id="cb55-2"><a href="ch-tts.html#cb55-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> tts_synthesizer <span class="op">*</span>synthesizer<span class="op">,</span></span>
+<span id="cb55-3"><a href="ch-tts.html#cb55-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
+<span id="cb55-4"><a href="ch-tts.html#cb55-4" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb55-5"><a href="ch-tts.html#cb55-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> number <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb55-6"><a href="ch-tts.html#cb55-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">int16_t</span> <span class="op">*</span>pcm <span class="op">=</span> NULL<span class="op">;</span></span>
+<span id="cb55-7"><a href="ch-tts.html#cb55-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span></span>
+<span id="cb55-8"><a href="ch-tts.html#cb55-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb55-9"><a href="ch-tts.html#cb55-9" aria-hidden="true" tabindex="-1"></a>        pcm <span class="op">=</span> tts_synthesizer_continue<span class="op">(</span>synthesizer<span class="op">,</span> <span class="op">&amp;</span>number<span class="op">);</span></span>
+<span id="cb55-10"><a href="ch-tts.html#cb55-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>NULL <span class="op">==</span> pcm<span class="op">)</span> <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb55-11"><a href="ch-tts.html#cb55-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-12"><a href="ch-tts.html#cb55-12" aria-hidden="true" tabindex="-1"></a>        处理数据<span class="op">;</span></span>
+<span id="cb55-13"><a href="ch-tts.html#cb55-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb55-14"><a href="ch-tts.html#cb55-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb55-15"><a href="ch-tts.html#cb55-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>这个回调函数可以阻塞，也可以随时返回、中断合成。由于合成需要一定的处理时间，当在这个回调里回放音频时，
+为了保证回放连续，必须缓存一定的数据量，待缓存数据低于某门限时，调用 <code>tts_synthesizer_continue</code> 补充数据。
+请参考“<a href="#ch-tts-resources%7D">资源消耗</a>”并结合时延确定缓存数据门限。</p>
+<p>如果需要多次重复播放合成的内容，那么可调用 <code>tts_synthesizer_restart</code> 重新开始合成：</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb56-1"><a href="ch-tts.html#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> tts_synthesizer_restart<span class="op">(</span></span>
+<span id="cb56-2"><a href="ch-tts.html#cb56-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> tts_synthesizer <span class="op">*</span>synthesizer<span class="op">);</span> <span class="co">// 合成引擎对象</span></span></code></pre></div>
+<p>注意，合成引擎对象 <code>synthesizer</code> 只存在于回调函数 <code>callback</code> 内。<code>callback</code> 一旦返回，这个对象就被销毁。</p></li>
+</ul></li>
+<li><p>复位</p>
+<p>使用 <code>tts_reset</code> 清空已添加的内容。</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb57-1"><a href="ch-tts.html#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> tts_reset<span class="op">(</span></span>
+<span id="cb57-2"><a href="ch-tts.html#cb57-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> tts_context <span class="op">*</span>ctx<span class="op">);</span>   <span class="co">// TTS 引擎对象</span></span></code></pre></div>
+<p><code>tts_synthesize</code> 或 <code>tts_synthesizer_run</code> 正在执行时，不可调用 <code>tts_reset</code>。</p></li>
+</ol>
+<p>另外，可通过 <code>tts_tune</code> 微调合成效果：</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb58-1"><a href="ch-tts.html#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> tts_tune<span class="op">(</span></span>
+<span id="cb58-2"><a href="ch-tts.html#cb58-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> tts_context <span class="op">*</span>ctx<span class="op">,</span> <span class="co">// TTS 引擎对象</span></span>
+<span id="cb58-3"><a href="ch-tts.html#cb58-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> tune<span class="op">);</span>           <span class="co">// 微调值（默认：8）</span></span></code></pre></div>
+<p>微调值越大，则音节与音节之间的间隔越大。</p>
+</div>
+<div id="ch-tts-voice-def" class="section level2 hasAnchor" number="8.3">
+<h2><span class="header-section-number">8.3</span> 语音库<a href="ch-tts.html#ch-tts-voice-def" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>语音库由语音音源（录音）、汉语字典、词典等组成，由 <code>tts_gen</code> 工具转换为单一的 .bin 文件。
+这种 .bin 文件可以烧录到任意 4 字节对齐的地址。假设烧录到 0x04000000，
+初始化时将此地址传入 <code>tts_init</code>：</p>
+<div class="sourceCode" id="cb59"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb59-1"><a href="ch-tts.html#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> tts_context <span class="op">*</span>tts_init<span class="op">(</span></span>
+<span id="cb59-2"><a href="ch-tts.html#cb59-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span><span class="dt">const</span> <span class="kw">struct</span> voice_definition <span class="op">*)</span><span class="bn">0x04000000</span><span class="op">,</span></span>
+<span id="cb59-3"><a href="ch-tts.html#cb59-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">...);</span></span></code></pre></div>
+<div id="ch-tts-voice-def-builtin" class="section level3 hasAnchor" number="8.3.1">
+<h3><span class="header-section-number">8.3.1</span> 内置语音库<a href="ch-tts.html#ch-tts-voice-def-builtin" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>音频处理库附带了两种音色的语音库，每种语音库又提供了词典缩减、音质不同的版本。各语音库的大小见表 <a href="ch-tts.html#tab:ch-tts-voice-size">8.1</a>。</p>
+<table>
+<caption><span id="tab:ch-tts-voice-size">表 8.1: </span> 内置的各语音库</caption>
+<thead>
+<tr class="header">
+<th align="center">名称</th>
+<th align="center">音色</th>
+<th align="center">词典</th>
+<th align="center">音质</th>
+<th align="right">大小（字节）</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">xiaotao_full_h</td>
+<td align="center">女声</td>
+<td align="center">完整</td>
+<td align="center">高</td>
+<td align="right">4823217</td>
+</tr>
+<tr class="even">
+<td align="center">xiaotao_full_m</td>
+<td align="center">女声</td>
+<td align="center">完整</td>
+<td align="center">中</td>
+<td align="right">4150083</td>
+</tr>
+<tr class="odd">
+<td align="center">xiaotao_full_l</td>
+<td align="center">女声</td>
+<td align="center">完整</td>
+<td align="center">低</td>
+<td align="right">2755734</td>
+</tr>
+<tr class="even">
+<td align="center">xiaotao_lite_h</td>
+<td align="center">女声</td>
+<td align="center">缩减</td>
+<td align="center">高</td>
+<td align="right">3162253</td>
+</tr>
+<tr class="odd">
+<td align="center">xiaotao_lite_m</td>
+<td align="center">女声</td>
+<td align="center">缩减</td>
+<td align="center">中</td>
+<td align="right">2489119</td>
+</tr>
+<tr class="even">
+<td align="center">xiaotao_lite_l</td>
+<td align="center">女声</td>
+<td align="center">缩减</td>
+<td align="center">低</td>
+<td align="right">1094770</td>
+</tr>
+<tr class="odd">
+<td align="center">xiaoxin_full_h</td>
+<td align="center">男声</td>
+<td align="center">完整</td>
+<td align="center">高</td>
+<td align="right">4128000</td>
+</tr>
+<tr class="even">
+<td align="center">xiaoxin_full_m</td>
+<td align="center">男声</td>
+<td align="center">完整</td>
+<td align="center">中</td>
+<td align="right">3614424</td>
+</tr>
+<tr class="odd">
+<td align="center">xiaoxin_full_l</td>
+<td align="center">男声</td>
+<td align="center">完整</td>
+<td align="center">低</td>
+<td align="right">2550588</td>
+</tr>
+<tr class="even">
+<td align="center">xiaoxin_lite_h</td>
+<td align="center">男声</td>
+<td align="center">缩减</td>
+<td align="center">高</td>
+<td align="right">2467036</td>
+</tr>
+<tr class="odd">
+<td align="center">xiaoxin_lite_m</td>
+<td align="center">男声</td>
+<td align="center">缩减</td>
+<td align="center">中</td>
+<td align="right">1953460</td>
+</tr>
+<tr class="even">
+<td align="center">xiaoxin_lite_l</td>
+<td align="center">男声</td>
+<td align="center">缩减</td>
+<td align="center">低</td>
+<td align="right">889624</td>
+</tr>
+</tbody>
+</table>
+<p>每种语音库推荐的微调值见表 <a href="ch-tts.html#tab:ch-tts-voice-tune">8.2</a>。</p>
+<table>
+<caption><span id="tab:ch-tts-voice-tune">表 8.2: </span> 内置语音库推荐的微调值</caption>
+<thead>
+<tr class="header">
+<th align="center">名称</th>
+<th align="center">音色</th>
+<th align="right">微调值</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">xiaotao</td>
+<td align="center">女声</td>
+<td align="right">8</td>
+</tr>
+<tr class="even">
+<td align="center">xiaoxin</td>
+<td align="center">男声</td>
+<td align="right">200</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="ch-tts-customize-voice-def" class="section level3 hasAnchor" number="8.3.2">
+<h3><span class="header-section-number">8.3.2</span> 自定义语音库<a href="ch-tts.html#ch-tts-customize-voice-def" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>利于工具 <code>tts_gen</code> 可以自定义语音库，定制专属音色、优化合成效果。定制步骤如下。</p>
+<ol style="list-style-type: decimal">
+<li><p>准备两个词库，分别称为 <code>dict1</code> 和 <code>dict2</code>。</p>
+<p>需要单独录音的词汇放到 <code>dict1</code> 里，只需要识别、不需要单独录音的词汇放到 <code>dict2</code> 里。
+<code>dict1</code> 文件保存以 json 格式保存，如：</p>
+<div class="sourceCode" id="cb60"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb60-1"><a href="ch-tts.html#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="ot">[</span></span>
+<span id="cb60-2"><a href="ch-tts.html#cb60-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;一下&quot;</span><span class="ot">,</span></span>
+<span id="cb60-3"><a href="ch-tts.html#cb60-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;一个&quot;</span></span>
+<span id="cb60-4"><a href="ch-tts.html#cb60-4" aria-hidden="true" tabindex="-1"></a><span class="ot">]</span></span></code></pre></div>
+<p><code>dict2</code> 是一个文本文件，每行一个词语，如：</p>
+<pre><code>一一列举
+一一对应</code></pre>
+<p>这两个词典都可以为空。当解析器识别出 <code>dict1</code> 里的词语，合成时会直接使用录音，效果较佳；
+当识别出 <code>dict2</code> 里的词语，合成器输出的词语发音将比单字拼接更自然一些。</p>
+<p><code>dict1</code>、<code>dict2</code> 里的每个词最多可以包含 255 个汉字，<code>dict1</code> 里每个词的录音经压缩后长度不可超过 65535 字节。</p></li>
+<li><p>使用 <code>tts_gen</code> 导出录音计划</p>
+<div class="sourceCode" id="cb62"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb62-1"><a href="ch-tts.html#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="ex">tts_gen</span> tts_plan /path/to/dict1.json path/to/tts_plan.json</span></code></pre></div>
+<p>运行这个命令，就会生成录音计划 <code>tts_plan.json</code>。</p></li>
+<li><p>进行录音</p>
+<p>按照录音计划完成录音。譬如将拼音“a (啊)”的录音保存为 “00000.raw”文件。</p>
+<div class="sourceCode" id="cb63"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb63-1"><a href="ch-tts.html#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb63-2"><a href="ch-tts.html#cb63-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;a (啊)&quot;</span><span class="fu">:</span> <span class="st">&quot;00000.raw&quot;</span><span class="fu">,</span></span>
+<span id="cb63-3"><a href="ch-tts.html#cb63-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;a1 (锕)&quot;</span><span class="fu">:</span> <span class="st">&quot;00001.raw&quot;</span><span class="fu">,</span></span>
+<span id="cb63-4"><a href="ch-tts.html#cb63-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;a2 (嗄)&quot;</span><span class="fu">:</span> <span class="st">&quot;00002.raw&quot;</span><span class="fu">,</span></span>
+<span id="cb63-5"><a href="ch-tts.html#cb63-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;ai1 (哀)&quot;</span><span class="fu">:</span> <span class="st">&quot;00003.raw&quot;</span><span class="fu">,</span></span>
+<span id="cb63-6"><a href="ch-tts.html#cb63-6" aria-hidden="true" tabindex="-1"></a>    <span class="er">...</span></span>
+<span id="cb63-7"><a href="ch-tts.html#cb63-7" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<p>录音时使用单声道，保证音色、音量一致，音质清晰、无杂音，语气平和。</p>
+<p>这里的 raw 格式是指无格式的 16kHz 采样，每个采样 16 比特，小端模式。
+如果录音时采用了其它格式，可以用 ffmpeg<a href="#fn14" class="footnote-ref" id="fnref14"><sup>14</sup></a> 等工具批量转换为这种 raw 格式，
+如将 mp3 转换为 raw：</p>
+<div class="sourceCode" id="cb64"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb64-1"><a href="ch-tts.html#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> 00000.mp3 <span class="at">-f</span> s16le <span class="at">-ar</span> 16000 <span class="at">-acodec</span> pcm_s16le 00000.raw</span></code></pre></div></li>
+<li><p>生成 .bin 文件</p>
+<p>假设录音已保存在 <code>path/to/recordings</code> 目录下，用以下命令生成 .bin 文件。</p>
+<div class="sourceCode" id="cb65"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb65-1"><a href="ch-tts.html#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="ex">tts_gen</span> data path/to/tts_plan.json path/to/recordings output.bin 5 <span class="dt">\</span></span>
+<span id="cb65-2"><a href="ch-tts.html#cb65-2" aria-hidden="true" tabindex="-1"></a>             path/to/dict2</span></code></pre></div>
+<p>这里的参数 5 为编码等级，范围为 0~8，0 表示最低码率，音质最差；8 表示最高码率，音质最佳。
+如果不定义 <code>dict2</code>，<code>path/to/dict2</code> 参数可省略。省略 <code>dict2</code> 参数后，编码等级也可省略（默认值 5）。
+<code>output.bin</code> 即为生成的 .bin 文件。</p></li>
+</ol>
+</div>
+</div>
+<div id="ch-tts-resources" class="section level2 hasAnchor" number="8.4">
+<h2><span class="header-section-number">8.4</span> 资源消耗<a href="ch-tts.html#ch-tts-resources" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>TTS 需要较大的 Flash 存储空间，各内置语音库的大小见表 <a href="ch-tts.html#tab:ch-tts-voice-size">8.1</a>，必须配备一定容量的外置 Flash<a href="#fn15" class="footnote-ref" id="fnref15"><sup>15</sup></a>。</p>
+<p>当前版本音频数据使用 AMR-WB 压缩，<code>tts_synthesize</code> 函数的主要动作是 AMR-WB 解码，
+其性能请参考“<a href="#ch-amr-wb-resources%7D">AMR-WB 的解码性能</a>”。</p>
+</div>
+<div id="演示" class="section level2 hasAnchor" number="8.5">
+<h2><span class="header-section-number">8.5</span> 演示<a href="ch-tts.html#演示" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="windows" class="section level3 hasAnchor" number="8.5.1">
+<h3><span class="header-section-number">8.5.1</span> Windows<a href="ch-tts.html#windows" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><code>tts_demo</code> 可以用来快速测试语音库和合成效果。这个程序接受两个必选参数和几个可选参数：</p>
+<div class="sourceCode" id="cb66"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb66-1"><a href="ch-tts.html#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="ex">tts_demo</span> /path/to/voice/bin /path/to/text/file [--speed X] [--tune V] [--save FN]</span></code></pre></div>
+<p>第一个参数是语音库 .bin 文件，第二个参数是一个文本文件名，演示程序将合成这个文件第一行的内容，并播放出来。
+可选参数：<code>--speed X</code> 将语音速度设为 <code>X</code>，默认值 1.0，即不变速，详见“<a href="ch-stretch.html#ch-stretch">语音变速</a>”；
+<code>--tune V</code> 将微调值设为 <code>V</code>；<code>--save FN</code> 将合成的波形数据按“<a href="ch-tts.html#ch-tts-customize-voice-def">raw 格式</a>”保存到文件 <code>FN</code>。
+当指定了 <code>--save</code> 参数时，只保存文件，不自动播放。</p>
+</div>
+<div id="ing916xx-5" class="section level3 hasAnchor" number="8.5.2">
+<h3><span class="header-section-number">8.5.2</span> ING916XX<a href="ch-tts.html#ing916xx-5" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><code>tts_firmware</code> 是一个可以直接烧录到 ING916XX 开发板的固件。语音库需要单独烧录，
+请参考关于“<a href="#语音库-ch-tts-voice-def">语音库</a>”的说明。
+<code>test_tts</code> 是 <code>tts_firmware</code> 程序里的主要函数，
+演示了从串口读入文本、合成，再通过串口输出波形采样的全过程。</p>
+<div class="sourceCode" id="cb67"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb67-1"><a href="ch-tts.html#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> test_tts<span class="op">(</span>UART_TypeDef <span class="op">*</span>port<span class="op">)</span></span>
+<span id="cb67-2"><a href="ch-tts.html#cb67-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb67-3"><a href="ch-tts.html#cb67-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">static</span> <span class="dt">char</span> input<span class="op">[...];</span></span>
+<span id="cb67-4"><a href="ch-tts.html#cb67-4" aria-hidden="true" tabindex="-1"></a>    platform_printf<span class="op">(</span><span class="st">&quot;TTS Demo</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb67-5"><a href="ch-tts.html#cb67-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-6"><a href="ch-tts.html#cb67-6" aria-hidden="true" tabindex="-1"></a>    <span class="pp">#define MAX_SYLLABLES ...</span></span>
+<span id="cb67-7"><a href="ch-tts.html#cb67-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-8"><a href="ch-tts.html#cb67-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="kw">struct</span> voice_definition <span class="op">*</span> voice_def <span class="op">=</span> <span class="op">...;</span></span>
+<span id="cb67-9"><a href="ch-tts.html#cb67-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-10"><a href="ch-tts.html#cb67-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>context  <span class="op">=</span> malloc<span class="op">(</span>tts_get_context_size<span class="op">(</span>MAX_SYLLABLES<span class="op">));</span></span>
+<span id="cb67-11"><a href="ch-tts.html#cb67-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>scratch1 <span class="op">=</span> malloc<span class="op">(</span>tts_get_scratch_mem1_size<span class="op">());</span></span>
+<span id="cb67-12"><a href="ch-tts.html#cb67-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>scratch2 <span class="op">=</span> malloc<span class="op">(</span>tts_get_scratch_mem2_size<span class="op">());</span></span>
+<span id="cb67-13"><a href="ch-tts.html#cb67-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-14"><a href="ch-tts.html#cb67-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> tts_context <span class="op">*</span>ctx <span class="op">=</span> tts_init<span class="op">(</span>voice_def<span class="op">,</span></span>
+<span id="cb67-15"><a href="ch-tts.html#cb67-15" aria-hidden="true" tabindex="-1"></a>        MAX_SYLLABLES<span class="op">,</span> context<span class="op">);</span></span>
+<span id="cb67-16"><a href="ch-tts.html#cb67-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-17"><a href="ch-tts.html#cb67-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="op">(</span>true<span class="op">)</span></span>
+<span id="cb67-18"><a href="ch-tts.html#cb67-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb67-19"><a href="ch-tts.html#cb67-19" aria-hidden="true" tabindex="-1"></a>        <span class="co">// 从串口输入字符串（代码从略）</span></span>
+<span id="cb67-20"><a href="ch-tts.html#cb67-20" aria-hidden="true" tabindex="-1"></a>        input_from_uart<span class="op">(</span>port<span class="op">,</span> input<span class="op">,</span> <span class="kw">sizeof</span><span class="op">(</span>input<span class="op">));</span></span>
+<span id="cb67-21"><a href="ch-tts.html#cb67-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-22"><a href="ch-tts.html#cb67-22" aria-hidden="true" tabindex="-1"></a>        tts_reset<span class="op">(</span>ctx<span class="op">);</span></span>
+<span id="cb67-23"><a href="ch-tts.html#cb67-23" aria-hidden="true" tabindex="-1"></a>        tts_push_utf8_str<span class="op">(</span>ctx<span class="op">,</span> input<span class="op">);</span></span>
+<span id="cb67-24"><a href="ch-tts.html#cb67-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-25"><a href="ch-tts.html#cb67-25" aria-hidden="true" tabindex="-1"></a>        <span class="co">// save_pcm_samples 将 PCM 从串口输出（代码从略）</span></span>
+<span id="cb67-26"><a href="ch-tts.html#cb67-26" aria-hidden="true" tabindex="-1"></a>        tts_synthesize<span class="op">(</span>ctx<span class="op">,</span> save_pcm_samples<span class="op">,</span> NULL<span class="op">,</span></span>
+<span id="cb67-27"><a href="ch-tts.html#cb67-27" aria-hidden="true" tabindex="-1"></a>            scratch1<span class="op">,</span> scratch2<span class="op">);</span></span>
+<span id="cb67-28"><a href="ch-tts.html#cb67-28" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb67-29"><a href="ch-tts.html#cb67-29" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>PC 端运行 <code>tts_demo.py</code>，允许用户输入不同的文本，收听合成效果。这个脚步依赖若干软件包，
+如有缺失，运行时会给出提示信息，请按提示信息安装相应的软件包。这个脚本接受一个必选参数串口号，假设开发板串口为 COM9，则如下调用该脚本：</p>
+<div class="sourceCode" id="cb68"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb68-1"><a href="ch-tts.html#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> tts_demo.py COM9</span></code></pre></div>
+<p>脚本还接受可选的波特率参数，默认 115200 波特。通过 <code>-b</code> 设置波特率参数：</p>
+<div class="sourceCode" id="cb69"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb69-1"><a href="ch-tts.html#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> tts_demo.py COM9 <span class="at">-b</span> 921600</span></code></pre></div>
+</div>
+</div>
+<div id="局限与建议" class="section level2 hasAnchor" number="8.6">
+<h2><span class="header-section-number">8.6</span> 局限与建议<a href="ch-tts.html#局限与建议" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>当前版本存在以下局限：</p>
+<ul>
+<li><p>与当前最先进的 TTS 系统相比，连贯性、语气、韵律等方面存在不足，不够自然</p>
+<p><strong>分析</strong>：受制于嵌入式系统的计算资源，无法使用当前最先进的 TTS 技术方案。</p>
+<p><strong>缓解措施</strong>：对于较封闭（待合成的文本相对固定）的应用场景，可以通过自定义语音库的方法录制常见短语，改善效果。</p></li>
+<li><p>多音字识别准确性有限</p>
+<p><strong>分析</strong>：当前版本基于词典识别多音字。基于词典分词存在一定的错误概率，而且存在多音词（如朝阳、大夫），所以无法做到完全准确。</p>
+<p><strong>缓解措施</strong>：1）使用拼音合成；2）将多音字替换为与正确读音同音的单音字；3）通过自定义语音库为多音词提供正确读音。</p></li>
+<li><p>不支持儿化音、轻声变调</p>
+<p><strong>缓解措施</strong>：通过自定义语音库为需要儿化、轻声的词语和短语提供正确读音。</p></li>
+</ul>
+<p>综上，为提高合成效果，请参考以下方法或建议：</p>
+<ul>
+<li><p>针对应用场景提炼词语、短语，对关键词语、短语甚至句子直接录音，创建<strong>自定义语音库</strong>；</p></li>
+<li><p>使用空格<strong>辅助分词</strong>，减少分词错误；</p></li>
+<li><p>使用“[]”<strong>手动组词</strong>；</p></li>
+<li><p>使用<strong>拼音合成</strong>弥补多音字识别的不足；</p></li>
+<li><p>避免使用的、了、吗、呢等语气词。</p></li>
+</ul>
+
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="11">
+<li id="fn11"><p>下列 77 个字符除外：乥，乲，兺，厼，
+叾，哛，唜，唟，喸，囕，夞，巼，怾，旕，朰，栍，桛，椧，烪，猠，硛，硳，穒，縇，莻，虄，襨，
+迲，闏，龩，龬，龭，龳，龴，龶，龸，龼，龽，龾，龿，鿀，鿁，鿂，鿅，鿆，鿇，鿈，鿉，鿊，鿋，
+鿖，鿗，鿘，鿙，鿚，鿛，鿜，鿝，鿞，鿟，鿠，鿡，鿢，鿣，鿤，鿥，鿦，鿧，鿨，鿩，鿪，鿮，鿯，
+鿹，鿽，鿾，鿿。这些字符的读音暂时无法依据汉典确定。<a href="ch-tts.html#fnref11" class="footnote-back">↩︎</a></p></li>
+<li id="fn12"><p>只有紧跟中文字符的空格才被视作分词辅助用途。<a href="ch-tts.html#fnref12" class="footnote-back">↩︎</a></p></li>
+<li id="fn13"><p>当使用完整版语音库时，“及时处理”被识别为一个词语，并且多音字“处”的声调错误。添加空格后，听感流畅，而且“处”的读音也被正确判别。<a href="ch-tts.html#fnref13" class="footnote-back">↩︎</a></p></li>
+<li id="fn14"><p><a href="https://ffmpeg.org/" class="uri">https://ffmpeg.org/</a><a href="ch-tts.html#fnref14" class="footnote-back">↩︎</a></p></li>
+<li id="fn15"><p><a href="https://ingchips.github.io/blog/2024-02-05-external-flash/" class="uri">https://ingchips.github.io/blog/2024-02-05-external-flash/</a><a href="ch-tts.html#fnref15" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="ch-amr-wb.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ch-stretch.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["an_libaudio.pdf", "an_libaudio.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection",
+"scroll_highlight": true
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

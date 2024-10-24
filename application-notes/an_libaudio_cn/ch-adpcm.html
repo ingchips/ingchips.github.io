@@ -4,20 +4,20 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Page not found | 应用指南：音频处理库</title>
-  <meta name="description" content="Page not found | 应用指南：音频处理库." />
+  <title>4 ADPCM 编解码 | 应用指南：音频处理库</title>
+  <meta name="description" content="4 ADPCM 编解码 | 应用指南：音频处理库." />
   <meta name="generator" content="bookdown 0.32 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Page not found | 应用指南：音频处理库" />
+  <meta property="og:title" content="4 ADPCM 编解码 | 应用指南：音频处理库" />
   <meta property="og:type" content="book" />
   
-  <meta property="og:description" content="Page not found | 应用指南：音频处理库." />
+  <meta property="og:description" content="4 ADPCM 编解码 | 应用指南：音频处理库." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Page not found | 应用指南：音频处理库" />
+  <meta name="twitter:title" content="4 ADPCM 编解码 | 应用指南：音频处理库" />
   
-  <meta name="twitter:description" content="Page not found | 应用指南：音频处理库." />
+  <meta name="twitter:description" content="4 ADPCM 编解码 | 应用指南：音频处理库." />
   
 
 <meta name="author" content="Ingchips Technology Co., Ltd." />
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-
-
+<link rel="prev" href="ch-denoise.html"/>
+<link rel="next" href="ch-sbc.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -252,19 +252,79 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="page-not-found" class="section level1">
-<h1>Page not found</h1>
-<p>The page you requested cannot be found (perhaps it was moved or renamed).</p>
-<p>You may want to try searching to find the page's new location, or use
-the table of contents to find the page you are looking for.</p>
+<div id="ch-adpcm" class="section level1 hasAnchor" number="4">
+<h1><span class="header-section-number">4</span> ADPCM 编解码<a href="ch-adpcm.html#ch-adpcm" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>ADPCM 编码将 PCM 转换为每采样占用 4-bit 的压缩格式；ADPCM 解码把这种压缩格式转换为 16-bit PCM。</p>
+<div id="使用方法-1" class="section level2 hasAnchor" number="4.1">
+<h2><span class="header-section-number">4.1</span> 使用方法<a href="ch-adpcm.html#使用方法-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="编码" class="section level3 hasAnchor" number="4.1.1">
+<h3><span class="header-section-number">4.1.1</span> 编码<a href="ch-adpcm.html#编码" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ol style="list-style-type: decimal">
+<li><p>定义回调函数</p>
+<p>这个回调函数用来接收编码结果，其签名为：</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb6-1"><a href="ch-adpcm.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="dt">void</span> <span class="op">(*</span>adpcm_encode_output_cb_f<span class="op">)(</span></span>
+<span id="cb6-2"><a href="ch-adpcm.html#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> output<span class="op">,</span> <span class="co">// 编码输出，包含两个 4-bit 数据</span></span>
+<span id="cb6-3"><a href="ch-adpcm.html#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>param<span class="op">);</span>   <span class="co">// 用户数据</span></span></code></pre></div></li>
+<li><p>初始化编码器对象</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb7-1"><a href="ch-adpcm.html#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> adpcm_enc_init<span class="op">(</span></span>
+<span id="cb7-2"><a href="ch-adpcm.html#cb7-2" aria-hidden="true" tabindex="-1"></a>    adpcm_enc_t <span class="op">*</span>adpcm<span class="op">,</span>                <span class="co">// 编码器对象</span></span>
+<span id="cb7-3"><a href="ch-adpcm.html#cb7-3" aria-hidden="true" tabindex="-1"></a>    adpcm_encode_output_cb_f callback<span class="op">,</span> <span class="co">// 回调函数</span></span>
+<span id="cb7-4"><a href="ch-adpcm.html#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>param<span class="op">);</span>                      <span class="co">// 传给回调函数的用户数据</span></span></code></pre></div></li>
+<li><p>编码</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb8-1"><a href="ch-adpcm.html#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> adpcm_encode<span class="op">(</span></span>
+<span id="cb8-2"><a href="ch-adpcm.html#cb8-2" aria-hidden="true" tabindex="-1"></a>    adpcm_enc_t <span class="op">*</span>adpcm<span class="op">,</span>         <span class="co">// 编码器对象</span></span>
+<span id="cb8-3"><a href="ch-adpcm.html#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> pcm_sample_t <span class="op">*</span>input<span class="op">,</span>  <span class="co">// 音频数据</span></span>
+<span id="cb8-4"><a href="ch-adpcm.html#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> input_size<span class="op">);</span>            <span class="co">// 音频采样数</span></span></code></pre></div>
+<p>采样数 <code>input_size</code> 可以是奇数。每产生两个 4-bit 编码输出（拼接为 1 个字节<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>），
+就会调用一次 <code>callback</code>。</p></li>
+</ol>
+</div>
+<div id="解码" class="section level3 hasAnchor" number="4.1.2">
+<h3><span class="header-section-number">4.1.2</span> 解码<a href="ch-adpcm.html#解码" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ol style="list-style-type: decimal">
+<li><p>定义回调函数</p>
+<p>这个回调函数用来接收解码结果，其签名为：</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb9-1"><a href="ch-adpcm.html#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="dt">void</span> <span class="op">(*</span>adpcm_decode_output_cb_f<span class="op">)(</span></span>
+<span id="cb9-2"><a href="ch-adpcm.html#cb9-2" aria-hidden="true" tabindex="-1"></a>    pcm_sample_t output<span class="op">,</span> <span class="co">// 解码输出</span></span>
+<span id="cb9-3"><a href="ch-adpcm.html#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span><span class="op">*</span> param<span class="op">);</span>        <span class="co">// 用户数据</span></span></code></pre></div></li>
+<li><p>初始化解码器</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb10-1"><a href="ch-adpcm.html#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> adpcm_dec_init<span class="op">(</span></span>
+<span id="cb10-2"><a href="ch-adpcm.html#cb10-2" aria-hidden="true" tabindex="-1"></a>    adpcm_dec_t<span class="op">*</span> adpcm<span class="op">,</span>                <span class="co">// 解码器对象</span></span>
+<span id="cb10-3"><a href="ch-adpcm.html#cb10-3" aria-hidden="true" tabindex="-1"></a>    adpcm_decode_output_cb_f callback<span class="op">,</span> <span class="co">// 回调函数</span></span>
+<span id="cb10-4"><a href="ch-adpcm.html#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span><span class="op">*</span> param<span class="op">);</span>                      <span class="co">// 传给回调函数的用户数据</span></span></code></pre></div></li>
+<li><p>解码</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb11-1"><a href="ch-adpcm.html#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> adpcm_decode<span class="op">(</span></span>
+<span id="cb11-2"><a href="ch-adpcm.html#cb11-2" aria-hidden="true" tabindex="-1"></a>    adpcm_dec_t <span class="op">*</span>adpcm<span class="op">,</span> <span class="co">// 解码器对象</span></span>
+<span id="cb11-3"><a href="ch-adpcm.html#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> data<span class="op">);</span>      <span class="co">// ADPCM 编码</span></span></code></pre></div></li>
+</ol>
+</div>
+</div>
+<div id="资源消耗-1" class="section level2 hasAnchor" number="4.2">
+<h2><span class="header-section-number">4.2</span> 资源消耗<a href="ch-adpcm.html#资源消耗-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>以下数据仅供参考。实际表现受编译器、Cache、RTOS、中断等因素影响。</p>
+<div id="ing916xx-1" class="section level3 hasAnchor" number="4.2.1">
+<h3><span class="header-section-number">4.2.1</span> ING916XX<a href="ch-adpcm.html#ing916xx-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>当 CPU 主频为 112 MHz 时，<code>adpcm_encode</code> 处理 1 个采样仅需 <span class="math inline">\(0.7 \mu s\)</span> ，或者说
+处理 1 个采样消耗的 CPU 频率约为 80 Hz，处理 16 kHz 采样消耗的 CPU 频率约为 1.25 MHz。</p>
+<p>当 CPU 主频为 112 MHz 时，<code>adpcm_decode</code> 解码 1 个字节输出 2 个采样约需 <span class="math inline">\(1.9 \mu s\)</span> ，或者说
+解码 1 个字节消耗的 CPU 频率约为 213 Hz，解码 16 kHz ADPCM 消耗的 CPU 频率约为 3.4 MHz。</p>
+
+</div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="6">
+<li id="fn6"><p>设高 4-bit 对应第 <span class="math inline">\(n\)</span> 个采样，则低 4-bit 对应第 <span class="math inline">\(n + 1\)</span> 个采样。<a href="ch-adpcm.html#fnref6" class="footnote-back">↩︎</a></p></li>
+</ol>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-
-
+<a href="ch-denoise.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ch-sbc.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>7 AMR-WB 编解码 | 应用指南：音频处理库</title>
+  <meta name="description" content="7 AMR-WB 编解码 | 应用指南：音频处理库." />
+  <meta name="generator" content="bookdown 0.32 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="7 AMR-WB 编解码 | 应用指南：音频处理库" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="7 AMR-WB 编解码 | 应用指南：音频处理库." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="7 AMR-WB 编解码 | 应用指南：音频处理库" />
+  
+  <meta name="twitter:description" content="7 AMR-WB 编解码 | 应用指南：音频处理库." />
+  
+
+<meta name="author" content="Ingchips Technology Co., Ltd." />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="ch-opus.html"/>
+<link rel="next" href="ch-tts.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">应用指南：音频处理库</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> 版本历史</a></li>
+<li class="chapter" data-level="2" data-path="ch-overview.html"><a href="ch-overview.html"><i class="fa fa-check"></i><b>2</b> 概览</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="ch-overview.html"><a href="ch-overview.html#模块设计原则"><i class="fa fa-check"></i><b>2.1</b> 模块设计原则</a></li>
+<li class="chapter" data-level="2.2" data-path="ch-overview.html"><a href="ch-overview.html#依赖关系"><i class="fa fa-check"></i><b>2.2</b> 依赖关系</a></li>
+<li class="chapter" data-level="2.3" data-path="ch-overview.html"><a href="ch-overview.html#缩略语及术语"><i class="fa fa-check"></i><b>2.3</b> 缩略语及术语</a></li>
+<li class="chapter" data-level="2.4" data-path="ch-overview.html"><a href="ch-overview.html#参考文档"><i class="fa fa-check"></i><b>2.4</b> 参考文档</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="ch-denoise.html"><a href="ch-denoise.html"><i class="fa fa-check"></i><b>3</b> 降噪</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="ch-denoise.html"><a href="ch-denoise.html#使用方法"><i class="fa fa-check"></i><b>3.1</b> 使用方法</a></li>
+<li class="chapter" data-level="3.2" data-path="ch-denoise.html"><a href="ch-denoise.html#资源消耗"><i class="fa fa-check"></i><b>3.2</b> 资源消耗</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="ch-denoise.html"><a href="ch-denoise.html#ing916xx"><i class="fa fa-check"></i><b>3.2.1</b> ING916XX</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="ch-denoise.html"><a href="ch-denoise.html#应用建议"><i class="fa fa-check"></i><b>3.3</b> 应用建议</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="ch-adpcm.html"><a href="ch-adpcm.html"><i class="fa fa-check"></i><b>4</b> ADPCM 编解码</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="ch-adpcm.html"><a href="ch-adpcm.html#使用方法-1"><i class="fa fa-check"></i><b>4.1</b> 使用方法</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="ch-adpcm.html"><a href="ch-adpcm.html#编码"><i class="fa fa-check"></i><b>4.1.1</b> 编码</a></li>
+<li class="chapter" data-level="4.1.2" data-path="ch-adpcm.html"><a href="ch-adpcm.html#解码"><i class="fa fa-check"></i><b>4.1.2</b> 解码</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="ch-adpcm.html"><a href="ch-adpcm.html#资源消耗-1"><i class="fa fa-check"></i><b>4.2</b> 资源消耗</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="ch-adpcm.html"><a href="ch-adpcm.html#ing916xx-1"><i class="fa fa-check"></i><b>4.2.1</b> ING916XX</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="ch-sbc.html"><a href="ch-sbc.html"><i class="fa fa-check"></i><b>5</b> SBC/mSBC 编解码</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="ch-sbc.html"><a href="ch-sbc.html#帧描述参数"><i class="fa fa-check"></i><b>5.1</b> 帧描述参数</a></li>
+<li class="chapter" data-level="5.2" data-path="ch-sbc.html"><a href="ch-sbc.html#使用方法-2"><i class="fa fa-check"></i><b>5.2</b> 使用方法</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="ch-sbc.html"><a href="ch-sbc.html#编码-1"><i class="fa fa-check"></i><b>5.2.1</b> 编码</a></li>
+<li class="chapter" data-level="5.2.2" data-path="ch-sbc.html"><a href="ch-sbc.html#解码-1"><i class="fa fa-check"></i><b>5.2.2</b> 解码</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="ch-sbc.html"><a href="ch-sbc.html#资源消耗-2"><i class="fa fa-check"></i><b>5.3</b> 资源消耗</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="ch-sbc.html"><a href="ch-sbc.html#ing916xx-2"><i class="fa fa-check"></i><b>5.3.1</b> ING916XX</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="ch-opus.html"><a href="ch-opus.html"><i class="fa fa-check"></i><b>6</b> Opus 编码</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="ch-opus.html"><a href="ch-opus.html#使用方法-3"><i class="fa fa-check"></i><b>6.1</b> 使用方法</a></li>
+<li class="chapter" data-level="6.2" data-path="ch-opus.html"><a href="ch-opus.html#参数选择与评估"><i class="fa fa-check"></i><b>6.2</b> 参数选择与评估</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="ch-opus.html"><a href="ch-opus.html#临时内存评估"><i class="fa fa-check"></i><b>6.2.1</b> 临时内存评估</a></li>
+<li class="chapter" data-level="6.2.2" data-path="ch-opus.html"><a href="ch-opus.html#性能评估"><i class="fa fa-check"></i><b>6.2.2</b> 性能评估</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="ch-opus.html"><a href="ch-opus.html#资源消耗-3"><i class="fa fa-check"></i><b>6.3</b> 资源消耗</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="ch-opus.html"><a href="ch-opus.html#ing916xx-3"><i class="fa fa-check"></i><b>6.3.1</b> ING916XX</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="ch-opus.html"><a href="ch-opus.html#线程安全性"><i class="fa fa-check"></i><b>6.4</b> 线程安全性</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="ch-amr-wb.html"><a href="ch-amr-wb.html"><i class="fa fa-check"></i><b>7</b> AMR-WB 编解码</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="ch-amr-wb.html"><a href="ch-amr-wb.html#使用方法-4"><i class="fa fa-check"></i><b>7.1</b> 使用方法</a>
+<ul>
+<li class="chapter" data-level="7.1.1" data-path="ch-amr-wb.html"><a href="ch-amr-wb.html#编码-2"><i class="fa fa-check"></i><b>7.1.1</b> 编码</a></li>
+<li class="chapter" data-level="7.1.2" data-path="ch-amr-wb.html"><a href="ch-amr-wb.html#解码-2"><i class="fa fa-check"></i><b>7.1.2</b> 解码</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="ch-amr-wb.html"><a href="ch-amr-wb.html#ch-amr-wb-resources"><i class="fa fa-check"></i><b>7.2</b> 资源消耗</a>
+<ul>
+<li class="chapter" data-level="7.2.1" data-path="ch-amr-wb.html"><a href="ch-amr-wb.html#ing916xx-4"><i class="fa fa-check"></i><b>7.2.1</b> ING916XX</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="ch-tts.html"><a href="ch-tts.html"><i class="fa fa-check"></i><b>8</b> 语音合成</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="ch-tts.html"><a href="ch-tts.html#特性"><i class="fa fa-check"></i><b>8.1</b> 特性</a>
+<ul>
+<li class="chapter" data-level="8.1.1" data-path="ch-tts.html"><a href="ch-tts.html#工具软件"><i class="fa fa-check"></i><b>8.1.1</b> 工具软件</a></li>
+</ul></li>
+<li class="chapter" data-level="8.2" data-path="ch-tts.html"><a href="ch-tts.html#使用方法-5"><i class="fa fa-check"></i><b>8.2</b> 使用方法</a></li>
+<li class="chapter" data-level="8.3" data-path="ch-tts.html"><a href="ch-tts.html#ch-tts-voice-def"><i class="fa fa-check"></i><b>8.3</b> 语音库</a>
+<ul>
+<li class="chapter" data-level="8.3.1" data-path="ch-tts.html"><a href="ch-tts.html#ch-tts-voice-def-builtin"><i class="fa fa-check"></i><b>8.3.1</b> 内置语音库</a></li>
+<li class="chapter" data-level="8.3.2" data-path="ch-tts.html"><a href="ch-tts.html#ch-tts-customize-voice-def"><i class="fa fa-check"></i><b>8.3.2</b> 自定义语音库</a></li>
+</ul></li>
+<li class="chapter" data-level="8.4" data-path="ch-tts.html"><a href="ch-tts.html#ch-tts-resources"><i class="fa fa-check"></i><b>8.4</b> 资源消耗</a></li>
+<li class="chapter" data-level="8.5" data-path="ch-tts.html"><a href="ch-tts.html#演示"><i class="fa fa-check"></i><b>8.5</b> 演示</a>
+<ul>
+<li class="chapter" data-level="8.5.1" data-path="ch-tts.html"><a href="ch-tts.html#windows"><i class="fa fa-check"></i><b>8.5.1</b> Windows</a></li>
+<li class="chapter" data-level="8.5.2" data-path="ch-tts.html"><a href="ch-tts.html#ing916xx-5"><i class="fa fa-check"></i><b>8.5.2</b> ING916XX</a></li>
+</ul></li>
+<li class="chapter" data-level="8.6" data-path="ch-tts.html"><a href="ch-tts.html#局限与建议"><i class="fa fa-check"></i><b>8.6</b> 局限与建议</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="ch-stretch.html"><a href="ch-stretch.html"><i class="fa fa-check"></i><b>9</b> 语音变速</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="ch-stretch.html"><a href="ch-stretch.html#使用方法-6"><i class="fa fa-check"></i><b>9.1</b> 使用方法</a></li>
+<li class="chapter" data-level="9.2" data-path="ch-stretch.html"><a href="ch-stretch.html#ch-stretch-resources"><i class="fa fa-check"></i><b>9.2</b> 资源消耗</a>
+<ul>
+<li class="chapter" data-level="9.2.1" data-path="ch-stretch.html"><a href="ch-stretch.html#ing916xx-6"><i class="fa fa-check"></i><b>9.2.1</b> ING916XX</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="ch-acknowledgement.html"><a href="ch-acknowledgement.html"><i class="fa fa-check"></i><b>10</b> 致谢</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">应用指南：音频处理库</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="ch-amr-wb" class="section level1 hasAnchor" number="7">
+<h1><span class="header-section-number">7</span> AMR-WB 编解码<a href="ch-amr-wb.html#ch-amr-wb" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>AMR-WB 由 3GPP（第三代合作伙伴计划）制定<a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a>，是一种用于语音编码的音频压缩标准，广泛应用于移动通信领域，特别是在 3G 和 4G 网络中。
+AMR-WB 支持的音频带宽范围为 50-7000 Hz，比 AMR-NB 更宽，语音更清晰、自然。
+具备从 6.6 kbps 到 23.85 kbps 等多种码率，支持动态调整、优化语音质量和带宽占用。</p>
+<p>AMR-WB 音频采样率为 16kHz，以 20ms 为一帧，即 320 个采样（<code>AMR_WB_PCM_FRAME_16k</code>）。</p>
+<div id="使用方法-4" class="section level2 hasAnchor" number="7.1">
+<h2><span class="header-section-number">7.1</span> 使用方法<a href="ch-amr-wb.html#使用方法-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="编码-2" class="section level3 hasAnchor" number="7.1.1">
+<h3><span class="header-section-number">7.1.1</span> 编码<a href="ch-amr-wb.html#编码-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ol style="list-style-type: decimal">
+<li><p>初始化</p>
+<p>使用 <code>amr_wb_encoder_init</code> 初始化编码器对象：</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb36-1"><a href="ch-amr-wb.html#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> amr_wb_encoder <span class="op">*</span>amr_wb_encoder_init<span class="op">(</span></span>
+<span id="cb36-2"><a href="ch-amr-wb.html#cb36-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> bit_stream_format<span class="op">,</span>  <span class="co">// 比特流格式</span></span>
+<span id="cb36-3"><a href="ch-amr-wb.html#cb36-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> allow_dtx<span class="op">,</span>          <span class="co">// 是否启用 DTX (1 或 0)</span></span>
+<span id="cb36-4"><a href="ch-amr-wb.html#cb36-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> mode<span class="op">,</span>               <span class="co">// 默认模式（即码率）</span></span>
+<span id="cb36-5"><a href="ch-amr-wb.html#cb36-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>buf<span class="op">);</span>             <span class="co">// 用于存放上下文的内存</span></span></code></pre></div>
+<p>支持三种比特流格式，如表 <a href="ch-amr-wb.html#tab:ch5-amr-bit-stream-format">7.1</a> 所示。当用于语音数据压缩时，
+应该使用 MIME 格式（<code>AMR_WB_BIT_STREAM_FORMAT_MIME_IETF</code>）。</p>
+<table>
+<caption><span id="tab:ch5-amr-bit-stream-format">表 7.1: </span> AMR-WB 比特流格式</caption>
+<thead>
+<tr class="header">
+<th align="center">格式</th>
+<th align="center">帧头长度（字节）</th>
+<th align="left">载荷格式</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">ETS</td>
+<td align="center">6</td>
+<td align="left">每 2 个字节表示一个比特</td>
+</tr>
+<tr class="even">
+<td align="center">ITU</td>
+<td align="center">4</td>
+<td align="left">每 2 个字节表示一个比特</td>
+</tr>
+<tr class="odd">
+<td align="center">MIME</td>
+<td align="center">1</td>
+<td align="left">详见 RFC 3267 (5.1，5.3)</td>
+</tr>
+</tbody>
+</table>
+<p>帧头长度也可以通过 <code>amr_wb_get_frame_header_size(mode)</code> 获得。</p>
+<p><code>allow_dtx</code> 参数详见 AMR-WB 规范，可以填 <code>0</code>。</p>
+<p>模式参数 <code>mode</code> 与实际码率对应关系见表 <a href="ch-amr-wb.html#tab:ch5-amr-modes">7.2</a>。</p>
+<table>
+<caption><span id="tab:ch5-amr-modes">表 7.2: </span> AMR-WB 码率模式与帧长（MIME 格式）</caption>
+<thead>
+<tr class="header">
+<th align="center">模式</th>
+<th align="center">码率（kb/s）</th>
+<th align="center">每帧比特数</th>
+<th align="center">每帧载荷长度（字节）</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">0</td>
+<td align="center">6.6</td>
+<td align="center">132</td>
+<td align="center">17</td>
+</tr>
+<tr class="even">
+<td align="center">1</td>
+<td align="center">8.85</td>
+<td align="center">177</td>
+<td align="center">23</td>
+</tr>
+<tr class="odd">
+<td align="center">2</td>
+<td align="center">12.65</td>
+<td align="center">253</td>
+<td align="center">32</td>
+</tr>
+<tr class="even">
+<td align="center">3</td>
+<td align="center">14.25</td>
+<td align="center">285</td>
+<td align="center">36</td>
+</tr>
+<tr class="odd">
+<td align="center">4</td>
+<td align="center">15.85</td>
+<td align="center">317</td>
+<td align="center">40</td>
+</tr>
+<tr class="even">
+<td align="center">5</td>
+<td align="center">18.25</td>
+<td align="center">365</td>
+<td align="center">40</td>
+</tr>
+<tr class="odd">
+<td align="center">6</td>
+<td align="center">19.85</td>
+<td align="center">397</td>
+<td align="center">50</td>
+</tr>
+<tr class="even">
+<td align="center">7</td>
+<td align="center">23.05</td>
+<td align="center">461</td>
+<td align="center">58</td>
+</tr>
+<tr class="odd">
+<td align="center">8</td>
+<td align="center">23.85</td>
+<td align="center">477</td>
+<td align="center">60</td>
+</tr>
+</tbody>
+</table>
+<p>调用 <code>amr_wb_encoder_get_context_size()</code> 可获取 <code>buf</code> 所需大小。</p></li>
+<li><p>编码</p>
+<p>调用 <code>amr_wb_encoder_encode_frame</code> 编码一个音频帧，其返回值为音频帧的帧头和载荷的总长度。</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb37-1"><a href="ch-amr-wb.html#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> amr_wb_encoder_encode_frame<span class="op">(</span></span>
+<span id="cb37-2"><a href="ch-amr-wb.html#cb37-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> amr_wb_encoder <span class="op">*</span>ctx<span class="op">,</span> <span class="co">// 编码器对象</span></span>
+<span id="cb37-3"><a href="ch-amr-wb.html#cb37-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">int16_t</span> <span class="op">*</span>pcm_samples<span class="op">,</span> <span class="co">// PCM 输入</span></span>
+<span id="cb37-4"><a href="ch-amr-wb.html#cb37-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> <span class="op">*</span>output<span class="op">,</span>            <span class="co">// 编码输出</span></span>
+<span id="cb37-5"><a href="ch-amr-wb.html#cb37-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>scratch<span class="op">);</span>             <span class="co">// 临时内存</span></span></code></pre></div>
+<p>编码输出 <code>output</code> 的大小根据选择的码率确定（见表 <a href="ch-amr-wb.html#tab:ch5-amr-modes">7.2</a>），
+例如，若码率为 6.6 kb/s，则 <code>output</code> 的长度应该至少是 1 + 17 = 18 字节。</p>
+<p>调用 <code>amr_wb_encoder_get_context_size()</code> 可获取临时内存 <code>scratch</code> 所需大小。</p>
+<p>需要切换模式时，调用 <code>amr_wb_encoder_encode_frame2</code>，先切换模式，再编码。</p></li>
+</ol>
+<p>下面的代码演示了如何编码一整段数据。</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb38-1"><a href="ch-amr-wb.html#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> <span class="op">*</span>context <span class="op">=</span> malloc<span class="op">(</span>amr_wb_encoder_get_context_size<span class="op">());</span></span>
+<span id="cb38-2"><a href="ch-amr-wb.html#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> <span class="op">*</span>scratch <span class="op">=</span> malloc<span class="op">(</span>amr_wb_encoder_get_scratch_mem_size<span class="op">());</span></span>
+<span id="cb38-3"><a href="ch-amr-wb.html#cb38-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-4"><a href="ch-amr-wb.html#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint8_t</span> output<span class="op">[</span>模式所对应的载荷长度 <span class="op">+</span> <span class="dv">1</span><span class="op">];</span></span>
+<span id="cb38-5"><a href="ch-amr-wb.html#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> <span class="dt">uint16_t</span> <span class="op">*</span>in <span class="op">=</span> <span class="op">...</span>        <span class="co">// 音频采样</span></span>
+<span id="cb38-6"><a href="ch-amr-wb.html#cb38-6" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> <span class="dt">int</span> NUM_OF_SAMPLES <span class="op">=</span> <span class="op">....</span> <span class="co">// 总采样数</span></span>
+<span id="cb38-7"><a href="ch-amr-wb.html#cb38-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-8"><a href="ch-amr-wb.html#cb38-8" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> amr_wb_encoder <span class="op">*</span>enc <span class="op">=</span></span>
+<span id="cb38-9"><a href="ch-amr-wb.html#cb38-9" aria-hidden="true" tabindex="-1"></a>    amr_wb_encoder_init<span class="op">(</span>AMR_WB_BIT_STREAM_FORMAT_MIME_IETF<span class="op">,</span></span>
+<span id="cb38-10"><a href="ch-amr-wb.html#cb38-10" aria-hidden="true" tabindex="-1"></a>        <span class="dv">0</span><span class="op">,</span> 模式<span class="op">,</span> context<span class="op">);</span></span>
+<span id="cb38-11"><a href="ch-amr-wb.html#cb38-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-12"><a href="ch-amr-wb.html#cb38-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb38-13"><a href="ch-amr-wb.html#cb38-13" aria-hidden="true" tabindex="-1"></a>     i <span class="op">&lt;</span> NUM_OF_SAMPLES <span class="op">-</span> AMR_WB_PCM_FRAME_16k<span class="op">;</span></span>
+<span id="cb38-14"><a href="ch-amr-wb.html#cb38-14" aria-hidden="true" tabindex="-1"></a>     i <span class="op">+=</span> AMR_WB_PCM_FRAME_16k<span class="op">)</span></span>
+<span id="cb38-15"><a href="ch-amr-wb.html#cb38-15" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb38-16"><a href="ch-amr-wb.html#cb38-16" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> r <span class="op">=</span> amr_wb_encoder_encode_frame<span class="op">(</span></span>
+<span id="cb38-17"><a href="ch-amr-wb.html#cb38-17" aria-hidden="true" tabindex="-1"></a>        enc<span class="op">,</span> in <span class="op">+</span> i<span class="op">,</span> output<span class="op">,</span> scratch<span class="op">);</span></span>
+<span id="cb38-18"><a href="ch-amr-wb.html#cb38-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-19"><a href="ch-amr-wb.html#cb38-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 处理 pcm_output</span></span>
+<span id="cb38-20"><a href="ch-amr-wb.html#cb38-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">....</span></span>
+<span id="cb38-21"><a href="ch-amr-wb.html#cb38-21" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</div>
+<div id="解码-2" class="section level3 hasAnchor" number="7.1.2">
+<h3><span class="header-section-number">7.1.2</span> 解码<a href="ch-amr-wb.html#解码-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ol style="list-style-type: decimal">
+<li><p>初始化</p>
+<p>使用 <code>amr_wb_decoder_init</code> 初始化解码器对象：</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb39-1"><a href="ch-amr-wb.html#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> amr_wb_decoder <span class="op">*</span>amr_wb_decoder_init<span class="op">(</span></span>
+<span id="cb39-2"><a href="ch-amr-wb.html#cb39-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> bit_stream_format<span class="op">,</span>      <span class="co">// 比特流格式</span></span>
+<span id="cb39-3"><a href="ch-amr-wb.html#cb39-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>buf<span class="op">);</span>                 <span class="co">// 用于存放上下文的内存</span></span></code></pre></div>
+<p>调用 <code>amr_wb_decoder_get_context_size()</code> 可获取 <code>buf</code> 所需大小。</p>
+<div class="rmdnote">
+<p>
+比特流格式仅支持
+<code>AMR_WB_BIT_STREAM_FORMAT_MIME_IETF</code>。
+</p>
+</div></li>
+<li><p>解码帧头</p>
+<p>使用 <code>amr_wb_decoder_probe</code> 解码帧头，获得音频帧基本参数：</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb40-1"><a href="ch-amr-wb.html#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> amr_wb_decoder_probe<span class="op">(</span></span>
+<span id="cb40-2"><a href="ch-amr-wb.html#cb40-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> amr_wb_decoder <span class="op">*</span>ctx<span class="op">,</span> <span class="co">// 解码器对象</span></span>
+<span id="cb40-3"><a href="ch-amr-wb.html#cb40-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>stream<span class="op">);</span>     <span class="co">// 音频流</span></span></code></pre></div>
+<p>音频流 <code>stream</code> 应该指向一个音频帧的帧头。这个函数将返回这个音频帧的载荷的长度。
+如果出现错误，将返回负值错误码。</p></li>
+<li><p>解码载荷</p>
+<p>使用 <code>amr_wb_decoder_decode_frame</code> 解码载荷：</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb41-1"><a href="ch-amr-wb.html#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> amr_wb_decoder_decode_frame<span class="op">(</span></span>
+<span id="cb41-2"><a href="ch-amr-wb.html#cb41-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> amr_wb_decoder <span class="op">*</span>ctx<span class="op">,</span> <span class="co">// 解码器对象</span></span>
+<span id="cb41-3"><a href="ch-amr-wb.html#cb41-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>payload<span class="op">,</span>     <span class="co">// 音频帧载荷</span></span>
+<span id="cb41-4"><a href="ch-amr-wb.html#cb41-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int16_t</span> <span class="op">*</span>synth_pcm<span class="op">,</span>         <span class="co">// PCM 输出</span></span>
+<span id="cb41-5"><a href="ch-amr-wb.html#cb41-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>scratch<span class="op">);</span>             <span class="co">// 临时内存</span></span></code></pre></div>
+<p>这个函数返回输出的 PCM 采样的个数，即 <code>AMR_WB_PCM_FRAME_16k</code>，
+<code>synth_pcm</code> 的长度也应为 <code>AMR_WB_PCM_FRAME_16k</code>。</p>
+<p>调用 <code>amr_wb_decoder_get_scratch_mem_size()</code> 可获取临时内存 <code>scratch</code> 所需大小。</p></li>
+</ol>
+<p>下面的代码演示了如何解码一段数据。</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb42-1"><a href="ch-amr-wb.html#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint8_t</span> pcm_output<span class="op">[</span>AMR_WB_PCM_FRAME_16k<span class="op">];</span></span>
+<span id="cb42-2"><a href="ch-amr-wb.html#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-3"><a href="ch-amr-wb.html#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>in <span class="op">=</span> <span class="op">...;</span> <span class="co">// 音频数据</span></span>
+<span id="cb42-4"><a href="ch-amr-wb.html#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> data_size <span class="op">=</span> <span class="op">...;</span>     <span class="co">// 音频数据总长度</span></span>
+<span id="cb42-5"><a href="ch-amr-wb.html#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> <span class="op">*</span>context <span class="op">=</span> malloc<span class="op">(</span>amr_wb_decoder_get_context_size<span class="op">());</span></span>
+<span id="cb42-6"><a href="ch-amr-wb.html#cb42-6" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> <span class="op">*</span>scratch <span class="op">=</span> malloc<span class="op">(</span>amr_wb_decoder_get_scratch_mem_size<span class="op">());</span></span>
+<span id="cb42-7"><a href="ch-amr-wb.html#cb42-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-8"><a href="ch-amr-wb.html#cb42-8" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> amr_wb_decoder <span class="op">*</span>dec <span class="op">=</span> amr_wb_decoder_init<span class="op">(</span></span>
+<span id="cb42-9"><a href="ch-amr-wb.html#cb42-9" aria-hidden="true" tabindex="-1"></a>    AMR_WB_BIT_STREAM_FORMAT_MIME_IETF<span class="op">,</span> context<span class="op">);</span></span>
+<span id="cb42-10"><a href="ch-amr-wb.html#cb42-10" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> <span class="dt">int</span> header_size <span class="op">=</span> amr_wb_get_frame_header_size<span class="op">(</span></span>
+<span id="cb42-11"><a href="ch-amr-wb.html#cb42-11" aria-hidden="true" tabindex="-1"></a>    AMR_WB_BIT_STREAM_FORMAT_MIME_IETF<span class="op">);</span></span>
+<span id="cb42-12"><a href="ch-amr-wb.html#cb42-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-13"><a href="ch-amr-wb.html#cb42-13" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="op">(</span>data_size <span class="op">&gt;</span> header_size<span class="op">)</span></span>
+<span id="cb42-14"><a href="ch-amr-wb.html#cb42-14" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb42-15"><a href="ch-amr-wb.html#cb42-15" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> payload_len <span class="op">=</span> amr_wb_decoder_probe<span class="op">(</span>dec<span class="op">,</span> in<span class="op">);</span></span>
+<span id="cb42-16"><a href="ch-amr-wb.html#cb42-16" aria-hidden="true" tabindex="-1"></a>    in <span class="op">+=</span> header_size<span class="op">;</span></span>
+<span id="cb42-17"><a href="ch-amr-wb.html#cb42-17" aria-hidden="true" tabindex="-1"></a>    data_size <span class="op">-=</span> header_size<span class="op">;</span></span>
+<span id="cb42-18"><a href="ch-amr-wb.html#cb42-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-19"><a href="ch-amr-wb.html#cb42-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>payload_len <span class="op">&gt;</span> data_size<span class="op">)</span> <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb42-20"><a href="ch-amr-wb.html#cb42-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>payload_len <span class="op">&lt;</span> <span class="dv">0</span><span class="op">)</span> <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb42-21"><a href="ch-amr-wb.html#cb42-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-22"><a href="ch-amr-wb.html#cb42-22" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> r <span class="op">=</span> amr_wb_decoder_decode_frame<span class="op">(</span></span>
+<span id="cb42-23"><a href="ch-amr-wb.html#cb42-23" aria-hidden="true" tabindex="-1"></a>        dec<span class="op">,</span> in<span class="op">,</span> pcm_output<span class="op">,</span> scratch<span class="op">);</span></span>
+<span id="cb42-24"><a href="ch-amr-wb.html#cb42-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-25"><a href="ch-amr-wb.html#cb42-25" aria-hidden="true" tabindex="-1"></a>    in        <span class="op">+=</span> payload_len<span class="op">;</span></span>
+<span id="cb42-26"><a href="ch-amr-wb.html#cb42-26" aria-hidden="true" tabindex="-1"></a>    data_size <span class="op">-=</span> payload_len<span class="op">;</span></span>
+<span id="cb42-27"><a href="ch-amr-wb.html#cb42-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-28"><a href="ch-amr-wb.html#cb42-28" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 处理 pcm_output</span></span>
+<span id="cb42-29"><a href="ch-amr-wb.html#cb42-29" aria-hidden="true" tabindex="-1"></a>    <span class="op">....</span></span>
+<span id="cb42-30"><a href="ch-amr-wb.html#cb42-30" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</div>
+</div>
+<div id="ch-amr-wb-resources" class="section level2 hasAnchor" number="7.2">
+<h2><span class="header-section-number">7.2</span> 资源消耗<a href="ch-amr-wb.html#ch-amr-wb-resources" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>以下数据仅供参考。实际表现受编译器、Cache、RTOS、中断、音频数据等因素影响。</p>
+<div id="ing916xx-4" class="section level3 hasAnchor" number="7.2.1">
+<h3><span class="header-section-number">7.2.1</span> ING916XX<a href="ch-amr-wb.html#ing916xx-4" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<table>
+<caption><span id="tab:ch5-amr-mem-usage">表 7.3: </span> AMR-WB 编解码器的内存需求</caption>
+<thead>
+<tr class="header">
+<th align="center">功能</th>
+<th align="center"><code>context</code>（字节）</th>
+<th align="center"><code>scratch</code>（字节）</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">编码</td>
+<td align="center">2788</td>
+<td align="center">11898</td>
+</tr>
+<tr class="even">
+<td align="center">解码</td>
+<td align="center">1552</td>
+<td align="center">3826</td>
+</tr>
+</tbody>
+</table>
+<p>当 CPU 主频为 112 MHz 时，AMR-WB 编解码器的处理一个音频帧所消耗的时间见表 <a href="ch-amr-wb.html#tab:ch5-amr-time-usage">7.4</a>。
+从表中可以看出，需要进行实时编码时，只能使用 6.6 kbps，不可使用更高速率。</p>
+<table>
+<caption><span id="tab:ch5-amr-time-usage">表 7.4: </span> AMR-WB 编解码器处理一个音频帧所消耗的平均时间</caption>
+<thead>
+<tr class="header">
+<th align="center">模式</th>
+<th align="center">编码 （ms）</th>
+<th align="center">解码 （ms）</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">0</td>
+<td align="center">16.7</td>
+<td align="center">7.9</td>
+</tr>
+<tr class="even">
+<td align="center">1</td>
+<td align="center">20.0</td>
+<td align="center">6.6</td>
+</tr>
+<tr class="odd">
+<td align="center">2</td>
+<td align="center">22.2</td>
+<td align="center">5.9</td>
+</tr>
+<tr class="even">
+<td align="center">3</td>
+<td align="center">23.9</td>
+<td align="center">5.9</td>
+</tr>
+<tr class="odd">
+<td align="center">4</td>
+<td align="center">23.9</td>
+<td align="center">6.0</td>
+</tr>
+<tr class="even">
+<td align="center">5</td>
+<td align="center">24.6</td>
+<td align="center">6.1</td>
+</tr>
+<tr class="odd">
+<td align="center">6</td>
+<td align="center">25.6</td>
+<td align="center">6.2</td>
+</tr>
+<tr class="even">
+<td align="center">7</td>
+<td align="center">25.3</td>
+<td align="center">6.2</td>
+</tr>
+<tr class="odd">
+<td align="center">8</td>
+<td align="center">24.8</td>
+<td align="center">6.6</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="10">
+<li id="fn10"><p>参见 TS 26.171 等<a href="ch-amr-wb.html#fnref10" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="ch-opus.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ch-tts.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["an_libaudio.pdf", "an_libaudio.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection",
+"scroll_highlight": true
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

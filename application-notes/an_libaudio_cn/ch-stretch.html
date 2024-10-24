@@ -4,20 +4,20 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Page not found | 应用指南：音频处理库</title>
-  <meta name="description" content="Page not found | 应用指南：音频处理库." />
+  <title>9 语音变速 | 应用指南：音频处理库</title>
+  <meta name="description" content="9 语音变速 | 应用指南：音频处理库." />
   <meta name="generator" content="bookdown 0.32 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Page not found | 应用指南：音频处理库" />
+  <meta property="og:title" content="9 语音变速 | 应用指南：音频处理库" />
   <meta property="og:type" content="book" />
   
-  <meta property="og:description" content="Page not found | 应用指南：音频处理库." />
+  <meta property="og:description" content="9 语音变速 | 应用指南：音频处理库." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Page not found | 应用指南：音频处理库" />
+  <meta name="twitter:title" content="9 语音变速 | 应用指南：音频处理库" />
   
-  <meta name="twitter:description" content="Page not found | 应用指南：音频处理库." />
+  <meta name="twitter:description" content="9 语音变速 | 应用指南：音频处理库." />
   
 
 <meta name="author" content="Ingchips Technology Co., Ltd." />
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-
-
+<link rel="prev" href="ch-tts.html"/>
+<link rel="next" href="ch-acknowledgement.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -252,19 +252,152 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="page-not-found" class="section level1">
-<h1>Page not found</h1>
-<p>The page you requested cannot be found (perhaps it was moved or renamed).</p>
-<p>You may want to try searching to find the page's new location, or use
-the table of contents to find the page you are looking for.</p>
+<div id="ch-stretch" class="section level1 hasAnchor" number="9">
+<h1><span class="header-section-number">9</span> 语音变速<a href="ch-stretch.html#ch-stretch" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>音频处理库提供了语音变速功能，可把语音在时域上拉长或则缩短，而语音的采样率、基频以及共振峰保持不变。</p>
+<div id="使用方法-6" class="section level2 hasAnchor" number="9.1">
+<h2><span class="header-section-number">9.1</span> 使用方法<a href="ch-stretch.html#使用方法-6" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ol style="list-style-type: decimal">
+<li><p>确定参数</p>
+<p>确定采样率（如 16kHz）和要关注的基频范围（例如 <code>STRETCH_DEF_FREQ_RANGE</code>：55 ~ 333 Hz）。本模块要求：</p>
+<ul>
+<li>采样率 / 基频下限 &lt; 2400</li>
+<li>采样率 / 基频上限 &gt; 24</li>
+</ul>
+<p>或者说，基频不能超出 [采样率 / 2400, 采样率 / 24]。</p></li>
+<li><p>初始化变速器对象</p>
+<div class="sourceCode" id="cb70"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb70-1"><a href="ch-stretch.html#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> stretch_ctx_t <span class="op">*</span>stretch_init<span class="op">(</span></span>
+<span id="cb70-2"><a href="ch-stretch.html#cb70-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> sampling_rate<span class="op">,</span>   <span class="co">// 采样率</span></span>
+<span id="cb70-3"><a href="ch-stretch.html#cb70-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> lower_freq<span class="op">,</span>      <span class="co">// 基频下限</span></span>
+<span id="cb70-4"><a href="ch-stretch.html#cb70-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> upper_freq<span class="op">,</span>      <span class="co">// 基频上限</span></span>
+<span id="cb70-5"><a href="ch-stretch.html#cb70-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> flags<span class="op">,</span>           <span class="co">// 标志位</span></span>
+<span id="cb70-6"><a href="ch-stretch.html#cb70-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>buf<span class="op">);</span>          <span class="co">// 上下文内存</span></span></code></pre></div>
+<p>标志位 <code>flags</code> 是 <code>STRETCH_..._FLAG</code> 各种常量的组合，可以为 0。<code>buf</code>
+是用来存放语音变速器对象上下文的内存，其大小通过 <code>stretch_get_context_size</code> 获得。</p></li>
+<li><p>分配用来接收变速输出的内存</p>
+<p>本模块采用流式处理，假设每次最多输入 <code>max_num_samples</code> 个采样，则变速器每次输出的采样数至多为：</p>
+<div class="sourceCode" id="cb71"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb71-1"><a href="ch-stretch.html#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> stretch_get_output_capacity<span class="op">(</span></span>
+<span id="cb71-2"><a href="ch-stretch.html#cb71-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> stretch_ctx_t <span class="op">*</span>ctx<span class="op">,</span>  <span class="co">// 变速器对象</span></span>
+<span id="cb71-3"><a href="ch-stretch.html#cb71-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> max_num_samples<span class="op">,</span></span>
+<span id="cb71-4"><a href="ch-stretch.html#cb71-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> min_speed<span class="op">);</span></span></code></pre></div>
+<p>其中 <code>min_speed</code> 是最小速度。速度近似为原始长度与处理后的语音长度的比值，1.0 为无变化，
+大于 1.0 为压缩（加速），小于 1.0 为拉伸（减速）。</p>
+<p>根据 <code>stretch_get_output_capacity</code> 返回的最大采样数可为输出分配足够的内存（每个采样为一个 <code>int16_t</code>）。</p></li>
+<li><p>处理语音</p>
+<p>通过 <code>stretch_samples</code> 处理一小段语音数据。这个函数返回的是本次处理所输出的采样的个数。</p>
+<div class="sourceCode" id="cb72"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb72-1"><a href="ch-stretch.html#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> stretch_samples<span class="op">(</span></span>
+<span id="cb72-2"><a href="ch-stretch.html#cb72-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> stretch_ctx_t <span class="op">*</span>ctx<span class="op">,</span>  <span class="co">// 变速器对象</span></span>
+<span id="cb72-3"><a href="ch-stretch.html#cb72-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">int16_t</span> <span class="op">*</span>samples<span class="op">,</span>     <span class="co">// 输入的采样</span></span>
+<span id="cb72-4"><a href="ch-stretch.html#cb72-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> num_samples<span class="op">,</span>            <span class="co">// 输入的采样的个数</span></span>
+<span id="cb72-5"><a href="ch-stretch.html#cb72-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int16_t</span> <span class="op">*</span>output<span class="op">,</span>            <span class="co">// 输出</span></span>
+<span id="cb72-6"><a href="ch-stretch.html#cb72-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> speed<span class="op">);</span>               <span class="co">// 本次处理使用的速度</span></span></code></pre></div></li>
+<li><p>刷新数据</p>
+<p>使用 <code>stretch_flush</code> 输出剩余数据。这个函数返回的是所输出的采样的个数。</p>
+<div class="sourceCode" id="cb73"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb73-1"><a href="ch-stretch.html#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> stretch_flush<span class="op">(</span></span>
+<span id="cb73-2"><a href="ch-stretch.html#cb73-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> stretch_ctx_t <span class="op">*</span>ctx<span class="op">,</span>  <span class="co">// 变速器对象</span></span>
+<span id="cb73-3"><a href="ch-stretch.html#cb73-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int16_t</span> <span class="op">*</span>output<span class="op">);</span>           <span class="co">// 输出</span></span></code></pre></div></li>
+<li><p>复位</p>
+<p>使用 <code>stretch_reset</code> 复位变速器，为处理下一段语音做好准备。</p>
+<div class="sourceCode" id="cb74"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb74-1"><a href="ch-stretch.html#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> stretch_reset<span class="op">(</span></span>
+<span id="cb74-2"><a href="ch-stretch.html#cb74-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> stretch_ctx_t <span class="op">*</span>ctx<span class="op">);</span> <span class="co">// 变速器对象</span></span></code></pre></div></li>
+</ol>
+<p>借助变速功能还可实现语音变调（只改变音调，时域长度不变），例如：</p>
+<ol style="list-style-type: decimal">
+<li><p>将 16kHz 采样的音频直接以 8kHz 播放，音调降低，但时长也被拉长到 2 倍；</p></li>
+<li><p>使用变速功能将速度变为 2 倍，则时长与原音频保持一致。</p></li>
+</ol>
+</div>
+<div id="ch-stretch-resources" class="section level2 hasAnchor" number="9.2">
+<h2><span class="header-section-number">9.2</span> 资源消耗<a href="ch-stretch.html#ch-stretch-resources" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>以下数据仅供参考。实际表现受编译器、Cache、RTOS、中断、音频数据等因素影响。</p>
+<p>内存占用与参数有关，例如：</p>
+<div class="sourceCode" id="cb75"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb75-1"><a href="ch-stretch.html#cb75-1" aria-hidden="true" tabindex="-1"></a>stretch_get_context_size<span class="op">(</span><span class="dv">16000</span><span class="op">,</span> STRETCH_DEF_FREQ_RANGE<span class="op">,</span> <span class="dv">0</span><span class="op">)</span> <span class="op">==</span> <span class="dv">1788</span> <span class="op">(</span>字节<span class="op">)</span></span></code></pre></div>
+<p>使用上述参数，并且 <code>max_num_samples</code> 取做 <code>AMR_WB_PCM_FRAME_16k</code>，不同 <code>min_speed</code> 设置下的
+<code>stretch_get_output_capacity()</code> 返回的内存大小如表 <a href="ch-stretch.html#tab:ch-stretch-output-capacity">9.1</a></p>
+<table>
+<caption><span id="tab:ch-stretch-output-capacity">表 9.1: </span> 为输出预留的内存空间的大小</caption>
+<thead>
+<tr class="header">
+<th align="center">最小速度</th>
+<th align="right">为输出预留的内存（字节）</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">0.6</td>
+<td align="right">3026</td>
+</tr>
+<tr class="even">
+<td align="center">0.8</td>
+<td align="right">2706</td>
+</tr>
+<tr class="odd">
+<td align="center">1.2</td>
+<td align="right">2386</td>
+</tr>
+<tr class="even">
+<td align="center">1.4</td>
+<td align="right">2386</td>
+</tr>
+</tbody>
+</table>
+<div class="rmdnote">
+<p>
+提示：用于 TTS 变速时，请留意
+<code>tts_get_scratch_mem2_size()</code> 的大小，
+如果足以容纳变速器的输出，则可考虑复用。
+</p>
+</div>
+<div id="ing916xx-6" class="section level3 hasAnchor" number="9.2.1">
+<h3><span class="header-section-number">9.2.1</span> ING916XX<a href="ch-stretch.html#ing916xx-6" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>在上述参数下，生成 <code>AMR_WB_PCM_FRAME_16k</code> 个采样，需要的平均时间可参考表 <a href="ch-stretch.html#tab:ch-stretch-performance">9.2</a>。</p>
+<div class="rmdnote">
+<p>
+减小基频范围可缩短处理时间。
+</p>
+</div>
+<table>
+<caption><span id="tab:ch-stretch-performance">表 9.2: </span> 特定参数下语音变速时间消耗参考值</caption>
+<thead>
+<tr class="header">
+<th align="center">速度</th>
+<th align="right">时间消耗 (ms)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">0.6</td>
+<td align="right">5.9</td>
+</tr>
+<tr class="even">
+<td align="center">0.8</td>
+<td align="right">5.8</td>
+</tr>
+<tr class="odd">
+<td align="center">1.2</td>
+<td align="right">8.8</td>
+</tr>
+<tr class="even">
+<td align="center">1.4</td>
+<td align="right">10.1</td>
+</tr>
+<tr class="odd">
+<td align="center">1.6</td>
+<td align="right">11.5</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-
-
+<a href="ch-tts.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ch-acknowledgement.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

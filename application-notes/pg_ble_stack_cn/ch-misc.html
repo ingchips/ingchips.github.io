@@ -369,7 +369,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1><span class="header-section-number">12</span> 杂项<a href="ch-misc.html#ch-misc" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <div id="接收-cte" class="section level2 hasAnchor" number="12.1">
 <h2><span class="header-section-number">12.1</span> 接收 CTE<a href="ch-misc.html#接收-cte" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>共有四种 CTE 接收、发送方式<a href="#fn51" class="footnote-ref" id="fnref51"><sup>51</sup></a>。
+<p>共有四种 CTE 接收、发送方式<a href="ch-cap.html#fn51" class="footnote-ref" id="fnref51"><sup>51</sup></a>。
 以 AoA 为例，各种方式的使用方法如下。</p>
 <div id="基于连接的-cte-接收和发送" class="section level3 hasAnchor" number="12.1.1">
 <h3><span class="header-section-number">12.1.1</span> 基于连接的 CTE 接收和发送<a href="ch-misc.html#基于连接的-cte-接收和发送" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -504,12 +504,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>这种方式的使用可参考 SDK <em>Central CTE</em> 和 <em>Peripehral LED &amp; CTE</em>。</p>
 <div id="发送方-2" class="section level4 hasAnchor" number="12.1.4.1">
 <h4><span class="header-section-number">12.1.4.1</span> 发送方<a href="ch-misc.html#发送方-2" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p>配置一个扩展广播集，属性设置为不可连接、不可扫描。待广播集使能后，调用 <code>ll_attach_cte_to_adv_set</code><a href="#fn52" class="footnote-ref" id="fnref52"><sup>52</sup></a>
+<p>配置一个扩展广播集，属性设置为不可连接、不可扫描。待广播集使能后，调用 <code>ll_attach_cte_to_adv_set</code><a href="ch-cap.html#fn52" class="footnote-ref" id="fnref52"><sup>52</sup></a>
 为扩展广播附加 CTE。</p>
 </div>
 <div id="接收方-2" class="section level4 hasAnchor" number="12.1.4.2">
 <h4><span class="header-section-number">12.1.4.2</span> 接收方<a href="ch-misc.html#接收方-2" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p>启动扫描之后，调用 <code>ll_scanner_enable_iq_sampling</code><a href="#fn53" class="footnote-ref" id="fnref53"><sup>53</sup></a> 使能 CTE 采样。
+<p>启动扫描之后，调用 <code>ll_scanner_enable_iq_sampling</code><a href="ch-cap.html#fn53" class="footnote-ref" id="fnref53"><sup>53</sup></a> 使能 CTE 采样。
 之后，通过 <code>HCI_SUBEVENT_LE_VENDOR_PRO_CONNECTIONLESS_IQ_REPORT</code> 事件获得 CTE 报告。</p>
 </div>
 </div>
@@ -568,7 +568,7 @@ CIPHERTEXT:69c4e0d86a7b0430d8cdb78070b4c55a</code></pre>
 <div id="aes-ccm" class="section level3 hasAnchor" number="12.2.2">
 <h3><span class="header-section-number">12.2.2</span> AES-CCM<a href="ch-misc.html#aes-ccm" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>CCM 是 Cipher Block Chaining-Message Authentication Code (CBC-MAC) 和 Counter 模式（CTR）的组合，同时对数据加密和生成认证信息。
-通过 <code>gap_start_ccm</code> 启动 AES-CCM 计算<a href="#fn54" class="footnote-ref" id="fnref54"><sup>54</sup></a>：</p>
+通过 <code>gap_start_ccm</code> 启动 AES-CCM 计算<a href="ch-cap.html#fn54" class="footnote-ref" id="fnref54"><sup>54</sup></a>：</p>
 <div class="sourceCode" id="cb121"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb121-1"><a href="ch-misc.html#cb121-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_start_ccm<span class="op">(</span></span>
 <span id="cb121-2"><a href="ch-misc.html#cb121-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">uint8_t</span>  type<span class="op">,</span>        <span class="co">// 类型：0 为加密，1 为解密</span></span>
 <span id="cb121-3"><a href="ch-misc.html#cb121-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">uint8_t</span>  mic_size<span class="op">,</span>    <span class="co">// MIC 长度（4 或 8 字节）</span></span>
@@ -646,7 +646,7 @@ CIPHERTEXT:69c4e0d86a7b0430d8cdb78070b4c55a</code></pre>
 <h3><span class="header-section-number">12.3.1</span> Data Length 与 MTU<a href="ch-misc.html#data-length-与-mtu" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>低功耗蓝牙进入连接模式后，各层分别协商通信中数据包的大小，对于 ATT 层，由 MTU EXCHANGE 流程实现；对于链路层，由 DATA LENGTH 更新流程实现。</p>
 <p>按照规范，进入连接模式后，DATA LENGTH 更新流程可以由主或从设备在任何时刻发起。这导致了一个问题：某些芯片无法处理对方设备“随时”发起的
-DATA LENGTH 更新流程<a href="#fn55" class="footnote-ref" id="fnref55"><sup>55</sup></a>。
+DATA LENGTH 更新流程<a href="ch-cap.html#fn55" class="footnote-ref" id="fnref55"><sup>55</sup></a>。
 为了更新地兼容不同的芯片，协议栈定义了两个配置项：</p>
 <div class="sourceCode" id="cb127"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb127-1"><a href="ch-misc.html#cb127-1" aria-hidden="true" tabindex="-1"></a><span class="kw">enum</span> btstack_config_item <span class="op">{</span></span>
 <span id="cb127-2"><a href="ch-misc.html#cb127-2" aria-hidden="true" tabindex="-1"></a>    STACK_ATT_SERVER_ENABLE_AUTO_DATA_LEN_REQ <span class="op">=</span> <span class="dv">1</span><span class="op">,</span></span>
@@ -728,7 +728,7 @@ DATA LENGTH 更新流程<a href="#fn55" class="footnote-ref" id="fnref55"><sup>5
 <div id="默认的键值存储实现" class="section level3 hasAnchor" number="12.5.2">
 <h3><span class="header-section-number">12.5.2</span> 默认的键值存储实现<a href="ch-misc.html#默认的键值存储实现" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>默认的键值存储实现的总储存大小为 1024 字节。这个实现本身没有数据持久化。
-持久化需要开发者通过 <code>kv_init</code><a href="#fn56" class="footnote-ref" id="fnref56"><sup>56</sup></a> 提供回调来实现：</p>
+持久化需要开发者通过 <code>kv_init</code><a href="ch-cap.html#fn56" class="footnote-ref" id="fnref56"><sup>56</sup></a> 提供回调来实现：</p>
 <div class="sourceCode" id="cb135"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb135-1"><a href="ch-misc.html#cb135-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> kv_init<span class="op">(</span></span>
 <span id="cb135-2"><a href="ch-misc.html#cb135-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 用来保存数据的回调</span></span>
 <span id="cb135-3"><a href="ch-misc.html#cb135-3" aria-hidden="true" tabindex="-1"></a>  f_kv_write_to_nvm f_write<span class="op">,</span></span>
@@ -771,7 +771,7 @@ DATA LENGTH 更新流程<a href="#fn55" class="footnote-ref" id="fnref55"><sup>5
 <div id="ch98-le-dev-db" class="section level2 hasAnchor" number="12.6">
 <h2><span class="header-section-number">12.6</span> 设备数据库<a href="ch-misc.html#ch98-le-dev-db" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>设备数据库模块（<em>le_device_db</em>）负责存储、管理设备的绑定信息。这个模块是基于键值存储模块实现的，
-所能存储的设备个数等于 max(软件包所支持的连接数目, 10)<a href="#fn57" class="footnote-ref" id="fnref57"><sup>57</sup></a>。删、查等接口如下。</p>
+所能存储的设备个数等于 max(软件包所支持的连接数目, 10)<a href="ch-cap.html#fn57" class="footnote-ref" id="fnref57"><sup>57</sup></a>。删、查等接口如下。</p>
 <ul>
 <li><p>查：<code>le_device_db_find</code></p>
 <div class="sourceCode" id="cb138"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb138-1"><a href="ch-misc.html#cb138-1" aria-hidden="true" tabindex="-1"></a>le_device_memory_db_t <span class="op">*</span>le_device_db_find<span class="op">(</span></span>
@@ -857,7 +857,7 @@ v8.2 以下版本的 <em>gatt_client_util</em> 模块仅提供 GATT
 <span id="cb145-2"><a href="ch-misc.html#cb145-2" aria-hidden="true" tabindex="-1"></a>    gatt_client_create_sync_runner<span class="op">(</span>synced_push_user_msg<span class="op">);</span></span></code></pre></div></li>
 </ol></li>
 </ul>
-<p>注意：对于一个连接，最多只能存在一个与之关联的同步执行器。最简单的用法是在初始化时创建唯一一个同步执行器对象<a href="#fn58" class="footnote-ref" id="fnref58"><sup>58</sup></a>。创建多个同步执行器时，最多只能有一个使能了 GAP 同步版 API。</p>
+<p>注意：对于一个连接，最多只能存在一个与之关联的同步执行器。最简单的用法是在初始化时创建唯一一个同步执行器对象<a href="ch-cap.html#fn58" class="footnote-ref" id="fnref58"><sup>58</sup></a>。创建多个同步执行器时，最多只能有一个使能了 GAP 同步版 API。</p>
 <p>上述准备工作做完，就可以使用同步 API 了。下面这个函数 —— 称为一个同步执行体 —— 使用同步 API 多次读取某个特征的值并打印：</p>
 <div class="sourceCode" id="cb146"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb146-1"><a href="ch-misc.html#cb146-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 用 user_data 表示 value_handle</span></span>
 <span id="cb146-2"><a href="ch-misc.html#cb146-2" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> demo_synced_api<span class="op">(</span></span>
@@ -905,7 +905,7 @@ v8.2 以下版本的 <em>gatt_client_util</em> 模块仅提供 GATT
 <p>与 <code>gap_ext_create_connection</code> 相比，这个函数是“阻塞”的：函数直到连接成功或者超时才返回。
 如果调用 <code>gap_create_connection</code> 时出错，则 <code>gap_ext_create_connection</code> 会返回其错误码；
 其它情况下返回的值即 <code>le_meta_event_enh_create_conn_complete_t</code> 里的 <code>status</code> 字段。
-也就是说，连接建立成功时返回值为 0 时，超时时返回值为 0x02<a href="#fn59" class="footnote-ref" id="fnref59"><sup>59</sup></a> (未知的连接句柄)。</p>
+也就是说，连接建立成功时返回值为 0 时，超时时返回值为 0x02<a href="ch-cap.html#fn59" class="footnote-ref" id="fnref59"><sup>59</sup></a> (未知的连接句柄)。</p>
 <p><code>complete</code> 参数为输出，保存了<code>HCI_SUBEVENT_LE_ENHANCED_CONNECTION_COMPLETE</code> 事件的数据。
 同使用 <code>gap_ext_create_connection</code> 一样，已有的 HCI 事件回调函数也会收到
 这个 <code>HCI_SUBEVENT_LE_ENHANCED_CONNECTION_COMPLETE</code> 事件。</p></li>
@@ -949,7 +949,7 @@ v8.2 以下版本的 <em>gatt_client_util</em> 模块仅提供 GATT
 <span id="cb152-10"><a href="ch-misc.html#cb152-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> <span class="op">*</span>subversion<span class="op">);</span></span></code></pre></div>
 <p>蓝牙链路层协议版本号由 Bluethooth SIG 指定，部分编号与版本号的对应关系如表
 <a href="ch-overview.html#tab:ch-overview-ble-version">3.4</a> 所示；
-厂家编号由厂家申请、Bluethooth SIG 指定<a href="#fn60" class="footnote-ref" id="fnref60"><sup>60</sup></a>；
+厂家编号由厂家申请、Bluethooth SIG 指定<a href="ch-cap.html#fn60" class="footnote-ref" id="fnref60"><sup>60</sup></a>；
 Controller 版本号由 Controller 厂家自行指定。</p></li>
 <li><p><code>gap_sync_read_remote_used_features</code>：读取某连接对端设备使用的蓝牙特性</p>
 <p>函数原型如下：</p>
@@ -970,7 +970,7 @@ Controller 版本号由 Controller 厂家自行指定。</p></li>
 <li><p><code>gatt_client_sync_read_value_of_characteristic</code>：同步读取特征的值</p></li>
 <li><p><code>gatt_client_sync_read_characteristic_descriptor</code>：同步读取特征描述符</p></li>
 <li><p><code>gatt_client_sync_write_value_of_characteristic</code>：同步有响应地写入特征的值</p></li>
-<li><p><code>gatt_client_sync_write_value_of_characteristic_without_response</code>：同步无响应地写入特征的值<a href="#fn61" class="footnote-ref" id="fnref61"><sup>61</sup></a></p></li>
+<li><p><code>gatt_client_sync_write_value_of_characteristic_without_response</code>：同步无响应地写入特征的值<a href="ch-cap.html#fn61" class="footnote-ref" id="fnref61"><sup>61</sup></a></p></li>
 <li><p><code>gatt_client_sync_write_characteristic_descriptor</code>：同步写入特征描述符</p></li>
 </ul>
 </div>
@@ -1019,7 +1019,7 @@ Controller 版本号由 Controller 厂家自行指定。</p></li>
 <ul>
 <li>这个模块依赖于一个真正的 RTOS。使用 NoOS 软件包时，必需提供真正的队列及事件支持。</li>
 <li>封装必然存在开销。对于高性能、高实时性的应用，不推荐使用。反之，对于相对简单的应用，则推荐使用，可以简化代码；</li>
-<li>不要在中断服务程序内使用这些 API<a href="#fn62" class="footnote-ref" id="fnref62"><sup>62</sup></a>。</li>
+<li>不要在中断服务程序内使用这些 API<a href="ch-cap.html#fn62" class="footnote-ref" id="fnref62"><sup>62</sup></a>。</li>
 </ul>
 </div>
 <div id="ch-misc-privacy" class="section level2 hasAnchor" number="12.9">

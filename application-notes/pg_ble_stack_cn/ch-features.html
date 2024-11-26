@@ -398,8 +398,8 @@ S=8 传输包头信息的速率为 <span class="math inline">\(125kb/s\)</span>�
 <p>在旧规范中，广播只能使用 37、38、39 等 3 个信道。随着 BLE 设备的快速增长，
 这 3 个信道将变得越来越拥挤。于是新规范将广播 <em>扩展</em> 到另外的 37 个信道，并将旧版广播称为传统广播
 （Legacy advertising）。一个设备可以使用不同的广播参数、地址发送多组扩展广播，每组广播称为一个广播集。</p>
-<p>扩展广播由一串广播 PDU 组成<a href="#fn13" class="footnote-ref" id="fnref13"><sup>13</sup></a>，最多可携带 1650 字节的广播数据。
-第 1 个 PDU 仍位于 37、38、39 等 3 个信道，相同内容重复 3 次<a href="#fn14" class="footnote-ref" id="fnref14"><sup>14</sup></a>。
+<p>扩展广播由一串广播 PDU 组成<a href="ch-cap.html#fn13" class="footnote-ref" id="fnref13"><sup>13</sup></a>，最多可携带 1650 字节的广播数据。
+第 1 个 PDU 仍位于 37、38、39 等 3 个信道，相同内容重复 3 次<a href="ch-cap.html#fn14" class="footnote-ref" id="fnref14"><sup>14</sup></a>。
 这些 PDU 里含有一种新的长度可变的包头，其中的 AuxPtr 用来通知扫描方何时、何地（信道）接收下一个 PDU，
 如同一个指向时频域的指针。AuxPtr 包含以下字段：</p>
 <ul>
@@ -441,7 +441,7 @@ PDU 没有任何区别。</p>
 <div id="信道选择算法-2" class="section level3 hasAnchor" number="4.1.4">
 <h3><span class="header-section-number">4.1.4</span> 信道选择算法 #2<a href="ch-features.html#信道选择算法-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>旧规范里的信道选择算法仅有 1 个参数，<code>hopIncrement</code>。
-假设上一个连接事件所使用的信道的原始编号<a href="#fn15" class="footnote-ref" id="fnref15"><sup>15</sup></a>为 <span class="math inline">\(n\)</span>，
+假设上一个连接事件所使用的信道的原始编号<a href="ch-cap.html#fn15" class="footnote-ref" id="fnref15"><sup>15</sup></a>为 <span class="math inline">\(n\)</span>，
 那么，本次连接事件所使用的信道的原始编号就是 <span class="math inline">\((n + \mathit{hopIncrement}) \mod 37\)</span>。</p>
 <p>这种跳频算法基本没有随机性，效果不佳。新的信道选择算法 #2 可粗略地写为</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb8-1"><a href="ch-features.html#cb8-1" aria-hidden="true" tabindex="-1"></a>hash<span class="op">(</span>AccessAddress<span class="op">,</span> EventCounter<span class="op">);</span></span></code></pre></div>
@@ -483,7 +483,7 @@ PDU 没有任何区别。</p>
 <p>假设设备 A 与设备 B 之间已经建立连接。如果设备 A 正在发送周期广播或者已经与其它设备发送的周期广播建立同步，
 现设备 B 也需要与这个周期广播建立了同步，那么设备 A 可以将周期广播的信息传递给设备 B，
 设备 B 根据这个信息直接开始接收 AUX_SYNC_IND，迅速建立同步。
-这一传递过程简称 PAST<a href="#fn16" class="footnote-ref" id="fnref16"><sup>16</sup></a>，其关键在于以连接事件为参考，
+这一传递过程简称 PAST<a href="ch-cap.html#fn16" class="footnote-ref" id="fnref16"><sup>16</sup></a>，其关键在于以连接事件为参考，
 描述周期广播的定时信息。</p>
 <div class="rmdnote">
 <p>
@@ -551,7 +551,7 @@ PDU 没有任何区别。</p>
 <li><p>对于 PAwR，PAST 是必选项。</p></li>
 </ul>
 <p>如图 <a href="ch-features.html#fig:ch-features-pawr">4.1</a> 所示，PAwR 将 PADVB 的一个广播周期拆分为多个子事件，
-每个子事件包含 1 个数接包<a href="#fn17" class="footnote-ref" id="fnref17"><sup>17</sup></a>，及多个响应时隙。
+每个子事件包含 1 个数接包<a href="ch-cap.html#fn17" class="footnote-ref" id="fnref17"><sup>17</sup></a>，及多个响应时隙。
 为了确定它们之间的定时关系，增加了子事件间隔、响应时隙延迟、响应时隙间隔、响应时隙数目等参数。</p>
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch-features-pawr"></span>
 <img src="img/pawr_timing.png" alt="PAwR 子事件与响应" width="85%" />
@@ -573,7 +573,7 @@ PDU 没有任何区别。</p>
 <div id="广播时-coded-phy-选择" class="section level3 hasAnchor" number="4.6.1">
 <h3><span class="header-section-number">4.6.1</span> 广播时 Coded PHY 选择<a href="ch-features.html#广播时-coded-phy-选择" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>当使用 Coded PHY 发送广播时，5.4 以前的 HCI 无法指定 S=2 或者 S=8。5.4 补上了这一“漏洞”。
-SDK 一直支持<a href="#fn18" class="footnote-ref" id="fnref18"><sup>18</sup></a>
+SDK 一直支持<a href="ch-cap.html#fn18" class="footnote-ref" id="fnref18"><sup>18</sup></a>
 通过 API <code>ll_set_adv_coded_scheme</code> 选择 S=2 或者 S=8。</p>
 
 </div>

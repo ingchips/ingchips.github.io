@@ -395,7 +395,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb25-9"><a href="ch-scan.html#cb25-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 只接收来自白名单内的设备的广播（所定向的设备与本设备身份地址不同的除外）</span></span>
 <span id="cb25-10"><a href="ch-scan.html#cb25-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// SCAN_ACCEPT_WLIST_EXCEPT_IDENTITY_NOT_MATCH</span></span>
 <span id="cb25-11"><a href="ch-scan.html#cb25-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> scan_filter_policy_t<span class="op">;</span></span></code></pre></div>
-<p>后两种策略<a href="#fn23" class="footnote-ref" id="fnref23"><sup>23</sup></a>与前两种策略的区别在于判断是否接受定向广播的方法不同。前两种策略只接受满足以下两者之一的定向广播：</p>
+<p>后两种策略<a href="ch-cap.html#fn23" class="footnote-ref" id="fnref23"><sup>23</sup></a>与前两种策略的区别在于判断是否接受定向广播的方法不同。前两种策略只接受满足以下两者之一的定向广播：</p>
 <ol style="list-style-type: decimal">
 <li>TargetA 与本设备的地址一致，</li>
 <li>TargetA 是可解析地址，且可由本设备的 IRK 解析。</li>
@@ -445,6 +445,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb27-9"><a href="ch-scan.html#cb27-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 扫描窗口，单位是 625us</span></span>
 <span id="cb27-10"><a href="ch-scan.html#cb27-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> window<span class="op">;</span></span>
 <span id="cb27-11"><a href="ch-scan.html#cb27-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> scan_phy_config_t<span class="op">;</span></span></code></pre></div>
+<div class="rmdnote">
+<p>
+当连接、扫描并发时，由于协议栈倾向于优化传输速率，将明显降低扫描任务的调度。需要更多地调度扫描任务时，
+可调用 LL API <code>ll_hint_on_ce_len</code><a href="ch-cap.html#fn1"
+class="footnote-ref" id="fnref1"><sup>1</sup></a> 提示 Controller
+减小连接事件的长度。
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
 </div>
 <div id="起停扫描" class="section level3 hasAnchor" number="6.2.2">
 <h3><span class="header-section-number">6.2.2</span> 起停扫描<a href="ch-scan.html#起停扫描" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -512,7 +531,7 @@ Controller
 </div>
 <div id="与周期广播同步" class="section level3 hasAnchor" number="6.2.4">
 <h3><span class="header-section-number">6.2.4</span> 与周期广播同步<a href="ch-scan.html#与周期广播同步" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>发现周期广播后，可以通过 <code>gap_periodic_adv_create_sync</code> 与周期广播同步<a href="#fn24" class="footnote-ref" id="fnref24"><sup>24</sup></a>：</p>
+<p>发现周期广播后，可以通过 <code>gap_periodic_adv_create_sync</code> 与周期广播同步<a href="ch-cap.html#fn24" class="footnote-ref" id="fnref24"><sup>24</sup></a>：</p>
 <div class="sourceCode" id="cb31"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb31-1"><a href="ch-scan.html#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_periodic_adv_create_sync<span class="op">(</span></span>
 <span id="cb31-2"><a href="ch-scan.html#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 过滤策略：目标地址来自白名单还是参数</span></span>
 <span id="cb31-3"><a href="ch-scan.html#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> periodic_adv_filter_policy_t filter_policy<span class="op">,</span></span>
@@ -577,6 +596,7 @@ Controller
 <hr />
 <ol start="23">
 <li id="fn23"><p>后两种策略在规范中称为 Extended filter policy。ING916 和 ING918 不支持后两种策略。<a href="ch-scan.html#fnref23" class="footnote-back">↩︎</a></p></li>
+<li id="fn1"><p><a href="https://www.bluetooth.com/" class="uri">https://www.bluetooth.com/</a><a href="ch-intro.html#fnref1" class="footnote-back">↩︎</a></p></li>
 <li id="fn24"><p>即周期性地接收周期广播。<a href="ch-scan.html#fnref24" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>

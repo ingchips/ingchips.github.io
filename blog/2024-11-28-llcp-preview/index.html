@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>基于 Trace 实现 LLPC预览功能 - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="基于 Trace 实现 LLCP 预览功能，能帮助开发者实时监控 LLCP 通信，简单高效。"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+
+      <div id="box">
+        <input id="in_search" type="search" name="search" placeholder="搜索：输入并回车">
+      </div>
+
+      <script>
+        let search_input = document.getElementById('in_search');
+        if (search_input) {
+          search_input.addEventListener("keypress", function(event) {
+          if (event.key === "Enter") {
+            window.open('https://www.bing.com/search?q=' + encodeURIComponent(search_input.value) + '%20site%3A' + window.location.hostname);
+            event.preventDefault();
+            }
+          });
+        }
+      </script>
+
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item has-children">
+
+              
+<a class="" href="/docs/sdk/apps/#web-apps">
+  
+  Web 工具
+  
+</a>
+
+              
+
+                <ul class="submenu">
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/callgraph">
+  
+  Callgraph (调用图)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index.html">
+  
+  ING918/ING916 FOTA
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index_cn.html">
+  
+  ING918/ING916 FOTA (中文版)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/powerprofiler/">
+  
+  Online Power Profiler
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/air_trace/">
+  
+  Trace Logger
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/assertion_tool/index.html">
+  
+  ING918/ING916 Assertion Tool
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/assertion_tool/index_cn.html">
+  
+  ING918/ING916 Assertion Tool (中文版)
+  
+</a>
+
+  </li>
+  
+</ul>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+    <div class="inner outer">
+  <div class="docs-content">
+    <article class="post post-full">
+      <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+              inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+              displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+          }
+        });
+      </script>
+      <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <header class="post-header has-gradient outer">
+        
+        
+        <div class="inner-sm">
+          <div class="post-meta">
+            <time class="published" datetime="2024-11-28 00:00">November 28, 2024</time>
+          </div>
+          <h1 class="post-title">基于 Trace 实现 LLPC预览功能</h1>
+          
+          
+        </div>
+      </header>
+      <div class="inner-md outer">
+        <div class="post-content">
+          <p>在蓝牙协议栈开发过程中，有时需要预先知道 LLCP。本文将介绍如何利用 trace 机制实现 LLCP 预览功能。</p>
+
+<h2 id="实现原理">实现原理</h2>
+
+<p>打开 trace <code class="language-plaintext highlighter-rouge">PLATFORM_TRACE_ID_LLCP</code> 类型，Controller 会在接收到 LLCP 时通过 trace 回调函数导出数据。
+我们可以在回调函数里截获 <code class="language-plaintext highlighter-rouge">PLATFORM_TRACE_ID_LLCP</code>，并预览数据。这个的“预览”包含两层含义：</p>
+
+<ol>
+  <li>Controller 尚未处理该 PDU（Controller 将于 trace 回调完成后处理 PDU）；</li>
+  <li>只可读取 PDU 内容，不可修改。</li>
+</ol>
+
+<p>让我们详细介绍实现方法。</p>
+
+<h3 id="1-trace-数据结构">1. Trace 数据结构</h3>
+
+<p><code class="language-plaintext highlighter-rouge">PLATFORM_TRACE_ID_LLCP</code> trace 类型使用的头信息结构如下：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#pragma pack (push, 1)
+</span><span class="k">typedef</span> <span class="k">struct</span>
+<span class="p">{</span>
+    <span class="kt">uint32_t</span> <span class="n">A</span><span class="p">;</span>
+    <span class="kt">uint32_t</span> <span class="n">B</span><span class="p">;</span>
+    <span class="kt">uint8_t</span>  <span class="n">id</span><span class="p">;</span>
+    <span class="kt">uint8_t</span>  <span class="n">tag</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">header_t</span><span class="p">;</span>
+<span class="cp">#pragma pack (pop)
+</span></code></pre></div></div>
+
+<p>这个结构使用 <code class="language-plaintext highlighter-rouge">#pragma pack (push, 1)</code> 指令确保内存对齐。</p>
+
+<h3 id="2-trace-回调处理">2. Trace 回调处理</h3>
+
+<p>假设 <code class="language-plaintext highlighter-rouge">cb_trace_read_llcp</code> 函数为 trace 回调函数，在函数开头添加代码截获接收到的 LLCP：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">static</span> <span class="kt">uint32_t</span> <span class="nf">cb_trace_read_llcp</span><span class="p">(</span><span class="k">const</span> <span class="n">platform_evt_trace_t</span> <span class="o">*</span><span class="n">trace</span><span class="p">,</span> <span class="n">trace_rtt_t</span> <span class="o">*</span><span class="n">ctx</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">trace</span><span class="o">-&gt;</span><span class="n">len1</span> <span class="o">==</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">header_t</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="k">const</span> <span class="n">header_t</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="k">const</span> <span class="n">header_t</span> <span class="o">*</span><span class="p">)</span><span class="n">trace</span><span class="o">-&gt;</span><span class="n">data1</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">((</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">id</span> <span class="o">==</span> <span class="n">PLATFORM_TRACE_ID_LLCP</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">tag</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="p">{</span>
+            <span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">p8</span> <span class="o">=</span> <span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="p">)</span><span class="n">trace</span><span class="o">-&gt;</span><span class="n">data2</span><span class="p">;</span>
+            <span class="n">llcp_preview</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">tag</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="n">p8</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">p8</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">trace</span><span class="o">-&gt;</span><span class="n">len2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="c1">// ...</span>
+
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="3-pdu-预览显示">3. PDU 预览显示</h3>
+
+<p><code class="language-plaintext highlighter-rouge">llcp_preview</code> 函数负责预览 LLCP。下面的参考代码打印了关于 LLCP 的完整信息：</p>
+
+<ul>
+  <li>连接句柄（handle）</li>
+  <li>操作码（op_code）</li>
+  <li>控制数据</li>
+</ul>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">static</span> <span class="kt">void</span> <span class="nf">llcp_preview</span><span class="p">(</span><span class="n">hci_con_handle_t</span> <span class="n">handle</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">op_code</span><span class="p">,</span> <span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">ctr_data</span><span class="p">,</span> <span class="kt">int</span> <span class="n">ctr_data_len</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">platform_printf</span><span class="p">(</span><span class="s">"LLCP[%d] OP %02x: "</span><span class="p">,</span> <span class="n">handle</span><span class="p">,</span> <span class="n">op_code</span><span class="p">);</span>
+    <span class="n">printf_hexdump</span><span class="p">(</span><span class="n">ctr_data</span><span class="p">,</span> <span class="n">ctr_data_len</span><span class="p">);</span>
+    <span class="n">platform_printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="总结">总结</h2>
+
+<p>利用 trace 机制实现的 PDU 预览功能，能帮助开发者实时监控 LLCP 通信，实现必要功能。</p>
+
+        </div><!-- .post-content -->
+      </div><!-- .inner-md -->
+    </article><!-- .post -->
+
+    <nav id="page-nav" class="page-nav">
+      <div id="page-nav-inside" class="page-nav-inside sticky">
+        <h2 class="page-nav-title">Jump to Section</h2>
+      </div><!-- .page-nav-inside -->
+    </nav><!-- .page-nav -->
+  </div>
+</div>
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2021-2023. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

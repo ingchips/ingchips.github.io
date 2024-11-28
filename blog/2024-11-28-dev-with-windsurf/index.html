@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>用 Windsurf 打造 AI 辅助集成开发环境 - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="Windsurf 是一个 AI 辅助的集成开发环境，利于先进的 AI 技术帮助开发者完成开发任务。"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+
+      <div id="box">
+        <input id="in_search" type="search" name="search" placeholder="搜索：输入并回车">
+      </div>
+
+      <script>
+        let search_input = document.getElementById('in_search');
+        if (search_input) {
+          search_input.addEventListener("keypress", function(event) {
+          if (event.key === "Enter") {
+            window.open('https://www.bing.com/search?q=' + encodeURIComponent(search_input.value) + '%20site%3A' + window.location.hostname);
+            event.preventDefault();
+            }
+          });
+        }
+      </script>
+
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item has-children">
+
+              
+<a class="" href="/docs/sdk/apps/#web-apps">
+  
+  Web 工具
+  
+</a>
+
+              
+
+                <ul class="submenu">
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/callgraph">
+  
+  Callgraph (调用图)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index.html">
+  
+  ING918/ING916 FOTA
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index_cn.html">
+  
+  ING918/ING916 FOTA (中文版)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/powerprofiler/">
+  
+  Online Power Profiler
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/air_trace/">
+  
+  Trace Logger
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/assertion_tool/index.html">
+  
+  ING918/ING916 Assertion Tool
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/assertion_tool/index_cn.html">
+  
+  ING918/ING916 Assertion Tool (中文版)
+  
+</a>
+
+  </li>
+  
+</ul>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+    <div class="inner outer">
+  <div class="docs-content">
+    <article class="post post-full">
+      <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+              inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+              displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+          }
+        });
+      </script>
+      <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <header class="post-header has-gradient outer">
+        
+        
+        <div class="inner-sm">
+          <div class="post-meta">
+            <time class="published" datetime="2024-11-28 00:00">November 28, 2024</time>
+          </div>
+          <h1 class="post-title">用 Windsurf 打造 AI 辅助集成开发环境</h1>
+          
+          
+        </div>
+      </header>
+      <div class="inner-md outer">
+        <div class="post-content">
+          <p><a href="https://windsurfai.org/">Windsurf</a> 是一款由 Codeium 开发的智能集成开发环境（IDE），它融合了最先进的 AI 技术，为开发者提供前所未有的编程体验。其号称世界上第一款真正智能化的 IDE，能够与开发者进行自然的对话式交互，真正实现智能协作编程。主要特点：</p>
+
+<ul>
+  <li><strong>智能代码助手</strong>：内置强大的 AI 助手 Cascade，能够理解开发者的意图，提供准确的代码建议和解决方案。</li>
+  <li><strong>自然语言交互</strong>：开发者可以用自然语言描述需求，Windsurf 能够准确理解并执行相应的编程任务。</li>
+  <li><strong>代码智能分析</strong>：自动分析代码结构和依赖关系，提供深入的代码洞察。</li>
+  <li><strong>协作编程体验</strong>：AI 助手可以作为配对编程伙伴，帮助开发者更快更好地完成编程任务。</li>
+  <li><strong>智能调试能力</strong>：具备强大的代码调试和错误分析能力，帮助开发者快速定位和解决问题。</li>
+</ul>
+
+<p>本文将介绍 Windsurf 结合 INGCHIPS SDK 的配置方法。</p>
+
+<h2 id="安装与配置">安装与配置</h2>
+
+<p>从 <a href="https://codeium.com/windsurf">官网</a> 下载并安装。</p>
+
+<h2 id="用途-1问答机器人">用途 1：问答机器人</h2>
+
+<p>Windsurf 可以作为一个问答机器人，自动阅读文档，回答问题。</p>
+
+<ol>
+  <li>
+    <p>克隆或者下载 INGCHIPS 软件文档网站：</p>
+
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> git clone https://github.com/ingchips/ingchips.github.io.git
+</code></pre></div>    </div>
+
+    <p>假设克隆到 <code class="language-plaintext highlighter-rouge">ingchips.github.io</code> 目录。</p>
+  </li>
+  <li>
+    <p>用 Windsurf 打开 <code class="language-plaintext highlighter-rouge">ingchips.github.io</code> 目录，开始问答。</p>
+  </li>
+</ol>
+
+<h3 id="对话演示">对话演示</h3>
+
+<ol>
+  <li>
+    <p>问：SDK v8.4.18 更新了什么？</p>
+
+    <p><img src="../img/windsurf_ai_assistant.png" alt="" /></p>
+
+    <p>其中划掉的几项为其它版本的改动，Windsurf 错误地识别了版本号。</p>
+  </li>
+  <li>
+    <p>问：如何进行 Opus 编码？</p>
+
+    <p><img src="../img/windsurf_ai_opus_1.png" alt="" /></p>
+
+    <p><img src="../img/windsurf_ai_opus_2.png" alt="" /></p>
+  </li>
+</ol>
+
+<h2 id="用途-2ai-辅助开发">用途 2：AI 辅助开发</h2>
+
+<p>安装 <code class="language-plaintext highlighter-rouge">clangd</code> 插件，用于 C/C++ 语言的代码智能分析。插件安装后自动下载 <code class="language-plaintext highlighter-rouge">clangd</code> 后端程序，请等待下载完成后再使用。</p>
+
+<ol>
+  <li>
+    <p>使用 Wizard 以 “<strong>COPY to my project</strong>” 的方式新建项目</p>
+
+    <p>假设新项目的目录为 <code class="language-plaintext highlighter-rouge">c:/tmp/test_sdk</code>。假设 Wizard 配置的 SDK 路径为 <code class="language-plaintext highlighter-rouge">c:\Program\ING_SDK</code></p>
+  </li>
+  <li>
+    <p>在项目根目录下新建文件 <code class="language-plaintext highlighter-rouge">.clangd</code>，内容如下:</p>
+
+    <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="na">CompileFlags</span><span class="pi">:</span>
+     <span class="na">Add</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">-DUSE_STDPERIPH_DRIVER</span><span class="pi">,</span> <span class="nv">-D__GNUC__</span><span class="pi">,</span> <span class="nv">-D__packed</span><span class="pi">,</span> <span class="nv">-Ic</span><span class="pi">:</span><span class="nv">/Program/ING_SDK/wizard/CMSIS/Include</span><span class="pi">,</span> <span class="nv">-Ic</span><span class="pi">:</span><span class="nv">/tmp/test_sdk/sdk/bundles/typical/inc</span><span class="pi">,</span> <span class="nv">-Ic</span><span class="pi">:</span><span class="nv">/tmp/test_sdk/sdk/bundles/typical/inc/os</span><span class="pi">,</span> <span class="nv">-Ic</span><span class="pi">:</span><span class="nv">/tmp/test_sdk/sdk/src/BSP</span><span class="pi">,</span> <span class="nv">-Ic</span><span class="pi">:</span><span class="nv">/tmp/test_sdk/sdk/src/FWlib</span><span class="pi">,</span> <span class="nv">-Ic</span><span class="pi">:</span><span class="nv">/tmp/test_sdk/sdk/src/StartUP/ing918</span><span class="pi">,</span> <span class="nv">-Ic</span><span class="pi">:</span><span class="nv">/tmp/test_sdk/sdk/src/Tools</span><span class="pi">,</span> <span class="nv">-Ic</span><span class="pi">:</span><span class="nv">/tmp/test_sdk/sdk/src/SigMesh/inc/mesh</span><span class="pi">,</span> <span class="nv">-Ic</span><span class="pi">:</span><span class="nv">/tmp/test_sdk/sdk/src/SigMesh/inc/mesh_host</span><span class="pi">]</span>
+</code></pre></div>    </div>
+
+    <div class="note">
+ <strong>说明：</strong>测试表明这里似乎必须使用绝对路径，有待进一步研究。另请参考这个 <a href="https://github.com/clangd/clangd/discussions/903">讨论</a>。</div>
+  </li>
+  <li>
+    <p>使用 Windsurf 打开项目，浏览代码，确认 <code class="language-plaintext highlighter-rouge">clangd</code> 后端已经启动，可以进行智能分析。</p>
+
+    <p><img src="../img/windsurf_clangd_working.png" alt="" /></p>
+
+    <p>注意，图中给出了所用函数各参数的名称，对于参数较多的函数，这个功能非常有用。</p>
+  </li>
+</ol>
+
+<p>现在就可以体验 Windsurf 的完整功能了。</p>
+
+<div class="note">
+<strong>温馨提示：</strong>Windsurf 会积极地参与开发过程，请务必注意使用 git 等版本控制工具。</div>
+
+        </div><!-- .post-content -->
+      </div><!-- .inner-md -->
+    </article><!-- .post -->
+
+    <nav id="page-nav" class="page-nav">
+      <div id="page-nav-inside" class="page-nav-inside sticky">
+        <h2 class="page-nav-title">Jump to Section</h2>
+      </div><!-- .page-nav-inside -->
+    </nav><!-- .page-nav -->
+  </div>
+</div>
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2021-2023. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+    </body>
+</html>

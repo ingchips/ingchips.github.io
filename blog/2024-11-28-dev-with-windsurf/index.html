@@ -316,7 +316,9 @@
   <li>
     <p>使用 Wizard 以 “<strong>COPY to my project</strong>” 的方式新建项目</p>
 
-    <p>假设新项目的目录为 <code class="language-plaintext highlighter-rouge">c:/tmp/test_sdk</code>。假设 Wizard 配置的 SDK 路径为 <code class="language-plaintext highlighter-rouge">c:\Program\ING_SDK</code></p>
+    <p>假设新项目的目录为 <code class="language-plaintext highlighter-rouge">c:/tmp/test_sdk</code>。假设 Wizard 配置的 SDK 路径为 <code class="language-plaintext highlighter-rouge">c:\Program\ING_SDK</code>。</p>
+
+    <p>可以手动将 SDK 里的例子复制到项目路径下，供 AI 参考。</p>
   </li>
   <li>
     <p>在项目根目录下新建文件 <code class="language-plaintext highlighter-rouge">.clangd</code>，内容如下:</p>
@@ -337,10 +339,43 @@
   </li>
 </ol>
 
-<p>现在就可以体验 Windsurf 的完整功能了。</p>
+<p>现在就可以体验 Windsurf 的完整功能了。我们用 Wizard 创建一个广播数据、Profile 都为空的 ING918 Keil 工程。</p>
 
 <div class="note">
 <strong>温馨提示：</strong>Windsurf 会积极地参与开发过程，请务必注意使用 git 等版本控制工具。</div>
+
+<h3 id="演示-1-设置广播名称">演示 1. 设置广播名称</h3>
+
+<p>尝试用 Windsurf 设置广播名称。在 Cascade 里输入“set device name to “WINDSURF” in adv data”，它能够自动分析代码，
+找到正确的位置，完成设置：</p>
+
+<p><img src="../img/windsurf_cascade_adv_data.png" alt="" /></p>
+
+<p>更新后的广播数据：</p>
+
+<p><img src="../img/windsurf_ai_update_adv_data.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">adv_data</code> 里的广播名称设置了为“WINDSURF”。</p>
+
+<h3 id="演示-2-加入低功耗功能">演示 2. 加入低功耗功能</h3>
+
+<p>尝试用 Windsurf 加入低功耗功能。它从 SDK 里找到了 <code class="language-plaintext highlighter-rouge">power_ctrl</code> lib，在正确的位置添加了 3 个函数的调用。</p>
+
+<p><img src="../img/windsurf_ai_power_lib.png" alt="" /></p>
+
+<p>提醒 Windsurf 需要找一个 platform 的低功耗配置，它就在 <code class="language-plaintext highlighter-rouge">app_main</code> 里使能了低功耗，但是使能标志是“幻想”出来的 <code class="language-plaintext highlighter-rouge">ENABLE</code>，
+告诉 Windsurf <code class="language-plaintext highlighter-rouge">ENABLE</code> 未定义，最终修改如下：</p>
+
+<p><img src="../img/windsurf_ai_platform_cfg.png" alt="" /></p>
+
+<p>编译发现缺少 <code class="language-plaintext highlighter-rouge">power_ctrl</code> lib 3 个函数的定义。把这个信息告诉 Windsurf，它首先询问是否把
+<code class="language-plaintext highlighter-rouge">power_ctrl.lib</code> 拷贝到 <code class="language-plaintext highlighter-rouge">src</code> 目录，拒绝并告诉它可以直接添加到工程，它就自动修改了 <code class="language-plaintext highlighter-rouge">.uvprojx</code> 工程文件：</p>
+
+<p><img src="../img/windsurf_ai_modify_project.png" alt="" /></p>
+
+<h2 id="总结">总结</h2>
+
+<p>INGCHIPS SDK 可以方便地与 Windsurf 结合，在项目开发过程中充分利用 Windsurf 带来的智能化编程。</p>
 
         </div><!-- .post-content -->
       </div><!-- .inner-md -->

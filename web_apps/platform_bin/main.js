@@ -45,7 +45,8 @@ function show_summary() {
     let releases = Array.from(all_releases);
     releases.sort((a, b) => compare_list(extract_numbers(a), extract_numbers(b)));
 
-    $('#sdk-version-msg').text('Support SDK versions from ' + releases[0] + ' to ' + releases[releases.length - 1] + '.');
+    $('#sdk-version-msg').text('Support SDK versions from ' + releases[0] + ' to ' + releases[releases.length - 1]
+        + ' (' + Object.keys(sdkBins).length + ' binaries).');
 }
 
 function setup_drop_zone(id, drop_handler)
@@ -78,22 +79,22 @@ async function processPlatformBin(f) {
     $('#main_window').attr('hidden', true);
 
     if (sha1 in sdkBins) {
-        
+
         $('#info_found_window').attr('hidden', false);
 
         let bin = sdkBins[sha1];
-        
+
         let bundle = bin['bundle'].split('\\');
         $('#bundle_varient').text(bundle[0]);
         $('#bundle_chip').text(bundle[1]);
-        
+
         $('#first_released_in_sdk_version').text(bin['rel'][0]);
         if (bin['rel'].length > 1) {
             $('#platform_included_in').attr('hidden', false);
         }
 
         for (let release of bin['rel'].slice(1)) {
-            let span = document.createElement('span');            
+            let span = document.createElement('span');
             span.appendChild(document.createTextNode(release));
             span.classList.add('uk-label', 'uk-margin-small-right', 'uk-text-lowercase');
             document.getElementById('platform_included_in').appendChild(span);
@@ -111,7 +112,7 @@ async function handleBinFileDrop(evt) {
 }
 
 async function appStart() {
-    
+
     if (window.File && window.FileReader && window.FileList && window.Blob) {
     } else {
         return;

@@ -301,6 +301,22 @@
     <p>[<strong>修正</strong>] SM: 加密失败的处理</p>
 
     <p>旧版本：当与已配对设备重新建立连接时加密失败，SM 未做处理。新版本 SM 将上报 <code class="language-plaintext highlighter-rouge">SM_FINAL_FAIL_ENCRYPTION</code>。</p>
+
+    <p><strong>Q:</strong> 对于无法升级 SDK 的应用如何处理？</p>
+
+    <p><strong>A:</strong> 响应 <code class="language-plaintext highlighter-rouge">HCI_EVENT_ENCRYPTION_CHANGE</code> 事件，删除配对配对信息并重启。</p>
+
+    <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">case</span> <span class="n">HCI_EVENT_ENCRYPTION_CHANGE</span><span class="p">:</span>
+  <span class="p">{</span>
+      <span class="k">const</span> <span class="n">hci_encryption_change_event_t</span> <span class="o">*</span><span class="n">evt</span> <span class="o">=</span> <span class="n">decode_hci_event</span><span class="p">(</span><span class="n">packet</span><span class="p">,</span> <span class="n">hci_encryption_change_event_t</span><span class="p">);</span>
+      <span class="k">if</span> <span class="p">((</span><span class="n">evt</span><span class="o">-&gt;</span><span class="n">status</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">evt</span><span class="o">-&gt;</span><span class="n">enabled</span> <span class="o">==</span> <span class="mi">0</span><span class="p">))</span>
+      <span class="p">{</span>
+          <span class="err">删除对端设备的配对信息</span><span class="p">,</span> <span class="err">保存数据</span><span class="p">;</span>
+          <span class="err">重启</span><span class="p">;</span>
+      <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="k">break</span><span class="p">;</span>
+</code></pre></div>    </div>
   </li>
 </ul>
 

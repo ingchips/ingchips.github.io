@@ -275,6 +275,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="9.2.4" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#写入特征"><i class="fa fa-check"></i><b>9.2.4</b> 写入特征</a></li>
 <li class="chapter" data-level="9.2.5" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#订阅特征"><i class="fa fa-check"></i><b>9.2.5</b> 订阅特征</a></li>
 <li class="chapter" data-level="9.2.6" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#att_mtu-1"><i class="fa fa-check"></i><b>9.2.6</b> ATT_MTU</a></li>
+<li class="chapter" data-level="9.2.7" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#自定义-mtu"><i class="fa fa-check"></i><b>9.2.7</b> 自定义 MTU </a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="10" data-path="ch-l2cap.html"><a href="ch-l2cap.html"><i class="fa fa-check"></i><b>10</b> L2CAP</a>
@@ -315,9 +316,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="12.2.1" data-path="ch-misc.html"><a href="ch-misc.html#aes-128-加密"><i class="fa fa-check"></i><b>12.2.1</b> AES-128 加密</a></li>
 <li class="chapter" data-level="12.2.2" data-path="ch-misc.html"><a href="ch-misc.html#aes-ccm"><i class="fa fa-check"></i><b>12.2.2</b> AES-CCM</a></li>
 </ul></li>
-<li class="chapter" data-level="12.3" data-path="ch-misc.html"><a href="ch-misc.html#兼容性"><i class="fa fa-check"></i><b>12.3</b> 兼容性</a>
+<li class="chapter" data-level="12.3" data-path="ch-misc.html"><a href="ch-misc.html#协议栈配置"><i class="fa fa-check"></i><b>12.3</b> 协议栈配置</a>
 <ul>
 <li class="chapter" data-level="12.3.1" data-path="ch-misc.html"><a href="ch-misc.html#data-length-与-mtu"><i class="fa fa-check"></i><b>12.3.1</b> Data Length 与 MTU</a></li>
+<li class="chapter" data-level="12.3.2" data-path="ch-misc.html"><a href="ch-misc.html#面向测试"><i class="fa fa-check"></i><b>12.3.2</b> 面向测试</a></li>
 </ul></li>
 <li class="chapter" data-level="12.4" data-path="ch-misc.html"><a href="ch-misc.html#api-返回值"><i class="fa fa-check"></i><b>12.4</b> API 返回值</a></li>
 <li class="chapter" data-level="12.5" data-path="ch-misc.html"><a href="ch-misc.html#键值存储接口与实现"><i class="fa fa-check"></i><b>12.5</b> 键值存储接口与实现</a>
@@ -370,7 +372,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="概览-4" class="section level2 hasAnchor" number="10.1">
 <h2><span class="header-section-number">10.1</span> 概览<a href="ch-l2cap.html#概览-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>BLE L2CAP 负责高层协议复用，分包、组包，以及 QoS 信息的传输。</p>
-<p>L2CAP 定义了基于信用点的连接。两个设备之间可以建立多个基于信用点的连接，不同连接用 SPSM<a href="#fn37" class="footnote-ref" id="fnref37"><sup>37</sup></a> 区分。
+<p>L2CAP 定义了基于信用点的连接。两个设备之间可以建立多个基于信用点的连接，不同连接用 SPSM<a href="ch-cap.html#fn39" class="footnote-ref" id="fnref39"><sup>39</sup></a> 区分。
 SPSM 长度为 16 比特，<code>0x0001</code>~<code>0x007f</code> 为规范保留，<code>0x0080</code>~<code>0x00ff</code> 可自由使用：</p>
 <ul>
 <li>对于服务端，SPSM 可以取固定值或根据 GATT Profile 动态设置；</li>
@@ -386,17 +388,17 @@ SPSM 长度为 16 比特，<code>0x0001</code>~<code>0x007f</code> 为规范保�
 <div id="从端请求更新连接参数" class="section level3 hasAnchor" number="10.2.1">
 <h3><span class="header-section-number">10.2.1</span> 从端请求更新连接参数<a href="ch-l2cap.html#从端请求更新连接参数" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>从角色调用 <code>l2cap_request_connection_parameter_update</code> 可向主端请求更新连接参数：</p>
-<div class="sourceCode" id="cb76"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb76-1"><a href="ch-l2cap.html#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> l2cap_request_connection_parameter_update<span class="op">(</span></span>
-<span id="cb76-2"><a href="ch-l2cap.html#cb76-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 连接句柄</span></span>
-<span id="cb76-3"><a href="ch-l2cap.html#cb76-3" aria-hidden="true" tabindex="-1"></a>  hci_con_handle_t con_handle<span class="op">,</span></span>
-<span id="cb76-4"><a href="ch-l2cap.html#cb76-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 请求的最小连接间隔（单位 1.25ms）</span></span>
-<span id="cb76-5"><a href="ch-l2cap.html#cb76-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> conn_interval_min<span class="op">,</span></span>
-<span id="cb76-6"><a href="ch-l2cap.html#cb76-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 请求的最大连接间隔（单位 1.25ms）</span></span>
-<span id="cb76-7"><a href="ch-l2cap.html#cb76-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> conn_interval_max<span class="op">,</span></span>
-<span id="cb76-8"><a href="ch-l2cap.html#cb76-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 请求的从机延迟</span></span>
-<span id="cb76-9"><a href="ch-l2cap.html#cb76-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> conn_latency<span class="op">,</span></span>
-<span id="cb76-10"><a href="ch-l2cap.html#cb76-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 请求的超时时间（单位 10ms）</span></span>
-<span id="cb76-11"><a href="ch-l2cap.html#cb76-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> supervision_timeout<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb77"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb77-1"><a href="ch-l2cap.html#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> l2cap_request_connection_parameter_update<span class="op">(</span></span>
+<span id="cb77-2"><a href="ch-l2cap.html#cb77-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 连接句柄</span></span>
+<span id="cb77-3"><a href="ch-l2cap.html#cb77-3" aria-hidden="true" tabindex="-1"></a>  hci_con_handle_t con_handle<span class="op">,</span></span>
+<span id="cb77-4"><a href="ch-l2cap.html#cb77-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 请求的最小连接间隔（单位 1.25ms）</span></span>
+<span id="cb77-5"><a href="ch-l2cap.html#cb77-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> conn_interval_min<span class="op">,</span></span>
+<span id="cb77-6"><a href="ch-l2cap.html#cb77-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 请求的最大连接间隔（单位 1.25ms）</span></span>
+<span id="cb77-7"><a href="ch-l2cap.html#cb77-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> conn_interval_max<span class="op">,</span></span>
+<span id="cb77-8"><a href="ch-l2cap.html#cb77-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 请求的从机延迟</span></span>
+<span id="cb77-9"><a href="ch-l2cap.html#cb77-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> conn_latency<span class="op">,</span></span>
+<span id="cb77-10"><a href="ch-l2cap.html#cb77-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 请求的超时时间（单位 10ms）</span></span>
+<span id="cb77-11"><a href="ch-l2cap.html#cb77-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> supervision_timeout<span class="op">);</span></span></code></pre></div>
 <p>事件 <code>HCI_SUBEVENT_LE_CONNECTION_UPDATE_COMPLETE</code> 标志着参数更新完成。</p>
 </div>
 <div id="基于信用点的连接" class="section level3 hasAnchor" number="10.2.2">
@@ -404,12 +406,12 @@ SPSM 长度为 16 比特，<code>0x0001</code>~<code>0x007f</code> 为规范保�
 <ol style="list-style-type: decimal">
 <li><p>注册 SPSM 及回调</p>
 <p>调用 <code>l2cap_register_service</code> 注册 SPSM 及对应的回调函数：</p>
-<div class="sourceCode" id="cb77"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb77-1"><a href="ch-l2cap.html#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> l2cap_register_service<span class="op">(</span></span>
-<span id="cb77-2"><a href="ch-l2cap.html#cb77-2" aria-hidden="true" tabindex="-1"></a>  btstack_packet_handler_t packet_handler<span class="op">,</span></span>
-<span id="cb77-3"><a href="ch-l2cap.html#cb77-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> psm<span class="op">,</span>  <span class="co">// SPSM</span></span>
-<span id="cb77-4"><a href="ch-l2cap.html#cb77-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> mtu<span class="op">,</span>  <span class="co">// MTU 可填 0</span></span>
-<span id="cb77-5"><a href="ch-l2cap.html#cb77-5" aria-hidden="true" tabindex="-1"></a>  gap_security_level_t security_level</span>
-<span id="cb77-6"><a href="ch-l2cap.html#cb77-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb78"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb78-1"><a href="ch-l2cap.html#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> l2cap_register_service<span class="op">(</span></span>
+<span id="cb78-2"><a href="ch-l2cap.html#cb78-2" aria-hidden="true" tabindex="-1"></a>  btstack_packet_handler_t packet_handler<span class="op">,</span></span>
+<span id="cb78-3"><a href="ch-l2cap.html#cb78-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> psm<span class="op">,</span>  <span class="co">// SPSM</span></span>
+<span id="cb78-4"><a href="ch-l2cap.html#cb78-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> mtu<span class="op">,</span>  <span class="co">// MTU 可填 0</span></span>
+<span id="cb78-5"><a href="ch-l2cap.html#cb78-5" aria-hidden="true" tabindex="-1"></a>  gap_security_level_t security_level</span>
+<span id="cb78-6"><a href="ch-l2cap.html#cb78-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">);</span></span></code></pre></div>
 <p>这里的 <code>MTU</code> 最小为 23，可直接填 0，表示采用协议栈所支持的最大 MTU。无论是服务端还是客户端，
 都需要完成这个注册流程。</p>
 <p>这个回调函数将收到以下事件：</p>
@@ -418,40 +420,40 @@ SPSM 长度为 16 比特，<code>0x0001</code>~<code>0x007f</code> 为规范保�
 <p>事件参数详见 <code>l2cap_event_channel_opened_t</code>。</p></li>
 <li><p>L2CAP_EVENT_CHANNEL_CLOSED：连接已关闭</p>
 <p>事件参数详见 <code>l2cap_event_channel_closed_t</code>。</p></li>
-<li><p>L2CAP_EVENT_COMPLETED_SDU_PACKET：收到完整 SDU<a href="#fn38" class="footnote-ref" id="fnref38"><sup>38</sup></a></p>
+<li><p>L2CAP_EVENT_COMPLETED_SDU_PACKET：收到完整 SDU<a href="ch-cap.html#fn40" class="footnote-ref" id="fnref40"><sup>40</sup></a></p>
 <p>事件参数详见 <code>l2cap_event_complete_sdu_t</code>。</p></li>
-<li><p>L2CAP_EVENT_FRAGMENT_SDU_PACKET：收到 SDU 片断<a href="#fn39" class="footnote-ref" id="fnref39"><sup>39</sup></a></p>
+<li><p>L2CAP_EVENT_FRAGMENT_SDU_PACKET：收到 SDU 片断<a href="ch-cap.html#fn41" class="footnote-ref" id="fnref41"><sup>41</sup></a></p>
 <p>事件参数详见 l2cap_event_fragment_sdu_t。</p></li>
 </ul></li>
 <li><p>建立连接</p>
 <p>BLE 连接建立并发现服务端的 SPSM 后，客户端就可以调用这个函数发起基于信用点的连接：</p>
-<div class="sourceCode" id="cb78"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb78-1"><a href="ch-l2cap.html#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> l2cap_create_le_credit_based_connection_request<span class="op">(</span></span>
-<span id="cb78-2"><a href="ch-l2cap.html#cb78-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> credits<span class="op">,</span>   <span class="co">// 赋于对端的初始信用点</span></span>
-<span id="cb78-3"><a href="ch-l2cap.html#cb78-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> psm<span class="op">,</span>       <span class="co">// SPSM</span></span>
-<span id="cb78-4"><a href="ch-l2cap.html#cb78-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> handle<span class="op">,</span>    <span class="co">// 连接句加柄</span></span>
-<span id="cb78-5"><a href="ch-l2cap.html#cb78-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> <span class="op">*</span>local_cid <span class="co">// 本基于信用点的连接的 ID</span></span>
-<span id="cb78-6"><a href="ch-l2cap.html#cb78-6" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb79"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb79-1"><a href="ch-l2cap.html#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> l2cap_create_le_credit_based_connection_request<span class="op">(</span></span>
+<span id="cb79-2"><a href="ch-l2cap.html#cb79-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> credits<span class="op">,</span>   <span class="co">// 赋于对端的初始信用点</span></span>
+<span id="cb79-3"><a href="ch-l2cap.html#cb79-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> psm<span class="op">,</span>       <span class="co">// SPSM</span></span>
+<span id="cb79-4"><a href="ch-l2cap.html#cb79-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> handle<span class="op">,</span>    <span class="co">// 连接句加柄</span></span>
+<span id="cb79-5"><a href="ch-l2cap.html#cb79-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> <span class="op">*</span>local_cid <span class="co">// 本基于信用点的连接的 ID</span></span>
+<span id="cb79-6"><a href="ch-l2cap.html#cb79-6" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div></li>
 <li><p>发送数据</p>
 <p>连接打开后调用 <code>l2cap_credit_based_send</code> 发送数据：</p>
-<div class="sourceCode" id="cb79"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb79-1"><a href="ch-l2cap.html#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> l2cap_credit_based_send<span class="op">(</span></span>
-<span id="cb79-2"><a href="ch-l2cap.html#cb79-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> local_cid<span class="op">,</span>   <span class="co">// 基于信用点的连接的 ID</span></span>
-<span id="cb79-3"><a href="ch-l2cap.html#cb79-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>data<span class="op">,</span>  <span class="co">// SDU 数据</span></span>
-<span id="cb79-4"><a href="ch-l2cap.html#cb79-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> len          <span class="co">// SDU 总长度</span></span>
-<span id="cb79-5"><a href="ch-l2cap.html#cb79-5" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb80"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb80-1"><a href="ch-l2cap.html#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> l2cap_credit_based_send<span class="op">(</span></span>
+<span id="cb80-2"><a href="ch-l2cap.html#cb80-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> local_cid<span class="op">,</span>   <span class="co">// 基于信用点的连接的 ID</span></span>
+<span id="cb80-3"><a href="ch-l2cap.html#cb80-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>data<span class="op">,</span>  <span class="co">// SDU 数据</span></span>
+<span id="cb80-4"><a href="ch-l2cap.html#cb80-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> len          <span class="co">// SDU 总长度</span></span>
+<span id="cb80-5"><a href="ch-l2cap.html#cb80-5" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
 <p>这个函数如果出错，将返回负数错误码：</p>
 <ul>
 <li><code>-BTSTACK_LE_CHANNEL_NOT_EXIST：连接不存在</code></li>
 </ul>
-<p>否则这个函数会返回发送出去<a href="#fn40" class="footnote-ref" id="fnref40"><sup>40</sup></a>的数据的长度。当整个 SDU 都已发送时，
-返回值与 <code>len</code> 参数相同，否则小于 <code>len</code> 参数<a href="#fn41" class="footnote-ref" id="fnref41"><sup>41</sup></a>。
+<p>否则这个函数会返回发送出去<a href="ch-cap.html#fn42" class="footnote-ref" id="fnref42"><sup>42</sup></a>的数据的长度。当整个 SDU 都已发送时，
+返回值与 <code>len</code> 参数相同，否则小于 <code>len</code> 参数<a href="ch-cap.html#fn43" class="footnote-ref" id="fnref43"><sup>43</sup></a>。
 这时，需要等待有可用的信用点或者链路层队列出现空余时：如果返回值为 0，则再次调用
 <code>l2cap_credit_based_send</code> 重新发送；否则调用 <code>l2cap_credit_based_send_continue</code>
 继续发送剩余数据：</p>
-<div class="sourceCode" id="cb80"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb80-1"><a href="ch-l2cap.html#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> l2cap_credit_based_send_continue<span class="op">(</span></span>
-<span id="cb80-2"><a href="ch-l2cap.html#cb80-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> local_cid<span class="op">,</span>   <span class="co">// 基于信用点的连接的 ID</span></span>
-<span id="cb80-3"><a href="ch-l2cap.html#cb80-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>data<span class="op">,</span>  <span class="co">// SDU 剩余数据</span></span>
-<span id="cb80-4"><a href="ch-l2cap.html#cb80-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> len          <span class="co">// SDU 剩余长度</span></span>
-<span id="cb80-5"><a href="ch-l2cap.html#cb80-5" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb81"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb81-1"><a href="ch-l2cap.html#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> l2cap_credit_based_send_continue<span class="op">(</span></span>
+<span id="cb81-2"><a href="ch-l2cap.html#cb81-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> local_cid<span class="op">,</span>   <span class="co">// 基于信用点的连接的 ID</span></span>
+<span id="cb81-3"><a href="ch-l2cap.html#cb81-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>data<span class="op">,</span>  <span class="co">// SDU 剩余数据</span></span>
+<span id="cb81-4"><a href="ch-l2cap.html#cb81-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> len          <span class="co">// SDU 剩余长度</span></span>
+<span id="cb81-5"><a href="ch-l2cap.html#cb81-5" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
 <div class="rmdcaution">
 <p>
 在完整发送一个 SDU 前不可调用 <code>l2cap_credit_based_send</code>
@@ -460,17 +462,17 @@ SPSM 长度为 16 比特，<code>0x0001</code>~<code>0x007f</code> 为规范保�
 </div></li>
 <li><p>为对端补充信用点</p>
 <p>调用 <code>l2cap_le_send_flow_control_credit</code> 即可为对端补充信用点：</p>
-<div class="sourceCode" id="cb81"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb81-1"><a href="ch-l2cap.html#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> l2cap_le_send_flow_control_credit<span class="op">(</span></span>
-<span id="cb81-2"><a href="ch-l2cap.html#cb81-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> local_cid<span class="op">,</span>   <span class="co">// 基于信用点的连接的 ID</span></span>
-<span id="cb81-3"><a href="ch-l2cap.html#cb81-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> credits      <span class="co">// 要补充的点数</span></span>
-<span id="cb81-4"><a href="ch-l2cap.html#cb81-4" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb82"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb82-1"><a href="ch-l2cap.html#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> l2cap_le_send_flow_control_credit<span class="op">(</span></span>
+<span id="cb82-2"><a href="ch-l2cap.html#cb82-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> local_cid<span class="op">,</span>   <span class="co">// 基于信用点的连接的 ID</span></span>
+<span id="cb82-3"><a href="ch-l2cap.html#cb82-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> credits      <span class="co">// 要补充的点数</span></span>
+<span id="cb82-4"><a href="ch-l2cap.html#cb82-4" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div></li>
 <li><p>查询信用点数</p>
 <p>调用 <code>l2cap_get_le_credit_based_connection_credits</code> 查询当前的信用点情况：</p>
-<div class="sourceCode" id="cb82"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb82-1"><a href="ch-l2cap.html#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> l2cap_get_le_credit_based_connection_credits<span class="op">(</span></span>
-<span id="cb82-2"><a href="ch-l2cap.html#cb82-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> local_cid<span class="op">,</span>     <span class="co">// 基于信用点的连接的 ID</span></span>
-<span id="cb82-3"><a href="ch-l2cap.html#cb82-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> <span class="op">*</span>peer_credits<span class="op">,</span></span>
-<span id="cb82-4"><a href="ch-l2cap.html#cb82-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> <span class="op">*</span>local_credits</span>
-<span id="cb82-5"><a href="ch-l2cap.html#cb82-5" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb83"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb83-1"><a href="ch-l2cap.html#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> l2cap_get_le_credit_based_connection_credits<span class="op">(</span></span>
+<span id="cb83-2"><a href="ch-l2cap.html#cb83-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> local_cid<span class="op">,</span>     <span class="co">// 基于信用点的连接的 ID</span></span>
+<span id="cb83-3"><a href="ch-l2cap.html#cb83-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> <span class="op">*</span>peer_credits<span class="op">,</span></span>
+<span id="cb83-4"><a href="ch-l2cap.html#cb83-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> <span class="op">*</span>local_credits</span>
+<span id="cb83-5"><a href="ch-l2cap.html#cb83-5" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
 <p><code>local_credits</code> 表示对方还能允许本方在该连接上发送多少 K 帧；<code>peer_credits</code>
 表示对方的 <code>local_credits</code>。</p></li>
 </ol>
@@ -485,22 +487,22 @@ SPSM 长度为 16 比特，<code>0x0001</code>~<code>0x007f</code> 为规范保�
 <li><p>要求协议栈产生“可发送”事件，在事件中重新尝试发送；</p>
 <p>对于 GATT 服务器，调用 <code>att_server_request_can_send_now_event</code>。待传输队列不满时，
 GATT 服务器的<a href="ch-gatt-server.html#ch-gatt-server-overview">事件回调函数</a>会收到 <code>ATT_EVENT_CAN_SEND_NOW</code> 事件。
-也可以调用 <code>att_dispatch_server_request_can_send_now_event</code><a href="#fn42" class="footnote-ref" id="fnref42"><sup>42</sup></a>，待传输队列不满时，会收到 <code>L2CAP_EVENT_CAN_SEND_NOW</code> 事件。</p>
+也可以调用 <code>att_dispatch_server_request_can_send_now_event</code><a href="ch-cap.html#fn44" class="footnote-ref" id="fnref44"><sup>44</sup></a>，待传输队列不满时，会收到 <code>L2CAP_EVENT_CAN_SEND_NOW</code> 事件。</p>
 <p>对于 GATT 客户端，调用 <code>att_dispatch_client_request_can_send_now_event</code>。待传输队列不满时，
 GATT 客户端的事件回调函数会收到 <code>L2CAP_EVENT_CAN_SEND_NOW</code> 事件。</p>
 <p>另有 <code>att_server_can_send_now</code>、<code>att_dispatch_client_can_send_now</code>、<code>att_dispatch_server_can_send_now</code>
 等几个以 <code>can_send_now</code> 为后缀的 API，用于查询当前是否可发送数据。这几个 API 一般不需要调用。
 以 <code>att_server_notify</code> 为例，其伪代码如下：</p>
-<div class="sourceCode" id="cb83"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb83-1"><a href="ch-l2cap.html#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> att_server_notify<span class="op">(</span>con_handle<span class="op">,</span> attribute_handle<span class="op">,</span> value<span class="op">){</span></span>
-<span id="cb83-2"><a href="ch-l2cap.html#cb83-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>con_handle 不存在<span class="op">)</span></span>
-<span id="cb83-3"><a href="ch-l2cap.html#cb83-3" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> BTSTACK_LE_CHANNEL_NOT_EXIST<span class="op">;</span></span>
-<span id="cb83-4"><a href="ch-l2cap.html#cb83-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb83-5"><a href="ch-l2cap.html#cb83-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(!</span>att_dispatch_server_can_send_now<span class="op">(</span>con_handle<span class="op">))</span></span>
-<span id="cb83-6"><a href="ch-l2cap.html#cb83-6" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> BTSTACK_ACL_BUFFERS_FULL<span class="op">;</span></span>
-<span id="cb83-7"><a href="ch-l2cap.html#cb83-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb83-8"><a href="ch-l2cap.html#cb83-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> l2cap_send<span class="op">(</span>con_handle<span class="op">,</span> L2CAP_CID_ATTRIBUTE_PROTOCOL<span class="op">,</span></span>
-<span id="cb83-9"><a href="ch-l2cap.html#cb83-9" aria-hidden="true" tabindex="-1"></a>                      header<span class="op">,</span> value<span class="op">);</span></span>
-<span id="cb83-10"><a href="ch-l2cap.html#cb83-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb84"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb84-1"><a href="ch-l2cap.html#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> att_server_notify<span class="op">(</span>con_handle<span class="op">,</span> attribute_handle<span class="op">,</span> value<span class="op">){</span></span>
+<span id="cb84-2"><a href="ch-l2cap.html#cb84-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>con_handle 不存在<span class="op">)</span></span>
+<span id="cb84-3"><a href="ch-l2cap.html#cb84-3" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> BTSTACK_LE_CHANNEL_NOT_EXIST<span class="op">;</span></span>
+<span id="cb84-4"><a href="ch-l2cap.html#cb84-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-5"><a href="ch-l2cap.html#cb84-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(!</span>att_dispatch_server_can_send_now<span class="op">(</span>con_handle<span class="op">))</span></span>
+<span id="cb84-6"><a href="ch-l2cap.html#cb84-6" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> BTSTACK_ACL_BUFFERS_FULL<span class="op">;</span></span>
+<span id="cb84-7"><a href="ch-l2cap.html#cb84-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-8"><a href="ch-l2cap.html#cb84-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> l2cap_send<span class="op">(</span>con_handle<span class="op">,</span> L2CAP_CID_ATTRIBUTE_PROTOCOL<span class="op">,</span></span>
+<span id="cb84-9"><a href="ch-l2cap.html#cb84-9" aria-hidden="true" tabindex="-1"></a>                      header<span class="op">,</span> value<span class="op">);</span></span>
+<span id="cb84-10"><a href="ch-l2cap.html#cb84-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>可见，调用 <code>att_server_notify</code> 之前不需要先调用 <code>att_dispatch_server_can_send_now</code>。</p></li>
 <li><p>也可以延迟一段时间后重试。</p></li>
 </ul>
@@ -510,14 +512,14 @@ GATT 客户端的事件回调函数会收到 <code>L2CAP_EVENT_CAN_SEND_NOW</cod
 </div>
 <div class="footnotes">
 <hr />
-<ol start="37">
-<li id="fn37"><p>5.1 及更低版本里称为 LE_PSM<a href="ch-l2cap.html#fnref37" class="footnote-back">↩︎</a></p></li>
-<li id="fn38"><p>整个 SDU 只占用一个 K 帧<a href="ch-l2cap.html#fnref38" class="footnote-back">↩︎</a></p></li>
-<li id="fn39"><p>整个 SDU 占用多个 K 帧
-这个事件对应其中一个 K 帧<a href="ch-l2cap.html#fnref39" class="footnote-back">↩︎</a></p></li>
-<li id="fn40"><p>指进入链路层发送队列。<a href="ch-l2cap.html#fnref40" class="footnote-back">↩︎</a></p></li>
-<li id="fn41"><p>当信用点用完或者链路层队列已满时，会出现此情况<a href="ch-l2cap.html#fnref41" class="footnote-back">↩︎</a></p></li>
-<li id="fn42"><p><code>att_server_request_can_send_now_event</code> 是基于 <code>att_dispatch_server_request_can_send_now_event</code> 实现的。<a href="ch-l2cap.html#fnref42" class="footnote-back">↩︎</a></p></li>
+<ol start="39">
+<li id="fn39"><p>5.1 及更低版本里称为 LE_PSM<a href="ch-l2cap.html#fnref39" class="footnote-back">↩︎</a></p></li>
+<li id="fn40"><p>整个 SDU 只占用一个 K 帧<a href="ch-l2cap.html#fnref40" class="footnote-back">↩︎</a></p></li>
+<li id="fn41"><p>整个 SDU 占用多个 K 帧
+这个事件对应其中一个 K 帧<a href="ch-l2cap.html#fnref41" class="footnote-back">↩︎</a></p></li>
+<li id="fn42"><p>指进入链路层发送队列。<a href="ch-l2cap.html#fnref42" class="footnote-back">↩︎</a></p></li>
+<li id="fn43"><p>当信用点用完或者链路层队列已满时，会出现此情况<a href="ch-l2cap.html#fnref43" class="footnote-back">↩︎</a></p></li>
+<li id="fn44"><p><code>att_server_request_can_send_now_event</code> 是基于 <code>att_dispatch_server_request_can_send_now_event</code> 实现的。<a href="ch-l2cap.html#fnref44" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

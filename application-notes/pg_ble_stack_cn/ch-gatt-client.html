@@ -275,6 +275,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="9.2.4" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#写入特征"><i class="fa fa-check"></i><b>9.2.4</b> 写入特征</a></li>
 <li class="chapter" data-level="9.2.5" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#订阅特征"><i class="fa fa-check"></i><b>9.2.5</b> 订阅特征</a></li>
 <li class="chapter" data-level="9.2.6" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#att_mtu-1"><i class="fa fa-check"></i><b>9.2.6</b> ATT_MTU</a></li>
+<li class="chapter" data-level="9.2.7" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#自定义-mtu"><i class="fa fa-check"></i><b>9.2.7</b> 自定义 MTU </a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="10" data-path="ch-l2cap.html"><a href="ch-l2cap.html"><i class="fa fa-check"></i><b>10</b> L2CAP</a>
@@ -315,9 +316,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="12.2.1" data-path="ch-misc.html"><a href="ch-misc.html#aes-128-加密"><i class="fa fa-check"></i><b>12.2.1</b> AES-128 加密</a></li>
 <li class="chapter" data-level="12.2.2" data-path="ch-misc.html"><a href="ch-misc.html#aes-ccm"><i class="fa fa-check"></i><b>12.2.2</b> AES-CCM</a></li>
 </ul></li>
-<li class="chapter" data-level="12.3" data-path="ch-misc.html"><a href="ch-misc.html#兼容性"><i class="fa fa-check"></i><b>12.3</b> 兼容性</a>
+<li class="chapter" data-level="12.3" data-path="ch-misc.html"><a href="ch-misc.html#协议栈配置"><i class="fa fa-check"></i><b>12.3</b> 协议栈配置</a>
 <ul>
 <li class="chapter" data-level="12.3.1" data-path="ch-misc.html"><a href="ch-misc.html#data-length-与-mtu"><i class="fa fa-check"></i><b>12.3.1</b> Data Length 与 MTU</a></li>
+<li class="chapter" data-level="12.3.2" data-path="ch-misc.html"><a href="ch-misc.html#面向测试"><i class="fa fa-check"></i><b>12.3.2</b> 面向测试</a></li>
 </ul></li>
 <li class="chapter" data-level="12.4" data-path="ch-misc.html"><a href="ch-misc.html#api-返回值"><i class="fa fa-check"></i><b>12.4</b> API 返回值</a></li>
 <li class="chapter" data-level="12.5" data-path="ch-misc.html"><a href="ch-misc.html#键值存储接口与实现"><i class="fa fa-check"></i><b>12.5</b> 键值存储接口与实现</a>
@@ -387,7 +389,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>可选地，开发者可以设置 GATT 客户端事件回调：</p>
 <div class="sourceCode" id="cb62"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb62-1"><a href="ch-gatt-client.html#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> gatt_client_register_handler<span class="op">(</span></span>
 <span id="cb62-2"><a href="ch-gatt-client.html#cb62-2" aria-hidden="true" tabindex="-1"></a>  btstack_packet_handler_t handler<span class="op">);</span></span></code></pre></div>
-<p>这个回调函数目前只会收到一个事件<a href="#fn36" class="footnote-ref" id="fnref36"><sup>36</sup></a>：</p>
+<p>这个回调函数会收到以下事件<a href="ch-cap.html#fn36" class="footnote-ref" id="fnref36"><sup>36</sup></a>：</p>
 <ul>
 <li><p><code>GATT_EVENT_MTU</code></p>
 <p>这个事件表示 MTU 协商完成。有两个解析函数：</p>
@@ -396,6 +398,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>获得连接句柄；</p></li>
 <li><p><code>gatt_event_mtu_get_mtu(packet)</code></p>
 <p>获得 MTU 大小。</p></li>
+</ul></li>
+<li><p><code>GATT_EVENT_UNHANDLED_SERVER_VALUE</code> <a href="ch-cap.html#fn37" class="footnote-ref" id="fnref37"><sup>37</sup></a></p>
+<p>这个事件表示收到了服务器某特性的值上报，但是相关句柄未通过 <code>gatt_client_listen_for_characteristic_value_updates</code> 注册回调函数。</p>
+<ul>
+<li><p><code>gatt_event_unhandled_server_value_get_type(packet)</code></p>
+<p>获得上报类型，即 <code>GATT_EVENT_NOTIFICATION</code> 或 <code>GATT_EVENT_INDICATION</code>；</p></li>
+<li><p><code>gatt_event_unhandled_server_value_get_value_handle(packet)</code></p>
+<p>获得特征的句柄；</p></li>
+<li><p><code>gatt_event_unhandled_server_value_get_size(packet)</code></p>
+<p>获得上报的值的长度；</p></li>
+<li><p><code>gatt_event_unhandled_server_value_get_data(packet)</code></p>
+<p>获得指向上报的值的指针。</p></li>
 </ul></li>
 </ul>
 <div id="句柄范围" class="section level3 hasAnchor" number="9.1.1">
@@ -409,11 +423,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">9.2</span> 使用说明<a href="ch-gatt-client.html#使用说明-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <div id="创建客户端" class="section level3 hasAnchor" number="9.2.1">
 <h3><span class="header-section-number">9.2.1</span> 创建客户端<a href="ch-gatt-client.html#创建客户端" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>调用 GATT 客户端的绝大多数 API 时，都会按需自动创建客户端实例。不会触发创建动作的 API：</p>
+<p>调用 GATT 客户端的绝大多数带有连接句柄参数的 API 时，都会按需自动创建客户端实例。带有连接句柄参数但不会触发创建动作的 API：</p>
 <ul>
 <li><code>gatt_client_listen_for_characteristic_value_updates</code></li>
 </ul>
-<p>通过 <code>gatt_client_is_ready()</code> 可“手动”创建客户端实例。</p>
+<p>通过 <code>gatt_client_is_ready()</code> 可显式地“手动”创建客户端实例。</p>
 </div>
 <div id="发现服务" class="section level3 hasAnchor" number="9.2.2">
 <h3><span class="header-section-number">9.2.2</span> 发现服务<a href="ch-gatt-client.html#发现服务" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -438,14 +452,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb63-5"><a href="ch-gatt-client.html#cb63-5" aria-hidden="true" tabindex="-1"></a>  hci_con_handle_t con_handle<span class="op">);</span></span></code></pre></div>
 <p>其回调函数的例子：</p>
 <div class="sourceCode" id="cb64"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb64-1"><a href="ch-gatt-client.html#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> service_discovery_callback<span class="op">(</span></span>
-<span id="cb64-2"><a href="ch-gatt-client.html#cb64-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 事件包类型（忽略）</span></span>
-<span id="cb64-3"><a href="ch-gatt-client.html#cb64-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> packet_type<span class="op">,</span></span>
-<span id="cb64-4"><a href="ch-gatt-client.html#cb64-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 连接句柄（这个句柄也可以从事件内部获得，故忽略此参数）</span></span>
-<span id="cb64-5"><a href="ch-gatt-client.html#cb64-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> _<span class="op">,</span></span>
-<span id="cb64-6"><a href="ch-gatt-client.html#cb64-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 事件包</span></span>
-<span id="cb64-7"><a href="ch-gatt-client.html#cb64-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>packet<span class="op">,</span></span>
-<span id="cb64-8"><a href="ch-gatt-client.html#cb64-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 事件包大小</span></span>
-<span id="cb64-9"><a href="ch-gatt-client.html#cb64-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> size<span class="op">)</span></span>
+<span id="cb64-2"><a href="ch-gatt-client.html#cb64-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 事件包类型（忽略）</span></span>
+<span id="cb64-3"><a href="ch-gatt-client.html#cb64-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> packet_type<span class="op">,</span></span>
+<span id="cb64-4"><a href="ch-gatt-client.html#cb64-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 连接句柄（这个句柄也可以从事件内部获得，故忽略此参数）</span></span>
+<span id="cb64-5"><a href="ch-gatt-client.html#cb64-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> _<span class="op">,</span></span>
+<span id="cb64-6"><a href="ch-gatt-client.html#cb64-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 事件包</span></span>
+<span id="cb64-7"><a href="ch-gatt-client.html#cb64-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>packet<span class="op">,</span></span>
+<span id="cb64-8"><a href="ch-gatt-client.html#cb64-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 事件包大小</span></span>
+<span id="cb64-9"><a href="ch-gatt-client.html#cb64-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> size<span class="op">)</span></span>
 <span id="cb64-10"><a href="ch-gatt-client.html#cb64-10" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
 <span id="cb64-11"><a href="ch-gatt-client.html#cb64-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> con_handle<span class="op">;</span></span>
 <span id="cb64-12"><a href="ch-gatt-client.html#cb64-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">switch</span> <span class="op">(</span>packet<span class="op">[</span><span class="dv">0</span><span class="op">])</span></span>
@@ -528,14 +542,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb67-7"><a href="ch-gatt-client.html#cb67-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> characteristic_value_handle<span class="op">);</span></span></code></pre></div>
 <p>其回调函数的例子：</p>
 <div class="sourceCode" id="cb68"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb68-1"><a href="ch-gatt-client.html#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> read_characteristic_value_callback<span class="op">(</span></span>
-<span id="cb68-2"><a href="ch-gatt-client.html#cb68-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 事件包类型（忽略）</span></span>
-<span id="cb68-3"><a href="ch-gatt-client.html#cb68-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> packet_type<span class="op">,</span></span>
-<span id="cb68-4"><a href="ch-gatt-client.html#cb68-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 连接句柄（这个句柄也可以从事件内部获得，故忽略此参数）</span></span>
-<span id="cb68-5"><a href="ch-gatt-client.html#cb68-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> _<span class="op">,</span></span>
-<span id="cb68-6"><a href="ch-gatt-client.html#cb68-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 事件包</span></span>
-<span id="cb68-7"><a href="ch-gatt-client.html#cb68-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>packet<span class="op">,</span></span>
-<span id="cb68-8"><a href="ch-gatt-client.html#cb68-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 事件包大小</span></span>
-<span id="cb68-9"><a href="ch-gatt-client.html#cb68-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> size<span class="op">)</span></span>
+<span id="cb68-2"><a href="ch-gatt-client.html#cb68-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 事件包类型（忽略）</span></span>
+<span id="cb68-3"><a href="ch-gatt-client.html#cb68-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> packet_type<span class="op">,</span></span>
+<span id="cb68-4"><a href="ch-gatt-client.html#cb68-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 连接句柄（这个句柄也可以从事件内部获得，故忽略此参数）</span></span>
+<span id="cb68-5"><a href="ch-gatt-client.html#cb68-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> _<span class="op">,</span></span>
+<span id="cb68-6"><a href="ch-gatt-client.html#cb68-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 事件包</span></span>
+<span id="cb68-7"><a href="ch-gatt-client.html#cb68-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>packet<span class="op">,</span></span>
+<span id="cb68-8"><a href="ch-gatt-client.html#cb68-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 事件包大小</span></span>
+<span id="cb68-9"><a href="ch-gatt-client.html#cb68-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> size<span class="op">)</span></span>
 <span id="cb68-10"><a href="ch-gatt-client.html#cb68-10" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
 <span id="cb68-11"><a href="ch-gatt-client.html#cb68-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">switch</span> <span class="op">(</span>packet<span class="op">[</span><span class="dv">0</span><span class="op">])</span></span>
 <span id="cb68-12"><a href="ch-gatt-client.html#cb68-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
@@ -667,6 +681,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb75-6"><a href="ch-gatt-client.html#cb75-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> <span class="op">*</span> mtu<span class="op">);</span></span></code></pre></div>
 <p>特征的值的最大长度为 <span class="math inline">\((ATT\_MTU - 3)\)</span>。调用 <code>gatt_client_write_value_of_characteristic_without_response</code> 写入值时，
 如果超过最大长度，会返回错误码：<code>GATT_CLIENT_VALUE_TOO_LONG</code>。</p>
+</div>
+<div id="自定义-mtu" class="section level3 hasAnchor" number="9.2.7">
+<h3><span class="header-section-number">9.2.7</span> 自定义 MTU <a href="ch-cap.html#fn38" class="footnote-ref" id="fnref38"><sup>38</sup></a><a href="ch-gatt-client.html#自定义-mtu" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>当 GATT 客户端实例创建时，会自动发起 MTU 协商。开发者可通过以下接口干预 MTU 协商过程。</p>
+<ol style="list-style-type: decimal">
+<li><p>为协议栈配置 <code>STACK_GATT_CLIENT_DISABLE_MTU_EXCHANGE</code>，关闭 MTU 自动协商功能；</p></li>
+<li><p>通过 <code>gatt_client_exchange_mtu_request</code> 编程发起 MTU 协商：</p>
+<div class="sourceCode" id="cb76"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb76-1"><a href="ch-gatt-client.html#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> gatt_client_exchange_mtu_request<span class="op">(</span></span>
+<span id="cb76-2"><a href="ch-gatt-client.html#cb76-2" aria-hidden="true" tabindex="-1"></a>    hci_con_handle_t con_handle<span class="op">,</span> <span class="co">// 连接句柄</span></span>
+<span id="cb76-3"><a href="ch-gatt-client.html#cb76-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> mtu<span class="op">);</span>               <span class="co">// MTU 建议值</span></span></code></pre></div></li>
+</ol>
+<p>注意：一个连接上 GATT 客户端最多只能发起一次 MTU 协商过程。</p>
 
 </div>
 </div>
@@ -675,6 +701,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <hr />
 <ol start="36">
 <li id="fn36"><p>以及转发过来的 <code>L2CAP_EVENT_CAN_SEND_NOW</code> 事件。<a href="ch-gatt-client.html#fnref36" class="footnote-back">↩︎</a></p></li>
+<li id="fn37"><p>SDK v8.4.23 及以上版本。<a href="ch-gatt-client.html#fnref37" class="footnote-back">↩︎</a></p></li>
+<li id="fn38"><p>SDK v8.4.23 及以上版本。<a href="ch-gatt-client.html#fnref38" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

@@ -275,6 +275,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="9.2.4" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#写入特征"><i class="fa fa-check"></i><b>9.2.4</b> 写入特征</a></li>
 <li class="chapter" data-level="9.2.5" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#订阅特征"><i class="fa fa-check"></i><b>9.2.5</b> 订阅特征</a></li>
 <li class="chapter" data-level="9.2.6" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#att_mtu-1"><i class="fa fa-check"></i><b>9.2.6</b> ATT_MTU</a></li>
+<li class="chapter" data-level="9.2.7" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#自定义-mtu"><i class="fa fa-check"></i><b>9.2.7</b> 自定义 MTU </a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="10" data-path="ch-l2cap.html"><a href="ch-l2cap.html"><i class="fa fa-check"></i><b>10</b> L2CAP</a>
@@ -315,9 +316,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="12.2.1" data-path="ch-misc.html"><a href="ch-misc.html#aes-128-加密"><i class="fa fa-check"></i><b>12.2.1</b> AES-128 加密</a></li>
 <li class="chapter" data-level="12.2.2" data-path="ch-misc.html"><a href="ch-misc.html#aes-ccm"><i class="fa fa-check"></i><b>12.2.2</b> AES-CCM</a></li>
 </ul></li>
-<li class="chapter" data-level="12.3" data-path="ch-misc.html"><a href="ch-misc.html#兼容性"><i class="fa fa-check"></i><b>12.3</b> 兼容性</a>
+<li class="chapter" data-level="12.3" data-path="ch-misc.html"><a href="ch-misc.html#协议栈配置"><i class="fa fa-check"></i><b>12.3</b> 协议栈配置</a>
 <ul>
 <li class="chapter" data-level="12.3.1" data-path="ch-misc.html"><a href="ch-misc.html#data-length-与-mtu"><i class="fa fa-check"></i><b>12.3.1</b> Data Length 与 MTU</a></li>
+<li class="chapter" data-level="12.3.2" data-path="ch-misc.html"><a href="ch-misc.html#面向测试"><i class="fa fa-check"></i><b>12.3.2</b> 面向测试</a></li>
 </ul></li>
 <li class="chapter" data-level="12.4" data-path="ch-misc.html"><a href="ch-misc.html#api-返回值"><i class="fa fa-check"></i><b>12.4</b> API 返回值</a></li>
 <li class="chapter" data-level="12.5" data-path="ch-misc.html"><a href="ch-misc.html#键值存储接口与实现"><i class="fa fa-check"></i><b>12.5</b> 键值存储接口与实现</a>
@@ -424,7 +426,7 @@ Host 的架构如图 <a href="ch-overview.html#fig:ch0-host-overview">3.1</a> �
 <span id="cb2-19"><a href="ch-overview.html#cb2-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span><span class="op">;</span></span>
 <span id="cb2-20"><a href="ch-overview.html#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
 <span id="cb2-21"><a href="ch-overview.html#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>各个模块（包含协议内部模块及 App<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>）通过注册回调函数以响应这些事件。
+<p>各个模块（包含协议内部模块及 App<a href="ch-cap.html#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>）通过注册回调函数以响应这些事件。
 有的模块在处理这些消息时又会产生其它的新事件，
 为了响应这些新事件可以再向这些模块注册回调函数。也就是说，Host 内部各个模块（以及 App）通过消息、回调函数耦合在一起。
 例如：</p>
@@ -449,12 +451,12 @@ Host 的架构如图 <a href="ch-overview.html#fig:ch0-host-overview">3.1</a> �
 </p>
 </div>
 <p>对于连接模式，低功耗蓝牙定义了特征（Characteristic）和值（Value）这两个概念，进而组织成服务（Service），再由服务组成配置（Profile）。
-特征的标识用 UUI​D 标识。客户端发现了服务器支持的服务后，就可以读写特征的值，或者订阅特征<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>。
+特征的标识用 UUI​D 标识。客户端发现了服务器支持的服务后，就可以读写特征的值，或者订阅特征<a href="ch-cap.html#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>。
 显然特征不见得支持所有这些操作，因此，蓝牙核心规范又为特征定义了属性（Property）、
 描述符（Discriptor）等装饰物，以说明特征所支持的操作、需要的权限。UUID 长度为 <span class="math inline">\(16\)</span> 字节，为了提高传输效率，BLE 定义了一系列特殊的 UUID，
 它们的区别仅在于 2 个字节，另外 <span class="math inline">\(14\)</span> 个字节相同：</p>
 <pre><code>0x0000xxxx-0000-1000-8000-00805F9B34FB</code></pre>
-<p>这两个字节就是所谓的 16-bit UUID，由蓝牙特别兴趣小组公司负责管理、分配<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>。</p>
+<p>这两个字节就是所谓的 16-bit UUID，由蓝牙特别兴趣小组公司负责管理、分配<a href="ch-cap.html#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>。</p>
 </div>
 <div id="回调函数事件包" class="section level2 hasAnchor" number="3.4">
 <h2><span class="header-section-number">3.4</span> 回调函数事件包<a href="ch-overview.html#回调函数事件包" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -494,7 +496,7 @@ Host 的架构如图 <a href="ch-overview.html#fig:ch0-host-overview">3.1</a> �
 <li><p><code>HCI_EVENT_LE_META</code>：BLE 元事件</p>
 <p>这个元事件下辖多个子事件。先通过 <code>hci_event_le_meta_get_subevent_code(packet)</code> 获得子事件代码，然后通过
 <code>decode_hci_le_meta_event(packet, sub_event_type)</code> 宏得到子事件的内容。
-<code>sub_event_type</code> 为子事件内容对应的数据类型，各字段与蓝牙核心规范里的定义一致<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>。</p>
+<code>sub_event_type</code> 为子事件内容对应的数据类型，各字段与蓝牙核心规范里的定义一致<a href="ch-cap.html#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>。</p>
 <p>协议栈的版本及初始化流程导致下列子事件不会出现，只会出现对应的扩展过的、功能更全面的事件：</p>
 <ul>
 <li><p><code>HCI_SUBEVENT_LE_CONNECTION_COMPLETE</code></p>
@@ -861,7 +863,7 @@ Controller 收到这样的命令后不上报 <code>HCI_EVENT_COMMAND_COMPLETE</c
 </tr>
 <tr class="even">
 <td align="center">0xE0~0xFF</td>
-<td align="left">Profile 或 服务的错误码<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>。</td>
+<td align="left">Profile 或 服务的错误码<a href="ch-cap.html#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>。</td>
 </tr>
 </tbody>
 </table>
@@ -1106,8 +1108,8 @@ Controller 收到这样的命令后不上报 <code>HCI_EVENT_COMMAND_COMPLETE</c
 <div id="异步特性" class="section level2 hasAnchor" number="3.11">
 <h2><span class="header-section-number">3.11</span> 异步特性<a href="ch-overview.html#异步特性" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Host API 绝大多数都是异步非阻塞操作，比如调用 <code>gap_set_ext_adv_enable()</code> 并不立即使能广播：这个函数只会给 Controller
-发送一条 HCI 消息<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a>，Controller 接收消息、完成处理之后才会真正开始广播。</p>
-<p>这种异步特性可能使得实现某些功能的代码冗长、零散，开发者可以考虑使用其它语言<a href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a>，
+发送一条 HCI 消息<a href="ch-cap.html#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a>，Controller 接收消息、完成处理之后才会真正开始广播。</p>
+<p>这种异步特性可能使得实现某些功能的代码冗长、零散，开发者可以考虑使用其它语言<a href="ch-cap.html#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a>，
 或者重新封装 Host API，使其变为同步操作（参考 “<a href="ch-misc.html#ch-misc-synced-api">同步版 API</a>”一节）。</p>
 </div>
 <div id="线程安全性" class="section level2 hasAnchor" number="3.12">
@@ -1141,7 +1143,7 @@ API，即便发现功能正常，也仅是偶然现象，无法保证总是正�
 <p>以下几种随机地址类型通过最高的 2 个比特区分。</p>
 <ol style="list-style-type: decimal">
 <li><p>静态设备地址（最高 2 个比特为 0b11）</p>
-<p>可随机生成，可以每次上电后重新生成<a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a>，但是整个上电周期内不能改变。</p></li>
+<p>可随机生成，可以每次上电后重新生成<a href="ch-cap.html#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a>，但是整个上电周期内不能改变。</p></li>
 <li><p>私有地址</p>
 <p>共有两种私有地址。</p>
 <ol style="list-style-type: decimal">
@@ -1161,7 +1163,7 @@ API，即便发现功能正常，也仅是偶然现象，无法保证总是正�
 <p>使用蓝牙地址时要注意字节顺序。协议栈遵循下面的基本规律：</p>
 <ul>
 <li>API 使用大端模式</li>
-<li>BLE 元事件使用小端模式<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a></li>
+<li>BLE 元事件使用小端模式<a href="ch-cap.html#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a></li>
 </ul>
 <p>使用 <code>reverse_bd_addr</code> 可以翻转地址的字节顺序：</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb7-1"><a href="ch-overview.html#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> reverse_bd_addr<span class="op">(</span></span>
@@ -1172,7 +1174,7 @@ API，即便发现功能正常，也仅是偶然现象，无法保证总是正�
 </div>
 <div id="解析列表与隐私" class="section level2 hasAnchor" number="3.14">
 <h2><span class="header-section-number">3.14</span> 解析列表与隐私<a href="ch-overview.html#解析列表与隐私" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>当使用链路层隐私（LL Privacy）特性<a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a>时，需要用到解析列表。与之相关的 API 如下：</p>
+<p>当使用链路层隐私（LL Privacy）特性<a href="ch-cap.html#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a>时，需要用到解析列表。与之相关的 API 如下：</p>
 <ol style="list-style-type: decimal">
 <li><p><code>gap_add_dev_to_resolving_list</code>：向列表中添加一条记录。一条记录包含 4 项数据：对端设备身份地址及地址类型，本端及对端的 IRK；</p></li>
 <li><p><code>gap_remove_dev_from_resolving_list</code>：删除列表中的一条记录；</p></li>

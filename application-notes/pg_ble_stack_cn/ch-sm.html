@@ -275,6 +275,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="9.2.4" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#写入特征"><i class="fa fa-check"></i><b>9.2.4</b> 写入特征</a></li>
 <li class="chapter" data-level="9.2.5" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#订阅特征"><i class="fa fa-check"></i><b>9.2.5</b> 订阅特征</a></li>
 <li class="chapter" data-level="9.2.6" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#att_mtu-1"><i class="fa fa-check"></i><b>9.2.6</b> ATT_MTU</a></li>
+<li class="chapter" data-level="9.2.7" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#自定义-mtu"><i class="fa fa-check"></i><b>9.2.7</b> 自定义 MTU </a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="10" data-path="ch-l2cap.html"><a href="ch-l2cap.html"><i class="fa fa-check"></i><b>10</b> L2CAP</a>
@@ -315,9 +316,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="12.2.1" data-path="ch-misc.html"><a href="ch-misc.html#aes-128-加密"><i class="fa fa-check"></i><b>12.2.1</b> AES-128 加密</a></li>
 <li class="chapter" data-level="12.2.2" data-path="ch-misc.html"><a href="ch-misc.html#aes-ccm"><i class="fa fa-check"></i><b>12.2.2</b> AES-CCM</a></li>
 </ul></li>
-<li class="chapter" data-level="12.3" data-path="ch-misc.html"><a href="ch-misc.html#兼容性"><i class="fa fa-check"></i><b>12.3</b> 兼容性</a>
+<li class="chapter" data-level="12.3" data-path="ch-misc.html"><a href="ch-misc.html#协议栈配置"><i class="fa fa-check"></i><b>12.3</b> 协议栈配置</a>
 <ul>
 <li class="chapter" data-level="12.3.1" data-path="ch-misc.html"><a href="ch-misc.html#data-length-与-mtu"><i class="fa fa-check"></i><b>12.3.1</b> Data Length 与 MTU</a></li>
+<li class="chapter" data-level="12.3.2" data-path="ch-misc.html"><a href="ch-misc.html#面向测试"><i class="fa fa-check"></i><b>12.3.2</b> 面向测试</a></li>
 </ul></li>
 <li class="chapter" data-level="12.4" data-path="ch-misc.html"><a href="ch-misc.html#api-返回值"><i class="fa fa-check"></i><b>12.4</b> API 返回值</a></li>
 <li class="chapter" data-level="12.5" data-path="ch-misc.html"><a href="ch-misc.html#键值存储接口与实现"><i class="fa fa-check"></i><b>12.5</b> 键值存储接口与实现</a>
@@ -372,8 +374,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>安全管理（Security Manager）协议负责配对、认证及加密。
 连接的主角色在 SM 里扮演发起者（Initiator），从角色扮演应答者（Responder）。
 SM 涉及多个密钥，其层次关系如图 <a href="ch-sm.html#fig:ch6-ble-keys">11.1</a>，位于顶层的是 ER 和 IR，
-长度都是 <span class="math inline">\(128 bits\)</span><a href="#fn43" class="footnote-ref" id="fnref43"><sup>43</sup></a>，<span class="math inline">\(d1\)</span> 是加解密工具箱里的一个工具，
-DIV 是一个随机数<a href="#fn44" class="footnote-ref" id="fnref44"><sup>44</sup></a>。</p>
+长度都是 <span class="math inline">\(128 bits\)</span><a href="ch-cap.html#fn45" class="footnote-ref" id="fnref45"><sup>45</sup></a>，<span class="math inline">\(d1\)</span> 是加解密工具箱里的一个工具，
+DIV 是一个随机数<a href="ch-cap.html#fn46" class="footnote-ref" id="fnref46"><sup>46</sup></a>。</p>
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch6-ble-keys"></span>
 <img src="img/ble_keys.png" alt="BLE 密钥层次结构" width="85%" />
 <p class="caption">
@@ -395,83 +397,83 @@ DIV 是一个随机数<a href="#fn44" class="footnote-ref" id="fnref44"><sup>44<
 <h3><span class="header-section-number">11.2.1</span> 初始化<a href="ch-sm.html#初始化" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <ol style="list-style-type: decimal">
 <li><p>调用 <code>sm_add_event_handler</code> 添加 SM 模块事件回调</p>
-<div class="sourceCode" id="cb84"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb84-1"><a href="ch-sm.html#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sm_add_event_handler<span class="op">(</span></span>
-<span id="cb84-2"><a href="ch-sm.html#cb84-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 回调函数</span></span>
-<span id="cb84-3"><a href="ch-sm.html#cb84-3" aria-hidden="true" tabindex="-1"></a>  btstack_packet_callback_registration_t <span class="op">*</span> callback_handler<span class="op">);</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb85"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb85-1"><a href="ch-sm.html#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sm_add_event_handler<span class="op">(</span></span>
+<span id="cb85-2"><a href="ch-sm.html#cb85-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 回调函数</span></span>
+<span id="cb85-3"><a href="ch-sm.html#cb85-3" aria-hidden="true" tabindex="-1"></a>  btstack_packet_callback_registration_t <span class="op">*</span> callback_handler<span class="op">);</span></span></code></pre></div></li>
 <li><p>调用 <code>sm_config</code> 配置基础数据 ER、IR</p>
-<div class="sourceCode" id="cb85"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb85-1"><a href="ch-sm.html#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sm_config<span class="op">(</span></span>
-<span id="cb85-2"><a href="ch-sm.html#cb85-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 是否使能 SM（默认为不使能）</span></span>
-<span id="cb85-3"><a href="ch-sm.html#cb85-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> enable<span class="op">,</span></span>
-<span id="cb85-4"><a href="ch-sm.html#cb85-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 设备的 IO 能力</span></span>
-<span id="cb85-5"><a href="ch-sm.html#cb85-5" aria-hidden="true" tabindex="-1"></a>  io_capability_t io_capability<span class="op">,</span></span>
-<span id="cb85-6"><a href="ch-sm.html#cb85-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 从角色时是否自动发送安全请求</span></span>
-<span id="cb85-7"><a href="ch-sm.html#cb85-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span>   request_security<span class="op">,</span></span>
-<span id="cb85-8"><a href="ch-sm.html#cb85-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 持久化数据</span></span>
-<span id="cb85-9"><a href="ch-sm.html#cb85-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> sm_persistent_t <span class="op">*</span>persistent<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb86"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb86-1"><a href="ch-sm.html#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sm_config<span class="op">(</span></span>
+<span id="cb86-2"><a href="ch-sm.html#cb86-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 是否使能 SM（默认为不使能）</span></span>
+<span id="cb86-3"><a href="ch-sm.html#cb86-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> enable<span class="op">,</span></span>
+<span id="cb86-4"><a href="ch-sm.html#cb86-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 设备的 IO 能力</span></span>
+<span id="cb86-5"><a href="ch-sm.html#cb86-5" aria-hidden="true" tabindex="-1"></a>  io_capability_t io_capability<span class="op">,</span></span>
+<span id="cb86-6"><a href="ch-sm.html#cb86-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 从角色时是否自动发送安全请求</span></span>
+<span id="cb86-7"><a href="ch-sm.html#cb86-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span>   request_security<span class="op">,</span></span>
+<span id="cb86-8"><a href="ch-sm.html#cb86-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 持久化数据</span></span>
+<span id="cb86-9"><a href="ch-sm.html#cb86-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> sm_persistent_t <span class="op">*</span>persistent<span class="op">);</span></span></code></pre></div>
 <p>这里的 IO 能力 <code>io_capability</code> 用于协商配对方法，跟设备的实际 IO 能力无关：</p>
-<div class="sourceCode" id="cb86"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb86-1"><a href="ch-sm.html#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">enum</span> <span class="op">{</span></span>
-<span id="cb86-2"><a href="ch-sm.html#cb86-2" aria-hidden="true" tabindex="-1"></a>  IO_CAPABILITY_UNINITIALIZED <span class="op">=</span> <span class="op">-</span><span class="dv">1</span><span class="op">,</span></span>
-<span id="cb86-3"><a href="ch-sm.html#cb86-3" aria-hidden="true" tabindex="-1"></a>  IO_CAPABILITY_DISPLAY_ONLY <span class="op">=</span> <span class="dv">0</span><span class="op">,</span>   <span class="co">// 只支持显示</span></span>
-<span id="cb86-4"><a href="ch-sm.html#cb86-4" aria-hidden="true" tabindex="-1"></a>  IO_CAPABILITY_DISPLAY_YES_NO<span class="op">,</span>     <span class="co">// 可显示，可输入 YES、NO</span></span>
-<span id="cb86-5"><a href="ch-sm.html#cb86-5" aria-hidden="true" tabindex="-1"></a>  IO_CAPABILITY_KEYBOARD_ONLY<span class="op">,</span>      <span class="co">// 只能输入</span></span>
-<span id="cb86-6"><a href="ch-sm.html#cb86-6" aria-hidden="true" tabindex="-1"></a>  IO_CAPABILITY_NO_INPUT_NO_OUTPUT<span class="op">,</span> <span class="co">// 无输入、输出能力</span></span>
-<span id="cb86-7"><a href="ch-sm.html#cb86-7" aria-hidden="true" tabindex="-1"></a>  IO_CAPABILITY_KEYBOARD_DISPLAY<span class="op">,</span>   <span class="co">// 可显示，能输入</span></span>
-<span id="cb86-8"><a href="ch-sm.html#cb86-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> io_capability_t<span class="op">;</span></span></code></pre></div>
-<p>这里的输入能力指可以输入 <span class="math inline">\(0-9\)</span> 等 <span class="math inline">\(10\)</span> 个数字，以及 YES、NO；显示能力是指可以显示 6 位十进制识别码（<span class="math inline">\(000000-999999\)</span>）<a href="#fn45" class="footnote-ref" id="fnref45"><sup>45</sup></a>。</p>
+<div class="sourceCode" id="cb87"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb87-1"><a href="ch-sm.html#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">enum</span> <span class="op">{</span></span>
+<span id="cb87-2"><a href="ch-sm.html#cb87-2" aria-hidden="true" tabindex="-1"></a>  IO_CAPABILITY_UNINITIALIZED <span class="op">=</span> <span class="op">-</span><span class="dv">1</span><span class="op">,</span></span>
+<span id="cb87-3"><a href="ch-sm.html#cb87-3" aria-hidden="true" tabindex="-1"></a>  IO_CAPABILITY_DISPLAY_ONLY <span class="op">=</span> <span class="dv">0</span><span class="op">,</span>   <span class="co">// 只支持显示</span></span>
+<span id="cb87-4"><a href="ch-sm.html#cb87-4" aria-hidden="true" tabindex="-1"></a>  IO_CAPABILITY_DISPLAY_YES_NO<span class="op">,</span>     <span class="co">// 可显示，可输入 YES、NO</span></span>
+<span id="cb87-5"><a href="ch-sm.html#cb87-5" aria-hidden="true" tabindex="-1"></a>  IO_CAPABILITY_KEYBOARD_ONLY<span class="op">,</span>      <span class="co">// 只能输入</span></span>
+<span id="cb87-6"><a href="ch-sm.html#cb87-6" aria-hidden="true" tabindex="-1"></a>  IO_CAPABILITY_NO_INPUT_NO_OUTPUT<span class="op">,</span> <span class="co">// 无输入、输出能力</span></span>
+<span id="cb87-7"><a href="ch-sm.html#cb87-7" aria-hidden="true" tabindex="-1"></a>  IO_CAPABILITY_KEYBOARD_DISPLAY<span class="op">,</span>   <span class="co">// 可显示，能输入</span></span>
+<span id="cb87-8"><a href="ch-sm.html#cb87-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> io_capability_t<span class="op">;</span></span></code></pre></div>
+<p>这里的输入能力指可以输入 <span class="math inline">\(0-9\)</span> 等 <span class="math inline">\(10\)</span> 个数字，以及 YES、NO；显示能力是指可以显示 6 位十进制识别码（<span class="math inline">\(000000-999999\)</span>）<a href="ch-cap.html#fn47" class="footnote-ref" id="fnref47"><sup>47</sup></a>。</p>
 <p>持久化数据的定义如下：</p>
-<div class="sourceCode" id="cb87"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb87-1"><a href="ch-sm.html#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> sm_persistent</span>
-<span id="cb87-2"><a href="ch-sm.html#cb87-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb87-3"><a href="ch-sm.html#cb87-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">// ER 密钥</span></span>
-<span id="cb87-4"><a href="ch-sm.html#cb87-4" aria-hidden="true" tabindex="-1"></a>  sm_key_t        er<span class="op">;</span></span>
-<span id="cb87-5"><a href="ch-sm.html#cb87-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// IR 密钥</span></span>
-<span id="cb87-6"><a href="ch-sm.html#cb87-6" aria-hidden="true" tabindex="-1"></a>  sm_key_t        ir<span class="op">;</span></span>
-<span id="cb87-7"><a href="ch-sm.html#cb87-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 身份地址</span></span>
-<span id="cb87-8"><a href="ch-sm.html#cb87-8" aria-hidden="true" tabindex="-1"></a>  bd_addr_t       identity_addr<span class="op">;</span></span>
-<span id="cb87-9"><a href="ch-sm.html#cb87-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 身份地址类型（BD_ADDR_TYPE_LE_PUBLIC 或 BD_ADDR_TYPE_LE_RANDOM）</span></span>
-<span id="cb87-10"><a href="ch-sm.html#cb87-10" aria-hidden="true" tabindex="-1"></a>  bd_addr_type_t  identity_addr_type<span class="op">;</span></span>
-<span id="cb87-11"><a href="ch-sm.html#cb87-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> sm_persistent_t<span class="op">;</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb88"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb88-1"><a href="ch-sm.html#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> sm_persistent</span>
+<span id="cb88-2"><a href="ch-sm.html#cb88-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb88-3"><a href="ch-sm.html#cb88-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">// ER 密钥</span></span>
+<span id="cb88-4"><a href="ch-sm.html#cb88-4" aria-hidden="true" tabindex="-1"></a>  sm_key_t        er<span class="op">;</span></span>
+<span id="cb88-5"><a href="ch-sm.html#cb88-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// IR 密钥</span></span>
+<span id="cb88-6"><a href="ch-sm.html#cb88-6" aria-hidden="true" tabindex="-1"></a>  sm_key_t        ir<span class="op">;</span></span>
+<span id="cb88-7"><a href="ch-sm.html#cb88-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 身份地址</span></span>
+<span id="cb88-8"><a href="ch-sm.html#cb88-8" aria-hidden="true" tabindex="-1"></a>  bd_addr_t       identity_addr<span class="op">;</span></span>
+<span id="cb88-9"><a href="ch-sm.html#cb88-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 身份地址类型（BD_ADDR_TYPE_LE_PUBLIC 或 BD_ADDR_TYPE_LE_RANDOM）</span></span>
+<span id="cb88-10"><a href="ch-sm.html#cb88-10" aria-hidden="true" tabindex="-1"></a>  bd_addr_type_t  identity_addr_type<span class="op">;</span></span>
+<span id="cb88-11"><a href="ch-sm.html#cb88-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> sm_persistent_t<span class="op">;</span></span></code></pre></div></li>
 <li><p>通过 <code>sm_set_authentication_requirements</code> 设置认证需求</p>
-<div class="sourceCode" id="cb88"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb88-1"><a href="ch-sm.html#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sm_set_authentication_requirements<span class="op">(</span></span>
-<span id="cb88-2"><a href="ch-sm.html#cb88-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// SM_AUTHREQ_... 的组合：是否绑定、是否需要 MITM 保护</span></span>
-<span id="cb88-3"><a href="ch-sm.html#cb88-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> auth_req<span class="op">);</span></span>
-<span id="cb88-4"><a href="ch-sm.html#cb88-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-5"><a href="ch-sm.html#cb88-5" aria-hidden="true" tabindex="-1"></a><span class="co">// 不可绑定</span></span>
-<span id="cb88-6"><a href="ch-sm.html#cb88-6" aria-hidden="true" tabindex="-1"></a><span class="pp">#define SM_AUTHREQ_NO_BONDING       ...</span></span>
-<span id="cb88-7"><a href="ch-sm.html#cb88-7" aria-hidden="true" tabindex="-1"></a><span class="co">// 可绑定</span></span>
-<span id="cb88-8"><a href="ch-sm.html#cb88-8" aria-hidden="true" tabindex="-1"></a><span class="pp">#define SM_AUTHREQ_BONDING          ...</span></span>
-<span id="cb88-9"><a href="ch-sm.html#cb88-9" aria-hidden="true" tabindex="-1"></a><span class="co">// 使能 MITM 保护</span></span>
-<span id="cb88-10"><a href="ch-sm.html#cb88-10" aria-hidden="true" tabindex="-1"></a><span class="pp">#define SM_AUTHREQ_MITM_PROTECTION  ...</span></span>
-<span id="cb88-11"><a href="ch-sm.html#cb88-11" aria-hidden="true" tabindex="-1"></a><span class="co">// 使能 基于 LE 安全连接的配对</span></span>
-<span id="cb88-12"><a href="ch-sm.html#cb88-12" aria-hidden="true" tabindex="-1"></a><span class="pp">#define SM_AUTHREQ_SC               ...</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb89"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb89-1"><a href="ch-sm.html#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sm_set_authentication_requirements<span class="op">(</span></span>
+<span id="cb89-2"><a href="ch-sm.html#cb89-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// SM_AUTHREQ_... 的组合：是否绑定、是否需要 MITM 保护</span></span>
+<span id="cb89-3"><a href="ch-sm.html#cb89-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> auth_req<span class="op">);</span></span>
+<span id="cb89-4"><a href="ch-sm.html#cb89-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb89-5"><a href="ch-sm.html#cb89-5" aria-hidden="true" tabindex="-1"></a><span class="co">// 不可绑定</span></span>
+<span id="cb89-6"><a href="ch-sm.html#cb89-6" aria-hidden="true" tabindex="-1"></a><span class="pp">#define SM_AUTHREQ_NO_BONDING       ...</span></span>
+<span id="cb89-7"><a href="ch-sm.html#cb89-7" aria-hidden="true" tabindex="-1"></a><span class="co">// 可绑定</span></span>
+<span id="cb89-8"><a href="ch-sm.html#cb89-8" aria-hidden="true" tabindex="-1"></a><span class="pp">#define SM_AUTHREQ_BONDING          ...</span></span>
+<span id="cb89-9"><a href="ch-sm.html#cb89-9" aria-hidden="true" tabindex="-1"></a><span class="co">// 使能 MITM 保护</span></span>
+<span id="cb89-10"><a href="ch-sm.html#cb89-10" aria-hidden="true" tabindex="-1"></a><span class="pp">#define SM_AUTHREQ_MITM_PROTECTION  ...</span></span>
+<span id="cb89-11"><a href="ch-sm.html#cb89-11" aria-hidden="true" tabindex="-1"></a><span class="co">// 使能 基于 LE 安全连接的配对</span></span>
+<span id="cb89-12"><a href="ch-sm.html#cb89-12" aria-hidden="true" tabindex="-1"></a><span class="pp">#define SM_AUTHREQ_SC               ...</span></span></code></pre></div></li>
 </ol>
 </div>
 <div id="使用私有随机地址" class="section level3 hasAnchor" number="11.2.2">
 <h3><span class="header-section-number">11.2.2</span> 使用私有随机地址<a href="ch-sm.html#使用私有随机地址" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>如果需要使用私有随机地址，可调用 <code>sm_private_random_address_generation_set_mode</code> 启动 SM 模块的私有地址生成功能：</p>
-<div class="sourceCode" id="cb89"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb89-1"><a href="ch-sm.html#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sm_private_random_address_generation_set_mode<span class="op">(</span></span>
-<span id="cb89-2"><a href="ch-sm.html#cb89-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 私有地址的生成方式</span></span>
-<span id="cb89-3"><a href="ch-sm.html#cb89-3" aria-hidden="true" tabindex="-1"></a>  gap_random_address_type_t random_address_type<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb90"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb90-1"><a href="ch-sm.html#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sm_private_random_address_generation_set_mode<span class="op">(</span></span>
+<span id="cb90-2"><a href="ch-sm.html#cb90-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 私有地址的生成方式</span></span>
+<span id="cb90-3"><a href="ch-sm.html#cb90-3" aria-hidden="true" tabindex="-1"></a>  gap_random_address_type_t random_address_type<span class="op">);</span></span></code></pre></div>
 <p>私有地址的生成方式有三种：</p>
-<div class="sourceCode" id="cb90"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb90-1"><a href="ch-sm.html#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">enum</span> <span class="op">{</span></span>
-<span id="cb90-2"><a href="ch-sm.html#cb90-2" aria-hidden="true" tabindex="-1"></a>  GAP_RANDOM_ADDRESS_OFF <span class="op">=</span> <span class="dv">0</span><span class="op">,</span>         <span class="co">// 不生成（默认值）</span></span>
-<span id="cb90-3"><a href="ch-sm.html#cb90-3" aria-hidden="true" tabindex="-1"></a>  GAP_RANDOM_ADDRESS_NON_RESOLVABLE<span class="op">,</span>  <span class="co">// 生成不可解析私有地址</span></span>
-<span id="cb90-4"><a href="ch-sm.html#cb90-4" aria-hidden="true" tabindex="-1"></a>  GAP_RANDOM_ADDRESS_RESOLVABLE<span class="op">,</span>      <span class="co">// 生成可解析私有地址</span></span>
-<span id="cb90-5"><a href="ch-sm.html#cb90-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> gap_random_address_type_t<span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb91"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb91-1"><a href="ch-sm.html#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">enum</span> <span class="op">{</span></span>
+<span id="cb91-2"><a href="ch-sm.html#cb91-2" aria-hidden="true" tabindex="-1"></a>  GAP_RANDOM_ADDRESS_OFF <span class="op">=</span> <span class="dv">0</span><span class="op">,</span>         <span class="co">// 不生成（默认值）</span></span>
+<span id="cb91-3"><a href="ch-sm.html#cb91-3" aria-hidden="true" tabindex="-1"></a>  GAP_RANDOM_ADDRESS_NON_RESOLVABLE<span class="op">,</span>  <span class="co">// 生成不可解析私有地址</span></span>
+<span id="cb91-4"><a href="ch-sm.html#cb91-4" aria-hidden="true" tabindex="-1"></a>  GAP_RANDOM_ADDRESS_RESOLVABLE<span class="op">,</span>      <span class="co">// 生成可解析私有地址</span></span>
+<span id="cb91-5"><a href="ch-sm.html#cb91-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> gap_random_address_type_t<span class="op">;</span></span></code></pre></div>
 <p>启动后 SM 模块将尽快产生一个新的地址并弹出 <code>SM_EVENT_PRIVATE_RANDOM_ADDR_UPDATE</code> 事件，
 之后周期性地重新产生并弹出事件。周期默认为 15 分钟，可通过 <code>sm_private_random_address_generation_set_update_period</code>
-修改<a href="#fn46" class="footnote-ref" id="fnref46"><sup>46</sup></a>：</p>
-<div class="sourceCode" id="cb91"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb91-1"><a href="ch-sm.html#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sm_private_random_address_generation_set_update_period<span class="op">(</span></span>
-<span id="cb91-2"><a href="ch-sm.html#cb91-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> period_ms<span class="op">);</span></span></code></pre></div>
+修改<a href="ch-cap.html#fn48" class="footnote-ref" id="fnref48"><sup>48</sup></a>：</p>
+<div class="sourceCode" id="cb92"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb92-1"><a href="ch-sm.html#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sm_private_random_address_generation_set_update_period<span class="op">(</span></span>
+<span id="cb92-2"><a href="ch-sm.html#cb92-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> period_ms<span class="op">);</span></span></code></pre></div>
 </div>
 <div id="sm-事件回调" class="section level3 hasAnchor" number="11.2.3">
 <h3><span class="header-section-number">11.2.3</span> SM 事件回调<a href="ch-sm.html#sm-事件回调" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>SM 模块的事件回调函数将收到一系列事件，App 的主要工作就在于响应这些事件。</p>
 <ul>
 <li><p><code>SM_EVENT_PRIVATE_RANDOM_ADDR_UPDATE</code></p>
-<p>SM 生成了一个新的私有随机地址。App 此时可以更新广播地址<a href="#fn47" class="footnote-ref" id="fnref47"><sup>47</sup></a>，比如：</p>
-<div class="sourceCode" id="cb92"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb92-1"><a href="ch-sm.html#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 更新广播集 0 的随机地址</span></span>
-<span id="cb92-2"><a href="ch-sm.html#cb92-2" aria-hidden="true" tabindex="-1"></a>gap_set_adv_set_random_addr<span class="op">(</span><span class="dv">0</span><span class="op">,</span></span>
-<span id="cb92-3"><a href="ch-sm.html#cb92-3" aria-hidden="true" tabindex="-1"></a>  sm_private_random_addr_update_get_address<span class="op">(</span>packet<span class="op">));</span></span></code></pre></div></li>
+<p>SM 生成了一个新的私有随机地址。App 此时可以更新广播地址<a href="ch-cap.html#fn49" class="footnote-ref" id="fnref49"><sup>49</sup></a>，比如：</p>
+<div class="sourceCode" id="cb93"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb93-1"><a href="ch-sm.html#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 更新广播集 0 的随机地址</span></span>
+<span id="cb93-2"><a href="ch-sm.html#cb93-2" aria-hidden="true" tabindex="-1"></a>gap_set_adv_set_random_addr<span class="op">(</span><span class="dv">0</span><span class="op">,</span></span>
+<span id="cb93-3"><a href="ch-sm.html#cb93-3" aria-hidden="true" tabindex="-1"></a>  sm_private_random_addr_update_get_address<span class="op">(</span>packet<span class="op">));</span></span></code></pre></div></li>
 </ul>
 <p>与地址解析、查找有关的 3 个事件：</p>
 <ul>
@@ -498,16 +500,16 @@ DIV 是一个随机数<a href="#fn44" class="footnote-ref" id="fnref44"><sup>44<
 <li><code>sm_event_identity_resolving_succeeded_get_le_device_db_index(packet)</code>：在“<a href="ch-misc.html#ch98-le-dev-db">设备数据库</a>”里的序号</li>
 </ul>
 <p>例如，通过下面的代码获取解析出的身份地址：</p>
-<div class="sourceCode" id="cb93"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb93-1"><a href="ch-sm.html#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint16_t</span> index <span class="op">=</span></span>
-<span id="cb93-2"><a href="ch-sm.html#cb93-2" aria-hidden="true" tabindex="-1"></a>    sm_event_identity_resolving_succeeded_get_le_device_db_index<span class="op">(</span>packet<span class="op">);</span></span>
-<span id="cb93-3"><a href="ch-sm.html#cb93-3" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> le_device_memory_db_t <span class="op">*</span>item <span class="op">=</span></span>
-<span id="cb93-4"><a href="ch-sm.html#cb93-4" aria-hidden="true" tabindex="-1"></a>    le_device_db_from_key<span class="op">(</span>index<span class="op">);</span></span>
-<span id="cb93-5"><a href="ch-sm.html#cb93-5" aria-hidden="true" tabindex="-1"></a>printf<span class="op">(</span><span class="st">&quot;RESOLVING_SUCCEEDED: (%d) &quot;</span><span class="op">,</span> index<span class="op">);</span></span>
-<span id="cb93-6"><a href="ch-sm.html#cb93-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>item<span class="op">)</span></span>
-<span id="cb93-7"><a href="ch-sm.html#cb93-7" aria-hidden="true" tabindex="-1"></a>    printf_hexdump<span class="op">(</span>item<span class="op">-&gt;</span>addr<span class="op">,</span> BD_ADDR_LEN<span class="op">);</span></span>
-<span id="cb93-8"><a href="ch-sm.html#cb93-8" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span></span>
-<span id="cb93-9"><a href="ch-sm.html#cb93-9" aria-hidden="true" tabindex="-1"></a>    printf<span class="op">(</span><span class="st">&quot;ERROR: should not happen&quot;</span><span class="op">);</span></span>
-<span id="cb93-10"><a href="ch-sm.html#cb93-10" aria-hidden="true" tabindex="-1"></a>printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb94"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb94-1"><a href="ch-sm.html#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint16_t</span> index <span class="op">=</span></span>
+<span id="cb94-2"><a href="ch-sm.html#cb94-2" aria-hidden="true" tabindex="-1"></a>    sm_event_identity_resolving_succeeded_get_le_device_db_index<span class="op">(</span>packet<span class="op">);</span></span>
+<span id="cb94-3"><a href="ch-sm.html#cb94-3" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> le_device_memory_db_t <span class="op">*</span>item <span class="op">=</span></span>
+<span id="cb94-4"><a href="ch-sm.html#cb94-4" aria-hidden="true" tabindex="-1"></a>    le_device_db_from_key<span class="op">(</span>index<span class="op">);</span></span>
+<span id="cb94-5"><a href="ch-sm.html#cb94-5" aria-hidden="true" tabindex="-1"></a>printf<span class="op">(</span><span class="st">&quot;RESOLVING_SUCCEEDED: (%d) &quot;</span><span class="op">,</span> index<span class="op">);</span></span>
+<span id="cb94-6"><a href="ch-sm.html#cb94-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>item<span class="op">)</span></span>
+<span id="cb94-7"><a href="ch-sm.html#cb94-7" aria-hidden="true" tabindex="-1"></a>    printf_hexdump<span class="op">(</span>item<span class="op">-&gt;</span>addr<span class="op">,</span> BD_ADDR_LEN<span class="op">);</span></span>
+<span id="cb94-8"><a href="ch-sm.html#cb94-8" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span></span>
+<span id="cb94-9"><a href="ch-sm.html#cb94-9" aria-hidden="true" tabindex="-1"></a>    printf<span class="op">(</span><span class="st">&quot;ERROR: should not happen&quot;</span><span class="op">);</span></span>
+<span id="cb94-10"><a href="ch-sm.html#cb94-10" aria-hidden="true" tabindex="-1"></a>printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span></code></pre></div></li>
 </ul>
 <p>与配对有关的事件：</p>
 <ul>
@@ -524,7 +526,7 @@ DIV 是一个随机数<a href="#fn44" class="footnote-ref" id="fnref44"><sup>44<
 <p>仅在基于 LE 安全连接的配对时出现。调用 <code>sm_numeric_comparison_confirm</code> 确认数字无误，
 <code>sm_bonding_decline</code> 否认。</p>
 <p>请注意区分两类涉及数字识别码的配对事件，并了解 Bluetooth SIG
-的安全说明<a href="#fn48" class="footnote-ref" id="fnref48"><sup>48</sup></a>：</p>
+的安全说明<a href="ch-cap.html#fn50" class="footnote-ref" id="fnref50"><sup>50</sup></a>：</p>
 <ul>
 <li><p>对于基于 LE 安全连接的配对，配对双方同时显示数字（SM_EVENT_NUMERIC_COMPARISON_REQUEST），
 用户在两个设备上分别确认显示的数字是否一致；</p></li>
@@ -536,46 +538,46 @@ DIV 是一个随机数<a href="#fn44" class="footnote-ref" id="fnref44"><sup>44<
 <ul>
 <li><p><code>SM_EVENT_STATE_CHANGED</code></p>
 <p>这个事件指示 SM 总状态的变化。使用 <code>decode_hci_event</code> 将其解析为 <code>sm_event_state_changed_t</code>：</p>
-<div class="sourceCode" id="cb94"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb94-1"><a href="ch-sm.html#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> sm_event_state_changed <span class="op">{</span></span>
-<span id="cb94-2"><a href="ch-sm.html#cb94-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 连接句柄</span></span>
-<span id="cb94-3"><a href="ch-sm.html#cb94-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> conn_handle<span class="op">;</span></span>
-<span id="cb94-4"><a href="ch-sm.html#cb94-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 状态变化的原因</span></span>
-<span id="cb94-5"><a href="ch-sm.html#cb94-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> reason<span class="op">;</span></span>
-<span id="cb94-6"><a href="ch-sm.html#cb94-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> sm_event_state_changed_t<span class="op">;</span></span>
-<span id="cb94-7"><a href="ch-sm.html#cb94-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb94-8"><a href="ch-sm.html#cb94-8" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> sm_event_state_changed_t <span class="op">*</span>state_changed <span class="op">=</span></span>
-<span id="cb94-9"><a href="ch-sm.html#cb94-9" aria-hidden="true" tabindex="-1"></a>  decode_hci_event<span class="op">(</span>packet<span class="op">,</span> sm_event_state_changed_t<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb95"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb95-1"><a href="ch-sm.html#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> sm_event_state_changed <span class="op">{</span></span>
+<span id="cb95-2"><a href="ch-sm.html#cb95-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 连接句柄</span></span>
+<span id="cb95-3"><a href="ch-sm.html#cb95-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> conn_handle<span class="op">;</span></span>
+<span id="cb95-4"><a href="ch-sm.html#cb95-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 状态变化的原因</span></span>
+<span id="cb95-5"><a href="ch-sm.html#cb95-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> reason<span class="op">;</span></span>
+<span id="cb95-6"><a href="ch-sm.html#cb95-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> sm_event_state_changed_t<span class="op">;</span></span>
+<span id="cb95-7"><a href="ch-sm.html#cb95-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb95-8"><a href="ch-sm.html#cb95-8" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> sm_event_state_changed_t <span class="op">*</span>state_changed <span class="op">=</span></span>
+<span id="cb95-9"><a href="ch-sm.html#cb95-9" aria-hidden="true" tabindex="-1"></a>  decode_hci_event<span class="op">(</span>packet<span class="op">,</span> sm_event_state_changed_t<span class="op">);</span></span></code></pre></div>
 <p>这里的 <code>reason</code> 即 SM 的几种<strong>主要</strong>状态：</p>
-<div class="sourceCode" id="cb95"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb95-1"><a href="ch-sm.html#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="kw">enum</span> sm_state_t</span>
-<span id="cb95-2"><a href="ch-sm.html#cb95-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb95-3"><a href="ch-sm.html#cb95-3" aria-hidden="true" tabindex="-1"></a>  SM_STARTED<span class="op">,</span>                 <span class="co">// SM 启动</span></span>
-<span id="cb95-4"><a href="ch-sm.html#cb95-4" aria-hidden="true" tabindex="-1"></a>  SM_FINAL_PAIRED<span class="op">,</span>            <span class="co">// 已配对</span></span>
-<span id="cb95-5"><a href="ch-sm.html#cb95-5" aria-hidden="true" tabindex="-1"></a>  SM_FINAL_REESTABLISHED<span class="op">,</span>     <span class="co">// 已重新建立</span></span>
-<span id="cb95-6"><a href="ch-sm.html#cb95-6" aria-hidden="true" tabindex="-1"></a>  SM_FINAL_FAIL_PROTOCOL<span class="op">,</span>     <span class="co">// 协议流程错误</span></span>
-<span id="cb95-7"><a href="ch-sm.html#cb95-7" aria-hidden="true" tabindex="-1"></a>  SM_FINAL_FAIL_TIMEOUT<span class="op">,</span>      <span class="co">// 超时</span></span>
-<span id="cb95-8"><a href="ch-sm.html#cb95-8" aria-hidden="true" tabindex="-1"></a>  SM_FINAL_FAIL_DISCONNECT<span class="op">,</span>   <span class="co">// 连接断开</span></span>
-<span id="cb95-9"><a href="ch-sm.html#cb95-9" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb96"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb96-1"><a href="ch-sm.html#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="kw">enum</span> sm_state_t</span>
+<span id="cb96-2"><a href="ch-sm.html#cb96-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb96-3"><a href="ch-sm.html#cb96-3" aria-hidden="true" tabindex="-1"></a>  SM_STARTED<span class="op">,</span>                 <span class="co">// SM 启动</span></span>
+<span id="cb96-4"><a href="ch-sm.html#cb96-4" aria-hidden="true" tabindex="-1"></a>  SM_FINAL_PAIRED<span class="op">,</span>            <span class="co">// 已配对</span></span>
+<span id="cb96-5"><a href="ch-sm.html#cb96-5" aria-hidden="true" tabindex="-1"></a>  SM_FINAL_REESTABLISHED<span class="op">,</span>     <span class="co">// 已重新建立</span></span>
+<span id="cb96-6"><a href="ch-sm.html#cb96-6" aria-hidden="true" tabindex="-1"></a>  SM_FINAL_FAIL_PROTOCOL<span class="op">,</span>     <span class="co">// 协议流程错误</span></span>
+<span id="cb96-7"><a href="ch-sm.html#cb96-7" aria-hidden="true" tabindex="-1"></a>  SM_FINAL_FAIL_TIMEOUT<span class="op">,</span>      <span class="co">// 超时</span></span>
+<span id="cb96-8"><a href="ch-sm.html#cb96-8" aria-hidden="true" tabindex="-1"></a>  SM_FINAL_FAIL_DISCONNECT<span class="op">,</span>   <span class="co">// 连接断开</span></span>
+<span id="cb96-9"><a href="ch-sm.html#cb96-9" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div></li>
 </ul>
 </div>
 <div id="每个连接的个性化设置" class="section level3 hasAnchor" number="11.2.4">
 <h3><span class="header-section-number">11.2.4</span> 每个连接的个性化设置<a href="ch-sm.html#每个连接的个性化设置" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>SM API 支持为每个连接进行个性化的设置：</p>
-<div class="sourceCode" id="cb96"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb96-1"><a href="ch-sm.html#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sm_config_conn<span class="op">(</span></span>
-<span id="cb96-2"><a href="ch-sm.html#cb96-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 连接句柄</span></span>
-<span id="cb96-3"><a href="ch-sm.html#cb96-3" aria-hidden="true" tabindex="-1"></a>  hci_con_handle_t con_handle<span class="op">,</span></span>
-<span id="cb96-4"><a href="ch-sm.html#cb96-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// IO 能力</span></span>
-<span id="cb96-5"><a href="ch-sm.html#cb96-5" aria-hidden="true" tabindex="-1"></a>  io_capability_t io_capability<span class="op">,</span></span>
-<span id="cb96-6"><a href="ch-sm.html#cb96-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// SM_AUTHREQ_... 的组合：是否绑定、是否需要 MITM 保护等</span></span>
-<span id="cb96-7"><a href="ch-sm.html#cb96-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> auth_req<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb97"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb97-1"><a href="ch-sm.html#cb97-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sm_config_conn<span class="op">(</span></span>
+<span id="cb97-2"><a href="ch-sm.html#cb97-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 连接句柄</span></span>
+<span id="cb97-3"><a href="ch-sm.html#cb97-3" aria-hidden="true" tabindex="-1"></a>  hci_con_handle_t con_handle<span class="op">,</span></span>
+<span id="cb97-4"><a href="ch-sm.html#cb97-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// IO 能力</span></span>
+<span id="cb97-5"><a href="ch-sm.html#cb97-5" aria-hidden="true" tabindex="-1"></a>  io_capability_t io_capability<span class="op">,</span></span>
+<span id="cb97-6"><a href="ch-sm.html#cb97-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// SM_AUTHREQ_... 的组合：是否绑定、是否需要 MITM 保护等</span></span>
+<span id="cb97-7"><a href="ch-sm.html#cb97-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> auth_req<span class="op">);</span></span></code></pre></div>
 <p>注意，这个 API 只允许在 HCI 事件 <code>HCI_SUBEVENT_LE_ENHANCED_CONNECTION_COMPLETE</code> 的回调里调用。即使 SM 为禁用状态，
 也可以使用这个 API 为单个连接使能 SM。</p>
 </div>
 <div id="地址解析查找" class="section level3 hasAnchor" number="11.2.5">
 <h3><span class="header-section-number">11.2.5</span> 地址解析、查找<a href="ch-sm.html#地址解析查找" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>通过 <code>sm_address_resolution_lookup</code> 可以“手动”触发蓝牙设备地址的解析、查找：</p>
-<div class="sourceCode" id="cb97"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb97-1"><a href="ch-sm.html#cb97-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> sm_address_resolution_lookup<span class="op">(</span></span>
-<span id="cb97-2"><a href="ch-sm.html#cb97-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> addr_type<span class="op">,</span>  <span class="co">// 地址类型</span></span>
-<span id="cb97-3"><a href="ch-sm.html#cb97-3" aria-hidden="true" tabindex="-1"></a>  bd_addr_t addr<span class="op">);</span>    <span class="co">// 地址</span></span></code></pre></div>
+<div class="sourceCode" id="cb98"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb98-1"><a href="ch-sm.html#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> sm_address_resolution_lookup<span class="op">(</span></span>
+<span id="cb98-2"><a href="ch-sm.html#cb98-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> addr_type<span class="op">,</span>  <span class="co">// 地址类型</span></span>
+<span id="cb98-3"><a href="ch-sm.html#cb98-3" aria-hidden="true" tabindex="-1"></a>  bd_addr_t addr<span class="op">);</span>    <span class="co">// 地址</span></span></code></pre></div>
 <p>这里的“查找”指是的在“<a href="ch-misc.html#ch98-le-dev-db">设备数据库</a>”中查找。如果传入的地址可解析私有地址，
 那么将尝试解析该地址。</p>
 <p>这个函数将待查地址加入一个处理队列，如果成功加入，返回值为 0；反之返回非 0 值。
@@ -584,19 +586,19 @@ SM_EVENT_IDENTITY_RESOLVING_SUCCEEDED 等事件上报。</p>
 </div>
 <div id="p-256-椭圆曲线" class="section level3 hasAnchor" number="11.2.6">
 <h3><span class="header-section-number">11.2.6</span> P-256 椭圆曲线<a href="ch-sm.html#p-256-椭圆曲线" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>要在 ING916、ING918 上使用基于 LE 安全连接的配对，需要先为 Controller 安装 FIPS 186-4<a href="#fn49" class="footnote-ref" id="fnref49"><sup>49</sup></a>
+<p>要在 ING916、ING918 上使用基于 LE 安全连接的配对，需要先为 Controller 安装 FIPS 186-4<a href="ch-cap.html#fn51" class="footnote-ref" id="fnref51"><sup>51</sup></a>
 P-256 椭圆曲线计算引擎：</p>
-<div class="sourceCode" id="cb98"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb98-1"><a href="ch-sm.html#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_install_ecc_engine<span class="op">(</span></span>
-<span id="cb98-2"><a href="ch-sm.html#cb98-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 用于生成一对新的公钥和私钥的回调函数</span></span>
-<span id="cb98-3"><a href="ch-sm.html#cb98-3" aria-hidden="true" tabindex="-1"></a>  f_start_generate_p256_key_pair start_generate_p256_key_pair<span class="op">,</span></span>
-<span id="cb98-4"><a href="ch-sm.html#cb98-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 用于计算 DH 交换密钥的回调</span></span>
-<span id="cb98-5"><a href="ch-sm.html#cb98-5" aria-hidden="true" tabindex="-1"></a>  f_start_generate_dhkey start_generate_dhkey<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb99"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb99-1"><a href="ch-sm.html#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_install_ecc_engine<span class="op">(</span></span>
+<span id="cb99-2"><a href="ch-sm.html#cb99-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 用于生成一对新的公钥和私钥的回调函数</span></span>
+<span id="cb99-3"><a href="ch-sm.html#cb99-3" aria-hidden="true" tabindex="-1"></a>  f_start_generate_p256_key_pair start_generate_p256_key_pair<span class="op">,</span></span>
+<span id="cb99-4"><a href="ch-sm.html#cb99-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 用于计算 DH 交换密钥的回调</span></span>
+<span id="cb99-5"><a href="ch-sm.html#cb99-5" aria-hidden="true" tabindex="-1"></a>  f_start_generate_dhkey start_generate_dhkey<span class="op">);</span></span></code></pre></div>
 <p>回调函数的实现方法可参考 SDK 里的相关示例。</p>
 <p>当不使用 OOB 时，SM 层自动管理公钥、私钥的生成：对于每个基于 LE 安全连接的配对流程都会重新生成私钥。
 当使用 OOB 时，考虑到可能存在与多个设备配对的情况，私钥的更新由开发者控制：
 每次调用 <code>sm_sc_generate_oob_data</code> 时，重新生成私钥和 OOB 数据，该私钥（及对应的公钥）
 将应用于后续所有的基于 LE 安全连接的配对流程。此时，为了保护设备的私钥，开发者需要及时重新调用
-<code>sm_sc_generate_oob_data</code> 刷新私钥和 OOB 数据。参照蓝牙核心规范<a href="#fn50" class="footnote-ref" id="fnref50"><sup>50</sup></a>，
+<code>sm_sc_generate_oob_data</code> 刷新私钥和 OOB 数据。参照蓝牙核心规范<a href="ch-cap.html#fn52" class="footnote-ref" id="fnref52"><sup>52</sup></a>，
 最迟应该在 <span class="math inline">\(S + 3 F &gt; 8\)</span> 时刷新私钥，其中 S 表示当前私钥参与的配对成功的次数，F 表示当前私钥参与的配对失败的次数。</p>
 </div>
 <div id="基于-oob-数据的配对" class="section level3 hasAnchor" number="11.2.7">
@@ -604,47 +606,47 @@ P-256 椭圆曲线计算引擎：</p>
 <ul>
 <li><p>对于 LE 传统 OOB 配对：</p>
 <p>通过 <code>sm_register_oob_data_callback</code> 注册回调函数来为 SM 提供 OOB 数据：</p>
-<div class="sourceCode" id="cb99"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb99-1"><a href="ch-sm.html#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sm_register_oob_data_callback<span class="op">(</span></span>
-<span id="cb99-2"><a href="ch-sm.html#cb99-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> <span class="op">(*</span>get_oob_data_callback<span class="op">)(</span></span>
-<span id="cb99-3"><a href="ch-sm.html#cb99-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> address_type<span class="op">,</span></span>
-<span id="cb99-4"><a href="ch-sm.html#cb99-4" aria-hidden="true" tabindex="-1"></a>    bd_addr_t addr<span class="op">,</span></span>
-<span id="cb99-5"><a href="ch-sm.html#cb99-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> <span class="op">*</span> oob_data<span class="op">));</span></span></code></pre></div>
+<div class="sourceCode" id="cb100"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb100-1"><a href="ch-sm.html#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sm_register_oob_data_callback<span class="op">(</span></span>
+<span id="cb100-2"><a href="ch-sm.html#cb100-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> <span class="op">(*</span>get_oob_data_callback<span class="op">)(</span></span>
+<span id="cb100-3"><a href="ch-sm.html#cb100-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> address_type<span class="op">,</span></span>
+<span id="cb100-4"><a href="ch-sm.html#cb100-4" aria-hidden="true" tabindex="-1"></a>    bd_addr_t addr<span class="op">,</span></span>
+<span id="cb100-5"><a href="ch-sm.html#cb100-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> <span class="op">*</span> oob_data<span class="op">));</span></span></code></pre></div>
 <p>这个回调函数的签名为：</p>
-<div class="sourceCode" id="cb100"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb100-1"><a href="ch-sm.html#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 存在与该对端设备关联的 OOB 数据时返回 1；否则返回 0.</span></span>
-<span id="cb100-2"><a href="ch-sm.html#cb100-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="op">(*</span>get_oob_data_callback<span class="op">)(</span></span>
-<span id="cb100-3"><a href="ch-sm.html#cb100-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 对端设备的地址类型</span></span>
-<span id="cb100-4"><a href="ch-sm.html#cb100-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> address_type<span class="op">,</span></span>
-<span id="cb100-5"><a href="ch-sm.html#cb100-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 对端设备的地址</span></span>
-<span id="cb100-6"><a href="ch-sm.html#cb100-6" aria-hidden="true" tabindex="-1"></a>    bd_addr_t addr<span class="op">,</span></span>
-<span id="cb100-7"><a href="ch-sm.html#cb100-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 输出：OOB 数据（长度与 sm_key_t 相同）</span></span>
-<span id="cb100-8"><a href="ch-sm.html#cb100-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> <span class="op">*</span> oob_data<span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb101"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb101-1"><a href="ch-sm.html#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 存在与该对端设备关联的 OOB 数据时返回 1；否则返回 0.</span></span>
+<span id="cb101-2"><a href="ch-sm.html#cb101-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="op">(*</span>get_oob_data_callback<span class="op">)(</span></span>
+<span id="cb101-3"><a href="ch-sm.html#cb101-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 对端设备的地址类型</span></span>
+<span id="cb101-4"><a href="ch-sm.html#cb101-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> address_type<span class="op">,</span></span>
+<span id="cb101-5"><a href="ch-sm.html#cb101-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 对端设备的地址</span></span>
+<span id="cb101-6"><a href="ch-sm.html#cb101-6" aria-hidden="true" tabindex="-1"></a>    bd_addr_t addr<span class="op">,</span></span>
+<span id="cb101-7"><a href="ch-sm.html#cb101-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 输出：OOB 数据（长度与 sm_key_t 相同）</span></span>
+<span id="cb101-8"><a href="ch-sm.html#cb101-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> <span class="op">*</span> oob_data<span class="op">)</span></span></code></pre></div>
 <p>此 OOB 数据为随机生成。</p></li>
 <li><p>基于 LE 安全连接的 OOB 配对</p></li>
 </ul>
 <p>通过 <code>sm_register_sc_oob_data_callback</code> 注册回调函数来为 SM 提供 OOB 数据：</p>
-<div class="sourceCode" id="cb101"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb101-1"><a href="ch-sm.html#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sm_register_sc_oob_data_callback<span class="op">(</span></span>
-<span id="cb101-2"><a href="ch-sm.html#cb101-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> <span class="op">(*</span>get_sc_oob_data_callback<span class="op">)(</span></span>
-<span id="cb101-3"><a href="ch-sm.html#cb101-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> address_type<span class="op">,</span></span>
-<span id="cb101-4"><a href="ch-sm.html#cb101-4" aria-hidden="true" tabindex="-1"></a>    bd_addr_t addr<span class="op">,</span></span>
-<span id="cb101-5"><a href="ch-sm.html#cb101-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> <span class="op">*</span>peer_confirm<span class="op">,</span></span>
-<span id="cb101-6"><a href="ch-sm.html#cb101-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> <span class="op">*</span>peer_random<span class="op">));</span></span></code></pre></div>
+<div class="sourceCode" id="cb102"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb102-1"><a href="ch-sm.html#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sm_register_sc_oob_data_callback<span class="op">(</span></span>
+<span id="cb102-2"><a href="ch-sm.html#cb102-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> <span class="op">(*</span>get_sc_oob_data_callback<span class="op">)(</span></span>
+<span id="cb102-3"><a href="ch-sm.html#cb102-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> address_type<span class="op">,</span></span>
+<span id="cb102-4"><a href="ch-sm.html#cb102-4" aria-hidden="true" tabindex="-1"></a>    bd_addr_t addr<span class="op">,</span></span>
+<span id="cb102-5"><a href="ch-sm.html#cb102-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> <span class="op">*</span>peer_confirm<span class="op">,</span></span>
+<span id="cb102-6"><a href="ch-sm.html#cb102-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> <span class="op">*</span>peer_random<span class="op">));</span></span></code></pre></div>
 <p>这个回调函数的签名为：</p>
-<div class="sourceCode" id="cb102"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb102-1"><a href="ch-sm.html#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 存在与该对端设备关联的 OOB 数据时返回 1；否则返回 0.</span></span>
-<span id="cb102-2"><a href="ch-sm.html#cb102-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="op">(*</span>get_sc_oob_data_callback<span class="op">)(</span></span>
-<span id="cb102-3"><a href="ch-sm.html#cb102-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 对端设备的地址类型</span></span>
-<span id="cb102-4"><a href="ch-sm.html#cb102-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> address_type<span class="op">,</span></span>
-<span id="cb102-5"><a href="ch-sm.html#cb102-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 对端设备的地址</span></span>
-<span id="cb102-6"><a href="ch-sm.html#cb102-6" aria-hidden="true" tabindex="-1"></a>    bd_addr_t addr<span class="op">,</span></span>
-<span id="cb102-7"><a href="ch-sm.html#cb102-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 输出：OOB 数据 confirm（长度与 sm_key_t 相同）</span></span>
-<span id="cb102-8"><a href="ch-sm.html#cb102-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> <span class="op">*</span>peer_confirm<span class="op">,</span></span>
-<span id="cb102-9"><a href="ch-sm.html#cb102-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 输出：OOB 数据 random （长度与 sm_key_t 相同）</span></span>
-<span id="cb102-10"><a href="ch-sm.html#cb102-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> <span class="op">*</span>peer_random<span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb103"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb103-1"><a href="ch-sm.html#cb103-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 存在与该对端设备关联的 OOB 数据时返回 1；否则返回 0.</span></span>
+<span id="cb103-2"><a href="ch-sm.html#cb103-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="op">(*</span>get_sc_oob_data_callback<span class="op">)(</span></span>
+<span id="cb103-3"><a href="ch-sm.html#cb103-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 对端设备的地址类型</span></span>
+<span id="cb103-4"><a href="ch-sm.html#cb103-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> address_type<span class="op">,</span></span>
+<span id="cb103-5"><a href="ch-sm.html#cb103-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 对端设备的地址</span></span>
+<span id="cb103-6"><a href="ch-sm.html#cb103-6" aria-hidden="true" tabindex="-1"></a>    bd_addr_t addr<span class="op">,</span></span>
+<span id="cb103-7"><a href="ch-sm.html#cb103-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 输出：OOB 数据 confirm（长度与 sm_key_t 相同）</span></span>
+<span id="cb103-8"><a href="ch-sm.html#cb103-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> <span class="op">*</span>peer_confirm<span class="op">,</span></span>
+<span id="cb103-9"><a href="ch-sm.html#cb103-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 输出：OOB 数据 random （长度与 sm_key_t 相同）</span></span>
+<span id="cb103-10"><a href="ch-sm.html#cb103-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> <span class="op">*</span>peer_random<span class="op">)</span></span></code></pre></div>
 <p>confirm 是从 random 和公钥等数据中推算得出，通过调用 <code>sm_sc_generate_oob_data</code>
 可触发生成一组新的 random、confirm 数据：</p>
-<div class="sourceCode" id="cb103"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb103-1"><a href="ch-sm.html#cb103-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> sm_sc_generate_oob_data<span class="op">(</span></span>
-<span id="cb103-2"><a href="ch-sm.html#cb103-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">void</span> <span class="op">(*</span>callback<span class="op">)(</span></span>
-<span id="cb103-3"><a href="ch-sm.html#cb103-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>confirm<span class="op">,</span></span>
-<span id="cb103-4"><a href="ch-sm.html#cb103-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>random<span class="op">));</span></span></code></pre></div>
+<div class="sourceCode" id="cb104"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb104-1"><a href="ch-sm.html#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> sm_sc_generate_oob_data<span class="op">(</span></span>
+<span id="cb104-2"><a href="ch-sm.html#cb104-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">void</span> <span class="op">(*</span>callback<span class="op">)(</span></span>
+<span id="cb104-3"><a href="ch-sm.html#cb104-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>confirm<span class="op">,</span></span>
+<span id="cb104-4"><a href="ch-sm.html#cb104-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>random<span class="op">));</span></span></code></pre></div>
 <p>新的 random、confirm 数据生成后，会调用这个回调告知结果。通过带外传输将这组数据传递到对端，
 对端在 <code>get_sc_oob_data_callback</code> 里将这组数据再传递到 SM 完成 OOB 配对。</p>
 <p><code>sm_sc_generate_oob_data</code> 函数会返回以下几种值：</p>
@@ -658,15 +660,15 @@ P-256 椭圆曲线计算引擎：</p>
 </div>
 <div class="footnotes">
 <hr />
-<ol start="43">
-<li id="fn43"><p>生成时需要保证具有足够高的熵。<a href="ch-sm.html#fnref43" class="footnote-back">↩︎</a></p></li>
-<li id="fn44"><p>IRK、DHK、LTK、CSRK 等的具体含义及作用请参考蓝牙核心规范。<a href="ch-sm.html#fnref44" class="footnote-back">↩︎</a></p></li>
-<li id="fn45"><p>以及给予用户必要的提示的能力。<a href="ch-sm.html#fnref45" class="footnote-back">↩︎</a></p></li>
-<li id="fn46"><p>没必要过于频繁地更新地址。尤其是对于可解析地址，每更新一次，就意味着泄露了一点关于 IRK 的消息。<a href="ch-sm.html#fnref46" class="footnote-back">↩︎</a></p></li>
-<li id="fn47"><p>注意：当该广播是可连接的并且正在广播时，不允许修改地址。<a href="ch-sm.html#fnref47" class="footnote-back">↩︎</a></p></li>
-<li id="fn48"><p><a href="https://www.bluetooth.com/learn-about-bluetooth/key-attributes/bluetooth-security/method-vulnerability/" class="uri">https://www.bluetooth.com/learn-about-bluetooth/key-attributes/bluetooth-security/method-vulnerability/</a><a href="ch-sm.html#fnref48" class="footnote-back">↩︎</a></p></li>
-<li id="fn49"><p>dx.doi.org/10.6028/NIST.FIPS.186-4<a href="ch-sm.html#fnref49" class="footnote-back">↩︎</a></p></li>
-<li id="fn50"><p>BLUETOOTH CORE SPECIFICATION Version 5.4 | Vol 3, Part H, 2.3.6<a href="ch-sm.html#fnref50" class="footnote-back">↩︎</a></p></li>
+<ol start="45">
+<li id="fn45"><p>生成时需要保证具有足够高的熵。<a href="ch-sm.html#fnref45" class="footnote-back">↩︎</a></p></li>
+<li id="fn46"><p>IRK、DHK、LTK、CSRK 等的具体含义及作用请参考蓝牙核心规范。<a href="ch-sm.html#fnref46" class="footnote-back">↩︎</a></p></li>
+<li id="fn47"><p>以及给予用户必要的提示的能力。<a href="ch-sm.html#fnref47" class="footnote-back">↩︎</a></p></li>
+<li id="fn48"><p>没必要过于频繁地更新地址。尤其是对于可解析地址，每更新一次，就意味着泄露了一点关于 IRK 的消息。<a href="ch-sm.html#fnref48" class="footnote-back">↩︎</a></p></li>
+<li id="fn49"><p>注意：当该广播是可连接的并且正在广播时，不允许修改地址。<a href="ch-sm.html#fnref49" class="footnote-back">↩︎</a></p></li>
+<li id="fn50"><p><a href="https://www.bluetooth.com/learn-about-bluetooth/key-attributes/bluetooth-security/method-vulnerability/" class="uri">https://www.bluetooth.com/learn-about-bluetooth/key-attributes/bluetooth-security/method-vulnerability/</a><a href="ch-sm.html#fnref50" class="footnote-back">↩︎</a></p></li>
+<li id="fn51"><p>dx.doi.org/10.6028/NIST.FIPS.186-4<a href="ch-sm.html#fnref51" class="footnote-back">↩︎</a></p></li>
+<li id="fn52"><p>BLUETOOTH CORE SPECIFICATION Version 5.4 | Vol 3, Part H, 2.3.6<a href="ch-sm.html#fnref52" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

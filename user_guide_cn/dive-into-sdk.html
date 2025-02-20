@@ -199,7 +199,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="3.8" data-path="tutorial.html"><a href="tutorial.html#双角色-ble网关"><i class="fa fa-check"></i><b>3.8</b> 双角色 &amp; BLE网关</a>
 <ul>
-<li class="chapter" data-level="3.8.1" data-path="tutorial.html"><a href="tutorial.html#用-ingwizard-创建一个外设app"><i class="fa fa-check"></i><b>3.8.1</b> 用 <code>ingWizard</code> 创建一个外设APP</a></li>
+<li class="chapter" data-level="3.8.1" data-path="tutorial.html"><a href="tutorial.html#用-wizard-创建一个外设app"><i class="fa fa-check"></i><b>3.8.1</b> 用 <code>Wizard</code> 创建一个外设APP</a></li>
 <li class="chapter" data-level="3.8.2" data-path="tutorial.html"><a href="tutorial.html#定义温度计数据"><i class="fa fa-check"></i><b>3.8.2</b> 定义温度计数据</a></li>
 <li class="chapter" data-level="3.8.3" data-path="tutorial.html"><a href="tutorial.html#扫描温度计"><i class="fa fa-check"></i><b>3.8.3</b> 扫描温度计</a></li>
 <li class="chapter" data-level="3.8.4" data-path="tutorial.html"><a href="tutorial.html#发现服务"><i class="fa fa-check"></i><b>3.8.4</b> 发现服务</a></li>
@@ -208,13 +208,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.8.7" data-path="tutorial.html"><a href="tutorial.html#准备温度计"><i class="fa fa-check"></i><b>3.8.7</b> 准备温度计</a></li>
 <li class="chapter" data-level="3.8.8" data-path="tutorial.html"><a href="tutorial.html#测试"><i class="fa fa-check"></i><b>3.8.8</b> 测试</a></li>
 </ul></li>
-<li class="chapter" data-level="3.9" data-path="tutorial.html"><a href="tutorial.html#hello-nim"><i class="fa fa-check"></i><b>3.9</b> Hello, Nim</a>
-<ul>
-<li class="chapter" data-level="3.9.1" data-path="tutorial.html"><a href="tutorial.html#创建一个-nim-app"><i class="fa fa-check"></i><b>3.9.1</b> 创建一个 <code>Nim</code> APP</a></li>
-<li class="chapter" data-level="3.9.2" data-path="tutorial.html"><a href="tutorial.html#创建广播数据"><i class="fa fa-check"></i><b>3.9.2</b> 创建广播数据</a></li>
-<li class="chapter" data-level="3.9.3" data-path="tutorial.html"><a href="tutorial.html#创建配置数据"><i class="fa fa-check"></i><b>3.9.3</b> 创建配置数据</a></li>
-<li class="chapter" data-level="3.9.4" data-path="tutorial.html"><a href="tutorial.html#使用-nim-的好处"><i class="fa fa-check"></i><b>3.9.4</b> 使用 <code>Nim</code> 的好处</a></li>
-</ul></li>
+<li class="chapter" data-level="3.9" data-path="tutorial.html"><a href="tutorial.html#从示例开始"><i class="fa fa-check"></i><b>3.9</b> 从示例开始</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="core-tools.html"><a href="core-tools.html"><i class="fa fa-check"></i><b>4</b> 核心工具</a>
 <ul>
@@ -350,8 +344,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ol>
 <div class="rmdnote">
 <p>
-RAM 由 platform 和 app 共享使用。<code>ingWizard</code> 创建的新项目
-RAM 的位置、大小会自动得以配置。不建议开发者修改此设置。
+RAM 由 platform 和 app 共享使用。<code>Wizard</code> 创建的新项目 RAM
+的位置、大小会自动得以配置。不建议开发者修改此设置。
 </p>
 </div>
 <div id="全局分配" class="section level3 hasAnchor" number="5.1.1">
@@ -387,16 +381,16 @@ RAM 的位置、大小会自动得以配置。不建议开发者修改此设置�
 <p>分配、释放内存块时需要消耗时间。</p></li>
 <li><p>碎片</p></li>
 </ul>
-<p>基于以上考虑，<code>ingWizard</code> 创建项目时在默认情况下，堆大小设置为 0，完全禁用了 <code>malloc</code> 和 <code>free</code>。
+<p>基于以上考虑，<code>Wizard</code> 创建项目时在默认情况下，堆大小设置为 0，完全禁用了 <code>malloc</code> 和 <code>free</code>。
 如果确实需要使用堆，可以在创建项目时，把堆大小修改为合适的数值。
 在使用 <code>malloc</code> 和 <code>free</code> 之前，请查看以下建议：</p>
 <ul>
 <li><p>使用全局变量</p></li>
-<li><p>使用内存池<a href="#fn18" class="footnote-ref" id="fnref18"><sup>18</sup></a></p>
+<li><p>使用内存池<a href="#fn19" class="footnote-ref" id="fnref19"><sup>19</sup></a></p>
 <p>这可能是一种适用于多数场景的方案。</p></li>
 <li><p>使用 RTOS 的堆内存接口，如 <code>pvPortMalloc</code> 和 <code>pvPortFree</code></p>
 <p>注意，这个堆由 platform 和 <code>FreeRTOS</code> 共用，留给 app 的空间可能不多。标准的
-<code>malloc</code> &amp; <code>free</code> 在 <code>ingWizard</code>
+<code>malloc</code> &amp; <code>free</code> 在 <code>Wizard</code>
 的堆设置里可配置为由 <code>pvPortMalloc</code> &amp; <code>pvPortFree</code> 实现，此时，libc 里的堆分配器不会链接到程序里，
 <code>malloc</code> &amp; <code>free</code> 完全依赖 <code>pvPortMalloc</code> &amp; <code>pvPortFree</code> 实现。</p></li>
 </ul>
@@ -410,7 +404,7 @@ RAM 的位置、大小会自动得以配置。不建议开发者修改此设置�
 <li><p>不要在中断服务程序里做过多处理，应该尽快延续到任务里，</p></li>
 <li><p>蓝牙协议栈的回调函数在协议栈任务的上下文里运行，所以也不要做过多处理，</p></li>
 <li><p>调用蓝牙协议栈 API （除了 <code>btstack_push_user_msg</code> 本身）之前先利用消息传递函数
-<code>btstack_push_user_msg</code> 或其它特殊函数<a href="#fn19" class="footnote-ref" id="fnref19"><sup>19</sup></a> 与协议栈同步（参见 <a href="tutorial.html#inter-task-comm">任务间通信</a>）</p></li>
+<code>btstack_push_user_msg</code> 或其它特殊函数<a href="#fn20" class="footnote-ref" id="fnref20"><sup>20</sup></a> 与协议栈同步（参见 <a href="tutorial.html#inter-task-comm">任务间通信</a>）</p></li>
 </ol>
 </div>
 <div id="中断管理" class="section level2 hasAnchor" number="5.3">
@@ -450,7 +444,7 @@ Platform 会询问 app 当前是否允许进入深睡眠，如果不允许，则
 <p>以下操作严格禁止：</p>
 <ol style="list-style-type: decimal">
 <li>修改中断向量表相关的寄存器</li>
-<li>修改表 <a href="#tab:ch4-irq-summary-918"><strong>??</strong></a> 和表 <a href="#tab:ch4-irq-summary-916"><strong>??</strong></a> 中未列出的中断的配置</li>
+<li>修改中断的配置</li>
 </ol>
 </div>
 <div id="debugging-tracing" class="section level2 hasAnchor" number="5.6">
@@ -458,10 +452,10 @@ Platform 会询问 app 当前是否允许进入深睡眠，如果不允许，则
 <p>除了在线调试外，SDK 提供以下两种辅助调试的方法：</p>
 <ol style="list-style-type: decimal">
 <li><p><code>printf</code></p>
-<p><code>printf</code> 是检查程序行为最方便的方法。<code>ingWizard</code> 能够为 <code>printf</code> 生成支撑代码.</p></li>
+<p><code>printf</code> 是检查程序行为最方便的方法。<code>Wizard</code> 能够为 <code>printf</code> 生成支撑代码.</p></li>
 <li><p>跟踪（Trace）</p>
-<p>内部状态和 HCI 接口消息可通过 Trace 记录下来。<code>ingWizard</code> 也能够为 Trace 生成支撑代码。Trace
-包含几种预先定义的数据类型，可以编程选择记录哪些数据类型。使用 <a href="core-tools.html#ingtracer">ingTracer</a> 查看
+<p>内部状态和 HCI 接口消息可通过 Trace 记录下来。<code>Wizard</code> 也能够为 Trace 生成支撑代码。Trace
+包含几种预先定义的数据类型，可以编程选择记录哪些数据类型。使用 <a href="core-tools.html#ingtracer">Tracer</a> 查看
 Trace 数据。</p></li>
 </ol>
 <table>
@@ -487,7 +481,7 @@ Trace 数据。</p></li>
 </tbody>
 </table>
 <p><code>printf</code> 和 trace 都可以配置成从 UART 口或者 SEGGER
-RTT<a href="#fn20" class="footnote-ref" id="fnref20"><sup>20</sup></a> 输出。
+RTT<a href="#fn21" class="footnote-ref" id="fnref21"><sup>21</sup></a> 输出。
 表
 <a href="dive-into-sdk.html#tab:ch3-port-compare">5.2</a> 对比了两种传输方式。</p>
 <table>
@@ -576,7 +570,7 @@ savebin share.bin 0x400A0000 0x10000</code></pre></li>
 <li>填写起始地址和大小；</li>
 <li>打开快捷菜单，用 “Memory Save …” 保存数据。</li>
 </ol></li>
-<li><p>GDB (GNU Arm Embedded Toolchain 及 Nim)</p>
+<li><p>GDB (GNU Arm Embedded Toolchain)</p>
 <p>在 GDB 调试模式下，使用 <code>dump</code> 命令保存每个区域。</p></li>
 </ul>
 <p>内存也可以使用一小段专门的代码导出。例如在
@@ -587,10 +581,10 @@ savebin share.bin 0x400A0000 0x10000</code></pre></li>
 </div>
 <div class="footnotes">
 <hr />
-<ol start="18">
-<li id="fn18"><p><a href="https://en.wikipedia.org/wiki/Memory_pool" class="uri">https://en.wikipedia.org/wiki/Memory_pool</a><a href="dive-into-sdk.html#fnref18" class="footnote-back">↩︎</a></p></li>
-<li id="fn19"><p>请参考《低功耗蓝牙开发者手册》“线程安全性”一节。<a href="dive-into-sdk.html#fnref19" class="footnote-back">↩︎</a></p></li>
-<li id="fn20"><p><a href="https://www.segger.com/products/debug-probes/j-link/technology/about-real-time-transfer/" class="uri">https://www.segger.com/products/debug-probes/j-link/technology/about-real-time-transfer/</a><a href="dive-into-sdk.html#fnref20" class="footnote-back">↩︎</a></p></li>
+<ol start="19">
+<li id="fn19"><p><a href="https://en.wikipedia.org/wiki/Memory_pool" class="uri">https://en.wikipedia.org/wiki/Memory_pool</a><a href="dive-into-sdk.html#fnref19" class="footnote-back">↩︎</a></p></li>
+<li id="fn20"><p>请参考《低功耗蓝牙开发者手册》“线程安全性”一节。<a href="dive-into-sdk.html#fnref20" class="footnote-back">↩︎</a></p></li>
+<li id="fn21"><p><a href="https://www.segger.com/products/debug-probes/j-link/technology/about-real-time-transfer/" class="uri">https://www.segger.com/products/debug-probes/j-link/technology/about-real-time-transfer/</a><a href="dive-into-sdk.html#fnref21" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

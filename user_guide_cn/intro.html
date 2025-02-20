@@ -199,7 +199,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="3.8" data-path="tutorial.html"><a href="tutorial.html#双角色-ble网关"><i class="fa fa-check"></i><b>3.8</b> 双角色 &amp; BLE网关</a>
 <ul>
-<li class="chapter" data-level="3.8.1" data-path="tutorial.html"><a href="tutorial.html#用-ingwizard-创建一个外设app"><i class="fa fa-check"></i><b>3.8.1</b> 用 <code>ingWizard</code> 创建一个外设APP</a></li>
+<li class="chapter" data-level="3.8.1" data-path="tutorial.html"><a href="tutorial.html#用-wizard-创建一个外设app"><i class="fa fa-check"></i><b>3.8.1</b> 用 <code>Wizard</code> 创建一个外设APP</a></li>
 <li class="chapter" data-level="3.8.2" data-path="tutorial.html"><a href="tutorial.html#定义温度计数据"><i class="fa fa-check"></i><b>3.8.2</b> 定义温度计数据</a></li>
 <li class="chapter" data-level="3.8.3" data-path="tutorial.html"><a href="tutorial.html#扫描温度计"><i class="fa fa-check"></i><b>3.8.3</b> 扫描温度计</a></li>
 <li class="chapter" data-level="3.8.4" data-path="tutorial.html"><a href="tutorial.html#发现服务"><i class="fa fa-check"></i><b>3.8.4</b> 发现服务</a></li>
@@ -208,13 +208,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.8.7" data-path="tutorial.html"><a href="tutorial.html#准备温度计"><i class="fa fa-check"></i><b>3.8.7</b> 准备温度计</a></li>
 <li class="chapter" data-level="3.8.8" data-path="tutorial.html"><a href="tutorial.html#测试"><i class="fa fa-check"></i><b>3.8.8</b> 测试</a></li>
 </ul></li>
-<li class="chapter" data-level="3.9" data-path="tutorial.html"><a href="tutorial.html#hello-nim"><i class="fa fa-check"></i><b>3.9</b> Hello, Nim</a>
-<ul>
-<li class="chapter" data-level="3.9.1" data-path="tutorial.html"><a href="tutorial.html#创建一个-nim-app"><i class="fa fa-check"></i><b>3.9.1</b> 创建一个 <code>Nim</code> APP</a></li>
-<li class="chapter" data-level="3.9.2" data-path="tutorial.html"><a href="tutorial.html#创建广播数据"><i class="fa fa-check"></i><b>3.9.2</b> 创建广播数据</a></li>
-<li class="chapter" data-level="3.9.3" data-path="tutorial.html"><a href="tutorial.html#创建配置数据"><i class="fa fa-check"></i><b>3.9.3</b> 创建配置数据</a></li>
-<li class="chapter" data-level="3.9.4" data-path="tutorial.html"><a href="tutorial.html#使用-nim-的好处"><i class="fa fa-check"></i><b>3.9.4</b> 使用 <code>Nim</code> 的好处</a></li>
-</ul></li>
+<li class="chapter" data-level="3.9" data-path="tutorial.html"><a href="tutorial.html#从示例开始"><i class="fa fa-check"></i><b>3.9</b> 从示例开始</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="core-tools.html"><a href="core-tools.html"><i class="fa fa-check"></i><b>4</b> 核心工具</a>
 <ul>
@@ -355,12 +349,7 @@ Figure 2.1: SDK Overview
 <code>Rowley Crossworks for ARM</code><a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> ，
 <code>SEGGER Embedded Studio for ARM</code><a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> 。
 支持 <code>GNU Arm Embedded Toolchain</code><a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> 。
-核心工具可以自动配置所有这些 IDE、工具链。</p>
-<p>支持 <code>Nim</code><a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a> 作为 <code>C</code> 的替代。</p>
-<p>对于新工程，可将
-<code>Visual Studio Code</code><a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a> 配置为代码编辑器。
-对于 <code>Nim</code> and <code>GNU Arm Embedded Toolchain</code>，
-编译、下载等任务可以在 <code>Visual Studio Code</code> 里启动。</p></li>
+核心工具可以自动配置所有这些 IDE、工具链。</p></li>
 <li><p>平台软件包</p>
 <p>为不同应用场景提供不同的软件包（比如 <code>typical</code>，<code>extension</code>）。
 每个软件包包含完整的协议栈和（可选的） <code>FreeRTOS</code> 可执行二进制文件及对应的 <code>C</code> 头文件。
@@ -402,32 +391,25 @@ Figure 2.2: Architecture
 <p><code>app_main</code> 应该总是返回 <code>0</code>。</p>
 <p>平台，BLE 协议栈和 FreeRTOS 的 API 在相应的 <code>C</code> 头文件里声明，包含头文件就可以使用。</p>
 </div>
-<div id="使用-nim-语言开发-app" class="section level4 hasAnchor" number="2.2.1.2">
-<h4><span class="header-section-number">2.2.1.2</span> 使用 <code>Nim</code> 语言开发 App<a href="intro.html#使用-nim-语言开发-app" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p>App 的主函数名为 <code>appMain</code>，app 在这个函数里进行初始化：</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode nim"><code class="sourceCode nim"><span id="cb2-1"><a href="intro.html#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">proc</span> <span class="st">appMain</span><span class="co">*</span><span class="kw">():</span> <span class="at">int</span> <span class="at">{.exportc noconv.}</span> <span class="co">=</span></span>
-<span id="cb2-2"><a href="intro.html#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">...</span></span>
-<span id="cb2-3"><a href="intro.html#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="dv">0</span><span class="kw">;</span></span></code></pre></div>
-<p><code>appMain</code> 应该总是返回 <code>0</code>。</p>
-<p>得益于平台和 app 的划分，app 的体积大大减小。这带来很多好处，不限于：</p>
+<div id="其它语言" class="section level4 hasAnchor" number="2.2.1.2">
+<h4><span class="header-section-number">2.2.1.2</span> 其它语言<a href="intro.html#其它语言" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>可以使用其它语言开发应用，如：</p>
 <ul>
-<li><p>更小、更简洁的 app 代码</p></li>
-<li><p>更快的下载和 FOTA</p></li>
-<li><p>专注于功能开发</p></li>
+<li><p>Rust<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a></p></li>
+<li><p>Nim<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a></p></li>
+<li><p>Zig<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a></p></li>
 </ul>
-<p>SDK 为各 IDE 提供了对应的 Flash 烧写算法。App 调试也很方便：使用 Flash
-下载工具（<a href="core-tools.html#ch2-downloader">4.2</a>）下载平台二进制文件，然后在 IDE 里正常下载、调试 app。</p>
 </div>
 </div>
 <div id="noos-软件包" class="section level3 hasAnchor" number="2.2.2">
 <h3><span class="header-section-number">2.2.2</span> “NoOS” 软件包<a href="intro.html#noos-软件包" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>当需要使用另外的 RTOS，或者需要使用那些 RTOS 软件包中未提供的功能时，开发者可以选用“NoOS”软件包。</p>
 <p>“NoOS”软件包定义了一个通用 RTOS 接口，开发者需要实现这个接口，并通过 <code>app_main</code> 的返回值告知平台。</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="intro.html#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uintptr_t</span> app_main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
-<span id="cb3-2"><a href="intro.html#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb3-3"><a href="intro.html#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">...</span></span>
-<span id="cb3-4"><a href="intro.html#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="op">(</span><span class="dt">uintptr_t</span><span class="op">)</span>os_impl_get_driver<span class="op">();</span></span>
-<span id="cb3-5"><a href="intro.html#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="intro.html#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uintptr_t</span> app_main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb2-2"><a href="intro.html#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb2-3"><a href="intro.html#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">...</span></span>
+<span id="cb2-4"><a href="intro.html#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="op">(</span><span class="dt">uintptr_t</span><span class="op">)</span>os_impl_get_driver<span class="op">();</span></span>
+<span id="cb2-5"><a href="intro.html#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </div>
 </div>
 <div id="缩略语和术语" class="section level2 hasAnchor" number="2.3">
@@ -503,10 +485,10 @@ Figure 2.2: Architecture
 <h2><span class="header-section-number">2.4</span> 参考资料<a href="intro.html#参考资料" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <ol style="list-style-type: decimal">
 <li><p>Host API Reference</p></li>
-<li><p>Bluetooth SIG<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a></p></li>
-<li><p>FreeRTOS<a href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a></p></li>
+<li><p>Bluetooth SIG<a href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a></p></li>
+<li><p>FreeRTOS<a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a></p></li>
 <li><p>Mastering the FreeRTOS™ Real Time
-Kernel<a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a></p></li>
+Kernel<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a></p></li>
 </ol>
 
 </div>
@@ -519,11 +501,12 @@ Kernel<a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a></p></l
 <li id="fn3"><p><a href="https://www.crossworks.com/index.htm/" class="uri">https://www.crossworks.com/index.htm/</a><a href="intro.html#fnref3" class="footnote-back">↩︎</a></p></li>
 <li id="fn4"><p><a href="https://www.segger.com/products/development-tools/embedded-studio/" class="uri">https://www.segger.com/products/development-tools/embedded-studio/</a><a href="intro.html#fnref4" class="footnote-back">↩︎</a></p></li>
 <li id="fn5"><p><a href="https://developer.arm.com/open-source/gnu-toolchain/gnu-rm" class="uri">https://developer.arm.com/open-source/gnu-toolchain/gnu-rm</a><a href="intro.html#fnref5" class="footnote-back">↩︎</a></p></li>
-<li id="fn6"><p><a href="https://www.nim-lang.org" class="uri">https://www.nim-lang.org</a><a href="intro.html#fnref6" class="footnote-back">↩︎</a></p></li>
-<li id="fn7"><p><a href="https://code.visualstudio.com" class="uri">https://code.visualstudio.com</a><a href="intro.html#fnref7" class="footnote-back">↩︎</a></p></li>
-<li id="fn8"><p><a href="https://www.bluetooth.com/" class="uri">https://www.bluetooth.com/</a><a href="intro.html#fnref8" class="footnote-back">↩︎</a></p></li>
-<li id="fn9"><p><a href="https://freertos.org" class="uri">https://freertos.org</a><a href="intro.html#fnref9" class="footnote-back">↩︎</a></p></li>
-<li id="fn10"><p><a href="https://www.freertos.org/Documentation/161204_Mastering_the_FreeRTOS_Real_Time_Kernel-A_Hands-On_Tutorial_Guide.pdf" class="uri">https://www.freertos.org/Documentation/161204_Mastering_the_FreeRTOS_Real_Time_Kernel-A_Hands-On_Tutorial_Guide.pdf</a><a href="intro.html#fnref10" class="footnote-back">↩︎</a></p></li>
+<li id="fn6"><p><a href="https://ingchips.github.io/blog/2022-09-24-use-rust/" class="uri">https://ingchips.github.io/blog/2022-09-24-use-rust/</a><a href="intro.html#fnref6" class="footnote-back">↩︎</a></p></li>
+<li id="fn7"><p>SDK 示例：<em>Smart Home Hub</em>。<a href="intro.html#fnref7" class="footnote-back">↩︎</a></p></li>
+<li id="fn8"><p>SDK 示例：<em>Central FOTA</em>。<a href="intro.html#fnref8" class="footnote-back">↩︎</a></p></li>
+<li id="fn9"><p><a href="https://www.bluetooth.com/" class="uri">https://www.bluetooth.com/</a><a href="intro.html#fnref9" class="footnote-back">↩︎</a></p></li>
+<li id="fn10"><p><a href="https://freertos.org" class="uri">https://freertos.org</a><a href="intro.html#fnref10" class="footnote-back">↩︎</a></p></li>
+<li id="fn11"><p><a href="https://www.freertos.org/Documentation/161204_Mastering_the_FreeRTOS_Real_Time_Kernel-A_Hands-On_Tutorial_Guide.pdf" class="uri">https://www.freertos.org/Documentation/161204_Mastering_the_FreeRTOS_Real_Time_Kernel-A_Hands-On_Tutorial_Guide.pdf</a><a href="intro.html#fnref11" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

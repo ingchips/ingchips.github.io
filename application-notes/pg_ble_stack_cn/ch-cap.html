@@ -391,10 +391,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="13.9.4" data-path="ch-misc.html"><a href="ch-misc.html#建立连接"><i class="fa fa-check"></i><b>13.9.4</b> 建立连接</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="14" data-path="ch-cap.html"><a href="ch-cap.html"><i class="fa fa-check"></i><b>14</b> 协议栈能力</a>
-<ul>
-<li class="chapter" data-level="14.1" data-path="ch-cap.html"><a href="ch-cap.html#非标扩展"><i class="fa fa-check"></i><b>14.1</b> “非标”扩展</a></li>
-</ul></li>
+<li class="chapter" data-level="14" data-path="ch-cap.html"><a href="ch-cap.html"><i class="fa fa-check"></i><b>14</b> 协议栈能力</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
 
@@ -536,53 +533,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tbody>
 </table>
 <p>通过 <code>ll_get_capabilities</code> 和 <code>btstack_get_capabilities</code> 可分别获取链路层和 Host 的协议栈能力<a href="ch-cap.html#fn73" class="footnote-ref" id="fnref73"><sup>73</sup></a>。</p>
-<div id="非标扩展" class="section level2 hasAnchor" number="14.1">
-<h2><span class="header-section-number">14.1</span> “非标”扩展<a href="ch-cap.html#非标扩展" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>软件包 <em>extension</em> 和 <em>exp</em> 包含一系列“非标”扩展。这些扩展多为放松参数限制，可供开发者测试、对比。
-使用这些“非标”扩展将带来兼容性问题，故需谨慎，并遵循相关管理规定。</p>
-<p>以下扩展功能各型号芯片皆可支持，具体表现依赖于芯片本身的处理能力：</p>
-<ol style="list-style-type: decimal">
-<li><p>允许广播最小间隔小于 <span class="math inline">\(20ms\)</span>，最小间隔取决于数据包空口时长；</p></li>
-<li><p>允许连接间隔小于 <span class="math inline">\(7.5ms\)</span>，最小间隔取决于时间单位（默认 <span class="math inline">\(1.25ms\)</span>）、芯片处理能力及数据包空口时长；</p></li>
-<li><p>自定义连接间隔的时间单位；</p>
-<div class="sourceCode" id="cb240"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb240-1"><a href="ch-cap.html#cb240-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_set_conn_interval_unit<span class="op">(</span></span>
-<span id="cb240-2"><a href="ch-cap.html#cb240-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> unit<span class="op">);</span>   <span class="co">// 自定义的时间单位（微秒）</span></span></code></pre></div></li>
-<li><p>在扩展广播上附着 CTE<a href="ch-cap.html#fn74" class="footnote-ref" id="fnref74"><sup>74</sup></a>；</p>
-<div class="sourceCode" id="cb241"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb241-1"><a href="ch-cap.html#cb241-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_attach_cte_to_adv_set<span class="op">(</span></span>
-<span id="cb241-2"><a href="ch-cap.html#cb241-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> adv_hdl<span class="op">,</span>  <span class="co">// 广播集句柄</span></span>
-<span id="cb241-3"><a href="ch-cap.html#cb241-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> cte_type<span class="op">,</span> <span class="co">// CTE 类型（0 为 AoA）</span></span>
-<span id="cb241-4"><a href="ch-cap.html#cb241-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> cte_len<span class="op">,</span>  <span class="co">// CTE 长度</span></span>
-<span id="cb241-5"><a href="ch-cap.html#cb241-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 用于 AoD 发送的天线切换模板的长度</span></span>
-<span id="cb241-6"><a href="ch-cap.html#cb241-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> switching_pattern_len<span class="op">,</span></span>
-<span id="cb241-7"><a href="ch-cap.html#cb241-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 用于 AoD 发送的天线切换模板</span></span>
-<span id="cb241-8"><a href="ch-cap.html#cb241-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>switching_pattern<span class="op">);</span></span></code></pre></div></li>
-<li><p>锁频<a href="ch-cap.html#fn75" class="footnote-ref" id="fnref75"><sup>75</sup></a>；</p>
-<div class="sourceCode" id="cb242"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb242-1"><a href="ch-cap.html#cb242-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 锁频</span></span>
-<span id="cb242-2"><a href="ch-cap.html#cb242-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_lock_frequency<span class="op">(</span></span>
-<span id="cb242-3"><a href="ch-cap.html#cb242-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> freq_mhz<span class="op">);</span>    <span class="co">// 频点（单位：MHz）</span></span>
-<span id="cb242-4"><a href="ch-cap.html#cb242-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb242-5"><a href="ch-cap.html#cb242-5" aria-hidden="true" tabindex="-1"></a><span class="co">// 解锁</span></span>
-<span id="cb242-6"><a href="ch-cap.html#cb242-6" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_unlock_frequency<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div></li>
-<li><p>Raw Packet；</p>
-<p>详见 Controller API Reference。</p></li>
-</ol>
-<p>以下扩展功能不适用于 ING918 芯片家族：</p>
-<ol style="list-style-type: decimal">
-<li><p>允许传统广播数据长度超过 <span class="math inline">\(31\)</span> 字节，最大 <span class="math inline">\(249\)</span> 字节；</p></li>
-<li><p>自定义数据白化初值；</p>
-<div class="sourceCode" id="cb243"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb243-1"><a href="ch-cap.html#cb243-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_override_whitening_init_value<span class="op">(</span></span>
-<span id="cb243-2"><a href="ch-cap.html#cb243-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> override<span class="op">,</span> <span class="co">// 是否启用</span></span>
-<span id="cb243-3"><a href="ch-cap.html#cb243-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> value<span class="op">);</span>   <span class="co">// 自定义的初值</span></span></code></pre></div></li>
-<li><p>自定义广播数据包 PDU 类型；</p>
-<div class="sourceCode" id="cb244"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb244-1"><a href="ch-cap.html#cb244-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_allow_nonstandard_adv_type<span class="op">(</span></span>
-<span id="cb244-2"><a href="ch-cap.html#cb244-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> allowed<span class="op">,</span>  <span class="co">// 是否允许</span></span>
-<span id="cb244-3"><a href="ch-cap.html#cb244-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> type<span class="op">);</span>    <span class="co">// 自定义的PDU 类型</span></span></code></pre></div></li>
-<li><p>自定义 CTE 比特。</p>
-<div class="sourceCode" id="cb245"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb245-1"><a href="ch-cap.html#cb245-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_set_cte_bit<span class="op">(</span></span>
-<span id="cb245-2"><a href="ch-cap.html#cb245-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> bit<span class="op">);</span>     <span class="co">// CTE 比特（默认为 1）</span></span></code></pre></div></li>
-</ol>
 
-</div>
 </div>
 <div class="footnotes footnotes-end-of-document">
 <hr />
@@ -663,8 +614,6 @@ GATT 客户端上的会话可以并发。<a href="ch-misc.html#fnref67" class="f
 <li id="fn71"><p>可以使用 <code>btstack_push_user_runnable</code>。<a href="ch-misc.html#fnref71" class="footnote-back">↩︎</a></p></li>
 <li id="fn72"><p>依据 SDK v8.3.7。ING916XX 协议栈能力可能发生变化。<a href="ch-cap.html#fnref72" class="footnote-back">↩︎</a></p></li>
 <li id="fn73"><p>限 SDK v8.4.13 或更高版本。<a href="ch-cap.html#fnref73" class="footnote-back">↩︎</a></p></li>
-<li id="fn74"><p>仅限支持 CTE 的芯片型号。<a href="ch-cap.html#fnref74" class="footnote-back">↩︎</a></p></li>
-<li id="fn75"><p>将所有射频行为固定在一个指定的信道。<a href="ch-cap.html#fnref75" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 <div class="footnotes">
@@ -672,8 +621,6 @@ GATT 客户端上的会话可以并发。<a href="ch-misc.html#fnref67" class="f
 <ol start="72">
 <li id="fn72"><p>依据 SDK v8.3.7。ING916XX 协议栈能力可能发生变化。<a href="ch-cap.html#fnref72" class="footnote-back">↩︎</a></p></li>
 <li id="fn73"><p>限 SDK v8.4.13 或更高版本。<a href="ch-cap.html#fnref73" class="footnote-back">↩︎</a></p></li>
-<li id="fn74"><p>仅限支持 CTE 的芯片型号。<a href="ch-cap.html#fnref74" class="footnote-back">↩︎</a></p></li>
-<li id="fn75"><p>将所有射频行为固定在一个指定的信道。<a href="ch-cap.html#fnref75" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>12 Controller | 低功耗蓝牙开发者手册</title>
+  <meta name="description" content="12 Controller | 低功耗蓝牙开发者手册." />
+  <meta name="generator" content="bookdown 0.32 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="12 Controller | 低功耗蓝牙开发者手册" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="12 Controller | 低功耗蓝牙开发者手册." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="12 Controller | 低功耗蓝牙开发者手册" />
+  
+  <meta name="twitter:description" content="12 Controller | 低功耗蓝牙开发者手册." />
+  
+
+<meta name="author" content="Ingchips Technology Co., Ltd." />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="ch-sm.html"/>
+<link rel="next" href="ch-misc.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">低功耗蓝牙开发者手册</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> 版本历史</a></li>
+<li class="chapter" data-level="2" data-path="ch-intro.html"><a href="ch-intro.html"><i class="fa fa-check"></i><b>2</b> 简介</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="ch-intro.html"><a href="ch-intro.html#缩略语及术语"><i class="fa fa-check"></i><b>2.1</b> 缩略语及术语</a></li>
+<li class="chapter" data-level="2.2" data-path="ch-intro.html"><a href="ch-intro.html#参考文档"><i class="fa fa-check"></i><b>2.2</b> 参考文档</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="ch-overview.html"><a href="ch-overview.html"><i class="fa fa-check"></i><b>3</b> 概览</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="ch-overview.html"><a href="ch-overview.html#基本原则"><i class="fa fa-check"></i><b>3.1</b> 基本原则</a></li>
+<li class="chapter" data-level="3.2" data-path="ch-overview.html"><a href="ch-overview.html#协议栈架构"><i class="fa fa-check"></i><b>3.2</b> 协议栈架构</a></li>
+<li class="chapter" data-level="3.3" data-path="ch-overview.html"><a href="ch-overview.html#ch-overview-comm-model"><i class="fa fa-check"></i><b>3.3</b> 通信模型</a></li>
+<li class="chapter" data-level="3.4" data-path="ch-overview.html"><a href="ch-overview.html#回调函数事件包"><i class="fa fa-check"></i><b>3.4</b> 回调函数事件包</a></li>
+<li class="chapter" data-level="3.5" data-path="ch-overview.html"><a href="ch-overview.html#事件包的解析"><i class="fa fa-check"></i><b>3.5</b> 事件包的解析</a></li>
+<li class="chapter" data-level="3.6" data-path="ch-overview.html"><a href="ch-overview.html#ch0-ctrl-err-code"><i class="fa fa-check"></i><b>3.6</b> Controller 错误码</a></li>
+<li class="chapter" data-level="3.7" data-path="ch-overview.html"><a href="ch-overview.html#ch0-att-err-codes"><i class="fa fa-check"></i><b>3.7</b> ATT 错误码</a></li>
+<li class="chapter" data-level="3.8" data-path="ch-overview.html"><a href="ch-overview.html#controller-特性定义"><i class="fa fa-check"></i><b>3.8</b> Controller 特性定义</a></li>
+<li class="chapter" data-level="3.9" data-path="ch-overview.html"><a href="ch-overview.html#蓝牙规范版本编号"><i class="fa fa-check"></i><b>3.9</b> 蓝牙规范版本编号</a></li>
+<li class="chapter" data-level="3.10" data-path="ch-overview.html"><a href="ch-overview.html#白名单"><i class="fa fa-check"></i><b>3.10</b> 白名单</a></li>
+<li class="chapter" data-level="3.11" data-path="ch-overview.html"><a href="ch-overview.html#异步特性"><i class="fa fa-check"></i><b>3.11</b> 异步特性</a></li>
+<li class="chapter" data-level="3.12" data-path="ch-overview.html"><a href="ch-overview.html#线程安全性"><i class="fa fa-check"></i><b>3.12</b> 线程安全性</a></li>
+<li class="chapter" data-level="3.13" data-path="ch-overview.html"><a href="ch-overview.html#ch-overview-ble-addr"><i class="fa fa-check"></i><b>3.13</b> BLE 设备地址</a></li>
+<li class="chapter" data-level="3.14" data-path="ch-overview.html"><a href="ch-overview.html#解析列表与隐私"><i class="fa fa-check"></i><b>3.14</b> 解析列表与隐私</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="ch-features.html"><a href="ch-features.html"><i class="fa fa-check"></i><b>4</b> 特性简析</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="ch-features.html"><a href="ch-features.html#新特性"><i class="fa fa-check"></i><b>4.1</b> 5.0 新特性</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="ch-features.html"><a href="ch-features.html#新的-phy"><i class="fa fa-check"></i><b>4.1.1</b> 新的 PHY</a></li>
+<li class="chapter" data-level="4.1.2" data-path="ch-features.html"><a href="ch-features.html#扩展广播"><i class="fa fa-check"></i><b>4.1.2</b> 扩展广播</a></li>
+<li class="chapter" data-level="4.1.3" data-path="ch-features.html"><a href="ch-features.html#周期广播"><i class="fa fa-check"></i><b>4.1.3</b> 周期广播</a></li>
+<li class="chapter" data-level="4.1.4" data-path="ch-features.html"><a href="ch-features.html#信道选择算法-2"><i class="fa fa-check"></i><b>4.1.4</b> 信道选择算法 #2</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="ch-features.html"><a href="ch-features.html#新特性-1"><i class="fa fa-check"></i><b>4.2</b> 5.1 新特性</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="ch-features.html"><a href="ch-features.html#cte"><i class="fa fa-check"></i><b>4.2.1</b> CTE</a></li>
+<li class="chapter" data-level="4.2.2" data-path="ch-features.html"><a href="ch-features.html#ch-feature-prd-transfer"><i class="fa fa-check"></i><b>4.2.2</b> 周期广播同步信息传递</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="ch-features.html"><a href="ch-features.html#新特性-2"><i class="fa fa-check"></i><b>4.3</b> 5.2 新特性</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="ch-features.html"><a href="ch-features.html#le-audio"><i class="fa fa-check"></i><b>4.3.1</b> LE Audio</a></li>
+<li class="chapter" data-level="4.3.2" data-path="ch-features.html"><a href="ch-features.html#增强的-atteatt"><i class="fa fa-check"></i><b>4.3.2</b> 增强的 ATT（EATT）</a></li>
+<li class="chapter" data-level="4.3.3" data-path="ch-features.html"><a href="ch-features.html#路径损耗监测与功率控制"><i class="fa fa-check"></i><b>4.3.3</b> 路径损耗监测与功率控制</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="ch-features.html"><a href="ch-features.html#新特性-3"><i class="fa fa-check"></i><b>4.4</b> 5.3 新特性</a>
+<ul>
+<li class="chapter" data-level="4.4.1" data-path="ch-features.html"><a href="ch-features.html#减速模式"><i class="fa fa-check"></i><b>4.4.1</b> 减速模式</a></li>
+</ul></li>
+<li class="chapter" data-level="4.5" data-path="ch-features.html"><a href="ch-features.html#新特性-4"><i class="fa fa-check"></i><b>4.5</b> 5.4 新特性</a>
+<ul>
+<li class="chapter" data-level="4.5.1" data-path="ch-features.html"><a href="ch-features.html#带响应的周期广播pawr"><i class="fa fa-check"></i><b>4.5.1</b> 带响应的周期广播（PAwR）</a></li>
+<li class="chapter" data-level="4.5.2" data-path="ch-features.html"><a href="ch-features.html#广播数据加密"><i class="fa fa-check"></i><b>4.5.2</b> 广播数据加密</a></li>
+</ul></li>
+<li class="chapter" data-level="4.6" data-path="ch-features.html"><a href="ch-features.html#其它"><i class="fa fa-check"></i><b>4.6</b> 其它</a>
+<ul>
+<li class="chapter" data-level="4.6.1" data-path="ch-features.html"><a href="ch-features.html#广播时-coded-phy-选择"><i class="fa fa-check"></i><b>4.6.1</b> 广播时 Coded PHY 选择</a></li>
+</ul></li>
+<li class="chapter" data-level="4.7" data-path="ch-features.html"><a href="ch-features.html#新特性-5"><i class="fa fa-check"></i><b>4.7</b> 6.0 新特性</a>
+<ul>
+<li class="chapter" data-level="4.7.1" data-path="ch-features.html"><a href="ch-features.html#信道探测"><i class="fa fa-check"></i><b>4.7.1</b> 信道探测</a></li>
+<li class="chapter" data-level="4.7.2" data-path="ch-features.html"><a href="ch-features.html#基于决策的广告过滤dbaf"><i class="fa fa-check"></i><b>4.7.2</b> 基于决策的广告过滤（DBAF）</a></li>
+<li class="chapter" data-level="4.7.3" data-path="ch-features.html"><a href="ch-features.html#广播者监控"><i class="fa fa-check"></i><b>4.7.3</b> 广播者监控</a></li>
+<li class="chapter" data-level="4.7.4" data-path="ch-features.html"><a href="ch-features.html#isoal-增强"><i class="fa fa-check"></i><b>4.7.4</b> ISOAL 增强</a></li>
+<li class="chapter" data-level="4.7.5" data-path="ch-features.html"><a href="ch-features.html#链路层扩展特性集"><i class="fa fa-check"></i><b>4.7.5</b> 链路层扩展特性集</a></li>
+<li class="chapter" data-level="4.7.6" data-path="ch-features.html"><a href="ch-features.html#帧间隔更新"><i class="fa fa-check"></i><b>4.7.6</b> 帧间隔更新</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="ch-adv.html"><a href="ch-adv.html"><i class="fa fa-check"></i><b>5</b> GAP - 广播</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="ch-adv.html"><a href="ch-adv.html#概览"><i class="fa fa-check"></i><b>5.1</b> 概览</a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="ch-adv.html"><a href="ch-adv.html#类型"><i class="fa fa-check"></i><b>5.1.1</b> 类型</a></li>
+<li class="chapter" data-level="5.1.2" data-path="ch-adv.html"><a href="ch-adv.html#ch1-adv-filter"><i class="fa fa-check"></i><b>5.1.2</b> 过滤策略</a></li>
+<li class="chapter" data-level="5.1.3" data-path="ch-adv.html"><a href="ch-adv.html#phy"><i class="fa fa-check"></i><b>5.1.3</b> PHY</a></li>
+<li class="chapter" data-level="5.1.4" data-path="ch-adv.html"><a href="ch-adv.html#广播集"><i class="fa fa-check"></i><b>5.1.4</b> 广播集</a></li>
+<li class="chapter" data-level="5.1.5" data-path="ch-adv.html"><a href="ch-adv.html#相关事件"><i class="fa fa-check"></i><b>5.1.5</b> 相关事件</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="ch-adv.html"><a href="ch-adv.html#使用说明"><i class="fa fa-check"></i><b>5.2</b> 使用说明</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="ch-adv.html"><a href="ch-adv.html#gap_set_ext_adv_para"><i class="fa fa-check"></i><b>5.2.1</b> 配置广播</a></li>
+<li class="chapter" data-level="5.2.2" data-path="ch-adv.html"><a href="ch-adv.html#ch1-adv-data-edit"><i class="fa fa-check"></i><b>5.2.2</b> 广播数据</a></li>
+<li class="chapter" data-level="5.2.3" data-path="ch-adv.html"><a href="ch-adv.html#配置周期广播"><i class="fa fa-check"></i><b>5.2.3</b> 配置周期广播</a></li>
+<li class="chapter" data-level="5.2.4" data-path="ch-adv.html"><a href="ch-adv.html#起停广播"><i class="fa fa-check"></i><b>5.2.4</b> 起停广播</a></li>
+<li class="chapter" data-level="5.2.5" data-path="ch-adv.html"><a href="ch-adv.html#起停周期广播"><i class="fa fa-check"></i><b>5.2.5</b> 起停周期广播</a></li>
+<li class="chapter" data-level="5.2.6" data-path="ch-adv.html"><a href="ch-adv.html#为周期广播添加-cte"><i class="fa fa-check"></i><b>5.2.6</b> 为周期广播添加 CTE</a></li>
+<li class="chapter" data-level="5.2.7" data-path="ch-adv.html"><a href="ch-adv.html#带响应的周期广播pawr-1"><i class="fa fa-check"></i><b>5.2.7</b> 带响应的周期广播（PAwR）</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="ch-scan.html"><a href="ch-scan.html"><i class="fa fa-check"></i><b>6</b> GAP - 扫描</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="ch-scan.html"><a href="ch-scan.html#概览-1"><i class="fa fa-check"></i><b>6.1</b> 概览</a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="ch-scan.html"><a href="ch-scan.html#间隔与窗口"><i class="fa fa-check"></i><b>6.1.1</b> 间隔与窗口</a></li>
+<li class="chapter" data-level="6.1.2" data-path="ch-scan.html"><a href="ch-scan.html#过滤策略"><i class="fa fa-check"></i><b>6.1.2</b> 过滤策略</a></li>
+<li class="chapter" data-level="6.1.3" data-path="ch-scan.html"><a href="ch-scan.html#主动与被动"><i class="fa fa-check"></i><b>6.1.3</b> 主动与被动</a></li>
+<li class="chapter" data-level="6.1.4" data-path="ch-scan.html"><a href="ch-scan.html#phy-1"><i class="fa fa-check"></i><b>6.1.4</b> PHY</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="ch-scan.html"><a href="ch-scan.html#使用说明-1"><i class="fa fa-check"></i><b>6.2</b> 使用说明</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="ch-scan.html"><a href="ch-scan.html#配置参数"><i class="fa fa-check"></i><b>6.2.1</b> 配置参数</a></li>
+<li class="chapter" data-level="6.2.2" data-path="ch-scan.html"><a href="ch-scan.html#起停扫描"><i class="fa fa-check"></i><b>6.2.2</b> 起停扫描</a></li>
+<li class="chapter" data-level="6.2.3" data-path="ch-scan.html"><a href="ch-scan.html#处理数据"><i class="fa fa-check"></i><b>6.2.3</b> 处理数据</a></li>
+<li class="chapter" data-level="6.2.4" data-path="ch-scan.html"><a href="ch-scan.html#与周期广播同步"><i class="fa fa-check"></i><b>6.2.4</b> 与周期广播同步</a></li>
+<li class="chapter" data-level="6.2.5" data-path="ch-scan.html"><a href="ch-scan.html#与-pawr-同步"><i class="fa fa-check"></i><b>6.2.5</b> 与 PAwR 同步</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="ch-conn.html"><a href="ch-conn.html"><i class="fa fa-check"></i><b>7</b> GAP - 连接</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="ch-conn.html"><a href="ch-conn.html#概览-2"><i class="fa fa-check"></i><b>7.1</b> 概览</a></li>
+<li class="chapter" data-level="7.2" data-path="ch-conn.html"><a href="ch-conn.html#使用说明-2"><i class="fa fa-check"></i><b>7.2</b> 使用说明</a>
+<ul>
+<li class="chapter" data-level="7.2.1" data-path="ch-conn.html"><a href="ch-conn.html#ch-scan-create-connection"><i class="fa fa-check"></i><b>7.2.1</b> 建立连接</a></li>
+<li class="chapter" data-level="7.2.2" data-path="ch-conn.html"><a href="ch-conn.html#取消连接"><i class="fa fa-check"></i><b>7.2.2</b> 取消连接</a></li>
+<li class="chapter" data-level="7.2.3" data-path="ch-conn.html"><a href="ch-conn.html#获取对端版本"><i class="fa fa-check"></i><b>7.2.3</b> 获取对端版本</a></li>
+<li class="chapter" data-level="7.2.4" data-path="ch-conn.html"><a href="ch-conn.html#获取对端特性"><i class="fa fa-check"></i><b>7.2.4</b> 获取对端特性</a></li>
+<li class="chapter" data-level="7.2.5" data-path="ch-conn.html"><a href="ch-conn.html#设置-phy"><i class="fa fa-check"></i><b>7.2.5</b> 设置 PHY</a></li>
+<li class="chapter" data-level="7.2.6" data-path="ch-conn.html"><a href="ch-conn.html#更新连接参数"><i class="fa fa-check"></i><b>7.2.6</b> 更新连接参数</a></li>
+<li class="chapter" data-level="7.2.7" data-path="ch-conn.html"><a href="ch-conn.html#ch-conn-subrating"><i class="fa fa-check"></i><b>7.2.7</b> 减速模式</a></li>
+<li class="chapter" data-level="7.2.8" data-path="ch-conn.html"><a href="ch-conn.html#ch-conn-pathloss"><i class="fa fa-check"></i><b>7.2.8</b> 路损检测与上报</a></li>
+<li class="chapter" data-level="7.2.9" data-path="ch-conn.html"><a href="ch-conn.html#ch-conn-power-ctrl"><i class="fa fa-check"></i><b>7.2.9</b> 功率控制</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="ch-gatt-server.html"><a href="ch-gatt-server.html"><i class="fa fa-check"></i><b>8</b> GATT - 服务器</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="ch-gatt-server.html"><a href="ch-gatt-server.html#ch-gatt-server-overview"><i class="fa fa-check"></i><b>8.1</b> 概览</a></li>
+<li class="chapter" data-level="8.2" data-path="ch-gatt-server.html"><a href="ch-gatt-server.html#使用说明-3"><i class="fa fa-check"></i><b>8.2</b> 使用说明</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="ch-gatt-server.html"><a href="ch-gatt-server.html#profile-数据"><i class="fa fa-check"></i><b>8.2.1</b> Profile 数据</a></li>
+<li class="chapter" data-level="8.2.2" data-path="ch-gatt-server.html"><a href="ch-gatt-server.html#实现读回调"><i class="fa fa-check"></i><b>8.2.2</b> 实现读回调</a></li>
+<li class="chapter" data-level="8.2.3" data-path="ch-gatt-server.html"><a href="ch-gatt-server.html#实现写回调"><i class="fa fa-check"></i><b>8.2.3</b> 实现写回调</a></li>
+<li class="chapter" data-level="8.2.4" data-path="ch-gatt-server.html"><a href="ch-gatt-server.html#发送通知notification"><i class="fa fa-check"></i><b>8.2.4</b> 发送通知（Notification）</a></li>
+<li class="chapter" data-level="8.2.5" data-path="ch-gatt-server.html"><a href="ch-gatt-server.html#发送指示indication"><i class="fa fa-check"></i><b>8.2.5</b> 发送指示（Indication）</a></li>
+<li class="chapter" data-level="8.2.6" data-path="ch-gatt-server.html"><a href="ch-gatt-server.html#响应事件"><i class="fa fa-check"></i><b>8.2.6</b> 响应事件</a></li>
+<li class="chapter" data-level="8.2.7" data-path="ch-gatt-server.html"><a href="ch-gatt-server.html#att_mtu"><i class="fa fa-check"></i><b>8.2.7</b> ATT_MTU</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html"><i class="fa fa-check"></i><b>9</b> GATT - 客户端</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#概览-3"><i class="fa fa-check"></i><b>9.1</b> 概览</a>
+<ul>
+<li class="chapter" data-level="9.1.1" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#句柄范围"><i class="fa fa-check"></i><b>9.1.1</b> 句柄范围</a></li>
+</ul></li>
+<li class="chapter" data-level="9.2" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#使用说明-4"><i class="fa fa-check"></i><b>9.2</b> 使用说明</a>
+<ul>
+<li class="chapter" data-level="9.2.1" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#创建客户端"><i class="fa fa-check"></i><b>9.2.1</b> 创建客户端</a></li>
+<li class="chapter" data-level="9.2.2" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#发现服务"><i class="fa fa-check"></i><b>9.2.2</b> 发现服务</a></li>
+<li class="chapter" data-level="9.2.3" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#读取特征"><i class="fa fa-check"></i><b>9.2.3</b> 读取特征</a></li>
+<li class="chapter" data-level="9.2.4" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#写入特征"><i class="fa fa-check"></i><b>9.2.4</b> 写入特征</a></li>
+<li class="chapter" data-level="9.2.5" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#订阅特征"><i class="fa fa-check"></i><b>9.2.5</b> 订阅特征</a></li>
+<li class="chapter" data-level="9.2.6" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#att_mtu-1"><i class="fa fa-check"></i><b>9.2.6</b> ATT_MTU</a></li>
+<li class="chapter" data-level="9.2.7" data-path="ch-gatt-client.html"><a href="ch-gatt-client.html#自定义-mtu"><i class="fa fa-check"></i><b>9.2.7</b> 自定义 MTU </a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="ch-l2cap.html"><a href="ch-l2cap.html"><i class="fa fa-check"></i><b>10</b> L2CAP</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="ch-l2cap.html"><a href="ch-l2cap.html#概览-4"><i class="fa fa-check"></i><b>10.1</b> 概览</a></li>
+<li class="chapter" data-level="10.2" data-path="ch-l2cap.html"><a href="ch-l2cap.html#使用说明-5"><i class="fa fa-check"></i><b>10.2</b> 使用说明</a>
+<ul>
+<li class="chapter" data-level="10.2.1" data-path="ch-l2cap.html"><a href="ch-l2cap.html#从端请求更新连接参数"><i class="fa fa-check"></i><b>10.2.1</b> 从端请求更新连接参数</a></li>
+<li class="chapter" data-level="10.2.2" data-path="ch-l2cap.html"><a href="ch-l2cap.html#基于信用点的连接"><i class="fa fa-check"></i><b>10.2.2</b> 基于信用点的连接</a></li>
+<li class="chapter" data-level="10.2.3" data-path="ch-l2cap.html"><a href="ch-l2cap.html#ch-i2cap-tx-queue"><i class="fa fa-check"></i><b>10.2.3</b> 传输队列</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="ch-sm.html"><a href="ch-sm.html"><i class="fa fa-check"></i><b>11</b> 安全管理</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="ch-sm.html"><a href="ch-sm.html#概览-5"><i class="fa fa-check"></i><b>11.1</b> 概览</a></li>
+<li class="chapter" data-level="11.2" data-path="ch-sm.html"><a href="ch-sm.html#使用说明-6"><i class="fa fa-check"></i><b>11.2</b> 使用说明</a>
+<ul>
+<li class="chapter" data-level="11.2.1" data-path="ch-sm.html"><a href="ch-sm.html#初始化"><i class="fa fa-check"></i><b>11.2.1</b> 初始化</a></li>
+<li class="chapter" data-level="11.2.2" data-path="ch-sm.html"><a href="ch-sm.html#使用私有随机地址"><i class="fa fa-check"></i><b>11.2.2</b> 使用私有随机地址</a></li>
+<li class="chapter" data-level="11.2.3" data-path="ch-sm.html"><a href="ch-sm.html#sm-事件回调"><i class="fa fa-check"></i><b>11.2.3</b> SM 事件回调</a></li>
+<li class="chapter" data-level="11.2.4" data-path="ch-sm.html"><a href="ch-sm.html#每个连接的个性化设置"><i class="fa fa-check"></i><b>11.2.4</b> 每个连接的个性化设置</a></li>
+<li class="chapter" data-level="11.2.5" data-path="ch-sm.html"><a href="ch-sm.html#地址解析查找"><i class="fa fa-check"></i><b>11.2.5</b> 地址解析、查找</a></li>
+<li class="chapter" data-level="11.2.6" data-path="ch-sm.html"><a href="ch-sm.html#p-256-椭圆曲线"><i class="fa fa-check"></i><b>11.2.6</b> P-256 椭圆曲线</a></li>
+<li class="chapter" data-level="11.2.7" data-path="ch-sm.html"><a href="ch-sm.html#基于-oob-数据的配对"><i class="fa fa-check"></i><b>11.2.7</b> 基于 OOB 数据的配对</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="ch-controller.html"><a href="ch-controller.html"><i class="fa fa-check"></i><b>12</b> Controller</a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="ch-controller.html"><a href="ch-controller.html#配置项"><i class="fa fa-check"></i><b>12.1</b> 配置项</a>
+<ul>
+<li class="chapter" data-level="12.1.1" data-path="ch-controller.html"><a href="ch-controller.html#功能开关"><i class="fa fa-check"></i><b>12.1.1</b> 功能开关</a></li>
+<li class="chapter" data-level="12.1.2" data-path="ch-controller.html"><a href="ch-controller.html#可配参数"><i class="fa fa-check"></i><b>12.1.2</b> 可配参数</a></li>
+</ul></li>
+<li class="chapter" data-level="12.2" data-path="ch-controller.html"><a href="ch-controller.html#hci-增强"><i class="fa fa-check"></i><b>12.2</b> HCI 增强</a>
+<ul>
+<li class="chapter" data-level="12.2.1" data-path="ch-controller.html"><a href="ch-controller.html#读取特性和能力"><i class="fa fa-check"></i><b>12.2.1</b> 读取特性和能力</a></li>
+<li class="chapter" data-level="12.2.2" data-path="ch-controller.html"><a href="ch-controller.html#工作状态"><i class="fa fa-check"></i><b>12.2.2</b> 工作状态</a></li>
+<li class="chapter" data-level="12.2.3" data-path="ch-controller.html"><a href="ch-controller.html#发射功率"><i class="fa fa-check"></i><b>12.2.3</b> 发射功率</a></li>
+<li class="chapter" data-level="12.2.4" data-path="ch-controller.html"><a href="ch-controller.html#编码方式"><i class="fa fa-check"></i><b>12.2.4</b> 编码方式</a></li>
+<li class="chapter" data-level="12.2.5" data-path="ch-controller.html"><a href="ch-controller.html#底层广播参数"><i class="fa fa-check"></i><b>12.2.5</b> 底层广播参数</a></li>
+<li class="chapter" data-level="12.2.6" data-path="ch-controller.html"><a href="ch-controller.html#底层连接参数"><i class="fa fa-check"></i><b>12.2.6</b> 底层连接参数</a></li>
+<li class="chapter" data-level="12.2.7" data-path="ch-controller.html"><a href="ch-controller.html#默认天线"><i class="fa fa-check"></i><b>12.2.7</b> 默认天线</a></li>
+<li class="chapter" data-level="12.2.8" data-path="ch-controller.html"><a href="ch-controller.html#单信道扫描"><i class="fa fa-check"></i><b>12.2.8</b> 单信道扫描</a></li>
+</ul></li>
+<li class="chapter" data-level="12.3" data-path="ch-controller.html"><a href="ch-controller.html#连接中止与重建"><i class="fa fa-check"></i><b>12.3</b> 连接中止与重建</a></li>
+<li class="chapter" data-level="12.4" data-path="ch-controller.html"><a href="ch-controller.html#广播上的-cte"><i class="fa fa-check"></i><b>12.4</b> 广播上的 CTE</a></li>
+<li class="chapter" data-level="12.5" data-path="ch-controller.html"><a href="ch-controller.html#原始包raw-packet对象"><i class="fa fa-check"></i><b>12.5</b> 原始包（Raw Packet）对象</a>
+<ul>
+<li class="chapter" data-level="12.5.1" data-path="ch-controller.html"><a href="ch-controller.html#无响应的包"><i class="fa fa-check"></i><b>12.5.1</b> 无响应的包</a></li>
+<li class="chapter" data-level="12.5.2" data-path="ch-controller.html"><a href="ch-controller.html#带确认的包ack-able-packet"><i class="fa fa-check"></i><b>12.5.2</b> 带确认的包（Ack-able Packet）</a></li>
+<li class="chapter" data-level="12.5.3" data-path="ch-controller.html"><a href="ch-controller.html#信道监听"><i class="fa fa-check"></i><b>12.5.3</b> 信道监听</a></li>
+</ul></li>
+<li class="chapter" data-level="12.6" data-path="ch-controller.html"><a href="ch-controller.html#内存管理"><i class="fa fa-check"></i><b>12.6</b> 内存管理</a></li>
+<li class="chapter" data-level="12.7" data-path="ch-controller.html"><a href="ch-controller.html#低时延接口"><i class="fa fa-check"></i><b>12.7</b> 低时延接口</a>
+<ul>
+<li class="chapter" data-level="12.7.1" data-path="ch-controller.html"><a href="ch-controller.html#acl-预览"><i class="fa fa-check"></i><b>12.7.1</b> ACL 预览</a></li>
+<li class="chapter" data-level="12.7.2" data-path="ch-controller.html"><a href="ch-controller.html#aes-加密"><i class="fa fa-check"></i><b>12.7.2</b> AES 加密</a></li>
+</ul></li>
+<li class="chapter" data-level="12.8" data-path="ch-controller.html"><a href="ch-controller.html#非标选项"><i class="fa fa-check"></i><b>12.8</b> “非标”选项</a>
+<ul>
+<li class="chapter" data-level="12.8.1" data-path="ch-controller.html"><a href="ch-controller.html#锁频"><i class="fa fa-check"></i><b>12.8.1</b> 锁频</a></li>
+<li class="chapter" data-level="12.8.2" data-path="ch-controller.html"><a href="ch-controller.html#自定义参数"><i class="fa fa-check"></i><b>12.8.2</b> 自定义参数</a></li>
+</ul></li>
+<li class="chapter" data-level="12.9" data-path="ch-controller.html"><a href="ch-controller.html#ecc-引擎"><i class="fa fa-check"></i><b>12.9</b> ECC 引擎</a></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="ch-misc.html"><a href="ch-misc.html"><i class="fa fa-check"></i><b>13</b> 杂项</a>
+<ul>
+<li class="chapter" data-level="13.1" data-path="ch-misc.html"><a href="ch-misc.html#接收-cte"><i class="fa fa-check"></i><b>13.1</b> 接收 CTE</a>
+<ul>
+<li class="chapter" data-level="13.1.1" data-path="ch-misc.html"><a href="ch-misc.html#基于连接的-cte-接收和发送"><i class="fa fa-check"></i><b>13.1.1</b> 基于连接的 CTE 接收和发送</a></li>
+<li class="chapter" data-level="13.1.2" data-path="ch-misc.html"><a href="ch-misc.html#misc-cte-periodic-adv"><i class="fa fa-check"></i><b>13.1.2</b> 基于周期广播的 CTE 接收和发送</a></li>
+<li class="chapter" data-level="13.1.3" data-path="ch-misc.html"><a href="ch-misc.html#基于私有方式-1-的-cte-接收和发送"><i class="fa fa-check"></i><b>13.1.3</b> 基于私有方式 #1 的 CTE 接收和发送</a></li>
+<li class="chapter" data-level="13.1.4" data-path="ch-misc.html"><a href="ch-misc.html#基于私有方式-2-的-cte-接收和发送"><i class="fa fa-check"></i><b>13.1.4</b> 基于私有方式 #2 的 CTE 接收和发送</a></li>
+</ul></li>
+<li class="chapter" data-level="13.2" data-path="ch-misc.html"><a href="ch-misc.html#加密与解密"><i class="fa fa-check"></i><b>13.2</b> 加密与解密</a>
+<ul>
+<li class="chapter" data-level="13.2.1" data-path="ch-misc.html"><a href="ch-misc.html#ch-misc-aes-encrypt"><i class="fa fa-check"></i><b>13.2.1</b> AES-128 加密</a></li>
+<li class="chapter" data-level="13.2.2" data-path="ch-misc.html"><a href="ch-misc.html#aes-ccm"><i class="fa fa-check"></i><b>13.2.2</b> AES-CCM</a></li>
+</ul></li>
+<li class="chapter" data-level="13.3" data-path="ch-misc.html"><a href="ch-misc.html#协议栈配置"><i class="fa fa-check"></i><b>13.3</b> 协议栈配置</a>
+<ul>
+<li class="chapter" data-level="13.3.1" data-path="ch-misc.html"><a href="ch-misc.html#data-length-与-mtu"><i class="fa fa-check"></i><b>13.3.1</b> Data Length 与 MTU</a></li>
+<li class="chapter" data-level="13.3.2" data-path="ch-misc.html"><a href="ch-misc.html#面向测试"><i class="fa fa-check"></i><b>13.3.2</b> 面向测试</a></li>
+</ul></li>
+<li class="chapter" data-level="13.4" data-path="ch-misc.html"><a href="ch-misc.html#api-返回值"><i class="fa fa-check"></i><b>13.4</b> API 返回值</a></li>
+<li class="chapter" data-level="13.5" data-path="ch-misc.html"><a href="ch-misc.html#键值存储接口与实现"><i class="fa fa-check"></i><b>13.5</b> 键值存储接口与实现</a>
+<ul>
+<li class="chapter" data-level="13.5.1" data-path="ch-misc.html"><a href="ch-misc.html#键值存储接口"><i class="fa fa-check"></i><b>13.5.1</b> 键值存储接口</a></li>
+<li class="chapter" data-level="13.5.2" data-path="ch-misc.html"><a href="ch-misc.html#默认的键值存储实现"><i class="fa fa-check"></i><b>13.5.2</b> 默认的键值存储实现</a></li>
+<li class="chapter" data-level="13.5.3" data-path="ch-misc.html"><a href="ch-misc.html#自定义键值存储实现"><i class="fa fa-check"></i><b>13.5.3</b> 自定义键值存储实现</a></li>
+</ul></li>
+<li class="chapter" data-level="13.6" data-path="ch-misc.html"><a href="ch-misc.html#ch98-le-dev-db"><i class="fa fa-check"></i><b>13.6</b> 设备数据库</a></li>
+<li class="chapter" data-level="13.7" data-path="ch-misc.html"><a href="ch-misc.html#ch-misc-synced-api"><i class="fa fa-check"></i><b>13.7</b> 同步版 API</a>
+<ul>
+<li class="chapter" data-level="13.7.1" data-path="ch-misc.html"><a href="ch-misc.html#gap-同步-api"><i class="fa fa-check"></i><b>13.7.1</b> GAP 同步 API</a></li>
+<li class="chapter" data-level="13.7.2" data-path="ch-misc.html"><a href="ch-misc.html#gatt-客户端同步-api"><i class="fa fa-check"></i><b>13.7.2</b> GATT 客户端同步 API</a></li>
+</ul></li>
+<li class="chapter" data-level="13.8" data-path="ch-misc.html"><a href="ch-misc.html#ch-misc-thread-safe-api"><i class="fa fa-check"></i><b>13.8</b> 线程安全的 API</a></li>
+<li class="chapter" data-level="13.9" data-path="ch-misc.html"><a href="ch-misc.html#ch-misc-privacy"><i class="fa fa-check"></i><b>13.9</b> 链路层隐私</a>
+<ul>
+<li class="chapter" data-level="13.9.1" data-path="ch-misc.html"><a href="ch-misc.html#将已配对设备添加到解析列表"><i class="fa fa-check"></i><b>13.9.1</b> 将已配对设备添加到解析列表</a></li>
+<li class="chapter" data-level="13.9.2" data-path="ch-misc.html"><a href="ch-misc.html#广播"><i class="fa fa-check"></i><b>13.9.2</b> 广播</a></li>
+<li class="chapter" data-level="13.9.3" data-path="ch-misc.html"><a href="ch-misc.html#扫描"><i class="fa fa-check"></i><b>13.9.3</b> 扫描</a></li>
+<li class="chapter" data-level="13.9.4" data-path="ch-misc.html"><a href="ch-misc.html#建立连接"><i class="fa fa-check"></i><b>13.9.4</b> 建立连接</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="ch-cap.html"><a href="ch-cap.html"><i class="fa fa-check"></i><b>14</b> 协议栈能力</a>
+<ul>
+<li class="chapter" data-level="14.1" data-path="ch-cap.html"><a href="ch-cap.html#非标扩展"><i class="fa fa-check"></i><b>14.1</b> “非标”扩展</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">低功耗蓝牙开发者手册</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="ch-controller" class="section level1 hasAnchor" number="12">
+<h1><span class="header-section-number">12</span> Controller<a href="ch-controller.html#ch-controller" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Controller 除了通过 HCI 为 Host 提供服务以外，还提供了一系列接口供开发者直接调用。
+这些接口有的弥补 HCI 的不足，有的提供标准以外的扩展功能。这些接口与芯片、软件包紧密耦合，
+不同芯片系列、软件包，所提供的 Controller 接口也不相同，比如 <code>typical</code>
+软件包不提供不符合规范的“非标”接口。</p>
+<div id="配置项" class="section level2 hasAnchor" number="12.1">
+<h2><span class="header-section-number">12.1</span> 配置项<a href="ch-controller.html#配置项" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="功能开关" class="section level3 hasAnchor" number="12.1.1">
+<h3><span class="header-section-number">12.1.1</span> 功能开关<a href="ch-controller.html#功能开关" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>链路层包含若干功能开关，通过 <code>platform_config(PLATFORM_CFG_LL_DBG_FLAGS, ...)</code> 设置。</p>
+<p>各功能开关及设置后所产生的效果如下：</p>
+<ul>
+<li><p><code>LL_FLAG_DISABLE_CTE_PREPROCESSING</code>：关闭 CTE 预处理。</p>
+<p>用于调试。非必要不应设置。</p></li>
+<li><p><code>LL_FLAG_LEGACY_ONLY_INITIATING</code>：仅通过传统广播信道建立连接。</p>
+<p>当待连接的设备仅支持或仅使用传统广播时，建议开启，可明显提高连接建立速度。</p></li>
+<li><p><code>LL_FLAG_LEGACY_ONLY_SCANNING</code>：仅扫描传统广播。</p>
+<p>当待扫描的设备仅支持或仅使用传统广播时，建议开启，可明显提高扫描效率。</p></li>
+<li><p><code>LL_FLAG_REDUCE_INSTANT_ERRORS</code>：尝试减少“0x28 - 时机已过”错误码的上报。</p>
+<p>多连接场景当遇到较多“0x28 - 时机已过”错误时，可尝试设置。</p></li>
+<li><p><code>LL_FLAG_DISABLE_RSSI_FILTER</code>：关闭内部的 RSSI 滤波器</p>
+<p>当需要读取原始 RSSI 时设置。</p></li>
+<li><p><code>LL_FLAG_RSSI_AFTER_CRC</code>：仅从 CRC 正常的数据包获取 RSSI</p>
+<p>当需要更稳定的 RSSI 时设置。</p></li>
+</ul>
+<p>通过 <code>platform_config</code> 时，应把所有需要打开的开关组合起来，一并设置。如：</p>
+<ul>
+<li><p>对方设备仅仅支持或仅使用传统广播，组合使用 <code>LL_FLAG_LEGACY_ONLY_INITIATING</code> 和 <code>LL_FLAG_LEGACY_ONLY_SCANNING</code>：</p>
+<div class="sourceCode" id="cb105"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb105-1"><a href="ch-controller.html#cb105-1" aria-hidden="true" tabindex="-1"></a>platform_config<span class="op">(</span>PLATFORM_CFG_LL_DBG_FLAGS<span class="op">,</span></span>
+<span id="cb105-2"><a href="ch-controller.html#cb105-2" aria-hidden="true" tabindex="-1"></a>      LL_FLAG_LEGACY_ONLY_INITIATING</span>
+<span id="cb105-3"><a href="ch-controller.html#cb105-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">|</span> LL_FLAG_LEGACY_ONLY_SCANNING<span class="op">);</span></span></code></pre></div></li>
+<li><p>要获得尽可能稳定的 RSSI，那么：</p>
+<div class="sourceCode" id="cb106"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb106-1"><a href="ch-controller.html#cb106-1" aria-hidden="true" tabindex="-1"></a>platform_config<span class="op">(</span>PLATFORM_CFG_LL_DBG_FLAGS<span class="op">,</span></span>
+<span id="cb106-2"><a href="ch-controller.html#cb106-2" aria-hidden="true" tabindex="-1"></a>      LL_FLAG_RSSI_AFTER_CRC<span class="op">);</span></span></code></pre></div></li>
+<li><p>要获得尽可能多的原始 RSSI，那么：</p>
+<div class="sourceCode" id="cb107"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb107-1"><a href="ch-controller.html#cb107-1" aria-hidden="true" tabindex="-1"></a>platform_config<span class="op">(</span>PLATFORM_CFG_LL_DBG_FLAGS<span class="op">,</span></span>
+<span id="cb107-2"><a href="ch-controller.html#cb107-2" aria-hidden="true" tabindex="-1"></a>      LL_FLAG_DISABLE_RSSI_FILTER<span class="op">);</span></span></code></pre></div></li>
+</ul>
+</div>
+<div id="可配参数" class="section level3 hasAnchor" number="12.1.2">
+<h3><span class="header-section-number">12.1.2</span> 可配参数<a href="ch-controller.html#可配参数" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>链路层还包含若干带有参数值的可配置项，通过 <code>ll_config</code> 配置：</p>
+<div class="sourceCode" id="cb108"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb108-1"><a href="ch-controller.html#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_config<span class="op">(</span>ll_config_item_t item<span class="op">,</span> <span class="co">// 项目</span></span>
+<span id="cb108-2"><a href="ch-controller.html#cb108-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> value<span class="op">);</span>                  <span class="co">// 值</span></span></code></pre></div>
+<p><code>ll_config_item_t</code> 包含以下项目：</p>
+<ul>
+<li><p><code>LL_CFG_SLAVE_LATENCY_PRE_WAKE_UP</code>：使用从机延迟时，用于预唤醒的时间提前量。</p>
+<p>Controller 在处理连接时，包含两部分工作：主要的处理以 RTOS 任务形式进行，
+另外少量的工作（配置和触发硬件）在中断中进行。使用从机延迟时，假设按照从机延迟处理流程，
+需要在 T 时刻的中断里配置和触发硬件，但是在这之前，RTOS 任务有可能一直未能触发，所以需要在
+T 时刻之前主动唤醒 RTOS 任务，完成必要的处理，为 T 时刻的中断做好准备。</p>
+<p>参数值的范围为 <span class="math inline">\(1\)</span> ~ <span class="math inline">\(255\)</span>，单位为 <span class="math inline">\(0.625ms\)</span>。默认值为 4。</p></li>
+<li><p><code>LL_CFG_FEATURE_SET_MASK</code>：特性集合掩码。</p>
+<p>有时需要“模仿”其它 BLE 设备的链路层协议流程，而支持的特性对链路层协议流程影响很大。
+为此可通过该配置项调整上报给对端设备的链路层特性。例如，模仿只支持加密和 2M PHY
+两种特性的设备：</p>
+<div class="sourceCode" id="cb109"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb109-1"><a href="ch-controller.html#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> <span class="dt">uint8_t</span> feature_mask<span class="op">[</span><span class="dv">8</span><span class="op">]</span> <span class="op">=</span></span>
+<span id="cb109-2"><a href="ch-controller.html#cb109-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb109-3"><a href="ch-controller.html#cb109-3" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x01</span><span class="op">,</span>       <span class="co">// 比特 0: LE Encryption</span></span>
+<span id="cb109-4"><a href="ch-controller.html#cb109-4" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x01</span><span class="op">,</span>       <span class="co">// 比特 8: LE 2M PHY</span></span>
+<span id="cb109-5"><a href="ch-controller.html#cb109-5" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb109-6"><a href="ch-controller.html#cb109-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb109-7"><a href="ch-controller.html#cb109-7" aria-hidden="true" tabindex="-1"></a><span class="co">// 参数值为指向掩码数组的指针</span></span>
+<span id="cb109-8"><a href="ch-controller.html#cb109-8" aria-hidden="true" tabindex="-1"></a>ll_config<span class="op">(</span>LL_CFG_FEATURE_SET_MASK<span class="op">,</span></span>
+<span id="cb109-9"><a href="ch-controller.html#cb109-9" aria-hidden="true" tabindex="-1"></a>          <span class="op">(</span><span class="dt">uintptr_t</span><span class="op">)</span>feature_mask<span class="op">);</span></span></code></pre></div>
+<p>注意，这里只是修改了 Feature Exchange 流程的上报值，对链路层的实际功能没有影响。
+需要保证设置的掩码数组一直存在，不可释放。</p></li>
+</ul>
+<p>通过 <code>ll_set_max_conn_number</code> 设置可能用到的最大连接数：</p>
+<div class="sourceCode" id="cb110"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb110-1"><a href="ch-controller.html#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_set_max_conn_number<span class="op">(</span></span>
+<span id="cb110-2"><a href="ch-controller.html#cb110-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> max_number<span class="op">);</span></span></code></pre></div>
+<p>比如软件包本身支持的最大连接数为 <span class="math inline">\(N\)</span>，但是应用中实际最多用到 2 个连接，通过 <code>ll_set_max_conn_number(2)</code>
+可优化多连接时的数据吞吐率。<code>ll_set_max_conn_number(M)</code>，<span class="math inline">\(M &gt; N\)</span>，并不能增加软件包本身支持的最大连接数。</p>
+<p>当一个连接事件中接收到多个 ACL 数据包时，Controller 默认以 4 个<a href="ch-cap.html#fn53" class="footnote-ref" id="fnref53"><sup>53</sup></a>为一组上报，而不是每收到一个即上报，以减少任务间的切换开销。
+通过 <code>ll_set_conn_acl_report_latency</code> 可以修改上报频率：</p>
+<div class="sourceCode" id="cb111"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb111-1"><a href="ch-controller.html#cb111-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_set_conn_acl_report_latency<span class="op">(</span></span>
+<span id="cb111-2"><a href="ch-controller.html#cb111-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> conn_handle<span class="op">,</span> <span class="co">// 连接句柄</span></span>
+<span id="cb111-3"><a href="ch-controller.html#cb111-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> latency<span class="op">);</span>         <span class="co">// 以 latency 个包一组上报</span></span></code></pre></div>
+<p>当 <code>latency</code> 为 0 时，表示总是等到连接事件结束时集中上报；<code>latency</code> 为 1 时，每收到一个 ACL 数据包就立即上报。
+这个参数保存在连接对象内，当连接断开后，配置消失。</p>
+</div>
+</div>
+<div id="hci-增强" class="section level2 hasAnchor" number="12.2">
+<h2><span class="header-section-number">12.2</span> HCI 增强<a href="ch-controller.html#hci-增强" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="读取特性和能力" class="section level3 hasAnchor" number="12.2.1">
+<h3><span class="header-section-number">12.2.1</span> 读取特性和能力<a href="ch-controller.html#读取特性和能力" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>通过 <code>ll_get_capabilities</code> 可能直接获取 Controller 支持的特性及各种能力。</p>
+<div class="sourceCode" id="cb112"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb112-1"><a href="ch-controller.html#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_get_capabilities<span class="op">(</span></span>
+<span id="cb112-2"><a href="ch-controller.html#cb112-2" aria-hidden="true" tabindex="-1"></a>    ll_capabilities_t <span class="op">*</span>capabilities<span class="op">);</span></span></code></pre></div>
+<p><code>ll_capabilities_t</code> 的定义如下。</p>
+<div class="sourceCode" id="cb113"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb113-1"><a href="ch-controller.html#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> ll_capabilities</span>
+<span id="cb113-2"><a href="ch-controller.html#cb113-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb113-3"><a href="ch-controller.html#cb113-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 链路层支持的特性集合</span></span>
+<span id="cb113-4"><a href="ch-controller.html#cb113-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>features<span class="op">;</span></span>
+<span id="cb113-5"><a href="ch-controller.html#cb113-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 最大广播集数目</span></span>
+<span id="cb113-6"><a href="ch-controller.html#cb113-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> adv_set_num<span class="op">;</span></span>
+<span id="cb113-7"><a href="ch-controller.html#cb113-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 最大连接数</span></span>
+<span id="cb113-8"><a href="ch-controller.html#cb113-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> conn_num<span class="op">;</span></span>
+<span id="cb113-9"><a href="ch-controller.html#cb113-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 白名单列表的大小</span></span>
+<span id="cb113-10"><a href="ch-controller.html#cb113-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> whitelist_size<span class="op">;</span></span>
+<span id="cb113-11"><a href="ch-controller.html#cb113-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 地址解析列表的大小</span></span>
+<span id="cb113-12"><a href="ch-controller.html#cb113-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> resolving_list_size<span class="op">;</span></span>
+<span id="cb113-13"><a href="ch-controller.html#cb113-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 周期广播者列表的大小</span></span>
+<span id="cb113-14"><a href="ch-controller.html#cb113-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> periodic_advertiser_list_size<span class="op">;</span></span>
+<span id="cb113-15"><a href="ch-controller.html#cb113-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 用于检测广播数据重复的过滤器的大小</span></span>
+<span id="cb113-16"><a href="ch-controller.html#cb113-16" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> adv_dup_filter_size<span class="op">;</span></span>
+<span id="cb113-17"><a href="ch-controller.html#cb113-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> ll_capabilities_t<span class="op">;</span></span></code></pre></div>
+</div>
+<div id="工作状态" class="section level3 hasAnchor" number="12.2.2">
+<h3><span class="header-section-number">12.2.2</span> 工作状态<a href="ch-controller.html#工作状态" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>通过 <code>ll_get_states</code> 可以获取当前 Controller 的工作状态：</p>
+<div class="sourceCode" id="cb114"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb114-1"><a href="ch-controller.html#cb114-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_get_states<span class="op">(</span><span class="dt">uint32_t</span> <span class="op">*</span>adv_states<span class="op">,</span></span>
+<span id="cb114-2"><a href="ch-controller.html#cb114-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> <span class="op">*</span>conn_states<span class="op">,</span></span>
+<span id="cb114-3"><a href="ch-controller.html#cb114-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> <span class="op">*</span>sync_states<span class="op">,</span></span>
+<span id="cb114-4"><a href="ch-controller.html#cb114-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> <span class="op">*</span>other_states<span class="op">);</span></span></code></pre></div>
+<p><code>adv_status[n]</code> 中第 <code>n</code> 的 <code>uint32_t</code> 的第 <code>i</code> 比特表示第 <span class="math inline">\((n \times 32 + i)\)</span> 个广播集的工作状态，
+为 0 表示未使能，1 表示已使能（正在广播）。<code>conn_states</code>、<code>sync_states</code> 的含义与之类似。
+传入这三个数组指针参数时，数组的长度应为最大数目向上转换为 32 的倍数，再除以 <span class="math inline">\(32\)</span> 所得到的商。
+如从 <code>ll_get_capabilities</code> 得知最大广播集数目 <code>adv_set_num</code> 为 10，
+则 <code>adv_states</code> 的长度为 1；最大连接数 <code>conn_num</code> 为 33，则 <code>conn_states</code> 的长度应为 2。</p>
+<p><code>other_states</code> 数组长度目前固定为 1，<code>other_states[0]</code> 的比特 0 为 1 表示正在扫描；比特 1 为 1
+表示正在建立连接。</p>
+</div>
+<div id="发射功率" class="section level3 hasAnchor" number="12.2.3">
+<h3><span class="header-section-number">12.2.3</span> 发射功率<a href="ch-controller.html#发射功率" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>通过 <code>ll_set_tx_power_range</code> 可设置发送功率范围。此范围将被用于广播、连接等各种需要发射的场景。</p>
+<div class="sourceCode" id="cb115"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb115-1"><a href="ch-controller.html#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_set_tx_power_range<span class="op">(</span></span>
+<span id="cb115-2"><a href="ch-controller.html#cb115-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int16_t</span> min_dBm<span class="op">,</span> <span class="co">// 最小发射功率（单位：dBm）</span></span>
+<span id="cb115-3"><a href="ch-controller.html#cb115-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int16_t</span> max_dBm<span class="op">);</span><span class="co">// 最大发射功率（单位：dBm）</span></span></code></pre></div>
+<p>此范围限制存在于链路层，对 HCI 命令里指定的发射功率起限制作用。如将 <code>max_dBm</code> 设置为 0 dBm，则
+通过 <code>gap_set_ext_adv_para</code> 设置广播的发射功率为 3 dBm 时，最终发射功率会被限制为 0 dBm。</p>
+<p>显然，最终的发射功率还受硬件实际支持的范围限制，将 <code>max_dBm</code> 设置为 1000 dBm，并不可能得到 1000 dBm 的最大发射功率。</p>
+<p>通过 <code>ll_set_conn_tx_power</code> 可以直接调节连接的发射功率：</p>
+<div class="sourceCode" id="cb116"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb116-1"><a href="ch-controller.html#cb116-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_set_conn_tx_power<span class="op">(</span></span>
+<span id="cb116-2"><a href="ch-controller.html#cb116-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> conn_handle<span class="op">,</span> <span class="co">// 连接句柄</span></span>
+<span id="cb116-3"><a href="ch-controller.html#cb116-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int16_t</span> tx_power<span class="op">);</span>    <span class="co">// 发射功率（单位：dBm）</span></span></code></pre></div>
+<p>当对端设备支持功率控制特性时，可通过 <code>ll_adjust_conn_peer_tx_power</code> 尝试调整对端的发射功率：</p>
+<div class="sourceCode" id="cb117"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb117-1"><a href="ch-controller.html#cb117-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_adjust_conn_peer_tx_power<span class="op">(</span></span>
+<span id="cb117-2"><a href="ch-controller.html#cb117-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> conn_handle<span class="op">,</span> <span class="co">// 连接句柄</span></span>
+<span id="cb117-3"><a href="ch-controller.html#cb117-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int8_t</span> delta<span class="op">);</span>        <span class="co">// 功率增量（单位：dBm）</span></span></code></pre></div>
+<p><code>delta</code> 为正数，表示请求对端增加发射功率，为负数则表示降低发射功率。</p>
+</div>
+<div id="编码方式" class="section level3 hasAnchor" number="12.2.4">
+<h3><span class="header-section-number">12.2.4</span> 编码方式<a href="ch-controller.html#编码方式" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>当需要使用 Coded 编码时，默认采用 S8 方式。</p>
+<div class="sourceCode" id="cb118"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb118-1"><a href="ch-controller.html#cb118-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">enum</span> coded_scheme_e</span>
+<span id="cb118-2"><a href="ch-controller.html#cb118-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb118-3"><a href="ch-controller.html#cb118-3" aria-hidden="true" tabindex="-1"></a>    BLE_CODED_S8<span class="op">,</span></span>
+<span id="cb118-4"><a href="ch-controller.html#cb118-4" aria-hidden="true" tabindex="-1"></a>    BLE_CODED_S2</span>
+<span id="cb118-5"><a href="ch-controller.html#cb118-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> coded_scheme_t<span class="op">;</span></span></code></pre></div>
+<p>通过 <code>ll_set_adv_coded_scheme</code> 修改广播集的 Coded 编码方式：</p>
+<div class="sourceCode" id="cb119"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb119-1"><a href="ch-controller.html#cb119-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_set_adv_coded_scheme<span class="op">(</span></span>
+<span id="cb119-2"><a href="ch-controller.html#cb119-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> adv_hdl<span class="op">,</span>       <span class="co">// 广播集句柄</span></span>
+<span id="cb119-3"><a href="ch-controller.html#cb119-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> coded_scheme_t scheme<span class="op">);</span><span class="co">//  Coded 编码方式</span></span></code></pre></div>
+<p>此函数需要在 <code>adv_hdl</code> 使能前调用方能生效。</p>
+<p>通过 <code>ll_set_initiating_coded_scheme</code> 设置以 Coded 编码发送连接请求时的编码方式：</p>
+<div class="sourceCode" id="cb120"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb120-1"><a href="ch-controller.html#cb120-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_set_initiating_coded_scheme<span class="op">(</span></span>
+<span id="cb120-2"><a href="ch-controller.html#cb120-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> coded_scheme_t scheme<span class="op">);</span></span></code></pre></div>
+<p>此函数需要 <code>gap_ext_create_connection</code> 之前调用方能生效。</p>
+<p>使用 <code>ll_set_conn_coded_scheme</code> 修改连接的 Coded 编码方式：</p>
+<div class="sourceCode" id="cb121"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb121-1"><a href="ch-controller.html#cb121-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_set_conn_coded_scheme<span class="op">(</span></span>
+<span id="cb121-2"><a href="ch-controller.html#cb121-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> conn_handle<span class="op">,</span> <span class="co">// 连接句柄</span></span>
+<span id="cb121-3"><a href="ch-controller.html#cb121-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> ci<span class="op">);</span>              <span class="co">//  Coded 编码方式（同 `coded_scheme_t`）</span></span></code></pre></div>
+</div>
+<div id="底层广播参数" class="section level3 hasAnchor" number="12.2.5">
+<h3><span class="header-section-number">12.2.5</span> 底层广播参数<a href="ch-controller.html#底层广播参数" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>一个广播事件会在多个主广播信道上各发送一个广播数据包（参见 <a href="ch-adv.html#gap_set_ext_adv_para"><code>primary_adv_channel_map</code></a> 参数）。
+通过 <code>ll_legacy_adv_set_interval</code> 可配置相邻两个广播数据包的间隔：</p>
+<div class="sourceCode" id="cb122"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb122-1"><a href="ch-controller.html#cb122-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_legacy_adv_set_interval<span class="op">(</span></span>
+<span id="cb122-2"><a href="ch-controller.html#cb122-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> for_hdc<span class="op">,</span> <span class="co">// 用于高占空比情况（单位：μs），默认 1250 μs</span></span>
+<span id="cb122-3"><a href="ch-controller.html#cb122-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> not_hdc<span class="op">);</span><span class="co">// 用于其它情况（单位：μs），默认 1500 μs</span></span></code></pre></div>
+<p><code>platform_config(PLATFORM_CFG_LL_LEGACY_ADV_INTERVAL, flag)</code> 等效于：</p>
+<div class="sourceCode" id="cb123"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb123-1"><a href="ch-controller.html#cb123-1" aria-hidden="true" tabindex="-1"></a>ll_legacy_adv_set_interval<span class="op">(</span>flag <span class="op">&gt;&gt;</span> <span class="dv">16</span><span class="op">,</span> flag <span class="op">&amp;</span> <span class="bn">0xffff</span><span class="op">);</span></span></code></pre></div>
+<p>适当减小间隔可以略微降低功耗。</p>
+</div>
+<div id="底层连接参数" class="section level3 hasAnchor" number="12.2.6">
+<h3><span class="header-section-number">12.2.6</span> 底层连接参数<a href="ch-controller.html#底层连接参数" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Controller 调度连接事件时，以连接事件长度（<code>ce_len</code>）为参考。连接建立后的从设备，<code>ce_len</code>
+总是初始化为连接间隔，即追求最大吞吐率。对于多连接或多状态并发，这种初始设置并不合适。此时，可通过
+<code>ll_hint_on_ce_len</code> 提示 Controller 实际需要的连接事件长度。将 <code>ce_len</code> 调小后，Controller
+就可以在连接事件结束后调度其它任务，有效实现多任务并发。</p>
+<div class="sourceCode" id="cb124"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb124-1"><a href="ch-controller.html#cb124-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_hint_on_ce_len<span class="op">(</span></span>
+<span id="cb124-2"><a href="ch-controller.html#cb124-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint16_t</span> conn_handle<span class="op">,</span> <span class="co">// 连接句柄</span></span>
+<span id="cb124-3"><a href="ch-controller.html#cb124-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint16_t</span> min_ce_len<span class="op">,</span>  <span class="co">// 事件长度的最小值（单位：0.625 ms）</span></span>
+<span id="cb124-4"><a href="ch-controller.html#cb124-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint16_t</span> max_ce_len<span class="op">);</span> <span class="co">// 事件长度的最大值（单位：0.625 ms）</span></span></code></pre></div>
+<p>这个函数调整已建立的连接调用。</p>
+<p>此函数同样适应于主设备。主设备与从设备的不同在于其 <code>ce_len</code> 来自 <a href="ch-conn.html#ch-scan-create-connection">phy_configs</a> 参数。</p>
+<p>从机延迟参数可以有效降低速低功耗应用的耗电，但主机端往往把从机延迟设为 0。通过 <code>ll_set_conn_latency</code>
+可以为从机<strong>主动</strong>设置从机延迟参数降低功耗：</p>
+<div class="sourceCode" id="cb125"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb125-1"><a href="ch-controller.html#cb125-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_set_conn_latency<span class="op">(</span></span>
+<span id="cb125-2"><a href="ch-controller.html#cb125-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> conn_handle<span class="op">,</span>   <span class="co">// 连接句柄</span></span>
+<span id="cb125-3"><a href="ch-controller.html#cb125-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> latency<span class="op">);</span>           <span class="co">// 从机延迟参数</span></span></code></pre></div>
+<p>注意：不建议在使用了减速模式的情况下使用。</p>
+<p>通过 <code>ll_get_conn_info</code> 可以读取连接的基础参数：</p>
+<div class="sourceCode" id="cb126"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb126-1"><a href="ch-controller.html#cb126-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 函数执行成功时返回 0，否则返回非 0 值。</span></span>
+<span id="cb126-2"><a href="ch-controller.html#cb126-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_get_conn_info<span class="op">(</span></span>
+<span id="cb126-3"><a href="ch-controller.html#cb126-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint16_t</span> conn_handle<span class="op">,</span> <span class="co">// 连接句柄</span></span>
+<span id="cb126-4"><a href="ch-controller.html#cb126-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> <span class="op">*</span>access_addr<span class="op">,</span>      <span class="co">// 接入地址</span></span>
+<span id="cb126-5"><a href="ch-controller.html#cb126-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> <span class="op">*</span>crc_init<span class="op">,</span>         <span class="co">// CRC 初始值</span></span>
+<span id="cb126-6"><a href="ch-controller.html#cb126-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> <span class="op">*</span>hop_inc<span class="op">);</span>          <span class="co">// 信道选择算法 #1 跳频增量</span></span></code></pre></div>
+<p>通过 <code>ll_get_conn_events_info</code> 获取未来若干连接事件的参数信息：</p>
+<div class="sourceCode" id="cb127"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb127-1"><a href="ch-controller.html#cb127-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 函数执行成功时返回 0，否则返回非 0 值。</span></span>
+<span id="cb127-2"><a href="ch-controller.html#cb127-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_get_conn_events_info<span class="op">(</span></span>
+<span id="cb127-3"><a href="ch-controller.html#cb127-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint16_t</span> conn_handle<span class="op">,</span> <span class="co">// 连接句柄</span></span>
+<span id="cb127-4"><a href="ch-controller.html#cb127-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> number<span class="op">,</span>                 <span class="co">// 连接事件个数</span></span>
+<span id="cb127-5"><a href="ch-controller.html#cb127-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint64_t</span> from_time<span class="op">,</span>         <span class="co">// 时间参考</span></span>
+<span id="cb127-6"><a href="ch-controller.html#cb127-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> <span class="op">*</span>interval<span class="op">,</span>         <span class="co">// 输出：连接间隔（单位：μs）</span></span>
+<span id="cb127-7"><a href="ch-controller.html#cb127-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> <span class="op">*</span>time_offset<span class="op">,</span>      <span class="co">// 输出：第一个连接事件与 `from_time` 的时间差</span></span>
+<span id="cb127-8"><a href="ch-controller.html#cb127-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> <span class="op">*</span>event_count<span class="op">,</span>      <span class="co">// 输出：第一个连接事件的事件计数值</span></span>
+<span id="cb127-9"><a href="ch-controller.html#cb127-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> <span class="op">*</span>channel_ids<span class="op">);</span>      <span class="co">// 输出：`number` 个物理信道号</span></span></code></pre></div>
+<p>这个函数输出 <code>from_time</code> 之后 <code>number</code> 个连接事件的物理信道号等参数。注意：这个函数假定从当前时刻到
+<code>number</code> 个连接事件结束信道参数不发生变化，并且忽略减速模式参数。当信道参数发生变化时（如连接参数更新、信道集合更新），
+输出的参数将是不可靠的。</p>
+</div>
+<div id="默认天线" class="section level3 hasAnchor" number="12.2.7">
+<h3><span class="header-section-number">12.2.7</span> 默认天线<a href="ch-controller.html#默认天线" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>当系统配置了多个天线（如使用 CTE、信道探测等特性时）时，通过 <code>ll_set_def_antenna</code> 可设置射频工作时的默认天线 ID：</p>
+<div class="sourceCode" id="cb128"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb128-1"><a href="ch-controller.html#cb128-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_set_def_antenna<span class="op">(</span><span class="dt">uint8_t</span> ant_id<span class="op">);</span></span></code></pre></div>
+<p>这个设置直接写入硬件，立即生效。当 LLE 复位时，此设置会恢复为 0，需要响应 <code>PLATFORM_CB_EVT_LLE_INIT</code> 事件，重新设置。</p>
+</div>
+<div id="单信道扫描" class="section level3 hasAnchor" number="12.2.8">
+<h3><span class="header-section-number">12.2.8</span> 单信道扫描<a href="ch-controller.html#单信道扫描" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>扫描广播时，在每个扫描窗口轮流扫描 3 个主广播信道。可通过 <code>ll_scan_set_fixed_channel</code> 限定只扫描其中一个主广播信道。</p>
+<div class="sourceCode" id="cb129"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb129-1"><a href="ch-controller.html#cb129-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_scan_set_fixed_channel<span class="op">(</span></span>
+<span id="cb129-2"><a href="ch-controller.html#cb129-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> channel_index<span class="op">);</span></span></code></pre></div>
+<p><code>channel_index</code> 可以是 37、38 或 39；也可以是 0，表示解除锁定，恢复为轮流扫描所有主广播信道。</p>
+<p>此项设置一直生效。</p>
+</div>
+</div>
+<div id="连接中止与重建" class="section level2 hasAnchor" number="12.3">
+<h2><span class="header-section-number">12.3</span> 连接中止与重建<a href="ch-controller.html#连接中止与重建" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>通过 <code>ll_create_conn</code> 可以跳过广播、连接建立过程，直接创建或者恢复连接：</p>
+<div class="sourceCode" id="cb130"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb130-1"><a href="ch-controller.html#cb130-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 函数执行成功时返回 0，否则返回非 0 值。</span></span>
+<span id="cb130-2"><a href="ch-controller.html#cb130-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_create_conn<span class="op">(</span></span>
+<span id="cb130-3"><a href="ch-controller.html#cb130-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> role<span class="op">,</span>               <span class="co">// 角色。主（0），从（1）</span></span>
+<span id="cb130-4"><a href="ch-controller.html#cb130-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> addr_types<span class="op">,</span>         <span class="co">// 广播者和连接发起者的地址类型</span></span>
+<span id="cb130-5"><a href="ch-controller.html#cb130-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>adv_addr<span class="op">,</span>    <span class="co">// 广播者地址</span></span>
+<span id="cb130-6"><a href="ch-controller.html#cb130-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>init_addr<span class="op">,</span>   <span class="co">// 连接发起者的地址</span></span>
+<span id="cb130-7"><a href="ch-controller.html#cb130-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> rx_phy<span class="op">,</span>             <span class="co">// 接收 PHY（以主角色为参考）</span></span>
+<span id="cb130-8"><a href="ch-controller.html#cb130-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> tx_phy<span class="op">,</span>             <span class="co">// 发射 PHY（以主角色为参考）</span></span>
+<span id="cb130-9"><a href="ch-controller.html#cb130-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> access_addr<span class="op">,</span>       <span class="co">// 接入地址</span></span>
+<span id="cb130-10"><a href="ch-controller.html#cb130-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> crc_init<span class="op">,</span>          <span class="co">// CRC 初始值</span></span>
+<span id="cb130-11"><a href="ch-controller.html#cb130-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> interval<span class="op">,</span>          <span class="co">// 连接间隔（单位：μs）</span></span>
+<span id="cb130-12"><a href="ch-controller.html#cb130-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> sup_timeout<span class="op">,</span>       <span class="co">// 超时时间（单位：10 ms）</span></span>
+<span id="cb130-13"><a href="ch-controller.html#cb130-13" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>channel_map<span class="op">,</span> <span class="co">// 信道集合（5 个字节，37 个信道的 bitmap）</span></span>
+<span id="cb130-14"><a href="ch-controller.html#cb130-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span>  ch_sel_algo<span class="op">,</span>       <span class="co">// 信道选择算法（0: 算法 #1; 1：算法 #2）</span></span>
+<span id="cb130-15"><a href="ch-controller.html#cb130-15" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span>  hop_inc<span class="op">,</span>           <span class="co">// 跳频增量（仅用于信道选择算法 #1）</span></span>
+<span id="cb130-16"><a href="ch-controller.html#cb130-16" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span>  last_unmapped_ch<span class="op">,</span>  <span class="co">// 上一次未映射信道号（仅用于信道选择算法 #1）</span></span>
+<span id="cb130-17"><a href="ch-controller.html#cb130-17" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> min_ce_len<span class="op">,</span>        <span class="co">// 事件长度的最小值（单位：0.625 ms）</span></span>
+<span id="cb130-18"><a href="ch-controller.html#cb130-18" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> max_ce_len<span class="op">,</span>        <span class="co">// 事件长度的最大值（单位：0.625 ms）</span></span>
+<span id="cb130-19"><a href="ch-controller.html#cb130-19" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint64_t</span> start_time<span class="op">,</span>        <span class="co">// 首个连接事件的起始时间（单位：μs）</span></span>
+<span id="cb130-20"><a href="ch-controller.html#cb130-20" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> event_counter<span class="op">,</span>     <span class="co">// 首个连接事件的事件计数值</span></span>
+<span id="cb130-21"><a href="ch-controller.html#cb130-21" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> slave_latency<span class="op">,</span>     <span class="co">// 从机延迟参数</span></span>
+<span id="cb130-22"><a href="ch-controller.html#cb130-22" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span>  sleep_clk_acc<span class="op">,</span>     <span class="co">// 睡眠时钟精度（仅用于从角色）</span></span>
+<span id="cb130-23"><a href="ch-controller.html#cb130-23" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> sync_window<span class="op">,</span>       <span class="co">// 首个连接事件的同步窗口长度（单位：0.625ms）</span></span>
+<span id="cb130-24"><a href="ch-controller.html#cb130-24" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">void</span> <span class="op">*</span>security<span class="op">);</span>      <span class="co">// 链路层安全上下文</span></span></code></pre></div>
+<p><code>security</code> 来自 <code>HCI_SUBEVENT_LE_VENDOR_CONNECTION_ABORTED</code> 事件，NULL 表示不加密。</p>
+<p>使用 <code>ll_conn_abort</code> 中止连接：</p>
+<div class="sourceCode" id="cb131"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb131-1"><a href="ch-controller.html#cb131-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 中止流程成功启动时返回 0，否则返回非 0 值。</span></span>
+<span id="cb131-2"><a href="ch-controller.html#cb131-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_conn_abort<span class="op">(</span></span>
+<span id="cb131-3"><a href="ch-controller.html#cb131-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> conn_handle<span class="op">);</span>      <span class="co">// 连接句柄</span></span></code></pre></div>
+<p>连接中止后，将上报 <code>HCI_SUBEVENT_LE_VENDOR_CONNECTION_ABORTED</code> 事件。</p>
+</div>
+<div id="广播上的-cte" class="section level2 hasAnchor" number="12.4">
+<h2><span class="header-section-number">12.4</span> 广播上的 CTE<a href="ch-controller.html#广播上的-cte" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>CTE 私有方案 #2<a href="ch-cap.html#fn54" class="footnote-ref" id="fnref54"><sup>54</sup></a>
+使用扩展广播发送 CTE。通过 <code>ll_attach_cte_to_adv_set</code> 为已初始化且未使能的广播集附着 CTE：</p>
+<div class="sourceCode" id="cb132"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb132-1"><a href="ch-controller.html#cb132-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 函数执行成功时返回 0，否则返回非 0 值。</span></span>
+<span id="cb132-2"><a href="ch-controller.html#cb132-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_attach_cte_to_adv_set<span class="op">(</span></span>
+<span id="cb132-3"><a href="ch-controller.html#cb132-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> adv_handle<span class="op">,</span>             <span class="co">// 广播集句柄</span></span>
+<span id="cb132-4"><a href="ch-controller.html#cb132-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> cte_type<span class="op">,</span>               <span class="co">// CTE 类型</span></span>
+<span id="cb132-5"><a href="ch-controller.html#cb132-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> cte_len<span class="op">,</span>                <span class="co">// CTE 长度（单位：8 μs）</span></span>
+<span id="cb132-6"><a href="ch-controller.html#cb132-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> switching_pattern_len<span class="op">,</span>  <span class="co">// 天线切换模板（发送 AoD 时使用）</span></span>
+<span id="cb132-7"><a href="ch-controller.html#cb132-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>switching_pattern<span class="op">);</span></span></code></pre></div>
+<p>CTE 类型 <code>cte_type</code> 包含 AoA（0）、AoD 1μs 切换（1）、AoD 1μs 切换（1）。</p>
+<p>会导致的该函数失败的几种原因：</p>
+<ul>
+<li>指定的广播集未初始化（参见“<a href="ch-adv.html#gap_set_ext_adv_para">广播的配置</a>”）；</li>
+<li>指定的广播集不是扩展广播；</li>
+<li>内存不足。</li>
+</ul>
+<p>启动了扫描后，通过 <code>ll_scanner_enable_iq_sampling</code> 开始接收扩展广播上附着的 CTE：</p>
+<div class="sourceCode" id="cb133"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb133-1"><a href="ch-controller.html#cb133-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 函数执行成功时返回 0，否则返回非 0 值。</span></span>
+<span id="cb133-2"><a href="ch-controller.html#cb133-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_scanner_enable_iq_sampling<span class="op">(</span></span>
+<span id="cb133-3"><a href="ch-controller.html#cb133-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> cte_type<span class="op">,</span>                 <span class="co">// 固定填 0</span></span>
+<span id="cb133-4"><a href="ch-controller.html#cb133-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> slot_len<span class="op">,</span>                 <span class="co">// 时隙长度</span></span>
+<span id="cb133-5"><a href="ch-controller.html#cb133-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> switching_pattern_len<span class="op">,</span>    <span class="co">// 天线切换模板（接收 AoA 时使用）</span></span>
+<span id="cb133-6"><a href="ch-controller.html#cb133-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>switching_pattern<span class="op">,</span></span>
+<span id="cb133-7"><a href="ch-controller.html#cb133-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> slot_sampling_offset<span class="op">,</span>     <span class="co">// 时隙内采样偏移（0..23）</span></span>
+<span id="cb133-8"><a href="ch-controller.html#cb133-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> slot_sample_count<span class="op">);</span>       <span class="co">// 时隙内采样数（1..5）</span></span></code></pre></div>
+<p><code>slot_len</code> 的取值与 <code>cte_slot_duration_type_t</code> 相同。采样时，从每个时隙的 <code>slot_sampling_offset</code> / 24 μs 处开始，
+连续采样 <code>slot_sample_count</code> 次，采样频率 24MHz。<code>slot_sampling_offset</code> 与 <code>slot_sample_count</code>
+的和必须小于等于 24。建议 <code>slot_sampling_offset</code> 取 12，<code>slot_sample_count</code> 取 1。</p>
+<p>如果扫描未开始，则该函数将失败。扫描停止后，CTE IQ 采样同步停止。再次开始扫描时，需要重新调用该函数才能继续采样。</p>
+<p>IQ 采样通过 <code>HCI_SUBEVENT_LE_VENDOR_PRO_CONNECTIONLESS_IQ_REPORT</code> 事件上报。</p>
+<p>通过 <code>ll_scanner_enable_iq_sampling_on_legacy</code><a href="ch-cap.html#fn55" class="footnote-ref" id="fnref55"><sup>55</sup></a> 可对传统广播的数据部分做 IQ 采样：</p>
+<div class="sourceCode" id="cb134"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb134-1"><a href="ch-controller.html#cb134-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_scanner_enable_iq_sampling_on_legacy<span class="op">(</span></span>
+<span id="cb134-2"><a href="ch-controller.html#cb134-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> sampling_offset<span class="op">,</span>        <span class="co">// 采样起始位置（单位：比特）</span></span>
+<span id="cb134-3"><a href="ch-controller.html#cb134-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> cte_type<span class="op">,</span>                <span class="co">// 固定填 0</span></span>
+<span id="cb134-4"><a href="ch-controller.html#cb134-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> cte_time<span class="op">,</span>                <span class="co">// CTE 时长（单位：8 μs）</span></span>
+<span id="cb134-5"><a href="ch-controller.html#cb134-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> slot_len<span class="op">,</span>                <span class="co">// 时隙长度</span></span>
+<span id="cb134-6"><a href="ch-controller.html#cb134-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> switching_pattern_len<span class="op">,</span>   <span class="co">// 天线切换模板（接收 AoA 时使用）</span></span>
+<span id="cb134-7"><a href="ch-controller.html#cb134-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>switching_pattern<span class="op">,</span></span>
+<span id="cb134-8"><a href="ch-controller.html#cb134-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> slot_sampling_offset<span class="op">,</span>    <span class="co">// 时隙内采样偏移（0..23）</span></span>
+<span id="cb134-9"><a href="ch-controller.html#cb134-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> slot_sample_count<span class="op">);</span>      <span class="co">// 时隙内采样数（1..5）</span></span></code></pre></div>
+<p>与 <code>ll_scanner_enable_iq_sampling</code> 相比，这个函数增加了两个参数：<code>sampling_offset</code> 和 <code>cte_time</code>。
+<code>sampling_offset</code> 表示采样起始位置，0 对应于 Payload 的第 0 个比特。例如，要采样 <code>ADV_IND</code> 的 <code>AdvData</code> 部分，
+则把 <code>sampling_offset</code> 取做 <span class="math inline">\((6 \times 8 =) 48\)</span>，以跳过长度为 6 个字节的 <code>AdvA</code>。
+IQ 采样通过 <code>HCI_SUBEVENT_LE_VENDOR_PRO_CONNECTIONLESS_IQ_REPORT</code> 事件上报。<a href="ch-cap.html#fn56" class="footnote-ref" id="fnref56"><sup>56</sup></a>。</p>
+<div class="rmdcaution">
+<p>
+此功能可能导致系统卡死或者产生
+HardFault。务必配合硬件看门狗使用。
+</p>
+</div>
+</div>
+<div id="原始包raw-packet对象" class="section level2 hasAnchor" number="12.5">
+<h2><span class="header-section-number">12.5</span> 原始包（Raw Packet）对象<a href="ch-controller.html#原始包raw-packet对象" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Raw Packet 对象是一种不透明的数据结构：</p>
+<div class="sourceCode" id="cb135"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb135-1"><a href="ch-controller.html#cb135-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> ll_raw_packet<span class="op">;</span></span></code></pre></div>
+<p>这部分接口是面向对象的，不同功能的对象使用不同的函数创建。
+销毁统一使用 <code>ll_raw_packet_free</code> 接口：</p>
+<div class="sourceCode" id="cb136"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb136-1"><a href="ch-controller.html#cb136-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_raw_packet_free<span class="op">(</span></span>
+<span id="cb136-2"><a href="ch-controller.html#cb136-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> ll_raw_packet <span class="op">*</span>packet<span class="op">);</span> <span class="co">// 要销毁的对象</span></span></code></pre></div>
+<p>必须待工作完成才能销毁。工作完成时通过回调函数通知应用。回调函数类型如下：</p>
+<div class="sourceCode" id="cb137"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb137-1"><a href="ch-controller.html#cb137-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="dt">void</span> <span class="op">(*</span> f_ll_raw_packet_done<span class="op">)(</span></span>
+<span id="cb137-2"><a href="ch-controller.html#cb137-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> ll_raw_packet <span class="op">*</span>packet<span class="op">,</span> <span class="co">// 产生回调的对象</span></span>
+<span id="cb137-3"><a href="ch-controller.html#cb137-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>user_data<span class="op">);</span>             <span class="co">// 用户数据</span></span></code></pre></div>
+<p>不同功能的对象使用方法类似：1）创建对象；2）设置信道参数；3）设置数据；4）运行；5）在回调函数中读取数据和状态。
+对象的运行函数，如 <code>ll_raw_packet_send</code>，立即返回而不是阻塞到运行完成；只要运行函数返回了表示成功的值，回调函数就必然被调用。
+运行函数一旦返回了表示成功的值，在完成运行之前（即回调函数被调用前），不允许再调用对象的其它方法。</p>
+<p>没有用于“取消运行”的接口。</p>
+<div id="无响应的包" class="section level3 hasAnchor" number="12.5.1">
+<h3><span class="header-section-number">12.5.1</span> 无响应的包<a href="ch-controller.html#无响应的包" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>无响应的 Raw Packet 通信包含两个角色：</p>
+<ul>
+<li>发送方：在指定的时间发送一包数据，发送完成即任务完成；</li>
+<li>接收方：在指定的时间窗口内持续接收数据，接收成功一包数据或者接收窗口结束时任务完成。</li>
+</ul>
+<div id="创建与配置" class="section level4 hasAnchor" number="12.5.1.1">
+<h4><span class="header-section-number">12.5.1.1</span> 创建与配置<a href="ch-controller.html#创建与配置" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>使用 <code>ll_raw_packet_alloc</code> 创建对象：</p>
+<div class="sourceCode" id="cb138"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb138-1"><a href="ch-controller.html#cb138-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> ll_raw_packet <span class="op">*</span>ll_raw_packet_alloc<span class="op">(</span></span>
+<span id="cb138-2"><a href="ch-controller.html#cb138-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> for_tx<span class="op">,</span>               <span class="co">// 角色（0: 接收方；1：发送方）</span></span>
+<span id="cb138-3"><a href="ch-controller.html#cb138-3" aria-hidden="true" tabindex="-1"></a>    f_ll_raw_packet_done on_done<span class="op">,</span> <span class="co">// 回调函数</span></span>
+<span id="cb138-4"><a href="ch-controller.html#cb138-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>user_data<span class="op">);</span>             <span class="co">// 传给回调函数的用户数据</span></span></code></pre></div>
+<p>使用 <code>ll_raw_packet_set_param</code> 配置信道参数：</p>
+<div class="sourceCode" id="cb139"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb139-1"><a href="ch-controller.html#cb139-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 函数执行成功时返回 0，否则返回非 0 值。</span></span>
+<span id="cb139-2"><a href="ch-controller.html#cb139-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_raw_packet_set_param<span class="op">(</span></span>
+<span id="cb139-3"><a href="ch-controller.html#cb139-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> ll_raw_packet <span class="op">*</span>packet<span class="op">,</span></span>
+<span id="cb139-4"><a href="ch-controller.html#cb139-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int8_t</span> tx_power<span class="op">,</span>        <span class="co">// 发射功率（单位：dBm）</span></span>
+<span id="cb139-5"><a href="ch-controller.html#cb139-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int8_t</span> rf_channel_id<span class="op">,</span>   <span class="co">// 射频信道号</span></span>
+<span id="cb139-6"><a href="ch-controller.html#cb139-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> phy<span class="op">,</span>            <span class="co">// PHY</span></span>
+<span id="cb139-7"><a href="ch-controller.html#cb139-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> access_addr<span class="op">,</span>   <span class="co">// 接入地址</span></span>
+<span id="cb139-8"><a href="ch-controller.html#cb139-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> crc_init<span class="op">);</span>     <span class="co">// CRC 初始值</span></span></code></pre></div>
+<p>射频信道号 <code>rf_channel_id</code> 范围为 0 ~ 39，当其值为 <span class="math inline">\(k\)</span> 时，信道中心频率为 <span class="math inline">\((2402 + 2k) MHz\)</span>。
+PHY 的取值见表 <a href="ch-controller.html#tab:ch-ctrl-phy-types">12.1</a>。</p>
+<table>
+<caption><span id="tab:ch-ctrl-phy-types">表 12.1: </span> PHY 类型</caption>
+<thead>
+<tr class="header">
+<th align="center">取值</th>
+<th align="left">含义（发送方）</th>
+<th align="left">含义（接收方）</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">1</td>
+<td align="left">1M</td>
+<td align="left">1M</td>
+</tr>
+<tr class="even">
+<td align="center">2</td>
+<td align="left">2M</td>
+<td align="left">2M</td>
+</tr>
+<tr class="odd">
+<td align="center">3</td>
+<td align="left">Coded S8</td>
+<td align="left">Coded</td>
+</tr>
+<tr class="even">
+<td align="center">4</td>
+<td align="left">Coded S2</td>
+<td align="left">—</td>
+</tr>
+</tbody>
+</table>
+<p>接入地址 <code>access_addr</code> 和 CRC 初始值 <code>crc_init</code> 的含义和用法与蓝牙核心规范一致。</p>
+</div>
+<div id="发送" class="section level4 hasAnchor" number="12.5.1.2">
+<h4><span class="header-section-number">12.5.1.2</span> 发送<a href="ch-controller.html#发送" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>发送方通过 <code>ll_raw_packet_set_tx_data</code> 设置待发送的数据：</p>
+<div class="sourceCode" id="cb140"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb140-1"><a href="ch-controller.html#cb140-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 函数执行成功时返回 0，否则返回非 0 值。</span></span>
+<span id="cb140-2"><a href="ch-controller.html#cb140-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_raw_packet_set_tx_data<span class="op">(</span></span>
+<span id="cb140-3"><a href="ch-controller.html#cb140-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> ll_raw_packet <span class="op">*</span>packet<span class="op">,</span></span>
+<span id="cb140-4"><a href="ch-controller.html#cb140-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> header<span class="op">,</span>     <span class="co">// 头数据（仅限低 2 比特）</span></span>
+<span id="cb140-5"><a href="ch-controller.html#cb140-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">void</span> <span class="op">*</span>data<span class="op">,</span>   <span class="co">// 数据</span></span>
+<span id="cb140-6"><a href="ch-controller.html#cb140-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> size<span class="op">);</span>          <span class="co">// 数据长度（单位：字节。最大 254)</span></span></code></pre></div>
+<p>如果附着了 CTE，<code>size</code> 最大支持 252 字节。当数据长度过长时，返回 1。</p>
+<p>通过 <code>ll_raw_packet_send</code> 在指定的时刻发送：</p>
+<div class="sourceCode" id="cb141"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb141-1"><a href="ch-controller.html#cb141-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 可以在指定时刻发送时返回 0，否则返回非 0 值。</span></span>
+<span id="cb141-2"><a href="ch-controller.html#cb141-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_raw_packet_send<span class="op">(</span></span>
+<span id="cb141-3"><a href="ch-controller.html#cb141-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> ll_raw_packet <span class="op">*</span>packet<span class="op">,</span></span>
+<span id="cb141-4"><a href="ch-controller.html#cb141-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint64_t</span> when<span class="op">);</span> <span class="co">// 发送时刻（单位：μs）</span></span></code></pre></div>
+<p>当 <code>platform_get_us_time()</code> 等于 <code>when</code> 时，启动发送。当 Controller 无法在指定的时间发送时（如与其它任务时间冲突，
+时间太迟等），返回非 0 值。
+<code>ll_raw_packet_send(packet, platform_get_us_time() + OFFSET)</code>，当 <code>OFFSET</code> 小于一定值 <code>T</code> 时，会因为时间太迟而返回非 0 值。
+<code>T</code> 值与芯片处理能力有关，一般为 100 到几百微秒。其它接口的 <code>when</code> 参数用法与此相同。</p>
+<p>发送完成后，如果需要再次发送相同的数据，直接调用 <code>ll_raw_packet_send</code> 即可，无需重新设置数据。</p>
+</div>
+<div id="接收" class="section level4 hasAnchor" number="12.5.1.3">
+<h4><span class="header-section-number">12.5.1.3</span> 接收<a href="ch-controller.html#接收" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>通过 <code>ll_raw_packet_recv</code> 在一定时间窗口内尝试接收数据包：</p>
+<div class="sourceCode" id="cb142"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb142-1"><a href="ch-controller.html#cb142-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 可以在指定窗口接收则返回 0，否则返回非 0 值。</span></span>
+<span id="cb142-2"><a href="ch-controller.html#cb142-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_raw_packet_recv<span class="op">(</span></span>
+<span id="cb142-3"><a href="ch-controller.html#cb142-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> ll_raw_packet <span class="op">*</span>packet<span class="op">,</span></span>
+<span id="cb142-4"><a href="ch-controller.html#cb142-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint64_t</span> when<span class="op">,</span>      <span class="co">// 接收窗口开始的时刻（单位：μs）</span></span>
+<span id="cb142-5"><a href="ch-controller.html#cb142-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> rx_window<span class="op">);</span><span class="co">// 窗口长度（单位：μs）</span></span></code></pre></div>
+<p>当 <code>platform_get_us_time()</code> 等于 <code>when</code> 时，开始尝试接收。这个函数立即返回，而非阻塞到接收完成再返回。
+从成功调用 <code>ll_raw_packet_set_tx_data</code> 到收到回调前，不可调用这个对象的其它方法。</p>
+<p>在回调函数里调用 <code>ll_raw_packet_get_rx_data</code> 读取接收状态和数据：</p>
+<div class="sourceCode" id="cb143"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb143-1"><a href="ch-controller.html#cb143-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 返回接收状态</span></span>
+<span id="cb143-2"><a href="ch-controller.html#cb143-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_raw_packet_get_rx_data<span class="op">(</span></span>
+<span id="cb143-3"><a href="ch-controller.html#cb143-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> ll_raw_packet <span class="op">*</span>packet<span class="op">,</span></span>
+<span id="cb143-4"><a href="ch-controller.html#cb143-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint64_t</span> <span class="op">*</span>air_time<span class="op">,</span> <span class="co">// 数据包在空口出现的时间</span></span>
+<span id="cb143-5"><a href="ch-controller.html#cb143-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> <span class="op">*</span>header<span class="op">,</span>    <span class="co">// 头数据（仅 2 比特）</span></span>
+<span id="cb143-6"><a href="ch-controller.html#cb143-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>data<span class="op">,</span>         <span class="co">// 用来接收数据的缓存</span></span>
+<span id="cb143-7"><a href="ch-controller.html#cb143-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="op">*</span>size<span class="op">,</span>          <span class="co">// 接收到的数据包的长度</span></span>
+<span id="cb143-8"><a href="ch-controller.html#cb143-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="op">*</span>rssi<span class="op">);</span>         <span class="co">// 接收到的数据包的 RSSI</span></span></code></pre></div>
+<p>返回值解释：</p>
+<ul>
+<li><p>0：成功接收，CRC 正确；</p></li>
+<li><p>1：未接收到任何信息（指定的信道上无信号，或者任务未执行）；</p></li>
+<li><p>2：接收到数据，但是出现接入码错误、CRC 错误等；</p></li>
+<li><p>5：数据长度错误；</p></li>
+<li><p>6：帧结构错误。</p></li>
+</ul>
+<p>当出现非 0 错误码，但是错误码不属于 <span class="math inline">\(\{1, 2\}\)</span> 时，<code>air_time</code>、<code>header</code>、<code>rssi</code> 等 3 项输出有效。</p>
+</div>
+<div id="附着-cte" class="section level4 hasAnchor" number="12.5.1.4">
+<h4><span class="header-section-number">12.5.1.4</span> 附着 CTE<a href="ch-controller.html#附着-cte" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>CTE 私有方案 #1<a href="ch-cap.html#fn57" class="footnote-ref" id="fnref57"><sup>57</sup></a>
+使用 Raw Packet 发送 CTE。发送方通过 <code>ll_raw_packet_set_tx_cte</code> 附着 CTE：</p>
+<div class="sourceCode" id="cb144"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb144-1"><a href="ch-controller.html#cb144-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_raw_packet_set_tx_cte<span class="op">(</span></span>
+<span id="cb144-2"><a href="ch-controller.html#cb144-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> ll_raw_packet <span class="op">*</span>packet<span class="op">,</span></span>
+<span id="cb144-3"><a href="ch-controller.html#cb144-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> cte_type<span class="op">,</span></span>
+<span id="cb144-4"><a href="ch-controller.html#cb144-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> cte_len<span class="op">,</span></span>
+<span id="cb144-5"><a href="ch-controller.html#cb144-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> switching_pattern_len<span class="op">,</span></span>
+<span id="cb144-6"><a href="ch-controller.html#cb144-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>switching_pattern<span class="op">);</span></span></code></pre></div>
+<p><code>ll_raw_packet_set_tx_cte</code> 各参数含义与 <code>ll_attach_cte_to_adv_set</code> 类似，不再赘述。
+需要 <code>ll_raw_packet_send(...)</code> 之前调用。</p>
+<p>接收方通过 <code>ll_raw_packet_set_rx_cte</code> 设置 CTE 接收参数：</p>
+<div class="sourceCode" id="cb145"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb145-1"><a href="ch-controller.html#cb145-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_raw_packet_set_rx_cte<span class="op">(</span></span>
+<span id="cb145-2"><a href="ch-controller.html#cb145-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> ll_raw_packet <span class="op">*</span>packet<span class="op">,</span></span>
+<span id="cb145-3"><a href="ch-controller.html#cb145-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> cte_type<span class="op">,</span></span>
+<span id="cb145-4"><a href="ch-controller.html#cb145-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> slot_len<span class="op">,</span></span>
+<span id="cb145-5"><a href="ch-controller.html#cb145-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> switching_pattern_len<span class="op">,</span></span>
+<span id="cb145-6"><a href="ch-controller.html#cb145-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>swiching_pattern<span class="op">,</span></span>
+<span id="cb145-7"><a href="ch-controller.html#cb145-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> slot_sampling_offset<span class="op">,</span></span>
+<span id="cb145-8"><a href="ch-controller.html#cb145-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> slot_sample_count<span class="op">);</span></span></code></pre></div>
+<p><code>ll_raw_packet_set_rx_cte</code> 各参数含义与 <code>ll_scanner_enable_iq_sampling</code> 类似，不再赘述。
+需要 <code>ll_raw_packet_recv(...)</code> 之前调用。</p>
+<p>完成接收后，在回调函数里通过 <code>ll_raw_packet_get_iq_samples</code> 获取 IQ 采样：</p>
+<div class="sourceCode" id="cb146"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb146-1"><a href="ch-controller.html#cb146-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 函数执行成功时返回 0，否则返回非 0 值。</span></span>
+<span id="cb146-2"><a href="ch-controller.html#cb146-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_raw_packet_get_iq_samples<span class="op">(</span></span>
+<span id="cb146-3"><a href="ch-controller.html#cb146-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> ll_raw_packet <span class="op">*</span>packet<span class="op">,</span></span>
+<span id="cb146-4"><a href="ch-controller.html#cb146-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>iq_samples<span class="op">,</span>    <span class="co">// 接收 IQ 采样的缓存</span></span>
+<span id="cb146-5"><a href="ch-controller.html#cb146-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="op">*</span>iq_sample_cnt<span class="op">,</span>  <span class="co">// 采样的数量</span></span>
+<span id="cb146-6"><a href="ch-controller.html#cb146-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> preprocess<span class="op">);</span>     <span class="co">// 是否进行预处理</span></span></code></pre></div>
+<p><code>iq_samples</code> 得到的数据顺序为“IQIQIQ……”。
+<code>preprocess</code> 为 0 时，不进行预处理，直接输出原始 IQ 采样数据，每个分量类型为<code>int16_t</code>；
+<code>preprocess</code> 为非 0 时，进行预处理，输出处理后的 IQ 采样数据，每个分量类型为<code>int8_t</code>。
+预处理仅支持 <code>slot_sample_count</code> 为 1 的情况。
+必须为 <code>iq_samples</code> 预留足够的空间。</p>
+<p>函数返回的错误码如下：当未收到 CTE 时，该函数返回 1；<code>preprocess</code> 非 0 且 <code>slot_sample_count</code> 大于 1 时，返回 2。</p>
+<p>对于发送方，提供了一种发送虚假 CTEInfo 数据域的方法：待调用了 <code>ll_raw_packet_set_tx_cte</code> 之后，通过
+<code>ll_raw_packet_set_fake_cte_info</code> 填写虚假 CTEInfo 数据域。在发送时，CTE 按照 <code>ll_raw_packet_set_tx_cte</code>
+指定的参数发送，但是数据包内协带的 CTEInfo 数据域却是修改过的。接收方处理 CTE 时将按照这个虚假的 CTEInfo 接收 CTE。</p>
+<div class="sourceCode" id="cb147"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb147-1"><a href="ch-controller.html#cb147-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 函数执行成功时返回 0，否则返回非 0 值。</span></span>
+<span id="cb147-2"><a href="ch-controller.html#cb147-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_raw_packet_set_fake_cte_info<span class="op">(</span></span>
+<span id="cb147-3"><a href="ch-controller.html#cb147-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> ll_raw_packet <span class="op">*</span>packet<span class="op">,</span></span>
+<span id="cb147-4"><a href="ch-controller.html#cb147-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> cte_type<span class="op">,</span></span>
+<span id="cb147-5"><a href="ch-controller.html#cb147-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> cte_len<span class="op">);</span></span></code></pre></div>
+<p>如果对象未通过 <code>ll_raw_packet_set_tx_cte</code> 配置 CTE，则返回 1；如果 CTE 参数错误，则返回 2。其它情况返回 0。</p>
+<p>用途举例：通过 <code>ll_raw_packet_set_tx_cte</code> 设置发送 AoD；通过 <code>ll_raw_packet_set_fake_cte</code> 填入 AoA。
+这样，双方在发送和接收 CTE 时分别切换天线，在天线控制端口可产生严格同步的脉冲信号输出。</p>
+</div>
+<div id="裸包模式" class="section level4 hasAnchor" number="12.5.1.5">
+<h4><span class="header-section-number">12.5.1.5</span> “裸包”模式<a href="ch-controller.html#裸包模式" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>无响应的 Raw Packet 通信默认使用与蓝牙规范一致的信道白化和 CRC 校验。另外提供一种关闭白化和 CRC 校验的“裸包”模式。
+在这种模式下，空口数据完全由开发者负责生成和校验，硬件只负责 PREAMBLE 和接入地址的比对。
+收发双方都通过 <code>ll_raw_packet_set_bare_mode</code> 启用“裸包”模式：</p>
+<div class="sourceCode" id="cb148"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb148-1"><a href="ch-controller.html#cb148-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 函数执行成功时返回 0，否则返回非 0 值。</span></span>
+<span id="cb148-2"><a href="ch-controller.html#cb148-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_raw_packet_set_bare_mode<span class="op">(</span></span>
+<span id="cb148-3"><a href="ch-controller.html#cb148-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> ll_raw_packet <span class="op">*</span>packet<span class="op">,</span></span>
+<span id="cb148-4"><a href="ch-controller.html#cb148-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> header<span class="op">,</span> <span class="co">// 在数据包长之前发送的头数据</span></span>
+<span id="cb148-5"><a href="ch-controller.html#cb148-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> freq_mhz<span class="op">);</span>  <span class="co">// 信道中心频点（单位：MHz）</span></span></code></pre></div>
+<p>仅支持发送 <code>header</code> 里部分比特，建议固定填写 0。当 <code>freq_mhz</code> 为 0 时，继续使用 <code>ll_raw_packet_set_param</code>
+所指定的信道；当其非 0 时，需要注意仍可能对邻近蓝牙信道产生干扰；当其在蓝牙 2.4GHz 频段以外时，行为未知。
+当输入参数不合理时，这个函数将返回非 0 值。</p>
+<p>通过 <code>ll_raw_packet_set_bare_data</code> 设置数据：</p>
+<div class="sourceCode" id="cb149"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb149-1"><a href="ch-controller.html#cb149-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 函数执行成功时返回 0，否则返回非 0 值。</span></span>
+<span id="cb149-2"><a href="ch-controller.html#cb149-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_raw_packet_set_bare_data<span class="op">(</span></span>
+<span id="cb149-3"><a href="ch-controller.html#cb149-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> ll_raw_packet <span class="op">*</span>packet<span class="op">,</span></span>
+<span id="cb149-4"><a href="ch-controller.html#cb149-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">void</span> <span class="op">*</span>data<span class="op">,</span>       <span class="co">// 数据</span></span>
+<span id="cb149-5"><a href="ch-controller.html#cb149-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> size<span class="op">,</span>               <span class="co">// 最大 255 字节</span></span>
+<span id="cb149-6"><a href="ch-controller.html#cb149-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> crc_value<span class="op">);</span>    <span class="co">// 附加在数据之后的 CRC（低 24 比特）</span></span></code></pre></div>
+<p>在接收端回调里通过 <code>ll_raw_packet_get_bare_rx_data</code> 获取接收状态和数据：</p>
+<div class="sourceCode" id="cb150"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb150-1"><a href="ch-controller.html#cb150-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 函数执行成功时返回 0，否则返回非 0 值。</span></span>
+<span id="cb150-2"><a href="ch-controller.html#cb150-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_raw_packet_get_bare_rx_data<span class="op">(</span></span>
+<span id="cb150-3"><a href="ch-controller.html#cb150-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> ll_raw_packet <span class="op">*</span>packet<span class="op">,</span></span>
+<span id="cb150-4"><a href="ch-controller.html#cb150-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint64_t</span> <span class="op">*</span>air_time<span class="op">,</span>   <span class="co">// 数据包在空口出现的时间</span></span>
+<span id="cb150-5"><a href="ch-controller.html#cb150-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> <span class="op">*</span>header<span class="op">,</span>      <span class="co">// 头数据</span></span>
+<span id="cb150-6"><a href="ch-controller.html#cb150-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>data<span class="op">,</span>           <span class="co">// 用来接收数据的缓存</span></span>
+<span id="cb150-7"><a href="ch-controller.html#cb150-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="op">*</span>size<span class="op">,</span>            <span class="co">// 接收到的数据包的长度</span></span>
+<span id="cb150-8"><a href="ch-controller.html#cb150-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="op">*</span>rssi<span class="op">,</span>            <span class="co">// 接收到的数据包的 RSSI</span></span>
+<span id="cb150-9"><a href="ch-controller.html#cb150-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> <span class="op">*</span>crc_value<span class="op">);</span> <span class="co">// 附加在数据之后的 CRC（低 24 比特）</span></span></code></pre></div>
+<p>在指定的信道、指定的窗口未能与接入地址比对成功时，返回 2；否则返回 0。</p>
+</div>
+</div>
+<div id="带确认的包ack-able-packet" class="section level3 hasAnchor" number="12.5.2">
+<h3><span class="header-section-number">12.5.2</span> 带确认的包（Ack-able Packet）<a href="ch-controller.html#带确认的包ack-able-packet" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>带确认的包可以在通信双方之间可靠地向对方传输一包数据。通信双方分别称为：</p>
+<ul>
+<li><p>发起者（Initiator）：在指定的时间开始发送数据，并在一定的时间窗口内等待对方发来的确认和数据包；</p></li>
+<li><p>应答者（Responder）：从指定的时间开始尝试接收数据，如果成功，自动向对方发送确认信息和己方数据包。</p></li>
+</ul>
+<p>在接收数据过程中，如果一方发现 CRC 错误，会自动请求对方重传。</p>
+<div id="创建与配置-1" class="section level4 hasAnchor" number="12.5.2.1">
+<h4><span class="header-section-number">12.5.2.1</span> 创建与配置<a href="ch-controller.html#创建与配置-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>通过 <code>ll_ackable_packet_alloc</code> 创建带确认的包对象：</p>
+<div class="sourceCode" id="cb151"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb151-1"><a href="ch-controller.html#cb151-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 创建成功返回对象指针；否则返回 NULL</span></span>
+<span id="cb151-2"><a href="ch-controller.html#cb151-2" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> ll_raw_packet <span class="op">*</span>ll_ackable_packet_alloc<span class="op">(</span></span>
+<span id="cb151-3"><a href="ch-controller.html#cb151-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> for_initiator<span class="op">,</span>        <span class="co">// 角色（1：发起者；0：应答者）</span></span>
+<span id="cb151-4"><a href="ch-controller.html#cb151-4" aria-hidden="true" tabindex="-1"></a>    f_ll_raw_packet_done on_done<span class="op">,</span> <span class="co">// 回调函数</span></span>
+<span id="cb151-5"><a href="ch-controller.html#cb151-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>user_data<span class="op">);</span>             <span class="co">// 传给回调函数的用户数据</span></span></code></pre></div>
+<p>使用 <code>ll_raw_packet_set_param</code> 配置参数。通过 <code>ll_ackable_packet_set_tx_data</code> 设置已方要发送数据（如不设置，则表示要发送的数据长度为 0）：</p>
+<div class="sourceCode" id="cb152"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb152-1"><a href="ch-controller.html#cb152-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 函数执行成功时返回 0，否则返回非 0 值。</span></span>
+<span id="cb152-2"><a href="ch-controller.html#cb152-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_ackable_packet_set_tx_data<span class="op">(</span></span>
+<span id="cb152-3"><a href="ch-controller.html#cb152-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> ll_raw_packet <span class="op">*</span>packet<span class="op">,</span></span>
+<span id="cb152-4"><a href="ch-controller.html#cb152-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">void</span> <span class="op">*</span>data<span class="op">,</span> <span class="co">// 数据</span></span>
+<span id="cb152-5"><a href="ch-controller.html#cb152-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> size<span class="op">);</span>        <span class="co">// 长度（单位：字节），最大 255 字节</span></span></code></pre></div>
+</div>
+<div id="运行" class="section level4 hasAnchor" number="12.5.2.2">
+<h4><span class="header-section-number">12.5.2.2</span> 运行<a href="ch-controller.html#运行" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>通过 <code>ll_ackable_packet_run</code> 设置对象的运行时机：</p>
+<div class="sourceCode" id="cb153"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb153-1"><a href="ch-controller.html#cb153-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 函数执行成功时返回 0，否则返回非 0 值。</span></span>
+<span id="cb153-2"><a href="ch-controller.html#cb153-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_ackable_packet_run<span class="op">(</span></span>
+<span id="cb153-3"><a href="ch-controller.html#cb153-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> ll_raw_packet <span class="op">*</span>packet<span class="op">,</span></span>
+<span id="cb153-4"><a href="ch-controller.html#cb153-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint64_t</span> when<span class="op">,</span>      <span class="co">// 接收窗口开始的时刻（单位：μs）</span></span>
+<span id="cb153-5"><a href="ch-controller.html#cb153-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> window<span class="op">);</span>   <span class="co">// 窗口长度（单位：μs）</span></span></code></pre></div>
+<p><code>window</code> 至少应为 0.625 ms，建议取 1.25ms 以上。</p>
+<p>收到回调后通过 <code>ll_ackable_packet_get_status</code> 获取己方数据的确认状态和接收到的数据：</p>
+<div class="sourceCode" id="cb154"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb154-1"><a href="ch-controller.html#cb154-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 返回对方数据的接收状态</span></span>
+<span id="cb154-2"><a href="ch-controller.html#cb154-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_ackable_packet_get_status<span class="op">(</span></span>
+<span id="cb154-3"><a href="ch-controller.html#cb154-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> ll_raw_packet <span class="op">*</span>packet<span class="op">,</span></span>
+<span id="cb154-4"><a href="ch-controller.html#cb154-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="op">*</span>acked<span class="op">,</span>         <span class="co">// 己方数据的确认状态</span></span>
+<span id="cb154-5"><a href="ch-controller.html#cb154-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint64_t</span> <span class="op">*</span>air_time<span class="op">,</span> <span class="co">// 对方数据包的空口时间</span></span>
+<span id="cb154-6"><a href="ch-controller.html#cb154-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>data<span class="op">,</span>         <span class="co">// 对方数据包的数据</span></span>
+<span id="cb154-7"><a href="ch-controller.html#cb154-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="op">*</span>size<span class="op">,</span>          <span class="co">// 对方数据包的大小</span></span>
+<span id="cb154-8"><a href="ch-controller.html#cb154-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="op">*</span>rssi<span class="op">);</span>         <span class="co">// 对方数据包的 RSSI</span></span></code></pre></div>
+<p>成功接收到对方数据时这个函数返回 0；否则返回其它错误码，无具体含义。<code>acked</code> 为 1 说明己方的数据被对方成功收到。</p>
+<div class="rmdnote">
+<p>
+<code>acked</code> 是否为 1 与这个函数是否返回 0 没有必然联系。
+</p>
+</div>
+</div>
+</div>
+<div id="信道监听" class="section level3 hasAnchor" number="12.5.3">
+<h3><span class="header-section-number">12.5.3</span> 信道监听<a href="ch-controller.html#信道监听" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>信道监听是在指定的信道上持续接收数据包，直到收到指定的数目或者接收窗口结束。可能的用途：</p>
+<ul>
+<li><p>在单一信道上接收广播数据；</p></li>
+<li><p>监听一个连接事件内通信双方的所有数据包；</p>
+<p>理想情况下（合理配置启动时间），收到的第 1 个 PDU 是主角色发送给从角色的，第 2 个是从角色发送给主角色的，依此类推。</p></li>
+</ul>
+<div id="创建与配置-2" class="section level4 hasAnchor" number="12.5.3.1">
+<h4><span class="header-section-number">12.5.3.1</span> 创建与配置<a href="ch-controller.html#创建与配置-2" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>通过 <code>ll_channel_monitor_alloc</code> 创建信道监听对象：</p>
+<div class="sourceCode" id="cb155"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb155-1"><a href="ch-controller.html#cb155-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 创建成功时返回对象指针，否则返回 NULL</span></span>
+<span id="cb155-2"><a href="ch-controller.html#cb155-2" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> ll_raw_packet <span class="op">*</span>ll_channel_monitor_alloc<span class="op">(</span></span>
+<span id="cb155-3"><a href="ch-controller.html#cb155-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> pdu_num<span class="op">,</span>     <span class="co">// 一次监听最多接收的包的数量</span></span>
+<span id="cb155-4"><a href="ch-controller.html#cb155-4" aria-hidden="true" tabindex="-1"></a>    f_ll_raw_packet_done on_done<span class="op">,</span> <span class="co">// 回调函数</span></span>
+<span id="cb155-5"><a href="ch-controller.html#cb155-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>user_data<span class="op">);</span>             <span class="co">// 用户数据</span></span></code></pre></div>
+<p>使用 <code>ll_raw_packet_set_param</code> 配置参数。</p>
+</div>
+<div id="运行-1" class="section level4 hasAnchor" number="12.5.3.2">
+<h4><span class="header-section-number">12.5.3.2</span> 运行<a href="ch-controller.html#运行-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>通过 <code>ll_channel_monitor_run</code> 运行监听对象：</p>
+<div class="sourceCode" id="cb156"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb156-1"><a href="ch-controller.html#cb156-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 函数执行成功时返回 0，否则返回非 0 值。</span></span>
+<span id="cb156-2"><a href="ch-controller.html#cb156-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_channel_monitor_run<span class="op">(</span></span>
+<span id="cb156-3"><a href="ch-controller.html#cb156-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> ll_raw_packet <span class="op">*</span>packet<span class="op">,</span></span>
+<span id="cb156-4"><a href="ch-controller.html#cb156-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint64_t</span> when<span class="op">,</span>    <span class="co">// 监听启动时间（单位：μs）</span></span>
+<span id="cb156-5"><a href="ch-controller.html#cb156-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> window<span class="op">);</span> <span class="co">// 窗长（单位：μs）</span></span></code></pre></div>
+<p>收到回调后，通过 <code>ll_channel_monitor_check_each_pdu</code> 依次遍历收到的数据包：</p>
+<div class="sourceCode" id="cb157"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb157-1"><a href="ch-controller.html#cb157-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 返回 `visitor` 的调用次数</span></span>
+<span id="cb157-2"><a href="ch-controller.html#cb157-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_channel_monitor_check_each_pdu<span class="op">(</span></span>
+<span id="cb157-3"><a href="ch-controller.html#cb157-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> ll_raw_packet <span class="op">*</span>packet<span class="op">,</span></span>
+<span id="cb157-4"><a href="ch-controller.html#cb157-4" aria-hidden="true" tabindex="-1"></a>    f_ll_channel_monitor_pdu_visitor visitor<span class="op">,</span> <span class="co">// 访问者回调</span></span>
+<span id="cb157-5"><a href="ch-controller.html#cb157-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>user_data<span class="op">);</span>   <span class="co">// 用户数据</span></span></code></pre></div>
+<p>访问者回调的类型如下：</p>
+<div class="sourceCode" id="cb158"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb158-1"><a href="ch-controller.html#cb158-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="dt">void</span> <span class="op">(*</span> f_ll_channel_monitor_pdu_visitor<span class="op">)(</span></span>
+<span id="cb158-2"><a href="ch-controller.html#cb158-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> index<span class="op">,</span>          <span class="co">// 包序号</span></span>
+<span id="cb158-3"><a href="ch-controller.html#cb158-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> status<span class="op">,</span>         <span class="co">// 接收状态</span></span>
+<span id="cb158-4"><a href="ch-controller.html#cb158-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> reserved<span class="op">,</span>   <span class="co">// 保留</span></span>
+<span id="cb158-5"><a href="ch-controller.html#cb158-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">void</span> <span class="op">*</span>data<span class="op">,</span>   <span class="co">// 数据</span></span>
+<span id="cb158-6"><a href="ch-controller.html#cb158-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> size<span class="op">,</span>           <span class="co">// 数据长度</span></span>
+<span id="cb158-7"><a href="ch-controller.html#cb158-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> rssi<span class="op">,</span>           <span class="co">// RSSI</span></span>
+<span id="cb158-8"><a href="ch-controller.html#cb158-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>user_data<span class="op">);</span>   <span class="co">// 用户数据</span></span></code></pre></div>
+<p><code>index</code> 从 0 开始，最大到 <code>pdu_num - 1</code>。<code>status</code> 为 0 表示该包成功接收；不为 0 时，表示接收失败，
+<code>data</code>、<code>size</code>、<code>rssi</code> 等输出皆无效。</p>
+<div class="rmdnote">
+<p>
+ING918 仅支持获取
+<code>rssi</code>。<code>data</code>、<code>size</code> 无输出。
+</p>
+</div>
+<p>通过 <code>ll_channel_monitor_get_1st_pdu_time</code> 获得第 1 个数据包的空口时间：</p>
+<div class="sourceCode" id="cb159"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb159-1"><a href="ch-controller.html#cb159-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 函数执行成功时返回 0，否则返回非 0 值。</span></span>
+<span id="cb159-2"><a href="ch-controller.html#cb159-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_channel_monitor_get_1st_pdu_time<span class="op">(</span></span>
+<span id="cb159-3"><a href="ch-controller.html#cb159-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> ll_raw_packet <span class="op">*</span>packet<span class="op">,</span></span>
+<span id="cb159-4"><a href="ch-controller.html#cb159-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint64_t</span> <span class="op">*</span>air_time<span class="op">);</span> <span class="co">// 空口时间</span></span></code></pre></div>
+<p>如果未成功收到数据包，这个函数会失败，返回非 0 值。</p>
+</div>
+</div>
+</div>
+<div id="内存管理" class="section level2 hasAnchor" number="12.6">
+<h2><span class="header-section-number">12.6</span> 内存管理<a href="ch-controller.html#内存管理" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Controller 管理了一个单独的堆空间，并对外提供接口供开发者使用。</p>
+<p>使用 <code>ll_malloc</code> 分配内存：</p>
+<div class="sourceCode" id="cb160"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb160-1"><a href="ch-controller.html#cb160-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 分配失败时返回 NULL</span></span>
+<span id="cb160-2"><a href="ch-controller.html#cb160-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> <span class="op">*</span>ll_malloc<span class="op">(</span></span>
+<span id="cb160-3"><a href="ch-controller.html#cb160-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> size<span class="op">);</span> <span class="co">// 大小（单位：字节）</span></span></code></pre></div>
+<p>使用 <code>ll_free</code> 释放内存：</p>
+<div class="sourceCode" id="cb161"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb161-1"><a href="ch-controller.html#cb161-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_free<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>buffer<span class="op">);</span></span></code></pre></div>
+<p>通过 <code>ll_get_heap_free_size</code> 获取当前未分配的空间大小：</p>
+<div class="sourceCode" id="cb162"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb162-1"><a href="ch-controller.html#cb162-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 返回当前未分配的空间大小（单位：字节）</span></span>
+<span id="cb162-2"><a href="ch-controller.html#cb162-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_get_heap_free_size<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<div class="rmdcaution">
+<p>
+过多地从 Controller 分配内存，将影响蓝牙功能。
+</p>
+</div>
+</div>
+<div id="低时延接口" class="section level2 hasAnchor" number="12.7">
+<h2><span class="header-section-number">12.7</span> 低时延接口<a href="ch-controller.html#低时延接口" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="acl-预览" class="section level3 hasAnchor" number="12.7.1">
+<h3><span class="header-section-number">12.7.1</span> ACL 预览<a href="ch-controller.html#acl-预览" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>ACL 数据从 Controller 传输到 Host 再通知应用存在一定的时延。如果开发者需要更及时地获取 ACL 数据，
+可通过 <code>ll_register_hci_acl_previewer</code> 注册数据预览回调：</p>
+<div class="sourceCode" id="cb163"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb163-1"><a href="ch-controller.html#cb163-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_register_hci_acl_previewer<span class="op">(</span></span>
+<span id="cb163-2"><a href="ch-controller.html#cb163-2" aria-hidden="true" tabindex="-1"></a>    f_ll_hci_acl_data_preview preview<span class="op">);</span></span></code></pre></div>
+<p>回调函数的类型如下：</p>
+<div class="sourceCode" id="cb164"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb164-1"><a href="ch-controller.html#cb164-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="dt">void</span> <span class="op">(*</span>f_ll_hci_acl_data_preview<span class="op">)(</span></span>
+<span id="cb164-2"><a href="ch-controller.html#cb164-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> conn_handle<span class="op">,</span>    <span class="co">// 连接句柄</span></span>
+<span id="cb164-3"><a href="ch-controller.html#cb164-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> acl_flags<span class="op">,</span> <span class="co">// ACL 标志位</span></span>
+<span id="cb164-4"><a href="ch-controller.html#cb164-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">void</span> <span class="op">*</span>data<span class="op">,</span>        <span class="co">// 数据</span></span>
+<span id="cb164-5"><a href="ch-controller.html#cb164-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> len<span class="op">);</span>                <span class="co">// 数据长度</span></span></code></pre></div>
+<p>ACL 标志位的含义如下：</p>
+<ul>
+<li><code>0x01</code>：L2CAP 消息的一个接续片断或者空 PDU；</li>
+<li><code>0x02</code>：L2CAP 新消息的第一个片断或者一条完整的 L2CAP 消息。</li>
+</ul>
+</div>
+<div id="aes-加密" class="section level3 hasAnchor" number="12.7.2">
+<h3><span class="header-section-number">12.7.2</span> AES 加密<a href="ch-controller.html#aes-加密" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>通过 GAP 接口进行 <a href="ch-misc.html#ch-misc-aes-encrypt">AES-128 加密</a>，存在一定的时延。通过 <code>ll_aes_encrypt</code>
+可以以阻塞模式立即调用硬件完成加密并得到结果：</p>
+<div class="sourceCode" id="cb165"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb165-1"><a href="ch-controller.html#cb165-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 函数执行成功时返回 0，否则返回非 0 值。</span></span>
+<span id="cb165-2"><a href="ch-controller.html#cb165-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_aes_encrypt<span class="op">(</span></span>
+<span id="cb165-3"><a href="ch-controller.html#cb165-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>key<span class="op">,</span>       <span class="co">// 密钥（小端模式）</span></span>
+<span id="cb165-4"><a href="ch-controller.html#cb165-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>plaintext<span class="op">,</span> <span class="co">// 明文（小端模式）</span></span>
+<span id="cb165-5"><a href="ch-controller.html#cb165-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> <span class="op">*</span>ciphertext<span class="op">);</span>     <span class="co">// 密文（大端模式）</span></span></code></pre></div>
+<p>当硬件正忙，无法计算时，该函数返回非 0 值。使用时请注意参数的大小端模式与 <code>gap_aes_encrypt</code> 不同。</p>
+</div>
+</div>
+<div id="非标选项" class="section level2 hasAnchor" number="12.8">
+<h2><span class="header-section-number">12.8</span> “非标”选项<a href="ch-controller.html#非标选项" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="锁频" class="section level3 hasAnchor" number="12.8.1">
+<h3><span class="header-section-number">12.8.1</span> 锁频<a href="ch-controller.html#锁频" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>锁频功能可将后续所有的射频行为（蓝牙广播、扫描、连接，原始包等）全部固定在指定的信道上。
+通过 <code>ll_lock_frequency</code> 开启锁定并指定频率：</p>
+<div class="sourceCode" id="cb166"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb166-1"><a href="ch-controller.html#cb166-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_lock_frequency<span class="op">(</span></span>
+<span id="cb166-2"><a href="ch-controller.html#cb166-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> freq_mhz<span class="op">);</span> <span class="co">// 频率（单位：MHz）</span></span></code></pre></div>
+<p>锁频是一种底层设置，链路层并不知晓。例如，将广播者锁频在 2402 MHz，扫描者扫描 37 信道时，在一个广播件内并不能同时收到 3 个广播包。
+这是因为广播者链路层在发送 3 个广播包时仍然按照 37/38/39 设置白化参数，虽然它们最终都在 37 信道发送。</p>
+<p>通过 <code>ll_unlock_frequency</code> 解除锁定：</p>
+<div class="sourceCode" id="cb167"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb167-1"><a href="ch-controller.html#cb167-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_unlock_frequency<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<p>嵌套 <code>ll_lock_frequency</code> 时，可能产生意外效果，例如：</p>
+<div class="sourceCode" id="cb168"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb168-1"><a href="ch-controller.html#cb168-1" aria-hidden="true" tabindex="-1"></a>lock<span class="op">(</span>f0<span class="op">);</span>       <span class="co">// 锁定到 f0</span></span>
+<span id="cb168-2"><a href="ch-controller.html#cb168-2" aria-hidden="true" tabindex="-1"></a>    lock<span class="op">(</span>f1<span class="op">);</span>   <span class="co">// 锁定到 f1</span></span>
+<span id="cb168-3"><a href="ch-controller.html#cb168-3" aria-hidden="true" tabindex="-1"></a>    unlock<span class="op">();</span></span>
+<span id="cb168-4"><a href="ch-controller.html#cb168-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">...</span>         <span class="co">// 此时依然处于锁频状态，锁定于 f1</span></span>
+<span id="cb168-5"><a href="ch-controller.html#cb168-5" aria-hidden="true" tabindex="-1"></a>unlock<span class="op">();</span></span>
+<span id="cb168-6"><a href="ch-controller.html#cb168-6" aria-hidden="true" tabindex="-1"></a><span class="op">...</span>             <span class="co">// 已解锁</span></span></code></pre></div>
+</div>
+<div id="自定义参数" class="section level3 hasAnchor" number="12.8.2">
+<h3><span class="header-section-number">12.8.2</span> 自定义参数<a href="ch-cap.html#fn58" class="footnote-ref" id="fnref58"><sup>58</sup></a><a href="ch-controller.html#自定义参数" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>通过 <code>ll_set_adv_access_address</code> 替换蓝牙核心规范定义的广播包接入地址：</p>
+<div class="sourceCode" id="cb169"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb169-1"><a href="ch-controller.html#cb169-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_set_adv_access_address<span class="op">(</span></span>
+<span id="cb169-2"><a href="ch-controller.html#cb169-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> acc_addr<span class="op">);</span></span></code></pre></div>
+<p>通过 <code>ll_override_whitening_init_value</code> 替换蓝牙核心规范定义的白化初始值：</p>
+<div class="sourceCode" id="cb170"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb170-1"><a href="ch-controller.html#cb170-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_override_whitening_init_value<span class="op">(</span></span>
+<span id="cb170-2"><a href="ch-controller.html#cb170-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> override<span class="op">,</span>  <span class="co">// 是否替换</span></span>
+<span id="cb170-3"><a href="ch-controller.html#cb170-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> value<span class="op">);</span>    <span class="co">// 白化初始值</span></span></code></pre></div>
+<p>当 <code>override</code> 为 0 时，恢复使用规范值，<code>value</code> 参数忽略；为 1 时，<code>value</code>
+的各比特依次放入移位寄存器的相应位置，即 <code>lfsr[0]</code> 填入最低比特，<code>lfsr[1]</code> 填入 <code>(value &gt;&gt; 1) &amp; 1</code>，依此类推。
+使用这种表示法，规范为 37 信道定义的白化初始值表示为 <code>0x53</code>。</p>
+<p>广播物理信道 PDU 包含长度为 4 个比特的 <code>PDU Type</code>。
+Controller 接收到的 <code>PDU Type</code> 为预留值时，整个 PDU 会被丢弃。通过 <code>ll_allow_nonstandard_adv_type</code> 可以使能接收一种非标 <code>PDU Type</code>：</p>
+<div class="sourceCode" id="cb171"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb171-1"><a href="ch-controller.html#cb171-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_allow_nonstandard_adv_type<span class="op">(</span></span>
+<span id="cb171-2"><a href="ch-controller.html#cb171-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> allowed<span class="op">,</span> <span class="co">// 是否使能非标 ADV 接收</span></span>
+<span id="cb171-3"><a href="ch-controller.html#cb171-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> type<span class="op">);</span>   <span class="co">// 非标类型值</span></span></code></pre></div>
+<p>当 <code>allowed</code> 为 0 时，功能关闭，<code>type</code> 参数忽略；为 1 时，扫描时会接收 <code>type</code> 类型的广播 PDU 并上报。</p>
+<p>规范定义 CTE 比特为 1。通过 <code>ll_set_cte_bit</code> 可修改其定义：</p>
+<div class="sourceCode" id="cb172"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb172-1"><a href="ch-controller.html#cb172-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_set_cte_bit<span class="op">(</span></span>
+<span id="cb172-2"><a href="ch-controller.html#cb172-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> bit<span class="op">);</span>  <span class="co">// CTE 比特（0 或 1）</span></span></code></pre></div>
+<p>规范定义连接间隔时，单位为 1.25 ms。通过 <code>ll_set_conn_interval_unit</code> 可自定义该值：</p>
+<div class="sourceCode" id="cb173"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb173-1"><a href="ch-controller.html#cb173-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_set_conn_interval_unit<span class="op">(</span></span>
+<span id="cb173-2"><a href="ch-controller.html#cb173-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> unit<span class="op">);</span> <span class="co">// （单位：μs）默认值：1250</span></span></code></pre></div>
+<p>此设置应该在连接建立前修改，通信双方必须使用相同的设置。<code>unit</code> 允许的最小值依赖硬件处理能力，
+ING918 为 800 μs 左右。将连接间隔调小，可明显降低通信时延。例如，标准中最小连接间隔为 <span class="math inline">\(7.5 ms\)</span>；
+使用 <em>extension</em> 包，ING918 连接间隔最小可降为 <span class="math inline">\((800 \times 1 =) 800 μs\)</span>。</p>
+</div>
+</div>
+<div id="ecc-引擎" class="section level2 hasAnchor" number="12.9">
+<h2><span class="header-section-number">12.9</span> ECC 引擎<a href="ch-controller.html#ecc-引擎" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>当 Controller 未内置 ECC 硬件时，允许应用提供 ECC 引擎，并通过 HCI 为 Host 提供服务。
+通过 <code>ll_install_ecc_engine</code> 定义 ECC 引擎：</p>
+<div class="sourceCode" id="cb174"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb174-1"><a href="ch-controller.html#cb174-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_install_ecc_engine<span class="op">(</span></span>
+<span id="cb174-2"><a href="ch-controller.html#cb174-2" aria-hidden="true" tabindex="-1"></a>    f_start_generate_p256_key_pair start_generate_p256_key_pair<span class="op">,</span></span>
+<span id="cb174-3"><a href="ch-controller.html#cb174-3" aria-hidden="true" tabindex="-1"></a>    f_start_generate_dhkey start_generate_dhkey<span class="op">);</span></span></code></pre></div>
+<p>ECC 引擎应该能够安全地保存一个公钥对，并实现两个接口（回调函数），：</p>
+<ul>
+<li><p><code>start_generate_p256_key_pair</code>：开始生成新的 P256 密钥对；</p></li>
+<li><p><code>start_generate_dhkey</code>：开始生成 DHKey。</p></li>
+</ul>
+<p><code>f_start_generate_p256_key_pair</code> 的定义为：</p>
+<div class="sourceCode" id="cb175"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb175-1"><a href="ch-controller.html#cb175-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="dt">void</span> <span class="op">(*</span>f_start_generate_p256_key_pair<span class="op">)(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<p>这个函数在 Controller 的上下文中调用，应该立即返回。当 P256 密钥对生成或出现错误后，通过 <code>ll_p256_key_pair_generated</code>
+告知结果：</p>
+<div class="sourceCode" id="cb176"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb176-1"><a href="ch-controller.html#cb176-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_p256_key_pair_generated<span class="op">(</span></span>
+<span id="cb176-2"><a href="ch-controller.html#cb176-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> status<span class="op">,</span>              <span class="co">// 是否成功（0：成功）</span></span>
+<span id="cb176-3"><a href="ch-controller.html#cb176-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>pub_key<span class="op">);</span> <span class="co">// 生成的公钥</span></span></code></pre></div>
+<p><code>status</code> 表示是否成功生成了新的密钥对，0 为成功，其它值为不成功。当成功时，<code>pub_key</code> 包含新生成的公钥，长度为 64 字节，
+前 32 字节为 X 坐标，后 32 字节为 Y 坐标，大端模式。</p>
+<p><code>f_start_generate_dhkey</code> 的定义为：</p>
+<div class="sourceCode" id="cb177"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb177-1"><a href="ch-controller.html#cb177-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="dt">int</span>  <span class="op">(*</span>f_start_generate_dhkey<span class="op">)(</span></span>
+<span id="cb177-2"><a href="ch-controller.html#cb177-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> key_type<span class="op">,</span>                   <span class="co">// 本端的密钥类型</span></span>
+<span id="cb177-3"><a href="ch-controller.html#cb177-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>remote_pub_key<span class="op">);</span> <span class="co">// 远端的公钥</span></span></code></pre></div>
+<p><code>key_type</code> 为 0 时，选用引擎生成的私钥；为 1 时使用规范定义的调试用私钥<a href="ch-cap.html#fn59" class="footnote-ref" id="fnref59"><sup>59</sup></a>。
+<code>remote_pub_key</code> 为远端的公钥，长度为 64 字节，前 32 字节为 X 坐标，后 32 字节为 Y 坐标，大端模式。</p>
+<p>这个函数也是在 Controller 的上下文中调用，应该立即返回。当 DHKey 生成或出现错误后，通过 <code>ll_p256_key_pair_generated</code>
+告知结果：</p>
+<div class="sourceCode" id="cb178"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb178-1"><a href="ch-controller.html#cb178-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_dhkey_generated<span class="op">(</span></span>
+<span id="cb178-2"><a href="ch-controller.html#cb178-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> status<span class="op">,</span>             <span class="co">// 是否成功（0：成功）</span></span>
+<span id="cb178-3"><a href="ch-controller.html#cb178-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>dh_key<span class="op">);</span> <span class="co">// Diffie Hellman Key</span></span></code></pre></div>
+<p><code>status</code> 为 0 时，表示 DHKey 生成成功，其它值为不成功。当成功时，<code>dh_key</code> 包含新生成的 DHKey，长度为 32 字节，
+大端模式。ECC 引擎必须首先检验远端公钥是否合法，如不合法，直接调用 <code>ll_dhkey_generated</code>，将 <code>status</code> 设为非 0 值。</p>
+
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="53">
+<li id="fn53"><p>典型值。不同软件包有所不同。<a href="ch-controller.html#fnref53" class="footnote-back">↩︎</a></p></li>
+<li id="fn54"><p>更多信息请参考《Application Note: Direction Finding Solution》, <a href="https://ingchips.github.io/application-notes/an_aoa/sdk-support.html#proprietary-solution-2" class="uri">https://ingchips.github.io/application-notes/an_aoa/sdk-support.html#proprietary-solution-2</a><a href="ch-controller.html#fnref54" class="footnote-back">↩︎</a></p></li>
+<li id="fn55"><p>ING918 不支持此功能。<a href="ch-controller.html#fnref55" class="footnote-back">↩︎</a></p></li>
+<li id="fn56"><p>关于原理、使用方法等更多信息请参考《使用 ING916 定位传统蓝牙设备》，<a href="https://ingchips.github.io/blog/2023-03-11-legacy-aoa/" class="uri">https://ingchips.github.io/blog/2023-03-11-legacy-aoa/</a><a href="ch-controller.html#fnref56" class="footnote-back">↩︎</a></p></li>
+<li id="fn57"><p>更多信息请参考《Application Note: Direction Finding Solution》, <a href="https://ingchips.github.io/application-notes/an_aoa/sdk-support.html#proprietary-solution-2" class="uri">https://ingchips.github.io/application-notes/an_aoa/sdk-support.html#proprietary-solution-2</a><a href="ch-controller.html#fnref57" class="footnote-back">↩︎</a></p></li>
+<li id="fn58"><p>本节功能中，ING918 仅支持自定义连接间隔。<a href="ch-controller.html#fnref58" class="footnote-back">↩︎</a></p></li>
+<li id="fn59"><p>参见蓝牙核心规范 Vol 3, Part H, 2.3.5.6 LE Secure Connections pairing phase 2.<a href="ch-controller.html#fnref59" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="ch-sm.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ch-misc.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["pg_ble_stack.pdf", "pg_ble_stack.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

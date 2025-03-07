@@ -150,13 +150,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.5" data-path="ch-overview.html"><a href="ch-overview.html#事件包的解析"><i class="fa fa-check"></i><b>3.5</b> 事件包的解析</a></li>
 <li class="chapter" data-level="3.6" data-path="ch-overview.html"><a href="ch-overview.html#ch0-ctrl-err-code"><i class="fa fa-check"></i><b>3.6</b> Controller 错误码</a></li>
 <li class="chapter" data-level="3.7" data-path="ch-overview.html"><a href="ch-overview.html#ch0-att-err-codes"><i class="fa fa-check"></i><b>3.7</b> ATT 错误码</a></li>
-<li class="chapter" data-level="3.8" data-path="ch-overview.html"><a href="ch-overview.html#controller-特性定义"><i class="fa fa-check"></i><b>3.8</b> Controller 特性定义</a></li>
-<li class="chapter" data-level="3.9" data-path="ch-overview.html"><a href="ch-overview.html#蓝牙规范版本编号"><i class="fa fa-check"></i><b>3.9</b> 蓝牙规范版本编号</a></li>
-<li class="chapter" data-level="3.10" data-path="ch-overview.html"><a href="ch-overview.html#白名单"><i class="fa fa-check"></i><b>3.10</b> 白名单</a></li>
-<li class="chapter" data-level="3.11" data-path="ch-overview.html"><a href="ch-overview.html#异步特性"><i class="fa fa-check"></i><b>3.11</b> 异步特性</a></li>
-<li class="chapter" data-level="3.12" data-path="ch-overview.html"><a href="ch-overview.html#线程安全性"><i class="fa fa-check"></i><b>3.12</b> 线程安全性</a></li>
-<li class="chapter" data-level="3.13" data-path="ch-overview.html"><a href="ch-overview.html#ch-overview-ble-addr"><i class="fa fa-check"></i><b>3.13</b> BLE 设备地址</a></li>
-<li class="chapter" data-level="3.14" data-path="ch-overview.html"><a href="ch-overview.html#解析列表与隐私"><i class="fa fa-check"></i><b>3.14</b> 解析列表与隐私</a></li>
+<li class="chapter" data-level="3.8" data-path="ch-overview.html"><a href="ch-overview.html#协议栈-api-错误码"><i class="fa fa-check"></i><b>3.8</b> 协议栈 API 错误码</a></li>
+<li class="chapter" data-level="3.9" data-path="ch-overview.html"><a href="ch-overview.html#controller-特性定义"><i class="fa fa-check"></i><b>3.9</b> Controller 特性定义</a></li>
+<li class="chapter" data-level="3.10" data-path="ch-overview.html"><a href="ch-overview.html#蓝牙规范版本编号"><i class="fa fa-check"></i><b>3.10</b> 蓝牙规范版本编号</a></li>
+<li class="chapter" data-level="3.11" data-path="ch-overview.html"><a href="ch-overview.html#白名单"><i class="fa fa-check"></i><b>3.11</b> 白名单</a></li>
+<li class="chapter" data-level="3.12" data-path="ch-overview.html"><a href="ch-overview.html#异步特性"><i class="fa fa-check"></i><b>3.12</b> 异步特性</a></li>
+<li class="chapter" data-level="3.13" data-path="ch-overview.html"><a href="ch-overview.html#线程安全性"><i class="fa fa-check"></i><b>3.13</b> 线程安全性</a></li>
+<li class="chapter" data-level="3.14" data-path="ch-overview.html"><a href="ch-overview.html#ch-overview-ble-addr"><i class="fa fa-check"></i><b>3.14</b> BLE 设备地址</a></li>
+<li class="chapter" data-level="3.15" data-path="ch-overview.html"><a href="ch-overview.html#解析列表与隐私"><i class="fa fa-check"></i><b>3.15</b> 解析列表与隐私</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="ch-features.html"><a href="ch-features.html"><i class="fa fa-check"></i><b>4</b> 特性简析</a>
 <ul>
@@ -730,13 +731,13 @@ DATA LENGTH 更新流程<a href="ch-cap.html#fn64" class="footnote-ref" id="fnre
 <li><p><code>att_server_notify</code> 的返回值：</p>
 <ul>
 <li><span class="math inline">\(0\)</span>：成功</li>
-<li><code>BTSTACK_LE_CHANNEL_NOT_EXIST</code>：连接不存在（连接句柄参数错误？）</li>
-<li><code>BTSTACK_ACL_BUFFERS_FULL</code>：内存已满</li>
+<li><code>BTSTACK_LE_CHANNEL_NOT_EXIST</code> (<code>0x59</code>)：连接不存在（连接句柄参数错误？）</li>
+<li><code>BTSTACK_ACL_BUFFERS_FULL</code> (<code>0x57</code>)：内存已满</li>
 </ul></li>
 <li><p><code>gap_set_ext_adv_para</code> 的返回值：</p>
 <ul>
 <li><span class="math inline">\(0\)</span>：成功</li>
-<li><code>BTSTACK_MEMORY_ALLOC_FAILED</code>：内存已满</li>
+<li><code>BTSTACK_MEMORY_ALLOC_FAILED</code> (<code>0x56</code>)：内存已满</li>
 </ul></li>
 </ul>
 </div>
@@ -1009,7 +1010,7 @@ v8.2 以下版本的 <em>gatt_client_util</em> 模块仅提供 GATT
 <span id="cb227-9"><a href="ch-misc.html#cb227-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Controller 版本号</span></span>
 <span id="cb227-10"><a href="ch-misc.html#cb227-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> <span class="op">*</span>subversion<span class="op">);</span></span></code></pre></div>
 <p>蓝牙链路层协议版本号由 Bluethooth SIG 指定，部分编号与版本号的对应关系如表
-<a href="ch-overview.html#tab:ch-overview-ble-version">3.4</a> 所示；
+<a href="ch-overview.html#tab:ch-overview-ble-version">3.5</a> 所示；
 厂家编号由厂家申请、Bluethooth SIG 指定<a href="ch-cap.html#fn69" class="footnote-ref" id="fnref69"><sup>69</sup></a>；
 Controller 版本号由 Controller 厂家自行指定。</p></li>
 <li><p><code>gap_sync_read_remote_used_features</code>：读取某连接对端设备使用的蓝牙特性</p>
@@ -1020,7 +1021,7 @@ Controller 版本号由 Controller 厂家自行指定。</p></li>
 <span id="cb228-4"><a href="ch-misc.html#cb228-4" aria-hidden="true" tabindex="-1"></a>  hci_con_handle_t con_handle<span class="op">,</span></span>
 <span id="cb228-5"><a href="ch-misc.html#cb228-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 蓝牙特性比特图</span></span>
 <span id="cb228-6"><a href="ch-misc.html#cb228-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> features<span class="op">[</span><span class="dv">8</span><span class="op">]);</span></span></code></pre></div>
-<p>蓝牙特性的定义参见表 <a href="ch-overview.html#tab:ch-overview-ble-features">3.3</a>。</p></li>
+<p>蓝牙特性的定义参见表 <a href="ch-overview.html#tab:ch-overview-ble-features">3.4</a>。</p></li>
 </ul>
 </div>
 <div id="gatt-客户端同步-api" class="section level3 hasAnchor" number="13.7.2">

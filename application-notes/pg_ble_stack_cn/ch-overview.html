@@ -150,13 +150,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.5" data-path="ch-overview.html"><a href="ch-overview.html#事件包的解析"><i class="fa fa-check"></i><b>3.5</b> 事件包的解析</a></li>
 <li class="chapter" data-level="3.6" data-path="ch-overview.html"><a href="ch-overview.html#ch0-ctrl-err-code"><i class="fa fa-check"></i><b>3.6</b> Controller 错误码</a></li>
 <li class="chapter" data-level="3.7" data-path="ch-overview.html"><a href="ch-overview.html#ch0-att-err-codes"><i class="fa fa-check"></i><b>3.7</b> ATT 错误码</a></li>
-<li class="chapter" data-level="3.8" data-path="ch-overview.html"><a href="ch-overview.html#controller-特性定义"><i class="fa fa-check"></i><b>3.8</b> Controller 特性定义</a></li>
-<li class="chapter" data-level="3.9" data-path="ch-overview.html"><a href="ch-overview.html#蓝牙规范版本编号"><i class="fa fa-check"></i><b>3.9</b> 蓝牙规范版本编号</a></li>
-<li class="chapter" data-level="3.10" data-path="ch-overview.html"><a href="ch-overview.html#白名单"><i class="fa fa-check"></i><b>3.10</b> 白名单</a></li>
-<li class="chapter" data-level="3.11" data-path="ch-overview.html"><a href="ch-overview.html#异步特性"><i class="fa fa-check"></i><b>3.11</b> 异步特性</a></li>
-<li class="chapter" data-level="3.12" data-path="ch-overview.html"><a href="ch-overview.html#线程安全性"><i class="fa fa-check"></i><b>3.12</b> 线程安全性</a></li>
-<li class="chapter" data-level="3.13" data-path="ch-overview.html"><a href="ch-overview.html#ch-overview-ble-addr"><i class="fa fa-check"></i><b>3.13</b> BLE 设备地址</a></li>
-<li class="chapter" data-level="3.14" data-path="ch-overview.html"><a href="ch-overview.html#解析列表与隐私"><i class="fa fa-check"></i><b>3.14</b> 解析列表与隐私</a></li>
+<li class="chapter" data-level="3.8" data-path="ch-overview.html"><a href="ch-overview.html#协议栈-api-错误码"><i class="fa fa-check"></i><b>3.8</b> 协议栈 API 错误码</a></li>
+<li class="chapter" data-level="3.9" data-path="ch-overview.html"><a href="ch-overview.html#controller-特性定义"><i class="fa fa-check"></i><b>3.9</b> Controller 特性定义</a></li>
+<li class="chapter" data-level="3.10" data-path="ch-overview.html"><a href="ch-overview.html#蓝牙规范版本编号"><i class="fa fa-check"></i><b>3.10</b> 蓝牙规范版本编号</a></li>
+<li class="chapter" data-level="3.11" data-path="ch-overview.html"><a href="ch-overview.html#白名单"><i class="fa fa-check"></i><b>3.11</b> 白名单</a></li>
+<li class="chapter" data-level="3.12" data-path="ch-overview.html"><a href="ch-overview.html#异步特性"><i class="fa fa-check"></i><b>3.12</b> 异步特性</a></li>
+<li class="chapter" data-level="3.13" data-path="ch-overview.html"><a href="ch-overview.html#线程安全性"><i class="fa fa-check"></i><b>3.13</b> 线程安全性</a></li>
+<li class="chapter" data-level="3.14" data-path="ch-overview.html"><a href="ch-overview.html#ch-overview-ble-addr"><i class="fa fa-check"></i><b>3.14</b> BLE 设备地址</a></li>
+<li class="chapter" data-level="3.15" data-path="ch-overview.html"><a href="ch-overview.html#解析列表与隐私"><i class="fa fa-check"></i><b>3.15</b> 解析列表与隐私</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="ch-features.html"><a href="ch-features.html"><i class="fa fa-check"></i><b>4</b> 特性简析</a>
 <ul>
@@ -816,112 +817,236 @@ Controller 收到这样的命令后不上报 <code>HCI_EVENT_COMMAND_COMPLETE</c
 <table>
 <caption><span id="tab:ch0-att-err-code">表 3.2: </span> ATT 错误码</caption>
 <colgroup>
-<col width="10%" />
-<col width="89%" />
+<col width="6%" />
+<col width="36%" />
+<col width="56%" />
 </colgroup>
 <thead>
 <tr class="header">
 <th align="center">错误码</th>
+<th align="left">宏定义</th>
 <th align="left">含义</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td align="center">0x00</td>
+<td align="left"></td>
 <td align="left">无错误。</td>
 </tr>
 <tr class="even">
 <td align="center">0x01</td>
+<td align="left"><code>ATT_ERROR_INVALID_HANDLE</code></td>
 <td align="left">无效句柄。</td>
 </tr>
 <tr class="odd">
 <td align="center">0x02</td>
+<td align="left"><code>ATT_ERROR_READ_NOT_PERMITTED</code></td>
 <td align="left">指定的特征不可读。</td>
 </tr>
 <tr class="even">
 <td align="center">0x03</td>
+<td align="left"><code>ATT_ERROR_WRITE_NOT_PERMITTED</code></td>
 <td align="left">指定的特征不可写。</td>
 </tr>
 <tr class="odd">
 <td align="center">0x04</td>
+<td align="left"><code>ATT_ERROR_INVALID_PDU</code></td>
 <td align="left">PDU 不合法。</td>
 </tr>
 <tr class="even">
 <td align="center">0x05</td>
+<td align="left"><code>ATT_ERROR_INSUFFICIENT_AUTHENTICATION</code></td>
 <td align="left">身份认证不足。在读写该特征之前需要进行身份认证。</td>
 </tr>
 <tr class="odd">
 <td align="center">0x06</td>
+<td align="left"><code>ATT_ERROR_REQUEST_NOT_SUPPORTED</code></td>
 <td align="left">ATT 服务器不支持该请求。</td>
 </tr>
 <tr class="even">
 <td align="center">0x07</td>
+<td align="left"><code>ATT_ERROR_INVALID_OFFSET</code></td>
 <td align="left">Offset 参数超出范围。</td>
 </tr>
 <tr class="odd">
 <td align="center">0x08</td>
+<td align="left"><code>ATT_ERROR_INSUFFICIENT_AUTHORIZATION</code></td>
 <td align="left">授权不足。在读写该特征之前需要获得授权。</td>
 </tr>
 <tr class="even">
 <td align="center">0x09</td>
+<td align="left"><code>ATT_ERROR_PREPARE_QUEUE_FULL</code></td>
 <td align="left">Prepare Write 队列已满。</td>
 </tr>
 <tr class="odd">
 <td align="center">0x0A</td>
+<td align="left"><code>ATT_ERROR_ATTRIBUTE_NOT_FOUND</code></td>
 <td align="left">未指定指定的特征。</td>
 </tr>
 <tr class="even">
 <td align="center">0x0B</td>
+<td align="left"><code>ATT_ERROR_ATTRIBUTE_NOT_LONG</code></td>
 <td align="left">特征太长，无法通过 ATT_READ_BLOB_REQ PDU 读取。</td>
 </tr>
 <tr class="odd">
 <td align="center">0x0C</td>
+<td align="left"><code>ATT_ERROR_INSUFFICIENT_ENCRYPTION_KEY_SIZE</code></td>
 <td align="left">密钥长度太短。</td>
 </tr>
 <tr class="even">
 <td align="center">0x0D</td>
+<td align="left"><code>ATT_ERROR_INVALID_ATTRIBUTE_VALUE_LENGTH</code></td>
 <td align="left">特征的长度不合法。</td>
 </tr>
 <tr class="odd">
 <td align="center">0x0E</td>
+<td align="left"><code>ATT_ERROR_UNLIKELY_ERROR</code></td>
 <td align="left">不常见的错误。</td>
 </tr>
 <tr class="even">
 <td align="center">0x0F</td>
+<td align="left"><code>ATT_ERROR_INSUFFICIENT_ENCRYPTION</code></td>
 <td align="left">加密不足。在读写该特征之前需要开启加密。</td>
 </tr>
 <tr class="odd">
 <td align="center">0x10</td>
+<td align="left"><code>ATT_ERROR_UNSUPPORTED_GROUP_TYPE</code></td>
 <td align="left">不支持的组类型。</td>
 </tr>
 <tr class="even">
 <td align="center">0x11</td>
+<td align="left"><code>ATT_ERROR_INSUFFICIENT_RESOURCES</code></td>
 <td align="left">资源不足，无法完成请求。</td>
 </tr>
 <tr class="odd">
 <td align="center">0x12</td>
+<td align="left"><code>ATT_ERROR_DATABASE_OUT_OF_SYNC</code></td>
 <td align="left">数据库失步。服务器要求客户端重新发现数据库。</td>
 </tr>
 <tr class="even">
 <td align="center">0x13</td>
+<td align="left"><code>ATT_ERROR_VALUE_NOT_ALLOWED</code></td>
 <td align="left">特征的参数值非法。</td>
 </tr>
 <tr class="odd">
 <td align="center">0x80~0x9F</td>
+<td align="left"></td>
 <td align="left">应用层错误码。</td>
 </tr>
 <tr class="even">
 <td align="center">0xE0~0xFF</td>
+<td align="left"></td>
 <td align="left">Profile 或 服务的错误码<a href="ch-cap.html#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>。</td>
 </tr>
 </tbody>
 </table>
-<p>宏定义 <code>ATT_ERROR_....</code> 与 0x01 ~ 0x13 错误码一一对应。</p>
 </div>
-<div id="controller-特性定义" class="section level2 hasAnchor" number="3.8">
-<h2><span class="header-section-number">3.8</span> Controller 特性定义<a href="ch-overview.html#controller-特性定义" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="协议栈-api-错误码" class="section level2 hasAnchor" number="3.8">
+<h2><span class="header-section-number">3.8</span> 协议栈 API 错误码<a href="ch-overview.html#协议栈-api-错误码" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>表 <a href="ch-overview.html#tab:ch0-stack-api-err-code">3.3</a> 列出了协议栈 API 返回的常见返回值（错误码）。</p>
 <table>
-<caption><span id="tab:ch-overview-ble-features">表 3.3: </span> BLE 链路层特性定义</caption>
+<caption><span id="tab:ch0-stack-api-err-code">表 3.3: </span> 协议栈 API 常见返回值（错误码）</caption>
+<colgroup>
+<col width="6%" />
+<col width="36%" />
+<col width="57%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">错误码</th>
+<th align="left">宏定义</th>
+<th align="left">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">0x0</td>
+<td align="left"></td>
+<td align="left">无错误。</td>
+</tr>
+<tr class="even">
+<td align="center">0x55</td>
+<td align="left"><code>BTSTACK_BUSY</code></td>
+<td align="left">协议栈正忙。</td>
+</tr>
+<tr class="odd">
+<td align="center">0x56</td>
+<td align="left"><code>BTSTACK_MEMORY_ALLOC_FAILED</code></td>
+<td align="left">内存不足，协议栈对象分配失败。</td>
+</tr>
+<tr class="even">
+<td align="center">0x57</td>
+<td align="left"><code>BTSTACK_ACL_BUFFERS_FULL</code></td>
+<td align="left">内存不足，无法缓存 ACL 数据。</td>
+</tr>
+<tr class="odd">
+<td align="center">0x59</td>
+<td align="left"><code>BTSTACK_LE_CHANNEL_NOT_EXIST</code></td>
+<td align="left">指定的 LE 信道句柄不存在（未连接）。</td>
+</tr>
+<tr class="even">
+<td align="center">0x69</td>
+<td align="left"><code>L2CAP_SERVICE_ALREADY_REGISTERED</code></td>
+<td align="left">服务已注册。</td>
+</tr>
+<tr class="odd">
+<td align="center">0x6A</td>
+<td align="left"><code>L2CAP_DATA_LEN_EXCEEDS_REMOTE_MTU</code></td>
+<td align="left">数据长度超出远端 MTU。</td>
+</tr>
+<tr class="even">
+<td align="center">0x6B</td>
+<td align="left"><code>L2CAP_SERVICE_NOT_REGISTERED</code></td>
+<td align="left">服务未注册。</td>
+</tr>
+<tr class="odd">
+<td align="center">0x6C</td>
+<td align="left"><code>L2CAP_CONNECTION_INSUFFICIENT_SECURITY</code></td>
+<td align="left">安全性不足。</td>
+</tr>
+<tr class="even">
+<td align="center">0x90</td>
+<td align="left"><code>ATT_HANDLE_VALUE_INDICATION_IN_PROGRESS</code></td>
+<td align="left">上一个指示（Indiction）流程未完成。</td>
+</tr>
+<tr class="odd">
+<td align="center">0x93</td>
+<td align="left"><code>GATT_CLIENT_NOT_CONNECTED</code></td>
+<td align="left">指定的连接句柄无效（未连接）。</td>
+</tr>
+<tr class="even">
+<td align="center">0x94</td>
+<td align="left"><code>GATT_CLIENT_BUSY</code></td>
+<td align="left">GATT 客户端正忙。</td>
+</tr>
+<tr class="odd">
+<td align="center">0x95</td>
+<td align="left"><code>GATT_CLIENT_IN_WRONG_STATE</code></td>
+<td align="left">GATT 客户端状态错误（会话冲突）。</td>
+</tr>
+<tr class="even">
+<td align="center">0x97</td>
+<td align="left"><code>GATT_CLIENT_VALUE_TOO_LONG</code></td>
+<td align="left">GATT 客户端：要写入的数据超过最大长度。</td>
+</tr>
+<tr class="odd">
+<td align="center">0x98</td>
+<td align="left"><code>GATT_CLIENT_CHARACTERISTIC_NOTIFICATION_NOT_SUPPORTED</code></td>
+<td align="left">GATT 客户端：待订阅的特征不支持通知（Notification）。</td>
+</tr>
+<tr class="even">
+<td align="center">0x99</td>
+<td align="left"><code>GATT_CLIENT_CHARACTERISTIC_INDICATION_NOT_SUPPORTED</code></td>
+<td align="left">GATT 客户端：待订阅的特征不支持指示（Indiction）。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="controller-特性定义" class="section level2 hasAnchor" number="3.9">
+<h2><span class="header-section-number">3.9</span> Controller 特性定义<a href="ch-overview.html#controller-特性定义" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<table>
+<caption><span id="tab:ch-overview-ble-features">表 3.4: </span> BLE 链路层特性定义</caption>
 <thead>
 <tr class="header">
 <th align="center">比特位置</th>
@@ -1099,10 +1224,10 @@ Controller 收到这样的命令后不上报 <code>HCI_EVENT_COMMAND_COMPLETE</c
 </p>
 </div>
 </div>
-<div id="蓝牙规范版本编号" class="section level2 hasAnchor" number="3.9">
-<h2><span class="header-section-number">3.9</span> 蓝牙规范版本编号<a href="ch-overview.html#蓝牙规范版本编号" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="蓝牙规范版本编号" class="section level2 hasAnchor" number="3.10">
+<h2><span class="header-section-number">3.10</span> 蓝牙规范版本编号<a href="ch-overview.html#蓝牙规范版本编号" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <table>
-<caption><span id="tab:ch-overview-ble-version">表 3.4: </span> 蓝牙链路层协议版本号</caption>
+<caption><span id="tab:ch-overview-ble-version">表 3.5: </span> 蓝牙链路层协议版本号</caption>
 <thead>
 <tr class="header">
 <th align="center">编号</th>
@@ -1145,8 +1270,8 @@ Controller 收到这样的命令后不上报 <code>HCI_EVENT_COMMAND_COMPLETE</c
 </tbody>
 </table>
 </div>
-<div id="白名单" class="section level2 hasAnchor" number="3.10">
-<h2><span class="header-section-number">3.10</span> 白名单<a href="ch-overview.html#白名单" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="白名单" class="section level2 hasAnchor" number="3.11">
+<h2><span class="header-section-number">3.11</span> 白名单<a href="ch-overview.html#白名单" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>在广播、扫描或者建立连接时，都可能用到白名单。操作白名单的 API 共有 3 个：</p>
 <ol style="list-style-type: decimal">
 <li><p><code>gap_clear_white_lists</code>：清空白名单</p></li>
@@ -1154,15 +1279,15 @@ Controller 收到这样的命令后不上报 <code>HCI_EVENT_COMMAND_COMPLETE</c
 <li><p><code>gap_remove_whitelist</code>：删除一个设备地址</p></li>
 </ol>
 </div>
-<div id="异步特性" class="section level2 hasAnchor" number="3.11">
-<h2><span class="header-section-number">3.11</span> 异步特性<a href="ch-overview.html#异步特性" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="异步特性" class="section level2 hasAnchor" number="3.12">
+<h2><span class="header-section-number">3.12</span> 异步特性<a href="ch-overview.html#异步特性" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Host API 绝大多数都是异步非阻塞操作，比如调用 <code>gap_set_ext_adv_enable()</code> 并不立即使能广播：这个函数只会给 Controller
 发送一条 HCI 消息<a href="ch-cap.html#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a>，Controller 接收消息、完成处理之后才会真正开始广播。</p>
 <p>这种异步特性可能使得实现某些功能的代码冗长、零散，开发者可以考虑使用其它语言<a href="ch-cap.html#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a>，
 或者重新封装 Host API，使其变为同步操作（参考 “<a href="ch-misc.html#ch-misc-synced-api">同步版 API</a>”一节）。</p>
 </div>
-<div id="线程安全性" class="section level2 hasAnchor" number="3.12">
-<h2><span class="header-section-number">3.12</span> 线程安全性<a href="ch-overview.html#线程安全性" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="线程安全性" class="section level2 hasAnchor" number="3.13">
+<h2><span class="header-section-number">3.13</span> 线程安全性<a href="ch-overview.html#线程安全性" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Host 是线程<strong>不安全</strong>的，除下列函数之外的所有 API，如无特殊说明都必须在 Host 任务的上下文内调用。
 当其它任务需要调用 Host API 时，必须触发一段处于 Host 任务上下文内的代码，再在这段代码里调用 Host API。
 下列函数恰是为该功能设置：</p>
@@ -1182,8 +1307,8 @@ API，即便发现功能正常，也仅是偶然现象，无法保证总是正�
 </p>
 </div>
 </div>
-<div id="ch-overview-ble-addr" class="section level2 hasAnchor" number="3.13">
-<h2><span class="header-section-number">3.13</span> BLE 设备地址<a href="ch-overview.html#ch-overview-ble-addr" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="ch-overview-ble-addr" class="section level2 hasAnchor" number="3.14">
+<h2><span class="header-section-number">3.14</span> BLE 设备地址<a href="ch-overview.html#ch-overview-ble-addr" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>BLE 设备地址长度为 6 字节，外加 1 个比特表示地址类型。BLE 规范定义了若干种地址类型：</p>
 <ol style="list-style-type: decimal">
 <li><p>公共地址（Public Address，地址类型为 0）</p>
@@ -1221,8 +1346,8 @@ API，即便发现功能正常，也仅是偶然现象，无法保证总是正�
 <span id="cb7-4"><a href="ch-overview.html#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 输出（不能与 src 相同）</span></span>
 <span id="cb7-5"><a href="ch-overview.html#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> <span class="op">*</span> dest<span class="op">);</span></span></code></pre></div>
 </div>
-<div id="解析列表与隐私" class="section level2 hasAnchor" number="3.14">
-<h2><span class="header-section-number">3.14</span> 解析列表与隐私<a href="ch-overview.html#解析列表与隐私" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="解析列表与隐私" class="section level2 hasAnchor" number="3.15">
+<h2><span class="header-section-number">3.15</span> 解析列表与隐私<a href="ch-overview.html#解析列表与隐私" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>当使用链路层隐私（LL Privacy）特性<a href="ch-cap.html#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a>时，需要用到解析列表。与之相关的 API 如下：</p>
 <ol style="list-style-type: decimal">
 <li><p><code>gap_add_dev_to_resolving_list</code>：向列表中添加一条记录。一条记录包含 4 项数据：对端设备身份地址及地址类型，本端及对端的 IRK；</p></li>

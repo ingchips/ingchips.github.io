@@ -150,13 +150,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.5" data-path="ch-overview.html"><a href="ch-overview.html#事件包的解析"><i class="fa fa-check"></i><b>3.5</b> 事件包的解析</a></li>
 <li class="chapter" data-level="3.6" data-path="ch-overview.html"><a href="ch-overview.html#ch0-ctrl-err-code"><i class="fa fa-check"></i><b>3.6</b> Controller 错误码</a></li>
 <li class="chapter" data-level="3.7" data-path="ch-overview.html"><a href="ch-overview.html#ch0-att-err-codes"><i class="fa fa-check"></i><b>3.7</b> ATT 错误码</a></li>
-<li class="chapter" data-level="3.8" data-path="ch-overview.html"><a href="ch-overview.html#controller-特性定义"><i class="fa fa-check"></i><b>3.8</b> Controller 特性定义</a></li>
-<li class="chapter" data-level="3.9" data-path="ch-overview.html"><a href="ch-overview.html#蓝牙规范版本编号"><i class="fa fa-check"></i><b>3.9</b> 蓝牙规范版本编号</a></li>
-<li class="chapter" data-level="3.10" data-path="ch-overview.html"><a href="ch-overview.html#白名单"><i class="fa fa-check"></i><b>3.10</b> 白名单</a></li>
-<li class="chapter" data-level="3.11" data-path="ch-overview.html"><a href="ch-overview.html#异步特性"><i class="fa fa-check"></i><b>3.11</b> 异步特性</a></li>
-<li class="chapter" data-level="3.12" data-path="ch-overview.html"><a href="ch-overview.html#线程安全性"><i class="fa fa-check"></i><b>3.12</b> 线程安全性</a></li>
-<li class="chapter" data-level="3.13" data-path="ch-overview.html"><a href="ch-overview.html#ch-overview-ble-addr"><i class="fa fa-check"></i><b>3.13</b> BLE 设备地址</a></li>
-<li class="chapter" data-level="3.14" data-path="ch-overview.html"><a href="ch-overview.html#解析列表与隐私"><i class="fa fa-check"></i><b>3.14</b> 解析列表与隐私</a></li>
+<li class="chapter" data-level="3.8" data-path="ch-overview.html"><a href="ch-overview.html#协议栈-api-错误码"><i class="fa fa-check"></i><b>3.8</b> 协议栈 API 错误码</a></li>
+<li class="chapter" data-level="3.9" data-path="ch-overview.html"><a href="ch-overview.html#controller-特性定义"><i class="fa fa-check"></i><b>3.9</b> Controller 特性定义</a></li>
+<li class="chapter" data-level="3.10" data-path="ch-overview.html"><a href="ch-overview.html#蓝牙规范版本编号"><i class="fa fa-check"></i><b>3.10</b> 蓝牙规范版本编号</a></li>
+<li class="chapter" data-level="3.11" data-path="ch-overview.html"><a href="ch-overview.html#白名单"><i class="fa fa-check"></i><b>3.11</b> 白名单</a></li>
+<li class="chapter" data-level="3.12" data-path="ch-overview.html"><a href="ch-overview.html#异步特性"><i class="fa fa-check"></i><b>3.12</b> 异步特性</a></li>
+<li class="chapter" data-level="3.13" data-path="ch-overview.html"><a href="ch-overview.html#线程安全性"><i class="fa fa-check"></i><b>3.13</b> 线程安全性</a></li>
+<li class="chapter" data-level="3.14" data-path="ch-overview.html"><a href="ch-overview.html#ch-overview-ble-addr"><i class="fa fa-check"></i><b>3.14</b> BLE 设备地址</a></li>
+<li class="chapter" data-level="3.15" data-path="ch-overview.html"><a href="ch-overview.html#解析列表与隐私"><i class="fa fa-check"></i><b>3.15</b> 解析列表与隐私</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="ch-features.html"><a href="ch-features.html"><i class="fa fa-check"></i><b>4</b> 特性简析</a>
 <ul>
@@ -423,12 +424,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>使用 GATT 客户端 API 时需要注意检查返回值，常见的返回值有：</p>
 <ul>
 <li><p><span class="math inline">\(0\)</span>：正常、成功；</p></li>
-<li><p><code>BTSTACK_MEMORY_ALLOC_FAILED</code>：内存不足，无法创建 GATT 客户端实例</p></li>
-<li><p><code>GATT_CLIENT_IN_WRONG_STATE</code>：会话冲突</p>
+<li><p><code>BTSTACK_MEMORY_ALLOC_FAILED</code> (<code>0x56</code>)：内存不足，无法创建 GATT 客户端实例</p></li>
+<li><p><code>GATT_CLIENT_IN_WRONG_STATE</code> (<code>0x95</code>)：会话冲突</p>
 <p>解决方法：等待上一个会话完成后再发起新的会话。通过 <code>gatt_client_is_ready</code> 可以查询当前是否可以发起新的会话。</p></li>
-<li><p><code>GATT_CLIENT_VALUE_TOO_LONG</code>：要写入的值超出 MTU 的限制</p>
+<li><p><code>GATT_CLIENT_VALUE_TOO_LONG</code> (<code>0x97</code>)：要写入的值超出 MTU 的限制</p>
 <p>解决方法：缩短值的长度；或者检查对比设备的 MTU 能力。</p></li>
-<li><p><code>BTSTACK_ACL_BUFFERS_FULL</code>：内部缓存已满，数据未进入发送队列</p>
+<li><p><code>BTSTACK_ACL_BUFFERS_FULL</code> (<code>0x57</code>)：内部缓存已满，数据未进入发送队列</p>
 <p>解决方法：参考 <a href="ch-l2cap.html#ch-i2cap-tx-queue">L2CAP 传输队列</a>。</p></li>
 </ul>
 <p>可选地，开发者可以设置 GATT 客户端事件回调：</p>
@@ -712,7 +713,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb74-8"><a href="ch-gatt-client.html#cb74-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 值为 GATT_CLIENT_CHARACTERISTICS_CONFIGURATION_NOTIFICATION</span></span>
 <span id="cb74-9"><a href="ch-gatt-client.html#cb74-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 或   GATT_CLIENT_CHARACTERISTICS_CONFIGURATION_INDICATION</span></span>
 <span id="cb74-10"><a href="ch-gatt-client.html#cb74-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 或   GATT_CLIENT_CHARACTERISTICS_CONFIGURATION_NONE</span></span>
-<span id="cb74-11"><a href="ch-gatt-client.html#cb74-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> configuration<span class="op">);</span></span></code></pre></div></li>
+<span id="cb74-11"><a href="ch-gatt-client.html#cb74-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> configuration<span class="op">);</span></span></code></pre></div>
+<p>如果待订阅的特征不支持指定的配置，则相应地返回 <code>GATT_CLIENT_CHARACTERISTIC_NOTIFICATION_NOT_SUPPORTED</code> (<code>0x98</code>)
+或 <code>GATT_CLIENT_CHARACTERISTIC_INDICATION_NOT_SUPPORTED</code> (<code>0x99</code>)。</p></li>
 </ol>
 </div>
 <div id="att_mtu-1" class="section level3 hasAnchor" number="9.2.6">
@@ -725,7 +728,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb75-5"><a href="ch-gatt-client.html#cb75-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 输出 MTU</span></span>
 <span id="cb75-6"><a href="ch-gatt-client.html#cb75-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> <span class="op">*</span> mtu<span class="op">);</span></span></code></pre></div>
 <p>特征的值的最大长度为 <span class="math inline">\((ATT\_MTU - 3)\)</span>。调用 <code>gatt_client_write_value_of_characteristic_without_response</code> 写入值时，
-如果超过最大长度，会返回错误码：<code>GATT_CLIENT_VALUE_TOO_LONG</code>。</p>
+如果超过最大长度，会返回错误码：<code>GATT_CLIENT_VALUE_TOO_LONG</code> (<code>0x97</code>)。</p>
 </div>
 <div id="自定义-mtu" class="section level3 hasAnchor" number="9.2.7">
 <h3><span class="header-section-number">9.2.7</span> 自定义 MTU <a href="ch-cap.html#fn38" class="footnote-ref" id="fnref38"><sup>38</sup></a><a href="ch-gatt-client.html#自定义-mtu" class="anchor-section" aria-label="Anchor link to header"></a></h3>

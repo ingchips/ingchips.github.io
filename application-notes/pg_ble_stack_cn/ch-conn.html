@@ -426,7 +426,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>建立连接的过程与主动扫描有相似之处：持续尝试接收某种类型的广播，主动发出一个请求。所以，蓝牙协议规定不要并发地执行这两项任务：
 建立连接前要先停止扫描，反之亦然。</p>
 <p>在建立连接之前，需要先通过 <code>gap_set_random_device_address</code> 为设备配置地址，这个地址用于扫描、发起连接等场景。
-通过 <code>gap_ext_create_connection</code> 建立连接。所连接的目标可以是一个特定的地址，也可以是白名单中的任意一个地址<a href="ch-cap.html#fn25" class="footnote-ref" id="fnref25"><sup>25</sup></a>。</p>
+通过 <code>gap_ext_create_connection</code> 建立连接。所连接的目标可以是一个特定的地址，也可以是白名单中的任意一个地址<a href="ch-cap.html#fn27" class="footnote-ref" id="fnref27"><sup>27</sup></a>。</p>
 <div class="sourceCode" id="cb34"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb34-1"><a href="ch-conn.html#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_ext_create_connection<span class="op">(</span></span>
 <span id="cb34-2"><a href="ch-conn.html#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 过滤策略：目标地址来自参数还是白名单？</span></span>
 <span id="cb34-3"><a href="ch-conn.html#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> initiating_filter_policy_t filter_policy<span class="op">,</span></span>
@@ -465,7 +465,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb35-21"><a href="ch-conn.html#cb35-21" aria-hidden="true" tabindex="-1"></a>    conn_para_t conn_param<span class="op">;</span></span>
 <span id="cb35-22"><a href="ch-conn.html#cb35-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> initiating_phy_config_t<span class="op">;</span></span></code></pre></div>
 <p>关于每个连接间隔内连接事件长度的提示信息（<code>min_ce_len</code> 和 <code>max_ce_len</code>）不会被传递给从端。Controller 可以借助这个信息更好地调度多种任务。
-从端 App 可调用 LL API <code>ll_hint_on_ce_len</code><a href="ch-cap.html#fn26" class="footnote-ref" id="fnref26"><sup>26</sup></a> 将提示信息告知 Controller。</p>
+从端 App 可调用 LL API <code>ll_hint_on_ce_len</code><a href="ch-cap.html#fn28" class="footnote-ref" id="fnref28"><sup>28</sup></a> 将提示信息告知 Controller。</p>
 <p>收到对应的 <code>HCI_EVENT_COMMAND_STATUS</code> 事件，并且 <code>status</code> 为 <span class="math inline">\(0\)</span>，标志着开始执行连接建立任务。
 <code>HCI_SUBEVENT_LE_ENHANCED_CONNECTION_COMPLETE</code> 事件标志着连接建立任务的结束。也就是说每次调用这个函数将到达 3 个互斥的终点：</p>
 <ol style="list-style-type: decimal">
@@ -547,7 +547,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="更新连接参数" class="section level3 hasAnchor" number="7.2.6">
 <h3><span class="header-section-number">7.2.6</span> 更新连接参数<a href="ch-conn.html#更新连接参数" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>连接中的主从角色都可以使用 <code>gap_update_connection_parameters</code><a href="ch-cap.html#fn27" class="footnote-ref" id="fnref27"><sup>27</sup></a>：主角色使用这个函数可以更新连接参数；
+<p>连接中的主从角色都可以使用 <code>gap_update_connection_parameters</code><a href="ch-cap.html#fn29" class="footnote-ref" id="fnref29"><sup>29</sup></a>：主角色使用这个函数可以更新连接参数；
 从角色使用这个函数则是请求主端更新连接参数：</p>
 <div class="sourceCode" id="cb37"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb37-1"><a href="ch-conn.html#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> gap_update_connection_parameters<span class="op">(</span></span>
 <span id="cb37-2"><a href="ch-conn.html#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 连接句柄</span></span>
@@ -570,7 +570,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3><span class="header-section-number">7.2.7</span> 减速模式<a href="ch-conn.html#ch-conn-subrating" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>减速模式的使用方法可参考 SDK <em>UART GATT Console</em>。</p>
 <p>减速（Subrating）模式为中心设备和外围设备定义了一种统一的节奏，在保证通信的持续性前提下跳过若干连接间隔，减少射频占用、降低功耗。
-调用 <code>gap_subrate_request</code><a href="ch-cap.html#fn28" class="footnote-ref" id="fnref28"><sup>28</sup></a> 即可在主从两端协商启动减速模式。</p>
+调用 <code>gap_subrate_request</code><a href="ch-cap.html#fn30" class="footnote-ref" id="fnref30"><sup>30</sup></a> 即可在主从两端协商启动减速模式。</p>
 <div class="sourceCode" id="cb38"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb38-1"><a href="ch-conn.html#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_subrate_request<span class="op">(</span></span>
 <span id="cb38-2"><a href="ch-conn.html#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 连接句柄</span></span>
 <span id="cb38-3"><a href="ch-conn.html#cb38-3" aria-hidden="true" tabindex="-1"></a>  hci_con_handle_t con_handle<span class="op">,</span></span>
@@ -688,12 +688,12 @@ Controller 监控损耗情况，当损耗分类发生改变时（图 <a href="ch
 </div>
 <div class="footnotes">
 <hr />
-<ol start="25">
-<li id="fn25"><p>需要连接多个设备，使用白名单方式效率更高。<a href="ch-conn.html#fnref25" class="footnote-back">↩︎</a></p></li>
-<li id="fn26"><p>参考 《Controller API Reference》。<a href="ch-conn.html#fnref26" class="footnote-back">↩︎</a></p></li>
-<li id="fn27"><p>对于 v8.2 以下版本，这个函数仅用于主角色，
-从角色需要使用 <code>l2cap_request_connection_parameter_update</code> 请求更新。<a href="ch-conn.html#fnref27" class="footnote-back">↩︎</a></p></li>
-<li id="fn28"><p>调用之前建议先检查对方是否支持此特性。此 API 无论主从角色都可以调用。<a href="ch-conn.html#fnref28" class="footnote-back">↩︎</a></p></li>
+<ol start="27">
+<li id="fn27"><p>需要连接多个设备，使用白名单方式效率更高。<a href="ch-conn.html#fnref27" class="footnote-back">↩︎</a></p></li>
+<li id="fn28"><p>参考 《Controller API Reference》。<a href="ch-conn.html#fnref28" class="footnote-back">↩︎</a></p></li>
+<li id="fn29"><p>对于 v8.2 以下版本，这个函数仅用于主角色，
+从角色需要使用 <code>l2cap_request_connection_parameter_update</code> 请求更新。<a href="ch-conn.html#fnref29" class="footnote-back">↩︎</a></p></li>
+<li id="fn30"><p>调用之前建议先检查对方是否支持此特性。此 API 无论主从角色都可以调用。<a href="ch-conn.html#fnref30" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

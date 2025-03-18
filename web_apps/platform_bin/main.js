@@ -118,7 +118,7 @@ async function appStart() {
         return;
     }
 
-    $.getJSON('sdk_bins.json', function(data) {
+    $.getJSON('sdk_bins.json?random=' + Math.random(), function(data) {
         sdkBins = data;
         console.log('SDK Bins loaded:', Object.keys(sdkBins).length + ' entries');
         show_summary();

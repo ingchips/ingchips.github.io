@@ -313,9 +313,85 @@
 </ul>
 </div>
 
-<h2 id="v8422">v8.4.22</h2>
+<h2 id="v8423">v8.4.23</h2>
 
 <h3 id="1-软件包">1. 软件包</h3>
+
+<ul>
+  <li>
+    <p>[<strong>更新</strong>] GATT Client: 增加事件 <code class="language-plaintext highlighter-rouge">GATT_EVENT_UNHANDLED_SERVER_VALUE</code></p>
+
+    <p>当收到某特征的上报（Notification 或 Indication），但是未注册回调函数时，GATT Client 现在将发送该事件。</p>
+
+    <p>旧版本：无事件上报。</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] GATT Client: 增加 <code class="language-plaintext highlighter-rouge">gatt_client_exchange_mtu_request</code></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] GATT Client: 正确地返回 <code class="language-plaintext highlighter-rouge">GATT_CLIENT_NOT_CONNECTED</code></p>
+
+    <p>旧版本只要指定的连接句柄上不存在 GATT Client，就一定会为这个连接句柄创建 GATT Client 实例。
+  如果该连接实际上并不存在，会导致：</p>
+
+    <ul>
+      <li>这个 GATT Client 实例一直占用内存，直到该连接真正建立并断开后才会释放；</li>
+      <li>该连接建立后，GATT Client 状态、功能异常。</li>
+    </ul>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code></code></pre></div>    </div>
+
+    <p>新版本：如果连接句柄指向的连接不存在，直接返回 <code class="language-plaintext highlighter-rouge">GATT_CLIENT_NOT_CONNECTED</code>，不再创建实例。</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] ING918: <code class="language-plaintext highlighter-rouge">platform_reset()</code> 复位外设</p>
+
+    <p>现在 ING918 上的 <code class="language-plaintext highlighter-rouge">platform_reset()</code> 也会复位外设，同 ING916 一致。</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] Controller: 过多地调度扫描任务</p>
+
+    <p>某些情况下（多任务并发时），Controller 可能过多地调度扫描任务，导致功耗增加。已修正。</p>
+  </li>
+</ul>
+
+<h3 id="2-库函数">2. 库函数</h3>
+
+<ul>
+  <li>
+    <p>[<strong>更新</strong>] SYSCTRL: 增加 <code class="language-plaintext highlighter-rouge">SYSCTRL_Reset</code></p>
+
+    <p><code class="language-plaintext highlighter-rouge">SYSCTRL_Reset</code> 借助看门狗复位整个 SoC，比 <code class="language-plaintext highlighter-rouge">platform_reset()</code> 复位得更全面。</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] ING916: <code class="language-plaintext highlighter-rouge">ADC_VrefCalibration</code> 可能存在缓存溢出、除 0 错误</p>
+  </li>
+</ul>
+
+<h3 id="3-示例">3. 示例</h3>
+
+<ul>
+  <li>[<strong>更新</strong>] <code class="language-plaintext highlighter-rouge">Peripheral Console (LiteOS)</code>: 一些更新</li>
+</ul>
+
+<h3 id="4-工具">4. 工具</h3>
+
+<ul>
+  <li>
+    <p>[<strong>更新</strong>] Wizard: 拷贝示例</p>
+
+    <p>将 SDK 里的示例拷贝出来，作为新项目。</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] Axf_tool: <code class="language-plaintext highlighter-rouge">call-stack</code> 显示源代码位置</p>
+
+    <p>当可执行文件里带有调试信息时，Axf_tool 现在可以显示源代码位置。</p>
+  </li>
+</ul>
+
+<h2 id="v8422">v8.4.22</h2>
+
+<h3 id="1-软件包-1">1. 软件包</h3>
 
 <ul>
   <li>
@@ -349,7 +425,7 @@
   </li>
 </ul>
 
-<h3 id="2-库函数">2. 库函数</h3>
+<h3 id="2-库函数-1">2. 库函数</h3>
 
 <ul>
   <li>[<strong>更新</strong>] UART: 增加检查 Rx/Tx 使能状态的接口</li>
@@ -357,7 +433,7 @@
 
 <h2 id="v8421">v8.4.21</h2>
 
-<h3 id="1-软件包-1">1. 软件包</h3>
+<h3 id="1-软件包-2">1. 软件包</h3>
 
 <ul>
   <li>
@@ -377,20 +453,20 @@
   </li>
 </ul>
 
-<h3 id="2-库函数-1">2. 库函数</h3>
+<h3 id="2-库函数-2">2. 库函数</h3>
 
 <ul>
   <li>[<strong>更新</strong>] ING916 QDEC: 补充脉冲捕获、定时器 API</li>
   <li>[<strong>更新</strong>] ING916 I2C: <code class="language-plaintext highlighter-rouge">I2C_ConfigClkFrequencyCalc</code> 根据实际时钟频率设置参数</li>
 </ul>
 
-<h3 id="3-示例">3. 示例</h3>
+<h3 id="3-示例-1">3. 示例</h3>
 
 <ul>
   <li>[<strong>更新</strong>] <code class="language-plaintext highlighter-rouge">Peripheral Console (LiteOS)</code>: 升级到 LiteOS-M 5.0.0</li>
 </ul>
 
-<h3 id="4-工具">4. 工具</h3>
+<h3 id="4-工具-1">4. 工具</h3>
 
 <ul>
   <li>[<strong>更新</strong>] Wizard: Release notes Markdown 渲染</li>
@@ -399,7 +475,7 @@
 
 <h2 id="v8420">v8.4.20</h2>
 
-<h3 id="1-软件包-2">1. 软件包</h3>
+<h3 id="1-软件包-3">1. 软件包</h3>
 
 <ul>
   <li>
@@ -444,7 +520,7 @@
   </li>
 </ul>
 
-<h3 id="2-库函数-2">2. 库函数</h3>
+<h3 id="2-库函数-3">2. 库函数</h3>
 
 <ul>
   <li>[<strong>更新</strong>] ING916 USB: <code class="language-plaintext highlighter-rouge">USB_SendData</code> 支持长度为 0 的数据包</li>
@@ -453,13 +529,13 @@
   <li>[<strong>更新</strong>] <code class="language-plaintext highlighter-rouge">att_db_util</code>: 增加 <code class="language-plaintext highlighter-rouge">ATT_PROPERTY_MIN_ENCRYPTION_KEY_SIZE</code></li>
 </ul>
 
-<h3 id="3-示例-1">3. 示例</h3>
+<h3 id="3-示例-2">3. 示例</h3>
 
 <ul>
   <li>[<strong>更新</strong>] 几个示例的文档</li>
 </ul>
 
-<h3 id="4-工具-1">4. 工具</h3>
+<h3 id="4-工具-2">4. 工具</h3>
 
 <ul>
   <li>
@@ -491,7 +567,7 @@
 
 <h2 id="v8419">v8.4.19</h2>
 
-<h3 id="1-软件包-3">1. 软件包</h3>
+<h3 id="1-软件包-4">1. 软件包</h3>
 
 <ul>
   <li>
@@ -508,7 +584,7 @@
   </li>
 </ul>
 
-<h3 id="2-库函数-3">2. 库函数</h3>
+<h3 id="2-库函数-4">2. 库函数</h3>
 
 <ul>
   <li>
@@ -544,7 +620,7 @@
   </li>
 </ul>
 
-<h3 id="3-示例-2">3. 示例</h3>
+<h3 id="3-示例-3">3. 示例</h3>
 
 <ul>
   <li>
@@ -557,7 +633,7 @@
   </li>
 </ul>
 
-<h3 id="4-工具-2">4. 工具</h3>
+<h3 id="4-工具-3">4. 工具</h3>
 
 <ul>
   <li>
@@ -571,7 +647,7 @@
 
 <h2 id="v8418">v8.4.18</h2>
 
-<h3 id="1-软件包-4">1. 软件包</h3>
+<h3 id="1-软件包-5">1. 软件包</h3>
 
 <ul>
   <li>
@@ -658,7 +734,7 @@
   </li>
 </ul>
 
-<h3 id="2-库函数-4">2. 库函数</h3>
+<h3 id="2-库函数-5">2. 库函数</h3>
 
 <ul>
   <li>
@@ -686,7 +762,7 @@
 
 <h2 id="v8417">v8.4.17</h2>
 
-<h3 id="1-软件包-5">1. 软件包</h3>
+<h3 id="1-软件包-6">1. 软件包</h3>
 
 <ul>
   <li>
@@ -726,7 +802,7 @@
 
 <h2 id="v8416">v8.4.16</h2>
 
-<h3 id="1-软件包-6">1. 软件包</h3>
+<h3 id="1-软件包-7">1. 软件包</h3>
 
 <ul>
   <li>
@@ -750,7 +826,7 @@
   </li>
 </ul>
 
-<h3 id="2-库函数-5">2. 库函数</h3>
+<h3 id="2-库函数-6">2. 库函数</h3>
 
 <ul>
   <li>
@@ -771,7 +847,7 @@
 
 <h2 id="v8415">v8.4.15</h2>
 
-<h3 id="1-软件包-7">1. 软件包</h3>
+<h3 id="1-软件包-8">1. 软件包</h3>
 
 <ul>
   <li>
@@ -804,7 +880,7 @@
   </li>
 </ul>
 
-<h3 id="2-库函数-6">2. 库函数</h3>
+<h3 id="2-库函数-7">2. 库函数</h3>
 
 <ul>
   <li>[<strong>新增</strong>] 为支持 Zephyr 而增加了一些必要的文件</li>
@@ -829,7 +905,7 @@
 
 <h2 id="v8414">v8.4.14</h2>
 
-<h3 id="1-软件包-8">1. 软件包</h3>
+<h3 id="1-软件包-9">1. 软件包</h3>
 
 <ul>
   <li>
@@ -850,7 +926,7 @@
   </li>
 </ul>
 
-<h3 id="2-库函数-7">2. 库函数</h3>
+<h3 id="2-库函数-8">2. 库函数</h3>
 
 <ul>
   <li>
@@ -880,7 +956,7 @@
 
 <h2 id="v8413">v8.4.13</h2>
 
-<h3 id="1-软件包-9">1. 软件包</h3>
+<h3 id="1-软件包-10">1. 软件包</h3>
 
 <ul>
   <li>
@@ -923,7 +999,7 @@
 
 <h2 id="v8412">v8.4.12</h2>
 
-<h3 id="1-软件包-10">1. 软件包</h3>
+<h3 id="1-软件包-11">1. 软件包</h3>
 
 <ul>
   <li>
@@ -960,7 +1036,7 @@
 
 <h2 id="v8411">v8.4.11</h2>
 
-<h3 id="1-软件包-11">1. 软件包</h3>
+<h3 id="1-软件包-12">1. 软件包</h3>
 
 <ul>
   <li>
@@ -1004,7 +1080,7 @@
   </li>
 </ul>
 
-<h3 id="2-库函数-8">2. 库函数</h3>
+<h3 id="2-库函数-9">2. 库函数</h3>
 
 <ul>
   <li>
@@ -1014,13 +1090,13 @@
   </li>
 </ul>
 
-<h3 id="3-示例-3">3. 示例</h3>
+<h3 id="3-示例-4">3. 示例</h3>
 
 <ul>
   <li>[<strong>更新</strong>] <em>UART GATT Console</em>: 演示 <code class="language-plaintext highlighter-rouge">gap_read_white_lists_size</code> 的用法</li>
 </ul>
 
-<h3 id="4-工具-3">4. 工具</h3>
+<h3 id="4-工具-4">4. 工具</h3>
 
 <ul>
   <li>[<strong>更新</strong>] <code class="language-plaintext highlighter-rouge">gen_files</code>: 提高运行速度</li>
@@ -1028,7 +1104,7 @@
 
 <h2 id="v8410">v8.4.10</h2>
 
-<h3 id="1-软件包-12">1. 软件包</h3>
+<h3 id="1-软件包-13">1. 软件包</h3>
 
 <ul>
   <li>
@@ -1059,13 +1135,13 @@
   </li>
 </ul>
 
-<h3 id="3-示例-4">3. 示例</h3>
+<h3 id="3-示例-5">3. 示例</h3>
 
 <ul>
   <li>[<strong>更新</strong>] <em>UART GATT Console</em>: 演示了 <code class="language-plaintext highlighter-rouge">ll_get_states</code> 的用法</li>
 </ul>
 
-<h3 id="4-工具-4">4. 工具</h3>
+<h3 id="4-工具-5">4. 工具</h3>
 
 <ul>
   <li>[<strong>更新</strong>] Cube: 修正了关于 PCAP, SPI 的几个问题</li>
@@ -1073,7 +1149,7 @@
 
 <h2 id="v849">v8.4.9</h2>
 
-<h3 id="1-软件包-13">1. 软件包</h3>
+<h3 id="1-软件包-14">1. 软件包</h3>
 
 <ul>
   <li>
@@ -1104,14 +1180,14 @@
   </li>
 </ul>
 
-<h3 id="3-示例-5">3. 示例</h3>
+<h3 id="3-示例-6">3. 示例</h3>
 
 <ul>
   <li>[<strong>更新</strong>] HID Mouse: 演示 LL Privacy</li>
   <li>[<strong>修正</strong>] I/O Over BLE: ING916 的兼容性</li>
 </ul>
 
-<h3 id="4-工具-5">4. 工具</h3>
+<h3 id="4-工具-6">4. 工具</h3>
 
 <ul>
   <li>[<strong>修正</strong>] Afx Tool: 不支持 ING916 <em>mini</em> 软件包</li>
@@ -1120,7 +1196,7 @@
 
 <h2 id="v848">v8.4.8</h2>
 
-<h3 id="1-软件包-14">1. 软件包</h3>
+<h3 id="1-软件包-15">1. 软件包</h3>
 
 <ul>
   <li>
@@ -1162,7 +1238,7 @@
 
 <h2 id="v847">v8.4.7</h2>
 
-<h3 id="1-软件包-15">1. 软件包</h3>
+<h3 id="1-软件包-16">1. 软件包</h3>
 
 <ul>
   <li>
@@ -1212,7 +1288,7 @@
 
 <h2 id="v846">v8.4.6</h2>
 
-<h3 id="1-软件包-16">1. 软件包</h3>
+<h3 id="1-软件包-17">1. 软件包</h3>
 
 <ul>
   <li>
@@ -1390,7 +1466,7 @@
 
 <h2 id="v845">v8.4.5</h2>
 
-<h3 id="1-软件包-17">1. 软件包</h3>
+<h3 id="1-软件包-18">1. 软件包</h3>
 
 <ul>
   <li>
@@ -1433,7 +1509,7 @@
   <li>[<strong>修正</strong>] ING916: <code class="language-plaintext highlighter-rouge">GIO_EnableDeepSleepWakeupSource</code> 允许禁用上下拉</li>
 </ul>
 
-<h3 id="3-示例-6">3. 示例</h3>
+<h3 id="3-示例-7">3. 示例</h3>
 
 <ul>
   <li>
@@ -1450,7 +1526,7 @@
   </li>
 </ul>
 
-<h3 id="4-工具-6">4. 工具</h3>
+<h3 id="4-工具-7">4. 工具</h3>
 
 <ul>
   <li>
@@ -1472,7 +1548,7 @@
 
 <h2 id="v844">v8.4.4</h2>
 
-<h3 id="1-软件包-18">1. 软件包</h3>
+<h3 id="1-软件包-19">1. 软件包</h3>
 
 <ul>
   <li>
@@ -1491,13 +1567,13 @@
   <li>[<strong>修正</strong>] ING916: <code class="language-plaintext highlighter-rouge">PINCTRL_DisableAllInputs</code> 里的溢出问题</li>
 </ul>
 
-<h3 id="3-示例-7">3. 示例</h3>
+<h3 id="3-示例-8">3. 示例</h3>
 
 <ul>
   <li>[<strong>更新</strong>] Peripheral Console (…): 在 ING916 上允许 <code class="language-plaintext highlighter-rouge">BLE_ONLY_SLEEP</code></li>
 </ul>
 
-<h3 id="4-工具-7">4. 工具</h3>
+<h3 id="4-工具-8">4. 工具</h3>
 
 <ul>
   <li>
@@ -1510,7 +1586,7 @@
 
 <h2 id="v843">v8.4.3</h2>
 
-<h3 id="1-软件包-19">1. 软件包</h3>
+<h3 id="1-软件包-20">1. 软件包</h3>
 
 <ul>
   <li>[<strong>修正</strong>] v8.4.1~v8.4.2 ING916 睡眠状态下底电流时大时小的问题 (涉及 <em>mini</em> 和 <em>noos_mini</em> 软件包)</li>
@@ -1518,7 +1594,7 @@
 
 <h2 id="v842">v8.4.2</h2>
 
-<h3 id="1-软件包-20">1. 软件包</h3>
+<h3 id="1-软件包-21">1. 软件包</h3>
 
 <ul>
   <li>
@@ -1577,7 +1653,7 @@
 
 <h2 id="v841">v8.4.1</h2>
 
-<h3 id="1-软件包-21">1. 软件包</h3>
+<h3 id="1-软件包-22">1. 软件包</h3>
 
 <ul>
   <li>
@@ -1643,7 +1719,7 @@
 
 <h2 id="v840">v8.4.0</h2>
 
-<h3 id="1-软件包-22">1. 软件包</h3>
+<h3 id="1-软件包-23">1. 软件包</h3>
 
 <ul>
   <li>
@@ -1753,13 +1829,13 @@
   </li>
 </ul>
 
-<h3 id="3-示例-8">3. 示例</h3>
+<h3 id="3-示例-9">3. 示例</h3>
 
 <ul>
   <li>[<strong>更新</strong>] <code class="language-plaintext highlighter-rouge">HID Keyboard</code>：演示里 <code class="language-plaintext highlighter-rouge">kv_init_backend</code> 的用法</li>
 </ul>
 
-<h3 id="4-工具-8">4. 工具</h3>
+<h3 id="4-工具-9">4. 工具</h3>
 
 <ul>
   <li>[<strong>更新</strong>] Cube: 修正了一些问题，增加 PLL 分频输出相关功能</li>

@@ -153,8 +153,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.1" data-path="ch-api.html"><a href="ch-api.html#callback-events"><i class="fa fa-check"></i><b>4.1</b> Callback events</a>
 <ul>
 <li class="chapter" data-level="4.1.1" data-path="ch-api.html"><a href="ch-api.html#platform_cb_evt_query_deep_sleep_allowed"><i class="fa fa-check"></i><b>4.1.1</b> <strong>PLATFORM_CB_EVT_QUERY_DEEP_SLEEP_ALLOWED</strong></a></li>
-<li class="chapter" data-level="4.1.2" data-path="ch-api.html"><a href="ch-api.html#platform_cb_evt_on_deep_sleep_wakeup"><i class="fa fa-check"></i><b>4.1.2</b> <strong>PLATFORM_CB_EVT_ON_DEEP_SLEEP_WAKEUP</strong></a></li>
-<li class="chapter" data-level="4.1.3" data-path="ch-api.html"><a href="ch-api.html#platform_cb_evt_on_idle_task_resumed"><i class="fa fa-check"></i><b>4.1.3</b> <strong>PLATFORM_CB_EVT_ON_IDLE_TASK_RESUMED</strong></a></li>
+<li class="chapter" data-level="4.1.2" data-path="ch-api.html"><a href="ch-api.html#platform_cb_evt_before_deep_sleep"><i class="fa fa-check"></i><b>4.1.2</b> <strong>PLATFORM_CB_EVT_BEFORE_DEEP_SLEEP</strong></a></li>
+<li class="chapter" data-level="4.1.3" data-path="ch-api.html"><a href="ch-api.html#platform_cb_evt_on_deep_sleep_wakeup"><i class="fa fa-check"></i><b>4.1.3</b> <strong>PLATFORM_CB_EVT_ON_DEEP_SLEEP_WAKEUP</strong></a></li>
+<li class="chapter" data-level="4.1.4" data-path="ch-api.html"><a href="ch-api.html#platform_cb_evt_on_idle_task_resumed"><i class="fa fa-check"></i><b>4.1.4</b> <strong>PLATFORM_CB_EVT_ON_IDLE_TASK_RESUMED</strong></a></li>
 </ul></li>
 <li class="chapter" data-level="4.2" data-path="ch-api.html"><a href="ch-api.html#interrupts"><i class="fa fa-check"></i><b>4.2</b> Interrupts</a>
 <ul>
@@ -217,7 +218,7 @@ a process<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>
 having the lowest priority. It’s a common practice for OS(es) to have an idle process,
 for example, the idle process with PID 0 in Windows and Linux.</p>
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch-framework-idle-task"></span>
-<img src="img/idle_task.png" alt="Idle Process" width="80%" />
+<img src="img/idle_task.png" alt="Idle Process" width="85%" />
 <p class="caption">
 Figure 3.1: Idle Process
 </p>
@@ -431,13 +432,14 @@ SLEEP, DEEPER SLEEP, and BLE ONLY SLEEP modes.
 involvements of Apps (IDLE, SNOOZE, and SLEEP), and Category B that do need the
 involvements of Apps (DEEP SLEEP, DEEPER SLEEP, and BLE ONLY SLEEP).</p>
 <p>This framework tried its best to minimize the involvements of Apps, and
-there are just two things to be handled by Apps:</p>
+there are just three things to be handled by Apps:</p>
 <ol style="list-style-type: decimal">
 <li><p>Tell the idle process which modes in Category B are allowed to be used;</p>
 <p>For ING916, Apps can take this opportunity to configure external wake up sources as well.</p></li>
+<li><p>Optionally configure peripherals on-demand before entering Category B sleep modes<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>;</p></li>
 <li><p>(Re-)Configure peripherals after waken up from Category B sleep modes.</p></li>
 </ol>
-<p>These two things are done in two platform event handlers.</p>
+<p>These three things are done in three platform event handlers respectively.</p>
 <p>How to determine if a mode in Category B is allowed? Here are some suggestions.</p>
 <ul>
 <li><p>DEEP SLEEP</p>
@@ -498,6 +500,7 @@ SLEEP.
 <li id="fn4"><p>Refer to
 <em>Programmer’s Guide - ING916XX Peripheral</em> for the configuration of wake up
 sources<a href="ch-framework.html#fnref4" class="footnote-back">↩︎</a></p></li>
+<li id="fn5"><p>Available from SDK v8.4.24.<a href="ch-framework.html#fnref5" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

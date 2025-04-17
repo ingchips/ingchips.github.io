@@ -321,14 +321,27 @@
   <li>
     <p>[<strong>修正</strong>] 内置 FreeRTOS 的软件包关闭省电功能时，FreeRTOS 任务有时无法及时切换 (<a href="https://github.com/ingchips/ING918XX_SDK_SOURCE/issues/298">Issue #298</a>)</p>
 
-    <p>对于不方便升级 SDK 的项目，请使用 <a href="/files/patch_plaform.py">这个脚本</a> 为 platform.bin 打补丁：</p>
+    <p>对于不方便升级 SDK 的项目，有两种解决方法：</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  python patch_platform.py 298 /path/to/sdk
-</code></pre></div>    </div>
+    <ol>
+      <li>
+        <p>使用 <a href="/files/patch_plaform.py">这个脚本</a> 为 platform.bin 打补丁：</p>
+
+        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> python patch_platform.py 298 /path/to/sdk
+</code></pre></div>        </div>
+      </li>
+      <li>
+        <p>开启省电，<code class="language-plaintext highlighter-rouge">PLATFORM_CB_EVT_QUERY_DEEP_SLEEP_ALLOWED</code> 事件回调总是返回 0。</p>
+
+        <p>对于 ING916，关闭自动降频功能：</p>
+
+        <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="n">platform_config</span><span class="p">(</span><span class="n">PLATFORM_CFG_AUTO_REDUCE_CLOCK_FREQ</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</code></pre></div>        </div>
+        <h2 id="v8424">v8.4.24</h2>
+      </li>
+    </ol>
   </li>
 </ul>
-
-<h2 id="v8424">v8.4.24</h2>
 
 <h3 id="1-软件包-1">1. 软件包</h3>
 

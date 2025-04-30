@@ -304,9 +304,27 @@
 <li>ING916XX 降低主频（HCLK）存在风险：低功耗电流异常，连接容易断开。</li>
 </ul></div>
 
-<h2 id="v850">v8.5.0</h2>
+<h2 id="v851">v8.5.1</h2>
 
 <h3 id="1-软件包">1. 软件包</h3>
+
+<ul>
+  <li>
+    <p>[<strong>修正</strong>] Controller: 意外发送 LL_PING_REQ</p>
+
+    <p>当已加密的连接断开后，PING 定时器保持运行。当重新连接后，如果连接未加密，定时器超时后会意外触发
+  LL_PING_REQ，不符合规范。现已修正。</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] Controller: 加密流程的处理</p>
+
+    <p>当加密流程被对方通过 LL_REJECT_EXT_IND 拒绝（如对方删除了配对信息）时，Controller 未恢复正常的通信状态，导致无法通信、<code class="language-plaintext highlighter-rouge">gap_disconnect</code> 不生效等现象。现已修正。如果对方通过 LL_REJECT_IND 拒绝，Controller 工作正常。</p>
+  </li>
+</ul>
+
+<h2 id="v850">v8.5.0</h2>
+
+<h3 id="1-软件包-1">1. 软件包</h3>
 
 <ul>
   <li>

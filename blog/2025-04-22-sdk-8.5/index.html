@@ -302,6 +302,13 @@
 <ul>
 <li>ING916XX 使用内部 RC 为主时钟时，如果要使用省电模式，则 RC 频率暂时只能配置为 24MHz。</li>
 <li>ING916XX 降低主频（HCLK）存在风险：低功耗电流异常，连接容易断开。</li>
+<li>ING918XX <code>platform_reset</code> 可能导致死机，请使用 <code>SYSCTRL_Reset()</code> 或替换为：<br />
+<pre>void platform_reset2(void)
+{
+    __disable_irq();
+    AHB_SYSCTRL-&gt;RstSet &amp;= 0x02;
+    NVIC_SystemReset();
+}</pre></li>
 </ul></div>
 
 <h2 id="v852">v8.5.2</h2>

@@ -1386,8 +1386,23 @@ invoked with such resolution.</p>
 <p>This type of timers are much like <code>platform_set_timer</code>, except that:</p>
 <ol style="list-style-type: decimal">
 <li>resolution is higher;</li>
-<li>callback is invoked in the context of an ISR.</li>
+<li>callback is invoked in the context of an ISR or the the caller.</li>
 </ol>
+<p>Pseudo code:</p>
+<div class="sourceCode" id="cb82"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb82-1"><a href="api-ref.html#cb82-1" aria-hidden="true" tabindex="-1"></a>create_us_timer<span class="op">(..)</span></span>
+<span id="cb82-2"><a href="api-ref.html#cb82-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb82-3"><a href="api-ref.html#cb82-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>time passed<span class="op">)</span> <span class="cf">return</span> NULL<span class="op">;</span></span>
+<span id="cb82-4"><a href="api-ref.html#cb82-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>out of memory<span class="op">)</span> <span class="cf">return</span> NULL<span class="op">;</span></span>
+<span id="cb82-5"><a href="api-ref.html#cb82-5" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> allocate a handle<span class="op">;</span></span>
+<span id="cb82-6"><a href="api-ref.html#cb82-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>timer is too near<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb82-7"><a href="api-ref.html#cb82-7" aria-hidden="true" tabindex="-1"></a>        <span class="co">// callback is invoked immediately in the context of the caller</span></span>
+<span id="cb82-8"><a href="api-ref.html#cb82-8" aria-hidden="true" tabindex="-1"></a>        callback<span class="op">(</span>param<span class="op">);</span></span>
+<span id="cb82-9"><a href="api-ref.html#cb82-9" aria-hidden="true" tabindex="-1"></a>        free memory<span class="op">;</span></span>
+<span id="cb82-10"><a href="api-ref.html#cb82-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> r<span class="op">;</span>        <span class="co">// a non-NULL value is returned</span></span>
+<span id="cb82-11"><a href="api-ref.html#cb82-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb82-12"><a href="api-ref.html#cb82-12" aria-hidden="true" tabindex="-1"></a>    save r into a queue<span class="op">;</span> <span class="co">// callback will be invoked in an ISR later</span></span>
+<span id="cb82-13"><a href="api-ref.html#cb82-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> r<span class="op">;</span></span>
+<span id="cb82-14"><a href="api-ref.html#cb82-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p><strong>DO NOT</strong> call <code>platform_create_us_timer</code> again in <code>callback</code>.</p>
 </div>
 </div>
@@ -1396,7 +1411,7 @@ invoked with such resolution.</p>
 <p>Delete a previously platform timer created by <code>platform_set_timer</code> or <code>platform_set_abs_timer</code>.</p>
 <div id="prototype-24" class="section level4 hasAnchor" number="6.6.3.1">
 <h4><span class="header-section-number">6.6.3.1</span> Prototype<a href="api-ref.html#prototype-24" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb82"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb82-1"><a href="api-ref.html#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_delete_timer<span class="op">(</span>f_platform_timer_callback callback<span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb83"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb83-1"><a href="api-ref.html#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_delete_timer<span class="op">(</span>f_platform_timer_callback callback<span class="op">)</span></span></code></pre></div>
 </div>
 <div id="parameters-23" class="section level4 hasAnchor" number="6.6.3.2">
 <h4><span class="header-section-number">6.6.3.2</span> Parameters<a href="api-ref.html#parameters-23" class="anchor-section" aria-label="Anchor link to header"></a></h4>
@@ -1421,7 +1436,7 @@ after this function is called.</p>
 <p>Read the counter of platform timer at 625μs resolution.</p>
 <div id="prototype-25" class="section level4 hasAnchor" number="6.6.4.1">
 <h4><span class="header-section-number">6.6.4.1</span> Prototype<a href="api-ref.html#prototype-25" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb83"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb83-1"><a href="api-ref.html#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> platform_get_timer_counter<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb84"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb84-1"><a href="api-ref.html#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> platform_get_timer_counter<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
 </div>
 <div id="parameters-24" class="section level4 hasAnchor" number="6.6.4.2">
 <h4><span class="header-section-number">6.6.4.2</span> Parameters<a href="api-ref.html#parameters-24" class="anchor-section" aria-label="Anchor link to header"></a></h4>
@@ -1438,7 +1453,7 @@ after this function is called.</p>
 <p>Read the internal time counting from BLE initialization.</p>
 <div id="prototype-26" class="section level4 hasAnchor" number="6.6.5.1">
 <h4><span class="header-section-number">6.6.5.1</span> Prototype<a href="api-ref.html#prototype-26" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb84"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb84-1"><a href="api-ref.html#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int64_t</span> platform_get_us_time<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb85"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb85-1"><a href="api-ref.html#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int64_t</span> platform_get_us_time<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
 </div>
 <div id="parameters-25" class="section level4 hasAnchor" number="6.6.5.2">
 <h4><span class="header-section-number">6.6.5.2</span> Parameters<a href="api-ref.html#parameters-25" class="anchor-section" aria-label="Anchor link to header"></a></h4>
@@ -1454,7 +1469,7 @@ after this function is called.</p>
 </div>
 <div id="example-15" class="section level4 hasAnchor" number="6.6.5.5">
 <h4><span class="header-section-number">6.6.5.5</span> Example<a href="api-ref.html#example-15" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb85"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb85-1"><a href="api-ref.html#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint64_t</span> now <span class="op">=</span> platform_get_us_time<span class="op">();</span></span></code></pre></div>
+<div class="sourceCode" id="cb86"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb86-1"><a href="api-ref.html#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint64_t</span> now <span class="op">=</span> platform_get_us_time<span class="op">();</span></span></code></pre></div>
 </div>
 </div>
 <div id="platform_set_abs_timer" class="section level3 hasAnchor" number="6.6.6">
@@ -1462,9 +1477,9 @@ after this function is called.</p>
 <p>Setup a single-shot platform timer triggered at an absolute time with 625μs resolution.</p>
 <div id="prototype-27" class="section level4 hasAnchor" number="6.6.6.1">
 <h4><span class="header-section-number">6.6.6.1</span> Prototype<a href="api-ref.html#prototype-27" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb86"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb86-1"><a href="api-ref.html#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_set_abs_timer<span class="op">(</span></span>
-<span id="cb86-2"><a href="api-ref.html#cb86-2" aria-hidden="true" tabindex="-1"></a>    f_platform_timer_callback callback<span class="op">,</span></span>
-<span id="cb86-3"><a href="api-ref.html#cb86-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> abs_time<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb87"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb87-1"><a href="api-ref.html#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_set_abs_timer<span class="op">(</span></span>
+<span id="cb87-2"><a href="api-ref.html#cb87-2" aria-hidden="true" tabindex="-1"></a>    f_platform_timer_callback callback<span class="op">,</span></span>
+<span id="cb87-3"><a href="api-ref.html#cb87-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> abs_time<span class="op">);</span></span></code></pre></div>
 </div>
 <div id="parameters-26" class="section level4 hasAnchor" number="6.6.6.2">
 <h4><span class="header-section-number">6.6.6.2</span> Parameters<a href="api-ref.html#parameters-26" class="anchor-section" aria-label="Anchor link to header"></a></h4>
@@ -1489,21 +1504,21 @@ for example, <code>abs_time</code> is <code>platform_get_timer_counter() - 1</co
 <div id="example-16" class="section level4 hasAnchor" number="6.6.6.5">
 <h4><span class="header-section-number">6.6.6.5</span> Example<a href="api-ref.html#example-16" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>Use this function to emulate a periodic timer.</p>
-<div class="sourceCode" id="cb87"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb87-1"><a href="api-ref.html#cb87-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb87-2"><a href="api-ref.html#cb87-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#define PERIOD  100</span></span>
-<span id="cb87-3"><a href="api-ref.html#cb87-3" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> last_timer <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb87-4"><a href="api-ref.html#cb87-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb87-5"><a href="api-ref.html#cb87-5" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_timer_callback<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
-<span id="cb87-6"><a href="api-ref.html#cb87-6" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb87-7"><a href="api-ref.html#cb87-7" aria-hidden="true" tabindex="-1"></a>    last_timer <span class="op">+=</span> PERIOD<span class="op">;</span></span>
-<span id="cb87-8"><a href="api-ref.html#cb87-8" aria-hidden="true" tabindex="-1"></a>    platform_set_abs_timer<span class="op">(</span>platform_timer_callback<span class="op">,</span> last_timer<span class="op">);</span></span>
-<span id="cb87-9"><a href="api-ref.html#cb87-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb87-10"><a href="api-ref.html#cb87-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// do periodic job</span></span>
-<span id="cb87-11"><a href="api-ref.html#cb87-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
-<span id="cb87-12"><a href="api-ref.html#cb87-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb87-13"><a href="api-ref.html#cb87-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb87-14"><a href="api-ref.html#cb87-14" aria-hidden="true" tabindex="-1"></a>last_timer <span class="op">=</span> platform_get_timer_counter<span class="op">()</span> <span class="op">+</span> PERIOD<span class="op">;</span></span>
-<span id="cb87-15"><a href="api-ref.html#cb87-15" aria-hidden="true" tabindex="-1"></a>platform_set_abs_timer<span class="op">(</span>platform_timer_callback<span class="op">,</span> last_timer<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb88"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb88-1"><a href="api-ref.html#cb88-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-2"><a href="api-ref.html#cb88-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#define PERIOD  100</span></span>
+<span id="cb88-3"><a href="api-ref.html#cb88-3" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> last_timer <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb88-4"><a href="api-ref.html#cb88-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-5"><a href="api-ref.html#cb88-5" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_timer_callback<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb88-6"><a href="api-ref.html#cb88-6" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb88-7"><a href="api-ref.html#cb88-7" aria-hidden="true" tabindex="-1"></a>    last_timer <span class="op">+=</span> PERIOD<span class="op">;</span></span>
+<span id="cb88-8"><a href="api-ref.html#cb88-8" aria-hidden="true" tabindex="-1"></a>    platform_set_abs_timer<span class="op">(</span>platform_timer_callback<span class="op">,</span> last_timer<span class="op">);</span></span>
+<span id="cb88-9"><a href="api-ref.html#cb88-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-10"><a href="api-ref.html#cb88-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// do periodic job</span></span>
+<span id="cb88-11"><a href="api-ref.html#cb88-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
+<span id="cb88-12"><a href="api-ref.html#cb88-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb88-13"><a href="api-ref.html#cb88-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-14"><a href="api-ref.html#cb88-14" aria-hidden="true" tabindex="-1"></a>last_timer <span class="op">=</span> platform_get_timer_counter<span class="op">()</span> <span class="op">+</span> PERIOD<span class="op">;</span></span>
+<span id="cb88-15"><a href="api-ref.html#cb88-15" aria-hidden="true" tabindex="-1"></a>platform_set_abs_timer<span class="op">(</span>platform_timer_callback<span class="op">,</span> last_timer<span class="op">);</span></span></code></pre></div>
 </div>
 </div>
 <div id="platform_set_timer" class="section level3 hasAnchor" number="6.6.7">
@@ -1511,9 +1526,9 @@ for example, <code>abs_time</code> is <code>platform_get_timer_counter() - 1</co
 <p>Setup a single-shot platform timer after a delay from “now” with 625μs resolution.</p>
 <div id="prototype-28" class="section level4 hasAnchor" number="6.6.7.1">
 <h4><span class="header-section-number">6.6.7.1</span> Prototype<a href="api-ref.html#prototype-28" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb88"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb88-1"><a href="api-ref.html#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_set_timer<span class="op">(</span></span>
-<span id="cb88-2"><a href="api-ref.html#cb88-2" aria-hidden="true" tabindex="-1"></a>    f_platform_timer_callback callback<span class="op">,</span></span>
-<span id="cb88-3"><a href="api-ref.html#cb88-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> delay<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb89"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb89-1"><a href="api-ref.html#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_set_timer<span class="op">(</span></span>
+<span id="cb89-2"><a href="api-ref.html#cb89-2" aria-hidden="true" tabindex="-1"></a>    f_platform_timer_callback callback<span class="op">,</span></span>
+<span id="cb89-3"><a href="api-ref.html#cb89-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> delay<span class="op">);</span></span></code></pre></div>
 </div>
 <div id="parameters-27" class="section level4 hasAnchor" number="6.6.7.2">
 <h4><span class="header-section-number">6.6.7.2</span> Parameters<a href="api-ref.html#parameters-27" class="anchor-section" aria-label="Anchor link to header"></a></h4>
@@ -1534,20 +1549,20 @@ called in a RTOS task-like context, but not an ISR.</p></li>
 <h4><span class="header-section-number">6.6.7.4</span> Remarks<a href="api-ref.html#remarks-23" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>This function always succeeds, except when running out of memory.</p>
 <p><code>platform_set_timer(f, 100)</code> is equivalent to:</p>
-<div class="sourceCode" id="cb89"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb89-1"><a href="api-ref.html#cb89-1" aria-hidden="true" tabindex="-1"></a>platform_set_abs_timer<span class="op">(</span>f<span class="op">,</span></span>
-<span id="cb89-2"><a href="api-ref.html#cb89-2" aria-hidden="true" tabindex="-1"></a>    platform_get_timer_counter<span class="op">()</span> <span class="op">+</span> <span class="dv">100</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb90"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb90-1"><a href="api-ref.html#cb90-1" aria-hidden="true" tabindex="-1"></a>platform_set_abs_timer<span class="op">(</span>f<span class="op">,</span></span>
+<span id="cb90-2"><a href="api-ref.html#cb90-2" aria-hidden="true" tabindex="-1"></a>    platform_get_timer_counter<span class="op">()</span> <span class="op">+</span> <span class="dv">100</span><span class="op">);</span></span></code></pre></div>
 <p><code>platform_set_timer(f, 0)</code> is equivalent to:</p>
-<div class="sourceCode" id="cb90"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb90-1"><a href="api-ref.html#cb90-1" aria-hidden="true" tabindex="-1"></a>platform_delete_timer<span class="op">(</span>f<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb91"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb91-1"><a href="api-ref.html#cb91-1" aria-hidden="true" tabindex="-1"></a>platform_delete_timer<span class="op">(</span>f<span class="op">);</span></span></code></pre></div>
 <p>but not</p>
-<div class="sourceCode" id="cb91"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb91-1"><a href="api-ref.html#cb91-1" aria-hidden="true" tabindex="-1"></a>platform_set_abs_timer<span class="op">(</span>f<span class="op">,</span></span>
-<span id="cb91-2"><a href="api-ref.html#cb91-2" aria-hidden="true" tabindex="-1"></a>    platform_get_timer_counter<span class="op">()</span> <span class="op">+</span> <span class="dv">0</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb92"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb92-1"><a href="api-ref.html#cb92-1" aria-hidden="true" tabindex="-1"></a>platform_set_abs_timer<span class="op">(</span>f<span class="op">,</span></span>
+<span id="cb92-2"><a href="api-ref.html#cb92-2" aria-hidden="true" tabindex="-1"></a>    platform_get_timer_counter<span class="op">()</span> <span class="op">+</span> <span class="dv">0</span><span class="op">);</span></span></code></pre></div>
 <p>Since <code>callback</code> is also the identifier of the timer, below two lines defines only
 a timer expiring after 200 units but not two separate timers:</p>
-<div class="sourceCode" id="cb92"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb92-1"><a href="api-ref.html#cb92-1" aria-hidden="true" tabindex="-1"></a>platform_set_timer<span class="op">(</span>f<span class="op">,</span> <span class="dv">100</span><span class="op">);</span></span>
-<span id="cb92-2"><a href="api-ref.html#cb92-2" aria-hidden="true" tabindex="-1"></a>platform_set_timer<span class="op">(</span>f<span class="op">,</span> <span class="dv">200</span><span class="op">);</span> <span class="co">// update the timer, but not creating a new one</span></span></code></pre></div>
+<div class="sourceCode" id="cb93"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb93-1"><a href="api-ref.html#cb93-1" aria-hidden="true" tabindex="-1"></a>platform_set_timer<span class="op">(</span>f<span class="op">,</span> <span class="dv">100</span><span class="op">);</span></span>
+<span id="cb93-2"><a href="api-ref.html#cb93-2" aria-hidden="true" tabindex="-1"></a>platform_set_timer<span class="op">(</span>f<span class="op">,</span> <span class="dv">200</span><span class="op">);</span> <span class="co">// update the timer, but not creating a new one</span></span></code></pre></div>
 <p>If <code>f</code> is used once again in <code>platform_set_abs_timer</code>, then the timer is updated
 again:</p>
-<div class="sourceCode" id="cb93"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb93-1"><a href="api-ref.html#cb93-1" aria-hidden="true" tabindex="-1"></a>platform_set_abs_timer<span class="op">(</span>f<span class="op">,</span> <span class="op">...);</span></span></code></pre></div>
+<div class="sourceCode" id="cb94"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb94-1"><a href="api-ref.html#cb94-1" aria-hidden="true" tabindex="-1"></a>platform_set_abs_timer<span class="op">(</span>f<span class="op">,</span> <span class="op">...);</span></span></code></pre></div>
 </div>
 </div>
 </div>
@@ -1560,8 +1575,8 @@ See “Programmer’s Guide - Power Saving”<a href="#fn30" class="footnote-ref
 <p>Prepare to suppress some cycles for tick-less power saving.</p>
 <div id="prototype-29" class="section level4 hasAnchor" number="6.7.1.1">
 <h4><span class="header-section-number">6.7.1.1</span> Prototype<a href="api-ref.html#prototype-29" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb94"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb94-1"><a href="api-ref.html#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> platform_pre_suppress_cycles_and_sleep_processing<span class="op">(</span></span>
-<span id="cb94-2"><a href="api-ref.html#cb94-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> expected_cycles<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb95"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb95-1"><a href="api-ref.html#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> platform_pre_suppress_cycles_and_sleep_processing<span class="op">(</span></span>
+<span id="cb95-2"><a href="api-ref.html#cb95-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> expected_cycles<span class="op">);</span></span></code></pre></div>
 </div>
 <div id="parameters-28" class="section level4 hasAnchor" number="6.7.1.2">
 <h4><span class="header-section-number">6.7.1.2</span> Parameters<a href="api-ref.html#parameters-28" class="anchor-section" aria-label="Anchor link to header"></a></h4>
@@ -1581,7 +1596,7 @@ See “Programmer’s Guide - Power Saving”<a href="#fn30" class="footnote-ref
 <p>Preprocessing for tick-less sleep.</p>
 <div id="prototype-30" class="section level4 hasAnchor" number="6.7.2.1">
 <h4><span class="header-section-number">6.7.2.1</span> Prototype<a href="api-ref.html#prototype-30" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb95"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb95-1"><a href="api-ref.html#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_pre_sleep_processing<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb96"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb96-1"><a href="api-ref.html#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_pre_sleep_processing<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
 </div>
 <div id="parameters-29" class="section level4 hasAnchor" number="6.7.2.2">
 <h4><span class="header-section-number">6.7.2.2</span> Parameters<a href="api-ref.html#parameters-29" class="anchor-section" aria-label="Anchor link to header"></a></h4>
@@ -1597,7 +1612,7 @@ See “Programmer’s Guide - Power Saving”<a href="#fn30" class="footnote-ref
 <p>Postprocessing for tick-less sleep.</p>
 <div id="prototype-31" class="section level4 hasAnchor" number="6.7.3.1">
 <h4><span class="header-section-number">6.7.3.1</span> Prototype<a href="api-ref.html#prototype-31" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb96"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb96-1"><a href="api-ref.html#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_post_sleep_processing<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb97"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb97-1"><a href="api-ref.html#cb97-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_post_sleep_processing<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
 </div>
 <div id="parameters-30" class="section level4 hasAnchor" number="6.7.3.2">
 <h4><span class="header-section-number">6.7.3.2</span> Parameters<a href="api-ref.html#parameters-30" class="anchor-section" aria-label="Anchor link to header"></a></h4>
@@ -1617,7 +1632,7 @@ See “Programmer’s Guide - Power Saving”<a href="#fn30" class="footnote-ref
 <p>Hook for Idle task got resumed. Call this when Idle task is resumed.</p>
 <div id="prototype-32" class="section level4 hasAnchor" number="6.7.4.1">
 <h4><span class="header-section-number">6.7.4.1</span> Prototype<a href="api-ref.html#prototype-32" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb97"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb97-1"><a href="api-ref.html#cb97-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_os_idle_resumed_hook<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb98"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb98-1"><a href="api-ref.html#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_os_idle_resumed_hook<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
 </div>
 <div id="parameters-31" class="section level4 hasAnchor" number="6.7.4.2">
 <h4><span class="header-section-number">6.7.4.2</span> Parameters<a href="api-ref.html#parameters-31" class="anchor-section" aria-label="Anchor link to header"></a></h4>
@@ -1641,7 +1656,7 @@ Use <code>platform_pre_suppress_cycles_and_sleep_processing</code> instead.</p>
 <p>Generate random bytes by using hardware random-number generator.</p>
 <div id="prototype-33" class="section level4 hasAnchor" number="6.8.1.1">
 <h4><span class="header-section-number">6.8.1.1</span> Prototype<a href="api-ref.html#prototype-33" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb98"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb98-1"><a href="api-ref.html#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span>  platform_hrng<span class="op">(</span><span class="dt">uint8_t</span> <span class="op">*</span>bytes<span class="op">,</span> <span class="dt">const</span> <span class="dt">uint32_t</span> len<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb99"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb99-1"><a href="api-ref.html#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span>  platform_hrng<span class="op">(</span><span class="dt">uint8_t</span> <span class="op">*</span>bytes<span class="op">,</span> <span class="dt">const</span> <span class="dt">uint32_t</span> len<span class="op">);</span></span></code></pre></div>
 </div>
 <div id="parameters-32" class="section level4 hasAnchor" number="6.8.1.2">
 <h4><span class="header-section-number">6.8.1.2</span> Parameters<a href="api-ref.html#parameters-32" class="anchor-section" aria-label="Anchor link to header"></a></h4>
@@ -1662,8 +1677,8 @@ Use <code>platform_pre_suppress_cycles_and_sleep_processing</code> instead.</p>
 </div>
 <div id="example-17" class="section level4 hasAnchor" number="6.8.1.5">
 <h4><span class="header-section-number">6.8.1.5</span> Example<a href="api-ref.html#example-17" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb99"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb99-1"><a href="api-ref.html#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> strong_random<span class="op">;</span></span>
-<span id="cb99-2"><a href="api-ref.html#cb99-2" aria-hidden="true" tabindex="-1"></a>platform_hrng<span class="op">(&amp;</span>strong_random<span class="op">,</span> <span class="kw">sizeof</span><span class="op">(</span>strong_random<span class="op">));</span></span></code></pre></div>
+<div class="sourceCode" id="cb100"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb100-1"><a href="api-ref.html#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> strong_random<span class="op">;</span></span>
+<span id="cb100-2"><a href="api-ref.html#cb100-2" aria-hidden="true" tabindex="-1"></a>platform_hrng<span class="op">(&amp;</span>strong_random<span class="op">,</span> <span class="kw">sizeof</span><span class="op">(</span>strong_random<span class="op">));</span></span></code></pre></div>
 </div>
 </div>
 <div id="platform_rand" class="section level3 hasAnchor" number="6.8.2">
@@ -1671,7 +1686,7 @@ Use <code>platform_pre_suppress_cycles_and_sleep_processing</code> instead.</p>
 <p>Generate a pseudo random integer by internal PRNG.</p>
 <div id="prototype-34" class="section level4 hasAnchor" number="6.8.2.1">
 <h4><span class="header-section-number">6.8.2.1</span> Prototype<a href="api-ref.html#prototype-34" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb100"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb100-1"><a href="api-ref.html#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> platform_rand<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb101"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb101-1"><a href="api-ref.html#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> platform_rand<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
 </div>
 <div id="parameters-33" class="section level4 hasAnchor" number="6.8.2.2">
 <h4><span class="header-section-number">6.8.2.2</span> Parameters<a href="api-ref.html#parameters-33" class="anchor-section" aria-label="Anchor link to header"></a></h4>
@@ -1688,7 +1703,7 @@ can be used as a replacement of <code>rand()</code> in standard library.</p>
 </div>
 <div id="example-18" class="section level4 hasAnchor" number="6.8.2.5">
 <h4><span class="header-section-number">6.8.2.5</span> Example<a href="api-ref.html#example-18" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb101"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb101-1"><a href="api-ref.html#cb101-1" aria-hidden="true" tabindex="-1"></a>printf<span class="op">(</span><span class="st">&quot;rand: %d</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> platform_rand<span class="op">());</span></span></code></pre></div>
+<div class="sourceCode" id="cb102"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb102-1"><a href="api-ref.html#cb102-1" aria-hidden="true" tabindex="-1"></a>printf<span class="op">(</span><span class="st">&quot;rand: %d</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> platform_rand<span class="op">());</span></span></code></pre></div>
 </div>
 </div>
 <div id="platform_read_persistent_reg" class="section level3 hasAnchor" number="6.8.3">
@@ -1697,7 +1712,7 @@ can be used as a replacement of <code>rand()</code> in standard library.</p>
 <a href="api-ref.html#platform_write_persistent_reg"><code>platform_write_persistent_reg</code></a>.</p>
 <div id="prototype-35" class="section level4 hasAnchor" number="6.8.3.1">
 <h4><span class="header-section-number">6.8.3.1</span> Prototype<a href="api-ref.html#prototype-35" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb102"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb102-1"><a href="api-ref.html#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> platform_read_persistent_reg<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb103"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb103-1"><a href="api-ref.html#cb103-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> platform_read_persistent_reg<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
 </div>
 <div id="parameters-34" class="section level4 hasAnchor" number="6.8.3.2">
 <h4><span class="header-section-number">6.8.3.2</span> Parameters<a href="api-ref.html#parameters-34" class="anchor-section" aria-label="Anchor link to header"></a></h4>
@@ -1714,7 +1729,7 @@ can be used as a replacement of <code>rand()</code> in standard library.</p>
 </div>
 <div id="example-19" class="section level4 hasAnchor" number="6.8.3.5">
 <h4><span class="header-section-number">6.8.3.5</span> Example<a href="api-ref.html#example-19" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb103"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb103-1"><a href="api-ref.html#cb103-1" aria-hidden="true" tabindex="-1"></a>platform_read_persistent_reg<span class="op">();</span></span></code></pre></div>
+<div class="sourceCode" id="cb104"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb104-1"><a href="api-ref.html#cb104-1" aria-hidden="true" tabindex="-1"></a>platform_read_persistent_reg<span class="op">();</span></span></code></pre></div>
 </div>
 </div>
 <div id="platform_reset" class="section level3 hasAnchor" number="6.8.4">
@@ -1722,7 +1737,7 @@ can be used as a replacement of <code>rand()</code> in standard library.</p>
 <p>Reset platform (SoC).</p>
 <div id="prototype-36" class="section level4 hasAnchor" number="6.8.4.1">
 <h4><span class="header-section-number">6.8.4.1</span> Prototype<a href="api-ref.html#prototype-36" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb104"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb104-1"><a href="api-ref.html#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_reset<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb105"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb105-1"><a href="api-ref.html#cb105-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_reset<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
 </div>
 <div id="parameters-35" class="section level4 hasAnchor" number="6.8.4.2">
 <h4><span class="header-section-number">6.8.4.2</span> Parameters<a href="api-ref.html#parameters-35" class="anchor-section" aria-label="Anchor link to header"></a></h4>
@@ -1738,8 +1753,8 @@ can be used as a replacement of <code>rand()</code> in standard library.</p>
 </div>
 <div id="example-20" class="section level4 hasAnchor" number="6.8.4.5">
 <h4><span class="header-section-number">6.8.4.5</span> Example<a href="api-ref.html#example-20" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb105"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb105-1"><a href="api-ref.html#cb105-1" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>out<span class="op">-</span>of<span class="op">-</span>memory<span class="op">)</span></span>
-<span id="cb105-2"><a href="api-ref.html#cb105-2" aria-hidden="true" tabindex="-1"></a>    platform_reset<span class="op">();</span></span></code></pre></div>
+<div class="sourceCode" id="cb106"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb106-1"><a href="api-ref.html#cb106-1" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>out<span class="op">-</span>of<span class="op">-</span>memory<span class="op">)</span></span>
+<span id="cb106-2"><a href="api-ref.html#cb106-2" aria-hidden="true" tabindex="-1"></a>    platform_reset<span class="op">();</span></span></code></pre></div>
 </div>
 </div>
 <div id="platform_shutdown" class="section level3 hasAnchor" number="6.8.5">
@@ -1756,9 +1771,9 @@ Possible causes for failures include:</p>
 </ol>
 <div id="prototype-37" class="section level4 hasAnchor" number="6.8.5.1">
 <h4><span class="header-section-number">6.8.5.1</span> Prototype<a href="api-ref.html#prototype-37" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb106"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb106-1"><a href="api-ref.html#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_shutdown<span class="op">(</span><span class="dt">const</span> <span class="dt">uint32_t</span> duration_cycles<span class="op">,</span></span>
-<span id="cb106-2"><a href="api-ref.html#cb106-2" aria-hidden="true" tabindex="-1"></a>                       <span class="dt">const</span> <span class="dt">void</span> <span class="op">*</span>p_retention_data<span class="op">,</span></span>
-<span id="cb106-3"><a href="api-ref.html#cb106-3" aria-hidden="true" tabindex="-1"></a>                       <span class="dt">const</span> <span class="dt">uint32_t</span> data_size<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb107"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb107-1"><a href="api-ref.html#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_shutdown<span class="op">(</span><span class="dt">const</span> <span class="dt">uint32_t</span> duration_cycles<span class="op">,</span></span>
+<span id="cb107-2"><a href="api-ref.html#cb107-2" aria-hidden="true" tabindex="-1"></a>                       <span class="dt">const</span> <span class="dt">void</span> <span class="op">*</span>p_retention_data<span class="op">,</span></span>
+<span id="cb107-3"><a href="api-ref.html#cb107-3" aria-hidden="true" tabindex="-1"></a>                       <span class="dt">const</span> <span class="dt">uint32_t</span> data_size<span class="op">);</span></span></code></pre></div>
 </div>
 <div id="parameters-36" class="section level4 hasAnchor" number="6.8.5.2">
 <h4><span class="header-section-number">6.8.5.2</span> Parameters<a href="api-ref.html#parameters-36" class="anchor-section" aria-label="Anchor link to header"></a></h4>
@@ -1784,8 +1799,8 @@ This parameter can be set to <code>NULL</code> when <code>data_size</code> is <c
 </div>
 <div id="example-21" class="section level4 hasAnchor" number="6.8.5.5">
 <h4><span class="header-section-number">6.8.5.5</span> Example<a href="api-ref.html#example-21" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb107"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb107-1"><a href="api-ref.html#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Shutdown the system and reboot after 1s.</span></span>
-<span id="cb107-2"><a href="api-ref.html#cb107-2" aria-hidden="true" tabindex="-1"></a>platform_shutdown<span class="op">(</span><span class="dv">32768</span><span class="op">,</span> NULL<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb108"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb108-1"><a href="api-ref.html#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Shutdown the system and reboot after 1s.</span></span>
+<span id="cb108-2"><a href="api-ref.html#cb108-2" aria-hidden="true" tabindex="-1"></a>platform_shutdown<span class="op">(</span><span class="dv">32768</span><span class="op">,</span> NULL<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span></code></pre></div>
 </div>
 </div>
 <div id="platform_write_persistent_reg" class="section level3 hasAnchor" number="6.8.6">
@@ -1814,7 +1829,7 @@ This value is kept even in power saving, shutdown mode, or when switching to ano
 </table>
 <div id="prototype-38" class="section level4 hasAnchor" number="6.8.6.1">
 <h4><span class="header-section-number">6.8.6.1</span> Prototype<a href="api-ref.html#prototype-38" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb108"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb108-1"><a href="api-ref.html#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_write_persistent_reg<span class="op">(</span><span class="dt">const</span> <span class="dt">uint8_t</span> value<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb109"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb109-1"><a href="api-ref.html#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_write_persistent_reg<span class="op">(</span><span class="dt">const</span> <span class="dt">uint8_t</span> value<span class="op">);</span></span></code></pre></div>
 </div>
 <div id="parameters-37" class="section level4 hasAnchor" number="6.8.6.2">
 <h4><span class="header-section-number">6.8.6.2</span> Parameters<a href="api-ref.html#parameters-37" class="anchor-section" aria-label="Anchor link to header"></a></h4>
@@ -1833,7 +1848,7 @@ This value is kept even in power saving, shutdown mode, or when switching to ano
 </div>
 <div id="example-22" class="section level4 hasAnchor" number="6.8.6.5">
 <h4><span class="header-section-number">6.8.6.5</span> Example<a href="api-ref.html#example-22" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb109"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb109-1"><a href="api-ref.html#cb109-1" aria-hidden="true" tabindex="-1"></a>platform_write_persistent_reg<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb110"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb110-1"><a href="api-ref.html#cb110-1" aria-hidden="true" tabindex="-1"></a>platform_write_persistent_reg<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span></code></pre></div>
 </div>
 </div>
 </div>
@@ -1844,7 +1859,7 @@ This value is kept even in power saving, shutdown mode, or when switching to ano
 <p>The <code>printf</code> function stored in platform binary.</p>
 <div id="prototype-39" class="section level4 hasAnchor" number="6.9.1.1">
 <h4><span class="header-section-number">6.9.1.1</span> Prototype<a href="api-ref.html#prototype-39" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb110"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb110-1"><a href="api-ref.html#cb110-1" aria-hidden="true" tabindex="-1"></a> <span class="dt">void</span>  platform_printf<span class="op">(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>format<span class="op">,</span> <span class="op">...);</span></span></code></pre></div>
+<div class="sourceCode" id="cb111"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb111-1"><a href="api-ref.html#cb111-1" aria-hidden="true" tabindex="-1"></a> <span class="dt">void</span>  platform_printf<span class="op">(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>format<span class="op">,</span> <span class="op">...);</span></span></code></pre></div>
 </div>
 <div id="parameters-38" class="section level4 hasAnchor" number="6.9.1.2">
 <h4><span class="header-section-number">6.9.1.2</span> Parameters<a href="api-ref.html#parameters-38" class="anchor-section" aria-label="Anchor link to header"></a></h4>
@@ -1873,7 +1888,7 @@ This value is kept even in power saving, shutdown mode, or when switching to ano
 </div>
 <div id="example-23" class="section level4 hasAnchor" number="6.9.1.5">
 <h4><span class="header-section-number">6.9.1.5</span> Example<a href="api-ref.html#example-23" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb111"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb111-1"><a href="api-ref.html#cb111-1" aria-hidden="true" tabindex="-1"></a>platform_printf<span class="op">(</span><span class="st">&quot;Hello world&quot;</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb112"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb112-1"><a href="api-ref.html#cb112-1" aria-hidden="true" tabindex="-1"></a>platform_printf<span class="op">(</span><span class="st">&quot;Hello world&quot;</span><span class="op">);</span></span></code></pre></div>
 </div>
 </div>
 <div id="platform_raise_assertion" class="section level3 hasAnchor" number="6.9.2">
@@ -1881,7 +1896,7 @@ This value is kept even in power saving, shutdown mode, or when switching to ano
 <p>Raise a software assertion.</p>
 <div id="prototype-40" class="section level4 hasAnchor" number="6.9.2.1">
 <h4><span class="header-section-number">6.9.2.1</span> Prototype<a href="api-ref.html#prototype-40" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb112"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb112-1"><a href="api-ref.html#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span>  platform_raise_assertion<span class="op">(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>file_name<span class="op">,</span> <span class="dt">int</span> line_no<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb113"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb113-1"><a href="api-ref.html#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span>  platform_raise_assertion<span class="op">(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>file_name<span class="op">,</span> <span class="dt">int</span> line_no<span class="op">);</span></span></code></pre></div>
 </div>
 <div id="parameters-39" class="section level4 hasAnchor" number="6.9.2.2">
 <h4><span class="header-section-number">6.9.2.2</span> Parameters<a href="api-ref.html#parameters-39" class="anchor-section" aria-label="Anchor link to header"></a></h4>
@@ -1902,8 +1917,8 @@ This value is kept even in power saving, shutdown mode, or when switching to ano
 </div>
 <div id="example-24" class="section level4 hasAnchor" number="6.9.2.5">
 <h4><span class="header-section-number">6.9.2.5</span> Example<a href="api-ref.html#example-24" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb113"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb113-1"><a href="api-ref.html#cb113-1" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>NULL <span class="op">==</span> ptr<span class="op">)</span></span>
-<span id="cb113-2"><a href="api-ref.html#cb113-2" aria-hidden="true" tabindex="-1"></a>    platform_raise_assertion<span class="op">(</span>__FILE__<span class="op">,</span> __LINE__<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb114"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb114-1"><a href="api-ref.html#cb114-1" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>NULL <span class="op">==</span> ptr<span class="op">)</span></span>
+<span id="cb114-2"><a href="api-ref.html#cb114-2" aria-hidden="true" tabindex="-1"></a>    platform_raise_assertion<span class="op">(</span>__FILE__<span class="op">,</span> __LINE__<span class="op">);</span></span></code></pre></div>
 </div>
 </div>
 <div id="platform_trace_raw" class="section level3 hasAnchor" number="6.9.3">
@@ -1911,9 +1926,9 @@ This value is kept even in power saving, shutdown mode, or when switching to ano
 <p>Output a block of raw data to TRACE. ID is <code>PLATFORM_TRACE_ID_RAW</code>.</p>
 <div id="prototype-41" class="section level4 hasAnchor" number="6.9.3.1">
 <h4><span class="header-section-number">6.9.3.1</span> Prototype<a href="api-ref.html#prototype-41" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb114"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb114-1"><a href="api-ref.html#cb114-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_trace_raw<span class="op">(</span></span>
-<span id="cb114-2"><a href="api-ref.html#cb114-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">void</span> <span class="op">*</span>buffer<span class="op">,</span></span>
-<span id="cb114-3"><a href="api-ref.html#cb114-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">int</span> byte_len<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb115"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb115-1"><a href="api-ref.html#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_trace_raw<span class="op">(</span></span>
+<span id="cb115-2"><a href="api-ref.html#cb115-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">void</span> <span class="op">*</span>buffer<span class="op">,</span></span>
+<span id="cb115-3"><a href="api-ref.html#cb115-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">int</span> byte_len<span class="op">);</span></span></code></pre></div>
 </div>
 <div id="parameters-40" class="section level4 hasAnchor" number="6.9.3.2">
 <h4><span class="header-section-number">6.9.3.2</span> Parameters<a href="api-ref.html#parameters-40" class="anchor-section" aria-label="Anchor link to header"></a></h4>
@@ -1933,8 +1948,8 @@ This value is kept even in power saving, shutdown mode, or when switching to ano
 <p>Get link layer driver API.</p>
 <div id="prototype-42" class="section level4 hasAnchor" number="6.10.1.1">
 <h4><span class="header-section-number">6.10.1.1</span> Prototype<a href="api-ref.html#prototype-42" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb115"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb115-1"><a href="api-ref.html#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> platform_hci_link_layer_interf_t <span class="op">*</span></span>
-<span id="cb115-2"><a href="api-ref.html#cb115-2" aria-hidden="true" tabindex="-1"></a>    platform_get_link_layer_interf<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb116"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb116-1"><a href="api-ref.html#cb116-1" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> platform_hci_link_layer_interf_t <span class="op">*</span></span>
+<span id="cb116-2"><a href="api-ref.html#cb116-2" aria-hidden="true" tabindex="-1"></a>    platform_get_link_layer_interf<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
 </div>
 <div id="parameters-41" class="section level4 hasAnchor" number="6.10.1.2">
 <h4><span class="header-section-number">6.10.1.2</span> Parameters<a href="api-ref.html#parameters-41" class="anchor-section" aria-label="Anchor link to header"></a></h4>
@@ -1964,7 +1979,7 @@ and <em>NEVER</em> be used in final products.
 </div>
 <div id="prototype-43" class="section level4 hasAnchor" number="6.10.2.1">
 <h4><span class="header-section-number">6.10.2.1</span> Prototype<a href="api-ref.html#prototype-43" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb116"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb116-1"><a href="api-ref.html#cb116-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sysSetPublicDeviceAddr<span class="op">(</span><span class="dt">const</span> <span class="dt">unsigned</span> <span class="dt">char</span> <span class="op">*</span>addr<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb117"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb117-1"><a href="api-ref.html#cb117-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sysSetPublicDeviceAddr<span class="op">(</span><span class="dt">const</span> <span class="dt">unsigned</span> <span class="dt">char</span> <span class="op">*</span>addr<span class="op">);</span></span></code></pre></div>
 </div>
 <div id="parameters-42" class="section level4 hasAnchor" number="6.10.2.2">
 <h4><span class="header-section-number">6.10.2.2</span> Parameters<a href="api-ref.html#parameters-42" class="anchor-section" aria-label="Anchor link to header"></a></h4>
@@ -1986,8 +2001,8 @@ event callback function.</p>
 </div>
 <div id="example-25" class="section level4 hasAnchor" number="6.10.2.5">
 <h4><span class="header-section-number">6.10.2.5</span> Example<a href="api-ref.html#example-25" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb117"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb117-1"><a href="api-ref.html#cb117-1" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> <span class="dt">unsigned</span> <span class="dt">char</span> pub_addr<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span><span class="dv">1</span><span class="op">,</span><span class="dv">2</span><span class="op">,</span><span class="dv">3</span><span class="op">,</span><span class="dv">4</span><span class="op">,</span><span class="dv">5</span><span class="op">,</span><span class="dv">6</span><span class="op">};</span></span>
-<span id="cb117-2"><a href="api-ref.html#cb117-2" aria-hidden="true" tabindex="-1"></a>sysSetPublicDeviceAddr<span class="op">(</span>pub_addr<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb118"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb118-1"><a href="api-ref.html#cb118-1" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> <span class="dt">unsigned</span> <span class="dt">char</span> pub_addr<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span><span class="dv">1</span><span class="op">,</span><span class="dv">2</span><span class="op">,</span><span class="dv">3</span><span class="op">,</span><span class="dv">4</span><span class="op">,</span><span class="dv">5</span><span class="op">,</span><span class="dv">6</span><span class="op">};</span></span>
+<span id="cb118-2"><a href="api-ref.html#cb118-2" aria-hidden="true" tabindex="-1"></a>sysSetPublicDeviceAddr<span class="op">(</span>pub_addr<span class="op">);</span></span></code></pre></div>
 
 </div>
 </div>

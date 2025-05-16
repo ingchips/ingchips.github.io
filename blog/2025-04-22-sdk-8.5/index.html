@@ -302,17 +302,44 @@
 <ul>
 <li>ING916XX 使用内部 RC 为主时钟时，如果要使用省电模式，则 RC 频率暂时只能配置为 24MHz。</li>
 <li>ING916XX 降低主频（HCLK）存在风险：低功耗电流异常，连接容易断开。</li>
-<li>ING918XX <code>platform_reset</code> 可能导致死机，请使用 <code>SYSCTRL_Reset()</code> 或替换为：<br />
-<pre>void platform_reset2(void)
-{
-    __disable_irq();
-    NVIC_SystemReset();
-}</pre></li>
 </ul></div>
+
+<h2 id="v853">v8.5.3</h2>
+
+<h3 id="1-软件包">1. 软件包</h3>
+
+<ul>
+  <li>
+    <p>[<strong>修正</strong>] ING918: <code class="language-plaintext highlighter-rouge">platform_reset</code> 死机</p>
+
+    <p>这是 v8.4.23 引入的问题，现已修复。</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] <code class="language-plaintext highlighter-rouge">gap_set_connection_parameter_range</code>：支持拒绝连接参数请求</p>
+
+    <p>当配置了特殊的无效参数时，Host 将拒绝所有的连接参数请求。</p>
+  </li>
+</ul>
+
+<h3 id="2-库函数">2. 库函数</h3>
+
+<ul>
+  <li>
+    <p>[<strong>更新</strong>] ING918 Eflash: 增加 <code class="language-plaintext highlighter-rouge">flash_get_die_info</code>、<code class="language-plaintext highlighter-rouge">flash_get_adc_calib_data</code>、 <code class="language-plaintext highlighter-rouge">flash_read_uid</code> 等新接口</p>
+
+    <p>对于 ING918、ING916 等系列芯片，都可以利用相同的 <code class="language-plaintext highlighter-rouge">flash_read_uid</code> 接口获得唯一的 ID 作为芯片标识。</p>
+  </li>
+</ul>
+
+<h3 id="2-工具">2. 工具</h3>
+
+<ul>
+  <li>[<strong>更新</strong>] <code class="language-plaintext highlighter-rouge">afx_tool</code>：改进 <code class="language-plaintext highlighter-rouge">call-stack</code> 功能。</li>
+</ul>
 
 <h2 id="v852">v8.5.2</h2>
 
-<h3 id="1-软件包">1. 软件包</h3>
+<h3 id="1-软件包-1">1. 软件包</h3>
 
 <ul>
   <li>
@@ -332,7 +359,7 @@
   </li>
 </ul>
 
-<h3 id="2-库函数">2. 库函数</h3>
+<h3 id="2-库函数-1">2. 库函数</h3>
 
 <ul>
   <li>
@@ -342,7 +369,7 @@
   </li>
 </ul>
 
-<h3 id="2-工具">2. 工具</h3>
+<h3 id="2-工具-1">2. 工具</h3>
 
 <ul>
   <li>
@@ -357,7 +384,7 @@
 
 <h2 id="v851">v8.5.1</h2>
 
-<h3 id="1-软件包-1">1. 软件包</h3>
+<h3 id="1-软件包-2">1. 软件包</h3>
 
 <ul>
   <li>
@@ -375,7 +402,7 @@
 
 <h2 id="v850">v8.5.0</h2>
 
-<h3 id="1-软件包-2">1. 软件包</h3>
+<h3 id="1-软件包-3">1. 软件包</h3>
 
 <ul>
   <li>
@@ -422,13 +449,13 @@
   </li>
 </ul>
 
-<h3 id="2-库函数-1">2. 库函数</h3>
+<h3 id="2-库函数-2">2. 库函数</h3>
 
 <ul>
   <li>[<strong>修正</strong>] ING916 USB: EP0 OUT 概率性故障</li>
 </ul>
 
-<h3 id="2-工具-1">2. 工具</h3>
+<h3 id="2-工具-2">2. 工具</h3>
 
 <ul>
   <li>

@@ -832,6 +832,24 @@ SDK/wizard/cfg/user_characteristics.json，找到要修改的特征，修改 Val
   <li>Windows: 请确保 Wizard 选项窗口里 VSCode 可执行文件关联到 VSCode <code class="language-plaintext highlighter-rouge">bin</code> 目录下的 <code class="language-plaintext highlighter-rouge">code.cmd</code>，而不是 <code class="language-plaintext highlighter-rouge">code.exe</code>。</li>
 </ul>
 
+<h2 id="13-keil-μvision-链接时报错-error-l6244e-exec-region-rw_iram1-address--not-aligned-on-a-n-byte-boundary如何解决">13. Keil μVision 链接时报错 “Error: L6244E: Exec region RW_IRAM1 address … not aligned on a N byte boundary”，如何解决？</h2>
+
+<p>这种现象在使用 v6 编译器时可能遇到，其中 N 大于 8。有多种解决方法：</p>
+
+<ul>
+  <li>
+    <p>在 Options for Target 的 Linker 页面添加 Misc controls 参数 <code class="language-plaintext highlighter-rouge">--legacyalign</code>；</p>
+
+    <p>说明：v5 链接器默认 <code class="language-plaintext highlighter-rouge">--legacyalign</code>，v6 链接器默认 <code class="language-plaintext highlighter-rouge">--no_legacyalign</code>。</p>
+  </li>
+  <li>
+    <p>检查代码，N 字节对齐是否确有必要；</p>
+  </li>
+  <li>
+    <p>手动增大 IRAM1 起始地址，使其符合对齐要求（不推荐）。</p>
+  </li>
+</ul>
+
               
               
               

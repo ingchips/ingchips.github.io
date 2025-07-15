@@ -316,18 +316,18 @@
     <p>由 v8.5.0 引入，现已修复。</p>
   </li>
   <li>
-    <p>[<strong>更新</strong>] <code class="language-plaintext highlighter-rouge">platform_set_us_timer</code></p>
+    <p>[<strong>更新</strong>] <code class="language-plaintext highlighter-rouge">platform_create_us_timer</code></p>
 
-    <p>旧版本的 <code class="language-plaintext highlighter-rouge">platform_set_us_timer</code> 是基于 RF 调度接口实现，其含义为“在指定时间占用射频 1μs”，使用时存在多种限制，如：</p>
+    <p>旧版本的 <code class="language-plaintext highlighter-rouge">platform_create_us_timer</code> 是基于 RF 调度接口实现，其含义为“在指定时间占用射频 1μs”，使用时存在多种限制，如：</p>
 
     <ul>
       <li>当某个时间段内正在进行扫描时，无法在这个时间段内创建定时器；</li>
-      <li>回调函数内不允许递归调用 <code class="language-plaintext highlighter-rouge">platform_set_us_timer</code>。</li>
+      <li>回调函数内不允许递归调用 <code class="language-plaintext highlighter-rouge">platform_create_us_timer</code>。</li>
     </ul>
 
-    <p>现在 <code class="language-plaintext highlighter-rouge">platform_set_us_timer</code> 已经重新设计，没有上述限制。</p>
+    <p>现在 <code class="language-plaintext highlighter-rouge">platform_create_us_timer</code> 已经重新设计，没有上述限制。</p>
 
-    <p>使用时一般会在回调函数里清除定时器句柄，因此新增 <code class="language-plaintext highlighter-rouge">platform_set_us_timer2</code>。</p>
+    <p>使用时一般会在回调函数里清除定时器句柄，因此新增 <code class="language-plaintext highlighter-rouge">platform_create_us_timer2</code>。</p>
   </li>
   <li>
     <p>[<strong>更新</strong>] Controller：更好地调度 Scan/Init/Adv/Conn 多任务</p>

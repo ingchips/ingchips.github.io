@@ -198,6 +198,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.6.5" data-path="ch-features.html"><a href="ch-features.html#链路层扩展特性集"><i class="fa fa-check"></i><b>4.6.5</b> 链路层扩展特性集</a></li>
 <li class="chapter" data-level="4.6.6" data-path="ch-features.html"><a href="ch-features.html#帧间隔更新"><i class="fa fa-check"></i><b>4.6.6</b> 帧间隔更新</a></li>
 </ul></li>
+<li class="chapter" data-level="4.7" data-path="ch-features.html"><a href="ch-features.html#新特性-6"><i class="fa fa-check"></i><b>4.7</b> 6.1 新特性</a>
+<ul>
+<li class="chapter" data-level="4.7.1" data-path="ch-features.html"><a href="ch-features.html#随机更新-rpa"><i class="fa fa-check"></i><b>4.7.1</b> 随机更新 RPA</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="ch-adv.html"><a href="ch-adv.html"><i class="fa fa-check"></i><b>5</b> GAP - 广播</a>
 <ul>
@@ -388,6 +392,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="13.9.3" data-path="ch-misc.html"><a href="ch-misc.html#扫描"><i class="fa fa-check"></i><b>13.9.3</b> 扫描</a></li>
 <li class="chapter" data-level="13.9.4" data-path="ch-misc.html"><a href="ch-misc.html#建立连接"><i class="fa fa-check"></i><b>13.9.4</b> 建立连接</a></li>
 </ul></li>
+<li class="chapter" data-level="13.10" data-path="ch-misc.html"><a href="ch-misc.html#干预连接参数请求流程"><i class="fa fa-check"></i><b>13.10</b> 干预连接参数请求流程</a></li>
 </ul></li>
 <li class="chapter" data-level="14" data-path="ch-cap.html"><a href="ch-cap.html"><i class="fa fa-check"></i><b>14</b> 协议栈能力</a></li>
 <li class="divider"></li>
@@ -414,7 +419,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1><span class="header-section-number">13</span> 杂项<a href="ch-misc.html#ch-misc" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <div id="接收-cte" class="section level2 hasAnchor" number="13.1">
 <h2><span class="header-section-number">13.1</span> 接收 CTE<a href="ch-misc.html#接收-cte" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>共有四种 CTE 接收、发送方式<a href="ch-cap.html#fn62" class="footnote-ref" id="fnref62"><sup>62</sup></a>。
+<p>共有四种 CTE 接收、发送方式<a href="ch-cap.html#fn63" class="footnote-ref" id="fnref63"><sup>63</sup></a>。
 以 AoA 为例，各种方式的使用方法如下。</p>
 <div id="基于连接的-cte-接收和发送" class="section level3 hasAnchor" number="13.1.1">
 <h3><span class="header-section-number">13.1.1</span> 基于连接的 CTE 接收和发送<a href="ch-misc.html#基于连接的-cte-接收和发送" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -549,12 +554,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>这种方式的使用可参考 SDK <em>Central CTE</em> 和 <em>Peripehral LED &amp; CTE</em>。</p>
 <div id="发送方-2" class="section level4 hasAnchor" number="13.1.4.1">
 <h4><span class="header-section-number">13.1.4.1</span> 发送方<a href="ch-misc.html#发送方-2" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p>配置一个扩展广播集，属性设置为不可连接、不可扫描。待广播集使能后，调用 <code>ll_attach_cte_to_adv_set</code><a href="ch-cap.html#fn63" class="footnote-ref" id="fnref63"><sup>63</sup></a>
+<p>配置一个扩展广播集，属性设置为不可连接、不可扫描。待广播集使能后，调用 <code>ll_attach_cte_to_adv_set</code><a href="ch-cap.html#fn64" class="footnote-ref" id="fnref64"><sup>64</sup></a>
 为扩展广播附加 CTE。</p>
 </div>
 <div id="接收方-2" class="section level4 hasAnchor" number="13.1.4.2">
 <h4><span class="header-section-number">13.1.4.2</span> 接收方<a href="ch-misc.html#接收方-2" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p>启动扫描之后，调用 <code>ll_scanner_enable_iq_sampling</code><a href="ch-cap.html#fn64" class="footnote-ref" id="fnref64"><sup>64</sup></a> 使能 CTE 采样。
+<p>启动扫描之后，调用 <code>ll_scanner_enable_iq_sampling</code><a href="ch-cap.html#fn65" class="footnote-ref" id="fnref65"><sup>65</sup></a> 使能 CTE 采样。
 之后，通过 <code>HCI_SUBEVENT_LE_VENDOR_PRO_CONNECTIONLESS_IQ_REPORT</code> 事件获得 CTE 报告。</p>
 </div>
 </div>
@@ -613,7 +618,7 @@ CIPHERTEXT:69c4e0d86a7b0430d8cdb78070b4c55a</code></pre>
 <div id="aes-ccm" class="section level3 hasAnchor" number="13.2.2">
 <h3><span class="header-section-number">13.2.2</span> AES-CCM<a href="ch-misc.html#aes-ccm" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>CCM 是 Cipher Block Chaining-Message Authentication Code (CBC-MAC) 和 Counter 模式（CTR）的组合，同时对数据加密和生成认证信息。
-通过 <code>gap_start_ccm</code> 启动 AES-CCM 计算<a href="ch-cap.html#fn65" class="footnote-ref" id="fnref65"><sup>65</sup></a>：</p>
+通过 <code>gap_start_ccm</code> 启动 AES-CCM 计算<a href="ch-cap.html#fn66" class="footnote-ref" id="fnref66"><sup>66</sup></a>：</p>
 <div class="sourceCode" id="cb196"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb196-1"><a href="ch-misc.html#cb196-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_start_ccm<span class="op">(</span></span>
 <span id="cb196-2"><a href="ch-misc.html#cb196-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">uint8_t</span>  type<span class="op">,</span>        <span class="co">// 类型：0 为加密，1 为解密</span></span>
 <span id="cb196-3"><a href="ch-misc.html#cb196-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">uint8_t</span>  mic_size<span class="op">,</span>    <span class="co">// MIC 长度（4 或 8 字节）</span></span>
@@ -698,13 +703,15 @@ CIPHERTEXT:69c4e0d86a7b0430d8cdb78070b4c55a</code></pre>
 <span id="cb203-4"><a href="ch-misc.html#cb203-4" aria-hidden="true" tabindex="-1"></a>    STACK_DISABLE_L2CAP_TIMEOUT <span class="op">=</span> <span class="op">...,</span></span>
 <span id="cb203-5"><a href="ch-misc.html#cb203-5" aria-hidden="true" tabindex="-1"></a>    STACK_SM_USE_FIXED_CSRK <span class="op">=</span> <span class="op">...</span></span>
 <span id="cb203-6"><a href="ch-misc.html#cb203-6" aria-hidden="true" tabindex="-1"></a>    STACK_GATT_CLIENT_DISABLE_MTU_EXCHANGE <span class="op">=</span> <span class="op">...</span></span>
-<span id="cb203-7"><a href="ch-misc.html#cb203-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">...</span></span>
-<span id="cb203-8"><a href="ch-misc.html#cb203-8" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div>
+<span id="cb203-7"><a href="ch-misc.html#cb203-7" aria-hidden="true" tabindex="-1"></a>    STACK_CONNECTION_UPDATE_PARAMETER_REPLY_USER <span class="op">=</span> <span class="op">...</span></span>
+<span id="cb203-8"><a href="ch-misc.html#cb203-8" aria-hidden="true" tabindex="-1"></a>    STACK_DEVICE_DATABASE_SUPPORT_MORE_DEVICES <span class="op">=</span> <span class="op">...</span></span>
+<span id="cb203-9"><a href="ch-misc.html#cb203-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">...</span></span>
+<span id="cb203-10"><a href="ch-misc.html#cb203-10" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div>
 <div id="data-length-与-mtu" class="section level3 hasAnchor" number="13.3.1">
 <h3><span class="header-section-number">13.3.1</span> Data Length 与 MTU<a href="ch-misc.html#data-length-与-mtu" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>低功耗蓝牙进入连接模式后，各层分别协商通信中数据包的大小，对于 ATT 层，由 MTU EXCHANGE 流程实现；对于链路层，由 DATA LENGTH 更新流程实现。</p>
 <p>按照规范，进入连接模式后，DATA LENGTH 更新流程可以由主或从设备在任何时刻发起。这导致了一个问题：某些芯片无法处理对方设备“随时”发起的
-DATA LENGTH 更新流程<a href="ch-cap.html#fn66" class="footnote-ref" id="fnref66"><sup>66</sup></a>。
+DATA LENGTH 更新流程<a href="ch-cap.html#fn67" class="footnote-ref" id="fnref67"><sup>67</sup></a>。
 为了更新地兼容不同的芯片，协议栈定义了两个配置项：</p>
 <ul>
 <li><code>STACK_ATT_SERVER_ENABLE_AUTO_DATA_LEN_REQ</code></li>
@@ -787,7 +794,7 @@ DATA LENGTH 更新流程<a href="ch-cap.html#fn66" class="footnote-ref" id="fnre
 <div id="默认的键值存储实现" class="section level3 hasAnchor" number="13.5.2">
 <h3><span class="header-section-number">13.5.2</span> 默认的键值存储实现<a href="ch-misc.html#默认的键值存储实现" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>默认的键值存储实现的总储存大小为 1024 字节。这个实现本身没有数据持久化。
-持久化需要开发者通过 <code>kv_init</code><a href="ch-cap.html#fn67" class="footnote-ref" id="fnref67"><sup>67</sup></a> 提供回调来实现：</p>
+持久化需要开发者通过 <code>kv_init</code><a href="ch-cap.html#fn68" class="footnote-ref" id="fnref68"><sup>68</sup></a> 提供回调来实现：</p>
 <div class="sourceCode" id="cb210"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb210-1"><a href="ch-misc.html#cb210-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> kv_init<span class="op">(</span></span>
 <span id="cb210-2"><a href="ch-misc.html#cb210-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 用来保存数据的回调</span></span>
 <span id="cb210-3"><a href="ch-misc.html#cb210-3" aria-hidden="true" tabindex="-1"></a>  f_kv_write_to_nvm f_write<span class="op">,</span></span>
@@ -830,7 +837,10 @@ DATA LENGTH 更新流程<a href="ch-cap.html#fn66" class="footnote-ref" id="fnre
 <div id="ch98-le-dev-db" class="section level2 hasAnchor" number="13.6">
 <h2><span class="header-section-number">13.6</span> 设备数据库<a href="ch-misc.html#ch98-le-dev-db" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>设备数据库模块（<em>le_device_db</em>）负责存储、管理设备的绑定信息。这个模块是基于键值存储模块实现的，
-所能存储的设备个数等于 max(软件包所支持的连接数目, 10)<a href="ch-cap.html#fn68" class="footnote-ref" id="fnref68"><sup>68</sup></a>。删、查等接口如下。</p>
+默认情况下，所能存储的设备个数等于 max(软件包所支持的连接数目, 10)<a href="ch-cap.html#fn69" class="footnote-ref" id="fnref69"><sup>69</sup></a>。
+对于 SDK v8.5 及更新版本，使用 <code>STACK_DEVICE_DATABASE_SUPPORT_MORE_DEVICES</code> 配置项可以将个数提升为
+(<code>KV_HOST_KEY_END</code> - <code>KV_HOST_KEY_START</code> + 1)。
+删、查等接口如下。</p>
 <ul>
 <li><p>查：<code>le_device_db_find</code></p>
 <div class="sourceCode" id="cb213"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb213-1"><a href="ch-misc.html#cb213-1" aria-hidden="true" tabindex="-1"></a>le_device_memory_db_t <span class="op">*</span>le_device_db_find<span class="op">(</span></span>
@@ -916,7 +926,7 @@ v8.2 以下版本的 <em>gatt_client_util</em> 模块仅提供 GATT
 <span id="cb220-2"><a href="ch-misc.html#cb220-2" aria-hidden="true" tabindex="-1"></a>    gatt_client_create_sync_runner<span class="op">(</span>synced_push_user_msg<span class="op">);</span></span></code></pre></div></li>
 </ol></li>
 </ul>
-<p>注意：对于一个连接，最多只能存在一个与之关联的同步执行器。最简单的用法是在初始化时创建唯一一个同步执行器对象<a href="ch-cap.html#fn69" class="footnote-ref" id="fnref69"><sup>69</sup></a>。创建多个同步执行器时，最多只能有一个使能了 GAP 同步版 API。</p>
+<p>注意：对于一个连接，最多只能存在一个与之关联的同步执行器。最简单的用法是在初始化时创建唯一一个同步执行器对象<a href="ch-cap.html#fn70" class="footnote-ref" id="fnref70"><sup>70</sup></a>。创建多个同步执行器时，最多只能有一个使能了 GAP 同步版 API。</p>
 <p>上述准备工作做完，就可以使用同步 API 了。下面这个函数 —— 称为一个同步执行体 —— 使用同步 API 多次读取某个特征的值并打印：</p>
 <div class="sourceCode" id="cb221"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb221-1"><a href="ch-misc.html#cb221-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 用 user_data 表示 value_handle</span></span>
 <span id="cb221-2"><a href="ch-misc.html#cb221-2" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> demo_synced_api<span class="op">(</span></span>
@@ -964,7 +974,7 @@ v8.2 以下版本的 <em>gatt_client_util</em> 模块仅提供 GATT
 <p>与 <code>gap_ext_create_connection</code> 相比，这个函数是“阻塞”的：函数直到连接成功或者超时才返回。
 如果调用 <code>gap_create_connection</code> 时出错，则 <code>gap_ext_create_connection</code> 会返回其错误码；
 其它情况下返回的值即 <code>le_meta_event_enh_create_conn_complete_t</code> 里的 <code>status</code> 字段。
-也就是说，连接建立成功时返回值为 0 时，超时时返回值为 0x02<a href="ch-cap.html#fn70" class="footnote-ref" id="fnref70"><sup>70</sup></a> (未知的连接句柄)。</p>
+也就是说，连接建立成功时返回值为 0 时，超时时返回值为 0x02<a href="ch-cap.html#fn71" class="footnote-ref" id="fnref71"><sup>71</sup></a> (未知的连接句柄)。</p>
 <p><code>complete</code> 参数为输出，保存了<code>HCI_SUBEVENT_LE_ENHANCED_CONNECTION_COMPLETE</code> 事件的数据。
 同使用 <code>gap_ext_create_connection</code> 一样，已有的 HCI 事件回调函数也会收到
 这个 <code>HCI_SUBEVENT_LE_ENHANCED_CONNECTION_COMPLETE</code> 事件。</p></li>
@@ -1008,7 +1018,7 @@ v8.2 以下版本的 <em>gatt_client_util</em> 模块仅提供 GATT
 <span id="cb227-10"><a href="ch-misc.html#cb227-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> <span class="op">*</span>subversion<span class="op">);</span></span></code></pre></div>
 <p>蓝牙链路层协议版本号由 Bluethooth SIG 指定，部分编号与版本号的对应关系如表
 <a href="ch-overview.html#tab:ch-overview-ble-version">3.5</a> 所示；
-厂家编号由厂家申请、Bluethooth SIG 指定<a href="ch-cap.html#fn71" class="footnote-ref" id="fnref71"><sup>71</sup></a>；
+厂家编号由厂家申请、Bluethooth SIG 指定<a href="ch-cap.html#fn72" class="footnote-ref" id="fnref72"><sup>72</sup></a>；
 Controller 版本号由 Controller 厂家自行指定。</p></li>
 <li><p><code>gap_sync_read_remote_used_features</code>：读取某连接对端设备使用的蓝牙特性</p>
 <p>函数原型如下：</p>
@@ -1029,7 +1039,7 @@ Controller 版本号由 Controller 厂家自行指定。</p></li>
 <li><p><code>gatt_client_sync_read_value_of_characteristic</code>：同步读取特征的值</p></li>
 <li><p><code>gatt_client_sync_read_characteristic_descriptor</code>：同步读取特征描述符</p></li>
 <li><p><code>gatt_client_sync_write_value_of_characteristic</code>：同步有响应地写入特征的值</p></li>
-<li><p><code>gatt_client_sync_write_value_of_characteristic_without_response</code>：同步无响应地写入特征的值<a href="ch-cap.html#fn72" class="footnote-ref" id="fnref72"><sup>72</sup></a></p></li>
+<li><p><code>gatt_client_sync_write_value_of_characteristic_without_response</code>：同步无响应地写入特征的值<a href="ch-cap.html#fn73" class="footnote-ref" id="fnref73"><sup>73</sup></a></p></li>
 <li><p><code>gatt_client_sync_write_characteristic_descriptor</code>：同步写入特征描述符</p></li>
 </ul>
 </div>
@@ -1078,7 +1088,7 @@ Controller 版本号由 Controller 厂家自行指定。</p></li>
 <ul>
 <li>这个模块依赖于一个真正的 RTOS。使用 NoOS 软件包时，必需提供真正的队列及事件支持。</li>
 <li>封装必然存在开销。对于高性能、高实时性的应用，不推荐使用。反之，对于相对简单的应用，则推荐使用，可以简化代码；</li>
-<li>不要在中断服务程序内使用这些 API<a href="ch-cap.html#fn73" class="footnote-ref" id="fnref73"><sup>73</sup></a>。</li>
+<li>不要在中断服务程序内使用这些 API<a href="ch-cap.html#fn74" class="footnote-ref" id="fnref74"><sup>74</sup></a>。</li>
 </ul>
 </div>
 <div id="ch-misc-privacy" class="section level2 hasAnchor" number="13.9">
@@ -1198,27 +1208,45 @@ Controller 从解析列表中查到对应的本端 IRK，使用与之对应的�
 <p>如果地址解析成功，<code>HCI_SUBEVENT_LE_ENHANCED_CONNECTION_COMPLETE_..</code> 事件里的 <code>peer_addr_type</code>
 将会是 <code>BD_ADDR_TYPE_LE_RESOLVED_RAN</code> 或者 <code>BD_ADDR_TYPE_LE_RESOLVED_PUB</code>，
 <code>peer_addr</code> 是解析出的对端的身份地址。</p>
+</div>
+</div>
+</div>
+<div id="干预连接参数请求流程" class="section level2 hasAnchor" number="13.10">
+<h2><span class="header-section-number">13.10</span> 干预连接参数请求流程<a href="ch-misc.html#干预连接参数请求流程" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>当双方支持时，主、从都可以发起连接参数请求流程。Host 默认会接收对方发送的任意连接参数请求。开发者可以通过多种方式干预流程。</p>
+<ul>
+<li><p>指定连接参数范围</p>
+<p>通过 <code>gap_set_connection_parameter_range</code> 可以指定所能接收的参数范围。Host 自动完成流程。</p></li>
+<li><p>拒绝所有连接参数请求</p>
+<p>通过 <code>gap_set_connection_parameter_range</code> 设置一组特殊无效参数，Host 将拒绝所有连接参数请求。无效参数是指：</p>
+<ul>
+<li><code>le_conn_interval_min</code> 为 <code>0xffff</code>；</li>
+<li>其它参数为 <code>0</code>。</li>
+</ul></li>
+<li><p>由 App 完成流程</p>
+<p>使用 <code>STACK_CONNECTION_UPDATE_PARAMETER_REPLY_USER</code> 配置项可将连接参数请求交由 App 处理。这时 App 可以响应
+<code>HCI_SUBEVENT_LE_REMOTE_CONNECTION_PARAMETER_REQUEST</code> 事件，并通过 <code>gap_connection_parameter_update_reply</code>
+或者 <code>gap_connection_parameter_update_negative_reply</code> 作出响应。</p></li>
+</ul>
 
-</div>
-</div>
 </div>
 </div>
 <div class="footnotes">
 <hr />
-<ol start="62">
-<li id="fn62"><p>参考《Application Note: Direction Finding Solution》。<a href="ch-misc.html#fnref62" class="footnote-back">↩︎</a></p></li>
-<li id="fn63"><p>参考《Controller API Reference》。<a href="ch-misc.html#fnref63" class="footnote-back">↩︎</a></p></li>
+<ol start="63">
+<li id="fn63"><p>参考《Application Note: Direction Finding Solution》。<a href="ch-misc.html#fnref63" class="footnote-back">↩︎</a></p></li>
 <li id="fn64"><p>参考《Controller API Reference》。<a href="ch-misc.html#fnref64" class="footnote-back">↩︎</a></p></li>
-<li id="fn65"><p>为防止与 Media Access Controller 混淆，蓝牙规范使用 MIC 代替 MAC。<a href="ch-misc.html#fnref65" class="footnote-back">↩︎</a></p></li>
-<li id="fn66"><p><a href="https://ingchips.github.io/blog/2021-06-02-sdk-6/#%E5%85%BC%E5%AE%B9%E6%80%A7" class="uri">https://ingchips.github.io/blog/2021-06-02-sdk-6/#%E5%85%BC%E5%AE%B9%E6%80%A7</a><a href="ch-misc.html#fnref66" class="footnote-back">↩︎</a></p></li>
-<li id="fn67"><p>只能在 <code>app_main</code> 就调用。<a href="ch-misc.html#fnref67" class="footnote-back">↩︎</a></p></li>
-<li id="fn68"><p>对于 v8.4.12 或更旧的版本，所能存储的设备个数等于软件包所支持的连接数目。<a href="ch-misc.html#fnref68" class="footnote-back">↩︎</a></p></li>
-<li id="fn69"><p>为多个连接创建多个同步执行器的优势在于多个
-GATT 客户端上的会话可以并发。<a href="ch-misc.html#fnref69" class="footnote-back">↩︎</a></p></li>
-<li id="fn70"><p>由规范规定。<a href="ch-misc.html#fnref70" class="footnote-back">↩︎</a></p></li>
-<li id="fn71"><p><a href="https://www.bluetooth.com/specifications/assigned-numbers/" class="uri">https://www.bluetooth.com/specifications/assigned-numbers/</a><a href="ch-misc.html#fnref71" class="footnote-back">↩︎</a></p></li>
-<li id="fn72"><p>这个函数的原始版本不是严格意义上的异步操作。考虑到在一个同步执行体内可能既会用到有响应的写入，也会用到无响应的写入，加入这个 API 可以带来便利。<a href="ch-misc.html#fnref72" class="footnote-back">↩︎</a></p></li>
-<li id="fn73"><p>可以使用 <code>btstack_push_user_runnable</code>。<a href="ch-misc.html#fnref73" class="footnote-back">↩︎</a></p></li>
+<li id="fn65"><p>参考《Controller API Reference》。<a href="ch-misc.html#fnref65" class="footnote-back">↩︎</a></p></li>
+<li id="fn66"><p>为防止与 Media Access Controller 混淆，蓝牙规范使用 MIC 代替 MAC。<a href="ch-misc.html#fnref66" class="footnote-back">↩︎</a></p></li>
+<li id="fn67"><p><a href="https://ingchips.github.io/blog/2021-06-02-sdk-6/#%E5%85%BC%E5%AE%B9%E6%80%A7" class="uri">https://ingchips.github.io/blog/2021-06-02-sdk-6/#%E5%85%BC%E5%AE%B9%E6%80%A7</a><a href="ch-misc.html#fnref67" class="footnote-back">↩︎</a></p></li>
+<li id="fn68"><p>只能在 <code>app_main</code> 就调用。<a href="ch-misc.html#fnref68" class="footnote-back">↩︎</a></p></li>
+<li id="fn69"><p>对于 v8.4.12 或更旧的版本，所能存储的设备个数等于软件包所支持的连接数目。<a href="ch-misc.html#fnref69" class="footnote-back">↩︎</a></p></li>
+<li id="fn70"><p>为多个连接创建多个同步执行器的优势在于多个
+GATT 客户端上的会话可以并发。<a href="ch-misc.html#fnref70" class="footnote-back">↩︎</a></p></li>
+<li id="fn71"><p>由规范规定。<a href="ch-misc.html#fnref71" class="footnote-back">↩︎</a></p></li>
+<li id="fn72"><p><a href="https://www.bluetooth.com/specifications/assigned-numbers/" class="uri">https://www.bluetooth.com/specifications/assigned-numbers/</a><a href="ch-misc.html#fnref72" class="footnote-back">↩︎</a></p></li>
+<li id="fn73"><p>这个函数的原始版本不是严格意义上的异步操作。考虑到在一个同步执行体内可能既会用到有响应的写入，也会用到无响应的写入，加入这个 API 可以带来便利。<a href="ch-misc.html#fnref73" class="footnote-back">↩︎</a></p></li>
+<li id="fn74"><p>可以使用 <code>btstack_push_user_runnable</code>。<a href="ch-misc.html#fnref74" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

@@ -295,6 +295,7 @@
 <ul>
   <li>AI 捷径（AI Shortcuts）</li>
   <li>ING-DAPLink</li>
+  <li>USB Host Demo</li>
 </ul>
 
 <div class="important">
@@ -304,9 +305,124 @@
 <li>ING916XX 降低主频（HCLK）存在风险：低功耗电流异常，连接容易断开。</li>
 </ul></div>
 
-<h2 id="v853">v8.5.3</h2>
+<h2 id="v854">v8.5.4</h2>
 
 <h3 id="1-软件包">1. 软件包</h3>
+
+<ul>
+  <li>
+    <p>[<strong>修正</strong>] 在 <code class="language-plaintext highlighter-rouge">app_main</code> 里调用 <code class="language-plaintext highlighter-rouge">platform_get_gen_os_driver()</code> 会返回 <code class="language-plaintext highlighter-rouge">NULL</code></p>
+
+    <p>由 v8.5.0 引入，现已修复。</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] <code class="language-plaintext highlighter-rouge">platform_set_us_timer</code></p>
+
+    <p>旧版本的 <code class="language-plaintext highlighter-rouge">platform_set_us_timer</code> 是基于 RF 调度接口实现，其含义为“在指定时间占用射频 1μs”，使用时存在多种限制，如：</p>
+
+    <ul>
+      <li>当某个时间段内正在进行扫描时，无法在这个时间段内创建定时器；</li>
+      <li>回调函数内不允许递归调用 <code class="language-plaintext highlighter-rouge">platform_set_us_timer</code>。</li>
+    </ul>
+
+    <p>现在 <code class="language-plaintext highlighter-rouge">platform_set_us_timer</code> 已经重新设计，没有上述限制。</p>
+
+    <p>使用时一般会在回调函数里清除定时器句柄，因此新增 <code class="language-plaintext highlighter-rouge">platform_set_us_timer2</code>。</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] Controller：更好地调度 Scan/Init/Adv/Conn 多任务</p>
+
+    <p>新版本增强了多任务调度能力，射频利用率明显提升。</p>
+  </li>
+  <li>
+    <p>[<strong>新增</strong>] Host 配置项：<code class="language-plaintext highlighter-rouge">STACK_CONNECTION_UPDATE_PARAMETER_REPLY_USER</code></p>
+
+    <p>详见“<a href="/application-notes/pg_ble_stack_cn/ch-misc.html#%E5%B9%B2%E9%A2%84%E8%BF%9E%E6%8E%A5%E5%8F%82%E6%95%B0%E8%AF%B7%E6%B1%82%E6%B5%81%E7%A8%8B">干预连接参数请求流程</a>”。</p>
+  </li>
+  <li>
+    <p>[<strong>新增</strong>] Host 配置项：<code class="language-plaintext highlighter-rouge">STACK_DEVICE_DATABASE_SUPPORT_MORE_DEVICES</code></p>
+
+    <p>打开这项配置后，Host 最多支持存储 <code class="language-plaintext highlighter-rouge">KV_HOST_KEY_END - KV_HOST_KEY_START + 1</code> 个配对设备信息。
+  而内置的 <code class="language-plaintext highlighter-rouge">kv</code> 存储模块存储空间有限，此配置必须配合自定义的 <code class="language-plaintext highlighter-rouge">kv</code> 存储模块使用。</p>
+  </li>
+  <li>
+    <p>[<strong>新增</strong>] API <code class="language-plaintext highlighter-rouge">ll_register_hci_conn_pdu_previewer</code></p>
+
+    <p>与现有的 <code class="language-plaintext highlighter-rouge">ll_register_hci_acl_previewer</code> 相比，<code class="language-plaintext highlighter-rouge">conn_pdu_previewer</code> 回调可以监控所有的 PDU（包括 ACL/LLCP/空包），
+  —— 无论 CRC 是否正确。该回调还能获取 PDU 对应的原始 RSSI。</p>
+  </li>
+</ul>
+
+<h3 id="2-库函数">2. 库函数</h3>
+
+<ul>
+  <li>
+    <p>[<strong>修正</strong>] ING918 EFlash: 开启编译优化后的潜在问题</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] ING918 EFlash: 增加 <code class="language-plaintext highlighter-rouge">flash_read_uid46</code></p>
+  </li>
+</ul>
+
+<h3 id="3-示例">3. 示例</h3>
+
+<ul>
+  <li>
+    <p>[<strong>新增</strong>] CherryUSB 移植与演示</p>
+
+    <p>这个新示例将 <a href="https://github.com/cherry-embedded/CherryUSB">CherryUSB</a> 移植到 ING916，并演示 USB Host/Device 的用法。
+  该示例只能用 Keil μVision 5 编译，不能用 Keil μVision 4 编译。</p>
+  </li>
+</ul>
+
+<h3 id="4-工具">4. 工具</h3>
+
+<ul>
+  <li>
+    <p>[<strong>更新</strong>] AI Shortcuts 可选用其它具备 OpenAI 兼容接口的 LLM 服务器</p>
+
+    <p><a href="https://learn.microsoft.com/en-us/azure/ai-foundry/foundry-local/get-started">Foundry</a>、<a href="https://ollama.com/">Ollama</a>、<a href="https://github.com/ggml-org/llama.cpp">llama.cpp</a> 等本地运行的 LLM 推理引擎也提供了 OpenAI 兼容接口，因此也能选用。以在本机运行 Local Foundry 为例，各设置如下：</p>
+
+    <ul>
+      <li>
+        <p>URL: http://localhost:5273/v1/chat/completions</p>
+
+        <p>这里的端口号可通过 <code class="language-plaintext highlighter-rouge">foundry service start</code> 或 <code class="language-plaintext highlighter-rouge">foundry service status</code> 命令确认。</p>
+      </li>
+      <li>
+        <p>模型：从 Foundry 支持的模型中选择。比如选择“Qwen2.5 Coder 1.5B 的 CUDA 加速模型”时，这里须填写其全称 <code class="language-plaintext highlighter-rouge">qwen2.5-coder-1.5b-instruct-cuda-gpu</code>。</p>
+      </li>
+      <li>
+        <p>API Key：任意填写几个字符，如 <code class="language-plaintext highlighter-rouge">123</code>。</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] Tracer: 打开大文件时，允许用户指定只读取部分内容</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] Wizard: 填加了几个命令行参数，详见 <code class="language-plaintext highlighter-rouge">--help</code></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] Wizard: 右键菜单集成 AI Shortcuts 功能</p>
+
+    <p>通过右键菜单可直接使用 AI Shortcuts 解释项目、文件或者函数。</p>
+
+    <p><img src="../img/wizard_ai_popup.png" alt="" /></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] Tracer: 导出 RSSI 统计图</p>
+
+    <p><img src="../img/tracer_rssi_chart.png" alt="" /></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] Downloader: 通过 USB 时，可强制使用 Ext bootloader</p>
+  </li>
+</ul>
+
+<h2 id="v853">v8.5.3</h2>
+
+<h3 id="1-软件包-1">1. 软件包</h3>
 
 <ul>
   <li>
@@ -321,7 +437,7 @@
   </li>
 </ul>
 
-<h3 id="2-库函数">2. 库函数</h3>
+<h3 id="2-库函数-1">2. 库函数</h3>
 
 <ul>
   <li>
@@ -339,7 +455,7 @@
 
 <h2 id="v852">v8.5.2</h2>
 
-<h3 id="1-软件包-1">1. 软件包</h3>
+<h3 id="1-软件包-2">1. 软件包</h3>
 
 <ul>
   <li>
@@ -359,7 +475,7 @@
   </li>
 </ul>
 
-<h3 id="2-库函数-1">2. 库函数</h3>
+<h3 id="2-库函数-2">2. 库函数</h3>
 
 <ul>
   <li>
@@ -384,7 +500,7 @@
 
 <h2 id="v851">v8.5.1</h2>
 
-<h3 id="1-软件包-2">1. 软件包</h3>
+<h3 id="1-软件包-3">1. 软件包</h3>
 
 <ul>
   <li>
@@ -402,7 +518,7 @@
 
 <h2 id="v850">v8.5.0</h2>
 
-<h3 id="1-软件包-3">1. 软件包</h3>
+<h3 id="1-软件包-4">1. 软件包</h3>
 
 <ul>
   <li>
@@ -449,7 +565,7 @@
   </li>
 </ul>
 
-<h3 id="2-库函数-2">2. 库函数</h3>
+<h3 id="2-库函数-3">2. 库函数</h3>
 
 <ul>
   <li>[<strong>修正</strong>] ING916 USB: EP0 OUT 概率性故障</li>

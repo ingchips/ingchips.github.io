@@ -198,6 +198,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.6.5" data-path="ch-features.html"><a href="ch-features.html#链路层扩展特性集"><i class="fa fa-check"></i><b>4.6.5</b> 链路层扩展特性集</a></li>
 <li class="chapter" data-level="4.6.6" data-path="ch-features.html"><a href="ch-features.html#帧间隔更新"><i class="fa fa-check"></i><b>4.6.6</b> 帧间隔更新</a></li>
 </ul></li>
+<li class="chapter" data-level="4.7" data-path="ch-features.html"><a href="ch-features.html#新特性-6"><i class="fa fa-check"></i><b>4.7</b> 6.1 新特性</a>
+<ul>
+<li class="chapter" data-level="4.7.1" data-path="ch-features.html"><a href="ch-features.html#随机更新-rpa"><i class="fa fa-check"></i><b>4.7.1</b> 随机更新 RPA</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="ch-adv.html"><a href="ch-adv.html"><i class="fa fa-check"></i><b>5</b> GAP - 广播</a>
 <ul>
@@ -388,6 +392,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="13.9.3" data-path="ch-misc.html"><a href="ch-misc.html#扫描"><i class="fa fa-check"></i><b>13.9.3</b> 扫描</a></li>
 <li class="chapter" data-level="13.9.4" data-path="ch-misc.html"><a href="ch-misc.html#建立连接"><i class="fa fa-check"></i><b>13.9.4</b> 建立连接</a></li>
 </ul></li>
+<li class="chapter" data-level="13.10" data-path="ch-misc.html"><a href="ch-misc.html#干预连接参数请求流程"><i class="fa fa-check"></i><b>13.10</b> 干预连接参数请求流程</a></li>
 </ul></li>
 <li class="chapter" data-level="14" data-path="ch-cap.html"><a href="ch-cap.html"><i class="fa fa-check"></i><b>14</b> 协议栈能力</a></li>
 <li class="divider"></li>
@@ -415,7 +420,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="概览-4" class="section level2 hasAnchor" number="10.1">
 <h2><span class="header-section-number">10.1</span> 概览<a href="ch-l2cap.html#概览-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>BLE L2CAP 负责高层协议复用，分包、组包，以及 QoS 信息的传输。</p>
-<p>L2CAP 定义了基于信用点的连接。两个设备之间可以建立多个基于信用点的连接，不同连接用 SPSM<a href="ch-cap.html#fn41" class="footnote-ref" id="fnref41"><sup>41</sup></a> 区分。
+<p>L2CAP 定义了基于信用点的连接。两个设备之间可以建立多个基于信用点的连接，不同连接用 SPSM<a href="ch-cap.html#fn42" class="footnote-ref" id="fnref42"><sup>42</sup></a> 区分。
 SPSM 长度为 16 比特，<code>0x0001</code>~<code>0x007f</code> 为规范保留，<code>0x0080</code>~<code>0x00ff</code> 可自由使用：</p>
 <ul>
 <li>对于服务端，SPSM 可以取固定值或根据 GATT Profile 动态设置；</li>
@@ -463,9 +468,9 @@ SPSM 长度为 16 比特，<code>0x0001</code>~<code>0x007f</code> 为规范保�
 <p>事件参数详见 <code>l2cap_event_channel_opened_t</code>。</p></li>
 <li><p>L2CAP_EVENT_CHANNEL_CLOSED：连接已关闭</p>
 <p>事件参数详见 <code>l2cap_event_channel_closed_t</code>。</p></li>
-<li><p>L2CAP_EVENT_COMPLETED_SDU_PACKET：收到完整 SDU<a href="ch-cap.html#fn42" class="footnote-ref" id="fnref42"><sup>42</sup></a></p>
+<li><p>L2CAP_EVENT_COMPLETED_SDU_PACKET：收到完整 SDU<a href="ch-cap.html#fn43" class="footnote-ref" id="fnref43"><sup>43</sup></a></p>
 <p>事件参数详见 <code>l2cap_event_complete_sdu_t</code>。</p></li>
-<li><p>L2CAP_EVENT_FRAGMENT_SDU_PACKET：收到 SDU 片断<a href="ch-cap.html#fn43" class="footnote-ref" id="fnref43"><sup>43</sup></a></p>
+<li><p>L2CAP_EVENT_FRAGMENT_SDU_PACKET：收到 SDU 片断<a href="ch-cap.html#fn44" class="footnote-ref" id="fnref44"><sup>44</sup></a></p>
 <p>事件参数详见 l2cap_event_fragment_sdu_t。</p></li>
 </ul></li>
 <li><p>建立连接</p>
@@ -487,8 +492,8 @@ SPSM 长度为 16 比特，<code>0x0001</code>~<code>0x007f</code> 为规范保�
 <ul>
 <li><code>-BTSTACK_LE_CHANNEL_NOT_EXIST：连接不存在</code></li>
 </ul>
-<p>否则这个函数会返回发送出去<a href="ch-cap.html#fn44" class="footnote-ref" id="fnref44"><sup>44</sup></a>的数据的长度。当整个 SDU 都已发送时，
-返回值与 <code>len</code> 参数相同，否则小于 <code>len</code> 参数<a href="ch-cap.html#fn45" class="footnote-ref" id="fnref45"><sup>45</sup></a>。
+<p>否则这个函数会返回发送出去<a href="ch-cap.html#fn45" class="footnote-ref" id="fnref45"><sup>45</sup></a>的数据的长度。当整个 SDU 都已发送时，
+返回值与 <code>len</code> 参数相同，否则小于 <code>len</code> 参数<a href="ch-cap.html#fn46" class="footnote-ref" id="fnref46"><sup>46</sup></a>。
 这时，需要等待有可用的信用点或者链路层队列出现空余时：如果返回值为 0，则再次调用
 <code>l2cap_credit_based_send</code> 重新发送；否则调用 <code>l2cap_credit_based_send_continue</code>
 继续发送剩余数据：</p>
@@ -530,7 +535,7 @@ SPSM 长度为 16 比特，<code>0x0001</code>~<code>0x007f</code> 为规范保�
 <li><p>要求协议栈产生“可发送”事件，在事件中重新尝试发送；</p>
 <p>对于 GATT 服务器，调用 <code>att_server_request_can_send_now_event</code>。待传输队列不满时，
 GATT 服务器的<a href="ch-gatt-server.html#ch-gatt-server-overview">事件回调函数</a>会收到 <code>ATT_EVENT_CAN_SEND_NOW</code> 事件。
-也可以调用 <code>att_dispatch_server_request_can_send_now_event</code><a href="ch-cap.html#fn46" class="footnote-ref" id="fnref46"><sup>46</sup></a>，待传输队列不满时，会收到 <code>L2CAP_EVENT_CAN_SEND_NOW</code> 事件。</p>
+也可以调用 <code>att_dispatch_server_request_can_send_now_event</code><a href="ch-cap.html#fn47" class="footnote-ref" id="fnref47"><sup>47</sup></a>，待传输队列不满时，会收到 <code>L2CAP_EVENT_CAN_SEND_NOW</code> 事件。</p>
 <p>对于 GATT 客户端，调用 <code>att_dispatch_client_request_can_send_now_event</code>。待传输队列不满时，
 GATT 客户端的事件回调函数会收到 <code>L2CAP_EVENT_CAN_SEND_NOW</code> 事件。</p>
 <p>另有 <code>att_server_can_send_now</code>、<code>att_dispatch_client_can_send_now</code>、<code>att_dispatch_server_can_send_now</code>
@@ -555,14 +560,14 @@ GATT 客户端的事件回调函数会收到 <code>L2CAP_EVENT_CAN_SEND_NOW</cod
 </div>
 <div class="footnotes">
 <hr />
-<ol start="41">
-<li id="fn41"><p>5.1 及更低版本里称为 LE_PSM<a href="ch-l2cap.html#fnref41" class="footnote-back">↩︎</a></p></li>
-<li id="fn42"><p>整个 SDU 只占用一个 K 帧<a href="ch-l2cap.html#fnref42" class="footnote-back">↩︎</a></p></li>
-<li id="fn43"><p>整个 SDU 占用多个 K 帧
-这个事件对应其中一个 K 帧<a href="ch-l2cap.html#fnref43" class="footnote-back">↩︎</a></p></li>
-<li id="fn44"><p>指进入链路层发送队列。<a href="ch-l2cap.html#fnref44" class="footnote-back">↩︎</a></p></li>
-<li id="fn45"><p>当信用点用完或者链路层队列已满时，会出现此情况<a href="ch-l2cap.html#fnref45" class="footnote-back">↩︎</a></p></li>
-<li id="fn46"><p><code>att_server_request_can_send_now_event</code> 是基于 <code>att_dispatch_server_request_can_send_now_event</code> 实现的。<a href="ch-l2cap.html#fnref46" class="footnote-back">↩︎</a></p></li>
+<ol start="42">
+<li id="fn42"><p>5.1 及更低版本里称为 LE_PSM<a href="ch-l2cap.html#fnref42" class="footnote-back">↩︎</a></p></li>
+<li id="fn43"><p>整个 SDU 只占用一个 K 帧<a href="ch-l2cap.html#fnref43" class="footnote-back">↩︎</a></p></li>
+<li id="fn44"><p>整个 SDU 占用多个 K 帧
+这个事件对应其中一个 K 帧<a href="ch-l2cap.html#fnref44" class="footnote-back">↩︎</a></p></li>
+<li id="fn45"><p>指进入链路层发送队列。<a href="ch-l2cap.html#fnref45" class="footnote-back">↩︎</a></p></li>
+<li id="fn46"><p>当信用点用完或者链路层队列已满时，会出现此情况<a href="ch-l2cap.html#fnref46" class="footnote-back">↩︎</a></p></li>
+<li id="fn47"><p><code>att_server_request_can_send_now_event</code> 是基于 <code>att_dispatch_server_request_can_send_now_event</code> 实现的。<a href="ch-l2cap.html#fnref47" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

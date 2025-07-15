@@ -198,6 +198,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.6.5" data-path="ch-features.html"><a href="ch-features.html#链路层扩展特性集"><i class="fa fa-check"></i><b>4.6.5</b> 链路层扩展特性集</a></li>
 <li class="chapter" data-level="4.6.6" data-path="ch-features.html"><a href="ch-features.html#帧间隔更新"><i class="fa fa-check"></i><b>4.6.6</b> 帧间隔更新</a></li>
 </ul></li>
+<li class="chapter" data-level="4.7" data-path="ch-features.html"><a href="ch-features.html#新特性-6"><i class="fa fa-check"></i><b>4.7</b> 6.1 新特性</a>
+<ul>
+<li class="chapter" data-level="4.7.1" data-path="ch-features.html"><a href="ch-features.html#随机更新-rpa"><i class="fa fa-check"></i><b>4.7.1</b> 随机更新 RPA</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="ch-adv.html"><a href="ch-adv.html"><i class="fa fa-check"></i><b>5</b> GAP - 广播</a>
 <ul>
@@ -388,6 +392,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="13.9.3" data-path="ch-misc.html"><a href="ch-misc.html#扫描"><i class="fa fa-check"></i><b>13.9.3</b> 扫描</a></li>
 <li class="chapter" data-level="13.9.4" data-path="ch-misc.html"><a href="ch-misc.html#建立连接"><i class="fa fa-check"></i><b>13.9.4</b> 建立连接</a></li>
 </ul></li>
+<li class="chapter" data-level="13.10" data-path="ch-misc.html"><a href="ch-misc.html#干预连接参数请求流程"><i class="fa fa-check"></i><b>13.10</b> 干预连接参数请求流程</a></li>
 </ul></li>
 <li class="chapter" data-level="14" data-path="ch-cap.html"><a href="ch-cap.html"><i class="fa fa-check"></i><b>14</b> 协议栈能力</a></li>
 <li class="divider"></li>
@@ -659,6 +664,20 @@ RTT 则通过测量信号去程和返程时间差来计算距离，能够提供�
 <p>一直以来，相邻两个数据包之间的间隔 <code>T_IFS</code> 固定为 <span class="math inline">\(150 μs\)</span>。现在，规范定义一套 <code>T_IFS</code> 更新机制，
 允许连接双方协商在 <span class="math inline">\(50 μs\)</span> ~ <span class="math inline">\(1000 μs\)</span> 范围内更新该参数。</p>
 <p>暂不支持。</p>
+</div>
+</div>
+<div id="新特性-6" class="section level2 hasAnchor" number="4.7">
+<h2><span class="header-section-number">4.7</span> 6.1 新特性<a href="ch-features.html#新特性-6" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="随机更新-rpa" class="section level3 hasAnchor" number="4.7.1">
+<h3><span class="header-section-number">4.7.1</span> 随机更新 RPA<a href="ch-features.html#随机更新-rpa" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>旧版本 RPA 更新周期固定，通过观察更新规律，有可能将多个 RPA 关联到设备。
+新版本将应有的固定周期拓展为一个区间，Controller 每次从这个区间中随机选取超时时间。</p>
+<p>优点：</p>
+<ul>
+<li>更好地保护设备隐私；</li>
+<li>由 Controller 实现，不需要 Host 参与，功耗低<a href="ch-cap.html#fn21" class="footnote-ref" id="fnref21"><sup>21</sup></a>。</li>
+</ul>
+<p>即将支持。</p>
 
 </div>
 </div>
@@ -672,6 +691,7 @@ RTT 则通过测量信号去程和返程时间差来计算距离，能够提供�
 <li id="fn18"><p>Periodic Advertising Sync Transfer。<a href="ch-features.html#fnref18" class="footnote-back">↩︎</a></p></li>
 <li id="fn19"><p>PAwR 每个子事件、每个响应都只包含一个数据包，不支持 PDU 队列。<a href="ch-features.html#fnref19" class="footnote-back">↩︎</a></p></li>
 <li id="fn20"><p><a href="https://github.com/ingchips/ING918XX_SDK_SOURCE/blob/75cbf9928711c39e0b234ae11796bc1696111998/bundles/typical/inc/platform_api.h#L265" class="uri">https://github.com/ingchips/ING918XX_SDK_SOURCE/blob/75cbf9928711c39e0b234ae11796bc1696111998/bundles/typical/inc/platform_api.h#L265</a><a href="ch-features.html#fnref20" class="footnote-back">↩︎</a></p></li>
+<li id="fn21"><p>旧版本下可以由 Host 随机更新 RPA，一般由软件实现，所以功率比用 Controller 实现功耗高。<a href="ch-features.html#fnref21" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

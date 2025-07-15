@@ -198,6 +198,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.6.5" data-path="ch-features.html"><a href="ch-features.html#链路层扩展特性集"><i class="fa fa-check"></i><b>4.6.5</b> 链路层扩展特性集</a></li>
 <li class="chapter" data-level="4.6.6" data-path="ch-features.html"><a href="ch-features.html#帧间隔更新"><i class="fa fa-check"></i><b>4.6.6</b> 帧间隔更新</a></li>
 </ul></li>
+<li class="chapter" data-level="4.7" data-path="ch-features.html"><a href="ch-features.html#新特性-6"><i class="fa fa-check"></i><b>4.7</b> 6.1 新特性</a>
+<ul>
+<li class="chapter" data-level="4.7.1" data-path="ch-features.html"><a href="ch-features.html#随机更新-rpa"><i class="fa fa-check"></i><b>4.7.1</b> 随机更新 RPA</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="ch-adv.html"><a href="ch-adv.html"><i class="fa fa-check"></i><b>5</b> GAP - 广播</a>
 <ul>
@@ -388,6 +392,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="13.9.3" data-path="ch-misc.html"><a href="ch-misc.html#扫描"><i class="fa fa-check"></i><b>13.9.3</b> 扫描</a></li>
 <li class="chapter" data-level="13.9.4" data-path="ch-misc.html"><a href="ch-misc.html#建立连接"><i class="fa fa-check"></i><b>13.9.4</b> 建立连接</a></li>
 </ul></li>
+<li class="chapter" data-level="13.10" data-path="ch-misc.html"><a href="ch-misc.html#干预连接参数请求流程"><i class="fa fa-check"></i><b>13.10</b> 干预连接参数请求流程</a></li>
 </ul></li>
 <li class="chapter" data-level="14" data-path="ch-cap.html"><a href="ch-cap.html"><i class="fa fa-check"></i><b>14</b> 协议栈能力</a></li>
 <li class="divider"></li>
@@ -484,7 +489,7 @@ T 时刻之前主动唤醒 RTOS 任务，完成必要的处理，为 T 时刻的
 <span id="cb110-2"><a href="ch-controller.html#cb110-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> max_number<span class="op">);</span></span></code></pre></div>
 <p>比如软件包本身支持的最大连接数为 <span class="math inline">\(N\)</span>，但是应用中实际最多用到 2 个连接，通过 <code>ll_set_max_conn_number(2)</code>
 可优化多连接时的数据吞吐率。<code>ll_set_max_conn_number(M)</code>，<span class="math inline">\(M &gt; N\)</span>，并不能增加软件包本身支持的最大连接数。</p>
-<p>当一个连接事件中接收到多个 ACL 数据包时，Controller 默认以 4 个<a href="ch-cap.html#fn55" class="footnote-ref" id="fnref55"><sup>55</sup></a>为一组上报，而不是每收到一个即上报，以减少任务间的切换开销。
+<p>当一个连接事件中接收到多个 ACL 数据包时，Controller 默认以 4 个<a href="ch-cap.html#fn56" class="footnote-ref" id="fnref56"><sup>56</sup></a>为一组上报，而不是每收到一个即上报，以减少任务间的切换开销。
 通过 <code>ll_set_conn_acl_report_latency</code> 可以修改上报频率：</p>
 <div class="sourceCode" id="cb111"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb111-1"><a href="ch-controller.html#cb111-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_set_conn_acl_report_latency<span class="op">(</span></span>
 <span id="cb111-2"><a href="ch-controller.html#cb111-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> conn_handle<span class="op">,</span> <span class="co">// 连接句柄</span></span>
@@ -676,7 +681,7 @@ T 时刻之前主动唤醒 RTOS 任务，完成必要的处理，为 T 时刻的
 </div>
 <div id="广播上的-cte" class="section level2 hasAnchor" number="12.4">
 <h2><span class="header-section-number">12.4</span> 广播上的 CTE<a href="ch-controller.html#广播上的-cte" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>CTE 私有方案 #2<a href="ch-cap.html#fn56" class="footnote-ref" id="fnref56"><sup>56</sup></a>
+<p>CTE 私有方案 #2<a href="ch-cap.html#fn57" class="footnote-ref" id="fnref57"><sup>57</sup></a>
 使用扩展广播发送 CTE。通过 <code>ll_attach_cte_to_adv_set</code> 为已初始化且未使能的广播集附着 CTE：</p>
 <div class="sourceCode" id="cb132"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb132-1"><a href="ch-controller.html#cb132-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 函数执行成功时返回 0，否则返回非 0 值。</span></span>
 <span id="cb132-2"><a href="ch-controller.html#cb132-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_attach_cte_to_adv_set<span class="op">(</span></span>
@@ -706,7 +711,7 @@ T 时刻之前主动唤醒 RTOS 任务，完成必要的处理，为 T 时刻的
 的和必须小于等于 24。建议 <code>slot_sampling_offset</code> 取 12，<code>slot_sample_count</code> 取 1。</p>
 <p>如果扫描未开始，则该函数将失败。扫描停止后，CTE IQ 采样同步停止。再次开始扫描时，需要重新调用该函数才能继续采样。</p>
 <p>IQ 采样通过 <code>HCI_SUBEVENT_LE_VENDOR_PRO_CONNECTIONLESS_IQ_REPORT</code> 事件上报。</p>
-<p>通过 <code>ll_scanner_enable_iq_sampling_on_legacy</code><a href="ch-cap.html#fn57" class="footnote-ref" id="fnref57"><sup>57</sup></a> 可对传统广播的数据部分做 IQ 采样：</p>
+<p>通过 <code>ll_scanner_enable_iq_sampling_on_legacy</code><a href="ch-cap.html#fn58" class="footnote-ref" id="fnref58"><sup>58</sup></a> 可对传统广播的数据部分做 IQ 采样：</p>
 <div class="sourceCode" id="cb134"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb134-1"><a href="ch-controller.html#cb134-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_scanner_enable_iq_sampling_on_legacy<span class="op">(</span></span>
 <span id="cb134-2"><a href="ch-controller.html#cb134-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> sampling_offset<span class="op">,</span>        <span class="co">// 采样起始位置（单位：比特）</span></span>
 <span id="cb134-3"><a href="ch-controller.html#cb134-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> cte_type<span class="op">,</span>                <span class="co">// 固定填 0</span></span>
@@ -719,7 +724,7 @@ T 时刻之前主动唤醒 RTOS 任务，完成必要的处理，为 T 时刻的
 <p>与 <code>ll_scanner_enable_iq_sampling</code> 相比，这个函数增加了两个参数：<code>sampling_offset</code> 和 <code>cte_time</code>。
 <code>sampling_offset</code> 表示采样起始位置，0 对应于 Payload 的第 0 个比特。例如，要采样 <code>ADV_IND</code> 的 <code>AdvData</code> 部分，
 则把 <code>sampling_offset</code> 取做 <span class="math inline">\((6 \times 8 =) 48\)</span>，以跳过长度为 6 个字节的 <code>AdvA</code>。
-IQ 采样通过 <code>HCI_SUBEVENT_LE_VENDOR_PRO_CONNECTIONLESS_IQ_REPORT</code> 事件上报。<a href="ch-cap.html#fn58" class="footnote-ref" id="fnref58"><sup>58</sup></a>。</p>
+IQ 采样通过 <code>HCI_SUBEVENT_LE_VENDOR_PRO_CONNECTIONLESS_IQ_REPORT</code> 事件上报。<a href="ch-cap.html#fn59" class="footnote-ref" id="fnref59"><sup>59</sup></a>。</p>
 <div class="rmdcaution">
 <p>
 此功能可能导致系统卡死或者产生
@@ -854,7 +859,7 @@ PHY 的取值见表 <a href="ch-controller.html#tab:ch-ctrl-phy-types">12.1</a>�
 </div>
 <div id="附着-cte" class="section level4 hasAnchor" number="12.5.1.4">
 <h4><span class="header-section-number">12.5.1.4</span> 附着 CTE<a href="ch-controller.html#附着-cte" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p>CTE 私有方案 #1<a href="ch-cap.html#fn59" class="footnote-ref" id="fnref59"><sup>59</sup></a>
+<p>CTE 私有方案 #1<a href="ch-cap.html#fn60" class="footnote-ref" id="fnref60"><sup>60</sup></a>
 使用 Raw Packet 发送 CTE。发送方通过 <code>ll_raw_packet_set_tx_cte</code> 附着 CTE：</p>
 <div class="sourceCode" id="cb144"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb144-1"><a href="ch-controller.html#cb144-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ll_raw_packet_set_tx_cte<span class="op">(</span></span>
 <span id="cb144-2"><a href="ch-controller.html#cb144-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> ll_raw_packet <span class="op">*</span>packet<span class="op">,</span></span>
@@ -1111,7 +1116,7 @@ ING918 仅支持获取
 <span id="cb168-6"><a href="ch-controller.html#cb168-6" aria-hidden="true" tabindex="-1"></a><span class="op">...</span>             <span class="co">// 已解锁</span></span></code></pre></div>
 </div>
 <div id="自定义参数" class="section level3 hasAnchor" number="12.8.2">
-<h3><span class="header-section-number">12.8.2</span> 自定义参数<a href="ch-cap.html#fn60" class="footnote-ref" id="fnref60"><sup>60</sup></a><a href="ch-controller.html#自定义参数" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<h3><span class="header-section-number">12.8.2</span> 自定义参数<a href="ch-cap.html#fn61" class="footnote-ref" id="fnref61"><sup>61</sup></a><a href="ch-controller.html#自定义参数" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>通过 <code>ll_set_adv_access_address</code> 替换蓝牙核心规范定义的广播包接入地址：</p>
 <div class="sourceCode" id="cb169"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb169-1"><a href="ch-controller.html#cb169-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ll_set_adv_access_address<span class="op">(</span></span>
 <span id="cb169-2"><a href="ch-controller.html#cb169-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> acc_addr<span class="op">);</span></span></code></pre></div>
@@ -1164,7 +1169,7 @@ ING918 为 800 μs 左右。将连接间隔调小，可明显降低通信时延�
 <div class="sourceCode" id="cb177"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb177-1"><a href="ch-controller.html#cb177-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="dt">int</span>  <span class="op">(*</span>f_start_generate_dhkey<span class="op">)(</span></span>
 <span id="cb177-2"><a href="ch-controller.html#cb177-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> key_type<span class="op">,</span>                   <span class="co">// 本端的密钥类型</span></span>
 <span id="cb177-3"><a href="ch-controller.html#cb177-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">uint8_t</span> <span class="op">*</span>remote_pub_key<span class="op">);</span> <span class="co">// 远端的公钥</span></span></code></pre></div>
-<p><code>key_type</code> 为 0 时，选用引擎生成的私钥；为 1 时使用规范定义的调试用私钥<a href="ch-cap.html#fn61" class="footnote-ref" id="fnref61"><sup>61</sup></a>。
+<p><code>key_type</code> 为 0 时，选用引擎生成的私钥；为 1 时使用规范定义的调试用私钥<a href="ch-cap.html#fn62" class="footnote-ref" id="fnref62"><sup>62</sup></a>。
 <code>remote_pub_key</code> 为远端的公钥，长度为 64 字节，前 32 字节为 X 坐标，后 32 字节为 Y 坐标，大端模式。</p>
 <p>这个函数也是在 Controller 的上下文中调用，应该立即返回。当 DHKey 生成或出现错误后，通过 <code>ll_p256_key_pair_generated</code>
 告知结果：</p>
@@ -1178,14 +1183,14 @@ ING918 为 800 μs 左右。将连接间隔调小，可明显降低通信时延�
 </div>
 <div class="footnotes">
 <hr />
-<ol start="55">
-<li id="fn55"><p>典型值。不同软件包有所不同。<a href="ch-controller.html#fnref55" class="footnote-back">↩︎</a></p></li>
-<li id="fn56"><p>更多信息请参考《Application Note: Direction Finding Solution》, <a href="https://ingchips.github.io/application-notes/an_aoa/sdk-support.html#proprietary-solution-2" class="uri">https://ingchips.github.io/application-notes/an_aoa/sdk-support.html#proprietary-solution-2</a><a href="ch-controller.html#fnref56" class="footnote-back">↩︎</a></p></li>
-<li id="fn57"><p>ING918 不支持此功能。<a href="ch-controller.html#fnref57" class="footnote-back">↩︎</a></p></li>
-<li id="fn58"><p>关于原理、使用方法等更多信息请参考《使用 ING916 定位传统蓝牙设备》，<a href="https://ingchips.github.io/blog/2023-03-11-legacy-aoa/" class="uri">https://ingchips.github.io/blog/2023-03-11-legacy-aoa/</a><a href="ch-controller.html#fnref58" class="footnote-back">↩︎</a></p></li>
-<li id="fn59"><p>更多信息请参考《Application Note: Direction Finding Solution》, <a href="https://ingchips.github.io/application-notes/an_aoa/sdk-support.html#proprietary-solution-2" class="uri">https://ingchips.github.io/application-notes/an_aoa/sdk-support.html#proprietary-solution-2</a><a href="ch-controller.html#fnref59" class="footnote-back">↩︎</a></p></li>
-<li id="fn60"><p>本节功能中，ING918 仅支持自定义连接间隔。<a href="ch-controller.html#fnref60" class="footnote-back">↩︎</a></p></li>
-<li id="fn61"><p>参见蓝牙核心规范 Vol 3, Part H, 2.3.5.6 LE Secure Connections pairing phase 2.<a href="ch-controller.html#fnref61" class="footnote-back">↩︎</a></p></li>
+<ol start="56">
+<li id="fn56"><p>典型值。不同软件包有所不同。<a href="ch-controller.html#fnref56" class="footnote-back">↩︎</a></p></li>
+<li id="fn57"><p>更多信息请参考《Application Note: Direction Finding Solution》, <a href="https://ingchips.github.io/application-notes/an_aoa/sdk-support.html#proprietary-solution-2" class="uri">https://ingchips.github.io/application-notes/an_aoa/sdk-support.html#proprietary-solution-2</a><a href="ch-controller.html#fnref57" class="footnote-back">↩︎</a></p></li>
+<li id="fn58"><p>ING918 不支持此功能。<a href="ch-controller.html#fnref58" class="footnote-back">↩︎</a></p></li>
+<li id="fn59"><p>关于原理、使用方法等更多信息请参考《使用 ING916 定位传统蓝牙设备》，<a href="https://ingchips.github.io/blog/2023-03-11-legacy-aoa/" class="uri">https://ingchips.github.io/blog/2023-03-11-legacy-aoa/</a><a href="ch-controller.html#fnref59" class="footnote-back">↩︎</a></p></li>
+<li id="fn60"><p>更多信息请参考《Application Note: Direction Finding Solution》, <a href="https://ingchips.github.io/application-notes/an_aoa/sdk-support.html#proprietary-solution-2" class="uri">https://ingchips.github.io/application-notes/an_aoa/sdk-support.html#proprietary-solution-2</a><a href="ch-controller.html#fnref60" class="footnote-back">↩︎</a></p></li>
+<li id="fn61"><p>本节功能中，ING918 仅支持自定义连接间隔。<a href="ch-controller.html#fnref61" class="footnote-back">↩︎</a></p></li>
+<li id="fn62"><p>参见蓝牙核心规范 Vol 3, Part H, 2.3.5.6 LE Secure Connections pairing phase 2.<a href="ch-controller.html#fnref62" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

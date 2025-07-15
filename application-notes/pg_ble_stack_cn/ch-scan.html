@@ -198,6 +198,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.6.5" data-path="ch-features.html"><a href="ch-features.html#链路层扩展特性集"><i class="fa fa-check"></i><b>4.6.5</b> 链路层扩展特性集</a></li>
 <li class="chapter" data-level="4.6.6" data-path="ch-features.html"><a href="ch-features.html#帧间隔更新"><i class="fa fa-check"></i><b>4.6.6</b> 帧间隔更新</a></li>
 </ul></li>
+<li class="chapter" data-level="4.7" data-path="ch-features.html"><a href="ch-features.html#新特性-6"><i class="fa fa-check"></i><b>4.7</b> 6.1 新特性</a>
+<ul>
+<li class="chapter" data-level="4.7.1" data-path="ch-features.html"><a href="ch-features.html#随机更新-rpa"><i class="fa fa-check"></i><b>4.7.1</b> 随机更新 RPA</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="ch-adv.html"><a href="ch-adv.html"><i class="fa fa-check"></i><b>5</b> GAP - 广播</a>
 <ul>
@@ -388,6 +392,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="13.9.3" data-path="ch-misc.html"><a href="ch-misc.html#扫描"><i class="fa fa-check"></i><b>13.9.3</b> 扫描</a></li>
 <li class="chapter" data-level="13.9.4" data-path="ch-misc.html"><a href="ch-misc.html#建立连接"><i class="fa fa-check"></i><b>13.9.4</b> 建立连接</a></li>
 </ul></li>
+<li class="chapter" data-level="13.10" data-path="ch-misc.html"><a href="ch-misc.html#干预连接参数请求流程"><i class="fa fa-check"></i><b>13.10</b> 干预连接参数请求流程</a></li>
 </ul></li>
 <li class="chapter" data-level="14" data-path="ch-cap.html"><a href="ch-cap.html"><i class="fa fa-check"></i><b>14</b> 协议栈能力</a></li>
 <li class="divider"></li>
@@ -440,7 +445,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb25-9"><a href="ch-scan.html#cb25-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 只接收来自白名单内的设备的广播（所定向的设备与本设备身份地址不同的除外）</span></span>
 <span id="cb25-10"><a href="ch-scan.html#cb25-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// SCAN_ACCEPT_WLIST_EXCEPT_IDENTITY_NOT_MATCH</span></span>
 <span id="cb25-11"><a href="ch-scan.html#cb25-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> scan_filter_policy_t<span class="op">;</span></span></code></pre></div>
-<p>后两种策略<a href="ch-cap.html#fn25" class="footnote-ref" id="fnref25"><sup>25</sup></a>与前两种策略的区别在于判断是否接受定向广播的方法不同。前两种策略只接受满足以下两者之一的定向广播：</p>
+<p>后两种策略<a href="ch-cap.html#fn26" class="footnote-ref" id="fnref26"><sup>26</sup></a>与前两种策略的区别在于判断是否接受定向广播的方法不同。前两种策略只接受满足以下两者之一的定向广播：</p>
 <ol style="list-style-type: decimal">
 <li>TargetA 与本设备的地址一致，</li>
 <li>TargetA 是可解析地址，且可由本设备的 IRK 解析。</li>
@@ -576,7 +581,7 @@ Controller
 </div>
 <div id="与周期广播同步" class="section level3 hasAnchor" number="6.2.4">
 <h3><span class="header-section-number">6.2.4</span> 与周期广播同步<a href="ch-scan.html#与周期广播同步" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>发现周期广播后，可以通过 <code>gap_periodic_adv_create_sync</code> 与周期广播同步<a href="ch-cap.html#fn26" class="footnote-ref" id="fnref26"><sup>26</sup></a>：</p>
+<p>发现周期广播后，可以通过 <code>gap_periodic_adv_create_sync</code> 与周期广播同步<a href="ch-cap.html#fn27" class="footnote-ref" id="fnref27"><sup>27</sup></a>：</p>
 <div class="sourceCode" id="cb31"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb31-1"><a href="ch-scan.html#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gap_periodic_adv_create_sync<span class="op">(</span></span>
 <span id="cb31-2"><a href="ch-scan.html#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 过滤策略：目标地址来自白名单还是参数</span></span>
 <span id="cb31-3"><a href="ch-scan.html#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> periodic_adv_filter_policy_t filter_policy<span class="op">,</span></span>
@@ -639,10 +644,10 @@ Controller
 </div>
 <div class="footnotes">
 <hr />
-<ol start="25">
-<li id="fn25"><p>后两种策略在规范中称为 Extended filter policy。ING916 和 ING918 不支持后两种策略。<a href="ch-scan.html#fnref25" class="footnote-back">↩︎</a></p></li>
+<ol start="26">
+<li id="fn26"><p>后两种策略在规范中称为 Extended filter policy。ING916 和 ING918 不支持后两种策略。<a href="ch-scan.html#fnref26" class="footnote-back">↩︎</a></p></li>
 <li id="fn1"><p><a href="https://www.bluetooth.com/" class="uri">https://www.bluetooth.com/</a><a href="ch-intro.html#fnref1" class="footnote-back">↩︎</a></p></li>
-<li id="fn26"><p>即周期性地接收周期广播。<a href="ch-scan.html#fnref26" class="footnote-back">↩︎</a></p></li>
+<li id="fn27"><p>即周期性地接收周期广播。<a href="ch-scan.html#fnref27" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

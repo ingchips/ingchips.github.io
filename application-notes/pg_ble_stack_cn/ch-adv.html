@@ -517,7 +517,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>一个广播集停止广播时，HCI 回调会收到 <code>HCI_SUBEVENT_LE_ADVERTISING_SET_TERMINATED</code> 事件。这个事件的触发条件如下：</p>
 <ul>
 <li>连接建立：此时 <code>status</code> 为 <code>0</code>，可读取广播句柄和连接句柄的对应关系；</li>
-<li>已达到预定的广播时长、次数，自动停止：此时 <code>status</code> 为 <code>0x43</code>；</li>
+<li>已达到预定的广播时长、次数，自动停止：此时 <code>status</code> 为 <code>0x43</code>（达到指定次数时）或 <code>0x3C</code>（达到指定的广播时长时）；</li>
 <li>极端情况：Controller 无法完成任务处理：此时 <code>status</code> 为 <code>0xFE</code>。</li>
 </ul>
 <p>注意，高占空比广播停止时不上报此事件，而是上报 <code>HCI_SUBEVENT_LE_ENHANCED_CONNECTION_COMPLETE</code> 事件。

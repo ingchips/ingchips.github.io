@@ -305,9 +305,44 @@
 <li>ING916XX 降低主频（HCLK）存在风险：低功耗电流异常，连接容易断开。</li>
 </ul></div>
 
-<h2 id="v854">v8.5.4</h2>
+<h2 id="v855">v8.5.5</h2>
 
 <h3 id="1-软件包">1. 软件包</h3>
+
+<ul>
+  <li>
+    <p>[<strong>修正</strong>] Controller: <code class="language-plaintext highlighter-rouge">LL_PHY_RSP</code> 的生成流程</p>
+
+    <p>当用 <code class="language-plaintext highlighter-rouge">gap_set_phy</code> 设置首选 PHYS 之后，<code class="language-plaintext highlighter-rouge">LL_PHY_RSP</code> 会被填写为对方的 PHYS 与本端首选 PHYS 的交集，
+  可能导致 <code class="language-plaintext highlighter-rouge">TX_PHYS</code> 或 <code class="language-plaintext highlighter-rouge">RX_PHYS</code> 为 <code class="language-plaintext highlighter-rouge">0</code>。现已改为直接填写本端首选 PHYS。</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] Host 配置项 <code class="language-plaintext highlighter-rouge">STACK_CONNECTION_UPDATE_PARAMETER_REPLY_USER</code></p>
+
+    <p>v8.5.4 中，调用 <code class="language-plaintext highlighter-rouge">btstack_config(options)</code>（<code class="language-plaintext highlighter-rouge">options</code> 非 <code class="language-plaintext highlighter-rouge">0</code>），等效为
+  <code class="language-plaintext highlighter-rouge">btstack_config(options | STACK_CONNECTION_UPDATE_PARAMETER_REPLY_USER)</code>。现已修复。</p>
+  </li>
+</ul>
+
+<h3 id="4-工具">4. 工具</h3>
+
+<ul>
+  <li>
+    <p>[<strong>更新</strong>] Wizard: RTT log 工具</p>
+
+    <p><code class="language-plaintext highlighter-rouge">rtt_logger.py</code> 支持通过 DAPLink 抓取、保存 RTT log。现在 SDK
+  提供了一个 Windows 命令行版本的工具 <code class="language-plaintext highlighter-rouge">daplink_rtt_logger</code>，同 <code class="language-plaintext highlighter-rouge">rtt_logger.py</code> 一样，
+  命令行参数完全兼容 SEGGER J-Link RTT 工具。这个工具同 J-Link RTT 一起集成到了 Wizard 右键菜单中：</p>
+
+    <p><img src="../img/wizard_popup_rtt.png" alt="" /></p>
+
+    <p>如图，这项菜单功能是为了配合 RTT Trace，只抓取 UP Channel 0。如果需要抓取其它 Channel，请通过命令行调用。</p>
+  </li>
+</ul>
+
+<h2 id="v854">v8.5.4</h2>
+
+<h3 id="1-软件包-1">1. 软件包</h3>
 
 <ul>
   <li>
@@ -375,7 +410,7 @@
   </li>
 </ul>
 
-<h3 id="4-工具">4. 工具</h3>
+<h3 id="4-工具-1">4. 工具</h3>
 
 <ul>
   <li>
@@ -416,13 +451,13 @@
     <p><img src="../img/tracer_rssi_chart.png" alt="" /></p>
   </li>
   <li>
-    <p>[<strong>更新</strong>] Downloader: 通过 USB 时，可强制使用 Ext bootloader</p>
+    <p>[<strong>更新</strong>] Downloader: 通过 USB 下载时，可强制使用 Ext bootloader</p>
   </li>
 </ul>
 
 <h2 id="v853">v8.5.3</h2>
 
-<h3 id="1-软件包-1">1. 软件包</h3>
+<h3 id="1-软件包-2">1. 软件包</h3>
 
 <ul>
   <li>
@@ -455,7 +490,7 @@
 
 <h2 id="v852">v8.5.2</h2>
 
-<h3 id="1-软件包-2">1. 软件包</h3>
+<h3 id="1-软件包-3">1. 软件包</h3>
 
 <ul>
   <li>
@@ -500,7 +535,7 @@
 
 <h2 id="v851">v8.5.1</h2>
 
-<h3 id="1-软件包-3">1. 软件包</h3>
+<h3 id="1-软件包-4">1. 软件包</h3>
 
 <ul>
   <li>
@@ -518,7 +553,7 @@
 
 <h2 id="v850">v8.5.0</h2>
 
-<h3 id="1-软件包-4">1. 软件包</h3>
+<h3 id="1-软件包-5">1. 软件包</h3>
 
 <ul>
   <li>

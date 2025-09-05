@@ -266,7 +266,7 @@ summarized in Table <a href="ch-framework.html#tab:ch-framework-sleep-modes">3.1
 <tr class="header">
 <th align="center">Mode</th>
 <th align="center">ING918</th>
-<th align="center">ING916</th>
+<th align="center">ING916, ING20</th>
 <th align="left">Notes</th>
 </tr>
 </thead>
@@ -314,7 +314,7 @@ dedicated logic in the SoC out of CPU itself. There are subtle differences betwe
 different sleep modes besides the notes in
 Table <a href="ch-framework.html#tab:ch-framework-sleep-modes">3.1</a>:</p>
 <ul>
-<li><p>For DEEP SLEEP on ING916, some peripherals, such as GPIO, can be optionally
+<li><p>For DEEP SLEEP on ING916 and ING92, some peripherals, such as GPIO, can be optionally
 put into special low power modes, rather than powered off, in which case, its output could
 be retained or acting as wake up sources;</p></li>
 <li><p>In DEEPER SLEEP, comparing with DEEP SLEEP:</p>
@@ -382,7 +382,7 @@ and Table <a href="ch-framework.html#tab:ch-framework-wakeup-sources-916">3.3</a
 </tbody>
 </table>
 <table>
-<caption><span id="tab:ch-framework-wakeup-sources-916">Table 3.3: </span> External wake up sources of ING916</caption>
+<caption><span id="tab:ch-framework-wakeup-sources-916">Table 3.3: </span> External wake up sources of ING916 and ING20</caption>
 <thead>
 <tr class="header">
 <th align="center">Mode</th>
@@ -435,7 +435,7 @@ involvements of Apps (DEEP SLEEP, DEEPER SLEEP, and BLE ONLY SLEEP).</p>
 there are just three things to be handled by Apps:</p>
 <ol style="list-style-type: decimal">
 <li><p>Tell the idle process which modes in Category B are allowed to be used;</p>
-<p>For ING916, Apps can take this opportunity to configure external wake up sources as well.</p></li>
+<p>For ING916 and ING20, Apps can take this opportunity to configure external wake up sources as well.</p></li>
 <li><p>Optionally configure peripherals on-demand before entering Category B sleep modes<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>;</p></li>
 <li><p>(Re-)Configure peripherals after waken up from Category B sleep modes.</p></li>
 </ol>
@@ -477,7 +477,7 @@ or RESET.</p>
 <li><p>For ING918</p>
 <p>Shutdown is based on DEEP SLEEP, except that most of if not all memory is powered
 off too. As in DEEP SLEEP, the system can be powered on again by EXT_INT.</p></li>
-<li><p>For ING916</p>
+<li><p>For ING916 and ING20</p>
 <p>Shutdown can be backed by DEEP SLEEP (default) or DEEPER SLEEP, which can be selected
 by bit <span class="math inline">\(0\)</span> of a debugger parameter <code>PLATFORM_CFG_PS_DBG_4</code> at present. The system
 can be powered on again by external sources (Table <a href="ch-framework.html#tab:ch-framework-wakeup-sources-916">3.3</a>), too.</p>

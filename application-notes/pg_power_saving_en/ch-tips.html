@@ -228,9 +228,9 @@ each peripheral as well as CPU itself, should be chosen with care.</p>
 <h3><span class="header-section-number">6.2.1</span> CPU<a href="ch-tips.html#ch-tips-cpu" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>The lower frequency, the less current is consumed. But, with a lower frequency,
 processing time becomes longer. Do not only measure current, but also execution time.</p>
-<p>Table <a href="ch-tips.html#tab:ch-tips-cpu-currents">6.1</a> shows current consumption<a href="#fn25" class="footnote-ref" id="fnref25"><sup>25</sup></a> of CPU running at varies frequencies under room temperature.</p>
+<p>Table <a href="ch-tips.html#tab:ch-tips-cpu-currents">6.1</a> shows current consumption<a href="#fn25" class="footnote-ref" id="fnref25"><sup>25</sup></a> of ING916’s CPU running at varies frequencies under room temperature.</p>
 <table>
-<caption><span id="tab:ch-tips-cpu-currents">Table 6.1: </span> CPU Current Consumption (<span class="math inline">\(mA\)</span>)</caption>
+<caption><span id="tab:ch-tips-cpu-currents">Table 6.1: </span> ING916 CPU Current Consumption (<span class="math inline">\(mA\)</span>)</caption>
 <thead>
 <tr class="header">
 <th align="center">Frequency (MHz)</th>
@@ -270,7 +270,7 @@ processing time becomes longer. Do not only measure current, but also execution 
 (Table <a href="ch-tips.html#tab:ch-tips-cpu-current-mhz">6.2</a>) or power per
 MHz (Table <a href="ch-tips.html#tab:ch-tips-cpu-power-mhz">6.3</a>).</p>
 <table>
-<caption><span id="tab:ch-tips-cpu-current-mhz">Table 6.2: </span> CPU Current Consumption Per MHz (<span class="math inline">\(\mu A/M\mathit{Hz}\)</span>)</caption>
+<caption><span id="tab:ch-tips-cpu-current-mhz">Table 6.2: </span> ING916 CPU Current Consumption Per MHz (<span class="math inline">\(\mu A/M\mathit{Hz}\)</span>)</caption>
 <thead>
 <tr class="header">
 <th align="center">Frequency (MHz)</th>
@@ -307,7 +307,7 @@ MHz (Table <a href="ch-tips.html#tab:ch-tips-cpu-power-mhz">6.3</a>).</p>
 </tbody>
 </table>
 <table>
-<caption><span id="tab:ch-tips-cpu-power-mhz">Table 6.3: </span> CPU Power Consumption Per MHz (<span class="math inline">\(\mu W/M\mathit{Hz}\)</span>)</caption>
+<caption><span id="tab:ch-tips-cpu-power-mhz">Table 6.3: </span> ING916 CPU Power Consumption Per MHz (<span class="math inline">\(\mu W/M\mathit{Hz}\)</span>)</caption>
 <thead>
 <tr class="header">
 <th align="center">Frequency (MHz)</th>
@@ -356,11 +356,11 @@ voltage.</li>
 </div>
 <div id="cpu-flash" class="section level3 hasAnchor" number="6.2.2">
 <h3><span class="header-section-number">6.2.2</span> CPU + Flash<a href="ch-tips.html#cpu-flash" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>Flash embedded in ING916 SoC interfacing CPU through QSPI, which might
+<p>Flash embedded in ING916 and ING20 SoC interfacing CPU through QSPI, which might
 become a bottleneck without cache. Since cache is shutdown in Category B sleep modes,
 in a short duration after waking up, the system works like without cache.
 Therefore, it is important to measure current consumption in such cases.</p>
-<p>For example, create a function filled with <span class="math inline">\(8192\)</span> NOP(s)(no operation) that is
+<p>Take ING916 as an example, create a function filled with <span class="math inline">\(8192\)</span> NOP(s)(no operation) that is
 larger than I-Cache, loop the function for <span class="math inline">\(200\)</span> times, and measure
 the used electric charge. Figure <a href="ch-tips.html#fig:ch-tips-cpu-flash">6.1</a> shows the result.
 It can be found that when lowering Flash frequency, much more electric charge

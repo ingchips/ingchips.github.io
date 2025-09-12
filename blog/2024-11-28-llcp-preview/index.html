@@ -290,15 +290,15 @@
       </header>
       <div class="inner-md outer">
         <div class="post-content">
-          <p>在蓝牙协议栈开发过程中，有时需要预先知道 LLCP。本文将介绍如何利用 trace 机制实现 LLCP 预览功能。</p>
+          <p>在蓝牙协议栈开发过程中，有时需要预先知道 LLCP。本文将介绍如何利用 Trace 机制实现 LLCP 预览功能。</p>
 
 <h2 id="实现原理">实现原理</h2>
 
-<p>打开 trace <code class="language-plaintext highlighter-rouge">PLATFORM_TRACE_ID_LLCP</code> 类型，Controller 会在接收到 LLCP 时通过 trace 回调函数导出数据。
+<p>打开 Trace <code class="language-plaintext highlighter-rouge">PLATFORM_TRACE_ID_LLCP</code> 类型，Controller 会在接收到 LLCP 时通过 Trace 回调函数导出数据。
 我们可以在回调函数里截获 <code class="language-plaintext highlighter-rouge">PLATFORM_TRACE_ID_LLCP</code>，并预览数据。这个的“预览”包含两层含义：</p>
 
 <ol>
-  <li>Controller 尚未处理该 PDU（Controller 将于 trace 回调完成后处理 PDU）；</li>
+  <li>Controller 尚未处理该 PDU（Controller 将于 Trace 回调完成后处理 PDU）；</li>
   <li>只可读取 PDU 内容，不可修改。</li>
 </ol>
 
@@ -306,7 +306,7 @@
 
 <h3 id="1-trace-数据结构">1. Trace 数据结构</h3>
 
-<p><code class="language-plaintext highlighter-rouge">PLATFORM_TRACE_ID_LLCP</code> trace 类型使用的头信息结构如下：</p>
+<p><code class="language-plaintext highlighter-rouge">PLATFORM_TRACE_ID_LLCP</code> Trace 类型使用的头信息结构如下：</p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#pragma pack (push, 1)
 </span><span class="k">typedef</span> <span class="k">struct</span>
@@ -323,17 +323,17 @@
 
 <h3 id="2-trace-回调处理">2. Trace 回调处理</h3>
 
-<p>假设 <code class="language-plaintext highlighter-rouge">cb_trace_read_llcp</code> 函数为 trace 回调函数，在函数开头添加代码截获接收到的 LLCP：</p>
+<p>假设 <code class="language-plaintext highlighter-rouge">cb_trace_read_llcp</code> 函数为 Trace 回调函数，在函数开头添加代码截获接收到的 LLCP：</p>
 
-<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">static</span> <span class="kt">uint32_t</span> <span class="nf">cb_trace_read_llcp</span><span class="p">(</span><span class="k">const</span> <span class="n">platform_evt_trace_t</span> <span class="o">*</span><span class="n">trace</span><span class="p">,</span> <span class="n">trace_rtt_t</span> <span class="o">*</span><span class="n">ctx</span><span class="p">)</span>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">static</span> <span class="kt">uint32_t</span> <span class="nf">cb_trace_read_llcp</span><span class="p">(</span><span class="k">const</span> <span class="n">platform_evt_trace_t</span> <span class="o">*</span><span class="n">Trace</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">ctx</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">trace</span><span class="o">-&gt;</span><span class="n">len1</span> <span class="o">==</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">header_t</span><span class="p">))</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">Trace</span><span class="o">-&gt;</span><span class="n">len1</span> <span class="o">==</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">header_t</span><span class="p">))</span>
     <span class="p">{</span>
-        <span class="k">const</span> <span class="n">header_t</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="k">const</span> <span class="n">header_t</span> <span class="o">*</span><span class="p">)</span><span class="n">trace</span><span class="o">-&gt;</span><span class="n">data1</span><span class="p">;</span>
+        <span class="k">const</span> <span class="n">header_t</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="k">const</span> <span class="n">header_t</span> <span class="o">*</span><span class="p">)</span><span class="n">Trace</span><span class="o">-&gt;</span><span class="n">data1</span><span class="p">;</span>
         <span class="k">if</span> <span class="p">((</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">id</span> <span class="o">==</span> <span class="n">PLATFORM_TRACE_ID_LLCP</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">tag</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">))</span>
         <span class="p">{</span>
-            <span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">p8</span> <span class="o">=</span> <span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="p">)</span><span class="n">trace</span><span class="o">-&gt;</span><span class="n">data2</span><span class="p">;</span>
-            <span class="n">llcp_preview</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">tag</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="n">p8</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">p8</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">trace</span><span class="o">-&gt;</span><span class="n">len2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+            <span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">p8</span> <span class="o">=</span> <span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="p">)</span><span class="n">Trace</span><span class="o">-&gt;</span><span class="n">data2</span><span class="p">;</span>
+            <span class="n">llcp_preview</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">tag</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="n">p8</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">p8</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Trace</span><span class="o">-&gt;</span><span class="n">len2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
         <span class="p">}</span>
     <span class="p">}</span>
 
@@ -363,7 +363,10 @@
 
 <h2 id="总结">总结</h2>
 
-<p>利用 trace 机制实现的 PDU 预览功能，能帮助开发者实时监控 LLCP 通信，实现必要功能。</p>
+<p>利用 Trace 机制实现的 PDU 预览功能，能帮助开发者实时监控 LLCP 通信，实现必要功能。</p>
+
+<div class="note">
+<strong>温馨提示：</strong>不要忘记设置 <code>PLATFORM_CFG_TRACE_MASK</code>，其中要包含 <code>PLATFORM_TRACE_ID_LLCP</code>。</div>
 
         </div><!-- .post-content -->
       </div><!-- .inner-md -->

@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>4 asdm简介 | ING20XX 系列芯片外设开发者手册</title>
+  <meta name="description" content="ING20XX 系列芯片开发者手册." />
+  <meta name="generator" content="bookdown 0.32 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="4 asdm简介 | ING20XX 系列芯片外设开发者手册" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="ING20XX 系列芯片开发者手册." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="4 asdm简介 | ING20XX 系列芯片外设开发者手册" />
+  
+  <meta name="twitter:description" content="ING20XX 系列芯片开发者手册." />
+  
+
+<meta name="author" content="Ingchips Technology Co., Ltd." />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="ch-adc.html"/>
+<link rel="next" href="ch-dma.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">ING20XX 系列芯片开发者手册</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> 版本历史</a></li>
+<li class="chapter" data-level="2" data-path="ch-overview.html"><a href="ch-overview.html"><i class="fa fa-check"></i><b>2</b> 概览</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="ch-overview.html"><a href="ch-overview.html#缩略语及术语"><i class="fa fa-check"></i><b>2.1</b> 缩略语及术语</a></li>
+<li class="chapter" data-level="2.2" data-path="ch-overview.html"><a href="ch-overview.html#参考文档"><i class="fa fa-check"></i><b>2.2</b> 参考文档</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="ch-adc.html"><a href="ch-adc.html"><i class="fa fa-check"></i><b>3</b> ADC简介</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="ch-adc.html"><a href="ch-adc.html#功能描述"><i class="fa fa-check"></i><b>3.1</b> 功能描述</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="ch-adc.html"><a href="ch-adc.html#特点"><i class="fa fa-check"></i><b>3.1.1</b> 特点</a></li>
+<li class="chapter" data-level="3.1.2" data-path="ch-adc.html"><a href="ch-adc.html#adc模式"><i class="fa fa-check"></i><b>3.1.2</b> ADC模式</a></li>
+<li class="chapter" data-level="3.1.3" data-path="ch-adc.html"><a href="ch-adc.html#adc输入模式"><i class="fa fa-check"></i><b>3.1.3</b> ADC输入模式</a></li>
+<li class="chapter" data-level="3.1.4" data-path="ch-adc.html"><a href="ch-adc.html#adc转换模式"><i class="fa fa-check"></i><b>3.1.4</b> ADC转换模式</a></li>
+<li class="chapter" data-level="3.1.5" data-path="ch-adc.html"><a href="ch-adc.html#adc通道"><i class="fa fa-check"></i><b>3.1.5</b> ADC通道</a></li>
+<li class="chapter" data-level="3.1.6" data-path="ch-adc.html"><a href="ch-adc.html#采样率"><i class="fa fa-check"></i><b>3.1.6</b> 采样率</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="ch-adc.html"><a href="ch-adc.html#使用方法"><i class="fa fa-check"></i><b>3.2</b> 使用方法</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="ch-adc.html"><a href="ch-adc.html#时钟配置"><i class="fa fa-check"></i><b>3.2.1</b> 时钟配置</a></li>
+<li class="chapter" data-level="3.2.2" data-path="ch-adc.html"><a href="ch-adc.html#adc参数配置"><i class="fa fa-check"></i><b>3.2.2</b> ADC参数配置</a></li>
+<li class="chapter" data-level="3.2.3" data-path="ch-adc.html"><a href="ch-adc.html#adc数据处理"><i class="fa fa-check"></i><b>3.2.3</b> ADC数据处理</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="ch-adc.html"><a href="ch-adc.html#编程指南"><i class="fa fa-check"></i><b>3.3</b> 编程指南</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="ch-adc.html"><a href="ch-adc.html#驱动接口"><i class="fa fa-check"></i><b>3.3.1</b> 驱动接口</a></li>
+<li class="chapter" data-level="3.3.2" data-path="ch-adc.html"><a href="ch-adc.html#代码示例"><i class="fa fa-check"></i><b>3.3.2</b> 代码示例</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="ch-asdm.html"><a href="ch-asdm.html"><i class="fa fa-check"></i><b>4</b> asdm简介</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="ch-asdm.html"><a href="ch-asdm.html#功能描述-1"><i class="fa fa-check"></i><b>4.1</b> 功能描述</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="ch-asdm.html"><a href="ch-asdm.html#特点-1"><i class="fa fa-check"></i><b>4.1.1</b> 特点</a></li>
+<li class="chapter" data-level="4.1.2" data-path="ch-asdm.html"><a href="ch-asdm.html#性能"><i class="fa fa-check"></i><b>4.1.2</b> 性能</a></li>
+<li class="chapter" data-level="4.1.3" data-path="ch-asdm.html"><a href="ch-asdm.html#引脚定义"><i class="fa fa-check"></i><b>4.1.3</b> 引脚定义</a></li>
+<li class="chapter" data-level="4.1.4" data-path="ch-asdm.html"><a href="ch-asdm.html#采样率-1"><i class="fa fa-check"></i><b>4.1.4</b> 采样率</a></li>
+<li class="chapter" data-level="4.1.5" data-path="ch-asdm.html"><a href="ch-asdm.html#模块功能简述"><i class="fa fa-check"></i><b>4.1.5</b> 模块功能简述</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="ch-asdm.html"><a href="ch-asdm.html#使用方法-1"><i class="fa fa-check"></i><b>4.2</b> 使用方法</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="ch-asdm.html"><a href="ch-asdm.html#时钟配置-1"><i class="fa fa-check"></i><b>4.2.1</b> 时钟配置</a></li>
+<li class="chapter" data-level="4.2.2" data-path="ch-asdm.html"><a href="ch-asdm.html#设置电压偏置和vref输出滤波"><i class="fa fa-check"></i><b>4.2.2</b> 设置电压偏置和Vref输出滤波</a></li>
+<li class="chapter" data-level="4.2.3" data-path="ch-asdm.html"><a href="ch-asdm.html#初始化配置"><i class="fa fa-check"></i><b>4.2.3</b> 初始化配置</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="ch-asdm.html"><a href="ch-asdm.html#编程指南-1"><i class="fa fa-check"></i><b>4.3</b> 编程指南</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="ch-asdm.html"><a href="ch-asdm.html#驱动接口-1"><i class="fa fa-check"></i><b>4.3.1</b> 驱动接口</a></li>
+<li class="chapter" data-level="4.3.2" data-path="ch-asdm.html"><a href="ch-asdm.html#代码示例-1"><i class="fa fa-check"></i><b>4.3.2</b> 代码示例</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="ch-dma.html"><a href="ch-dma.html"><i class="fa fa-check"></i><b>5</b> DMA简介</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="ch-dma.html"><a href="ch-dma.html#功能描述-2"><i class="fa fa-check"></i><b>5.1</b> 功能描述</a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="ch-dma.html"><a href="ch-dma.html#特点-2"><i class="fa fa-check"></i><b>5.1.1</b> 特点</a></li>
+<li class="chapter" data-level="5.1.2" data-path="ch-dma.html"><a href="ch-dma.html#搬运方式"><i class="fa fa-check"></i><b>5.1.2</b> 搬运方式</a></li>
+<li class="chapter" data-level="5.1.3" data-path="ch-dma.html"><a href="ch-dma.html#搬运类型"><i class="fa fa-check"></i><b>5.1.3</b> 搬运类型</a></li>
+<li class="chapter" data-level="5.1.4" data-path="ch-dma.html"><a href="ch-dma.html#中断类型"><i class="fa fa-check"></i><b>5.1.4</b> 中断类型</a></li>
+<li class="chapter" data-level="5.1.5" data-path="ch-dma.html"><a href="ch-dma.html#数据地址类型"><i class="fa fa-check"></i><b>5.1.5</b> 数据地址类型</a></li>
+<li class="chapter" data-level="5.1.6" data-path="ch-dma.html"><a href="ch-dma.html#数据方式"><i class="fa fa-check"></i><b>5.1.6</b> 数据方式</a></li>
+<li class="chapter" data-level="5.1.7" data-path="ch-dma.html"><a href="ch-dma.html#数据位宽"><i class="fa fa-check"></i><b>5.1.7</b> 数据位宽</a></li>
+<li class="chapter" data-level="5.1.8" data-path="ch-dma.html"><a href="ch-dma.html#总线仲裁"><i class="fa fa-check"></i><b>5.1.8</b> 总线仲裁</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="ch-dma.html"><a href="ch-dma.html#使用方法-2"><i class="fa fa-check"></i><b>5.2</b> 使用方法</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="ch-dma.html"><a href="ch-dma.html#方法概述"><i class="fa fa-check"></i><b>5.2.1</b> 方法概述</a></li>
+<li class="chapter" data-level="5.2.2" data-path="ch-dma.html"><a href="ch-dma.html#注意点"><i class="fa fa-check"></i><b>5.2.2</b> 注意点</a></li>
+<li class="chapter" data-level="5.2.3" data-path="ch-dma.html"><a href="ch-dma.html#握手请求"><i class="fa fa-check"></i><b>5.2.3</b> 握手请求</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="ch-dma.html"><a href="ch-dma.html#编程指南-2"><i class="fa fa-check"></i><b>5.3</b> 编程指南</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="ch-dma.html"><a href="ch-dma.html#驱动接口-2"><i class="fa fa-check"></i><b>5.3.1</b> 驱动接口</a></li>
+<li class="chapter" data-level="5.3.2" data-path="ch-dma.html"><a href="ch-dma.html#代码示例-2"><i class="fa fa-check"></i><b>5.3.2</b> 代码示例</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="ch-gpio.html"><a href="ch-gpio.html"><i class="fa fa-check"></i><b>6</b> 通用输入输出（GPIO）</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="ch-gpio.html"><a href="ch-gpio.html#功能概述"><i class="fa fa-check"></i><b>6.1</b> 功能概述</a></li>
+<li class="chapter" data-level="6.2" data-path="ch-gpio.html"><a href="ch-gpio.html#使用说明"><i class="fa fa-check"></i><b>6.2</b> 使用说明</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="ch-gpio.html"><a href="ch-gpio.html#设置-io-方向"><i class="fa fa-check"></i><b>6.2.1</b> 设置 IO 方向</a></li>
+<li class="chapter" data-level="6.2.2" data-path="ch-gpio.html"><a href="ch-gpio.html#读取输入"><i class="fa fa-check"></i><b>6.2.2</b> 读取输入</a></li>
+<li class="chapter" data-level="6.2.3" data-path="ch-gpio.html"><a href="ch-gpio.html#设置输出"><i class="fa fa-check"></i><b>6.2.3</b> 设置输出</a></li>
+<li class="chapter" data-level="6.2.4" data-path="ch-gpio.html"><a href="ch-gpio.html#配置中断请求"><i class="fa fa-check"></i><b>6.2.4</b> 配置中断请求</a></li>
+<li class="chapter" data-level="6.2.5" data-path="ch-gpio.html"><a href="ch-gpio.html#处理中断状态"><i class="fa fa-check"></i><b>6.2.5</b> 处理中断状态</a></li>
+<li class="chapter" data-level="6.2.6" data-path="ch-gpio.html"><a href="ch-gpio.html#输入去抖"><i class="fa fa-check"></i><b>6.2.6</b> 输入去抖</a></li>
+<li class="chapter" data-level="6.2.7" data-path="ch-gpio.html"><a href="ch-gpio.html#低功耗保持状态"><i class="fa fa-check"></i><b>6.2.7</b> 低功耗保持状态</a></li>
+<li class="chapter" data-level="6.2.8" data-path="ch-gpio.html"><a href="ch-gpio.html#睡眠唤醒源"><i class="fa fa-check"></i><b>6.2.8</b> 睡眠唤醒源</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="ch-iic.html"><a href="ch-iic.html"><i class="fa fa-check"></i><b>7</b> I2C总线</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="ch-iic.html"><a href="ch-iic.html#功能概述-1"><i class="fa fa-check"></i><b>7.1</b> 功能概述</a></li>
+<li class="chapter" data-level="7.2" data-path="ch-iic.html"><a href="ch-iic.html#使用说明-1"><i class="fa fa-check"></i><b>7.2</b> 使用说明</a>
+<ul>
+<li class="chapter" data-level="7.2.1" data-path="ch-iic.html"><a href="ch-iic.html#iic_i2c_blocking"><i class="fa fa-check"></i><b>7.2.1</b> 方法1（blocking）</a></li>
+<li class="chapter" data-level="7.2.2" data-path="ch-iic.html"><a href="ch-iic.html#iic_i2c_interrupt"><i class="fa fa-check"></i><b>7.2.2</b> 方法2（Interrupt）</a></li>
+<li class="chapter" data-level="7.2.3" data-path="ch-iic.html"><a href="ch-iic.html#时钟配置-2"><i class="fa fa-check"></i><b>7.2.3</b> 时钟配置</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="ch-I2S.html"><a href="ch-I2S.html"><i class="fa fa-check"></i><b>8</b> I2S简介</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="ch-I2S.html"><a href="ch-I2S.html#功能描述-3"><i class="fa fa-check"></i><b>8.1</b> 功能描述</a>
+<ul>
+<li class="chapter" data-level="8.1.1" data-path="ch-I2S.html"><a href="ch-I2S.html#特点-3"><i class="fa fa-check"></i><b>8.1.1</b> 特点</a></li>
+<li class="chapter" data-level="8.1.2" data-path="ch-I2S.html"><a href="ch-I2S.html#i2s角色"><i class="fa fa-check"></i><b>8.1.2</b> I2S角色</a></li>
+<li class="chapter" data-level="8.1.3" data-path="ch-I2S.html"><a href="ch-I2S.html#i2s工作模式"><i class="fa fa-check"></i><b>8.1.3</b> I2S工作模式</a></li>
+<li class="chapter" data-level="8.1.4" data-path="ch-I2S.html"><a href="ch-I2S.html#串行数据"><i class="fa fa-check"></i><b>8.1.4</b> 串行数据</a></li>
+<li class="chapter" data-level="8.1.5" data-path="ch-I2S.html"><a href="ch-I2S.html#时钟分频"><i class="fa fa-check"></i><b>8.1.5</b> 时钟分频</a></li>
+<li class="chapter" data-level="8.1.6" data-path="ch-I2S.html"><a href="ch-I2S.html#i2s存储器"><i class="fa fa-check"></i><b>8.1.6</b> I2S存储器</a></li>
+</ul></li>
+<li class="chapter" data-level="8.2" data-path="ch-I2S.html"><a href="ch-I2S.html#使用方法-3"><i class="fa fa-check"></i><b>8.2</b> 使用方法</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="ch-I2S.html"><a href="ch-I2S.html#方法概述-1"><i class="fa fa-check"></i><b>8.2.1</b> 方法概述</a></li>
+<li class="chapter" data-level="8.2.2" data-path="ch-I2S.html"><a href="ch-I2S.html#注意点-1"><i class="fa fa-check"></i><b>8.2.2</b> 注意点</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="ch-I2S.html"><a href="ch-I2S.html#编程指南-4"><i class="fa fa-check"></i><b>8.3</b> 编程指南</a>
+<ul>
+<li class="chapter" data-level="8.3.1" data-path="ch-I2S.html"><a href="ch-I2S.html#驱动接口-3"><i class="fa fa-check"></i><b>8.3.1</b> 驱动接口</a></li>
+<li class="chapter" data-level="8.3.2" data-path="ch-I2S.html"><a href="ch-I2S.html#代码示例-3"><i class="fa fa-check"></i><b>8.3.2</b> 代码示例</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="ch-keyscan.html"><a href="ch-keyscan.html"><i class="fa fa-check"></i><b>9</b> 硬件键盘扫描控制器（KEYSCAN）</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="ch-keyscan.html"><a href="ch-keyscan.html#功能概述-2"><i class="fa fa-check"></i><b>9.1</b> 功能概述</a>
+<ul>
+<li class="chapter" data-level="9.1.1" data-path="ch-keyscan.html"><a href="ch-keyscan.html#特性"><i class="fa fa-check"></i><b>9.1.1</b> 特性：</a></li>
+<li class="chapter" data-level="9.1.2" data-path="ch-keyscan.html"><a href="ch-keyscan.html#功能简述"><i class="fa fa-check"></i><b>9.1.2</b> 功能简述</a></li>
+<li class="chapter" data-level="9.1.3" data-path="ch-keyscan.html"><a href="ch-keyscan.html#lpkey模式"><i class="fa fa-check"></i><b>9.1.3</b> LPkey模式</a></li>
+</ul></li>
+<li class="chapter" data-level="9.2" data-path="ch-keyscan.html"><a href="ch-keyscan.html#使用说明-2"><i class="fa fa-check"></i><b>9.2</b> 使用说明</a>
+<ul>
+<li class="chapter" data-level="9.2.1" data-path="ch-keyscan.html"><a href="ch-keyscan.html#键盘矩阵的软件描述"><i class="fa fa-check"></i><b>9.2.1</b> 键盘矩阵的软件描述</a></li>
+<li class="chapter" data-level="9.2.2" data-path="ch-keyscan.html"><a href="ch-keyscan.html#keyscan模块初始化"><i class="fa fa-check"></i><b>9.2.2</b> KEYSCAN模块初始化</a></li>
+<li class="chapter" data-level="9.2.3" data-path="ch-keyscan.html"><a href="ch-keyscan.html#获取扫描到的按键"><i class="fa fa-check"></i><b>9.2.3</b> 获取扫描到的按键</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="ch-keyscan.html"><a href="ch-keyscan.html#应用举例"><i class="fa fa-check"></i><b>9.3</b> 应用举例</a>
+<ul>
+<li class="chapter" data-level="9.3.1" data-path="ch-keyscan.html"><a href="ch-keyscan.html#初始化keyscan模块"><i class="fa fa-check"></i><b>9.3.1</b> 初始化KEYSCAN模块</a></li>
+<li class="chapter" data-level="9.3.2" data-path="ch-keyscan.html"><a href="ch-keyscan.html#中断数据处理"><i class="fa fa-check"></i><b>9.3.2</b> 中断数据处理</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html"><i class="fa fa-check"></i><b>10</b> 管脚管理（PINCTRL）</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#功能概述-3"><i class="fa fa-check"></i><b>10.1</b> 功能概述</a></li>
+<li class="chapter" data-level="10.2" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#使用说明-3"><i class="fa fa-check"></i><b>10.2</b> 使用说明</a>
+<ul>
+<li class="chapter" data-level="10.2.1" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#为外设配置-io-管脚"><i class="fa fa-check"></i><b>10.2.1</b> 为外设配置 IO 管脚</a></li>
+<li class="chapter" data-level="10.2.2" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#ch-pinctrl-pull"><i class="fa fa-check"></i><b>10.2.2</b> 配置上拉、下拉</a></li>
+<li class="chapter" data-level="10.2.3" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#配置驱动能力"><i class="fa fa-check"></i><b>10.2.3</b> 配置驱动能力</a></li>
+<li class="chapter" data-level="10.2.4" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#配置天线切换控制管脚"><i class="fa fa-check"></i><b>10.2.4</b> 配置天线切换控制管脚</a></li>
+<li class="chapter" data-level="10.2.5" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#pinctrl-config-analog"><i class="fa fa-check"></i><b>10.2.5</b> 配置模拟模式</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="ch-pwm.html"><a href="ch-pwm.html"><i class="fa fa-check"></i><b>11</b> 增强型脉宽调制发生器（PWM）</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="ch-pwm.html"><a href="ch-pwm.html#pwm-工作模式"><i class="fa fa-check"></i><b>11.1</b> PWM 工作模式</a>
+<ul>
+<li class="chapter" data-level="11.1.1" data-path="ch-pwm.html"><a href="ch-pwm.html#最简单的模式up_without_died_zone"><i class="fa fa-check"></i><b>11.1.1</b> 最简单的模式：UP_WITHOUT_DIED_ZONE</a></li>
+<li class="chapter" data-level="11.1.2" data-path="ch-pwm.html"><a href="ch-pwm.html#up_with_died_zone"><i class="fa fa-check"></i><b>11.1.2</b> UP_WITH_DIED_ZONE</a></li>
+<li class="chapter" data-level="11.1.3" data-path="ch-pwm.html"><a href="ch-pwm.html#updown_without_died_zone"><i class="fa fa-check"></i><b>11.1.3</b> UPDOWN_WITHOUT_DIED_ZONE</a></li>
+<li class="chapter" data-level="11.1.4" data-path="ch-pwm.html"><a href="ch-pwm.html#updown_with_died_zone"><i class="fa fa-check"></i><b>11.1.4</b> UPDOWN_WITH_DIED_ZONE</a></li>
+<li class="chapter" data-level="11.1.5" data-path="ch-pwm.html"><a href="ch-pwm.html#single_without_died_zone"><i class="fa fa-check"></i><b>11.1.5</b> SINGLE_WITHOUT_DIED_ZONE</a></li>
+<li class="chapter" data-level="11.1.6" data-path="ch-pwm.html"><a href="ch-pwm.html#dma-模式"><i class="fa fa-check"></i><b>11.1.6</b> DMA 模式</a></li>
+<li class="chapter" data-level="11.1.7" data-path="ch-pwm.html"><a href="ch-pwm.html#输出控制"><i class="fa fa-check"></i><b>11.1.7</b> 输出控制</a></li>
+</ul></li>
+<li class="chapter" data-level="11.2" data-path="ch-pwm.html"><a href="ch-pwm.html#pcap"><i class="fa fa-check"></i><b>11.2</b> PCAP</a>
+<ul>
+<li class="chapter" data-level="11.2.1" data-path="ch-pwm.html"><a href="ch-pwm.html#ir模式"><i class="fa fa-check"></i><b>11.2.1</b> IR模式</a></li>
+</ul></li>
+<li class="chapter" data-level="11.3" data-path="ch-pwm.html"><a href="ch-pwm.html#pwm-使用说明"><i class="fa fa-check"></i><b>11.3</b> PWM 使用说明</a>
+<ul>
+<li class="chapter" data-level="11.3.1" data-path="ch-pwm.html"><a href="ch-pwm.html#启动与停止"><i class="fa fa-check"></i><b>11.3.1</b> 启动与停止</a></li>
+<li class="chapter" data-level="11.3.2" data-path="ch-pwm.html"><a href="ch-pwm.html#配置工作模式"><i class="fa fa-check"></i><b>11.3.2</b> 配置工作模式</a></li>
+<li class="chapter" data-level="11.3.3" data-path="ch-pwm.html"><a href="ch-pwm.html#配置门限"><i class="fa fa-check"></i><b>11.3.3</b> 配置门限</a></li>
+<li class="chapter" data-level="11.3.4" data-path="ch-pwm.html"><a href="ch-pwm.html#输出控制-1"><i class="fa fa-check"></i><b>11.3.4</b> 输出控制</a></li>
+<li class="chapter" data-level="11.3.5" data-path="ch-pwm.html"><a href="ch-pwm.html#综合示例"><i class="fa fa-check"></i><b>11.3.5</b> 综合示例</a></li>
+<li class="chapter" data-level="11.3.6" data-path="ch-pwm.html"><a href="ch-pwm.html#使用-dma-实时更新配置"><i class="fa fa-check"></i><b>11.3.6</b> 使用 DMA 实时更新配置</a></li>
+</ul></li>
+<li class="chapter" data-level="11.4" data-path="ch-pwm.html"><a href="ch-pwm.html#pcap-使用说明"><i class="fa fa-check"></i><b>11.4</b> PCAP 使用说明</a>
+<ul>
+<li class="chapter" data-level="11.4.1" data-path="ch-pwm.html"><a href="ch-pwm.html#配置-pcap-模式"><i class="fa fa-check"></i><b>11.4.1</b> 配置 PCAP 模式</a></li>
+</ul></li>
+<li class="chapter" data-level="11.5" data-path="ch-pwm.html"><a href="ch-pwm.html#ir模式示例"><i class="fa fa-check"></i><b>11.5</b> IR模式示例</a>
+<ul>
+<li class="chapter" data-level="11.5.1" data-path="ch-pwm.html"><a href="ch-pwm.html#ir-发送模式"><i class="fa fa-check"></i><b>11.5.1</b> IR 发送模式</a></li>
+<li class="chapter" data-level="11.5.2" data-path="ch-pwm.html"><a href="ch-pwm.html#ir接收模式"><i class="fa fa-check"></i><b>11.5.2</b> IR接收模式</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="ch-qdec.html"><a href="ch-qdec.html"><i class="fa fa-check"></i><b>12</b> QDEC简介</a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="ch-qdec.html"><a href="ch-qdec.html#功能描述-4"><i class="fa fa-check"></i><b>12.1</b> 功能描述</a>
+<ul>
+<li class="chapter" data-level="12.1.1" data-path="ch-qdec.html"><a href="ch-qdec.html#特点-4"><i class="fa fa-check"></i><b>12.1.1</b> 特点</a></li>
+<li class="chapter" data-level="12.1.2" data-path="ch-qdec.html"><a href="ch-qdec.html#正转和反转"><i class="fa fa-check"></i><b>12.1.2</b> 正转和反转</a></li>
+</ul></li>
+<li class="chapter" data-level="12.2" data-path="ch-qdec.html"><a href="ch-qdec.html#使用方法-4"><i class="fa fa-check"></i><b>12.2</b> 使用方法</a>
+<ul>
+<li class="chapter" data-level="12.2.1" data-path="ch-qdec.html"><a href="ch-qdec.html#方法概述-2"><i class="fa fa-check"></i><b>12.2.1</b> 方法概述</a></li>
+<li class="chapter" data-level="12.2.2" data-path="ch-qdec.html"><a href="ch-qdec.html#注意点-2"><i class="fa fa-check"></i><b>12.2.2</b> 注意点</a></li>
+</ul></li>
+<li class="chapter" data-level="12.3" data-path="ch-qdec.html"><a href="ch-qdec.html#编程指南-5"><i class="fa fa-check"></i><b>12.3</b> 编程指南</a>
+<ul>
+<li class="chapter" data-level="12.3.1" data-path="ch-qdec.html"><a href="ch-qdec.html#驱动接口-4"><i class="fa fa-check"></i><b>12.3.1</b> 驱动接口</a></li>
+<li class="chapter" data-level="12.3.2" data-path="ch-qdec.html"><a href="ch-qdec.html#代码示例-4"><i class="fa fa-check"></i><b>12.3.2</b> 代码示例</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="ch-spi.html"><a href="ch-spi.html"><i class="fa fa-check"></i><b>13</b> 串行外围设备接口（SPI）</a>
+<ul>
+<li class="chapter" data-level="13.1" data-path="ch-spi.html"><a href="ch-spi.html#功能概述-4"><i class="fa fa-check"></i><b>13.1</b> 功能概述</a></li>
+<li class="chapter" data-level="13.2" data-path="ch-spi.html"><a href="ch-spi.html#使用说明-4"><i class="fa fa-check"></i><b>13.2</b> 使用说明</a>
+<ul>
+<li class="chapter" data-level="13.2.1" data-path="ch-spi.html"><a href="ch-spi.html#时钟以及io配置"><i class="fa fa-check"></i><b>13.2.1</b> 时钟以及IO配置</a></li>
+<li class="chapter" data-level="13.2.2" data-path="ch-spi.html"><a href="ch-spi.html#模块初始化-1"><i class="fa fa-check"></i><b>13.2.2</b> 模块初始化</a></li>
+<li class="chapter" data-level="13.2.3" data-path="ch-spi.html"><a href="ch-spi.html#中断配置-1"><i class="fa fa-check"></i><b>13.2.3</b> 中断配置</a></li>
+<li class="chapter" data-level="13.2.4" data-path="ch-spi.html"><a href="ch-spi.html#编程指南-6"><i class="fa fa-check"></i><b>13.2.4</b> 编程指南</a></li>
+<li class="chapter" data-level="13.2.5" data-path="ch-spi.html"><a href="ch-spi.html#其他配置"><i class="fa fa-check"></i><b>13.2.5</b> 其他配置</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html"><i class="fa fa-check"></i><b>14</b> 系统控制（SYSCTRL）</a>
+<ul>
+<li class="chapter" data-level="14.1" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#功能概述-5"><i class="fa fa-check"></i><b>14.1</b> 功能概述</a>
+<ul>
+<li class="chapter" data-level="14.1.1" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#外设标识"><i class="fa fa-check"></i><b>14.1.1</b> 外设标识</a></li>
+<li class="chapter" data-level="14.1.2" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#时钟树"><i class="fa fa-check"></i><b>14.1.2</b> 时钟树</a></li>
+<li class="chapter" data-level="14.1.3" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#dma-规划"><i class="fa fa-check"></i><b>14.1.3</b> DMA 规划</a></li>
+</ul></li>
+<li class="chapter" data-level="14.2" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#使用说明-5"><i class="fa fa-check"></i><b>14.2</b> 使用说明</a>
+<ul>
+<li class="chapter" data-level="14.2.1" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#外设复位"><i class="fa fa-check"></i><b>14.2.1</b> 外设复位</a></li>
+<li class="chapter" data-level="14.2.2" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#时钟门控"><i class="fa fa-check"></i><b>14.2.2</b> 时钟门控</a></li>
+<li class="chapter" data-level="14.2.3" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#时钟配置-4"><i class="fa fa-check"></i><b>14.2.3</b> 时钟配置</a></li>
+<li class="chapter" data-level="14.2.4" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#dma-规划-1"><i class="fa fa-check"></i><b>14.2.4</b> DMA 规划</a></li>
+<li class="chapter" data-level="14.2.5" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#唤醒后的时钟配置"><i class="fa fa-check"></i><b>14.2.5</b> 唤醒后的时钟配置</a></li>
+<li class="chapter" data-level="14.2.6" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#ram-相关"><i class="fa fa-check"></i><b>14.2.6</b> RAM 相关</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="ch-timer.html"><a href="ch-timer.html"><i class="fa fa-check"></i><b>15</b> 定时器（TIMER）</a>
+<ul>
+<li class="chapter" data-level="15.1" data-path="ch-timer.html"><a href="ch-timer.html#功能概述-6"><i class="fa fa-check"></i><b>15.1</b> 功能概述</a></li>
+<li class="chapter" data-level="15.2" data-path="ch-timer.html"><a href="ch-timer.html#使用说明-6"><i class="fa fa-check"></i><b>15.2</b> 使用说明</a>
+<ul>
+<li class="chapter" data-level="15.2.1" data-path="ch-timer.html"><a href="ch-timer.html#设置timer工作模式"><i class="fa fa-check"></i><b>15.2.1</b> 设置TIMER工作模式</a></li>
+<li class="chapter" data-level="15.2.2" data-path="ch-timer.html"><a href="ch-timer.html#获取时钟频率"><i class="fa fa-check"></i><b>15.2.2</b> 获取时钟频率</a></li>
+<li class="chapter" data-level="15.2.3" data-path="ch-timer.html"><a href="ch-timer.html#重载值"><i class="fa fa-check"></i><b>15.2.3</b> 重载值</a></li>
+<li class="chapter" data-level="15.2.4" data-path="ch-timer.html"><a href="ch-timer.html#使能timer"><i class="fa fa-check"></i><b>15.2.4</b> 使能TIMER</a></li>
+<li class="chapter" data-level="15.2.5" data-path="ch-timer.html"><a href="ch-timer.html#获取timer的比较值"><i class="fa fa-check"></i><b>15.2.5</b> 获取TIMER的比较值</a></li>
+<li class="chapter" data-level="15.2.6" data-path="ch-timer.html"><a href="ch-timer.html#获取timer的计数器值"><i class="fa fa-check"></i><b>15.2.6</b> 获取TIMER的计数器值</a></li>
+<li class="chapter" data-level="15.2.7" data-path="ch-timer.html"><a href="ch-timer.html#计时器暂停"><i class="fa fa-check"></i><b>15.2.7</b> 计时器暂停</a></li>
+<li class="chapter" data-level="15.2.8" data-path="ch-timer.html"><a href="ch-timer.html#配置中断请求-1"><i class="fa fa-check"></i><b>15.2.8</b> 配置中断请求</a></li>
+<li class="chapter" data-level="15.2.9" data-path="ch-timer.html"><a href="ch-timer.html#处理中断状态-1"><i class="fa fa-check"></i><b>15.2.9</b> 处理中断状态</a></li>
+</ul></li>
+<li class="chapter" data-level="15.3" data-path="ch-timer.html"><a href="ch-timer.html#使用示例"><i class="fa fa-check"></i><b>15.3</b> 使用示例</a>
+<ul>
+<li class="chapter" data-level="15.3.1" data-path="ch-timer.html"><a href="ch-timer.html#使用计时器功能及暂停功能"><i class="fa fa-check"></i><b>15.3.1</b> 使用计时器功能及暂停功能</a></li>
+<li class="chapter" data-level="15.3.2" data-path="ch-timer.html"><a href="ch-timer.html#使用timer的pwm功能"><i class="fa fa-check"></i><b>15.3.2</b> 使用TIMER的PWM功能</a></li>
+<li class="chapter" data-level="15.3.3" data-path="ch-timer.html"><a href="ch-timer.html#通道0产生2个周期性中断"><i class="fa fa-check"></i><b>15.3.3</b> 通道0产生2个周期性中断</a></li>
+<li class="chapter" data-level="15.3.4" data-path="ch-timer.html"><a href="ch-timer.html#产生2路对齐的pwm信号"><i class="fa fa-check"></i><b>15.3.4</b> 产生2路对齐的PWM信号</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="ch-uart.html"><a href="ch-uart.html"><i class="fa fa-check"></i><b>16</b> 通用异步收发传输器（UART）</a>
+<ul>
+<li class="chapter" data-level="16.1" data-path="ch-uart.html"><a href="ch-uart.html#功能概述-7"><i class="fa fa-check"></i><b>16.1</b> 功能概述</a></li>
+<li class="chapter" data-level="16.2" data-path="ch-uart.html"><a href="ch-uart.html#使用说明-7"><i class="fa fa-check"></i><b>16.2</b> 使用说明</a>
+<ul>
+<li class="chapter" data-level="16.2.1" data-path="ch-uart.html"><a href="ch-uart.html#设置波特率"><i class="fa fa-check"></i><b>16.2.1</b> 设置波特率</a></li>
+<li class="chapter" data-level="16.2.2" data-path="ch-uart.html"><a href="ch-uart.html#获取波特率"><i class="fa fa-check"></i><b>16.2.2</b> 获取波特率</a></li>
+<li class="chapter" data-level="16.2.3" data-path="ch-uart.html"><a href="ch-uart.html#ch-uart-initial"><i class="fa fa-check"></i><b>16.2.3</b> UART初始化</a></li>
+<li class="chapter" data-level="16.2.4" data-path="ch-uart.html"><a href="ch-uart.html#uart轮询模式"><i class="fa fa-check"></i><b>16.2.4</b> UART轮询模式</a></li>
+<li class="chapter" data-level="16.2.5" data-path="ch-uart.html"><a href="ch-uart.html#uart中断使能禁用"><i class="fa fa-check"></i><b>16.2.5</b> UART中断使能/禁用</a></li>
+<li class="chapter" data-level="16.2.6" data-path="ch-uart.html"><a href="ch-uart.html#处理中断状态-2"><i class="fa fa-check"></i><b>16.2.6</b> 处理中断状态</a></li>
+<li class="chapter" data-level="16.2.7" data-path="ch-uart.html"><a href="ch-uart.html#uart-fifo中断触发逻辑"><i class="fa fa-check"></i><b>16.2.7</b> UART FIFO中断触发逻辑</a></li>
+<li class="chapter" data-level="16.2.8" data-path="ch-uart.html"><a href="ch-uart.html#发送数据"><i class="fa fa-check"></i><b>16.2.8</b> 发送数据</a></li>
+<li class="chapter" data-level="16.2.9" data-path="ch-uart.html"><a href="ch-uart.html#接收数据"><i class="fa fa-check"></i><b>16.2.9</b> 接收数据</a></li>
+<li class="chapter" data-level="16.2.10" data-path="ch-uart.html"><a href="ch-uart.html#dma传输模式使能"><i class="fa fa-check"></i><b>16.2.10</b> DMA传输模式使能</a></li>
+</ul></li>
+<li class="chapter" data-level="16.3" data-path="ch-uart.html"><a href="ch-uart.html#示例代码"><i class="fa fa-check"></i><b>16.3</b> 示例代码</a>
+<ul>
+<li class="chapter" data-level="16.3.1" data-path="ch-uart.html"><a href="ch-uart.html#uart接收变长字节数据"><i class="fa fa-check"></i><b>16.3.1</b> UART接收变长字节数据</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="17" data-path="ch-usb.html"><a href="ch-usb.html"><i class="fa fa-check"></i><b>17</b> 通用串行总线 (USB)</a>
+<ul>
+<li class="chapter" data-level="17.1" data-path="ch-usb.html"><a href="ch-usb.html#功能概述-8"><i class="fa fa-check"></i><b>17.1</b> 功能概述</a></li>
+<li class="chapter" data-level="17.2" data-path="ch-usb.html"><a href="ch-usb.html#使用说明-8"><i class="fa fa-check"></i><b>17.2</b> 使用说明</a>
+<ul>
+<li class="chapter" data-level="17.2.1" data-path="ch-usb.html"><a href="ch-usb.html#usb软件结构"><i class="fa fa-check"></i><b>17.2.1</b> USB软件结构</a></li>
+<li class="chapter" data-level="17.2.2" data-path="ch-usb.html"><a href="ch-usb.html#usb-device-状态"><i class="fa fa-check"></i><b>17.2.2</b> USB Device 状态</a></li>
+<li class="chapter" data-level="17.2.3" data-path="ch-usb.html"><a href="ch-usb.html#设置-io"><i class="fa fa-check"></i><b>17.2.3</b> 设置 IO</a></li>
+<li class="chapter" data-level="17.2.4" data-path="ch-usb.html"><a href="ch-usb.html#设置-phy"><i class="fa fa-check"></i><b>17.2.4</b> 设置 PHY</a></li>
+<li class="chapter" data-level="17.2.5" data-path="ch-usb.html"><a href="ch-usb.html#usb-模块初始化"><i class="fa fa-check"></i><b>17.2.5</b> USB 模块初始化</a></li>
+<li class="chapter" data-level="17.2.6" data-path="ch-usb.html"><a href="ch-usb.html#event-handler"><i class="fa fa-check"></i><b>17.2.6</b> event handler</a></li>
+<li class="chapter" data-level="17.2.7" data-path="ch-usb.html"><a href="ch-usb.html#常用driver-api"><i class="fa fa-check"></i><b>17.2.7</b> 常用driver API</a></li>
+<li class="chapter" data-level="17.2.8" data-path="ch-usb.html"><a href="ch-usb.html#使用场景"><i class="fa fa-check"></i><b>17.2.8</b> 使用场景</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="18" data-path="ch-watchdog.html"><a href="ch-watchdog.html"><i class="fa fa-check"></i><b>18</b> 看门狗（WATCHDOG）</a>
+<ul>
+<li class="chapter" data-level="18.1" data-path="ch-watchdog.html"><a href="ch-watchdog.html#功能概述-9"><i class="fa fa-check"></i><b>18.1</b> 功能概述</a></li>
+<li class="chapter" data-level="18.2" data-path="ch-watchdog.html"><a href="ch-watchdog.html#使用说明-9"><i class="fa fa-check"></i><b>18.2</b> 使用说明</a>
+<ul>
+<li class="chapter" data-level="18.2.1" data-path="ch-watchdog.html"><a href="ch-watchdog.html#配置看门狗"><i class="fa fa-check"></i><b>18.2.1</b> 配置看门狗</a></li>
+<li class="chapter" data-level="18.2.2" data-path="ch-watchdog.html"><a href="ch-watchdog.html#重启看门狗"><i class="fa fa-check"></i><b>18.2.2</b> 重启看门狗</a></li>
+<li class="chapter" data-level="18.2.3" data-path="ch-watchdog.html"><a href="ch-watchdog.html#清除中断"><i class="fa fa-check"></i><b>18.2.3</b> 清除中断</a></li>
+<li class="chapter" data-level="18.2.4" data-path="ch-watchdog.html"><a href="ch-watchdog.html#禁用看门狗"><i class="fa fa-check"></i><b>18.2.4</b> 禁用看门狗</a></li>
+<li class="chapter" data-level="18.2.5" data-path="ch-watchdog.html"><a href="ch-watchdog.html#暂停看门狗"><i class="fa fa-check"></i><b>18.2.5</b> 暂停看门狗</a></li>
+<li class="chapter" data-level="18.2.6" data-path="ch-watchdog.html"><a href="ch-watchdog.html#处理中断状态-3"><i class="fa fa-check"></i><b>18.2.6</b> 处理中断状态</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="19" data-path="ch-eflash.html"><a href="ch-eflash.html"><i class="fa fa-check"></i><b>19</b> 内置 Flash（EFlash）</a>
+<ul>
+<li class="chapter" data-level="19.1" data-path="ch-eflash.html"><a href="ch-eflash.html#功能概述-10"><i class="fa fa-check"></i><b>19.1</b> 功能概述</a></li>
+<li class="chapter" data-level="19.2" data-path="ch-eflash.html"><a href="ch-eflash.html#使用说明-10"><i class="fa fa-check"></i><b>19.2</b> 使用说明</a>
+<ul>
+<li class="chapter" data-level="19.2.1" data-path="ch-eflash.html"><a href="ch-eflash.html#擦除并写入新数据"><i class="fa fa-check"></i><b>19.2.1</b> 擦除并写入新数据</a></li>
+<li class="chapter" data-level="19.2.2" data-path="ch-eflash.html"><a href="ch-eflash.html#不擦除直接写入数据"><i class="fa fa-check"></i><b>19.2.2</b> 不擦除直接写入数据</a></li>
+<li class="chapter" data-level="19.2.3" data-path="ch-eflash.html"><a href="ch-eflash.html#单独擦除"><i class="fa fa-check"></i><b>19.2.3</b> 单独擦除</a></li>
+<li class="chapter" data-level="19.2.4" data-path="ch-eflash.html"><a href="ch-eflash.html#flash-数据升级"><i class="fa fa-check"></i><b>19.2.4</b> Flash 数据升级</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">ING20XX 系列芯片外设开发者手册</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="ch-asdm" class="section level1 hasAnchor" number="4">
+<h1><span class="header-section-number">4</span> asdm简介<a href="ch-asdm.html#ch-asdm" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>asdm全称，Sigma-Delta-Analog-to-Digital Converter，即Sigma-Delta模拟数字转换器。</p>
+<p>集成一个Sigma-Delta ADC模块，通过PIN测量电压，并将采集到的电压模拟信号转换成数字信号。相较于普通ADC模块，转换精度更高，抗干扰能力更强，功耗更低。</p>
+<p>专为数字音频采样设计，内置数字处理单元，包含AGC和HPF等数字信号处理功能，支持硬件滤波，集成音量控制，音量淡入淡出。支持DMIC输出PDM信号采样处理。</p>
+<div id="功能描述-1" class="section level2 hasAnchor" number="4.1">
+<h2><span class="header-section-number">4.1</span> 功能描述<a href="ch-asdm.html#功能描述-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="特点-1" class="section level3 hasAnchor" number="4.1.1">
+<h3><span class="header-section-number">4.1.1</span> 特点<a href="ch-asdm.html#特点-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>单端输入或全差分输入</p></li>
+<li><p>支持1MIC通道，模拟电压- 20dB ~ 40dB，增益0 / 16 / 12 / 20dB</p></li>
+<li><p>16位分辨率</p></li>
+<li><p>电压输入范围（0~VBAT）</p></li>
+<li><p>支持APB总线</p></li>
+<li><p>采样频率可编程</p></li>
+<li><p>可产生2.2 V到2.7 V的麦克风偏置电压， 最高输出电流2MA， 电流过载保护</p></li>
+<li><p>DMIC支持PDM信号采样处理，支持128和64bit两种采样类型</p></li>
+<li><p>支持带淡入和淡出的独立音量控制</p></li>
+<li><p>可编程时钟，支持六种典型采样频率：8/12/16/24/32/48kHz</p></li>
+<li><p>支持DC阻塞的高通滤波器</p></li>
+</ul>
+</div>
+<div id="性能" class="section level3 hasAnchor" number="4.1.2">
+<h3><span class="header-section-number">4.1.2</span> 性能<a href="ch-asdm.html#性能" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>温度：- 40 ~ 125℃</p></li>
+<li><p>电源电压( Analog )：从2.7 V到3.6 V</p></li>
+<li><p>SNR: &gt; 92dB （需要使用内部偏置电压，内置参考电压需单独外接滤波电容）</p></li>
+<li><p>THD: &lt;-84dB</p></li>
+<li><p>最高输出电流2MA: &lt;2mA</p></li>
+</ul>
+</div>
+<div id="引脚定义" class="section level3 hasAnchor" number="4.1.3">
+<h3><span class="header-section-number">4.1.3</span> 引脚定义<a href="ch-asdm.html#引脚定义" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>ASDM模块包含一对差分输入引脚ASDM_P和ASDM_N，以及一个偏置电压输出引脚MicBias，一个内置参考电压输出ASDM_Vref.</p>
+<p>其中MicBias引脚用于输出麦克风偏置电压，用于驱动麦克风，偏置电压可以根据需求进行调整，ASDM_Vref引脚用于输出内置参考电压，如果需要获得更好的采样效果，内置参考电压需要从引脚输出并单独外接滤波电容，ASDM_P和ASDM_N引脚用于输入麦克风信号。</p>
+<p>引脚的映射关系如表 <a href="ch-asdm.html#tab:ch-asdm-connection">4.1</a>所示。</p>
+<p><strong>注意：如果不考虑增加电容对内置参考电压滤波，请不要打开内置参考电压输出，否则会影响系统采样，电路错误甚至会损坏芯片</strong></p>
+<table>
+<caption><span id="tab:ch-asdm-connection">表 4.1: </span> ASDM引脚定义</caption>
+<thead>
+<tr class="header">
+<th align="left">引脚名称</th>
+<th align="left">连接引脚</th>
+<th align="left">连接引脚</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">ASDM_Vref</td>
+<td align="left">11</td>
+<td align="left">参考电压输出</td>
+</tr>
+<tr class="even">
+<td align="left">MicBias</td>
+<td align="left">12</td>
+<td align="left">麦克风偏置电压输出</td>
+</tr>
+<tr class="odd">
+<td align="left">ASDM_P</td>
+<td align="left">13</td>
+<td align="left">差分输入P(单端输入)</td>
+</tr>
+<tr class="even">
+<td align="left">ASDM_N</td>
+<td align="left">14</td>
+<td align="left">差分输入N</td>
+</tr>
+<tr class="odd">
+<td align="left">DMIC_CLK</td>
+<td align="left">查看PINCTRL章节</td>
+<td align="left">DMIC时钟输入</td>
+</tr>
+<tr class="even">
+<td align="left">DMIC_DATA</td>
+<td align="left">查看PINCTRL章节</td>
+<td align="left">DMIC数据输入</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="采样率-1" class="section level3 hasAnchor" number="4.1.4">
+<h3><span class="header-section-number">4.1.4</span> 采样率<a href="ch-asdm.html#采样率-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>模块的采样率和模块使用的输入时钟频率和内部时钟分频相关，支持的音频采样频率如表 <a href="ch-asdm.html#tab:ch-asdm-connection">4.1</a>所示</p>
+<table>
+<caption><span id="tab:ch-asdm-connection">表 4.1: </span> ASDM支持的采样率</caption>
+<colgroup>
+<col width="12%" />
+<col width="18%" />
+<col width="43%" />
+<col width="25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">采样率(kHz)</th>
+<th align="left">外设输入时钟频率(MHz)</th>
+<th align="left">模拟AMIC时钟采样频率/数字DMIC时钟采样频率（128*fs）</th>
+<th align="left">数字DMIC时钟采样频率（64*fs）</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">48</td>
+<td align="left">12.288</td>
+<td align="left">6.144</td>
+<td align="left">3.072</td>
+</tr>
+<tr class="even">
+<td align="left">32</td>
+<td align="left">12.288</td>
+<td align="left">3.072</td>
+<td align="left">1.536</td>
+</tr>
+<tr class="odd">
+<td align="left">24</td>
+<td align="left">12.288</td>
+<td align="left">2.448</td>
+<td align="left">1.224</td>
+</tr>
+<tr class="even">
+<td align="left">16</td>
+<td align="left">12.288</td>
+<td align="left">1.536</td>
+<td align="left">0.768</td>
+</tr>
+<tr class="odd">
+<td align="left">8</td>
+<td align="left">12.288</td>
+<td align="left">0.768</td>
+<td align="left">0.384</td>
+</tr>
+</tbody>
+</table>
+<p>外设的输入时钟频率由fast_clk分频而来，因此实现标准的声音采样需要调整对应的pll输出和asdm的div实现，推荐使用cube工具生成对应的时钟分频参数。</p>
+</div>
+<div id="模块功能简述" class="section level3 hasAnchor" number="4.1.5">
+<h3><span class="header-section-number">4.1.5</span> 模块功能简述<a href="ch-asdm.html#模块功能简述" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><img src="img/ASDM/asdm_diagram.png" /></p>
+<p>上图为ASDM的整体功能框图，包含数字和模拟两个信号输入，后端集成数字信号处理。</p>
+<ul>
+<li><p>模拟采样部分由PGA模块和Sigma-Delta ADC模块组成，PGA模块用于放大输入信号，Sigma-Delta ADC模块用于将模拟信号转换为数字信号。采样更加精确，采样结果可选经过硬件数字滤波输出或直接输出采样结果。</p></li>
+<li><p>DMIC输入接口可以采样dmic输入的pdm信号，可以直接输出获取dmic的数字输出或经硬件数字处理后输出滤波后的音频结果。</p></li>
+<li><p>内置SINC 和 HPF硬件数字滤波器，可以对输入数字信号进行滤波。</p></li>
+<li><p>AGC（自动增益控制）位于信号处理链的中间环节，可选是否开启，解决输入音频信号电平不均衡的问题。AGC通过自动动态地调整增益，使输出电平保持稳定
+，从而维持后续处理模块输入信号的级别。</p></li>
+<li><p>音量控制模块VolCtrl位于信号处理链的末端，用于调节输出信号的音量，通过调节增益值来控制输出信号的音量大小，可实现音量的淡入淡出控制。</p></li>
+<li><p>输出的结果可以直接通过fifo输出，同时支持DMA数据搬运和PTE任务触发。</p></li>
+</ul>
+</div>
+</div>
+<div id="使用方法-1" class="section level2 hasAnchor" number="4.2">
+<h2><span class="header-section-number">4.2</span> 使用方法<a href="ch-asdm.html#使用方法-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="时钟配置-1" class="section level3 hasAnchor" number="4.2.1">
+<h3><span class="header-section-number">4.2.1</span> 时钟配置<a href="ch-asdm.html#时钟配置-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>当前ASDM的时钟源来自于fast_clk，通过pll进行分频后输出到asdm_clk，推荐使用cube工具生成分频系数，这里提供一组可选的clk配置参数，pll时钟源来自于RF24M时钟，per分频设置为5，loop倍频设置为64，out分频设置为1，sdm分频设置为25，可获得12.288M的输出时钟。pll输出为307.2M。由于需要调整pll时钟源，开发者需要注意对应的时钟规划，防止外设出现时钟冲突的问题。</p>
+<p>例如：</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="ch-asdm.html#cb3-1" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_SelectSlowClk<span class="op">(</span>SYSCTRL_SLOW_CLK_24M_RF<span class="op">);</span></span>
+<span id="cb3-2"><a href="ch-asdm.html#cb3-2" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_SelectHClk<span class="op">(</span>SYSCTRL_CLK_SLOW<span class="op">);</span></span>
+<span id="cb3-3"><a href="ch-asdm.html#cb3-3" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_SelectFlashClk<span class="op">(</span>SYSCTRL_CLK_SLOW<span class="op">);</span></span>
+<span id="cb3-4"><a href="ch-asdm.html#cb3-4" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ConfigPLLClk<span class="op">(</span><span class="dv">5</span><span class="op">,</span><span class="dv">64</span><span class="op">,</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb3-5"><a href="ch-asdm.html#cb3-5" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_EnablePLL<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb3-6"><a href="ch-asdm.html#cb3-6" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_SelectHClk<span class="op">(</span>SYSCTRL_CLK_PLL_DIV_1<span class="op">);</span></span>
+<span id="cb3-7"><a href="ch-asdm.html#cb3-7" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_SelectFlashClk<span class="op">(</span>SYSCTRL_CLK_PLL_DIV_2<span class="op">);</span></span>
+<span id="cb3-8"><a href="ch-asdm.html#cb3-8" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_UpdateAsdmClk<span class="op">(</span><span class="dv">25</span><span class="op">);</span></span></code></pre></div>
+</div>
+<div id="设置电压偏置和vref输出滤波" class="section level3 hasAnchor" number="4.2.2">
+<h3><span class="header-section-number">4.2.2</span> 设置电压偏置和Vref输出滤波<a href="ch-asdm.html#设置电压偏置和vref输出滤波" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>asdm模块可以输出单独的偏置电压用来驱动mic输出，对应接口存在于<code>peripheral_sysctrl.c</code>,接口如下：</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb4-1"><a href="ch-asdm.html#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> SYSCTRL_SetAdcVrefSel<span class="op">(</span><span class="dt">uint8_t</span> vref<span class="op">);</span></span></code></pre></div>
+<p>为了获得更好的收音效果，通常推荐打开内部verf输出，外接单独的硬件滤波。<strong>不外接硬件滤波一定不要使能参考电压输出，否则可能导致底噪变大</strong>。打开Vref输出的接口如下：</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="ch-asdm.html#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> SYSCTRL_EnableAsdmVrefOutput<span class="op">(</span><span class="dt">uint8_t</span> enable<span class="op">);</span></span></code></pre></div>
+<p>使用ASDM模块，需要使用内置的参考电压对外部信号进行采样，因此<strong>一定要打开内部电压参考</strong>否则可能会工作不正常。接口如下：</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb6-1"><a href="ch-asdm.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> SYSCTRL_EnableInternalVref<span class="op">(</span><span class="dt">uint8_t</span> enable<span class="op">);</span></span></code></pre></div>
+<p><strong>注意：使能引脚偏置电压输出或参考电压输出，一定要将引脚设置为模拟输入，详细实现参考PINCTRL</strong></p>
+</div>
+<div id="初始化配置" class="section level3 hasAnchor" number="4.2.3">
+<h3><span class="header-section-number">4.2.3</span> 初始化配置<a href="ch-asdm.html#初始化配置" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>对于AMIC和DMIC的数据采样应用，由于ASDM内部集成了数字信号处理逻辑，可以极大的简化数字信号处理.</p>
+<p>通过配置对应的agc、hpf、sinc、vol等参数，可以快速实现数字信号处理。对比使用cpu进行数字信号滤波，降低了处理难度，加快了处理速度.</p>
+<p>对于想要快速使用ING20系列芯片进行语音采集应用测试和加快开发速度，调整AGC参数整定选择高通滤波器参数，电压偏置调整较为复杂，不方便初学者入手.</p>
+<p>因此在综合考虑芯片的易用性和灵活性下，初始化接口根据voice和music场景封装了典型的滤波参数和agc增益参数，用户可以使用初始化接口快速初始化外设，或根据自身需求调用指定接口整定对应滤波器和其他数字信号处理单元参数。</p>
+<p>ASDM 初始化接口配置如下：</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb7-1"><a href="ch-asdm.html#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ASDM_Config<span class="op">(</span>ASDM_TypeDef <span class="op">*</span>base<span class="op">,</span> ASDM_ConfigTypeDef<span class="op">*</span> pParam<span class="op">);</span></span></code></pre></div>
+<p>用户需要传入asdm模块宏APB_ASDM，和需要用户配置的结构体参数内容pParam。</p>
+<p>结构体如下：</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb8-1"><a href="ch-asdm.html#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span></span>
+<span id="cb8-2"><a href="ch-asdm.html#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb8-3"><a href="ch-asdm.html#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> volume<span class="op">;</span></span>
+<span id="cb8-4"><a href="ch-asdm.html#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> Asdm_Mode<span class="op">;</span></span>
+<span id="cb8-5"><a href="ch-asdm.html#cb8-5" aria-hidden="true" tabindex="-1"></a>    ASDM_SampleRate Sample_rate<span class="op">;</span></span>
+<span id="cb8-6"><a href="ch-asdm.html#cb8-6" aria-hidden="true" tabindex="-1"></a>    ASDM_AgcMode Agc_mode<span class="op">;</span></span>
+<span id="cb8-7"><a href="ch-asdm.html#cb8-7" aria-hidden="true" tabindex="-1"></a>    ASDM_AgcConfigTypeDef <span class="op">*</span>Agc_config<span class="op">;</span></span>
+<span id="cb8-8"><a href="ch-asdm.html#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> Fifo_Enable<span class="op">;</span></span>
+<span id="cb8-9"><a href="ch-asdm.html#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> Fifo_DmaTrigNum<span class="op">;</span></span>
+<span id="cb8-10"><a href="ch-asdm.html#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> FifoIntMask<span class="op">;</span></span>
+<span id="cb8-11"><a href="ch-asdm.html#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> ASDM_ConfigTypeDef<span class="op">;</span></span></code></pre></div>
+<p>涉及参数：</p>
+<p>volume：控制系统音量 <strong>注意：volume设置为0时，系统会静音输出数值为0</strong></p>
+<p>Asdm_Mode： 选择asdm模块输入模式，0 选择amic， 1选择dmic。</p>
+<p>Sample_rate： 可选对应采样率。</p>
+<p>Agc_mode： 封装了常用的agc模式配置，可以通过模式选择载入不同的agc默认参数配置或关闭agc。</p>
+<p>Agc_config： 用户选择<code>ASDM_AgcOff</code>时agc参数无效。 当用户选择<code>ASDM_AgcVoice</code>或<code>ASDM_AgcMusic</code>模式时，用户可以通过该结构体获取默认的agc参数信息（传入NULL指针无效），当用户选择<code>ASDM_AgcCustom</code>模式时，用户可以通过该结构体传入自定义的agc参数信息.</p>
+<p>具体参数如下：</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb9-1"><a href="ch-asdm.html#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span></span>
+<span id="cb9-2"><a href="ch-asdm.html#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb9-3"><a href="ch-asdm.html#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> Agc_MaxLevel<span class="op">;</span> <span class="co">//最大增益</span></span>
+<span id="cb9-4"><a href="ch-asdm.html#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> Agc_NoiseThreshold<span class="op">;</span> <span class="co">//噪声阈值</span></span>
+<span id="cb9-5"><a href="ch-asdm.html#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> Agc_NoiseEn<span class="op">;</span> <span class="co">//噪声检测使能</span></span>
+<span id="cb9-6"><a href="ch-asdm.html#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> Agc_NoiseHold<span class="op">;</span> <span class="co">//噪声检测保持时间</span></span>
+<span id="cb9-7"><a href="ch-asdm.html#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> Agc_NoiseFramTime<span class="op">;</span> <span class="co">//噪声检测帧时间</span></span>
+<span id="cb9-8"><a href="ch-asdm.html#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> Agc_PgaGate<span class="op">;</span> <span class="co">//PGA门限</span></span>
+<span id="cb9-9"><a href="ch-asdm.html#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> ASDM_AgcConfigTypeDef<span class="op">;</span></span></code></pre></div>
+<p>Fifo_Enable： 使能FIFO功能，0关闭，1打开。
+Fifo_DmaTrigNum： FIFO触发DMA传输的阈值，当FIFO内数据量大于该值时，DMA会自动传输数据。（仅用于dma传输）
+FifoIntMask： FIFO中断使能，打开对应的中断，可使用的中断类型参考 <code>ASDM_FifoMask</code>
+<strong>注意，当fifo关闭时 仅可开启ASDM_RX_FLG_EN中断</strong></p>
+</div>
+</div>
+<div id="编程指南-1" class="section level2 hasAnchor" number="4.3">
+<h2><span class="header-section-number">4.3</span> 编程指南<a href="ch-asdm.html#编程指南-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="驱动接口-1" class="section level3 hasAnchor" number="4.3.1">
+<h3><span class="header-section-number">4.3.1</span> 驱动接口<a href="ch-asdm.html#驱动接口-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>ASDM模块控制：</p>
+<ul>
+<li><p>ASDM_Config ：配置asdm模块工作参数。</p></li>
+<li><p>ASDM_Enable ：使能asdm模块。</p></li>
+</ul>
+<p>内部参数调整：</p>
+<ul>
+<li><p>ASDM_SetEdgeSample ：设置pdm模块采样的边沿。</p></li>
+<li><p>ASDM_InvertInput ：设置pdm模块输入信号是否反向。</p></li>
+<li><p>ASDM_SelMic ：选择输入类型，模拟输入 pdm输入。</p></li>
+<li><p>ASDM_SelDownSample ： PDM模块降采样（设置128 64采样率）</p></li>
+<li><p>ASDM_SetSampleRate ： 根据采样类型设置采样频率和高通滤波器参数</p></li>
+<li><p>ASDM_SetHpfCoef ： 单独设置高通滤波器参数</p></li>
+<li><p>ASDM_SetAgcMode ：设置agc模式，和agc参数</p></li>
+<li><p>ASDM_Reset ： 重置asdm模块</p></li>
+<li><p>ASDM_MuteEn ： 设置静音使能</p></li>
+<li><p>ASDM_SetPgaGain ： 设置pga增益</p></li>
+<li><p>ADSM_VolZeroState ： 获取系统静音状态</p></li>
+<li><p>ASDM_SetVol ： 设置系统输出音量步进</p></li>
+<li><p>ASDM_GetAGCMute ： 获取agc静音状态</p></li>
+</ul>
+<p>数据处理：</p>
+<ul>
+<li>ASDM_GetOutData ： 获取asdm模块输出数据</li>
+</ul>
+<p>ASDM模块输出数据格式说明：</p>
+<p>模块通过32位宽FIFO输出采样数据，每次输出包含两个16位采样值：</p>
+<p>高16位（bit[31:16]）：当前最新采样数据（时间上较新）
+低16位（bit[15:0]）：上一拍历史采样数据（时间上较旧）
+即：每次从FIFO读取的32位数据 = {当前采样, 历史采样}，按时间顺序从新到旧排列。</p>
+<ul>
+<li><p>ASDM_ClrOverflowError ： 清除FIFO溢出错误标志位</p></li>
+<li><p>ASDM_ClrFifo ： 清除FIFO</p></li>
+<li><p>ASDM_FifoEn ： 使能FIFO</p></li>
+<li><p>ASDM_GetFifoCount ： 获取FIFO内数据量</p></li>
+<li><p>ASDM_IntMask ： 使能asdm中断</p></li>
+<li><p>ASDM_GetIntStatus ： 获取asdm中断状态</p></li>
+<li><p>ASDM_SetDMATrig ： 设置DMA触发条件</p></li>
+</ul>
+<p>以上是asdm模块的驱动接口，详细描述可以参考头文件声明。</p>
+</div>
+<div id="代码示例-1" class="section level3 hasAnchor" number="4.3.2">
+<h3><span class="header-section-number">4.3.2</span> 代码示例<a href="ch-asdm.html#代码示例-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>下面展示asdm模块的基本用法，实际使用需要根据情况调整，对于大数据采样推荐使用dma进行数据搬运减小中断频率。</p>
+<p><strong>注意输入时钟的pll和div配置不在此表述可参考<code>sysctrl</code>接口</strong>,<code>SYSCTRL_UpdateAsdmClk</code>用来设置asdm模块基于fast_clk的输入分频，以下代码示例中假设调整pll和调用<code>SYSCTRL_UpdateAsdmClk</code>设置分频后时钟为12.288Mhz。</p>
+<div id="dmic中断获取mic数据输出" class="section level4 hasAnchor" number="4.3.2.1">
+<h4><span class="header-section-number">4.3.2.1</span> Dmic中断获取mic数据输出<a href="ch-asdm.html#dmic中断获取mic数据输出" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb10-1"><a href="ch-asdm.html#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> ASDM_cb_isr<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
+<span id="cb10-2"><a href="ch-asdm.html#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb10-3"><a href="ch-asdm.html#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="op">(</span>ASDM_GetFifoCount<span class="op">(</span>APB_ASDM<span class="op">))</span></span>
+<span id="cb10-4"><a href="ch-asdm.html#cb10-4" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span></span>
+<span id="cb10-5"><a href="ch-asdm.html#cb10-5" aria-hidden="true" tabindex="-1"></a>            <span class="dt">uint32_t</span> DataGet <span class="op">=</span> ASDM_GetOutData<span class="op">(</span>APB_ASDM<span class="op">);</span></span>
+<span id="cb10-6"><a href="ch-asdm.html#cb10-6" aria-hidden="true" tabindex="-1"></a>            <span class="dt">uint16_t</span> next_data <span class="op">=</span> <span class="op">(</span>DataGet<span class="op">)&gt;&gt;</span><span class="dv">16</span><span class="op">;</span></span>
+<span id="cb10-7"><a href="ch-asdm.html#cb10-7" aria-hidden="true" tabindex="-1"></a>            <span class="dt">uint16_t</span> data <span class="op">=</span> <span class="op">(</span>DataGet<span class="op">)&amp;</span><span class="bn">0xffff</span><span class="op">;</span></span>
+<span id="cb10-8"><a href="ch-asdm.html#cb10-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb10-9"><a href="ch-asdm.html#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb10-10"><a href="ch-asdm.html#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="ch-asdm.html#cb10-11" aria-hidden="true" tabindex="-1"></a>ASDM_ConfigTypeDef AsdmConfig <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb10-12"><a href="ch-asdm.html#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>Agc_config <span class="op">=</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb10-13"><a href="ch-asdm.html#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>Asdm_Mode <span class="op">=</span> <span class="dv">1</span><span class="op">,</span></span>
+<span id="cb10-14"><a href="ch-asdm.html#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>Agc_mode <span class="op">=</span> ASDM_AgcVoice<span class="op">,</span></span>
+<span id="cb10-15"><a href="ch-asdm.html#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>Sample_rate <span class="op">=</span> ASDM_SR_16k<span class="op">,</span></span>
+<span id="cb10-16"><a href="ch-asdm.html#cb10-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>Fifo_Enable <span class="op">=</span> <span class="dv">1</span><span class="op">,</span></span>
+<span id="cb10-17"><a href="ch-asdm.html#cb10-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>volume <span class="op">=</span> <span class="bn">0x3fff</span><span class="op">,</span></span>
+<span id="cb10-18"><a href="ch-asdm.html#cb10-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>FifoIntMask <span class="op">=</span> ASDM_FIFO_FULL_EN<span class="op">,</span></span>
+<span id="cb10-19"><a href="ch-asdm.html#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb10-20"><a href="ch-asdm.html#cb10-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-21"><a href="ch-asdm.html#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ASDM_InitPre<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb10-22"><a href="ch-asdm.html#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb10-23"><a href="ch-asdm.html#cb10-23" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> ret<span class="op">;</span></span>
+<span id="cb10-24"><a href="ch-asdm.html#cb10-24" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGate<span class="op">(</span>SYSCTRL_ClkGate_APB_GPIO0<span class="op">);</span></span>
+<span id="cb10-25"><a href="ch-asdm.html#cb10-25" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGate<span class="op">(</span>SYSCTRL_ClkGate_APB_PinCtrl<span class="op">);</span></span>
+<span id="cb10-26"><a href="ch-asdm.html#cb10-26" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGate<span class="op">(</span>SYSCTRL_ITEM_APB_ASDM<span class="op">);</span></span>
+<span id="cb10-27"><a href="ch-asdm.html#cb10-27" aria-hidden="true" tabindex="-1"></a>    PINCTRL_SelAsdm<span class="op">(</span>GIO_GPIO_13<span class="op">,</span>GIO_GPIO_14<span class="op">);</span></span>
+<span id="cb10-28"><a href="ch-asdm.html#cb10-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-29"><a href="ch-asdm.html#cb10-29" aria-hidden="true" tabindex="-1"></a>    ret <span class="op">=</span> ASDM_Config<span class="op">(</span>APB_ASDM<span class="op">,</span> <span class="op">&amp;</span>AsdmConfig<span class="op">);</span></span>
+<span id="cb10-30"><a href="ch-asdm.html#cb10-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>ret<span class="op">)</span></span>
+<span id="cb10-31"><a href="ch-asdm.html#cb10-31" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;ASDM_Config error %d</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> ret<span class="op">);</span></span>
+<span id="cb10-32"><a href="ch-asdm.html#cb10-32" aria-hidden="true" tabindex="-1"></a>    platform_set_irq_callback<span class="op">(</span>PLATFORM_CB_IRQ_ASDM<span class="op">,</span> ASDM_cb_isr<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb10-33"><a href="ch-asdm.html#cb10-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-34"><a href="ch-asdm.html#cb10-34" aria-hidden="true" tabindex="-1"></a>    ASDM_Enable<span class="op">(</span>APB_ASDM<span class="op">,</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb10-35"><a href="ch-asdm.html#cb10-35" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</div>
+<div id="amic中断获取mic数据输出" class="section level4 hasAnchor" number="4.3.2.2">
+<h4><span class="header-section-number">4.3.2.2</span> Amic中断获取mic数据输出<a href="ch-asdm.html#amic中断获取mic数据输出" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb11-1"><a href="ch-asdm.html#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> ASDM_cb_isr<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
+<span id="cb11-2"><a href="ch-asdm.html#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb11-3"><a href="ch-asdm.html#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="op">(</span>ASDM_GetFifoCount<span class="op">(</span>APB_ASDM<span class="op">))</span></span>
+<span id="cb11-4"><a href="ch-asdm.html#cb11-4" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span></span>
+<span id="cb11-5"><a href="ch-asdm.html#cb11-5" aria-hidden="true" tabindex="-1"></a>            <span class="dt">uint32_t</span> DataGet <span class="op">=</span> ASDM_GetOutData<span class="op">(</span>APB_ASDM<span class="op">);</span></span>
+<span id="cb11-6"><a href="ch-asdm.html#cb11-6" aria-hidden="true" tabindex="-1"></a>            <span class="dt">uint16_t</span> next_data <span class="op">=</span> <span class="op">(</span>DataGet<span class="op">)&gt;&gt;</span><span class="dv">16</span><span class="op">;</span></span>
+<span id="cb11-7"><a href="ch-asdm.html#cb11-7" aria-hidden="true" tabindex="-1"></a>            <span class="dt">uint16_t</span> data <span class="op">=</span> <span class="op">(</span>DataGet<span class="op">)&amp;</span><span class="bn">0xffff</span><span class="op">;</span></span>
+<span id="cb11-8"><a href="ch-asdm.html#cb11-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb11-9"><a href="ch-asdm.html#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb11-10"><a href="ch-asdm.html#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="ch-asdm.html#cb11-11" aria-hidden="true" tabindex="-1"></a>ASDM_ConfigTypeDef AsdmConfig <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb11-12"><a href="ch-asdm.html#cb11-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>Agc_config <span class="op">=</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb11-13"><a href="ch-asdm.html#cb11-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>Asdm_Mode <span class="op">=</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb11-14"><a href="ch-asdm.html#cb11-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>Agc_mode <span class="op">=</span> ASDM_AgcVoice<span class="op">,</span></span>
+<span id="cb11-15"><a href="ch-asdm.html#cb11-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>Sample_rate <span class="op">=</span> ASDM_SR_16k<span class="op">,</span></span>
+<span id="cb11-16"><a href="ch-asdm.html#cb11-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>Fifo_Enable <span class="op">=</span> <span class="dv">1</span><span class="op">,</span></span>
+<span id="cb11-17"><a href="ch-asdm.html#cb11-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>volume <span class="op">=</span> <span class="bn">0x3fff</span><span class="op">,</span></span>
+<span id="cb11-18"><a href="ch-asdm.html#cb11-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>FifoIntMask <span class="op">=</span> ASDM_FIFO_FULL_EN<span class="op">,</span></span>
+<span id="cb11-19"><a href="ch-asdm.html#cb11-19" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb11-20"><a href="ch-asdm.html#cb11-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-21"><a href="ch-asdm.html#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> ASDM_InitPre<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb11-22"><a href="ch-asdm.html#cb11-22" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb11-23"><a href="ch-asdm.html#cb11-23" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> ret<span class="op">;</span></span>
+<span id="cb11-24"><a href="ch-asdm.html#cb11-24" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGate<span class="op">(</span>SYSCTRL_ITEM_APB_ASDM<span class="op">);</span></span>
+<span id="cb11-25"><a href="ch-asdm.html#cb11-25" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGate<span class="op">(</span>SYSCTRL_ClkGate_APB_GPIO0<span class="op">);</span><span class="co">//gpio0</span></span>
+<span id="cb11-26"><a href="ch-asdm.html#cb11-26" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGate<span class="op">(</span>SYSCTRL_ClkGate_APB_PinCtrl<span class="op">);</span></span>
+<span id="cb11-27"><a href="ch-asdm.html#cb11-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-28"><a href="ch-asdm.html#cb11-28" aria-hidden="true" tabindex="-1"></a>    PINCTRL_EnableAnalog<span class="op">(</span>GIO_GPIO_11<span class="op">);</span> <span class="co">// vref pad</span></span>
+<span id="cb11-29"><a href="ch-asdm.html#cb11-29" aria-hidden="true" tabindex="-1"></a>    PINCTRL_EnableAnalog<span class="op">(</span>GIO_GPIO_12<span class="op">);</span> <span class="co">// mic bias pad</span></span>
+<span id="cb11-30"><a href="ch-asdm.html#cb11-30" aria-hidden="true" tabindex="-1"></a>    PINCTRL_EnableAnalog<span class="op">(</span>GIO_GPIO_13<span class="op">);</span> <span class="co">// mic in p</span></span>
+<span id="cb11-31"><a href="ch-asdm.html#cb11-31" aria-hidden="true" tabindex="-1"></a>    PINCTRL_EnableAnalog<span class="op">(</span>GIO_GPIO_14<span class="op">);</span> <span class="co">// mic in n</span></span>
+<span id="cb11-32"><a href="ch-asdm.html#cb11-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-33"><a href="ch-asdm.html#cb11-33" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_SetAdcVrefSel<span class="op">(</span><span class="bn">0x1</span><span class="op">);</span></span>
+<span id="cb11-34"><a href="ch-asdm.html#cb11-34" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_EnableAsdmVrefOutput<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb11-35"><a href="ch-asdm.html#cb11-35" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_EnableInternalVref<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb11-36"><a href="ch-asdm.html#cb11-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-37"><a href="ch-asdm.html#cb11-37" aria-hidden="true" tabindex="-1"></a>    ret <span class="op">=</span> ASDM_Config<span class="op">(</span>APB_ASDM<span class="op">,</span> <span class="op">&amp;</span>AsdmConfig<span class="op">);</span></span>
+<span id="cb11-38"><a href="ch-asdm.html#cb11-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>ret<span class="op">)</span></span>
+<span id="cb11-39"><a href="ch-asdm.html#cb11-39" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;ASDM_Config error %d</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> ret<span class="op">);</span></span>
+<span id="cb11-40"><a href="ch-asdm.html#cb11-40" aria-hidden="true" tabindex="-1"></a>    platform_set_irq_callback<span class="op">(</span>PLATFORM_CB_IRQ_ASDM<span class="op">,</span> ASDM_cb_isr<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb11-41"><a href="ch-asdm.html#cb11-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-42"><a href="ch-asdm.html#cb11-42" aria-hidden="true" tabindex="-1"></a>    ASDM_Enable<span class="op">(</span>APB_ASDM<span class="op">,</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb11-43"><a href="ch-asdm.html#cb11-43" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</div>
+<div id="amic-dma-配置" class="section level4 hasAnchor" number="4.3.2.3">
+<h4><span class="header-section-number">4.3.2.3</span> Amic DMA 配置<a href="ch-asdm.html#amic-dma-配置" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb12"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb12-1"><a href="ch-asdm.html#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&quot;pingpong.h&quot;</span></span>
+<span id="cb12-2"><a href="ch-asdm.html#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="ch-asdm.html#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#define DMA_CHANNEL             0</span></span>
+<span id="cb12-4"><a href="ch-asdm.html#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> DMA_PingPong_t PingPong<span class="op">;</span></span>
+<span id="cb12-5"><a href="ch-asdm.html#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="ch-asdm.html#cb12-6" aria-hidden="true" tabindex="-1"></a>ASDM_ConfigTypeDef AsdmConfig <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb12-7"><a href="ch-asdm.html#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>Agc_config <span class="op">=</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb12-8"><a href="ch-asdm.html#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>Asdm_Mode <span class="op">=</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb12-9"><a href="ch-asdm.html#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>Agc_mode <span class="op">=</span> ASDM_AgcVoice<span class="op">,</span></span>
+<span id="cb12-10"><a href="ch-asdm.html#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>Sample_rate <span class="op">=</span> ASDM_SR_16k<span class="op">,</span></span>
+<span id="cb12-11"><a href="ch-asdm.html#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>Fifo_Enable <span class="op">=</span> <span class="dv">1</span><span class="op">,</span></span>
+<span id="cb12-12"><a href="ch-asdm.html#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>volume <span class="op">=</span> <span class="bn">0x3fff</span><span class="op">,</span></span>
+<span id="cb12-13"><a href="ch-asdm.html#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>FifoIntMask <span class="op">=</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb12-14"><a href="ch-asdm.html#cb12-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>Fifo_DmaTrigNum <span class="op">=</span> <span class="dv">4</span><span class="op">,</span></span>
+<span id="cb12-15"><a href="ch-asdm.html#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb12-16"><a href="ch-asdm.html#cb12-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-17"><a href="ch-asdm.html#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> DMA_cb_isr<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
+<span id="cb12-18"><a href="ch-asdm.html#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb12-19"><a href="ch-asdm.html#cb12-19" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> state <span class="op">=</span> DMA_GetChannelIntState<span class="op">(</span>DMA_CHANNEL<span class="op">);</span></span>
+<span id="cb12-20"><a href="ch-asdm.html#cb12-20" aria-hidden="true" tabindex="-1"></a>    DMA_ClearChannelIntState<span class="op">(</span>DMA_CHANNEL<span class="op">,</span> state<span class="op">);</span></span>
+<span id="cb12-21"><a href="ch-asdm.html#cb12-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-22"><a href="ch-asdm.html#cb12-22" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> <span class="op">*</span>buff <span class="op">=</span> DMA_PingPongIntProc<span class="op">(&amp;</span>PingPong<span class="op">,</span> DMA_CHANNEL<span class="op">);</span></span>
+<span id="cb12-23"><a href="ch-asdm.html#cb12-23" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> tranSize <span class="op">=</span> DMA_PingPongGetTransSize<span class="op">(&amp;</span>PingPong<span class="op">);</span></span>
+<span id="cb12-24"><a href="ch-asdm.html#cb12-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-25"><a href="ch-asdm.html#cb12-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb12-26"><a href="ch-asdm.html#cb12-26" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb12-27"><a href="ch-asdm.html#cb12-27" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> test<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb12-28"><a href="ch-asdm.html#cb12-28" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb12-29"><a href="ch-asdm.html#cb12-29" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> ret<span class="op">;</span></span>
+<span id="cb12-30"><a href="ch-asdm.html#cb12-30" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGate<span class="op">(</span>SYSCTRL_ITEM_APB_ASDM<span class="op">);</span></span>
+<span id="cb12-31"><a href="ch-asdm.html#cb12-31" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGate<span class="op">(</span>SYSCTRL_ClkGate_APB_GPIO0<span class="op">);</span><span class="co">//gpio0</span></span>
+<span id="cb12-32"><a href="ch-asdm.html#cb12-32" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGate<span class="op">(</span>SYSCTRL_ClkGate_APB_PinCtrl<span class="op">);</span></span>
+<span id="cb12-33"><a href="ch-asdm.html#cb12-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-34"><a href="ch-asdm.html#cb12-34" aria-hidden="true" tabindex="-1"></a>    PINCTRL_EnableAnalog<span class="op">(</span>GIO_GPIO_11<span class="op">);</span> <span class="co">// vref pad</span></span>
+<span id="cb12-35"><a href="ch-asdm.html#cb12-35" aria-hidden="true" tabindex="-1"></a>    PINCTRL_EnableAnalog<span class="op">(</span>GIO_GPIO_12<span class="op">);</span> <span class="co">// mic bias pad</span></span>
+<span id="cb12-36"><a href="ch-asdm.html#cb12-36" aria-hidden="true" tabindex="-1"></a>    PINCTRL_EnableAnalog<span class="op">(</span>GIO_GPIO_13<span class="op">);</span> <span class="co">// mic in p</span></span>
+<span id="cb12-37"><a href="ch-asdm.html#cb12-37" aria-hidden="true" tabindex="-1"></a>    PINCTRL_EnableAnalog<span class="op">(</span>GIO_GPIO_14<span class="op">);</span> <span class="co">// mic in n</span></span>
+<span id="cb12-38"><a href="ch-asdm.html#cb12-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-39"><a href="ch-asdm.html#cb12-39" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_SetAdcVrefSel<span class="op">(</span><span class="bn">0x1</span><span class="op">);</span></span>
+<span id="cb12-40"><a href="ch-asdm.html#cb12-40" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_EnableAsdmVrefOutput<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb12-41"><a href="ch-asdm.html#cb12-41" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_EnableInternalVref<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb12-42"><a href="ch-asdm.html#cb12-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-43"><a href="ch-asdm.html#cb12-43" aria-hidden="true" tabindex="-1"></a>    ret <span class="op">=</span> ASDM_Config<span class="op">(</span>APB_ASDM<span class="op">,</span> <span class="op">&amp;</span>AsdmConfig<span class="op">);</span></span>
+<span id="cb12-44"><a href="ch-asdm.html#cb12-44" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>ret<span class="op">)</span></span>
+<span id="cb12-45"><a href="ch-asdm.html#cb12-45" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;ASDM_Config error %d</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> ret<span class="op">);</span></span>
+<span id="cb12-46"><a href="ch-asdm.html#cb12-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-47"><a href="ch-asdm.html#cb12-47" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGateMulti<span class="op">((</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_DMA<span class="op">));</span></span>
+<span id="cb12-48"><a href="ch-asdm.html#cb12-48" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_SelectUsedDmaItems<span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_DMA_ASDM_RX<span class="op">);</span></span>
+<span id="cb12-49"><a href="ch-asdm.html#cb12-49" aria-hidden="true" tabindex="-1"></a>    DMA_PingPongSetup<span class="op">(&amp;</span>PingPong<span class="op">,</span> SYSCTRL_DMA_ASDM_RX<span class="op">,</span> <span class="dv">80</span><span class="op">,</span> <span class="dv">8</span><span class="op">);</span></span>
+<span id="cb12-50"><a href="ch-asdm.html#cb12-50" aria-hidden="true" tabindex="-1"></a>    platform_set_irq_callback<span class="op">(</span>PLATFORM_CB_IRQ_DMA<span class="op">,</span> DMA_cb_isr<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb12-51"><a href="ch-asdm.html#cb12-51" aria-hidden="true" tabindex="-1"></a>    DMA_PingPongEnable<span class="op">(&amp;</span>PingPong<span class="op">,</span> DMA_CHANNEL<span class="op">);</span></span>
+<span id="cb12-52"><a href="ch-asdm.html#cb12-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-53"><a href="ch-asdm.html#cb12-53" aria-hidden="true" tabindex="-1"></a>    ASDM_Enable<span class="op">(</span>APB_ASDM<span class="op">,</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb12-54"><a href="ch-asdm.html#cb12-54" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+
+</div>
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="ch-adc.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ch-dma.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["pg_ing20.pdf", "pg_ing20.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection",
+"scroll_highlight": true
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

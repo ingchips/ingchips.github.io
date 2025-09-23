@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>9 硬件键盘扫描控制器（KEYSCAN） | ING20XX 系列芯片外设开发者手册</title>
+  <meta name="description" content="ING20XX 系列芯片开发者手册." />
+  <meta name="generator" content="bookdown 0.32 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="9 硬件键盘扫描控制器（KEYSCAN） | ING20XX 系列芯片外设开发者手册" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="ING20XX 系列芯片开发者手册." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="9 硬件键盘扫描控制器（KEYSCAN） | ING20XX 系列芯片外设开发者手册" />
+  
+  <meta name="twitter:description" content="ING20XX 系列芯片开发者手册." />
+  
+
+<meta name="author" content="Ingchips Technology Co., Ltd." />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="ch-I2S.html"/>
+<link rel="next" href="ch-pinctrl.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">ING20XX 系列芯片开发者手册</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> 版本历史</a></li>
+<li class="chapter" data-level="2" data-path="ch-overview.html"><a href="ch-overview.html"><i class="fa fa-check"></i><b>2</b> 概览</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="ch-overview.html"><a href="ch-overview.html#缩略语及术语"><i class="fa fa-check"></i><b>2.1</b> 缩略语及术语</a></li>
+<li class="chapter" data-level="2.2" data-path="ch-overview.html"><a href="ch-overview.html#参考文档"><i class="fa fa-check"></i><b>2.2</b> 参考文档</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="ch-adc.html"><a href="ch-adc.html"><i class="fa fa-check"></i><b>3</b> ADC简介</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="ch-adc.html"><a href="ch-adc.html#功能描述"><i class="fa fa-check"></i><b>3.1</b> 功能描述</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="ch-adc.html"><a href="ch-adc.html#特点"><i class="fa fa-check"></i><b>3.1.1</b> 特点</a></li>
+<li class="chapter" data-level="3.1.2" data-path="ch-adc.html"><a href="ch-adc.html#adc模式"><i class="fa fa-check"></i><b>3.1.2</b> ADC模式</a></li>
+<li class="chapter" data-level="3.1.3" data-path="ch-adc.html"><a href="ch-adc.html#adc输入模式"><i class="fa fa-check"></i><b>3.1.3</b> ADC输入模式</a></li>
+<li class="chapter" data-level="3.1.4" data-path="ch-adc.html"><a href="ch-adc.html#adc转换模式"><i class="fa fa-check"></i><b>3.1.4</b> ADC转换模式</a></li>
+<li class="chapter" data-level="3.1.5" data-path="ch-adc.html"><a href="ch-adc.html#adc通道"><i class="fa fa-check"></i><b>3.1.5</b> ADC通道</a></li>
+<li class="chapter" data-level="3.1.6" data-path="ch-adc.html"><a href="ch-adc.html#采样率"><i class="fa fa-check"></i><b>3.1.6</b> 采样率</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="ch-adc.html"><a href="ch-adc.html#使用方法"><i class="fa fa-check"></i><b>3.2</b> 使用方法</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="ch-adc.html"><a href="ch-adc.html#时钟配置"><i class="fa fa-check"></i><b>3.2.1</b> 时钟配置</a></li>
+<li class="chapter" data-level="3.2.2" data-path="ch-adc.html"><a href="ch-adc.html#adc参数配置"><i class="fa fa-check"></i><b>3.2.2</b> ADC参数配置</a></li>
+<li class="chapter" data-level="3.2.3" data-path="ch-adc.html"><a href="ch-adc.html#adc数据处理"><i class="fa fa-check"></i><b>3.2.3</b> ADC数据处理</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="ch-adc.html"><a href="ch-adc.html#编程指南"><i class="fa fa-check"></i><b>3.3</b> 编程指南</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="ch-adc.html"><a href="ch-adc.html#驱动接口"><i class="fa fa-check"></i><b>3.3.1</b> 驱动接口</a></li>
+<li class="chapter" data-level="3.3.2" data-path="ch-adc.html"><a href="ch-adc.html#代码示例"><i class="fa fa-check"></i><b>3.3.2</b> 代码示例</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="ch-asdm.html"><a href="ch-asdm.html"><i class="fa fa-check"></i><b>4</b> asdm简介</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="ch-asdm.html"><a href="ch-asdm.html#功能描述-1"><i class="fa fa-check"></i><b>4.1</b> 功能描述</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="ch-asdm.html"><a href="ch-asdm.html#特点-1"><i class="fa fa-check"></i><b>4.1.1</b> 特点</a></li>
+<li class="chapter" data-level="4.1.2" data-path="ch-asdm.html"><a href="ch-asdm.html#性能"><i class="fa fa-check"></i><b>4.1.2</b> 性能</a></li>
+<li class="chapter" data-level="4.1.3" data-path="ch-asdm.html"><a href="ch-asdm.html#引脚定义"><i class="fa fa-check"></i><b>4.1.3</b> 引脚定义</a></li>
+<li class="chapter" data-level="4.1.4" data-path="ch-asdm.html"><a href="ch-asdm.html#采样率-1"><i class="fa fa-check"></i><b>4.1.4</b> 采样率</a></li>
+<li class="chapter" data-level="4.1.5" data-path="ch-asdm.html"><a href="ch-asdm.html#模块功能简述"><i class="fa fa-check"></i><b>4.1.5</b> 模块功能简述</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="ch-asdm.html"><a href="ch-asdm.html#使用方法-1"><i class="fa fa-check"></i><b>4.2</b> 使用方法</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="ch-asdm.html"><a href="ch-asdm.html#时钟配置-1"><i class="fa fa-check"></i><b>4.2.1</b> 时钟配置</a></li>
+<li class="chapter" data-level="4.2.2" data-path="ch-asdm.html"><a href="ch-asdm.html#设置电压偏置和vref输出滤波"><i class="fa fa-check"></i><b>4.2.2</b> 设置电压偏置和Vref输出滤波</a></li>
+<li class="chapter" data-level="4.2.3" data-path="ch-asdm.html"><a href="ch-asdm.html#初始化配置"><i class="fa fa-check"></i><b>4.2.3</b> 初始化配置</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="ch-asdm.html"><a href="ch-asdm.html#编程指南-1"><i class="fa fa-check"></i><b>4.3</b> 编程指南</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="ch-asdm.html"><a href="ch-asdm.html#驱动接口-1"><i class="fa fa-check"></i><b>4.3.1</b> 驱动接口</a></li>
+<li class="chapter" data-level="4.3.2" data-path="ch-asdm.html"><a href="ch-asdm.html#代码示例-1"><i class="fa fa-check"></i><b>4.3.2</b> 代码示例</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="ch-dma.html"><a href="ch-dma.html"><i class="fa fa-check"></i><b>5</b> DMA简介</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="ch-dma.html"><a href="ch-dma.html#功能描述-2"><i class="fa fa-check"></i><b>5.1</b> 功能描述</a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="ch-dma.html"><a href="ch-dma.html#特点-2"><i class="fa fa-check"></i><b>5.1.1</b> 特点</a></li>
+<li class="chapter" data-level="5.1.2" data-path="ch-dma.html"><a href="ch-dma.html#搬运方式"><i class="fa fa-check"></i><b>5.1.2</b> 搬运方式</a></li>
+<li class="chapter" data-level="5.1.3" data-path="ch-dma.html"><a href="ch-dma.html#搬运类型"><i class="fa fa-check"></i><b>5.1.3</b> 搬运类型</a></li>
+<li class="chapter" data-level="5.1.4" data-path="ch-dma.html"><a href="ch-dma.html#中断类型"><i class="fa fa-check"></i><b>5.1.4</b> 中断类型</a></li>
+<li class="chapter" data-level="5.1.5" data-path="ch-dma.html"><a href="ch-dma.html#数据地址类型"><i class="fa fa-check"></i><b>5.1.5</b> 数据地址类型</a></li>
+<li class="chapter" data-level="5.1.6" data-path="ch-dma.html"><a href="ch-dma.html#数据方式"><i class="fa fa-check"></i><b>5.1.6</b> 数据方式</a></li>
+<li class="chapter" data-level="5.1.7" data-path="ch-dma.html"><a href="ch-dma.html#数据位宽"><i class="fa fa-check"></i><b>5.1.7</b> 数据位宽</a></li>
+<li class="chapter" data-level="5.1.8" data-path="ch-dma.html"><a href="ch-dma.html#总线仲裁"><i class="fa fa-check"></i><b>5.1.8</b> 总线仲裁</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="ch-dma.html"><a href="ch-dma.html#使用方法-2"><i class="fa fa-check"></i><b>5.2</b> 使用方法</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="ch-dma.html"><a href="ch-dma.html#方法概述"><i class="fa fa-check"></i><b>5.2.1</b> 方法概述</a></li>
+<li class="chapter" data-level="5.2.2" data-path="ch-dma.html"><a href="ch-dma.html#注意点"><i class="fa fa-check"></i><b>5.2.2</b> 注意点</a></li>
+<li class="chapter" data-level="5.2.3" data-path="ch-dma.html"><a href="ch-dma.html#握手请求"><i class="fa fa-check"></i><b>5.2.3</b> 握手请求</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="ch-dma.html"><a href="ch-dma.html#编程指南-2"><i class="fa fa-check"></i><b>5.3</b> 编程指南</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="ch-dma.html"><a href="ch-dma.html#驱动接口-2"><i class="fa fa-check"></i><b>5.3.1</b> 驱动接口</a></li>
+<li class="chapter" data-level="5.3.2" data-path="ch-dma.html"><a href="ch-dma.html#代码示例-2"><i class="fa fa-check"></i><b>5.3.2</b> 代码示例</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="ch-gpio.html"><a href="ch-gpio.html"><i class="fa fa-check"></i><b>6</b> 通用输入输出（GPIO）</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="ch-gpio.html"><a href="ch-gpio.html#功能概述"><i class="fa fa-check"></i><b>6.1</b> 功能概述</a></li>
+<li class="chapter" data-level="6.2" data-path="ch-gpio.html"><a href="ch-gpio.html#使用说明"><i class="fa fa-check"></i><b>6.2</b> 使用说明</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="ch-gpio.html"><a href="ch-gpio.html#设置-io-方向"><i class="fa fa-check"></i><b>6.2.1</b> 设置 IO 方向</a></li>
+<li class="chapter" data-level="6.2.2" data-path="ch-gpio.html"><a href="ch-gpio.html#读取输入"><i class="fa fa-check"></i><b>6.2.2</b> 读取输入</a></li>
+<li class="chapter" data-level="6.2.3" data-path="ch-gpio.html"><a href="ch-gpio.html#设置输出"><i class="fa fa-check"></i><b>6.2.3</b> 设置输出</a></li>
+<li class="chapter" data-level="6.2.4" data-path="ch-gpio.html"><a href="ch-gpio.html#配置中断请求"><i class="fa fa-check"></i><b>6.2.4</b> 配置中断请求</a></li>
+<li class="chapter" data-level="6.2.5" data-path="ch-gpio.html"><a href="ch-gpio.html#处理中断状态"><i class="fa fa-check"></i><b>6.2.5</b> 处理中断状态</a></li>
+<li class="chapter" data-level="6.2.6" data-path="ch-gpio.html"><a href="ch-gpio.html#输入去抖"><i class="fa fa-check"></i><b>6.2.6</b> 输入去抖</a></li>
+<li class="chapter" data-level="6.2.7" data-path="ch-gpio.html"><a href="ch-gpio.html#低功耗保持状态"><i class="fa fa-check"></i><b>6.2.7</b> 低功耗保持状态</a></li>
+<li class="chapter" data-level="6.2.8" data-path="ch-gpio.html"><a href="ch-gpio.html#睡眠唤醒源"><i class="fa fa-check"></i><b>6.2.8</b> 睡眠唤醒源</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="ch-iic.html"><a href="ch-iic.html"><i class="fa fa-check"></i><b>7</b> I2C总线</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="ch-iic.html"><a href="ch-iic.html#功能概述-1"><i class="fa fa-check"></i><b>7.1</b> 功能概述</a></li>
+<li class="chapter" data-level="7.2" data-path="ch-iic.html"><a href="ch-iic.html#使用说明-1"><i class="fa fa-check"></i><b>7.2</b> 使用说明</a>
+<ul>
+<li class="chapter" data-level="7.2.1" data-path="ch-iic.html"><a href="ch-iic.html#iic_i2c_blocking"><i class="fa fa-check"></i><b>7.2.1</b> 方法1（blocking）</a></li>
+<li class="chapter" data-level="7.2.2" data-path="ch-iic.html"><a href="ch-iic.html#iic_i2c_interrupt"><i class="fa fa-check"></i><b>7.2.2</b> 方法2（Interrupt）</a></li>
+<li class="chapter" data-level="7.2.3" data-path="ch-iic.html"><a href="ch-iic.html#时钟配置-2"><i class="fa fa-check"></i><b>7.2.3</b> 时钟配置</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="ch-I2S.html"><a href="ch-I2S.html"><i class="fa fa-check"></i><b>8</b> I2S简介</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="ch-I2S.html"><a href="ch-I2S.html#功能描述-3"><i class="fa fa-check"></i><b>8.1</b> 功能描述</a>
+<ul>
+<li class="chapter" data-level="8.1.1" data-path="ch-I2S.html"><a href="ch-I2S.html#特点-3"><i class="fa fa-check"></i><b>8.1.1</b> 特点</a></li>
+<li class="chapter" data-level="8.1.2" data-path="ch-I2S.html"><a href="ch-I2S.html#i2s角色"><i class="fa fa-check"></i><b>8.1.2</b> I2S角色</a></li>
+<li class="chapter" data-level="8.1.3" data-path="ch-I2S.html"><a href="ch-I2S.html#i2s工作模式"><i class="fa fa-check"></i><b>8.1.3</b> I2S工作模式</a></li>
+<li class="chapter" data-level="8.1.4" data-path="ch-I2S.html"><a href="ch-I2S.html#串行数据"><i class="fa fa-check"></i><b>8.1.4</b> 串行数据</a></li>
+<li class="chapter" data-level="8.1.5" data-path="ch-I2S.html"><a href="ch-I2S.html#时钟分频"><i class="fa fa-check"></i><b>8.1.5</b> 时钟分频</a></li>
+<li class="chapter" data-level="8.1.6" data-path="ch-I2S.html"><a href="ch-I2S.html#i2s存储器"><i class="fa fa-check"></i><b>8.1.6</b> I2S存储器</a></li>
+</ul></li>
+<li class="chapter" data-level="8.2" data-path="ch-I2S.html"><a href="ch-I2S.html#使用方法-3"><i class="fa fa-check"></i><b>8.2</b> 使用方法</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="ch-I2S.html"><a href="ch-I2S.html#方法概述-1"><i class="fa fa-check"></i><b>8.2.1</b> 方法概述</a></li>
+<li class="chapter" data-level="8.2.2" data-path="ch-I2S.html"><a href="ch-I2S.html#注意点-1"><i class="fa fa-check"></i><b>8.2.2</b> 注意点</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="ch-I2S.html"><a href="ch-I2S.html#编程指南-4"><i class="fa fa-check"></i><b>8.3</b> 编程指南</a>
+<ul>
+<li class="chapter" data-level="8.3.1" data-path="ch-I2S.html"><a href="ch-I2S.html#驱动接口-3"><i class="fa fa-check"></i><b>8.3.1</b> 驱动接口</a></li>
+<li class="chapter" data-level="8.3.2" data-path="ch-I2S.html"><a href="ch-I2S.html#代码示例-3"><i class="fa fa-check"></i><b>8.3.2</b> 代码示例</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="ch-keyscan.html"><a href="ch-keyscan.html"><i class="fa fa-check"></i><b>9</b> 硬件键盘扫描控制器（KEYSCAN）</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="ch-keyscan.html"><a href="ch-keyscan.html#功能概述-2"><i class="fa fa-check"></i><b>9.1</b> 功能概述</a>
+<ul>
+<li class="chapter" data-level="9.1.1" data-path="ch-keyscan.html"><a href="ch-keyscan.html#特性"><i class="fa fa-check"></i><b>9.1.1</b> 特性：</a></li>
+<li class="chapter" data-level="9.1.2" data-path="ch-keyscan.html"><a href="ch-keyscan.html#功能简述"><i class="fa fa-check"></i><b>9.1.2</b> 功能简述</a></li>
+<li class="chapter" data-level="9.1.3" data-path="ch-keyscan.html"><a href="ch-keyscan.html#lpkey模式"><i class="fa fa-check"></i><b>9.1.3</b> LPkey模式</a></li>
+</ul></li>
+<li class="chapter" data-level="9.2" data-path="ch-keyscan.html"><a href="ch-keyscan.html#使用说明-2"><i class="fa fa-check"></i><b>9.2</b> 使用说明</a>
+<ul>
+<li class="chapter" data-level="9.2.1" data-path="ch-keyscan.html"><a href="ch-keyscan.html#键盘矩阵的软件描述"><i class="fa fa-check"></i><b>9.2.1</b> 键盘矩阵的软件描述</a></li>
+<li class="chapter" data-level="9.2.2" data-path="ch-keyscan.html"><a href="ch-keyscan.html#keyscan模块初始化"><i class="fa fa-check"></i><b>9.2.2</b> KEYSCAN模块初始化</a></li>
+<li class="chapter" data-level="9.2.3" data-path="ch-keyscan.html"><a href="ch-keyscan.html#获取扫描到的按键"><i class="fa fa-check"></i><b>9.2.3</b> 获取扫描到的按键</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="ch-keyscan.html"><a href="ch-keyscan.html#应用举例"><i class="fa fa-check"></i><b>9.3</b> 应用举例</a>
+<ul>
+<li class="chapter" data-level="9.3.1" data-path="ch-keyscan.html"><a href="ch-keyscan.html#初始化keyscan模块"><i class="fa fa-check"></i><b>9.3.1</b> 初始化KEYSCAN模块</a></li>
+<li class="chapter" data-level="9.3.2" data-path="ch-keyscan.html"><a href="ch-keyscan.html#中断数据处理"><i class="fa fa-check"></i><b>9.3.2</b> 中断数据处理</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html"><i class="fa fa-check"></i><b>10</b> 管脚管理（PINCTRL）</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#功能概述-3"><i class="fa fa-check"></i><b>10.1</b> 功能概述</a></li>
+<li class="chapter" data-level="10.2" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#使用说明-3"><i class="fa fa-check"></i><b>10.2</b> 使用说明</a>
+<ul>
+<li class="chapter" data-level="10.2.1" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#为外设配置-io-管脚"><i class="fa fa-check"></i><b>10.2.1</b> 为外设配置 IO 管脚</a></li>
+<li class="chapter" data-level="10.2.2" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#ch-pinctrl-pull"><i class="fa fa-check"></i><b>10.2.2</b> 配置上拉、下拉</a></li>
+<li class="chapter" data-level="10.2.3" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#配置驱动能力"><i class="fa fa-check"></i><b>10.2.3</b> 配置驱动能力</a></li>
+<li class="chapter" data-level="10.2.4" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#配置天线切换控制管脚"><i class="fa fa-check"></i><b>10.2.4</b> 配置天线切换控制管脚</a></li>
+<li class="chapter" data-level="10.2.5" data-path="ch-pinctrl.html"><a href="ch-pinctrl.html#pinctrl-config-analog"><i class="fa fa-check"></i><b>10.2.5</b> 配置模拟模式</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="ch-pwm.html"><a href="ch-pwm.html"><i class="fa fa-check"></i><b>11</b> 增强型脉宽调制发生器（PWM）</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="ch-pwm.html"><a href="ch-pwm.html#pwm-工作模式"><i class="fa fa-check"></i><b>11.1</b> PWM 工作模式</a>
+<ul>
+<li class="chapter" data-level="11.1.1" data-path="ch-pwm.html"><a href="ch-pwm.html#最简单的模式up_without_died_zone"><i class="fa fa-check"></i><b>11.1.1</b> 最简单的模式：UP_WITHOUT_DIED_ZONE</a></li>
+<li class="chapter" data-level="11.1.2" data-path="ch-pwm.html"><a href="ch-pwm.html#up_with_died_zone"><i class="fa fa-check"></i><b>11.1.2</b> UP_WITH_DIED_ZONE</a></li>
+<li class="chapter" data-level="11.1.3" data-path="ch-pwm.html"><a href="ch-pwm.html#updown_without_died_zone"><i class="fa fa-check"></i><b>11.1.3</b> UPDOWN_WITHOUT_DIED_ZONE</a></li>
+<li class="chapter" data-level="11.1.4" data-path="ch-pwm.html"><a href="ch-pwm.html#updown_with_died_zone"><i class="fa fa-check"></i><b>11.1.4</b> UPDOWN_WITH_DIED_ZONE</a></li>
+<li class="chapter" data-level="11.1.5" data-path="ch-pwm.html"><a href="ch-pwm.html#single_without_died_zone"><i class="fa fa-check"></i><b>11.1.5</b> SINGLE_WITHOUT_DIED_ZONE</a></li>
+<li class="chapter" data-level="11.1.6" data-path="ch-pwm.html"><a href="ch-pwm.html#dma-模式"><i class="fa fa-check"></i><b>11.1.6</b> DMA 模式</a></li>
+<li class="chapter" data-level="11.1.7" data-path="ch-pwm.html"><a href="ch-pwm.html#输出控制"><i class="fa fa-check"></i><b>11.1.7</b> 输出控制</a></li>
+</ul></li>
+<li class="chapter" data-level="11.2" data-path="ch-pwm.html"><a href="ch-pwm.html#pcap"><i class="fa fa-check"></i><b>11.2</b> PCAP</a>
+<ul>
+<li class="chapter" data-level="11.2.1" data-path="ch-pwm.html"><a href="ch-pwm.html#ir模式"><i class="fa fa-check"></i><b>11.2.1</b> IR模式</a></li>
+</ul></li>
+<li class="chapter" data-level="11.3" data-path="ch-pwm.html"><a href="ch-pwm.html#pwm-使用说明"><i class="fa fa-check"></i><b>11.3</b> PWM 使用说明</a>
+<ul>
+<li class="chapter" data-level="11.3.1" data-path="ch-pwm.html"><a href="ch-pwm.html#启动与停止"><i class="fa fa-check"></i><b>11.3.1</b> 启动与停止</a></li>
+<li class="chapter" data-level="11.3.2" data-path="ch-pwm.html"><a href="ch-pwm.html#配置工作模式"><i class="fa fa-check"></i><b>11.3.2</b> 配置工作模式</a></li>
+<li class="chapter" data-level="11.3.3" data-path="ch-pwm.html"><a href="ch-pwm.html#配置门限"><i class="fa fa-check"></i><b>11.3.3</b> 配置门限</a></li>
+<li class="chapter" data-level="11.3.4" data-path="ch-pwm.html"><a href="ch-pwm.html#输出控制-1"><i class="fa fa-check"></i><b>11.3.4</b> 输出控制</a></li>
+<li class="chapter" data-level="11.3.5" data-path="ch-pwm.html"><a href="ch-pwm.html#综合示例"><i class="fa fa-check"></i><b>11.3.5</b> 综合示例</a></li>
+<li class="chapter" data-level="11.3.6" data-path="ch-pwm.html"><a href="ch-pwm.html#使用-dma-实时更新配置"><i class="fa fa-check"></i><b>11.3.6</b> 使用 DMA 实时更新配置</a></li>
+</ul></li>
+<li class="chapter" data-level="11.4" data-path="ch-pwm.html"><a href="ch-pwm.html#pcap-使用说明"><i class="fa fa-check"></i><b>11.4</b> PCAP 使用说明</a>
+<ul>
+<li class="chapter" data-level="11.4.1" data-path="ch-pwm.html"><a href="ch-pwm.html#配置-pcap-模式"><i class="fa fa-check"></i><b>11.4.1</b> 配置 PCAP 模式</a></li>
+</ul></li>
+<li class="chapter" data-level="11.5" data-path="ch-pwm.html"><a href="ch-pwm.html#ir模式示例"><i class="fa fa-check"></i><b>11.5</b> IR模式示例</a>
+<ul>
+<li class="chapter" data-level="11.5.1" data-path="ch-pwm.html"><a href="ch-pwm.html#ir-发送模式"><i class="fa fa-check"></i><b>11.5.1</b> IR 发送模式</a></li>
+<li class="chapter" data-level="11.5.2" data-path="ch-pwm.html"><a href="ch-pwm.html#ir接收模式"><i class="fa fa-check"></i><b>11.5.2</b> IR接收模式</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="ch-qdec.html"><a href="ch-qdec.html"><i class="fa fa-check"></i><b>12</b> QDEC简介</a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="ch-qdec.html"><a href="ch-qdec.html#功能描述-4"><i class="fa fa-check"></i><b>12.1</b> 功能描述</a>
+<ul>
+<li class="chapter" data-level="12.1.1" data-path="ch-qdec.html"><a href="ch-qdec.html#特点-4"><i class="fa fa-check"></i><b>12.1.1</b> 特点</a></li>
+<li class="chapter" data-level="12.1.2" data-path="ch-qdec.html"><a href="ch-qdec.html#正转和反转"><i class="fa fa-check"></i><b>12.1.2</b> 正转和反转</a></li>
+</ul></li>
+<li class="chapter" data-level="12.2" data-path="ch-qdec.html"><a href="ch-qdec.html#使用方法-4"><i class="fa fa-check"></i><b>12.2</b> 使用方法</a>
+<ul>
+<li class="chapter" data-level="12.2.1" data-path="ch-qdec.html"><a href="ch-qdec.html#方法概述-2"><i class="fa fa-check"></i><b>12.2.1</b> 方法概述</a></li>
+<li class="chapter" data-level="12.2.2" data-path="ch-qdec.html"><a href="ch-qdec.html#注意点-2"><i class="fa fa-check"></i><b>12.2.2</b> 注意点</a></li>
+</ul></li>
+<li class="chapter" data-level="12.3" data-path="ch-qdec.html"><a href="ch-qdec.html#编程指南-5"><i class="fa fa-check"></i><b>12.3</b> 编程指南</a>
+<ul>
+<li class="chapter" data-level="12.3.1" data-path="ch-qdec.html"><a href="ch-qdec.html#驱动接口-4"><i class="fa fa-check"></i><b>12.3.1</b> 驱动接口</a></li>
+<li class="chapter" data-level="12.3.2" data-path="ch-qdec.html"><a href="ch-qdec.html#代码示例-4"><i class="fa fa-check"></i><b>12.3.2</b> 代码示例</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="ch-spi.html"><a href="ch-spi.html"><i class="fa fa-check"></i><b>13</b> 串行外围设备接口（SPI）</a>
+<ul>
+<li class="chapter" data-level="13.1" data-path="ch-spi.html"><a href="ch-spi.html#功能概述-4"><i class="fa fa-check"></i><b>13.1</b> 功能概述</a></li>
+<li class="chapter" data-level="13.2" data-path="ch-spi.html"><a href="ch-spi.html#使用说明-4"><i class="fa fa-check"></i><b>13.2</b> 使用说明</a>
+<ul>
+<li class="chapter" data-level="13.2.1" data-path="ch-spi.html"><a href="ch-spi.html#时钟以及io配置"><i class="fa fa-check"></i><b>13.2.1</b> 时钟以及IO配置</a></li>
+<li class="chapter" data-level="13.2.2" data-path="ch-spi.html"><a href="ch-spi.html#模块初始化-1"><i class="fa fa-check"></i><b>13.2.2</b> 模块初始化</a></li>
+<li class="chapter" data-level="13.2.3" data-path="ch-spi.html"><a href="ch-spi.html#中断配置-1"><i class="fa fa-check"></i><b>13.2.3</b> 中断配置</a></li>
+<li class="chapter" data-level="13.2.4" data-path="ch-spi.html"><a href="ch-spi.html#编程指南-6"><i class="fa fa-check"></i><b>13.2.4</b> 编程指南</a></li>
+<li class="chapter" data-level="13.2.5" data-path="ch-spi.html"><a href="ch-spi.html#其他配置"><i class="fa fa-check"></i><b>13.2.5</b> 其他配置</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html"><i class="fa fa-check"></i><b>14</b> 系统控制（SYSCTRL）</a>
+<ul>
+<li class="chapter" data-level="14.1" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#功能概述-5"><i class="fa fa-check"></i><b>14.1</b> 功能概述</a>
+<ul>
+<li class="chapter" data-level="14.1.1" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#外设标识"><i class="fa fa-check"></i><b>14.1.1</b> 外设标识</a></li>
+<li class="chapter" data-level="14.1.2" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#时钟树"><i class="fa fa-check"></i><b>14.1.2</b> 时钟树</a></li>
+<li class="chapter" data-level="14.1.3" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#dma-规划"><i class="fa fa-check"></i><b>14.1.3</b> DMA 规划</a></li>
+</ul></li>
+<li class="chapter" data-level="14.2" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#使用说明-5"><i class="fa fa-check"></i><b>14.2</b> 使用说明</a>
+<ul>
+<li class="chapter" data-level="14.2.1" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#外设复位"><i class="fa fa-check"></i><b>14.2.1</b> 外设复位</a></li>
+<li class="chapter" data-level="14.2.2" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#时钟门控"><i class="fa fa-check"></i><b>14.2.2</b> 时钟门控</a></li>
+<li class="chapter" data-level="14.2.3" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#时钟配置-4"><i class="fa fa-check"></i><b>14.2.3</b> 时钟配置</a></li>
+<li class="chapter" data-level="14.2.4" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#dma-规划-1"><i class="fa fa-check"></i><b>14.2.4</b> DMA 规划</a></li>
+<li class="chapter" data-level="14.2.5" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#唤醒后的时钟配置"><i class="fa fa-check"></i><b>14.2.5</b> 唤醒后的时钟配置</a></li>
+<li class="chapter" data-level="14.2.6" data-path="ch-sysctrl.html"><a href="ch-sysctrl.html#ram-相关"><i class="fa fa-check"></i><b>14.2.6</b> RAM 相关</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="ch-timer.html"><a href="ch-timer.html"><i class="fa fa-check"></i><b>15</b> 定时器（TIMER）</a>
+<ul>
+<li class="chapter" data-level="15.1" data-path="ch-timer.html"><a href="ch-timer.html#功能概述-6"><i class="fa fa-check"></i><b>15.1</b> 功能概述</a></li>
+<li class="chapter" data-level="15.2" data-path="ch-timer.html"><a href="ch-timer.html#使用说明-6"><i class="fa fa-check"></i><b>15.2</b> 使用说明</a>
+<ul>
+<li class="chapter" data-level="15.2.1" data-path="ch-timer.html"><a href="ch-timer.html#设置timer工作模式"><i class="fa fa-check"></i><b>15.2.1</b> 设置TIMER工作模式</a></li>
+<li class="chapter" data-level="15.2.2" data-path="ch-timer.html"><a href="ch-timer.html#获取时钟频率"><i class="fa fa-check"></i><b>15.2.2</b> 获取时钟频率</a></li>
+<li class="chapter" data-level="15.2.3" data-path="ch-timer.html"><a href="ch-timer.html#重载值"><i class="fa fa-check"></i><b>15.2.3</b> 重载值</a></li>
+<li class="chapter" data-level="15.2.4" data-path="ch-timer.html"><a href="ch-timer.html#使能timer"><i class="fa fa-check"></i><b>15.2.4</b> 使能TIMER</a></li>
+<li class="chapter" data-level="15.2.5" data-path="ch-timer.html"><a href="ch-timer.html#获取timer的比较值"><i class="fa fa-check"></i><b>15.2.5</b> 获取TIMER的比较值</a></li>
+<li class="chapter" data-level="15.2.6" data-path="ch-timer.html"><a href="ch-timer.html#获取timer的计数器值"><i class="fa fa-check"></i><b>15.2.6</b> 获取TIMER的计数器值</a></li>
+<li class="chapter" data-level="15.2.7" data-path="ch-timer.html"><a href="ch-timer.html#计时器暂停"><i class="fa fa-check"></i><b>15.2.7</b> 计时器暂停</a></li>
+<li class="chapter" data-level="15.2.8" data-path="ch-timer.html"><a href="ch-timer.html#配置中断请求-1"><i class="fa fa-check"></i><b>15.2.8</b> 配置中断请求</a></li>
+<li class="chapter" data-level="15.2.9" data-path="ch-timer.html"><a href="ch-timer.html#处理中断状态-1"><i class="fa fa-check"></i><b>15.2.9</b> 处理中断状态</a></li>
+</ul></li>
+<li class="chapter" data-level="15.3" data-path="ch-timer.html"><a href="ch-timer.html#使用示例"><i class="fa fa-check"></i><b>15.3</b> 使用示例</a>
+<ul>
+<li class="chapter" data-level="15.3.1" data-path="ch-timer.html"><a href="ch-timer.html#使用计时器功能及暂停功能"><i class="fa fa-check"></i><b>15.3.1</b> 使用计时器功能及暂停功能</a></li>
+<li class="chapter" data-level="15.3.2" data-path="ch-timer.html"><a href="ch-timer.html#使用timer的pwm功能"><i class="fa fa-check"></i><b>15.3.2</b> 使用TIMER的PWM功能</a></li>
+<li class="chapter" data-level="15.3.3" data-path="ch-timer.html"><a href="ch-timer.html#通道0产生2个周期性中断"><i class="fa fa-check"></i><b>15.3.3</b> 通道0产生2个周期性中断</a></li>
+<li class="chapter" data-level="15.3.4" data-path="ch-timer.html"><a href="ch-timer.html#产生2路对齐的pwm信号"><i class="fa fa-check"></i><b>15.3.4</b> 产生2路对齐的PWM信号</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="ch-uart.html"><a href="ch-uart.html"><i class="fa fa-check"></i><b>16</b> 通用异步收发传输器（UART）</a>
+<ul>
+<li class="chapter" data-level="16.1" data-path="ch-uart.html"><a href="ch-uart.html#功能概述-7"><i class="fa fa-check"></i><b>16.1</b> 功能概述</a></li>
+<li class="chapter" data-level="16.2" data-path="ch-uart.html"><a href="ch-uart.html#使用说明-7"><i class="fa fa-check"></i><b>16.2</b> 使用说明</a>
+<ul>
+<li class="chapter" data-level="16.2.1" data-path="ch-uart.html"><a href="ch-uart.html#设置波特率"><i class="fa fa-check"></i><b>16.2.1</b> 设置波特率</a></li>
+<li class="chapter" data-level="16.2.2" data-path="ch-uart.html"><a href="ch-uart.html#获取波特率"><i class="fa fa-check"></i><b>16.2.2</b> 获取波特率</a></li>
+<li class="chapter" data-level="16.2.3" data-path="ch-uart.html"><a href="ch-uart.html#ch-uart-initial"><i class="fa fa-check"></i><b>16.2.3</b> UART初始化</a></li>
+<li class="chapter" data-level="16.2.4" data-path="ch-uart.html"><a href="ch-uart.html#uart轮询模式"><i class="fa fa-check"></i><b>16.2.4</b> UART轮询模式</a></li>
+<li class="chapter" data-level="16.2.5" data-path="ch-uart.html"><a href="ch-uart.html#uart中断使能禁用"><i class="fa fa-check"></i><b>16.2.5</b> UART中断使能/禁用</a></li>
+<li class="chapter" data-level="16.2.6" data-path="ch-uart.html"><a href="ch-uart.html#处理中断状态-2"><i class="fa fa-check"></i><b>16.2.6</b> 处理中断状态</a></li>
+<li class="chapter" data-level="16.2.7" data-path="ch-uart.html"><a href="ch-uart.html#uart-fifo中断触发逻辑"><i class="fa fa-check"></i><b>16.2.7</b> UART FIFO中断触发逻辑</a></li>
+<li class="chapter" data-level="16.2.8" data-path="ch-uart.html"><a href="ch-uart.html#发送数据"><i class="fa fa-check"></i><b>16.2.8</b> 发送数据</a></li>
+<li class="chapter" data-level="16.2.9" data-path="ch-uart.html"><a href="ch-uart.html#接收数据"><i class="fa fa-check"></i><b>16.2.9</b> 接收数据</a></li>
+<li class="chapter" data-level="16.2.10" data-path="ch-uart.html"><a href="ch-uart.html#dma传输模式使能"><i class="fa fa-check"></i><b>16.2.10</b> DMA传输模式使能</a></li>
+</ul></li>
+<li class="chapter" data-level="16.3" data-path="ch-uart.html"><a href="ch-uart.html#示例代码"><i class="fa fa-check"></i><b>16.3</b> 示例代码</a>
+<ul>
+<li class="chapter" data-level="16.3.1" data-path="ch-uart.html"><a href="ch-uart.html#uart接收变长字节数据"><i class="fa fa-check"></i><b>16.3.1</b> UART接收变长字节数据</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="17" data-path="ch-usb.html"><a href="ch-usb.html"><i class="fa fa-check"></i><b>17</b> 通用串行总线 (USB)</a>
+<ul>
+<li class="chapter" data-level="17.1" data-path="ch-usb.html"><a href="ch-usb.html#功能概述-8"><i class="fa fa-check"></i><b>17.1</b> 功能概述</a></li>
+<li class="chapter" data-level="17.2" data-path="ch-usb.html"><a href="ch-usb.html#使用说明-8"><i class="fa fa-check"></i><b>17.2</b> 使用说明</a>
+<ul>
+<li class="chapter" data-level="17.2.1" data-path="ch-usb.html"><a href="ch-usb.html#usb软件结构"><i class="fa fa-check"></i><b>17.2.1</b> USB软件结构</a></li>
+<li class="chapter" data-level="17.2.2" data-path="ch-usb.html"><a href="ch-usb.html#usb-device-状态"><i class="fa fa-check"></i><b>17.2.2</b> USB Device 状态</a></li>
+<li class="chapter" data-level="17.2.3" data-path="ch-usb.html"><a href="ch-usb.html#设置-io"><i class="fa fa-check"></i><b>17.2.3</b> 设置 IO</a></li>
+<li class="chapter" data-level="17.2.4" data-path="ch-usb.html"><a href="ch-usb.html#设置-phy"><i class="fa fa-check"></i><b>17.2.4</b> 设置 PHY</a></li>
+<li class="chapter" data-level="17.2.5" data-path="ch-usb.html"><a href="ch-usb.html#usb-模块初始化"><i class="fa fa-check"></i><b>17.2.5</b> USB 模块初始化</a></li>
+<li class="chapter" data-level="17.2.6" data-path="ch-usb.html"><a href="ch-usb.html#event-handler"><i class="fa fa-check"></i><b>17.2.6</b> event handler</a></li>
+<li class="chapter" data-level="17.2.7" data-path="ch-usb.html"><a href="ch-usb.html#常用driver-api"><i class="fa fa-check"></i><b>17.2.7</b> 常用driver API</a></li>
+<li class="chapter" data-level="17.2.8" data-path="ch-usb.html"><a href="ch-usb.html#使用场景"><i class="fa fa-check"></i><b>17.2.8</b> 使用场景</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="18" data-path="ch-watchdog.html"><a href="ch-watchdog.html"><i class="fa fa-check"></i><b>18</b> 看门狗（WATCHDOG）</a>
+<ul>
+<li class="chapter" data-level="18.1" data-path="ch-watchdog.html"><a href="ch-watchdog.html#功能概述-9"><i class="fa fa-check"></i><b>18.1</b> 功能概述</a></li>
+<li class="chapter" data-level="18.2" data-path="ch-watchdog.html"><a href="ch-watchdog.html#使用说明-9"><i class="fa fa-check"></i><b>18.2</b> 使用说明</a>
+<ul>
+<li class="chapter" data-level="18.2.1" data-path="ch-watchdog.html"><a href="ch-watchdog.html#配置看门狗"><i class="fa fa-check"></i><b>18.2.1</b> 配置看门狗</a></li>
+<li class="chapter" data-level="18.2.2" data-path="ch-watchdog.html"><a href="ch-watchdog.html#重启看门狗"><i class="fa fa-check"></i><b>18.2.2</b> 重启看门狗</a></li>
+<li class="chapter" data-level="18.2.3" data-path="ch-watchdog.html"><a href="ch-watchdog.html#清除中断"><i class="fa fa-check"></i><b>18.2.3</b> 清除中断</a></li>
+<li class="chapter" data-level="18.2.4" data-path="ch-watchdog.html"><a href="ch-watchdog.html#禁用看门狗"><i class="fa fa-check"></i><b>18.2.4</b> 禁用看门狗</a></li>
+<li class="chapter" data-level="18.2.5" data-path="ch-watchdog.html"><a href="ch-watchdog.html#暂停看门狗"><i class="fa fa-check"></i><b>18.2.5</b> 暂停看门狗</a></li>
+<li class="chapter" data-level="18.2.6" data-path="ch-watchdog.html"><a href="ch-watchdog.html#处理中断状态-3"><i class="fa fa-check"></i><b>18.2.6</b> 处理中断状态</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="19" data-path="ch-eflash.html"><a href="ch-eflash.html"><i class="fa fa-check"></i><b>19</b> 内置 Flash（EFlash）</a>
+<ul>
+<li class="chapter" data-level="19.1" data-path="ch-eflash.html"><a href="ch-eflash.html#功能概述-10"><i class="fa fa-check"></i><b>19.1</b> 功能概述</a></li>
+<li class="chapter" data-level="19.2" data-path="ch-eflash.html"><a href="ch-eflash.html#使用说明-10"><i class="fa fa-check"></i><b>19.2</b> 使用说明</a>
+<ul>
+<li class="chapter" data-level="19.2.1" data-path="ch-eflash.html"><a href="ch-eflash.html#擦除并写入新数据"><i class="fa fa-check"></i><b>19.2.1</b> 擦除并写入新数据</a></li>
+<li class="chapter" data-level="19.2.2" data-path="ch-eflash.html"><a href="ch-eflash.html#不擦除直接写入数据"><i class="fa fa-check"></i><b>19.2.2</b> 不擦除直接写入数据</a></li>
+<li class="chapter" data-level="19.2.3" data-path="ch-eflash.html"><a href="ch-eflash.html#单独擦除"><i class="fa fa-check"></i><b>19.2.3</b> 单独擦除</a></li>
+<li class="chapter" data-level="19.2.4" data-path="ch-eflash.html"><a href="ch-eflash.html#flash-数据升级"><i class="fa fa-check"></i><b>19.2.4</b> Flash 数据升级</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">ING20XX 系列芯片外设开发者手册</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="ch-keyscan" class="section level1 hasAnchor" number="9">
+<h1><span class="header-section-number">9</span> 硬件键盘扫描控制器（KEYSCAN）<a href="ch-keyscan.html#ch-keyscan" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="功能概述-2" class="section level2 hasAnchor" number="9.1">
+<h2><span class="header-section-number">9.1</span> 功能概述<a href="ch-keyscan.html#功能概述-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="特性" class="section level3 hasAnchor" number="9.1.1">
+<h3><span class="header-section-number">9.1.1</span> 特性：<a href="ch-keyscan.html#特性" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li>标准模式可配置矩阵，最大支持8行*22列的键盘矩阵。</li>
+<li>每个io支持额外的两个独立按键扫描。</li>
+<li>LPkey模式可配置三角阵列，最大支持16个COL连接共 y*(y-1)/2+2(x+y) 按键</li>
+<li>标准模式支持table（按键变化才产生中断）模式</li>
+<li>每个单独的行或者列可以设置启用或者禁用。</li>
+<li>可配置时钟。</li>
+<li>支持输入硬件去抖动，去抖时间可配置。</li>
+<li>支持配置扫描间隔和释放时间，支持多按键同时按下。</li>
+<li>支持中断和DMA。</li>
+</ul>
+</div>
+<div id="功能简述" class="section level3 hasAnchor" number="9.1.2">
+<h3><span class="header-section-number">9.1.2</span> 功能简述<a href="ch-keyscan.html#功能简述" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>keyscan模块支持DMA，fifo最大深度32，按键扫描支持标准和lpkey两种工作模式，其中标准模式支持table（按键按下上报变化）模式，Keyscan还提供了去抖功能，为输入过滤掉毛刺。该功能可以针对每个通道单独启用。过滤时间可单独配置。
+#### 标准模式</p>
+<p>keyscan标准模式支持x*y+2(x+y)个按键布局（x：列扫描，最高支持8列。 y：行扫描，最高支持22行）。支持的键盘扫描排列如下图所示：</p>
+<p><img src="img/KeyScan/keyscan_normal.png" /></p>
+<p>在标准模式下，keyscan模块会根据设定的扫描周期loop值（扫描周期和loop配置以及模块输入时钟相关）周期触发keyscan的按键扫描任务并将扫描到的键值压入FIFO，在keyscan的运行过程中，扫描流程如下。</p>
+<p><img src="img/KeyScan/keyscan_normal_flow.png" /></p>
+<p>标准扫描模式支持使能table模式，不需要手动获取fifo的数值并进行软件比对，硬件可以自动和上一次的采样结果进行比对，触发中断给出变化的键值。</p>
+</div>
+<div id="lpkey模式" class="section level3 hasAnchor" number="9.1.3">
+<h3><span class="header-section-number">9.1.3</span> LPkey模式<a href="ch-keyscan.html#lpkey模式" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Lpkey模式支持y*(y-1)/2+2(x+y)个按键布局（x：列扫描，最高支持8列。 y：行扫描，最高支持22行）。支持的键盘扫描排列如下图所示：</p>
+<p><img src="img/KeyScan/keyscan_lpkey.png" /></p>
+<p>LPkey模式提供了以更少的io数量扩展更多扫描矩阵的一种方式，相比普通模式，相同的io数量可扫描的按键数量更多，适用于小封装或io数量受限的应用场景。</p>
+<p>Lpkey模式不支持键值比较的（table）模式，扫描流程和标准模式相同。通过DMA或直接读取fifo的方式获取周期扫描按键值。判断按键是否触发。</p>
+</div>
+</div>
+<div id="使用说明-2" class="section level2 hasAnchor" number="9.2">
+<h2><span class="header-section-number">9.2</span> 使用说明<a href="ch-keyscan.html#使用说明-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>以4行*4列的键盘矩阵为例：</p>
+<p><img src="img/KeyScan/keyscan.jpg" /></p>
+<div id="键盘矩阵的软件描述" class="section level3 hasAnchor" number="9.2.1">
+<h3><span class="header-section-number">9.2.1</span> 键盘矩阵的软件描述<a href="ch-keyscan.html#键盘矩阵的软件描述" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb96"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb96-1"><a href="ch-keyscan.html#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb96-2"><a href="ch-keyscan.html#cb96-2" aria-hidden="true" tabindex="-1"></a>    KEYSCAN_InColIndex_t in_col<span class="op">;</span></span>
+<span id="cb96-3"><a href="ch-keyscan.html#cb96-3" aria-hidden="true" tabindex="-1"></a>    GIO_Index_t gpio<span class="op">;</span></span>
+<span id="cb96-4"><a href="ch-keyscan.html#cb96-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> KEYSCAN_InColList<span class="op">;</span></span>
+<span id="cb96-5"><a href="ch-keyscan.html#cb96-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb96-6"><a href="ch-keyscan.html#cb96-6" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb96-7"><a href="ch-keyscan.html#cb96-7" aria-hidden="true" tabindex="-1"></a>    KEYSCAN_OutRowIndex_t out_row<span class="op">;</span></span>
+<span id="cb96-8"><a href="ch-keyscan.html#cb96-8" aria-hidden="true" tabindex="-1"></a>    GIO_Index_t gpio<span class="op">;</span></span>
+<span id="cb96-9"><a href="ch-keyscan.html#cb96-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> KEYSCAN_OutRowList<span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb97"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb97-1"><a href="ch-keyscan.html#cb97-1" aria-hidden="true" tabindex="-1"></a>KEYSCAN_OutRowList key_out_row<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb97-2"><a href="ch-keyscan.html#cb97-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span>KEY_OUT_ROW_6<span class="op">,</span> GIO_GPIO_30<span class="op">},</span> <span class="co">// 第1行</span></span>
+<span id="cb97-3"><a href="ch-keyscan.html#cb97-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span>KEY_OUT_ROW_7<span class="op">,</span> GIO_GPIO_31<span class="op">},</span> <span class="co">// 第2行</span></span>
+<span id="cb97-4"><a href="ch-keyscan.html#cb97-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span>KEY_OUT_ROW_5<span class="op">,</span> GIO_GPIO_29<span class="op">},</span> <span class="co">// 第3行</span></span>
+<span id="cb97-5"><a href="ch-keyscan.html#cb97-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span>KEY_OUT_ROW_0<span class="op">,</span> GIO_GPIO_32<span class="op">},</span> <span class="co">// 第4行</span></span>
+<span id="cb97-6"><a href="ch-keyscan.html#cb97-6" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb97-7"><a href="ch-keyscan.html#cb97-7" aria-hidden="true" tabindex="-1"></a><span class="pp">#define key_out_row_num (sizeof(key_out_row) / sizeof(key_out_row[0]))</span></span>
+<span id="cb97-8"><a href="ch-keyscan.html#cb97-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb97-9"><a href="ch-keyscan.html#cb97-9" aria-hidden="true" tabindex="-1"></a>KEYSCAN_InColList key_in_col<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb97-10"><a href="ch-keyscan.html#cb97-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span>KEY_IN_COL_11<span class="op">,</span> GIO_GPIO_11<span class="op">},</span> <span class="co">// 第1列</span></span>
+<span id="cb97-11"><a href="ch-keyscan.html#cb97-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span>KEY_IN_COL_12<span class="op">,</span> GIO_GPIO_12<span class="op">},</span> <span class="co">// 第2列</span></span>
+<span id="cb97-12"><a href="ch-keyscan.html#cb97-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span>KEY_IN_COL_13<span class="op">,</span> GIO_GPIO_13<span class="op">},</span> <span class="co">// 第3列</span></span>
+<span id="cb97-13"><a href="ch-keyscan.html#cb97-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span>KEY_IN_COL_14<span class="op">,</span> GIO_GPIO_14<span class="op">},</span> <span class="co">// 第4列</span></span>
+<span id="cb97-14"><a href="ch-keyscan.html#cb97-14" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb97-15"><a href="ch-keyscan.html#cb97-15" aria-hidden="true" tabindex="-1"></a><span class="pp">#define key_in_col_num (sizeof(key_in_col) / sizeof(key_in_col[0]))</span></span></code></pre></div>
+<p>第1行按键接到了GPIO30，映射到KEYSCAN模块的ROW6。第1列按键接到了GPIO11，映射到KEYSCAN模块的COL11。以此类推4行4列的键盘阵列。</p>
+<p>注意：KEYSCAN的ROW和COL不是随意映射到GPIO，映射关系参考管脚管理（PINCTRL）说明文档。</p>
+</div>
+<div id="keyscan模块初始化" class="section level3 hasAnchor" number="9.2.2">
+<h3><span class="header-section-number">9.2.2</span> KEYSCAN模块初始化<a href="ch-keyscan.html#keyscan模块初始化" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb98"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb98-1"><a href="ch-keyscan.html#cb98-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb98-2"><a href="ch-keyscan.html#cb98-2" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb98-3"><a href="ch-keyscan.html#cb98-3" aria-hidden="true" tabindex="-1"></a>    KEYSCAN_InColList <span class="op">*</span>col<span class="op">;</span></span>
+<span id="cb98-4"><a href="ch-keyscan.html#cb98-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> col_num<span class="op">;</span></span>
+<span id="cb98-5"><a href="ch-keyscan.html#cb98-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb98-6"><a href="ch-keyscan.html#cb98-6" aria-hidden="true" tabindex="-1"></a>    KEYSCAN_OutRowList <span class="op">*</span>row<span class="op">;</span></span>
+<span id="cb98-7"><a href="ch-keyscan.html#cb98-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> row_num<span class="op">;</span></span>
+<span id="cb98-8"><a href="ch-keyscan.html#cb98-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb98-9"><a href="ch-keyscan.html#cb98-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> fifo_num_trig_int<span class="op">;</span></span>
+<span id="cb98-10"><a href="ch-keyscan.html#cb98-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> dma_num_trig_int<span class="op">;</span></span>
+<span id="cb98-11"><a href="ch-keyscan.html#cb98-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> loop_num_trig_int<span class="op">;</span></span>
+<span id="cb98-12"><a href="ch-keyscan.html#cb98-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> dma_en<span class="op">;</span></span>
+<span id="cb98-13"><a href="ch-keyscan.html#cb98-13" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> int_trig_en<span class="op">;</span></span>
+<span id="cb98-14"><a href="ch-keyscan.html#cb98-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> int_loop_en<span class="op">;</span></span>
+<span id="cb98-15"><a href="ch-keyscan.html#cb98-15" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> release_time<span class="op">;</span></span>
+<span id="cb98-16"><a href="ch-keyscan.html#cb98-16" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> scan_interval<span class="op">;</span></span>
+<span id="cb98-17"><a href="ch-keyscan.html#cb98-17" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> debounce_counter<span class="op">;</span></span>
+<span id="cb98-18"><a href="ch-keyscan.html#cb98-18" aria-hidden="true" tabindex="-1"></a><span class="pp">#if (INGCHIPS_FAMILY == INGCHIPS_FAMILY_20)</span></span>
+<span id="cb98-19"><a href="ch-keyscan.html#cb98-19" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> table_mode_en<span class="op">;</span></span>
+<span id="cb98-20"><a href="ch-keyscan.html#cb98-20" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> lpkey_mode_en<span class="op">;</span></span>
+<span id="cb98-21"><a href="ch-keyscan.html#cb98-21" aria-hidden="true" tabindex="-1"></a><span class="pp">#endif</span></span>
+<span id="cb98-22"><a href="ch-keyscan.html#cb98-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> KEYSCAN_SetStateStruct<span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb99"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb99-1"><a href="ch-keyscan.html#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb99-2"><a href="ch-keyscan.html#cb99-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> Initialize keyscan module</span></span>
+<span id="cb99-3"><a href="ch-keyscan.html#cb99-3" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
+<span id="cb99-4"><a href="ch-keyscan.html#cb99-4" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co"> </span><span class="cv">keyscan_set</span><span class="co">       Initial parameter struct</span></span>
+<span id="cb99-5"><a href="ch-keyscan.html#cb99-5" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@return</span><span class="co">                      0 if success else non-0</span></span>
+<span id="cb99-6"><a href="ch-keyscan.html#cb99-6" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb99-7"><a href="ch-keyscan.html#cb99-7" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> KEYSCAN_Initialize<span class="op">(</span><span class="dt">const</span> KEYSCAN_SetStateStruct<span class="op">*</span> keyscan_set<span class="op">);</span></span>
+<span id="cb99-8"><a href="ch-keyscan.html#cb99-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb99-9"><a href="ch-keyscan.html#cb99-9" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb99-10"><a href="ch-keyscan.html#cb99-10" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> Initialize mapping table of keyboard array row and col</span></span>
+<span id="cb99-11"><a href="ch-keyscan.html#cb99-11" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
+<span id="cb99-12"><a href="ch-keyscan.html#cb99-12" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co">  </span><span class="cv">keyscan_set</span><span class="co">       Initial parameter struct</span></span>
+<span id="cb99-13"><a href="ch-keyscan.html#cb99-13" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[out]</span><span class="co"> </span><span class="cv">ctx</span><span class="co">               keyboard array mapping table</span></span>
+<span id="cb99-14"><a href="ch-keyscan.html#cb99-14" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb99-15"><a href="ch-keyscan.html#cb99-15" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> KEYSCAN_InitKeyScanToIdx<span class="op">(</span><span class="dt">const</span> KEYSCAN_SetStateStruct<span class="op">*</span> keyscan_set<span class="op">,</span></span>
+<span id="cb99-16"><a href="ch-keyscan.html#cb99-16" aria-hidden="true" tabindex="-1"></a>                              KEYSCAN_Ctx <span class="op">*</span>ctx<span class="op">);</span></span></code></pre></div>
+</div>
+<div id="获取扫描到的按键" class="section level3 hasAnchor" number="9.2.3">
+<h3><span class="header-section-number">9.2.3</span> 获取扫描到的按键<a href="ch-keyscan.html#获取扫描到的按键" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>KEYSCAN模块使能扫描后会按照行和列的配置开始扫描。模块有FIFO缓存扫描数据。每次扫描循环结束，FIFO中压入1个0x400标志完成一次扫描。</p>
+<p>可以配置FIFO中数据个数触发中断或者DMA触发中断：</p>
+<div class="sourceCode" id="cb100"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb100-1"><a href="ch-keyscan.html#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> KEYSCAN_SetFifoNumTrigInt<span class="op">(</span><span class="dt">uint32_t</span> trig_num<span class="op">);</span></span>
+<span id="cb100-2"><a href="ch-keyscan.html#cb100-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> KEYSCAN_SetDmaNumTrigInt<span class="op">(</span><span class="dt">uint32_t</span> trig_num<span class="op">);</span></span></code></pre></div>
+<p>获取FIFO是否为空的状态和数据：</p>
+<div class="sourceCode" id="cb101"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb101-1"><a href="ch-keyscan.html#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb101-2"><a href="ch-keyscan.html#cb101-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> Check keyscan FIFO empty or not</span></span>
+<span id="cb101-3"><a href="ch-keyscan.html#cb101-3" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
+<span id="cb101-4"><a href="ch-keyscan.html#cb101-4" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@return</span><span class="co"> 0: FIFO have data; 1: empty</span></span>
+<span id="cb101-5"><a href="ch-keyscan.html#cb101-5" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb101-6"><a href="ch-keyscan.html#cb101-6" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> KEYSCAN_GetIntStateFifoEmptyRaw<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span>
+<span id="cb101-7"><a href="ch-keyscan.html#cb101-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb101-8"><a href="ch-keyscan.html#cb101-8" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb101-9"><a href="ch-keyscan.html#cb101-9" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> GET keyscan FIFO data</span></span>
+<span id="cb101-10"><a href="ch-keyscan.html#cb101-10" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
+<span id="cb101-11"><a href="ch-keyscan.html#cb101-11" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@return</span><span class="co"> 0~4 bits: col; 5~9 bits: row; 10 bit: scan cycle end flag</span></span>
+<span id="cb101-12"><a href="ch-keyscan.html#cb101-12" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb101-13"><a href="ch-keyscan.html#cb101-13" aria-hidden="true" tabindex="-1"></a><span class="dt">uint16_t</span> KEYSCAN_GetKeyData<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<p>按键FIFO原始数据的0~4位是按下按键所在的KEYSCAN模块中的col，5~9位是row，注意这个值并不是键盘矩阵中的行和列，可以用下面接口将原始数据解析为键盘矩阵中的行和列：</p>
+<div class="sourceCode" id="cb102"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb102-1"><a href="ch-keyscan.html#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb102-2"><a href="ch-keyscan.html#cb102-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@brief</span><span class="co"> Transfer keyscan FIFO raw data to keyboard array row and col</span></span>
+<span id="cb102-3"><a href="ch-keyscan.html#cb102-3" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
+<span id="cb102-4"><a href="ch-keyscan.html#cb102-4" aria-hidden="true" tabindex="-1"></a><span class="co"> * To use this helper function, `ctx` must be initialized with `KEYSCAN_InitKeyScanToIdx`.</span></span>
+<span id="cb102-5"><a href="ch-keyscan.html#cb102-5" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
+<span id="cb102-6"><a href="ch-keyscan.html#cb102-6" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co">  </span><span class="cv">ctx</span><span class="co">              keyboard array mapping table</span></span>
+<span id="cb102-7"><a href="ch-keyscan.html#cb102-7" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[in]</span><span class="co">  </span><span class="cv">key_data</span><span class="co">         keyscan FIFO raw data</span></span>
+<span id="cb102-8"><a href="ch-keyscan.html#cb102-8" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[out]</span><span class="co"> </span><span class="cv">row</span><span class="co">              pressed key&#39;s 0-based row index in keyboard array</span></span>
+<span id="cb102-9"><a href="ch-keyscan.html#cb102-9" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param[out]</span><span class="co"> </span><span class="cv">col</span><span class="co">              pressed key&#39;s 0-based col index in keyboard array</span></span>
+<span id="cb102-10"><a href="ch-keyscan.html#cb102-10" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@return</span><span class="co">                      0: scan cycle end data;</span></span>
+<span id="cb102-11"><a href="ch-keyscan.html#cb102-11" aria-hidden="true" tabindex="-1"></a><span class="co"> *                              1: find key pressed, *row and *col are key positions in keyboard array</span></span>
+<span id="cb102-12"><a href="ch-keyscan.html#cb102-12" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb102-13"><a href="ch-keyscan.html#cb102-13" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> KEYSCAN_KeyDataToRowColIdx<span class="op">(</span><span class="dt">const</span> KEYSCAN_Ctx <span class="op">*</span>ctx<span class="op">,</span> <span class="dt">uint32_t</span> key_data<span class="op">,</span></span>
+<span id="cb102-14"><a href="ch-keyscan.html#cb102-14" aria-hidden="true" tabindex="-1"></a>                                   <span class="dt">uint8_t</span> <span class="op">*</span>row<span class="op">,</span> <span class="dt">uint8_t</span> <span class="op">*</span>col<span class="op">);</span></span></code></pre></div>
+</div>
+</div>
+<div id="应用举例" class="section level2 hasAnchor" number="9.3">
+<h2><span class="header-section-number">9.3</span> 应用举例<a href="ch-keyscan.html#应用举例" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="初始化keyscan模块" class="section level3 hasAnchor" number="9.3.1">
+<h3><span class="header-section-number">9.3.1</span> 初始化KEYSCAN模块<a href="ch-keyscan.html#初始化keyscan模块" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb103"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb103-1"><a href="ch-keyscan.html#cb103-1" aria-hidden="true" tabindex="-1"></a>KEYSCAN_OutRowList key_out_row<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb103-2"><a href="ch-keyscan.html#cb103-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span>KEY_OUT_ROW_6<span class="op">,</span> GIO_GPIO_32<span class="op">},</span> <span class="co">// 第1行</span></span>
+<span id="cb103-3"><a href="ch-keyscan.html#cb103-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span>KEY_OUT_ROW_7<span class="op">,</span> GIO_GPIO_33<span class="op">},</span> <span class="co">// 第2行</span></span>
+<span id="cb103-4"><a href="ch-keyscan.html#cb103-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span>KEY_OUT_ROW_5<span class="op">,</span> GIO_GPIO_31<span class="op">},</span> <span class="co">// 第3行</span></span>
+<span id="cb103-5"><a href="ch-keyscan.html#cb103-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span>KEY_OUT_ROW_0<span class="op">,</span> GIO_GPIO_23<span class="op">},</span> <span class="co">// 第4行</span></span>
+<span id="cb103-6"><a href="ch-keyscan.html#cb103-6" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb103-7"><a href="ch-keyscan.html#cb103-7" aria-hidden="true" tabindex="-1"></a><span class="pp">#define key_out_row_num (sizeof(key_out_row) / sizeof(key_out_row[0]))</span></span>
+<span id="cb103-8"><a href="ch-keyscan.html#cb103-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb103-9"><a href="ch-keyscan.html#cb103-9" aria-hidden="true" tabindex="-1"></a>KEYSCAN_InColList key_in_col<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb103-10"><a href="ch-keyscan.html#cb103-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span>KEY_IN_COL_11<span class="op">,</span> GIO_GPIO_11<span class="op">},</span> <span class="co">// 第1列</span></span>
+<span id="cb103-11"><a href="ch-keyscan.html#cb103-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span>KEY_IN_COL_12<span class="op">,</span> GIO_GPIO_12<span class="op">},</span> <span class="co">// 第2列</span></span>
+<span id="cb103-12"><a href="ch-keyscan.html#cb103-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span>KEY_IN_COL_13<span class="op">,</span> GIO_GPIO_13<span class="op">},</span> <span class="co">// 第3列</span></span>
+<span id="cb103-13"><a href="ch-keyscan.html#cb103-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span>KEY_IN_COL_14<span class="op">,</span> GIO_GPIO_14<span class="op">},</span> <span class="co">// 第4列</span></span>
+<span id="cb103-14"><a href="ch-keyscan.html#cb103-14" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb103-15"><a href="ch-keyscan.html#cb103-15" aria-hidden="true" tabindex="-1"></a><span class="pp">#define key_in_col_num (sizeof(key_in_col) / sizeof(key_in_col[0]))</span></span>
+<span id="cb103-16"><a href="ch-keyscan.html#cb103-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb103-17"><a href="ch-keyscan.html#cb103-17" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> KEYSCAN_Ctx key_ctx <span class="op">=</span> <span class="op">{</span><span class="dv">0</span><span class="op">};</span></span>
+<span id="cb103-18"><a href="ch-keyscan.html#cb103-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb103-19"><a href="ch-keyscan.html#cb103-19" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> KEYSCAN_SetStateStruct keyscan_set <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb103-20"><a href="ch-keyscan.html#cb103-20" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>col               <span class="op">=</span> key_in_col<span class="op">,</span></span>
+<span id="cb103-21"><a href="ch-keyscan.html#cb103-21" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>col_num           <span class="op">=</span> key_in_col_num<span class="op">,</span></span>
+<span id="cb103-22"><a href="ch-keyscan.html#cb103-22" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>row               <span class="op">=</span> key_out_row<span class="op">,</span></span>
+<span id="cb103-23"><a href="ch-keyscan.html#cb103-23" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>row_num           <span class="op">=</span> key_out_row_num<span class="op">,</span></span>
+<span id="cb103-24"><a href="ch-keyscan.html#cb103-24" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>loop_num_trig_int <span class="op">=</span> <span class="dv">1</span><span class="op">,</span></span>
+<span id="cb103-25"><a href="ch-keyscan.html#cb103-25" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>int_loop_en       <span class="op">=</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb103-26"><a href="ch-keyscan.html#cb103-26" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>table_mode_en     <span class="op">=</span> <span class="dv">0</span><span class="op">,</span> <span class="co">// 使用table模式时，使能该结构体变量</span></span>
+<span id="cb103-27"><a href="ch-keyscan.html#cb103-27" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>fifo_num_trig_int <span class="op">=</span> <span class="dv">1</span><span class="op">,</span></span>
+<span id="cb103-28"><a href="ch-keyscan.html#cb103-28" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>release_time      <span class="op">=</span> <span class="bn">0x1ff</span><span class="op">,</span></span>
+<span id="cb103-29"><a href="ch-keyscan.html#cb103-29" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>scan_interval     <span class="op">=</span> <span class="bn">0xfff</span><span class="op">,</span></span>
+<span id="cb103-30"><a href="ch-keyscan.html#cb103-30" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>debounce_counter  <span class="op">=</span> <span class="bn">0xff</span><span class="op">,</span></span>
+<span id="cb103-31"><a href="ch-keyscan.html#cb103-31" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>dma_num_trig_int  <span class="op">=</span> <span class="bn">0x10</span><span class="op">,</span></span>
+<span id="cb103-32"><a href="ch-keyscan.html#cb103-32" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>dma_en            <span class="op">=</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb103-33"><a href="ch-keyscan.html#cb103-33" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>int_trig_en       <span class="op">=</span> <span class="dv">1</span><span class="op">,</span></span>
+<span id="cb103-34"><a href="ch-keyscan.html#cb103-34" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>lpkey_mode_en     <span class="op">=</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb103-35"><a href="ch-keyscan.html#cb103-35" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb103-36"><a href="ch-keyscan.html#cb103-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb103-37"><a href="ch-keyscan.html#cb103-37" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> keyscan_cb_isr<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">);</span></span>
+<span id="cb103-38"><a href="ch-keyscan.html#cb103-38" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> setup_peripherals_keyscan<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb103-39"><a href="ch-keyscan.html#cb103-39" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb103-40"><a href="ch-keyscan.html#cb103-40" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGateMulti<span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_KeyScan<span class="op">);</span></span>
+<span id="cb103-41"><a href="ch-keyscan.html#cb103-41" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGateMulti<span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> SYSCTRL_ITEM_APB_PinCtrl<span class="op">);</span></span>
+<span id="cb103-42"><a href="ch-keyscan.html#cb103-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb103-43"><a href="ch-keyscan.html#cb103-43" aria-hidden="true" tabindex="-1"></a>    KEYSCAN_Initialize<span class="op">(&amp;</span>keyscan_set<span class="op">);</span></span>
+<span id="cb103-44"><a href="ch-keyscan.html#cb103-44" aria-hidden="true" tabindex="-1"></a>    KEYSCAN_InitKeyScanToIdx<span class="op">(&amp;</span>keyscan_set<span class="op">,</span> <span class="op">&amp;</span>key_ctx<span class="op">);</span></span>
+<span id="cb103-45"><a href="ch-keyscan.html#cb103-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb103-46"><a href="ch-keyscan.html#cb103-46" aria-hidden="true" tabindex="-1"></a>    platform_set_irq_callback<span class="op">(</span>PLATFORM_CB_IRQ_KEYSCAN<span class="op">,</span> keyscan_cb_isr<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb103-47"><a href="ch-keyscan.html#cb103-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb103-48"><a href="ch-keyscan.html#cb103-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb103-49"><a href="ch-keyscan.html#cb103-49" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</div>
+<div id="中断数据处理" class="section level3 hasAnchor" number="9.3.2">
+<h3><span class="header-section-number">9.3.2</span> 中断数据处理<a href="ch-keyscan.html#中断数据处理" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="标准模式" class="section level4 hasAnchor" number="9.3.2.1">
+<h4><span class="header-section-number">9.3.2.1</span> 标准模式<a href="ch-keyscan.html#标准模式" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb104"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb104-1"><a href="ch-keyscan.html#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint8_t</span> key_state_buf<span class="op">[</span><span class="dv">2</span><span class="op">][</span>key_out_row_num<span class="op">][</span>key_in_col_num<span class="op">]</span> <span class="op">=</span> <span class="op">{</span><span class="dv">0</span><span class="op">};</span></span>
+<span id="cb104-2"><a href="ch-keyscan.html#cb104-2" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint8_t</span> key_state_last_index <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb104-3"><a href="ch-keyscan.html#cb104-3" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint8_t</span> key_state_now_index <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb104-4"><a href="ch-keyscan.html#cb104-4" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> printf_key_state<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb104-5"><a href="ch-keyscan.html#cb104-5" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb104-6"><a href="ch-keyscan.html#cb104-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> row<span class="op">,</span> col<span class="op">;</span></span>
+<span id="cb104-7"><a href="ch-keyscan.html#cb104-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span>row <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> row <span class="op">&lt;</span> key_out_row_num<span class="op">;</span> row<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb104-8"><a href="ch-keyscan.html#cb104-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span>col <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> col <span class="op">&lt;</span> key_in_col_num<span class="op">;</span> col<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb104-9"><a href="ch-keyscan.html#cb104-9" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>key_state_buf<span class="op">[</span>key_state_now_index<span class="op">][</span>row<span class="op">][</span>col<span class="op">]</span> <span class="op">!=</span></span>
+<span id="cb104-10"><a href="ch-keyscan.html#cb104-10" aria-hidden="true" tabindex="-1"></a>                key_state_buf<span class="op">[</span>key_state_last_index<span class="op">][</span>row<span class="op">][</span>col<span class="op">])</span> <span class="op">{</span></span>
+<span id="cb104-11"><a href="ch-keyscan.html#cb104-11" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;row%u col%u %s</span><span class="sc">\r\n</span><span class="st">&quot;</span><span class="op">,</span></span>
+<span id="cb104-12"><a href="ch-keyscan.html#cb104-12" aria-hidden="true" tabindex="-1"></a>                row <span class="op">+</span> <span class="dv">1</span><span class="op">,</span> col <span class="op">+</span> <span class="dv">1</span><span class="op">,</span></span>
+<span id="cb104-13"><a href="ch-keyscan.html#cb104-13" aria-hidden="true" tabindex="-1"></a>                key_state_buf<span class="op">[</span>key_state_now_index<span class="op">][</span>row<span class="op">][</span>col<span class="op">]</span> <span class="op">==</span> <span class="dv">0</span> <span class="op">?</span></span>
+<span id="cb104-14"><a href="ch-keyscan.html#cb104-14" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;release&quot;</span> <span class="op">:</span> <span class="st">&quot;press&quot;</span><span class="op">);</span></span>
+<span id="cb104-15"><a href="ch-keyscan.html#cb104-15" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb104-16"><a href="ch-keyscan.html#cb104-16" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb104-17"><a href="ch-keyscan.html#cb104-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb104-18"><a href="ch-keyscan.html#cb104-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb104-19"><a href="ch-keyscan.html#cb104-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>key_state_now_index <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb104-20"><a href="ch-keyscan.html#cb104-20" aria-hidden="true" tabindex="-1"></a>        key_state_now_index <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb104-21"><a href="ch-keyscan.html#cb104-21" aria-hidden="true" tabindex="-1"></a>        key_state_last_index <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb104-22"><a href="ch-keyscan.html#cb104-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb104-23"><a href="ch-keyscan.html#cb104-23" aria-hidden="true" tabindex="-1"></a>        key_state_now_index <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb104-24"><a href="ch-keyscan.html#cb104-24" aria-hidden="true" tabindex="-1"></a>        key_state_last_index <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb104-25"><a href="ch-keyscan.html#cb104-25" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb104-26"><a href="ch-keyscan.html#cb104-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb104-27"><a href="ch-keyscan.html#cb104-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span>row <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> row <span class="op">&lt;</span> key_out_row_num<span class="op">;</span> row<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb104-28"><a href="ch-keyscan.html#cb104-28" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span>col <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> col <span class="op">&lt;</span> key_in_col_num<span class="op">;</span> col<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb104-29"><a href="ch-keyscan.html#cb104-29" aria-hidden="true" tabindex="-1"></a>            key_state_buf<span class="op">[</span>key_state_now_index<span class="op">][</span>row<span class="op">][</span>col<span class="op">]</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb104-30"><a href="ch-keyscan.html#cb104-30" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb104-31"><a href="ch-keyscan.html#cb104-31" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb104-32"><a href="ch-keyscan.html#cb104-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb104-33"><a href="ch-keyscan.html#cb104-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb104-34"><a href="ch-keyscan.html#cb104-34" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb104-35"><a href="ch-keyscan.html#cb104-35" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> key_state_clear<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb104-36"><a href="ch-keyscan.html#cb104-36" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb104-37"><a href="ch-keyscan.html#cb104-37" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> row<span class="op">,</span> col<span class="op">;</span></span>
+<span id="cb104-38"><a href="ch-keyscan.html#cb104-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span>row <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> row <span class="op">&lt;</span> key_out_row_num<span class="op">;</span> row<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb104-39"><a href="ch-keyscan.html#cb104-39" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span>col <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> col <span class="op">&lt;</span> key_in_col_num<span class="op">;</span> col<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb104-40"><a href="ch-keyscan.html#cb104-40" aria-hidden="true" tabindex="-1"></a>            key_state_buf<span class="op">[</span><span class="dv">0</span><span class="op">][</span>row<span class="op">][</span>col<span class="op">]</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb104-41"><a href="ch-keyscan.html#cb104-41" aria-hidden="true" tabindex="-1"></a>            key_state_buf<span class="op">[</span><span class="dv">1</span><span class="op">][</span>row<span class="op">][</span>col<span class="op">]</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb104-42"><a href="ch-keyscan.html#cb104-42" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb104-43"><a href="ch-keyscan.html#cb104-43" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb104-44"><a href="ch-keyscan.html#cb104-44" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb104-45"><a href="ch-keyscan.html#cb104-45" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> keyscan_cb_isr<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
+<span id="cb104-46"><a href="ch-keyscan.html#cb104-46" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb104-47"><a href="ch-keyscan.html#cb104-47" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> key_data<span class="op">;</span></span>
+<span id="cb104-48"><a href="ch-keyscan.html#cb104-48" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> key_scan_row<span class="op">;</span></span>
+<span id="cb104-49"><a href="ch-keyscan.html#cb104-49" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> key_scan_col<span class="op">;</span></span>
+<span id="cb104-50"><a href="ch-keyscan.html#cb104-50" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> row <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb104-51"><a href="ch-keyscan.html#cb104-51" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> col <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb104-52"><a href="ch-keyscan.html#cb104-52" aria-hidden="true" tabindex="-1"></a>    <span class="dt">static</span> <span class="dt">uint8_t</span> have_key_pressed <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb104-53"><a href="ch-keyscan.html#cb104-53" aria-hidden="true" tabindex="-1"></a>    <span class="dt">static</span> <span class="dt">uint8_t</span> no_key_pressed_cnt <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb104-54"><a href="ch-keyscan.html#cb104-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb104-55"><a href="ch-keyscan.html#cb104-55" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="op">(</span>KEYSCAN_GetIntStateFifoEmptyRaw<span class="op">()</span> <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb104-56"><a href="ch-keyscan.html#cb104-56" aria-hidden="true" tabindex="-1"></a>        key_data <span class="op">=</span> KEYSCAN_GetKeyData<span class="op">();</span></span>
+<span id="cb104-57"><a href="ch-keyscan.html#cb104-57" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>KEYSCAN_KeyDataToRowColIdx<span class="op">(&amp;</span>key_ctx<span class="op">,</span> key_data<span class="op">,</span> <span class="op">&amp;</span>row<span class="op">,</span> <span class="op">&amp;</span>col<span class="op">))</span> <span class="op">{</span></span>
+<span id="cb104-58"><a href="ch-keyscan.html#cb104-58" aria-hidden="true" tabindex="-1"></a>            <span class="co">// 扫描到有按键按下 按键位置为 row col</span></span>
+<span id="cb104-59"><a href="ch-keyscan.html#cb104-59" aria-hidden="true" tabindex="-1"></a>            key_state_buf<span class="op">[</span>key_state_now_index<span class="op">][</span>row<span class="op">][</span>col<span class="op">]</span> <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb104-60"><a href="ch-keyscan.html#cb104-60" aria-hidden="true" tabindex="-1"></a>            have_key_pressed <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb104-61"><a href="ch-keyscan.html#cb104-61" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb104-62"><a href="ch-keyscan.html#cb104-62" aria-hidden="true" tabindex="-1"></a>            <span class="co">// 完成一次扫描 根据have_key_pressed判断该轮扫描中是否有按键按下</span></span>
+<span id="cb104-63"><a href="ch-keyscan.html#cb104-63" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>have_key_pressed <span class="op">==</span> <span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb104-64"><a href="ch-keyscan.html#cb104-64" aria-hidden="true" tabindex="-1"></a>                have_key_pressed <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb104-65"><a href="ch-keyscan.html#cb104-65" aria-hidden="true" tabindex="-1"></a>                no_key_pressed_cnt <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb104-66"><a href="ch-keyscan.html#cb104-66" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb104-67"><a href="ch-keyscan.html#cb104-67" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb104-68"><a href="ch-keyscan.html#cb104-68" aria-hidden="true" tabindex="-1"></a>            <span class="cf">switch</span> <span class="op">(</span>no_key_pressed_cnt<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb104-69"><a href="ch-keyscan.html#cb104-69" aria-hidden="true" tabindex="-1"></a>            <span class="cf">case</span> <span class="dv">0</span><span class="op">:</span> <span class="co">// 该轮扫描中有按键按下</span></span>
+<span id="cb104-70"><a href="ch-keyscan.html#cb104-70" aria-hidden="true" tabindex="-1"></a>                no_key_pressed_cnt<span class="op">++;</span></span>
+<span id="cb104-71"><a href="ch-keyscan.html#cb104-71" aria-hidden="true" tabindex="-1"></a>                printf_key_state<span class="op">();</span></span>
+<span id="cb104-72"><a href="ch-keyscan.html#cb104-72" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb104-73"><a href="ch-keyscan.html#cb104-73" aria-hidden="true" tabindex="-1"></a>            <span class="cf">case</span> <span class="dv">1</span><span class="op">:</span> <span class="co">// 该轮扫描中没有按键按下 上一轮扫描中有按键按下 说明按键释放</span></span>
+<span id="cb104-74"><a href="ch-keyscan.html#cb104-74" aria-hidden="true" tabindex="-1"></a>                no_key_pressed_cnt<span class="op">++;</span></span>
+<span id="cb104-75"><a href="ch-keyscan.html#cb104-75" aria-hidden="true" tabindex="-1"></a>                printf_key_state<span class="op">();</span></span>
+<span id="cb104-76"><a href="ch-keyscan.html#cb104-76" aria-hidden="true" tabindex="-1"></a>                key_state_clear<span class="op">();</span></span>
+<span id="cb104-77"><a href="ch-keyscan.html#cb104-77" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb104-78"><a href="ch-keyscan.html#cb104-78" aria-hidden="true" tabindex="-1"></a>            <span class="cf">case</span> <span class="dv">2</span><span class="op">:</span> <span class="co">// 连续两轮或以上都没有按键按下</span></span>
+<span id="cb104-79"><a href="ch-keyscan.html#cb104-79" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb104-80"><a href="ch-keyscan.html#cb104-80" aria-hidden="true" tabindex="-1"></a>            <span class="cf">default</span><span class="op">:</span></span>
+<span id="cb104-81"><a href="ch-keyscan.html#cb104-81" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb104-82"><a href="ch-keyscan.html#cb104-82" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb104-83"><a href="ch-keyscan.html#cb104-83" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb104-84"><a href="ch-keyscan.html#cb104-84" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb104-85"><a href="ch-keyscan.html#cb104-85" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb104-86"><a href="ch-keyscan.html#cb104-86" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</div>
+<div id="table-模式" class="section level4 hasAnchor" number="9.3.2.2">
+<h4><span class="header-section-number">9.3.2.2</span> Table 模式<a href="ch-keyscan.html#table-模式" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb105"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb105-1"><a href="ch-keyscan.html#cb105-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> keyscan_cb_isr<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
+<span id="cb105-2"><a href="ch-keyscan.html#cb105-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb105-3"><a href="ch-keyscan.html#cb105-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> key_data<span class="op">;</span></span>
+<span id="cb105-4"><a href="ch-keyscan.html#cb105-4" aria-hidden="true" tabindex="-1"></a>    KEYSCAN_ScanMode_t scan_mode<span class="op">;</span></span>
+<span id="cb105-5"><a href="ch-keyscan.html#cb105-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> key_scan_row<span class="op">;</span></span>
+<span id="cb105-6"><a href="ch-keyscan.html#cb105-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> key_scan_col<span class="op">;</span></span>
+<span id="cb105-7"><a href="ch-keyscan.html#cb105-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> row <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb105-8"><a href="ch-keyscan.html#cb105-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> col <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb105-9"><a href="ch-keyscan.html#cb105-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="op">(</span>KEYSCAN_GetIntStateFifoEmptyRaw<span class="op">()</span> <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb105-10"><a href="ch-keyscan.html#cb105-10" aria-hidden="true" tabindex="-1"></a>            key_data <span class="op">=</span> KEYSCAN_GetKeyData<span class="op">();</span></span>
+<span id="cb105-11"><a href="ch-keyscan.html#cb105-11" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span><span class="op">(</span>KEYSCAN_GetScanMode<span class="op">(</span><span class="dv">1</span><span class="op">,&amp;</span>scan_mode<span class="op">,</span>key_data<span class="op">))</span> <span class="op">{</span></span>
+<span id="cb105-12"><a href="ch-keyscan.html#cb105-12" aria-hidden="true" tabindex="-1"></a>                  KEYSCAN_KeyDataToRowColIdx<span class="op">(&amp;</span>key_ctx<span class="op">,</span> key_data<span class="op">,</span> <span class="op">&amp;</span>row<span class="op">,</span> <span class="op">&amp;</span>col<span class="op">);</span></span>
+<span id="cb105-13"><a href="ch-keyscan.html#cb105-13" aria-hidden="true" tabindex="-1"></a>                  print<span class="op">(</span><span class="st">&quot;row = %d, col = %d</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> row<span class="op">,</span> col<span class="op">);</span></span>
+<span id="cb105-14"><a href="ch-keyscan.html#cb105-14" aria-hidden="true" tabindex="-1"></a>              <span class="op">}</span></span>
+<span id="cb105-15"><a href="ch-keyscan.html#cb105-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb105-16"><a href="ch-keyscan.html#cb105-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+
+</div>
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="ch-I2S.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ch-pinctrl.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["pg_ing20.pdf", "pg_ing20.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection",
+"scroll_highlight": true
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

@@ -361,6 +361,49 @@
 <span class="p">}</span>
 </code></pre></div></div>
 
+<h2 id="特殊用法">特殊用法</h2>
+
+<p>目前 SDK 未提供设置公司 ID 的接口，暂时可以通过直接修改 <code class="language-plaintext highlighter-rouge">LLCP_VERSION_IND</code> 内容的方法修改公司 ID（修改这个值不影响 Controller 的行为和流程。）
+在下面的代码里，公司 ID 被修改为 <code class="language-plaintext highlighter-rouge">0xABCD</code>，小版本号被修改为 <code class="language-plaintext highlighter-rouge">0x1234</code>。</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#pragma pack (push, 1)
+</span><span class="k">typedef</span> <span class="k">struct</span>
+<span class="p">{</span>
+    <span class="kt">uint8_t</span>  <span class="n">version</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">company_id</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">subversion</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">llcp_version_ind_t</span><span class="p">;</span>
+<span class="cp">#pragma pack (pop)
+</span>
+<span class="k">static</span> <span class="kt">uint32_t</span> <span class="nf">cb_trace_read_llcp</span><span class="p">(</span><span class="k">const</span> <span class="n">platform_evt_trace_t</span> <span class="o">*</span><span class="n">trace</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">ctx</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">trace</span><span class="o">-&gt;</span><span class="n">len1</span> <span class="o">==</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">header_t</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="k">const</span> <span class="n">header_t</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="k">const</span> <span class="n">header_t</span> <span class="o">*</span><span class="p">)</span><span class="n">trace</span><span class="o">-&gt;</span><span class="n">data1</span><span class="p">;</span>
+        <span class="c1">// 判断是否为发送方向的 LLCP</span>
+        <span class="k">if</span> <span class="p">((</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">id</span> <span class="o">==</span> <span class="n">PLATFORM_TRACE_ID_LLCP</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="mi">0</span> <span class="o">==</span> <span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">tag</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">)))</span>
+        <span class="p">{</span>
+            <span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">p8</span> <span class="o">=</span> <span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="p">)</span><span class="n">trace</span><span class="o">-&gt;</span><span class="n">data2</span><span class="p">;</span>
+            <span class="k">const</span> <span class="kt">uint16_t</span> <span class="n">con_handle</span> <span class="o">=</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">tag</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">;</span>
+            <span class="k">const</span> <span class="kt">uint8_t</span>  <span class="n">op_code</span>    <span class="o">=</span> <span class="n">p8</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+            <span class="k">const</span> <span class="kt">int</span> <span class="n">ctrl_data_len</span>   <span class="o">=</span> <span class="n">trace</span><span class="o">-&gt;</span><span class="n">len2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+            <span class="kt">uint8_t</span> <span class="o">*</span> <span class="n">ctrl_data</span>       <span class="o">=</span> <span class="p">(</span><span class="kt">uint8_t</span> <span class="o">*</span><span class="p">)</span><span class="n">p8</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+            <span class="c1">// 判断是否为 LLCP_VERSION_IND</span>
+            <span class="k">if</span> <span class="p">((</span><span class="n">op_code</span> <span class="o">==</span> <span class="mh">0x0c</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">ctrl_data_len</span> <span class="o">==</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">llcp_version_ind_t</span><span class="p">)))</span>
+            <span class="p">{</span>
+                <span class="n">llcp_version_ind_t</span> <span class="o">*</span><span class="n">ver_ind</span> <span class="o">=</span> <span class="p">(</span><span class="n">llcp_version_ind_t</span> <span class="o">*</span><span class="p">)(</span><span class="n">ctrl_data</span><span class="p">);</span>
+                <span class="n">ver_ind</span><span class="o">-&gt;</span><span class="n">company_id</span> <span class="o">=</span> <span class="mh">0xABCD</span><span class="p">;</span>
+                <span class="n">ver_ind</span><span class="o">-&gt;</span><span class="n">subversion</span> <span class="o">=</span> <span class="mh">0x1234</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="c1">// ...</span>
+
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
 <h2 id="总结">总结</h2>
 
 <p>利用 Trace 机制实现的 PDU 预览功能，能帮助开发者实时监控 LLCP 通信，实现必要功能。</p>

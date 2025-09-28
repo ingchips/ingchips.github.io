@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>8 I2S简介 | ING20XX 系列芯片外设开发者手册</title>
+  <title>21 PTE简介 （Peripheral-Trigger-Engine） | ING20XX 系列芯片外设开发者手册</title>
   <meta name="description" content="ING20XX 系列芯片开发者手册." />
   <meta name="generator" content="bookdown 0.32 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="8 I2S简介 | ING20XX 系列芯片外设开发者手册" />
+  <meta property="og:title" content="21 PTE简介 （Peripheral-Trigger-Engine） | ING20XX 系列芯片外设开发者手册" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="ING20XX 系列芯片开发者手册." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="8 I2S简介 | ING20XX 系列芯片外设开发者手册" />
+  <meta name="twitter:title" content="21 PTE简介 （Peripheral-Trigger-Engine） | ING20XX 系列芯片外设开发者手册" />
   
   <meta name="twitter:description" content="ING20XX 系列芯片开发者手册." />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="ch-iic.html"/>
-<link rel="next" href="ch-keyscan.html"/>
+<link rel="prev" href="ch-rtimer.html"/>
+<link rel="next" href="ch-gpiote.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -522,287 +522,276 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="ch-I2S" class="section level1 hasAnchor" number="8">
-<h1><span class="header-section-number">8</span> I2S简介<a href="ch-I2S.html#ch-I2S" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p>I2S（inter-IC sound）总线是数字音频专用总线。它有四个引脚，两个数据引脚(DOUT和DIN)，一个位率时钟引脚(BCLK)和一个左右通道选择引脚(LRCLK)。</p>
-<p>另外，通过ING20的MCLK输出，它可用于给外部 DAC/ADC 芯片提供时钟（可选）。</p>
-<div id="功能描述-3" class="section level2 hasAnchor" number="8.1">
-<h2><span class="header-section-number">8.1</span> 功能描述<a href="ch-I2S.html#功能描述-3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="特点-3" class="section level3 hasAnchor" number="8.1.1">
-<h3><span class="header-section-number">8.1.1</span> 特点<a href="ch-I2S.html#特点-3" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="ch-pte" class="section level1 hasAnchor" number="21">
+<h1><span class="header-section-number">21</span> PTE简介 （Peripheral-Trigger-Engine）<a href="ch-pte.html#ch-pte" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>外设触发引擎( Peripheral trigger engine，PTE )通过事件发布和任务订阅的方式实现外设之间的连接，而不需要MCU的任何干预。通过PTE连接通道，当外设发生事件时，可以自动触发外设的预定义任务。这种逻辑联系无需 CPU 干预、降低功耗、提升实时性，可以使用PTE实现外设的预定义的行为。</p>
+<div id="pte功能描述" class="section level2 hasAnchor" number="21.1">
+<h2><span class="header-section-number">21.1</span> PTE功能描述<a href="ch-pte.html#pte功能描述" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>PTE功能包括事件发布和任务订阅。PTE事件发布器可以发布事件，PTE任务订阅器可以订阅事件并执行相应的任务。PTE可以发布的外设任务和监听事件类型是硬件预先定义的，软件只能使用预先定义的事件类型。</p>
+<p><strong>注意：部分外设的事件和任务和DMA相关，使用这些任务和事件必须配合DMA使用</strong></p>
+<div id="特性-2" class="section level3 hasAnchor" number="21.1.1">
+<h3><span class="header-section-number">21.1.1</span> 特性<a href="ch-pte.html#特性-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <ul>
-<li><p>遵从 I2S 协议标准，支持12S标准模式和左对齐模式</p></li>
-<li><p>支持PCM(脉冲编码调制)时序</p></li>
-<li><p>可编程的主从模式</p></li>
-<li><p>可配置的LRCLK和BCLK极性</p></li>
-<li><p>可配置数据位宽</p></li>
-<li><p>独立发送和接收FIFO</p></li>
-<li><p>TX和RX的FIFO深度分别为8*32bit</p></li>
-<li><p>支持立体声和单声道模式</p></li>
-<li><p>可配置的采样频率</p></li>
-<li><p>TX和RX分别支持DMA搬运</p></li>
+<li>外设作为发布者/订阅者</li>
+<li>外设作为发布者可以在设定的通道上发布事件。</li>
+<li>外设作为订阅者可以根据设定通道上的事件执行对应任务。</li>
+<li>支持多种连接选项，包括一对一、一对多、多对一、多对多。</li>
+<li>外设可以触发DMA任务，DMA可以发布生成的事件。</li>
+<li>支持最高16个发布和订阅通道。</li>
+<li>16个通道可以任意作为一个分组，支持最大四个通道分组。</li>
 </ul>
 </div>
-<div id="i2s角色" class="section level3 hasAnchor" number="8.1.2">
-<h3><span class="header-section-number">8.1.2</span> I2S角色<a href="ch-I2S.html#i2s角色" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>在 I2S 总线上，提供时钟和通道选择信号的器件是 MASTER，另一方则为 SLAVER。</p>
-<p>MASTER和SLAVE都可以进行数据收发。</p>
+<div id="pte外设通道连接特性" class="section level3 hasAnchor" number="21.1.2">
+<h3><span class="header-section-number">21.1.2</span> PTE外设通道连接特性<a href="ch-pte.html#pte外设通道连接特性" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>PTE外设喝PTE模块之间的连接模块称之为PTEC(Peripheral-Trigger-Engine Controller)，
+功能框图如下图所示：</p>
+<div class="figure">
+<img src="img/PTE/pte-pre.png" alt="" />
+<p class="caption">PTE外设和PTE模块之间的连接功能框图</p>
 </div>
-<div id="i2s工作模式" class="section level3 hasAnchor" number="8.1.3">
-<h3><span class="header-section-number">8.1.3</span> I2S工作模式<a href="ch-I2S.html#i2s工作模式" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>I2S 有两种工作模式：一种是立体声音频模式，另外一种是话音模式。</p>
+<p>由该框图可以看出，外设的任务喝事件可以预先配置到任意一个或多个通道，PTEC根据通道配置，将外设的任务和事件连接起来，当注册到同一个通道的外设发生事件时，PTEC会自动触发外设的预定义任务。</p>
+<p>例如： GPIOTE（GPIO Task Event）的按键检测事件和UART的DMA开始发送任务预先配置在一个通道0，GPIOTE模块检测到了一个按键按下的事件，发布给PTEC，PTEC根据通道配置，触发UART的DMA开始发送任务。中间无需CPU干预，提升了任务实时性。</p>
 </div>
-<div id="串行数据" class="section level3 hasAnchor" number="8.1.4">
-<h3><span class="header-section-number">8.1.4</span> 串行数据<a href="ch-I2S.html#串行数据" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>串行数据是以高位（MSB）在前，低位（LSB）在后的方式进行传送的。</p>
-<p>如果音频codec发送的位数多于I2S控制器的接收位数，I2S控制器会将低位多余的位数忽略掉；</p>
-<p>如果音频codec发送的位数小于I2S控制器接收位数，I2S控制器将后面的位补零。</p>
+<div id="pte模块通道的使能和分组" class="section level3 hasAnchor" number="21.1.3">
+<h3><span class="header-section-number">21.1.3</span> PTE模块通道的使能和分组<a href="ch-pte.html#pte模块通道的使能和分组" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>PTE的外设连接功能框图如下所示：</p>
+<div class="figure">
+<img src="img/PTE/pte.png" alt="" />
+<p class="caption">PTE模块通道的使能和分组</p>
 </div>
-<div id="时钟分频" class="section level3 hasAnchor" number="8.1.5">
-<h3><span class="header-section-number">8.1.5</span> 时钟分频<a href="ch-I2S.html#时钟分频" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>20芯片可选用系统24MHz时钟或者PLL作为I2S时钟源。</p>
-<p>位率时钟（BCLK）可以通过对功能时钟进行分频得到；</p>
-<p>通道选择时钟（LRCLK）即音频数据的采样频率可以通过对BCLK进行分频得到。</p>
-<p>音频 Codec 中对采样频率 LRCLK 要求精度比较高，我们在计算分频时应该首先根据不同的采样频率计算得到对应的 MCLK 和 BCLK。</p>
-<div id="时钟分频计算" class="section level4 hasAnchor" number="8.1.5.1">
-<h4><span class="header-section-number">8.1.5.1</span> 时钟分频计算<a href="ch-I2S.html#时钟分频计算" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p>计算示例：</p>
-<p>假设当前codec采用16K采样频率，mic要求一帧64位（参考具体的mic使用手册）。</p>
-<p>有以下关系：</p>
+<p>根据图示，PTE的通道连接特性包括：</p>
 <ul>
-<li><p>f_bclk = clk/(2*b_div)</p></li>
-<li><p>f_lrclk = f_bclk/(2*lr_div)</p></li>
-</ul>
-<p>其中clk为codec时钟，f_bclk、f_lrclk分别为BCLK和LRCLK，b_div、lr_div分别为BCLK和LRCLK的分频系数。</p>
-<p>BCLK和LRCLK之间的关系是可变的，但是BCLK必须大于等于LRCLK的48倍。即lr_div&gt;=24。</p>
-<p>支持lr_div = 32，DATA_LEN = 32位的配置，其他情况下lr_div - DATA_LEN &gt; 3。</p>
-<p>通过f_lrclk = 16000，lr_div = 32计算出f_bclk = 1.024MHz。也就是clk = 2.048*b_div。</p>
-<p>clk通过时钟源分频得到必定是整数，b_div也同样是整数，通过计算得知在384MHz内只有当b_div = 125时clk = 256MHz为整数。</p>
-<p>故需要将PLL时钟配置为256MHz，b_div = 125可以得到16K采样率。</p>
-</div>
-</div>
-<div id="i2s存储器" class="section level3 hasAnchor" number="8.1.6">
-<h3><span class="header-section-number">8.1.6</span> I2S存储器<a href="ch-I2S.html#i2s存储器" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>采用两个深度为8，宽度为32bit的FIFO分别存储接收、发送的音频数据。</p>
-<p>有如下规则：</p>
-<ul>
-<li><p>音频数据位宽为16bit时，每32bit存储两个音频数据，高16bit存储左声道数据，低16bit存储右声道数据。</p></li>
-<li><p>音频数据位宽大于16bit时，每32bit存储一个音频数据，低地址存储左声道数据，高地址存储右声道数据。</p></li>
+<li>PTE通道内部是一个总线矩阵。</li>
+<li>每个外设的功能task和event可以通过PTEC配置到一个或多个通道。</li>
+<li>每个PTE通道可以单独配置使能和关闭，外设通道功能使能前无法发布和订阅事件。</li>
+<li>PTE通道可以配置为分组，最多支持四个分组。</li>
+<li>PTE通道分组将多个通道组合为一组，监听一个通道的event触发分组内通道的多个任务。</li>
 </ul>
 </div>
+<div id="pte事件接收器" class="section level3 hasAnchor" number="21.1.4">
+<h3><span class="header-section-number">21.1.4</span> PTE事件接收器<a href="ch-pte.html#pte事件接收器" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>PTE事件接收器可以在对应的通道监听事件。PTE通道会监听所有配置到当前通道的事件。
+PTE支持的发布事件如下：</p>
+<div class="sourceCode" id="cb294"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb294-1"><a href="ch-pte.html#cb294-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
+<span id="cb294-2"><a href="ch-pte.html#cb294-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb294-3"><a href="ch-pte.html#cb294-3" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_QDEC_CH0_STOP_CPL <span class="op">=</span> <span class="dv">0</span><span class="op">,</span>  <span class="co">// QDEC channel 0 stop complete event</span></span>
+<span id="cb294-4"><a href="ch-pte.html#cb294-4" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_QDEC_CH1_STOP_CPL<span class="op">,</span>      <span class="co">// QDEC channel 1 stop complete event</span></span>
+<span id="cb294-5"><a href="ch-pte.html#cb294-5" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_QDEC_CH2_STOP_CPL<span class="op">,</span>      <span class="co">// QDEC channel 2 stop complete event</span></span>
+<span id="cb294-6"><a href="ch-pte.html#cb294-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb294-7"><a href="ch-pte.html#cb294-7" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_DMA_CH0_STOP_CPL <span class="op">=</span> <span class="dv">0</span><span class="op">,</span>  <span class="co">// DMA channel 0 stop complete event</span></span>
+<span id="cb294-8"><a href="ch-pte.html#cb294-8" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_DMA_CH1_STOP_CPL<span class="op">,</span>      <span class="co">// DMA channel 1 stop complete event</span></span>
+<span id="cb294-9"><a href="ch-pte.html#cb294-9" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_DMA_CH2_STOP_CPL<span class="op">,</span>      <span class="co">// DMA channel 2 stop complete event</span></span>
+<span id="cb294-10"><a href="ch-pte.html#cb294-10" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_DMA_CH3_STOP_CPL<span class="op">,</span>      <span class="co">// DMA channel 3 stop complete event</span></span>
+<span id="cb294-11"><a href="ch-pte.html#cb294-11" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_DMA_CH4_STOP_CPL<span class="op">,</span>      <span class="co">// DMA channel 4 stop complete event</span></span>
+<span id="cb294-12"><a href="ch-pte.html#cb294-12" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_DMA_CH5_STOP_CPL<span class="op">,</span>      <span class="co">// DMA channel 5 stop complete event</span></span>
+<span id="cb294-13"><a href="ch-pte.html#cb294-13" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_DMA_CH6_STOP_CPL<span class="op">,</span>      <span class="co">// DMA channel 6 stop complete event</span></span>
+<span id="cb294-14"><a href="ch-pte.html#cb294-14" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_DMA_CH7_STOP_CPL<span class="op">,</span>      <span class="co">// DMA channel 7 stop complete event</span></span>
+<span id="cb294-15"><a href="ch-pte.html#cb294-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb294-16"><a href="ch-pte.html#cb294-16" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_GPIOTE_CH0_INPUT_INT <span class="op">=</span> <span class="dv">0</span><span class="op">,</span> <span class="co">// GPIOTE channel 0 input interrupt event</span></span>
+<span id="cb294-17"><a href="ch-pte.html#cb294-17" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_GPIOTE_CH1_INPUT_INT<span class="op">,</span>      <span class="co">// GPIOTE channel 1 input interrupt event</span></span>
+<span id="cb294-18"><a href="ch-pte.html#cb294-18" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_GPIOTE_CH2_INPUT_INT<span class="op">,</span>      <span class="co">// GPIOTE channel 2 input interrupt event</span></span>
+<span id="cb294-19"><a href="ch-pte.html#cb294-19" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_GPIOTE_CH3_INPUT_INT<span class="op">,</span>      <span class="co">// GPIOTE channel 3 input interrupt event</span></span>
+<span id="cb294-20"><a href="ch-pte.html#cb294-20" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_GPIOTE_CH4_INPUT_INT<span class="op">,</span>    <span class="co">// GPIOTE channel 4 input interrupt event</span></span>
+<span id="cb294-21"><a href="ch-pte.html#cb294-21" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_GPIOTE_CH5_INPUT_INT<span class="op">,</span>      <span class="co">// GPIOTE channel 5 input interrupt event</span></span>
+<span id="cb294-22"><a href="ch-pte.html#cb294-22" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_GPIOTE_CH6_INPUT_INT<span class="op">,</span>      <span class="co">// GPIOTE channel 6 input interrupt event</span></span>
+<span id="cb294-23"><a href="ch-pte.html#cb294-23" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_GPIOTE_CH7_INPUT_INT<span class="op">,</span>      <span class="co">// GPIOTE channel 7 input interrupt event</span></span>
+<span id="cb294-24"><a href="ch-pte.html#cb294-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb294-25"><a href="ch-pte.html#cb294-25" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_TIMER_CH0_TIM0_TIM_UP <span class="op">=</span> <span class="dv">0</span><span class="op">,</span>    <span class="co">// Timer 0 channel 0 timer up event</span></span>
+<span id="cb294-26"><a href="ch-pte.html#cb294-26" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_TIMER_CH0_TIM1_TIM_UP<span class="op">,</span>        <span class="co">// Timer 1 channel 0 timer up event</span></span>
+<span id="cb294-27"><a href="ch-pte.html#cb294-27" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_TIMER_CH0_TIM2_TIM_UP<span class="op">,</span>        <span class="co">// Timer 2 channel 0 timer up event</span></span>
+<span id="cb294-28"><a href="ch-pte.html#cb294-28" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_TIMER_CH0_TIM3_TIM_UP<span class="op">,</span>        <span class="co">// Timer 3 channel 0 timer up event</span></span>
+<span id="cb294-29"><a href="ch-pte.html#cb294-29" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_TIMER_CH1_TIM0_TIM_UP<span class="op">,</span>        <span class="co">// Timer 0 channel 1 timer up event</span></span>
+<span id="cb294-30"><a href="ch-pte.html#cb294-30" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_TIMER_CH1_TIM1_TIM_UP<span class="op">,</span>        <span class="co">// Timer 1 channel 1 timer up event</span></span>
+<span id="cb294-31"><a href="ch-pte.html#cb294-31" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_TIMER_CH1_TIM2_TIM_UP<span class="op">,</span>        <span class="co">// Timer 2 channel 1 timer up event</span></span>
+<span id="cb294-32"><a href="ch-pte.html#cb294-32" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_TIMER_CH1_TIM3_TIM_UP<span class="op">,</span>        <span class="co">// Timer 3 channel 1 timer up event</span></span>
+<span id="cb294-33"><a href="ch-pte.html#cb294-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb294-34"><a href="ch-pte.html#cb294-34" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_SPI_TX_END <span class="op">=</span> <span class="dv">0</span><span class="op">,</span>                <span class="co">// SPI TX end event</span></span>
+<span id="cb294-35"><a href="ch-pte.html#cb294-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb294-36"><a href="ch-pte.html#cb294-36" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_I2C_TX_CPL <span class="op">=</span> <span class="dv">0</span><span class="op">,</span>                <span class="co">// I2C TX complete event</span></span>
+<span id="cb294-37"><a href="ch-pte.html#cb294-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb294-38"><a href="ch-pte.html#cb294-38" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_ADC_DATA_CPL <span class="op">=</span> <span class="dv">0</span><span class="op">,</span>              <span class="co">// ADC data complete event</span></span>
+<span id="cb294-39"><a href="ch-pte.html#cb294-39" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_ADC_STOP_TX_ST<span class="op">,</span>                <span class="co">// ADC stop transfer status flag in dma mode</span></span>
+<span id="cb294-40"><a href="ch-pte.html#cb294-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb294-41"><a href="ch-pte.html#cb294-41" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_UART_TX_INT <span class="op">=</span> <span class="dv">0</span><span class="op">,</span>                <span class="co">// UART TX interrupt event</span></span>
+<span id="cb294-42"><a href="ch-pte.html#cb294-42" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_UART_RX_INT<span class="op">,</span>                    <span class="co">// UART RX interrupt event</span></span>
+<span id="cb294-43"><a href="ch-pte.html#cb294-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb294-44"><a href="ch-pte.html#cb294-44" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_PWM_CH0_PWM_STOP <span class="op">=</span> <span class="dv">0</span><span class="op">,</span>           <span class="co">// PWM channel 0 PWM stop event</span></span>
+<span id="cb294-45"><a href="ch-pte.html#cb294-45" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_PWM_CH0_FIFO_TRG<span class="op">,</span>               <span class="co">// PWM channel 0 FIFO trigger event</span></span>
+<span id="cb294-46"><a href="ch-pte.html#cb294-46" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_PWM_CH0_PCM_STOP<span class="op">,</span>               <span class="co">// PWM channel 0 PCM stop event</span></span>
+<span id="cb294-47"><a href="ch-pte.html#cb294-47" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_PWM_CH1_PWM_STOP<span class="op">,</span>               <span class="co">// PWM channel 1 PWM stop event</span></span>
+<span id="cb294-48"><a href="ch-pte.html#cb294-48" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_PWM_CH1_FIFO_TRG<span class="op">,</span>               <span class="co">// PWM channel 1 FIFO trigger event</span></span>
+<span id="cb294-49"><a href="ch-pte.html#cb294-49" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_PWM_CH1_PCM_STOP<span class="op">,</span>               <span class="co">// PWM channel 1 PCM stop event</span></span>
+<span id="cb294-50"><a href="ch-pte.html#cb294-50" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_PWM_CH2_PWM_STOP<span class="op">,</span>               <span class="co">// PWM channel 2 PWM stop event</span></span>
+<span id="cb294-51"><a href="ch-pte.html#cb294-51" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_PWM_CH2_FIFO_TRG<span class="op">,</span>               <span class="co">// PWM channel 2 FIFO trigger event</span></span>
+<span id="cb294-52"><a href="ch-pte.html#cb294-52" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_PWM_CH2_PCM_STOP<span class="op">,</span>               <span class="co">// PWM channel 2 PCM stop event</span></span>
+<span id="cb294-53"><a href="ch-pte.html#cb294-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb294-54"><a href="ch-pte.html#cb294-54" aria-hidden="true" tabindex="-1"></a>    PTE_EVENT_ASDM_RX_DATA <span class="op">=</span> <span class="dv">0</span><span class="op">,</span>               <span class="co">// ASDM RX data event</span></span>
+<span id="cb294-55"><a href="ch-pte.html#cb294-55" aria-hidden="true" tabindex="-1"></a><span class="op">}</span>PTE_Event<span class="op">;</span></span></code></pre></div>
+<p>这些支持的事件可配置到对应的PTE通道上报对应的外设事件。</p>
 </div>
-<div id="使用方法-3" class="section level2 hasAnchor" number="8.2">
-<h2><span class="header-section-number">8.2</span> 使用方法<a href="ch-I2S.html#使用方法-3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="方法概述-1" class="section level3 hasAnchor" number="8.2.1">
-<h3><span class="header-section-number">8.2.1</span> 方法概述<a href="ch-I2S.html#方法概述-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>I2S使用方法总结为：时钟配置，I2S配置（包括采样率）和数据处理。</p>
-<p>数据发送：</p>
-<p><strong>1.</strong> I2S引脚GPIO配置</p>
-<p><strong>2.</strong> 配置外部 codec 芯片，使其处于工作模式</p>
-<p><strong>3.</strong> 写相应配置寄存器</p>
-<p><strong>4.</strong> 将数据写入TX_MEM</p>
-<p><strong>5.</strong> 使能I2S</p>
-<p><strong>6.</strong> 等待中断产生</p>
-<p><strong>7.</strong> 读取状态寄存器，将数据写入TX_MEM</p>
-<p><strong>8.</strong> 传输完毕，关闭 I2S</p>
-<p>数据接收：</p>
-<p><strong>1.</strong> I2S引脚GPIO配置</p>
-<p><strong>2.</strong> 配置外部 codec 芯片，使其处于工作模式</p>
-<p><strong>3.</strong> 写相应配置寄存器</p>
-<p><strong>4.</strong> 使能I2S</p>
-<p><strong>5.</strong> 等待中断产生</p>
-<p><strong>6.</strong> 读取状态寄存器，读取 RX_MEM 中数据</p>
-<p><strong>7.</strong> 传输完毕，关闭 I2S</p>
-<p>I2S控制器操作流程图如下：</p>
-<div class="figure" style="text-align: center"><span style="display:block;" id="fig:I2S"></span>
-<img src="img/I2s/I2s_structure.png" alt="I2S控制器操作流程图" width="50%" />
-<p class="caption">
-图 8.1: I2S控制器操作流程图
-</p>
+<div id="pte任务发布器" class="section level3 hasAnchor" number="21.1.5">
+<h3><span class="header-section-number">21.1.5</span> PTE任务发布器<a href="ch-pte.html#pte任务发布器" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>PTE任务发布器用于将任务发布到对应的外设，PTE监听到通道上的事件后会触发配置到当前通道的所有任务执行。PTE任务发布器支持以下任务：</p>
+<div class="sourceCode" id="cb295"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb295-1"><a href="ch-pte.html#cb295-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">enum</span></span>
+<span id="cb295-2"><a href="ch-pte.html#cb295-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb295-3"><a href="ch-pte.html#cb295-3" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_QDEC_CH0_START <span class="op">=</span> <span class="dv">0</span><span class="op">,</span>           <span class="co">// QDEC channel 0 start</span></span>
+<span id="cb295-4"><a href="ch-pte.html#cb295-4" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_QDEC_CH0_STOP<span class="op">,</span>                <span class="co">// QDEC channel 0 stop</span></span>
+<span id="cb295-5"><a href="ch-pte.html#cb295-5" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_QDEC_CH1_START<span class="op">,</span></span>
+<span id="cb295-6"><a href="ch-pte.html#cb295-6" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_QDEC_CH1_STOP<span class="op">,</span></span>
+<span id="cb295-7"><a href="ch-pte.html#cb295-7" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_QDEC_CH2_START<span class="op">,</span></span>
+<span id="cb295-8"><a href="ch-pte.html#cb295-8" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_QDEC_CH2_STOP<span class="op">,</span></span>
+<span id="cb295-9"><a href="ch-pte.html#cb295-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb295-10"><a href="ch-pte.html#cb295-10" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_GPIOTE_TOGGLE_CH0 <span class="op">=</span> <span class="dv">0</span><span class="op">,</span>        <span class="co">// GPIOTE channel 0 toggle</span></span>
+<span id="cb295-11"><a href="ch-pte.html#cb295-11" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_GPIOTE_TOGGLE_CH1<span class="op">,</span></span>
+<span id="cb295-12"><a href="ch-pte.html#cb295-12" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_GPIOTE_TOGGLE_CH2<span class="op">,</span></span>
+<span id="cb295-13"><a href="ch-pte.html#cb295-13" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_GPIOTE_TOGGLE_CH3<span class="op">,</span></span>
+<span id="cb295-14"><a href="ch-pte.html#cb295-14" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_GPIOTE_TOGGLE_CH4<span class="op">,</span></span>
+<span id="cb295-15"><a href="ch-pte.html#cb295-15" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_GPIOTE_TOGGLE_CH5<span class="op">,</span></span>
+<span id="cb295-16"><a href="ch-pte.html#cb295-16" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_GPIOTE_TOGGLE_CH6<span class="op">,</span></span>
+<span id="cb295-17"><a href="ch-pte.html#cb295-17" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_GPIOTE_TOGGLE_CH7<span class="op">,</span></span>
+<span id="cb295-18"><a href="ch-pte.html#cb295-18" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_GPIOTE_HIGH_CH0<span class="op">,</span>              <span class="co">// GPIOTE channel 0 high</span></span>
+<span id="cb295-19"><a href="ch-pte.html#cb295-19" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_GPIOTE_HIGH_CH1<span class="op">,</span></span>
+<span id="cb295-20"><a href="ch-pte.html#cb295-20" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_GPIOTE_HIGH_CH2<span class="op">,</span></span>
+<span id="cb295-21"><a href="ch-pte.html#cb295-21" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_GPIOTE_HIGH_CH3<span class="op">,</span></span>
+<span id="cb295-22"><a href="ch-pte.html#cb295-22" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_GPIOTE_HIGH_CH4<span class="op">,</span></span>
+<span id="cb295-23"><a href="ch-pte.html#cb295-23" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_GPIOTE_HIGH_CH5<span class="op">,</span></span>
+<span id="cb295-24"><a href="ch-pte.html#cb295-24" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_GPIOTE_HIGH_CH6<span class="op">,</span></span>
+<span id="cb295-25"><a href="ch-pte.html#cb295-25" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_GPIOTE_HIGH_CH7<span class="op">,</span></span>
+<span id="cb295-26"><a href="ch-pte.html#cb295-26" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_GPIOTE_LOW_CH0<span class="op">,</span>                <span class="co">// GPIOTE channel 0 low</span></span>
+<span id="cb295-27"><a href="ch-pte.html#cb295-27" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_GPIOTE_LOW_CH1<span class="op">,</span></span>
+<span id="cb295-28"><a href="ch-pte.html#cb295-28" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_GPIOTE_LOW_CH2<span class="op">,</span></span>
+<span id="cb295-29"><a href="ch-pte.html#cb295-29" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_GPIOTE_LOW_CH3<span class="op">,</span></span>
+<span id="cb295-30"><a href="ch-pte.html#cb295-30" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_GPIOTE_LOW_CH4<span class="op">,</span></span>
+<span id="cb295-31"><a href="ch-pte.html#cb295-31" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_GPIOTE_LOW_CH5<span class="op">,</span></span>
+<span id="cb295-32"><a href="ch-pte.html#cb295-32" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_GPIOTE_LOW_CH6<span class="op">,</span></span>
+<span id="cb295-33"><a href="ch-pte.html#cb295-33" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_GPIOTE_LOW_CH7<span class="op">,</span></span>
+<span id="cb295-34"><a href="ch-pte.html#cb295-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb295-35"><a href="ch-pte.html#cb295-35" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_TIMER_CH0_TM0_START <span class="op">=</span> <span class="dv">0</span><span class="op">,</span>      <span class="co">// TIMER channel 0 timer 0 start</span></span>
+<span id="cb295-36"><a href="ch-pte.html#cb295-36" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_TIMER_CH0_TM1_START<span class="op">,</span></span>
+<span id="cb295-37"><a href="ch-pte.html#cb295-37" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_TIMER_CH0_TM2_START<span class="op">,</span></span>
+<span id="cb295-38"><a href="ch-pte.html#cb295-38" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_TIMER_CH0_TM3_START<span class="op">,</span></span>
+<span id="cb295-39"><a href="ch-pte.html#cb295-39" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_TIMER_CH1_TM0_START<span class="op">,</span></span>
+<span id="cb295-40"><a href="ch-pte.html#cb295-40" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_TIMER_CH1_TM1_START<span class="op">,</span></span>
+<span id="cb295-41"><a href="ch-pte.html#cb295-41" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_TIMER_CH1_TM2_START<span class="op">,</span></span>
+<span id="cb295-42"><a href="ch-pte.html#cb295-42" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_TIMER_CH1_TM3_START<span class="op">,</span></span>
+<span id="cb295-43"><a href="ch-pte.html#cb295-43" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_TIMER_CH0_TM0_STOP<span class="op">,</span>           <span class="co">// TIMER channel 0 timer 0 stop</span></span>
+<span id="cb295-44"><a href="ch-pte.html#cb295-44" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_TIMER_CH0_TM1_STOP<span class="op">,</span></span>
+<span id="cb295-45"><a href="ch-pte.html#cb295-45" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_TIMER_CH0_TM2_STOP<span class="op">,</span></span>
+<span id="cb295-46"><a href="ch-pte.html#cb295-46" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_TIMER_CH0_TM3_STOP<span class="op">,</span></span>
+<span id="cb295-47"><a href="ch-pte.html#cb295-47" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_TIMER_CH1_TM0_STOP<span class="op">,</span></span>
+<span id="cb295-48"><a href="ch-pte.html#cb295-48" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_TIMER_CH1_TM1_STOP<span class="op">,</span></span>
+<span id="cb295-49"><a href="ch-pte.html#cb295-49" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_TIMER_CH1_TM2_STOP<span class="op">,</span></span>
+<span id="cb295-50"><a href="ch-pte.html#cb295-50" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_TIMER_CH1_TM3_STOP<span class="op">,</span></span>
+<span id="cb295-51"><a href="ch-pte.html#cb295-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb295-52"><a href="ch-pte.html#cb295-52" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_SPI_MASTER_TX_START <span class="op">=</span> <span class="dv">0</span><span class="op">,</span>   <span class="co">//  start spi master transfer in dma mode</span></span>
+<span id="cb295-53"><a href="ch-pte.html#cb295-53" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_SPI_MASTER_TX_STOP<span class="op">,</span>    <span class="co">//stop spi master transfer in dma mode</span></span>
+<span id="cb295-54"><a href="ch-pte.html#cb295-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb295-55"><a href="ch-pte.html#cb295-55" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_I2C_MASTER_TX <span class="op">=</span> <span class="dv">0</span><span class="op">,</span>     <span class="co">//I2C start i2c master transfer in dma mode</span></span>
+<span id="cb295-56"><a href="ch-pte.html#cb295-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb295-57"><a href="ch-pte.html#cb295-57" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_ADC_START <span class="op">=</span> <span class="dv">0</span><span class="op">,</span>        <span class="co">// ADC start to sample data</span></span>
+<span id="cb295-58"><a href="ch-pte.html#cb295-58" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_ADC_LOOP<span class="op">,</span>              <span class="co">// acd loop </span></span>
+<span id="cb295-59"><a href="ch-pte.html#cb295-59" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_ADC_STOP_TX<span class="op">,</span>        <span class="co">// adc stop transfer in dma mode</span></span>
+<span id="cb295-60"><a href="ch-pte.html#cb295-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb295-61"><a href="ch-pte.html#cb295-61" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_UART_TX_START <span class="op">=</span> <span class="dv">0</span><span class="op">,</span> <span class="co">// UART start transmiting data in dma mode</span></span>
+<span id="cb295-62"><a href="ch-pte.html#cb295-62" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_UART_TX_STOP<span class="op">,</span>    <span class="co">// UART stop transmiting data in dma mode</span></span>
+<span id="cb295-63"><a href="ch-pte.html#cb295-63" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_UART_RX_START<span class="op">,</span>    <span class="co">// UART start receiving data in dma mode</span></span>
+<span id="cb295-64"><a href="ch-pte.html#cb295-64" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_UART_RX_STOP<span class="op">,</span>    <span class="co">// UART stop receiving data in dma mode</span></span>
+<span id="cb295-65"><a href="ch-pte.html#cb295-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb295-66"><a href="ch-pte.html#cb295-66" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_PWM_CH0_IR_START <span class="op">=</span> <span class="dv">0</span><span class="op">,</span>  <span class="co">// PWM channel 0 IR send start</span></span>
+<span id="cb295-67"><a href="ch-pte.html#cb295-67" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_PWM_CH0_ONE_PULSE<span class="op">,</span> <span class="co">//PWM channel0 one pulse pwm</span></span>
+<span id="cb295-68"><a href="ch-pte.html#cb295-68" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_PWM_CH0_PWM_START<span class="op">,</span> <span class="co">//PWM channel0 start pwm</span></span>
+<span id="cb295-69"><a href="ch-pte.html#cb295-69" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_PWM_CH0_PWM_DMA_START<span class="op">,</span> <span class="co">//PWM channel0 start pwm in dma mode</span></span>
+<span id="cb295-70"><a href="ch-pte.html#cb295-70" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_PWM_CH0_PCM_START<span class="op">,</span> <span class="co">//PWM channel0 start pcm</span></span>
+<span id="cb295-71"><a href="ch-pte.html#cb295-71" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_PWM_CH0_PWM_STOP<span class="op">,</span>  <span class="co">//PWM channel0 stop pwm</span></span>
+<span id="cb295-72"><a href="ch-pte.html#cb295-72" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_PWM_CH0_PCM_STOP<span class="op">,</span>  <span class="co">//PWM channel0 stop pcm</span></span>
+<span id="cb295-73"><a href="ch-pte.html#cb295-73" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_PWM_CH1_IR_START<span class="op">,</span></span>
+<span id="cb295-74"><a href="ch-pte.html#cb295-74" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_PWM_CH1_ONE_PULSE<span class="op">,</span></span>
+<span id="cb295-75"><a href="ch-pte.html#cb295-75" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_PWM_CH1_PWM_START<span class="op">,</span></span>
+<span id="cb295-76"><a href="ch-pte.html#cb295-76" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_PWM_CH1_PWM_DMA_START<span class="op">,</span></span>
+<span id="cb295-77"><a href="ch-pte.html#cb295-77" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_PWM_CH1_PCM_START<span class="op">,</span></span>
+<span id="cb295-78"><a href="ch-pte.html#cb295-78" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_PWM_CH1_PWM_STOP<span class="op">,</span></span>
+<span id="cb295-79"><a href="ch-pte.html#cb295-79" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_PWM_CH1_PCM_STOP<span class="op">,</span></span>
+<span id="cb295-80"><a href="ch-pte.html#cb295-80" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_PWM_CH2_IR_START<span class="op">,</span></span>
+<span id="cb295-81"><a href="ch-pte.html#cb295-81" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_PWM_CH2_ONE_PULSE<span class="op">,</span></span>
+<span id="cb295-82"><a href="ch-pte.html#cb295-82" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_PWM_CH2_PWM_START<span class="op">,</span></span>
+<span id="cb295-83"><a href="ch-pte.html#cb295-83" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_PWM_CH2_PWM_DMA_START<span class="op">,</span></span>
+<span id="cb295-84"><a href="ch-pte.html#cb295-84" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_PWM_CH2_PCM_START<span class="op">,</span></span>
+<span id="cb295-85"><a href="ch-pte.html#cb295-85" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_PWM_CH2_PWM_STOP<span class="op">,</span></span>
+<span id="cb295-86"><a href="ch-pte.html#cb295-86" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_PWM_CH2_PCM_STOP<span class="op">,</span></span>
+<span id="cb295-87"><a href="ch-pte.html#cb295-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb295-88"><a href="ch-pte.html#cb295-88" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_I2S_TX_START <span class="op">=</span> <span class="dv">0</span><span class="op">,</span>  <span class="co">// I2S start sending data in dma mode</span></span>
+<span id="cb295-89"><a href="ch-pte.html#cb295-89" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_I2S_RX_START<span class="op">,</span>    <span class="co">// I2S start receiving data in dma mode</span></span>
+<span id="cb295-90"><a href="ch-pte.html#cb295-90" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_I2S_TX_STOP<span class="op">,</span>      <span class="co">// I2S stop sending data</span></span>
+<span id="cb295-91"><a href="ch-pte.html#cb295-91" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_I2S_RX_STOP<span class="op">,</span>    <span class="co">// I2S stop receiving data</span></span>
+<span id="cb295-92"><a href="ch-pte.html#cb295-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb295-93"><a href="ch-pte.html#cb295-93" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_ASDM_RX_START <span class="op">=</span> <span class="dv">0</span><span class="op">,</span> <span class="co">//ASDM start receiving data</span></span>
+<span id="cb295-94"><a href="ch-pte.html#cb295-94" aria-hidden="true" tabindex="-1"></a>    PTE_TASK_ASDM_RX_STOP<span class="op">,</span>    <span class="co">//ASDM stop receiving data</span></span>
+<span id="cb295-95"><a href="ch-pte.html#cb295-95" aria-hidden="true" tabindex="-1"></a><span class="op">}</span>PTE_Task<span class="op">;</span></span></code></pre></div>
 </div>
-<p>如果需要用到DMA搬运则需要在使能I2S之前配置DMA并使能。</p>
-</div>
-<div id="注意点-1" class="section level3 hasAnchor" number="8.2.2">
-<h3><span class="header-section-number">8.2.2</span> 注意点<a href="ch-I2S.html#注意点-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<ul>
-<li><p>I2S时钟源可以选择晶振24M时钟和PLL时钟，要注意是选择哪一个时钟源</p></li>
-<li><p>I2S数据可能会进行采样，需要注意具体的数据结构以及对应的数据处理，如是否需要数据移位等</p></li>
-<li><p>当前I2S支持的发送/接收数据位宽为16-32bit，需要查阅mic文档或其他使用手册来确定数据位宽，否则不能正常工作</p></li>
-<li><p>配置DMA要在使能I2S之前完成，使能I2S一定是最后一步</p></li>
-<li><p>建议采用DMA乒乓搬运的方式来传输I2S数据</p></li>
-</ul>
+<div id="pte分组" class="section level3 hasAnchor" number="21.1.6">
+<h3><span class="header-section-number">21.1.6</span> PTE分组<a href="ch-pte.html#pte分组" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>PTE可以将多个PTE通道映射到同一个PTE分组内，一个分组可以订阅一个PTE通道，当该PTE的时间源触发后，分组内的所有PTE通道都会执行相应的任务。</p>
 </div>
 </div>
-<div id="编程指南-4" class="section level2 hasAnchor" number="8.3">
-<h2><span class="header-section-number">8.3</span> 编程指南<a href="ch-I2S.html#编程指南-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="驱动接口-3" class="section level3 hasAnchor" number="8.3.1">
-<h3><span class="header-section-number">8.3.1</span> 驱动接口<a href="ch-I2S.html#驱动接口-3" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<ul>
-<li><p>I2S_ConfigClk：I2S时钟配置接口</p></li>
-<li><p>I2S_Config：I2S配置接口</p></li>
-<li><p>I2S_ConfigIRQ：I2S中断配置接口</p></li>
-<li><p>I2S_DMAEnable：I2S DMA使能接口</p></li>
-<li><p>I2S_Enable：I2S使能接口</p></li>
-<li><p>I2S_PopRxFIFO、I2S_PushTxFIFO：I2S FIFO读写接口</p></li>
-<li><p>I2S_ClearRxFIFO、I2S_ClearTxFIFO：I2S清FIFO接口</p></li>
-<li><p>I2S_GetIntState、I2S_ClearIntState：I2S获取中断、清中断接口</p></li>
-<li><p>I2S_GetRxFIFOCount、I2S_GetTxFIFOCount：I2S获取FIFO数据数量接口</p></li>
-<li><p>I2S_DataFromPDM：I2S获取PDM数据接口</p></li>
-</ul>
+<div id="使用方法-6" class="section level2 hasAnchor" number="21.2">
+<h2><span class="header-section-number">21.2</span> 使用方法<a href="ch-pte.html#使用方法-6" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="api介绍" class="section level3 hasAnchor" number="21.2.1">
+<h3><span class="header-section-number">21.2.1</span> API介绍<a href="ch-pte.html#api介绍" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>配置使能对应的任务到指定的PTE通道,使用该接口配置pte通道触发后要执行的任务。</p>
+<div class="sourceCode" id="cb296"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb296-1"><a href="ch-pte.html#cb296-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> PTE_ConfigTask<span class="op">(</span>PTE_Module module<span class="op">,</span> PTE_Task Task<span class="op">,</span> PTE_Channel SetTaskChannel<span class="op">,</span> <span class="dt">uint8_t</span> enable<span class="op">);</span></span></code></pre></div>
+<p>配置使能对应的监听事件到指定的PTE通道,使用该接口配置pte通道触发事件源。</p>
+<div class="sourceCode" id="cb297"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb297-1"><a href="ch-pte.html#cb297-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> PTE_ConfigEvent<span class="op">(</span>PTE_Module module<span class="op">,</span> PTE_Event Event<span class="op">,</span> PTE_Channel SetEventChannel<span class="op">,</span> <span class="dt">uint8_t</span> enable<span class="op">);</span></span></code></pre></div>
+<p>触发对应的任务，使用该接口可以通过软件方式手动触发任务运行，可以测试任务触发情况或手动触发任务运行。</p>
+<div class="sourceCode" id="cb298"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb298-1"><a href="ch-pte.html#cb298-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> PTE_TaskTrigger<span class="op">(</span>PTE_Module module<span class="op">,</span> PTE_Task Task<span class="op">);</span></span></code></pre></div>
+<p>使能对应的PTE通道，使用该接口使能PTE通道。PTE必须使能通道有效</p>
+<div class="sourceCode" id="cb299"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb299-1"><a href="ch-pte.html#cb299-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> PTE_ChxEnable<span class="op">(</span><span class="dt">uint32_t</span> items<span class="op">);</span></span></code></pre></div>
+<p>关闭对应的PTE通道使能</p>
+<div class="sourceCode" id="cb300"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb300-1"><a href="ch-pte.html#cb300-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> PTE_ChxDisable<span class="op">(</span><span class="dt">uint32_t</span> items<span class="op">);</span></span></code></pre></div>
+<p>获取当前的通道使能状态</p>
+<div class="sourceCode" id="cb301"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb301-1"><a href="ch-pte.html#cb301-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> PTE_ChxGetEnableState<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<p>使能PTE分组，调用该接口相当于一直向整个GROUP所有通道发送执行对应任务的信号。</p>
+<div class="sourceCode" id="cb302"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb302-1"><a href="ch-pte.html#cb302-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> PTE_SetTaskChxGroupEN<span class="op">(</span>PTEC_ChannelGroup SetChannelGroup<span class="op">)</span></span></code></pre></div>
+<p>关闭PTE分组，关闭向整个GROUP发送所有通道的执行任务信号。</p>
+<div class="sourceCode" id="cb303"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb303-1"><a href="ch-pte.html#cb303-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> PTE_SetTaskChxGroupDIS<span class="op">(</span>PTEC_ChannelGroup SetChannelGroup<span class="op">)</span></span></code></pre></div>
+<p>使能对分组对指定通道事件的订阅</p>
+<div class="sourceCode" id="cb304"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb304-1"><a href="ch-pte.html#cb304-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> PTE_SetTaskSubChxGroupEn<span class="op">(</span>PTEC_ChannelGroup SetChannelGroup<span class="op">,</span><span class="dt">uint32_t</span> SetSubChannel<span class="op">);</span></span></code></pre></div>
+<p>关闭对分组对指定通道事件的订阅</p>
+<div class="sourceCode" id="cb305"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb305-1"><a href="ch-pte.html#cb305-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> PTE_SetTaskSubChxGroupDis<span class="op">(</span>PTEC_ChannelGroup SetChannelGroup<span class="op">,</span><span class="dt">uint32_t</span> SetSubChannel<span class="op">);</span></span></code></pre></div>
+<p>设置多个PTE通道映射到某个PTE分组</p>
+<div class="sourceCode" id="cb306"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb306-1"><a href="ch-pte.html#cb306-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> PTE_SetTaskChxGroup<span class="op">(</span>PTEC_ChannelGroup SetChannelGroup<span class="op">,</span><span class="dt">uint32_t</span> SetChannel<span class="op">);</span></span></code></pre></div>
 </div>
-<div id="代码示例-3" class="section level3 hasAnchor" number="8.3.2">
-<h3><span class="header-section-number">8.3.2</span> 代码示例<a href="ch-I2S.html#代码示例-3" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>下面将通过实际代码展示I2S的基本配置及使用代码。</p>
-<div id="i2s配置" class="section level4 hasAnchor" number="8.3.2.1">
-<h4><span class="header-section-number">8.3.2.1</span> I2S配置<a href="ch-I2S.html#i2s配置" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb89"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb89-1"><a href="ch-I2S.html#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define I2S_PIN_BCLK        21</span></span>
-<span id="cb89-2"><a href="ch-I2S.html#cb89-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#define I2S_PIN_IN          22</span></span>
-<span id="cb89-3"><a href="ch-I2S.html#cb89-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#define I2S_PIN_LRCLK       35</span></span>
-<span id="cb89-4"><a href="ch-I2S.html#cb89-4" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> I2sSetup<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
-<span id="cb89-5"><a href="ch-I2S.html#cb89-5" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb89-6"><a href="ch-I2S.html#cb89-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// pinctrl &amp; GPIO mux</span></span>
-<span id="cb89-7"><a href="ch-I2S.html#cb89-7" aria-hidden="true" tabindex="-1"></a>    PINCTRL_SetPadMux<span class="op">(</span>I2S_PIN_BCLK<span class="op">,</span> IO_SOURCE_I2S_BCLK_OUT<span class="op">);</span></span>
-<span id="cb89-8"><a href="ch-I2S.html#cb89-8" aria-hidden="true" tabindex="-1"></a>    PINCTRL_SetPadMux<span class="op">(</span>I2S_PIN_IN<span class="op">,</span> IO_SOURCE_I2S_DATA_IN<span class="op">);</span></span>
-<span id="cb89-9"><a href="ch-I2S.html#cb89-9" aria-hidden="true" tabindex="-1"></a>    PINCTRL_SelI2sIn<span class="op">(</span>IO_NOT_A_PIN<span class="op">,</span> IO_NOT_A_PIN<span class="op">,</span> I2S_PIN_IN<span class="op">);</span></span>
-<span id="cb89-10"><a href="ch-I2S.html#cb89-10" aria-hidden="true" tabindex="-1"></a>    PINCTRL_SetPadMux<span class="op">(</span>I2S_PIN_LRCLK<span class="op">,</span> IO_SOURCE_I2S_LRCLK_OUT<span class="op">);</span></span>
-<span id="cb89-11"><a href="ch-I2S.html#cb89-11" aria-hidden="true" tabindex="-1"></a>    PINCTRL_Pull<span class="op">(</span>I2S_PIN_IN<span class="op">,</span> PINCTRL_PULL_DOWN<span class="op">);</span></span>
-<span id="cb89-12"><a href="ch-I2S.html#cb89-12" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb89-13"><a href="ch-I2S.html#cb89-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">// CLK &amp; Register</span></span>
-<span id="cb89-14"><a href="ch-I2S.html#cb89-14" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ConfigPLLClk<span class="op">(</span><span class="dv">6</span><span class="op">,</span> <span class="dv">128</span><span class="op">,</span> <span class="dv">2</span><span class="op">);</span> <span class="co">// sorce clk PLL = 256MHz</span></span>
-<span id="cb89-15"><a href="ch-I2S.html#cb89-15" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_SelectI2sClk<span class="op">(</span>SYSCTRL_CLK_PLL_DIV_1 <span class="op">+</span> <span class="dv">4</span><span class="op">);</span> <span class="co">// I2s_Clk = 51.2MHz</span></span>
-<span id="cb89-16"><a href="ch-I2S.html#cb89-16" aria-hidden="true" tabindex="-1"></a>    I2S_ConfigClk<span class="op">(</span>APB_I2S<span class="op">,</span> <span class="dv">25</span><span class="op">,</span> <span class="dv">32</span><span class="op">);</span> <span class="co">// F_bclk = 1.024MHz, F_lrclk = 16K</span></span>
-<span id="cb89-17"><a href="ch-I2S.html#cb89-17" aria-hidden="true" tabindex="-1"></a>    I2S_ConfigIRQ<span class="op">(</span>APB_I2S<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">10</span><span class="op">);</span></span>
-<span id="cb89-18"><a href="ch-I2S.html#cb89-18" aria-hidden="true" tabindex="-1"></a>    I2S_DMAEnable<span class="op">(</span>APB_I2S<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">0</span><span class="op">);</span>    </span>
-<span id="cb89-19"><a href="ch-I2S.html#cb89-19" aria-hidden="true" tabindex="-1"></a>    I2S_Config<span class="op">(</span>APB_I2S<span class="op">,</span> I2S_ROLE_MASTER<span class="op">,</span> I2S_MODE_STANDARD<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">24</span><span class="op">);</span></span>
-<span id="cb89-20"><a href="ch-I2S.html#cb89-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb89-21"><a href="ch-I2S.html#cb89-21" aria-hidden="true" tabindex="-1"></a>    <span class="co">// I2s interrupt</span></span>
-<span id="cb89-22"><a href="ch-I2S.html#cb89-22" aria-hidden="true" tabindex="-1"></a>    platform_set_irq_callback<span class="op">(</span>PLATFORM_CB_IRQ_I2S<span class="op">,</span> cb_isr<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
-<span id="cb89-23"><a href="ch-I2S.html#cb89-23" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div id="示例代码-1" class="section level3 hasAnchor" number="21.2.2">
+<h3><span class="header-section-number">21.2.2</span> 示例代码<a href="ch-pte.html#示例代码-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 </div>
-<div id="i2s使能" class="section level4 hasAnchor" number="8.3.2.2">
-<h4><span class="header-section-number">8.3.2.2</span> I2S使能<a href="ch-I2S.html#i2s使能" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p>I2S使能分3种情况：I2S发送、I2S接收、使用DMA搬运</p>
-<p>接收：</p>
-<div class="sourceCode" id="cb90"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb90-1"><a href="ch-I2S.html#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> I2sStart<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
-<span id="cb90-2"><a href="ch-I2S.html#cb90-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb90-3"><a href="ch-I2S.html#cb90-3" aria-hidden="true" tabindex="-1"></a>    I2S_ClearRxFIFO<span class="op">(</span>APB_I2S<span class="op">);</span></span>
-<span id="cb90-4"><a href="ch-I2S.html#cb90-4" aria-hidden="true" tabindex="-1"></a>    I2S_Enable<span class="op">(</span>APB_I2S<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">1</span><span class="op">);</span></span>
-<span id="cb90-5"><a href="ch-I2S.html#cb90-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>发送：</p>
-<div class="sourceCode" id="cb91"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb91-1"><a href="ch-I2S.html#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span>  sendSize <span class="op">=</span> <span class="dv">10</span><span class="op">;</span></span>
-<span id="cb91-2"><a href="ch-I2S.html#cb91-2" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> sendData<span class="op">[</span><span class="dv">10</span><span class="op">];</span></span>
-<span id="cb91-3"><a href="ch-I2S.html#cb91-3" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> I2sStart<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
-<span id="cb91-4"><a href="ch-I2S.html#cb91-4" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb91-5"><a href="ch-I2S.html#cb91-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> i<span class="op">;</span> </span>
-<span id="cb91-6"><a href="ch-I2S.html#cb91-6" aria-hidden="true" tabindex="-1"></a>    I2S_ClearTxFIFO<span class="op">(</span>APB_I2S<span class="op">);</span></span>
-<span id="cb91-7"><a href="ch-I2S.html#cb91-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// push data into TX_FIFO first</span></span>
-<span id="cb91-8"><a href="ch-I2S.html#cb91-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> sendSize<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
-<span id="cb91-9"><a href="ch-I2S.html#cb91-9" aria-hidden="true" tabindex="-1"></a>        I2S_PushTxFIFO<span class="op">(</span>APB_I2S<span class="op">,</span> sendData<span class="op">[</span>i<span class="op">]);</span></span>
-<span id="cb91-10"><a href="ch-I2S.html#cb91-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb91-11"><a href="ch-I2S.html#cb91-11" aria-hidden="true" tabindex="-1"></a>    I2S_Enable<span class="op">(</span>APB_I2S<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">1</span><span class="op">);</span></span>
-<span id="cb91-12"><a href="ch-I2S.html#cb91-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>使用DMA（接收）：</p>
-<div class="sourceCode" id="cb92"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb92-1"><a href="ch-I2S.html#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define CHANNEL_ID  0</span></span>
-<span id="cb92-2"><a href="ch-I2S.html#cb92-2" aria-hidden="true" tabindex="-1"></a>DMA_Descriptor test __attribute__<span class="op">((</span>aligned <span class="op">(</span><span class="dv">8</span><span class="op">)));</span>                                </span>
-<span id="cb92-3"><a href="ch-I2S.html#cb92-3" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> I2sStart<span class="op">(</span><span class="dt">uint32_t</span> data<span class="op">)</span></span>
-<span id="cb92-4"><a href="ch-I2S.html#cb92-4" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb92-5"><a href="ch-I2S.html#cb92-5" aria-hidden="true" tabindex="-1"></a>   DMA_EnableChannel<span class="op">(</span>CHANNEL_ID<span class="op">,</span> <span class="op">&amp;</span>test<span class="op">);</span></span>
-<span id="cb92-6"><a href="ch-I2S.html#cb92-6" aria-hidden="true" tabindex="-1"></a>   I2S_ClearRxFIFO<span class="op">(</span>APB_I2S<span class="op">);</span></span>
-<span id="cb92-7"><a href="ch-I2S.html#cb92-7" aria-hidden="true" tabindex="-1"></a>   I2S_DMAEnable<span class="op">(</span>APB_I2S<span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">);</span>    </span>
-<span id="cb92-8"><a href="ch-I2S.html#cb92-8" aria-hidden="true" tabindex="-1"></a>   I2S_Enable<span class="op">(</span>APB_I2S<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">1</span><span class="op">);</span></span>
-<span id="cb92-9"><a href="ch-I2S.html#cb92-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>无论哪种情况都必须最后一步使能I2S，否则I2S工作异常。</p>
-</div>
-<div id="i2s中断" class="section level4 hasAnchor" number="8.3.2.3">
-<h4><span class="header-section-number">8.3.2.3</span> I2S中断<a href="ch-I2S.html#i2s中断" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p>接收：</p>
-<div class="sourceCode" id="cb93"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb93-1"><a href="ch-I2S.html#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> cb_isr<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
-<span id="cb93-2"><a href="ch-I2S.html#cb93-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span> </span>
-<span id="cb93-3"><a href="ch-I2S.html#cb93-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> state <span class="op">=</span> I2S_GetIntState<span class="op">(</span>APB_I2S<span class="op">);</span></span>
-<span id="cb93-4"><a href="ch-I2S.html#cb93-4" aria-hidden="true" tabindex="-1"></a>    I2S_ClearIntState<span class="op">(</span>APB_I2S<span class="op">,</span> state<span class="op">);</span></span>
-<span id="cb93-5"><a href="ch-I2S.html#cb93-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb93-6"><a href="ch-I2S.html#cb93-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> i <span class="op">=</span> I2S_GetRxFIFOCount<span class="op">(</span>APB_I2S<span class="op">);</span></span>
-<span id="cb93-7"><a href="ch-I2S.html#cb93-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb93-8"><a href="ch-I2S.html#cb93-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="op">(</span>i<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb93-9"><a href="ch-I2S.html#cb93-9" aria-hidden="true" tabindex="-1"></a>        <span class="dt">uint32_t</span> data <span class="op">=</span> I2S_PopRxFIFO<span class="op">(</span>APB_I2S<span class="op">);</span></span>
-<span id="cb93-10"><a href="ch-I2S.html#cb93-10" aria-hidden="true" tabindex="-1"></a>        i<span class="op">--;</span></span>
-<span id="cb93-11"><a href="ch-I2S.html#cb93-11" aria-hidden="true" tabindex="-1"></a>        <span class="co">// do something with data</span></span>
-<span id="cb93-12"><a href="ch-I2S.html#cb93-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb93-13"><a href="ch-I2S.html#cb93-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb93-14"><a href="ch-I2S.html#cb93-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb93-15"><a href="ch-I2S.html#cb93-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>发送：</p>
-<div class="sourceCode" id="cb94"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb94-1"><a href="ch-I2S.html#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span>  sendSize <span class="op">=</span> <span class="dv">10</span><span class="op">;</span></span>
-<span id="cb94-2"><a href="ch-I2S.html#cb94-2" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> sendData<span class="op">[</span><span class="dv">10</span><span class="op">];</span></span>
-<span id="cb94-3"><a href="ch-I2S.html#cb94-3" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> cb_isr<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
-<span id="cb94-4"><a href="ch-I2S.html#cb94-4" aria-hidden="true" tabindex="-1"></a><span class="op">{</span> </span>
-<span id="cb94-5"><a href="ch-I2S.html#cb94-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> state <span class="op">=</span> I2S_GetIntState<span class="op">(</span>APB_I2S<span class="op">);</span></span>
-<span id="cb94-6"><a href="ch-I2S.html#cb94-6" aria-hidden="true" tabindex="-1"></a>    I2S_ClearIntState<span class="op">(</span>APB_I2S<span class="op">,</span> state<span class="op">);</span></span>
-<span id="cb94-7"><a href="ch-I2S.html#cb94-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb94-8"><a href="ch-I2S.html#cb94-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> i<span class="op">;</span></span>
-<span id="cb94-9"><a href="ch-I2S.html#cb94-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> sendSize<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
-<span id="cb94-10"><a href="ch-I2S.html#cb94-10" aria-hidden="true" tabindex="-1"></a>        I2S_PushTxFIFO<span class="op">(</span>APB_I2S<span class="op">,</span> sendData<span class="op">[</span>i<span class="op">]);</span></span>
-<span id="cb94-11"><a href="ch-I2S.html#cb94-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb94-12"><a href="ch-I2S.html#cb94-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb94-13"><a href="ch-I2S.html#cb94-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-</div>
-<div id="i2s-dma乒乓搬运" class="section level4 hasAnchor" number="8.3.2.4">
-<h4><span class="header-section-number">8.3.2.4</span> I2S &amp; DMA乒乓搬运<a href="ch-I2S.html#i2s-dma乒乓搬运" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p>下面以经典的DMA乒乓搬运I2S接收数据为例展示I2S实际使用方法。</p>
-<p>这里我们采用16K采样率，单个数据帧固定64位，和DMA协商握手、burstSize=8、一次搬运80个数据。</p>
-<div class="sourceCode" id="cb95"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb95-1"><a href="ch-I2S.html#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&quot;pingpong.h&quot;</span></span>
-<span id="cb95-2"><a href="ch-I2S.html#cb95-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#define I2S_PIN_BCLK        21</span></span>
-<span id="cb95-3"><a href="ch-I2S.html#cb95-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#define I2S_PIN_IN          22</span></span>
-<span id="cb95-4"><a href="ch-I2S.html#cb95-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#define I2S_PIN_LRCLK       35</span></span>
-<span id="cb95-5"><a href="ch-I2S.html#cb95-5" aria-hidden="true" tabindex="-1"></a><span class="pp">#define CHANNEL_ID  0</span></span>
-<span id="cb95-6"><a href="ch-I2S.html#cb95-6" aria-hidden="true" tabindex="-1"></a>DMA_PingPong_t PingPong<span class="op">;</span></span>
-<span id="cb95-7"><a href="ch-I2S.html#cb95-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb95-8"><a href="ch-I2S.html#cb95-8" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> DMA_cb_isr<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>user_data<span class="op">)</span></span>
-<span id="cb95-9"><a href="ch-I2S.html#cb95-9" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb95-10"><a href="ch-I2S.html#cb95-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> state <span class="op">=</span> DMA_GetChannelIntState<span class="op">(</span>CHANNEL_ID<span class="op">);</span></span>
-<span id="cb95-11"><a href="ch-I2S.html#cb95-11" aria-hidden="true" tabindex="-1"></a>    DMA_ClearChannelIntState<span class="op">(</span>CHANNEL_ID<span class="op">,</span> state<span class="op">);</span></span>
-<span id="cb95-12"><a href="ch-I2S.html#cb95-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb95-13"><a href="ch-I2S.html#cb95-13" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> <span class="op">*</span>rr <span class="op">=</span> DMA_PingPongIntProc<span class="op">(&amp;</span>PingPong<span class="op">,</span> CHANNEL_ID<span class="op">);</span></span>
-<span id="cb95-14"><a href="ch-I2S.html#cb95-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb95-15"><a href="ch-I2S.html#cb95-15" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> transSize <span class="op">=</span> DMA_PingPongGetTransSize<span class="op">(&amp;</span>PingPong<span class="op">);</span></span>
-<span id="cb95-16"><a href="ch-I2S.html#cb95-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="op">(</span>i <span class="op">&lt;</span> transSize<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb95-17"><a href="ch-I2S.html#cb95-17" aria-hidden="true" tabindex="-1"></a>        <span class="co">// do something with data &#39;rr[i]&#39;</span></span>
-<span id="cb95-18"><a href="ch-I2S.html#cb95-18" aria-hidden="true" tabindex="-1"></a>        i<span class="op">++;</span></span>
-<span id="cb95-19"><a href="ch-I2S.html#cb95-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb95-20"><a href="ch-I2S.html#cb95-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb95-21"><a href="ch-I2S.html#cb95-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb95-22"><a href="ch-I2S.html#cb95-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb95-23"><a href="ch-I2S.html#cb95-23" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> I2sSetup<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
-<span id="cb95-24"><a href="ch-I2S.html#cb95-24" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb95-25"><a href="ch-I2S.html#cb95-25" aria-hidden="true" tabindex="-1"></a>    <span class="co">// pinctrl &amp; GPIO mux</span></span>
-<span id="cb95-26"><a href="ch-I2S.html#cb95-26" aria-hidden="true" tabindex="-1"></a>    PINCTRL_SetPadMux<span class="op">(</span>I2S_PIN_BCLK<span class="op">,</span> IO_SOURCE_I2S_BCLK_OUT<span class="op">);</span></span>
-<span id="cb95-27"><a href="ch-I2S.html#cb95-27" aria-hidden="true" tabindex="-1"></a>    PINCTRL_SetPadMux<span class="op">(</span>I2S_PIN_IN<span class="op">,</span> IO_SOURCE_I2S_DATA_IN<span class="op">);</span></span>
-<span id="cb95-28"><a href="ch-I2S.html#cb95-28" aria-hidden="true" tabindex="-1"></a>    PINCTRL_SelI2sIn<span class="op">(</span>IO_NOT_A_PIN<span class="op">,</span> IO_NOT_A_PIN<span class="op">,</span> I2S_PIN_IN<span class="op">);</span></span>
-<span id="cb95-29"><a href="ch-I2S.html#cb95-29" aria-hidden="true" tabindex="-1"></a>    PINCTRL_SetPadMux<span class="op">(</span>I2S_PIN_LRCLK<span class="op">,</span> IO_SOURCE_I2S_LRCLK_OUT<span class="op">);</span></span>
-<span id="cb95-30"><a href="ch-I2S.html#cb95-30" aria-hidden="true" tabindex="-1"></a>    PINCTRL_Pull<span class="op">(</span>I2S_PIN_IN<span class="op">,</span> PINCTRL_PULL_DOWN<span class="op">);</span></span>
-<span id="cb95-31"><a href="ch-I2S.html#cb95-31" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb95-32"><a href="ch-I2S.html#cb95-32" aria-hidden="true" tabindex="-1"></a>    <span class="co">// CLK &amp; Register</span></span>
-<span id="cb95-33"><a href="ch-I2S.html#cb95-33" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ConfigPLLClk<span class="op">(</span><span class="dv">6</span><span class="op">,</span> <span class="dv">128</span><span class="op">,</span> <span class="dv">2</span><span class="op">);</span> <span class="co">// sorce clk PLL = 256MHz</span></span>
-<span id="cb95-34"><a href="ch-I2S.html#cb95-34" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_SelectI2sClk<span class="op">(</span>SYSCTRL_CLK_PLL_DIV_1 <span class="op">+</span> <span class="dv">4</span><span class="op">);</span> <span class="co">// I2s_Clk = 51.2MHz</span></span>
-<span id="cb95-35"><a href="ch-I2S.html#cb95-35" aria-hidden="true" tabindex="-1"></a>    I2S_ConfigClk<span class="op">(</span>APB_I2S<span class="op">,</span> <span class="dv">25</span><span class="op">,</span> <span class="dv">32</span><span class="op">);</span> <span class="co">// F_bclk = 1.024MHz, F_lrclk = 16K</span></span>
-<span id="cb95-36"><a href="ch-I2S.html#cb95-36" aria-hidden="true" tabindex="-1"></a>    I2S_ConfigIRQ<span class="op">(</span>APB_I2S<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">8</span><span class="op">);</span></span>
-<span id="cb95-37"><a href="ch-I2S.html#cb95-37" aria-hidden="true" tabindex="-1"></a>    I2S_DMAEnable<span class="op">(</span>APB_I2S<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">0</span><span class="op">);</span>    </span>
-<span id="cb95-38"><a href="ch-I2S.html#cb95-38" aria-hidden="true" tabindex="-1"></a>    I2S_Config<span class="op">(</span>APB_I2S<span class="op">,</span> I2S_ROLE_MASTER<span class="op">,</span> I2S_MODE_STANDARD<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">24</span><span class="op">);</span></span>
-<span id="cb95-39"><a href="ch-I2S.html#cb95-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb95-40"><a href="ch-I2S.html#cb95-40" aria-hidden="true" tabindex="-1"></a>    <span class="co">// setup DMA</span></span>
-<span id="cb95-41"><a href="ch-I2S.html#cb95-41" aria-hidden="true" tabindex="-1"></a>    DMA_PingPongSetup<span class="op">(&amp;</span>PingPong<span class="op">,</span> SYSCTRL_DMA_I2S_RX<span class="op">,</span> <span class="dv">100</span><span class="op">,</span> <span class="dv">8</span><span class="op">);</span></span>
-<span id="cb95-42"><a href="ch-I2S.html#cb95-42" aria-hidden="true" tabindex="-1"></a>    platform_set_irq_callback<span class="op">(</span>PLATFORM_CB_IRQ_DMA<span class="op">,</span> DMA_cb_isr<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
-<span id="cb95-43"><a href="ch-I2S.html#cb95-43" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb95-44"><a href="ch-I2S.html#cb95-44" aria-hidden="true" tabindex="-1"></a>    <span class="co">// start working</span></span>
-<span id="cb95-45"><a href="ch-I2S.html#cb95-45" aria-hidden="true" tabindex="-1"></a>    DMA_PingPongEnable<span class="op">(&amp;</span>PingPong<span class="op">,</span> CHANNEL_ID<span class="op">);</span></span>
-<span id="cb95-46"><a href="ch-I2S.html#cb95-46" aria-hidden="true" tabindex="-1"></a>    I2S_ClearRxFIFO<span class="op">(</span>APB_I2S<span class="op">);</span></span>
-<span id="cb95-47"><a href="ch-I2S.html#cb95-47" aria-hidden="true" tabindex="-1"></a>    I2S_DMAEnable<span class="op">(</span>APB_I2S<span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">);</span>    </span>
-<span id="cb95-48"><a href="ch-I2S.html#cb95-48" aria-hidden="true" tabindex="-1"></a>    I2S_Enable<span class="op">(</span>APB_I2S<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">1</span><span class="op">);</span></span>
-<span id="cb95-49"><a href="ch-I2S.html#cb95-49" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>DMA（乒乓搬运）的具体用法请参见本手册DMA一节。</p>
-<p>更加系统化的I2S代码请参考SDK中voice_remote_ctrl例程。</p>
+<div id="使用示例-2" class="section level3 hasAnchor" number="21.2.3">
+<h3><span class="header-section-number">21.2.3</span> 使用示例<a href="ch-pte.html#使用示例-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>下面代码将以GPIOTE模块初始化一个IO检测这个IO的电平状态，触发另外三个GPIOTE模块翻转三个IO的电平状态这个应用场景为例，展示GPIOTE模块和PTE模块的使用。</p>
+<p>GPIO 使用 CHANNEL1接收IO7触发事件，IO需要设置为输入模式，开启GPIO中断使能，外部IO上拉，设置中断模式为下降沿触发，使用GPIOTE的0 2 3三个通道映射GIO_GPIO_24、25、26三个IO，当GPIO7触发下降沿事件时，GPIOTE的0 2 3三个通道会翻转GIO_GPIO_24、25、26三个IO的电平状态。</p>
+<div class="sourceCode" id="cb307"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb307-1"><a href="ch-pte.html#cb307-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> pte_gpiote_test<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb307-2"><a href="ch-pte.html#cb307-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb307-3"><a href="ch-pte.html#cb307-3" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGate<span class="op">(</span>SYSCTRL_ITEM_APB_GPIO0<span class="op">);</span></span>
+<span id="cb307-4"><a href="ch-pte.html#cb307-4" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGate<span class="op">(</span>SYSCTRL_ITEM_APB_GPIO1<span class="op">);</span></span>
+<span id="cb307-5"><a href="ch-pte.html#cb307-5" aria-hidden="true" tabindex="-1"></a>    SYSCTRL_ClearClkGate<span class="op">(</span>SYSCTRL_ITEM_APB_GPIOTE<span class="op">);</span></span>
+<span id="cb307-6"><a href="ch-pte.html#cb307-6" aria-hidden="true" tabindex="-1"></a>    PINCTRL_Pull<span class="op">(</span>GIO_GPIO_7<span class="op">,</span> PINCTRL_PULL_UP<span class="op">);</span></span>
+<span id="cb307-7"><a href="ch-pte.html#cb307-7" aria-hidden="true" tabindex="-1"></a>    GIO_ConfigIntSource<span class="op">(</span>GIO_GPIO_7<span class="op">,</span> GIO_INT_EN_LOGIC_LOW_OR_FALLING_EDGE<span class="op">,</span> GIO_INT_EDGE<span class="op">);</span></span>
+<span id="cb307-8"><a href="ch-pte.html#cb307-8" aria-hidden="true" tabindex="-1"></a>    GPIOTE_Configuration<span class="op">(</span>GPIOTE_CHANNEL_0<span class="op">,</span>GPIOTE_CHANNEL_TASK<span class="op">,</span> GIO_GPIO_24<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb307-9"><a href="ch-pte.html#cb307-9" aria-hidden="true" tabindex="-1"></a>    GPIOTE_Configuration<span class="op">(</span>GPIOTE_CHANNEL_2<span class="op">,</span>GPIOTE_CHANNEL_TASK<span class="op">,</span> GIO_GPIO_25<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb307-10"><a href="ch-pte.html#cb307-10" aria-hidden="true" tabindex="-1"></a>    GPIOTE_Configuration<span class="op">(</span>GPIOTE_CHANNEL_3<span class="op">,</span>GPIOTE_CHANNEL_TASK<span class="op">,</span> GIO_GPIO_26<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb307-11"><a href="ch-pte.html#cb307-11" aria-hidden="true" tabindex="-1"></a>    GPIOTE_Configuration<span class="op">(</span>GPIOTE_CHANNEL_1<span class="op">,</span>GPIOTE_CHANNEL_EVENT<span class="op">,</span> GIO_GPIO_7<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb307-12"><a href="ch-pte.html#cb307-12" aria-hidden="true" tabindex="-1"></a>    PTE_ConfigTask<span class="op">(</span>PTE_GPIOTE_MODULE<span class="op">,</span> PTE_TASK_GPIOTE_TOGGLE_CH0<span class="op">,</span> PTE_CHANNEL_0<span class="op">,</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb307-13"><a href="ch-pte.html#cb307-13" aria-hidden="true" tabindex="-1"></a>    PTE_ConfigTask<span class="op">(</span>PTE_GPIOTE_MODULE<span class="op">,</span> PTE_TASK_GPIOTE_TOGGLE_CH2<span class="op">,</span> PTE_CHANNEL_0<span class="op">,</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb307-14"><a href="ch-pte.html#cb307-14" aria-hidden="true" tabindex="-1"></a>    PTE_ConfigTask<span class="op">(</span>PTE_GPIOTE_MODULE<span class="op">,</span> PTE_TASK_GPIOTE_TOGGLE_CH3<span class="op">,</span> PTE_CHANNEL_0<span class="op">,</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb307-15"><a href="ch-pte.html#cb307-15" aria-hidden="true" tabindex="-1"></a>    PTE_ConfigEvent<span class="op">(</span>PTE_GPIOTE_MODULE<span class="op">,</span> PTE_EVENT_GPIOTE_CH1_INPUT_INT<span class="op">,</span> PTE_CHANNEL_0<span class="op">,</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb307-16"><a href="ch-pte.html#cb307-16" aria-hidden="true" tabindex="-1"></a>    PTE_ChxEnable<span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> PTE_CHANNEL_0<span class="op">);</span></span>
+<span id="cb307-17"><a href="ch-pte.html#cb307-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb307-18"><a href="ch-pte.html#cb307-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb307-19"><a href="ch-pte.html#cb307-19" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb307-20"><a href="ch-pte.html#cb307-20" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb307-21"><a href="ch-pte.html#cb307-21" aria-hidden="true" tabindex="-1"></a>    pte_gpiote_test<span class="op">();</span></span>
+<span id="cb307-22"><a href="ch-pte.html#cb307-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span><span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb307-23"><a href="ch-pte.html#cb307-23" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>使用该代码测试，按下GPIO7对应的按键，GPIO24、GPIO25和GPIO26会翻转状态，LED灯会亮起和熄灭。</p>
 
-</div>
 </div>
 </div>
 </div>
@@ -811,8 +800,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="ch-iic.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="ch-keyscan.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="ch-rtimer.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ch-gpiote.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

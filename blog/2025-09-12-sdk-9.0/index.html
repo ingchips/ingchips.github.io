@@ -294,6 +294,7 @@
 
 <ul>
   <li>开始支持 ING20xx 系列（软件包、外设驱动、工具、示例）</li>
+  <li>支持 EATT (目前为“预览”：仅限 <em>exp</em>, <em>noos_exp</em> 软件包, API 可能修改)</li>
 </ul>
 
 <div class="important">
@@ -305,9 +306,50 @@
 <li>示例的移植正在进行中。</li>
 </ul></div>
 
-<h2 id="v900">v9.0.0</h2>
+<h2 id="v901">v9.0.1</h2>
 
 <h3 id="1-软件包">1. 软件包</h3>
+
+<ul>
+  <li>
+    <p>[<strong>新增</strong>] EATT</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] ING20 ROM：广播时可能出现断言</p>
+
+    <p>如果遇到 <code class="language-plaintext highlighter-rouge">assertion@ble50_llm.c:...</code>，可在 <code class="language-plaintext highlighter-rouge">app_main</code> 里调用 <code class="language-plaintext highlighter-rouge">platform_rom_hotfix_using_fpb</code>。
+  此补丁基于 FPB 的实现，可能与在线调试功能相互影响。</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] ING20：开启低功耗后，<code class="language-plaintext highlighter-rouge">platform_set_timer</code> 无法正确唤醒</p>
+  </li>
+</ul>
+
+<h3 id="2-库函数">2. 库函数</h3>
+
+<ul>
+  <li>[<strong>更新</strong>] ING20：补充和完善了 PTE/GPIOTE/SYSCTRL/KeyScan 等外设的驱动</li>
+</ul>
+
+<h3 id="3-工具">3. 工具</h3>
+
+<ul>
+  <li>
+    <p>[<strong>修正</strong>] Downloader：显示的 ING916 Flash 大小错误</p>
+
+    <p>此问题由 v9.0.0 引入。</p>
+  </li>
+</ul>
+
+<h3 id="4-文档">4. 文档</h3>
+
+<ul>
+  <li>[<strong>新增</strong>] 《<a href="/application-notes/pg_ing20_cn/index.html">ING20XX 系列芯片外设开发者手册</a>》</li>
+</ul>
+
+<h2 id="v900">v9.0.0</h2>
+
+<h3 id="1-软件包-1">1. 软件包</h3>
 
 <ul>
   <li>
@@ -318,7 +360,7 @@
   </li>
 </ul>
 
-<h3 id="2-库函数">2. 库函数</h3>
+<h3 id="2-库函数-1">2. 库函数</h3>
 
 <ul>
   <li>[<strong>新增</strong>] 支持 ING20</li>
@@ -330,7 +372,7 @@
   <li>[<strong>更新</strong>] CherryUSB: 演示 USB Host 功能</li>
 </ul>
 
-<h3 id="3-工具">3. 工具</h3>
+<h3 id="4-工具">4. 工具</h3>
 
 <ul>
   <li>

@@ -293,7 +293,7 @@
           <h2 id="highlights"><span style="background:yellow">Highlights:</span></h2>
 
 <ul>
-  <li>开始支持 ING20xx 系列（软件包、外设驱动、工具、示例）</li>
+  <li>支持 ING20xx 系列（软件包、外设驱动、工具、示例）</li>
   <li>支持 EATT (目前为“预览”：仅限 <em>exp</em>, <em>noos_exp</em> 软件包, API 可能修改)</li>
 </ul>
 
@@ -303,12 +303,104 @@
 <li>ROM 内的协议栈版本与 v8.4.22 相同。</li>
 <li>省电功能仍在优化中。</li>
 <li>对于使用 ROM 的项目，axf_tool 暂不支持基于 dump 的各项分析。</li>
-<li>示例的移植正在进行中。</li>
 </ul></div>
+
+<h2 id="v902">v9.0.2</h2>
+
+<h3 id="1-软件包">1. 软件包</h3>
+
+<ul>
+  <li>
+    <p>[<strong>修正</strong>] ING20：多连接时内存不足</p>
+
+    <p>ING20 <em>mass_conn</em> 软件包支持最多 5 连接，<em>mini</em> 支持 1 个连接；其它软件包支持最多 3 连接（旧版本支持 2 连接）。</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] ING20：<em>noos</em> 软件包无法使用</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] ING20 ROM：开启低功耗后，<code class="language-plaintext highlighter-rouge">platform_set_timer</code> 唤醒时间错误</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] Platform 启动时 Trace 输出芯片系列总是为 ING918</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] Controller：改善 Master 角色对低吞吐率设备的兼容性</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] <code class="language-plaintext highlighter-rouge">att_server_init</code></p>
+
+    <p>旧版本 <code class="language-plaintext highlighter-rouge">att_server_init</code> 用于初始化 ATT Server，并设置回调。新版本仅用来设置回调，ATT Server 初始化由 platform 完成。
+  旧版 <code class="language-plaintext highlighter-rouge">att_server_init</code>必须在 <code class="language-plaintext highlighter-rouge">PLATFORM_CB_EVT_PROFILE_INIT</code> 事件中调用，并且只能调用一次。</p>
+
+    <p>新版 SDK：</p>
+
+    <ul>
+      <li>如果应用不涉及 ATT 特征的写入、或者动态数据的读取，那么可以不调用 <code class="language-plaintext highlighter-rouge">att_sever_init</code>。</li>
+      <li>允许多次调用 <code class="language-plaintext highlighter-rouge">att_sever_init</code>，更新回调函数。</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="2-库函数">2. 库函数</h3>
+
+<ul>
+  <li>
+    <p>[<strong>修正</strong>] ING20 时钟相关：<code class="language-plaintext highlighter-rouge">TMR_GetClk</code>, <code class="language-plaintext highlighter-rouge">SYSCTRL_SelectPWMClk</code>, <code class="language-plaintext highlighter-rouge">SYSCTRL_SelectSpiClk</code></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] ING20 ASDM：支持两种 <code class="language-plaintext highlighter-rouge">ASDM_Mode</code></p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] ING20 ADC：增加 <code class="language-plaintext highlighter-rouge">ADC_GetData</code>, <code class="language-plaintext highlighter-rouge">ADC_SetVref</code>, <code class="language-plaintext highlighter-rouge">ADC_HardwareCalibration</code></p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] USB BSP：<code class="language-plaintext highlighter-rouge">bsp_usb_disable()</code> 导致的枚举问题</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] <code class="language-plaintext highlighter-rouge">rf_enable_powerboost</code>：适配 ING20</p>
+  </li>
+</ul>
+
+<h3 id="3-示例">3. 示例</h3>
+
+<ul>
+  <li>
+    <p>[<strong>更新</strong>] <em>Voice Remote Control</em>: 演示 ING20 ASDM 的使用（包括 AMIC 和 PDM 两种解码方式）</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] 示例适配 ING20，修复相关问题，如</p>
+
+    <ul>
+      <li><em>Peripheral Beacon</em>：出现软件断言，无法运行；</li>
+      <li><em>Thermometer with FOTA</em>: 升级时出现 HardFault；</li>
+      <li><em>HID Mouse</em>：<code class="language-plaintext highlighter-rouge">DB_FLASH_ADDRESS</code> 地址非法。</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="4-工具">4. 工具</h3>
+
+<ul>
+  <li>
+    <p>[<strong>更新</strong>] Wizard：集成基于 pyOCD 的 RTT log 工具</p>
+
+    <p>目前 Windows 版本的 DAP-Link RTT log 工具传输效率不及基于 <a href="https://pyocd.io/">pyOCD</a> 的
+  <a href="https://github.com/ingchips/ING918XX_SDK_SOURCE/blob/master/tools/rtt_logger.py">RTT log 工具</a>，
+  所以用这个工具替换了原右键菜单中的 ING-DAP-Link 工具，既支持 J-Link，也支持 DAP-Link。用法：</p>
+
+    <ol>
+      <li>安装 Python，参考 <a href="https://github.com/ingchips/ING918XX_SDK_SOURCE/tree/master/tools#rtt-logger">文档</a> 安装其它依赖项；</li>
+      <li>将 Python 主程序（<code class="language-plaintext highlighter-rouge">python.exe</code>）的完整路径填写到 Wizard 选项中。</li>
+    </ol>
+
+    <p>当未配置 <code class="language-plaintext highlighter-rouge">python.exe</code> 选项时，回退使用 Windows 版本的 DAP-Link RTT log 工具。</p>
+  </li>
+</ul>
 
 <h2 id="v901">v9.0.1</h2>
 
-<h3 id="1-软件包">1. 软件包</h3>
+<h3 id="1-软件包-1">1. 软件包</h3>
 
 <ul>
   <li>
@@ -325,7 +417,7 @@
   </li>
 </ul>
 
-<h3 id="2-库函数">2. 库函数</h3>
+<h3 id="2-库函数-1">2. 库函数</h3>
 
 <ul>
   <li>[<strong>更新</strong>] ING20：补充和完善了 PTE/GPIOTE/SYSCTRL/KeyScan 等外设的驱动</li>
@@ -349,7 +441,7 @@
 
 <h2 id="v900">v9.0.0</h2>
 
-<h3 id="1-软件包-1">1. 软件包</h3>
+<h3 id="1-软件包-2">1. 软件包</h3>
 
 <ul>
   <li>
@@ -360,19 +452,19 @@
   </li>
 </ul>
 
-<h3 id="2-库函数-1">2. 库函数</h3>
+<h3 id="2-库函数-2">2. 库函数</h3>
 
 <ul>
   <li>[<strong>新增</strong>] 支持 ING20</li>
 </ul>
 
-<h3 id="3-示例">3. 示例</h3>
+<h3 id="3-示例-1">3. 示例</h3>
 
 <ul>
   <li>[<strong>更新</strong>] CherryUSB: 演示 USB Host 功能</li>
 </ul>
 
-<h3 id="4-工具">4. 工具</h3>
+<h3 id="4-工具-1">4. 工具</h3>
 
 <ul>
   <li>
@@ -424,6 +516,8 @@
 <span class="p">{</span>
 <span class="cp">#ifdef PLATFORM_IN_ROM
 </span>    <span class="n">platform_rom_hotfix</span><span class="p">();</span>
+    <span class="c1">// v9.0.1 及以上版本包含了基于 FPB 的补丁，可能与在线调试功能相互影响</span>
+    <span class="n">platform_rom_hotfix_using_fpb</span><span class="p">();</span>
 <span class="cp">#endif
 </span>   <span class="p">...</span>
 <span class="p">}</span>

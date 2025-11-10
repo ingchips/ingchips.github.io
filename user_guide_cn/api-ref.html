@@ -23,7 +23,7 @@
 <meta name="author" content="Ingchips Technology Co., Ltd." />
 
 
-<meta name="date" content="2025-04-22" />
+<meta name="date" content="2025-11-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -291,10 +291,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6.6" data-path="api-ref.html"><a href="api-ref.html#时间与定时器"><i class="fa fa-check"></i><b>6.6</b> 时间与定时器</a>
 <ul>
 <li class="chapter" data-level="6.6.1" data-path="api-ref.html"><a href="api-ref.html#platform_cancel_us_timer"><i class="fa fa-check"></i><b>6.6.1</b> <code>platform_cancel_us_timer</code></a></li>
-<li class="chapter" data-level="6.6.2" data-path="api-ref.html"><a href="api-ref.html#platform_delete_timer"><i class="fa fa-check"></i><b>6.6.2</b> <code>platform_delete_timer</code></a></li>
-<li class="chapter" data-level="6.6.3" data-path="api-ref.html"><a href="api-ref.html#platform_get_timer_counter"><i class="fa fa-check"></i><b>6.6.3</b> <code>platform_get_timer_counter</code></a></li>
-<li class="chapter" data-level="6.6.4" data-path="api-ref.html"><a href="api-ref.html#platform_set_abs_timer"><i class="fa fa-check"></i><b>6.6.4</b> <code>platform_set_abs_timer</code></a></li>
-<li class="chapter" data-level="6.6.5" data-path="api-ref.html"><a href="api-ref.html#platform_set_timer"><i class="fa fa-check"></i><b>6.6.5</b> <code>platform_set_timer</code></a></li>
+<li class="chapter" data-level="6.6.2" data-path="api-ref.html"><a href="api-ref.html#platform_create_us_timer"><i class="fa fa-check"></i><b>6.6.2</b> <code>platform_create_us_timer</code></a></li>
+<li class="chapter" data-level="6.6.3" data-path="api-ref.html"><a href="api-ref.html#platform_create_us_timer2"><i class="fa fa-check"></i><b>6.6.3</b> <code>platform_create_us_timer2</code></a></li>
+<li class="chapter" data-level="6.6.4" data-path="api-ref.html"><a href="api-ref.html#platform_delete_timer"><i class="fa fa-check"></i><b>6.6.4</b> <code>platform_delete_timer</code></a></li>
+<li class="chapter" data-level="6.6.5" data-path="api-ref.html"><a href="api-ref.html#platform_get_timer_counter"><i class="fa fa-check"></i><b>6.6.5</b> <code>platform_get_timer_counter</code></a></li>
+<li class="chapter" data-level="6.6.6" data-path="api-ref.html"><a href="api-ref.html#platform_set_abs_timer"><i class="fa fa-check"></i><b>6.6.6</b> <code>platform_set_abs_timer</code></a></li>
+<li class="chapter" data-level="6.6.7" data-path="api-ref.html"><a href="api-ref.html#platform_set_timer"><i class="fa fa-check"></i><b>6.6.7</b> <code>platform_set_timer</code></a></li>
 </ul></li>
 <li class="chapter" data-level="6.7" data-path="api-ref.html"><a href="api-ref.html#节能"><i class="fa fa-check"></i><b>6.7</b> 节能</a>
 <ul>
@@ -676,7 +678,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>当链路层引擎初始化时，会触发此事件。</p></li>
 <li><p><code>PLATFORM_CB_EVT_HEAP_OOM</code>：内存不足。</p>
 <p>当堆分配失败（堆内存不足）时，会触发此事件。
-如果触发此事件且未定义回调，CPU将进入死循环。</p></li>
+如果触发此事件且未定义回调，CPU将进入死循环。
+参数 <code>void *data</code> 是从整数转换而来。这个整数代表内存不足的堆的编号：</p>
+<ul>
+<li><code>0</code>: FreeRTOS 的堆；</li>
+<li><code>1</code>: 链路层的堆；</li>
+<li><code>2</code>: 链路层任务池。</li>
+</ul></li>
 <li><p><code>PLATFORM_CB_EVT_TRACE</code>：跟踪输出。</p>
 <p>当发出跟踪项时，会触发此事件。应用程序可以为此事件定义回调函数以保存或记录跟踪输出。回调的 <code>param</code> 是从 <code>platform_trace_evt_t *</code> 类型转换而来（参见<a href="dive-into-sdk.html#debugging-tracing">调试与跟踪</a>）。</p>
 <div class="sourceCode" id="cb49"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb49-1"><a href="api-ref.html#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span></span>
@@ -1055,6 +1063,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="备注-14" class="section level4 hasAnchor" number="6.5.3.4">
 <h4><span class="header-section-number">6.5.3.4</span> 备注<a href="api-ref.html#备注-14" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p><code>gen_os_driver_t</code> 是RTOS上的一个抽象层。使用其中的API而不是直接使用RTOS API可以使应用程序跨RTOS（独立于底层RTOS）。</p>
+<p>在 SDK v8.5 及更新的版本里，由于内置 RTOS 可替换，在 <code>app_main</code> 调用这个函数就变得“奇怪”。为了向后兼容，
+<code>platform_get_gen_os_driver</code> 像旧版本一样返回模拟出来的驱动接口。如果开发者要替换内置的 RTOS，
+那么就不应该在 <code>app_main</code> 里使用这个接口。</p>
 </div>
 </div>
 <div id="platform_get_heap_status" class="section level3 hasAnchor" number="6.5.4">
@@ -1222,6 +1233,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><code>platform_create_us_timer</code></li>
 <li><code>platform_cancel_us_timer</code></li>
+<li><code>platform_create_us_timer2</code></li>
 </ul>
 <p>这两种类型的定时器都可以在节能模式下使用，即当节能模式启用时，它们会按预期工作。表<a href="#tab:ch-api-compare-timers">6.1</a>比较了这两种定时器。</p>
 <p>表: (#tab:ch-api-compare-timers) 两种 platform 定时器的比较</p>
@@ -1242,15 +1254,36 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <tr class="odd">
 <td align="center">回调</td>
 <td align="left">从类似任务的上下文中调用</td>
-<td align="left">从中断服务例程（ISR）中调用</td>
+<td align="left">从中断服务例程（ISR）或调用者中调用</td>
 </tr>
 <tr class="even">
 <td align="center">标识符</td>
 <td align="left">回调函数指针</td>
 <td align="left">定时器句柄</td>
 </tr>
+<tr class="odd">
+<td align="center">容量</td>
+<td align="left">受限于堆空间</td>
+<td align="left">少量几个</td>
+</tr>
 </tbody>
 </table>
+<p>SDK v8.5 重新设计微秒分辨率定时器。</p>
+<ul>
+<li><p>在旧版本中，</p>
+<p>API 实际上是对一些 Controller 函数的封装，其中 <code>platform_create_us_timer</code>
+其实表示在时间点 <em>T</em> 调度一个持续时间为1微秒的操作。因此，如果 Controller
+<em>将要</em> 在时间点 <em>T</em> 附近执行扫描或广告等操作，<code>platform_create_us_timer</code> 将
+失败。在 <code>callback</code> 中调用 <code>platform_create_us_timer</code> 也是<strong>禁止的</strong>。</p></li>
+<li><p>在v8.5及之后的版本中，</p>
+<p>这些 API 不再是 Controller 函数的封装，<code>platform_create_us_timer</code>
+在上面这种情况下也会成功。Controller 也使用此接口来管理所有 RF 操作。
+可以在 <code>callback</code> 中调用 <code>platform_create_us_timer</code>。</p></li>
+</ul>
+<p><code>platform_create_us_timer</code> 从专用内存池中分配数据，该内存池的大小是固定且有限的。
+在 v8.5 及之后的版本中，最多可以创建 4 个定时器。注意：Controller
+使用并且仅使用其中一个这样的定时器。
+如果 Controller 创建定时器失败，将引发 <code>PLATFORM_CB_EVT_HEAP_OOM</code> 事件。</p>
 <div id="platform_cancel_us_timer" class="section level3 hasAnchor" number="6.6.1">
 <h3><span class="header-section-number">6.6.1</span> <code>platform_cancel_us_timer</code><a href="api-ref.html#platform_cancel_us_timer" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>取消之前由 <code>platform_create_us_timer</code> 创建的 platform 定时器。</p>
@@ -1268,25 +1301,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="返回值-21" class="section level4 hasAnchor" number="6.6.1.3">
 <h4><span class="header-section-number">6.6.1.3</span> 返回值<a href="api-ref.html#返回值-21" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p>如果指定的定时器成功取消，该函数返回 0。否则，返回一个非 0 值，这也意味着定时器的回调函数正在执行中。
-### <code>platform_create_us_timer</code></p>
-<p>设置一个具有 1 微秒（μs）分辨率的单次触发 platform 定时器。</p>
+<p>如果指定的定时器成功取消，该函数返回 0。否则，返回一个非 0 值，这也意味着定时器的回调函数正在执行中。</p>
 </div>
-<div id="函数原型-22" class="section level4 hasAnchor" number="6.6.1.4">
-<h4><span class="header-section-number">6.6.1.4</span> 函数原型<a href="api-ref.html#函数原型-22" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+</div>
+<div id="platform_create_us_timer" class="section level3 hasAnchor" number="6.6.2">
+<h3><span class="header-section-number">6.6.2</span> <code>platform_create_us_timer</code><a href="api-ref.html#platform_create_us_timer" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>设置一个具有 1 微秒（μs）分辨率的单次触发 platform 定时器。</p>
+<div id="函数原型-22" class="section level4 hasAnchor" number="6.6.2.1">
+<h4><span class="header-section-number">6.6.2.1</span> 函数原型<a href="api-ref.html#函数原型-22" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <div class="sourceCode" id="cb80"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb80-1"><a href="api-ref.html#cb80-1" aria-hidden="true" tabindex="-1"></a>platform_us_timer_handle_t platform_create_us_timer<span class="op">(</span></span>
 <span id="cb80-2"><a href="api-ref.html#cb80-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint64_t</span> abs_time<span class="op">,</span></span>
 <span id="cb80-3"><a href="api-ref.html#cb80-3" aria-hidden="true" tabindex="-1"></a>    f_platform_us_timer_callback callback<span class="op">,</span></span>
 <span id="cb80-4"><a href="api-ref.html#cb80-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>param<span class="op">);</span></span></code></pre></div>
 </div>
-<div id="参数-22" class="section level4 hasAnchor" number="6.6.1.5">
-<h4><span class="header-section-number">6.6.1.5</span> 参数<a href="api-ref.html#参数-22" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="参数-22" class="section level4 hasAnchor" number="6.6.2.2">
+<h4><span class="header-section-number">6.6.2.2</span> 参数<a href="api-ref.html#参数-22" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <ul>
 <li><p><code>uint64_t abs_time</code></p>
 <p>当 <code>platform_get_us_timer() == abs_time</code> 时，回调函数将被调用。</p></li>
 <li><p><code>f_platform_us_timer_callback callback</code></p>
 <p>回调函数。其签名为：</p>
-<div class="sourceCode" id="cb81"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb81-1"><a href="api-ref.html#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="dt">void</span> <span class="op">*</span> <span class="op">(*</span> f_platform_us_timer_callback<span class="op">)(</span></span>
+<div class="sourceCode" id="cb81"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb81-1"><a href="api-ref.html#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="dt">void</span> <span class="op">(*</span> f_platform_us_timer_callback<span class="op">)(</span></span>
 <span id="cb81-2"><a href="api-ref.html#cb81-2" aria-hidden="true" tabindex="-1"></a>    platform_us_timer_handle_t timer_handle<span class="op">,</span></span>
 <span id="cb81-3"><a href="api-ref.html#cb81-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint64_t</span> time_us<span class="op">,</span></span>
 <span id="cb81-4"><a href="api-ref.html#cb81-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>param<span class="op">);</span></span></code></pre></div>
@@ -1297,108 +1332,151 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>用户参数。</p></li>
 </ul>
 </div>
-<div id="返回值-22" class="section level4 hasAnchor" number="6.6.1.6">
-<h4><span class="header-section-number">6.6.1.6</span> 返回值<a href="api-ref.html#返回值-22" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="返回值-22" class="section level4 hasAnchor" number="6.6.2.3">
+<h4><span class="header-section-number">6.6.2.3</span> 返回值<a href="api-ref.html#返回值-22" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>该函数返回创建的定时器的句柄。如果定时器成功创建，则返回非 NULL 值。否则，返回 NULL。</p>
 </div>
-<div id="备注-19" class="section level4 hasAnchor" number="6.6.1.7">
-<h4><span class="header-section-number">6.6.1.7</span> 备注<a href="api-ref.html#备注-19" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="备注-19" class="section level4 hasAnchor" number="6.6.2.4">
+<h4><span class="header-section-number">6.6.2.4</span> 备注<a href="api-ref.html#备注-19" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>尽管 <code>abs_time</code> 以微秒（μs）为单位，但<strong>不保证</strong>回调函数会以这样的分辨率被调用。</p>
-<p>这种类型的定时器与 <code>platform_set_timer</code> 非常相似，除了：</p>
-<ol style="list-style-type: decimal">
-<li>分辨率更高；</li>
-<li>回调函数在中断服务例程（ISR）上下文或者调用者的上下文中被调用。</li>
-</ol>
 <p>伪代码：</p>
 <div class="sourceCode" id="cb82"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb82-1"><a href="api-ref.html#cb82-1" aria-hidden="true" tabindex="-1"></a>create_us_timer<span class="op">(..)</span></span>
 <span id="cb82-2"><a href="api-ref.html#cb82-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb82-3"><a href="api-ref.html#cb82-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>时间已过<span class="op">)</span> <span class="cf">return</span> NULL<span class="op">;</span></span>
-<span id="cb82-4"><a href="api-ref.html#cb82-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>内存不足<span class="op">)</span> <span class="cf">return</span> NULL<span class="op">;</span></span>
-<span id="cb82-5"><a href="api-ref.html#cb82-5" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> 分配句柄<span class="op">;</span></span>
-<span id="cb82-6"><a href="api-ref.html#cb82-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>剩余时间太短<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb82-7"><a href="api-ref.html#cb82-7" aria-hidden="true" tabindex="-1"></a>        <span class="co">// callback 直接在调用者的上下文中被调用</span></span>
-<span id="cb82-8"><a href="api-ref.html#cb82-8" aria-hidden="true" tabindex="-1"></a>        callback<span class="op">(</span>param<span class="op">);</span></span>
-<span id="cb82-9"><a href="api-ref.html#cb82-9" aria-hidden="true" tabindex="-1"></a>        释放内存<span class="op">;</span></span>
-<span id="cb82-10"><a href="api-ref.html#cb82-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> r<span class="op">;</span>   <span class="co">// 返回的是非 NULL</span></span>
-<span id="cb82-11"><a href="api-ref.html#cb82-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb82-12"><a href="api-ref.html#cb82-12" aria-hidden="true" tabindex="-1"></a>    将 r 存储到队列<span class="op">;</span>  <span class="co">// callback 将在后续的 ISR 上下文中调用</span></span>
-<span id="cb82-13"><a href="api-ref.html#cb82-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> r<span class="op">;</span></span>
-<span id="cb82-14"><a href="api-ref.html#cb82-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p><strong>不要在</strong> <code>callback</code> 中再次调用 <code>platform_create_us_timer</code>。</p>
+<span id="cb82-3"><a href="api-ref.html#cb82-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>内存不足<span class="op">)</span> <span class="cf">return</span> NULL<span class="op">;</span></span>
+<span id="cb82-4"><a href="api-ref.html#cb82-4" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> 分配句柄<span class="op">;</span></span>
+<span id="cb82-5"><a href="api-ref.html#cb82-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>剩余时间太短<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb82-6"><a href="api-ref.html#cb82-6" aria-hidden="true" tabindex="-1"></a>        <span class="co">// callback 直接在调用者的上下文中被调用</span></span>
+<span id="cb82-7"><a href="api-ref.html#cb82-7" aria-hidden="true" tabindex="-1"></a>        callback<span class="op">(</span>param<span class="op">);</span></span>
+<span id="cb82-8"><a href="api-ref.html#cb82-8" aria-hidden="true" tabindex="-1"></a>        释放内存<span class="op">;</span></span>
+<span id="cb82-9"><a href="api-ref.html#cb82-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> r<span class="op">;</span>   <span class="co">// 返回的是非 NULL</span></span>
+<span id="cb82-10"><a href="api-ref.html#cb82-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb82-11"><a href="api-ref.html#cb82-11" aria-hidden="true" tabindex="-1"></a>    将 r 存储到队列<span class="op">;</span>  <span class="co">// callback 将在后续的 ISR 上下文中调用</span></span>
+<span id="cb82-12"><a href="api-ref.html#cb82-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> r<span class="op">;</span></span>
+<span id="cb82-13"><a href="api-ref.html#cb82-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </div>
 </div>
-<div id="platform_delete_timer" class="section level3 hasAnchor" number="6.6.2">
-<h3><span class="header-section-number">6.6.2</span> <code>platform_delete_timer</code><a href="api-ref.html#platform_delete_timer" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="platform_create_us_timer2" class="section level3 hasAnchor" number="6.6.3">
+<h3><span class="header-section-number">6.6.3</span> <code>platform_create_us_timer2</code><a href="api-ref.html#platform_create_us_timer2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>设置一个具有 1 微秒（μs）分辨率的单次触发 platform 定时器。</p>
+<div id="函数原型-23" class="section level4 hasAnchor" number="6.6.3.1">
+<h4><span class="header-section-number">6.6.3.1</span> 函数原型<a href="api-ref.html#函数原型-23" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb83"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb83-1"><a href="api-ref.html#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> platform_create_us_timer2<span class="op">(</span></span>
+<span id="cb83-2"><a href="api-ref.html#cb83-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint64_t</span> abs_time<span class="op">,</span></span>
+<span id="cb83-3"><a href="api-ref.html#cb83-3" aria-hidden="true" tabindex="-1"></a>    f_platform_us_timer_callback callback<span class="op">,</span></span>
+<span id="cb83-4"><a href="api-ref.html#cb83-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>param<span class="op">,</span></span>
+<span id="cb83-5"><a href="api-ref.html#cb83-5" aria-hidden="true" tabindex="-1"></a>    platform_us_timer_handle_t <span class="op">*</span>timer_handle<span class="op">);</span></span></code></pre></div>
+</div>
+<div id="参数-23" class="section level4 hasAnchor" number="6.6.3.2">
+<h4><span class="header-section-number">6.6.3.2</span> 参数<a href="api-ref.html#参数-23" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<ul>
+<li><p><code>uint64_t abs_time</code></p>
+<p>当 <code>platform_get_us_timer() == abs_time</code> 时，回调函数将被调用。</p></li>
+<li><p><code>f_platform_us_timer_callback callback</code></p>
+<p>回调函数。</p></li>
+<li><p><code>void *param</code></p>
+<p>用户参数。</p></li>
+<li><p><code>platform_us_timer_handle_t *timer_handle</code></p>
+<p>当创建成功时，<code>timer_handle</code> 被设置为定时器的句柄。如果定时器失败，<code>timer_handle</code> 被设置为 NULL。</p></li>
+</ul>
+</div>
+<div id="返回值-23" class="section level4 hasAnchor" number="6.6.3.3">
+<h4><span class="header-section-number">6.6.3.3</span> 返回值<a href="api-ref.html#返回值-23" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>如果创建成功，返回 <code>0</code>，否则返回 <code>-1</code>。</p>
+</div>
+<div id="备注-20" class="section level4 hasAnchor" number="6.6.3.4">
+<h4><span class="header-section-number">6.6.3.4</span> 备注<a href="api-ref.html#备注-20" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>一种常见的用法是在回调函数清除句柄。当使用 <code>platform_create_us_timer</code>，这种做法可能存在问题。例如：</p>
+<div class="sourceCode" id="cb84"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb84-1"><a href="api-ref.html#cb84-1" aria-hidden="true" tabindex="-1"></a>platform_us_timer_handle_t handle<span class="op">;</span></span>
+<span id="cb84-2"><a href="api-ref.html#cb84-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> callback<span class="op">(...)</span></span>
+<span id="cb84-3"><a href="api-ref.html#cb84-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb84-4"><a href="api-ref.html#cb84-4" aria-hidden="true" tabindex="-1"></a>    handle <span class="op">=</span> NULL<span class="op">;</span></span>
+<span id="cb84-5"><a href="api-ref.html#cb84-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb84-6"><a href="api-ref.html#cb84-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-7"><a href="api-ref.html#cb84-7" aria-hidden="true" tabindex="-1"></a><span class="co">// 回调函数可能在返回前就调用了，这时，</span></span>
+<span id="cb84-8"><a href="api-ref.html#cb84-8" aria-hidden="true" tabindex="-1"></a><span class="co">// handle 未能清除</span></span>
+<span id="cb84-9"><a href="api-ref.html#cb84-9" aria-hidden="true" tabindex="-1"></a>handle <span class="op">=</span> platform_create_us_timer<span class="op">(</span>T<span class="op">,</span></span>
+<span id="cb84-10"><a href="api-ref.html#cb84-10" aria-hidden="true" tabindex="-1"></a>    callback<span class="op">);</span></span></code></pre></div>
+<p>使用 <code>platform_create_us_timer2</code> 可以避免这种问题：</p>
+<div class="sourceCode" id="cb85"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb85-1"><a href="api-ref.html#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 在调用 `callback` 之前，</span></span>
+<span id="cb85-2"><a href="api-ref.html#cb85-2" aria-hidden="true" tabindex="-1"></a><span class="co">// `handle` 已由 `platform_create_us_timer2`</span></span>
+<span id="cb85-3"><a href="api-ref.html#cb85-3" aria-hidden="true" tabindex="-1"></a><span class="co">// 填入了正确的句柄</span></span>
+<span id="cb85-4"><a href="api-ref.html#cb85-4" aria-hidden="true" tabindex="-1"></a>platform_create_us_timer2<span class="op">(</span>T<span class="op">,</span></span>
+<span id="cb85-5"><a href="api-ref.html#cb85-5" aria-hidden="true" tabindex="-1"></a>    callback<span class="op">,</span></span>
+<span id="cb85-6"><a href="api-ref.html#cb85-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">&amp;</span>handle<span class="op">);</span></span></code></pre></div>
+</div>
+</div>
+<div id="platform_delete_timer" class="section level3 hasAnchor" number="6.6.4">
+<h3><span class="header-section-number">6.6.4</span> <code>platform_delete_timer</code><a href="api-ref.html#platform_delete_timer" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>删除先前由 <code>platform_set_timer</code> 或 <code>platform_set_abs_timer</code> 创建的platform定时器。</p>
-<div id="函数原型-23" class="section level4 hasAnchor" number="6.6.2.1">
-<h4><span class="header-section-number">6.6.2.1</span> 函数原型<a href="api-ref.html#函数原型-23" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb83"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb83-1"><a href="api-ref.html#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_delete_timer<span class="op">(</span>f_platform_timer_callback callback<span class="op">)</span></span></code></pre></div>
+<div id="函数原型-24" class="section level4 hasAnchor" number="6.6.4.1">
+<h4><span class="header-section-number">6.6.4.1</span> 函数原型<a href="api-ref.html#函数原型-24" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb86"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb86-1"><a href="api-ref.html#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_delete_timer<span class="op">(</span>f_platform_timer_callback callback<span class="op">)</span></span></code></pre></div>
 </div>
-<div id="参数-23" class="section level4 hasAnchor" number="6.6.2.2">
-<h4><span class="header-section-number">6.6.2.2</span> 参数<a href="api-ref.html#参数-23" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="参数-24" class="section level4 hasAnchor" number="6.6.4.2">
+<h4><span class="header-section-number">6.6.4.2</span> 参数<a href="api-ref.html#参数-24" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <ul>
 <li><p><code>f_platform_timer_callback callback</code></p>
 <p>回调函数，同时也是定时器的标识符。</p></li>
 </ul>
 </div>
-<div id="返回值-23" class="section level4 hasAnchor" number="6.6.2.3">
-<h4><span class="header-section-number">6.6.2.3</span> 返回值<a href="api-ref.html#返回值-23" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="返回值-24" class="section level4 hasAnchor" number="6.6.4.3">
+<h4><span class="header-section-number">6.6.4.3</span> 返回值<a href="api-ref.html#返回值-24" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>无。</p>
 </div>
-<div id="备注-20" class="section level4 hasAnchor" number="6.6.2.4">
-<h4><span class="header-section-number">6.6.2.4</span> 备注<a href="api-ref.html#备注-20" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="备注-21" class="section level4 hasAnchor" number="6.6.4.4">
+<h4><span class="header-section-number">6.6.4.4</span> 备注<a href="api-ref.html#备注-21" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>调用此函数时，回调可能已经排队等待在任务中调用。因此，在调用此函数后，回调仍可能被调用。</p>
 </div>
 </div>
-<div id="platform_get_timer_counter" class="section level3 hasAnchor" number="6.6.3">
-<h3><span class="header-section-number">6.6.3</span> <code>platform_get_timer_counter</code><a href="api-ref.html#platform_get_timer_counter" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="platform_get_timer_counter" class="section level3 hasAnchor" number="6.6.5">
+<h3><span class="header-section-number">6.6.5</span> <code>platform_get_timer_counter</code><a href="api-ref.html#platform_get_timer_counter" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>读取platform定时器的计数器，分辨率为625微秒。</p>
-<div id="函数原型-24" class="section level4 hasAnchor" number="6.6.3.1">
-<h4><span class="header-section-number">6.6.3.1</span> 函数原型<a href="api-ref.html#函数原型-24" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb84"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb84-1"><a href="api-ref.html#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> platform_get_timer_counter<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<div id="函数原型-25" class="section level4 hasAnchor" number="6.6.5.1">
+<h4><span class="header-section-number">6.6.5.1</span> 函数原型<a href="api-ref.html#函数原型-25" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb87"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb87-1"><a href="api-ref.html#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> platform_get_timer_counter<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
 </div>
-<div id="参数-24" class="section level4 hasAnchor" number="6.6.3.2">
-<h4><span class="header-section-number">6.6.3.2</span> 参数<a href="api-ref.html#参数-24" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="参数-25" class="section level4 hasAnchor" number="6.6.5.2">
+<h4><span class="header-section-number">6.6.5.2</span> 参数<a href="api-ref.html#参数-25" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>无。</p>
 </div>
-<div id="返回值-24" class="section level4 hasAnchor" number="6.6.3.3">
-<h4><span class="header-section-number">6.6.3.3</span> 返回值<a href="api-ref.html#返回值-24" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="返回值-25" class="section level4 hasAnchor" number="6.6.5.3">
+<h4><span class="header-section-number">6.6.5.3</span> 返回值<a href="api-ref.html#返回值-25" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>一个完整的32位值，表示当前计数器的值，大致等于 <code>platform_get_us_time() / 625</code>。
 ### <code>platform_get_us_time</code></p>
 <p>读取自BLE初始化以来的内部时间计数。</p>
 </div>
-<div id="函数原型-25" class="section level4 hasAnchor" number="6.6.3.4">
-<h4><span class="header-section-number">6.6.3.4</span> 函数原型<a href="api-ref.html#函数原型-25" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb85"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb85-1"><a href="api-ref.html#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int64_t</span> platform_get_us_time<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<div id="函数原型-26" class="section level4 hasAnchor" number="6.6.5.4">
+<h4><span class="header-section-number">6.6.5.4</span> 函数原型<a href="api-ref.html#函数原型-26" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb88"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb88-1"><a href="api-ref.html#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int64_t</span> platform_get_us_time<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
 </div>
-<div id="参数-25" class="section level4 hasAnchor" number="6.6.3.5">
-<h4><span class="header-section-number">6.6.3.5</span> 参数<a href="api-ref.html#参数-25" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="参数-26" class="section level4 hasAnchor" number="6.6.5.5">
+<h4><span class="header-section-number">6.6.5.5</span> 参数<a href="api-ref.html#参数-26" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>无。</p>
 </div>
-<div id="返回值-25" class="section level4 hasAnchor" number="6.6.3.6">
-<h4><span class="header-section-number">6.6.3.6</span> 返回值<a href="api-ref.html#返回值-25" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="返回值-26" class="section level4 hasAnchor" number="6.6.5.6">
+<h4><span class="header-section-number">6.6.5.6</span> 返回值<a href="api-ref.html#返回值-26" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>内部时间计数器的值，以1微秒为单位计数。该计数器大约每21.8年溢出一次。</p>
 </div>
-<div id="备注-21" class="section level4 hasAnchor" number="6.6.3.7">
-<h4><span class="header-section-number">6.6.3.7</span> 备注<a href="api-ref.html#备注-21" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="备注-22" class="section level4 hasAnchor" number="6.6.5.7">
+<h4><span class="header-section-number">6.6.5.7</span> 备注<a href="api-ref.html#备注-22" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>该计数器在关机后重新启动。</p>
 </div>
-<div id="示例-15" class="section level4 hasAnchor" number="6.6.3.8">
-<h4><span class="header-section-number">6.6.3.8</span> 示例<a href="api-ref.html#示例-15" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb86"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb86-1"><a href="api-ref.html#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint64_t</span> now <span class="op">=</span> platform_get_us_time<span class="op">();</span></span></code></pre></div>
+<div id="示例-15" class="section level4 hasAnchor" number="6.6.5.8">
+<h4><span class="header-section-number">6.6.5.8</span> 示例<a href="api-ref.html#示例-15" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb89"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb89-1"><a href="api-ref.html#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint64_t</span> now <span class="op">=</span> platform_get_us_time<span class="op">();</span></span></code></pre></div>
 </div>
 </div>
-<div id="platform_set_abs_timer" class="section level3 hasAnchor" number="6.6.4">
-<h3><span class="header-section-number">6.6.4</span> <code>platform_set_abs_timer</code><a href="api-ref.html#platform_set_abs_timer" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="platform_set_abs_timer" class="section level3 hasAnchor" number="6.6.6">
+<h3><span class="header-section-number">6.6.6</span> <code>platform_set_abs_timer</code><a href="api-ref.html#platform_set_abs_timer" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>设置一个单次触发的 platform 定时器，在绝对时间触发，分辨率为 625 微秒。</p>
-<div id="函数原型-26" class="section level4 hasAnchor" number="6.6.4.1">
-<h4><span class="header-section-number">6.6.4.1</span> 函数原型<a href="api-ref.html#函数原型-26" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb87"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb87-1"><a href="api-ref.html#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_set_abs_timer<span class="op">(</span></span>
-<span id="cb87-2"><a href="api-ref.html#cb87-2" aria-hidden="true" tabindex="-1"></a>    f_platform_timer_callback callback<span class="op">,</span></span>
-<span id="cb87-3"><a href="api-ref.html#cb87-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> abs_time<span class="op">);</span></span></code></pre></div>
+<div id="函数原型-27" class="section level4 hasAnchor" number="6.6.6.1">
+<h4><span class="header-section-number">6.6.6.1</span> 函数原型<a href="api-ref.html#函数原型-27" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb90"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb90-1"><a href="api-ref.html#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_set_abs_timer<span class="op">(</span></span>
+<span id="cb90-2"><a href="api-ref.html#cb90-2" aria-hidden="true" tabindex="-1"></a>    f_platform_timer_callback callback<span class="op">,</span></span>
+<span id="cb90-3"><a href="api-ref.html#cb90-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> abs_time<span class="op">);</span></span></code></pre></div>
 </div>
-<div id="参数-26" class="section level4 hasAnchor" number="6.6.4.2">
-<h4><span class="header-section-number">6.6.4.2</span> 参数<a href="api-ref.html#参数-26" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="参数-27" class="section level4 hasAnchor" number="6.6.6.2">
+<h4><span class="header-section-number">6.6.6.2</span> 参数<a href="api-ref.html#参数-27" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <ul>
 <li><p><code>f_platform_timer_callback callback</code></p>
 <p>定时器到期时的回调函数，该函数在类似 RTOS 任务的上下文中调用，而不是在中断服务例程（ISR）中调用。</p></li>
@@ -1408,45 +1486,45 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 例如，<code>abs_time</code> 为 <code>platform_get_timer_counter() - 1</code>。</p></li>
 </ul>
 </div>
-<div id="返回值-26" class="section level4 hasAnchor" number="6.6.4.3">
-<h4><span class="header-section-number">6.6.4.3</span> 返回值<a href="api-ref.html#返回值-26" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="返回值-27" class="section level4 hasAnchor" number="6.6.6.3">
+<h4><span class="header-section-number">6.6.6.3</span> 返回值<a href="api-ref.html#返回值-27" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>无。</p>
 </div>
-<div id="备注-22" class="section level4 hasAnchor" number="6.6.4.4">
-<h4><span class="header-section-number">6.6.4.4</span> 备注<a href="api-ref.html#备注-22" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="备注-23" class="section level4 hasAnchor" number="6.6.6.4">
+<h4><span class="header-section-number">6.6.6.4</span> 备注<a href="api-ref.html#备注-23" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>此函数总是成功，除非内存不足。</p>
 </div>
-<div id="示例-16" class="section level4 hasAnchor" number="6.6.4.5">
-<h4><span class="header-section-number">6.6.4.5</span> 示例<a href="api-ref.html#示例-16" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="示例-16" class="section level4 hasAnchor" number="6.6.6.5">
+<h4><span class="header-section-number">6.6.6.5</span> 示例<a href="api-ref.html#示例-16" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>使用此函数模拟一个周期性定时器。</p>
-<div class="sourceCode" id="cb88"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb88-1"><a href="api-ref.html#cb88-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-2"><a href="api-ref.html#cb88-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#define PERIOD  100</span></span>
-<span id="cb88-3"><a href="api-ref.html#cb88-3" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> last_timer <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb88-4"><a href="api-ref.html#cb88-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-5"><a href="api-ref.html#cb88-5" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_timer_callback<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
-<span id="cb88-6"><a href="api-ref.html#cb88-6" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb88-7"><a href="api-ref.html#cb88-7" aria-hidden="true" tabindex="-1"></a>    last_timer <span class="op">+=</span> PERIOD<span class="op">;</span></span>
-<span id="cb88-8"><a href="api-ref.html#cb88-8" aria-hidden="true" tabindex="-1"></a>    platform_set_abs_timer<span class="op">(</span>platform_timer_callback<span class="op">,</span> last_timer<span class="op">);</span></span>
-<span id="cb88-9"><a href="api-ref.html#cb88-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-10"><a href="api-ref.html#cb88-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 执行周期性任务</span></span>
-<span id="cb88-11"><a href="api-ref.html#cb88-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
-<span id="cb88-12"><a href="api-ref.html#cb88-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb88-13"><a href="api-ref.html#cb88-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-14"><a href="api-ref.html#cb88-14" aria-hidden="true" tabindex="-1"></a>last_timer <span class="op">=</span> platform_get_timer_counter<span class="op">()</span> <span class="op">+</span> PERIOD<span class="op">;</span></span>
-<span id="cb88-15"><a href="api-ref.html#cb88-15" aria-hidden="true" tabindex="-1"></a>platform_set_abs_timer<span class="op">(</span>platform_timer_callback<span class="op">,</span> last_timer<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb91"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb91-1"><a href="api-ref.html#cb91-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb91-2"><a href="api-ref.html#cb91-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#define PERIOD  100</span></span>
+<span id="cb91-3"><a href="api-ref.html#cb91-3" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">uint32_t</span> last_timer <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb91-4"><a href="api-ref.html#cb91-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb91-5"><a href="api-ref.html#cb91-5" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_timer_callback<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb91-6"><a href="api-ref.html#cb91-6" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb91-7"><a href="api-ref.html#cb91-7" aria-hidden="true" tabindex="-1"></a>    last_timer <span class="op">+=</span> PERIOD<span class="op">;</span></span>
+<span id="cb91-8"><a href="api-ref.html#cb91-8" aria-hidden="true" tabindex="-1"></a>    platform_set_abs_timer<span class="op">(</span>platform_timer_callback<span class="op">,</span> last_timer<span class="op">);</span></span>
+<span id="cb91-9"><a href="api-ref.html#cb91-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb91-10"><a href="api-ref.html#cb91-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 执行周期性任务</span></span>
+<span id="cb91-11"><a href="api-ref.html#cb91-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
+<span id="cb91-12"><a href="api-ref.html#cb91-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb91-13"><a href="api-ref.html#cb91-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb91-14"><a href="api-ref.html#cb91-14" aria-hidden="true" tabindex="-1"></a>last_timer <span class="op">=</span> platform_get_timer_counter<span class="op">()</span> <span class="op">+</span> PERIOD<span class="op">;</span></span>
+<span id="cb91-15"><a href="api-ref.html#cb91-15" aria-hidden="true" tabindex="-1"></a>platform_set_abs_timer<span class="op">(</span>platform_timer_callback<span class="op">,</span> last_timer<span class="op">);</span></span></code></pre></div>
 </div>
 </div>
-<div id="platform_set_timer" class="section level3 hasAnchor" number="6.6.5">
-<h3><span class="header-section-number">6.6.5</span> <code>platform_set_timer</code><a href="api-ref.html#platform_set_timer" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="platform_set_timer" class="section level3 hasAnchor" number="6.6.7">
+<h3><span class="header-section-number">6.6.7</span> <code>platform_set_timer</code><a href="api-ref.html#platform_set_timer" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>设置一个单次触发的 platform 定时器，从“现在”开始延迟，分辨率为 625 微秒。</p>
-<div id="函数原型-27" class="section level4 hasAnchor" number="6.6.5.1">
-<h4><span class="header-section-number">6.6.5.1</span> 函数原型<a href="api-ref.html#函数原型-27" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb89"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb89-1"><a href="api-ref.html#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_set_timer<span class="op">(</span></span>
-<span id="cb89-2"><a href="api-ref.html#cb89-2" aria-hidden="true" tabindex="-1"></a>    f_platform_timer_callback callback<span class="op">,</span></span>
-<span id="cb89-3"><a href="api-ref.html#cb89-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> delay<span class="op">);</span></span></code></pre></div>
+<div id="函数原型-28" class="section level4 hasAnchor" number="6.6.7.1">
+<h4><span class="header-section-number">6.6.7.1</span> 函数原型<a href="api-ref.html#函数原型-28" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb92"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb92-1"><a href="api-ref.html#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_set_timer<span class="op">(</span></span>
+<span id="cb92-2"><a href="api-ref.html#cb92-2" aria-hidden="true" tabindex="-1"></a>    f_platform_timer_callback callback<span class="op">,</span></span>
+<span id="cb92-3"><a href="api-ref.html#cb92-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> delay<span class="op">);</span></span></code></pre></div>
 </div>
-<div id="参数-27" class="section level4 hasAnchor" number="6.6.5.2">
-<h4><span class="header-section-number">6.6.5.2</span> 参数<a href="api-ref.html#参数-27" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="参数-28" class="section level4 hasAnchor" number="6.6.7.2">
+<h4><span class="header-section-number">6.6.7.2</span> 参数<a href="api-ref.html#参数-28" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <ul>
 <li><p><code>f_platform_timer_callback callback</code></p>
 <p>定时器到期时的回调函数，该函数在类似 RTOS 任务的上下文中调用，而非中断服务例程（ISR）。</p></li>
@@ -1455,26 +1533,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>有效范围：0~0x7fffffff。当 <code>delay</code> 为 0 时，定时器被清除。</p></li>
 </ul>
 </div>
-<div id="返回值-27" class="section level4 hasAnchor" number="6.6.5.3">
-<h4><span class="header-section-number">6.6.5.3</span> 返回值<a href="api-ref.html#返回值-27" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="返回值-28" class="section level4 hasAnchor" number="6.6.7.3">
+<h4><span class="header-section-number">6.6.7.3</span> 返回值<a href="api-ref.html#返回值-28" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>无。</p>
 </div>
-<div id="备注-23" class="section level4 hasAnchor" number="6.6.5.4">
-<h4><span class="header-section-number">6.6.5.4</span> 备注<a href="api-ref.html#备注-23" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="备注-24" class="section level4 hasAnchor" number="6.6.7.4">
+<h4><span class="header-section-number">6.6.7.4</span> 备注<a href="api-ref.html#备注-24" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>此函数总是成功，除非内存耗尽。</p>
 <p><code>platform_set_timer(f, 100)</code> 等同于：</p>
-<div class="sourceCode" id="cb90"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb90-1"><a href="api-ref.html#cb90-1" aria-hidden="true" tabindex="-1"></a>platform_set_abs_timer<span class="op">(</span>f<span class="op">,</span></span>
-<span id="cb90-2"><a href="api-ref.html#cb90-2" aria-hidden="true" tabindex="-1"></a>    platform_get_timer_counter<span class="op">()</span> <span class="op">+</span> <span class="dv">100</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb93"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb93-1"><a href="api-ref.html#cb93-1" aria-hidden="true" tabindex="-1"></a>platform_set_abs_timer<span class="op">(</span>f<span class="op">,</span></span>
+<span id="cb93-2"><a href="api-ref.html#cb93-2" aria-hidden="true" tabindex="-1"></a>    platform_get_timer_counter<span class="op">()</span> <span class="op">+</span> <span class="dv">100</span><span class="op">);</span></span></code></pre></div>
 <p><code>platform_set_timer(f, 0)</code> 等同于：</p>
-<div class="sourceCode" id="cb91"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb91-1"><a href="api-ref.html#cb91-1" aria-hidden="true" tabindex="-1"></a>platform_delete_timer<span class="op">(</span>f<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb94"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb94-1"><a href="api-ref.html#cb94-1" aria-hidden="true" tabindex="-1"></a>platform_delete_timer<span class="op">(</span>f<span class="op">);</span></span></code></pre></div>
 <p>但不等同于：</p>
-<div class="sourceCode" id="cb92"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb92-1"><a href="api-ref.html#cb92-1" aria-hidden="true" tabindex="-1"></a>platform_set_abs_timer<span class="op">(</span>f<span class="op">,</span></span>
-<span id="cb92-2"><a href="api-ref.html#cb92-2" aria-hidden="true" tabindex="-1"></a>    platform_get_timer_counter<span class="op">()</span> <span class="op">+</span> <span class="dv">0</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb95"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb95-1"><a href="api-ref.html#cb95-1" aria-hidden="true" tabindex="-1"></a>platform_set_abs_timer<span class="op">(</span>f<span class="op">,</span></span>
+<span id="cb95-2"><a href="api-ref.html#cb95-2" aria-hidden="true" tabindex="-1"></a>    platform_get_timer_counter<span class="op">()</span> <span class="op">+</span> <span class="dv">0</span><span class="op">);</span></span></code></pre></div>
 <p>由于 <code>callback</code> 也是定时器的标识符，以下两行代码仅定义了一个在 200 个单位后到期的定时器，而非两个独立的定时器：</p>
-<div class="sourceCode" id="cb93"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb93-1"><a href="api-ref.html#cb93-1" aria-hidden="true" tabindex="-1"></a>platform_set_timer<span class="op">(</span>f<span class="op">,</span> <span class="dv">100</span><span class="op">);</span></span>
-<span id="cb93-2"><a href="api-ref.html#cb93-2" aria-hidden="true" tabindex="-1"></a>platform_set_timer<span class="op">(</span>f<span class="op">,</span> <span class="dv">200</span><span class="op">);</span> <span class="co">// 更新定时器，而非创建新的</span></span></code></pre></div>
+<div class="sourceCode" id="cb96"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb96-1"><a href="api-ref.html#cb96-1" aria-hidden="true" tabindex="-1"></a>platform_set_timer<span class="op">(</span>f<span class="op">,</span> <span class="dv">100</span><span class="op">);</span></span>
+<span id="cb96-2"><a href="api-ref.html#cb96-2" aria-hidden="true" tabindex="-1"></a>platform_set_timer<span class="op">(</span>f<span class="op">,</span> <span class="dv">200</span><span class="op">);</span> <span class="co">// 更新定时器，而非创建新的</span></span></code></pre></div>
 <p>如果 <code>f</code> 再次用于<code>platform_set_abs_timer</code>，则定时器再次被更新：</p>
-<div class="sourceCode" id="cb94"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb94-1"><a href="api-ref.html#cb94-1" aria-hidden="true" tabindex="-1"></a>platform_set_abs_timer<span class="op">(</span>f<span class="op">,</span> <span class="op">...);</span></span></code></pre></div>
+<div class="sourceCode" id="cb97"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb97-1"><a href="api-ref.html#cb97-1" aria-hidden="true" tabindex="-1"></a>platform_set_abs_timer<span class="op">(</span>f<span class="op">,</span> <span class="op">...);</span></span></code></pre></div>
 </div>
 </div>
 </div>
@@ -1485,89 +1563,89 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="platform_pre_suppress_cycles_and_sleep_processing" class="section level3 hasAnchor" number="6.7.1">
 <h3><span class="header-section-number">6.7.1</span> <code>platform_pre_suppress_cycles_and_sleep_processing</code><a href="api-ref.html#platform_pre_suppress_cycles_and_sleep_processing" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>准备抑制一些低功耗实时时钟周期以实现无滴答节能。</p>
-<div id="函数原型-28" class="section level4 hasAnchor" number="6.7.1.1">
-<h4><span class="header-section-number">6.7.1.1</span> 函数原型<a href="api-ref.html#函数原型-28" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb95"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb95-1"><a href="api-ref.html#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> platform_pre_suppress_cycles_and_sleep_processing<span class="op">(</span></span>
-<span id="cb95-2"><a href="api-ref.html#cb95-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> expected_cycles<span class="op">);</span></span></code></pre></div>
+<div id="函数原型-29" class="section level4 hasAnchor" number="6.7.1.1">
+<h4><span class="header-section-number">6.7.1.1</span> 函数原型<a href="api-ref.html#函数原型-29" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb98"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb98-1"><a href="api-ref.html#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> platform_pre_suppress_cycles_and_sleep_processing<span class="op">(</span></span>
+<span id="cb98-2"><a href="api-ref.html#cb98-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> expected_cycles<span class="op">);</span></span></code></pre></div>
 </div>
-<div id="参数-28" class="section level4 hasAnchor" number="6.7.1.2">
-<h4><span class="header-section-number">6.7.1.2</span> 参数<a href="api-ref.html#参数-28" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="参数-29" class="section level4 hasAnchor" number="6.7.1.2">
+<h4><span class="header-section-number">6.7.1.2</span> 参数<a href="api-ref.html#参数-29" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <ul>
 <li><p><code>uint32_t expected_cycles</code></p>
 <p>预期可以被抑制的周期数（在节能模式下可以安全跳过的周期）。</p>
 <p>支持完整的 <code>uint32_t</code> 范围。</p></li>
 </ul>
 </div>
-<div id="返回值-28" class="section level4 hasAnchor" number="6.7.1.3">
-<h4><span class="header-section-number">6.7.1.3</span> 返回值<a href="api-ref.html#返回值-28" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="返回值-29" class="section level4 hasAnchor" number="6.7.1.3">
+<h4><span class="header-section-number">6.7.1.3</span> 返回值<a href="api-ref.html#返回值-29" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>调整后的可以被抑制的周期数。</p>
 </div>
 </div>
 <div id="platform_pre_sleep_processing" class="section level3 hasAnchor" number="6.7.2">
 <h3><span class="header-section-number">6.7.2</span> <code>platform_pre_sleep_processing</code><a href="api-ref.html#platform_pre_sleep_processing" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>无滴答睡眠的预处理。</p>
-<div id="函数原型-29" class="section level4 hasAnchor" number="6.7.2.1">
-<h4><span class="header-section-number">6.7.2.1</span> 函数原型<a href="api-ref.html#函数原型-29" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb96"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb96-1"><a href="api-ref.html#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_pre_sleep_processing<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<div id="函数原型-30" class="section level4 hasAnchor" number="6.7.2.1">
+<h4><span class="header-section-number">6.7.2.1</span> 函数原型<a href="api-ref.html#函数原型-30" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb99"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb99-1"><a href="api-ref.html#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_pre_sleep_processing<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
 </div>
-<div id="参数-29" class="section level4 hasAnchor" number="6.7.2.2">
-<h4><span class="header-section-number">6.7.2.2</span> 参数<a href="api-ref.html#参数-29" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="参数-30" class="section level4 hasAnchor" number="6.7.2.2">
+<h4><span class="header-section-number">6.7.2.2</span> 参数<a href="api-ref.html#参数-30" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>无。</p>
 </div>
-<div id="返回值-29" class="section level4 hasAnchor" number="6.7.2.3">
-<h4><span class="header-section-number">6.7.2.3</span> 返回值<a href="api-ref.html#返回值-29" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="返回值-30" class="section level4 hasAnchor" number="6.7.2.3">
+<h4><span class="header-section-number">6.7.2.3</span> 返回值<a href="api-ref.html#返回值-30" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>无。</p>
 </div>
 </div>
 <div id="platform_post_sleep_processing" class="section level3 hasAnchor" number="6.7.3">
 <h3><span class="header-section-number">6.7.3</span> <code>platform_post_sleep_processing</code><a href="api-ref.html#platform_post_sleep_processing" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>无滴答睡眠的后处理。</p>
-<div id="函数原型-30" class="section level4 hasAnchor" number="6.7.3.1">
-<h4><span class="header-section-number">6.7.3.1</span> 函数原型<a href="api-ref.html#函数原型-30" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb97"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb97-1"><a href="api-ref.html#cb97-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_post_sleep_processing<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<div id="函数原型-31" class="section level4 hasAnchor" number="6.7.3.1">
+<h4><span class="header-section-number">6.7.3.1</span> 函数原型<a href="api-ref.html#函数原型-31" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb100"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb100-1"><a href="api-ref.html#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_post_sleep_processing<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
 </div>
-<div id="参数-30" class="section level4 hasAnchor" number="6.7.3.2">
-<h4><span class="header-section-number">6.7.3.2</span> 参数<a href="api-ref.html#参数-30" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="参数-31" class="section level4 hasAnchor" number="6.7.3.2">
+<h4><span class="header-section-number">6.7.3.2</span> 参数<a href="api-ref.html#参数-31" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>无。</p>
 </div>
-<div id="返回值-30" class="section level4 hasAnchor" number="6.7.3.3">
-<h4><span class="header-section-number">6.7.3.3</span> 返回值<a href="api-ref.html#返回值-30" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="返回值-31" class="section level4 hasAnchor" number="6.7.3.3">
+<h4><span class="header-section-number">6.7.3.3</span> 返回值<a href="api-ref.html#返回值-31" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>无。</p>
 </div>
-<div id="备注-24" class="section level4 hasAnchor" number="6.7.3.4">
-<h4><span class="header-section-number">6.7.3.4</span> 备注<a href="api-ref.html#备注-24" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="备注-25" class="section level4 hasAnchor" number="6.7.3.4">
+<h4><span class="header-section-number">6.7.3.4</span> 备注<a href="api-ref.html#备注-25" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>如果调用了 <code>platform_pre_sleep_processing</code>，则必须跟随调用 <code>platform_post_sleep_processing</code>。</p>
 </div>
 </div>
 <div id="platform_os_idle_resumed_hook" class="section level3 hasAnchor" number="6.7.4">
 <h3><span class="header-section-number">6.7.4</span> <code>platform_os_idle_resumed_hook</code><a href="api-ref.html#platform_os_idle_resumed_hook" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>空闲任务恢复时的钩子。在空闲任务恢复时调用此函数。</p>
-<div id="函数原型-31" class="section level4 hasAnchor" number="6.7.4.1">
-<h4><span class="header-section-number">6.7.4.1</span> 函数原型<a href="api-ref.html#函数原型-31" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb98"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb98-1"><a href="api-ref.html#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_os_idle_resumed_hook<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<div id="函数原型-32" class="section level4 hasAnchor" number="6.7.4.1">
+<h4><span class="header-section-number">6.7.4.1</span> 函数原型<a href="api-ref.html#函数原型-32" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb101"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb101-1"><a href="api-ref.html#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_os_idle_resumed_hook<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
 </div>
-<div id="参数-31" class="section level4 hasAnchor" number="6.7.4.2">
-<h4><span class="header-section-number">6.7.4.2</span> 参数<a href="api-ref.html#参数-31" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="参数-32" class="section level4 hasAnchor" number="6.7.4.2">
+<h4><span class="header-section-number">6.7.4.2</span> 参数<a href="api-ref.html#参数-32" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>无。</p>
 </div>
-<div id="返回值-31" class="section level4 hasAnchor" number="6.7.4.3">
-<h4><span class="header-section-number">6.7.4.3</span> 返回值<a href="api-ref.html#返回值-31" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="返回值-32" class="section level4 hasAnchor" number="6.7.4.3">
+<h4><span class="header-section-number">6.7.4.3</span> 返回值<a href="api-ref.html#返回值-32" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>无。</p>
 </div>
 </div>
 <div id="platform_os_idle_resumed_hook-1" class="section level3 hasAnchor" number="6.7.5">
 <h3><span class="header-section-number">6.7.5</span> <code>platform_os_idle_resumed_hook</code><a href="api-ref.html#platform_os_idle_resumed_hook-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Hook for Idle task got resumed. Call this when Idle task is resumed.</p>
-<div id="函数原型-32" class="section level4 hasAnchor" number="6.7.5.1">
-<h4><span class="header-section-number">6.7.5.1</span> 函数原型<a href="api-ref.html#函数原型-32" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb99"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb99-1"><a href="api-ref.html#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_os_idle_resumed_hook<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<div id="函数原型-33" class="section level4 hasAnchor" number="6.7.5.1">
+<h4><span class="header-section-number">6.7.5.1</span> 函数原型<a href="api-ref.html#函数原型-33" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb102"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb102-1"><a href="api-ref.html#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_os_idle_resumed_hook<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
 </div>
-<div id="参数-32" class="section level4 hasAnchor" number="6.7.5.2">
-<h4><span class="header-section-number">6.7.5.2</span> 参数<a href="api-ref.html#参数-32" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="参数-33" class="section level4 hasAnchor" number="6.7.5.2">
+<h4><span class="header-section-number">6.7.5.2</span> 参数<a href="api-ref.html#参数-33" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>无。</p>
 </div>
-<div id="返回值-32" class="section level4 hasAnchor" number="6.7.5.3">
-<h4><span class="header-section-number">6.7.5.3</span> 返回值<a href="api-ref.html#返回值-32" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="返回值-33" class="section level4 hasAnchor" number="6.7.5.3">
+<h4><span class="header-section-number">6.7.5.3</span> 返回值<a href="api-ref.html#返回值-33" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>无。</p>
 </div>
 </div>
@@ -1582,12 +1660,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="platform_hrng" class="section level3 hasAnchor" number="6.8.1">
 <h3><span class="header-section-number">6.8.1</span> <code>platform_hrng</code><a href="api-ref.html#platform_hrng" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>使用硬件随机数生成器生成随机字节。</p>
-<div id="函数原型-33" class="section level4 hasAnchor" number="6.8.1.1">
-<h4><span class="header-section-number">6.8.1.1</span> 函数原型<a href="api-ref.html#函数原型-33" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb100"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb100-1"><a href="api-ref.html#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span>  platform_hrng<span class="op">(</span><span class="dt">uint8_t</span> <span class="op">*</span>bytes<span class="op">,</span> <span class="dt">const</span> <span class="dt">uint32_t</span> len<span class="op">);</span></span></code></pre></div>
+<div id="函数原型-34" class="section level4 hasAnchor" number="6.8.1.1">
+<h4><span class="header-section-number">6.8.1.1</span> 函数原型<a href="api-ref.html#函数原型-34" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb103"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb103-1"><a href="api-ref.html#cb103-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span>  platform_hrng<span class="op">(</span><span class="dt">uint8_t</span> <span class="op">*</span>bytes<span class="op">,</span> <span class="dt">const</span> <span class="dt">uint32_t</span> len<span class="op">);</span></span></code></pre></div>
 </div>
-<div id="参数-33" class="section level4 hasAnchor" number="6.8.1.2">
-<h4><span class="header-section-number">6.8.1.2</span> 参数<a href="api-ref.html#参数-33" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="参数-34" class="section level4 hasAnchor" number="6.8.1.2">
+<h4><span class="header-section-number">6.8.1.2</span> 参数<a href="api-ref.html#参数-34" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <ul>
 <li><p><code>uint8_t *bytes</code></p>
 <p>随机数据输出。</p></li>
@@ -1595,94 +1673,94 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>要生成的随机字节数。</p></li>
 </ul>
 </div>
-<div id="返回值-33" class="section level4 hasAnchor" number="6.8.1.3">
-<h4><span class="header-section-number">6.8.1.3</span> 返回值<a href="api-ref.html#返回值-33" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="返回值-34" class="section level4 hasAnchor" number="6.8.1.3">
+<h4><span class="header-section-number">6.8.1.3</span> 返回值<a href="api-ref.html#返回值-34" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>无。</p>
 </div>
-<div id="备注-25" class="section level4 hasAnchor" number="6.8.1.4">
-<h4><span class="header-section-number">6.8.1.4</span> 备注<a href="api-ref.html#备注-25" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="备注-26" class="section level4 hasAnchor" number="6.8.1.4">
+<h4><span class="header-section-number">6.8.1.4</span> 备注<a href="api-ref.html#备注-26" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>生成固定长度数据所需的时间是不确定的。</p>
 </div>
 <div id="示例-17" class="section level4 hasAnchor" number="6.8.1.5">
 <h4><span class="header-section-number">6.8.1.5</span> 示例<a href="api-ref.html#示例-17" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb101"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb101-1"><a href="api-ref.html#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> strong_random<span class="op">;</span></span>
-<span id="cb101-2"><a href="api-ref.html#cb101-2" aria-hidden="true" tabindex="-1"></a>platform_hrng<span class="op">(&amp;</span>strong_random<span class="op">,</span> <span class="kw">sizeof</span><span class="op">(</span>strong_random<span class="op">));</span></span></code></pre></div>
+<div class="sourceCode" id="cb104"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb104-1"><a href="api-ref.html#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> strong_random<span class="op">;</span></span>
+<span id="cb104-2"><a href="api-ref.html#cb104-2" aria-hidden="true" tabindex="-1"></a>platform_hrng<span class="op">(&amp;</span>strong_random<span class="op">,</span> <span class="kw">sizeof</span><span class="op">(</span>strong_random<span class="op">));</span></span></code></pre></div>
 </div>
 </div>
 <div id="platform_rand" class="section level3 hasAnchor" number="6.8.2">
 <h3><span class="header-section-number">6.8.2</span> <code>platform_rand</code><a href="api-ref.html#platform_rand" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>通过内部伪随机数生成器（PRNG）生成一个伪随机整数。</p>
-<div id="函数原型-34" class="section level4 hasAnchor" number="6.8.2.1">
-<h4><span class="header-section-number">6.8.2.1</span> 函数原型<a href="api-ref.html#函数原型-34" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb102"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb102-1"><a href="api-ref.html#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> platform_rand<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<div id="函数原型-35" class="section level4 hasAnchor" number="6.8.2.1">
+<h4><span class="header-section-number">6.8.2.1</span> 函数原型<a href="api-ref.html#函数原型-35" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb105"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb105-1"><a href="api-ref.html#cb105-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> platform_rand<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
 </div>
-<div id="参数-34" class="section level4 hasAnchor" number="6.8.2.2">
-<h4><span class="header-section-number">6.8.2.2</span> 参数<a href="api-ref.html#参数-34" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="参数-35" class="section level4 hasAnchor" number="6.8.2.2">
+<h4><span class="header-section-number">6.8.2.2</span> 参数<a href="api-ref.html#参数-35" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>无。</p>
 </div>
-<div id="返回值-34" class="section level4 hasAnchor" number="6.8.2.3">
-<h4><span class="header-section-number">6.8.2.3</span> 返回值<a href="api-ref.html#返回值-34" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="返回值-35" class="section level4 hasAnchor" number="6.8.2.3">
+<h4><span class="header-section-number">6.8.2.3</span> 返回值<a href="api-ref.html#返回值-35" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>返回一个范围在 0 到 RAND_MAX 之间的伪随机整数。</p>
 </div>
-<div id="备注-26" class="section level4 hasAnchor" number="6.8.2.4">
-<h4><span class="header-section-number">6.8.2.4</span> 备注<a href="api-ref.html#备注-26" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="备注-27" class="section level4 hasAnchor" number="6.8.2.4">
+<h4><span class="header-section-number">6.8.2.4</span> 备注<a href="api-ref.html#备注-27" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>内部 PRNG 的种子在启动时由硬件随机数生成器（HRNG）初始化。此函数可用作标准库中 <code>rand()</code> 函数的替代。</p>
 </div>
 <div id="示例-18" class="section level4 hasAnchor" number="6.8.2.5">
 <h4><span class="header-section-number">6.8.2.5</span> 示例<a href="api-ref.html#示例-18" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb103"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb103-1"><a href="api-ref.html#cb103-1" aria-hidden="true" tabindex="-1"></a>printf<span class="op">(</span><span class="st">&quot;rand: %d</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> platform_rand<span class="op">());</span></span></code></pre></div>
+<div class="sourceCode" id="cb106"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb106-1"><a href="api-ref.html#cb106-1" aria-hidden="true" tabindex="-1"></a>printf<span class="op">(</span><span class="st">&quot;rand: %d</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> platform_rand<span class="op">());</span></span></code></pre></div>
 </div>
 </div>
 <div id="platform_read_persistent_reg" class="section level3 hasAnchor" number="6.8.3">
 <h3><span class="header-section-number">6.8.3</span> <code>platform_read_persistent_reg</code><a href="api-ref.html#platform_read_persistent_reg" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>从持久寄存器中读取值。另请参阅
 <a href="api-ref.html#platform_write_persistent_reg"><code>platform_write_persistent_reg</code></a>。</p>
-<div id="函数原型-35" class="section level4 hasAnchor" number="6.8.3.1">
-<h4><span class="header-section-number">6.8.3.1</span> 函数原型<a href="api-ref.html#函数原型-35" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb104"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb104-1"><a href="api-ref.html#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> platform_read_persistent_reg<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<div id="函数原型-36" class="section level4 hasAnchor" number="6.8.3.1">
+<h4><span class="header-section-number">6.8.3.1</span> 函数原型<a href="api-ref.html#函数原型-36" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb107"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb107-1"><a href="api-ref.html#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> platform_read_persistent_reg<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
 </div>
-<div id="参数-35" class="section level4 hasAnchor" number="6.8.3.2">
-<h4><span class="header-section-number">6.8.3.2</span> 参数<a href="api-ref.html#参数-35" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="参数-36" class="section level4 hasAnchor" number="6.8.3.2">
+<h4><span class="header-section-number">6.8.3.2</span> 参数<a href="api-ref.html#参数-36" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>无。</p>
 </div>
-<div id="返回值-35" class="section level4 hasAnchor" number="6.8.3.3">
-<h4><span class="header-section-number">6.8.3.3</span> 返回值<a href="api-ref.html#返回值-35" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="返回值-36" class="section level4 hasAnchor" number="6.8.3.3">
+<h4><span class="header-section-number">6.8.3.3</span> 返回值<a href="api-ref.html#返回值-36" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>由
 <a href="api-ref.html#platform_write_persistent_reg"><code>platform_write_persistent_reg</code></a>
 写入的值。</p>
 </div>
-<div id="备注-27" class="section level4 hasAnchor" number="6.8.3.4">
-<h4><span class="header-section-number">6.8.3.4</span> 备注<a href="api-ref.html#备注-27" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="备注-28" class="section level4 hasAnchor" number="6.8.3.4">
+<h4><span class="header-section-number">6.8.3.4</span> 备注<a href="api-ref.html#备注-28" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>无。</p>
 </div>
 <div id="示例-19" class="section level4 hasAnchor" number="6.8.3.5">
 <h4><span class="header-section-number">6.8.3.5</span> 示例<a href="api-ref.html#示例-19" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb105"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb105-1"><a href="api-ref.html#cb105-1" aria-hidden="true" tabindex="-1"></a>platform_read_persistent_reg<span class="op">();</span></span></code></pre></div>
+<div class="sourceCode" id="cb108"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb108-1"><a href="api-ref.html#cb108-1" aria-hidden="true" tabindex="-1"></a>platform_read_persistent_reg<span class="op">();</span></span></code></pre></div>
 </div>
 </div>
 <div id="platform_reset" class="section level3 hasAnchor" number="6.8.4">
 <h3><span class="header-section-number">6.8.4</span> <code>platform_reset</code><a href="api-ref.html#platform_reset" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>重置 platform（SoC）。</p>
-<div id="函数原型-36" class="section level4 hasAnchor" number="6.8.4.1">
-<h4><span class="header-section-number">6.8.4.1</span> 函数原型<a href="api-ref.html#函数原型-36" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb106"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb106-1"><a href="api-ref.html#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_reset<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<div id="函数原型-37" class="section level4 hasAnchor" number="6.8.4.1">
+<h4><span class="header-section-number">6.8.4.1</span> 函数原型<a href="api-ref.html#函数原型-37" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb109"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb109-1"><a href="api-ref.html#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_reset<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
 </div>
-<div id="参数-36" class="section level4 hasAnchor" number="6.8.4.2">
-<h4><span class="header-section-number">6.8.4.2</span> 参数<a href="api-ref.html#参数-36" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="参数-37" class="section level4 hasAnchor" number="6.8.4.2">
+<h4><span class="header-section-number">6.8.4.2</span> 参数<a href="api-ref.html#参数-37" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>无。</p>
 </div>
-<div id="返回值-36" class="section level4 hasAnchor" number="6.8.4.3">
-<h4><span class="header-section-number">6.8.4.3</span> 返回值<a href="api-ref.html#返回值-36" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="返回值-37" class="section level4 hasAnchor" number="6.8.4.3">
+<h4><span class="header-section-number">6.8.4.3</span> 返回值<a href="api-ref.html#返回值-37" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>无。</p>
 </div>
-<div id="备注-28" class="section level4 hasAnchor" number="6.8.4.4">
-<h4><span class="header-section-number">6.8.4.4</span> 备注<a href="api-ref.html#备注-28" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="备注-29" class="section level4 hasAnchor" number="6.8.4.4">
+<h4><span class="header-section-number">6.8.4.4</span> 备注<a href="api-ref.html#备注-29" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>调用此函数后，其后的代码将不会被执行。</p>
 </div>
 <div id="示例-20" class="section level4 hasAnchor" number="6.8.4.5">
 <h4><span class="header-section-number">6.8.4.5</span> 示例<a href="api-ref.html#示例-20" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb107"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb107-1"><a href="api-ref.html#cb107-1" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>内存不足<span class="op">)</span></span>
-<span id="cb107-2"><a href="api-ref.html#cb107-2" aria-hidden="true" tabindex="-1"></a>    platform_reset<span class="op">();</span></span></code></pre></div>
+<div class="sourceCode" id="cb110"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb110-1"><a href="api-ref.html#cb110-1" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>内存不足<span class="op">)</span></span>
+<span id="cb110-2"><a href="api-ref.html#cb110-2" aria-hidden="true" tabindex="-1"></a>    platform_reset<span class="op">();</span></span></code></pre></div>
 </div>
 </div>
 <div id="platform_shutdown" class="section level3 hasAnchor" number="6.8.5">
@@ -1694,14 +1772,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>输入参数不正确；</li>
 <li>内部组件繁忙。</li>
 </ol>
-<div id="函数原型-37" class="section level4 hasAnchor" number="6.8.5.1">
-<h4><span class="header-section-number">6.8.5.1</span> 函数原型<a href="api-ref.html#函数原型-37" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb108"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb108-1"><a href="api-ref.html#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_shutdown<span class="op">(</span><span class="dt">const</span> <span class="dt">uint32_t</span> duration_cycles<span class="op">,</span></span>
-<span id="cb108-2"><a href="api-ref.html#cb108-2" aria-hidden="true" tabindex="-1"></a>                       <span class="dt">const</span> <span class="dt">void</span> <span class="op">*</span>p_retention_data<span class="op">,</span></span>
-<span id="cb108-3"><a href="api-ref.html#cb108-3" aria-hidden="true" tabindex="-1"></a>                       <span class="dt">const</span> <span class="dt">uint32_t</span> data_size<span class="op">);</span></span></code></pre></div>
+<div id="函数原型-38" class="section level4 hasAnchor" number="6.8.5.1">
+<h4><span class="header-section-number">6.8.5.1</span> 函数原型<a href="api-ref.html#函数原型-38" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb111"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb111-1"><a href="api-ref.html#cb111-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_shutdown<span class="op">(</span><span class="dt">const</span> <span class="dt">uint32_t</span> duration_cycles<span class="op">,</span></span>
+<span id="cb111-2"><a href="api-ref.html#cb111-2" aria-hidden="true" tabindex="-1"></a>                       <span class="dt">const</span> <span class="dt">void</span> <span class="op">*</span>p_retention_data<span class="op">,</span></span>
+<span id="cb111-3"><a href="api-ref.html#cb111-3" aria-hidden="true" tabindex="-1"></a>                       <span class="dt">const</span> <span class="dt">uint32_t</span> data_size<span class="op">);</span></span></code></pre></div>
 </div>
-<div id="参数-37" class="section level4 hasAnchor" number="6.8.5.2">
-<h4><span class="header-section-number">6.8.5.2</span> 参数<a href="api-ref.html#参数-37" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="参数-38" class="section level4 hasAnchor" number="6.8.5.2">
+<h4><span class="header-section-number">6.8.5.2</span> 参数<a href="api-ref.html#参数-38" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <ul>
 <li><p><code>const uint32_t duration_cycles</code></p>
 <p>重新上电（重启）前的等待时间（以实时时钟周期为单位）。最短持续时间为 825 个周期（约25.18毫秒）。如果使用 <code>0</code>，系统将保持在关机状态，直到外部唤醒信号被发出。</p></li>
@@ -1711,18 +1789,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>要保留的数据的大小。当不需要保留内存时，设置为 <code>0</code>。</p></li>
 </ul>
 </div>
-<div id="返回值-37" class="section level4 hasAnchor" number="6.8.5.3">
-<h4><span class="header-section-number">6.8.5.3</span> 返回值<a href="api-ref.html#返回值-37" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="返回值-38" class="section level4 hasAnchor" number="6.8.5.3">
+<h4><span class="header-section-number">6.8.5.3</span> 返回值<a href="api-ref.html#返回值-38" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>无。</p>
 </div>
-<div id="备注-29" class="section level4 hasAnchor" number="6.8.5.4">
-<h4><span class="header-section-number">6.8.5.4</span> 备注<a href="api-ref.html#备注-29" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="备注-30" class="section level4 hasAnchor" number="6.8.5.4">
+<h4><span class="header-section-number">6.8.5.4</span> 备注<a href="api-ref.html#备注-30" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>无。</p>
 </div>
 <div id="示例-21" class="section level4 hasAnchor" number="6.8.5.5">
 <h4><span class="header-section-number">6.8.5.5</span> 示例<a href="api-ref.html#示例-21" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb109"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb109-1"><a href="api-ref.html#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 关闭系统并在 1 秒后重启</span></span>
-<span id="cb109-2"><a href="api-ref.html#cb109-2" aria-hidden="true" tabindex="-1"></a>platform_shutdown<span class="op">(</span><span class="dv">32768</span><span class="op">,</span> NULL<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb112"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb112-1"><a href="api-ref.html#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 关闭系统并在 1 秒后重启</span></span>
+<span id="cb112-2"><a href="api-ref.html#cb112-2" aria-hidden="true" tabindex="-1"></a>platform_shutdown<span class="op">(</span><span class="dv">32768</span><span class="op">,</span> NULL<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span></code></pre></div>
 </div>
 </div>
 <div id="platform_write_persistent_reg" class="section level3 hasAnchor" number="6.8.6">
@@ -1748,28 +1826,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tr>
 </tbody>
 </table>
-<div id="函数原型-38" class="section level4 hasAnchor" number="6.8.6.1">
-<h4><span class="header-section-number">6.8.6.1</span> 函数原型<a href="api-ref.html#函数原型-38" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb110"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb110-1"><a href="api-ref.html#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_write_persistent_reg<span class="op">(</span><span class="dt">const</span> <span class="dt">uint8_t</span> value<span class="op">);</span></span></code></pre></div>
+<div id="函数原型-39" class="section level4 hasAnchor" number="6.8.6.1">
+<h4><span class="header-section-number">6.8.6.1</span> 函数原型<a href="api-ref.html#函数原型-39" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb113"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb113-1"><a href="api-ref.html#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_write_persistent_reg<span class="op">(</span><span class="dt">const</span> <span class="dt">uint8_t</span> value<span class="op">);</span></span></code></pre></div>
 </div>
-<div id="参数-38" class="section level4 hasAnchor" number="6.8.6.2">
-<h4><span class="header-section-number">6.8.6.2</span> 参数<a href="api-ref.html#参数-38" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="参数-39" class="section level4 hasAnchor" number="6.8.6.2">
+<h4><span class="header-section-number">6.8.6.2</span> 参数<a href="api-ref.html#参数-39" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <ul>
 <li><p><code>const uint8_t value</code></p>
 <p>要写入的值。</p></li>
 </ul>
 </div>
-<div id="返回值-38" class="section level4 hasAnchor" number="6.8.6.3">
-<h4><span class="header-section-number">6.8.6.3</span> 返回值<a href="api-ref.html#返回值-38" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="返回值-39" class="section level4 hasAnchor" number="6.8.6.3">
+<h4><span class="header-section-number">6.8.6.3</span> 返回值<a href="api-ref.html#返回值-39" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>无。</p>
 </div>
-<div id="备注-30" class="section level4 hasAnchor" number="6.8.6.4">
-<h4><span class="header-section-number">6.8.6.4</span> 备注<a href="api-ref.html#备注-30" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="备注-31" class="section level4 hasAnchor" number="6.8.6.4">
+<h4><span class="header-section-number">6.8.6.4</span> 备注<a href="api-ref.html#备注-31" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>无。</p>
 </div>
 <div id="示例-22" class="section level4 hasAnchor" number="6.8.6.5">
 <h4><span class="header-section-number">6.8.6.5</span> 示例<a href="api-ref.html#示例-22" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb111"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb111-1"><a href="api-ref.html#cb111-1" aria-hidden="true" tabindex="-1"></a>platform_write_persistent_reg<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb114"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb114-1"><a href="api-ref.html#cb114-1" aria-hidden="true" tabindex="-1"></a>platform_write_persistent_reg<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span></code></pre></div>
 </div>
 </div>
 </div>
@@ -1780,10 +1858,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>存储在 platform 二进制文件中的 <code>printf</code> 函数。</p>
 <div id="原型-1" class="section level4 hasAnchor" number="6.9.1.1">
 <h4><span class="header-section-number">6.9.1.1</span> 原型<a href="api-ref.html#原型-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb112"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb112-1"><a href="api-ref.html#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span>  platform_printf<span class="op">(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>format<span class="op">,</span> <span class="op">...);</span></span></code></pre></div>
+<div class="sourceCode" id="cb115"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb115-1"><a href="api-ref.html#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span>  platform_printf<span class="op">(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>format<span class="op">,</span> <span class="op">...);</span></span></code></pre></div>
 </div>
-<div id="参数-39" class="section level4 hasAnchor" number="6.9.1.2">
-<h4><span class="header-section-number">6.9.1.2</span> 参数<a href="api-ref.html#参数-39" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="参数-40" class="section level4 hasAnchor" number="6.9.1.2">
+<h4><span class="header-section-number">6.9.1.2</span> 参数<a href="api-ref.html#参数-40" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <ul>
 <li><p><code>const char *format</code></p>
 <p>格式化字符串。</p></li>
@@ -1791,12 +1869,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>格式化字符串的可变参数。</p></li>
 </ul>
 </div>
-<div id="返回值-39" class="section level4 hasAnchor" number="6.9.1.3">
-<h4><span class="header-section-number">6.9.1.3</span> 返回值<a href="api-ref.html#返回值-39" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="返回值-40" class="section level4 hasAnchor" number="6.9.1.3">
+<h4><span class="header-section-number">6.9.1.3</span> 返回值<a href="api-ref.html#返回值-40" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>无。</p>
 </div>
-<div id="备注-31" class="section level4 hasAnchor" number="6.9.1.4">
-<h4><span class="header-section-number">6.9.1.4</span> 备注<a href="api-ref.html#备注-31" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="备注-32" class="section level4 hasAnchor" number="6.9.1.4">
+<h4><span class="header-section-number">6.9.1.4</span> 备注<a href="api-ref.html#备注-32" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>使用此函数有利有弊。</p>
 <p>优点：</p>
 <ul>
@@ -1809,18 +1887,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="示例-23" class="section level4 hasAnchor" number="6.9.1.5">
 <h4><span class="header-section-number">6.9.1.5</span> 示例<a href="api-ref.html#示例-23" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb113"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb113-1"><a href="api-ref.html#cb113-1" aria-hidden="true" tabindex="-1"></a>platform_printf<span class="op">(</span><span class="st">&quot;Hello world&quot;</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb116"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb116-1"><a href="api-ref.html#cb116-1" aria-hidden="true" tabindex="-1"></a>platform_printf<span class="op">(</span><span class="st">&quot;Hello world&quot;</span><span class="op">);</span></span></code></pre></div>
 </div>
 </div>
 <div id="platform_raise_assertion" class="section level3 hasAnchor" number="6.9.2">
 <h3><span class="header-section-number">6.9.2</span> <code>platform_raise_assertion</code><a href="api-ref.html#platform_raise_assertion" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>触发软件断言。</p>
-<div id="函数原型-39" class="section level4 hasAnchor" number="6.9.2.1">
-<h4><span class="header-section-number">6.9.2.1</span> 函数原型<a href="api-ref.html#函数原型-39" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb114"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb114-1"><a href="api-ref.html#cb114-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span>  platform_raise_assertion<span class="op">(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>file_name<span class="op">,</span> <span class="dt">int</span> line_no<span class="op">);</span></span></code></pre></div>
+<div id="函数原型-40" class="section level4 hasAnchor" number="6.9.2.1">
+<h4><span class="header-section-number">6.9.2.1</span> 函数原型<a href="api-ref.html#函数原型-40" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb117"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb117-1"><a href="api-ref.html#cb117-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span>  platform_raise_assertion<span class="op">(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>file_name<span class="op">,</span> <span class="dt">int</span> line_no<span class="op">);</span></span></code></pre></div>
 </div>
-<div id="参数-40" class="section level4 hasAnchor" number="6.9.2.2">
-<h4><span class="header-section-number">6.9.2.2</span> 参数<a href="api-ref.html#参数-40" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="参数-41" class="section level4 hasAnchor" number="6.9.2.2">
+<h4><span class="header-section-number">6.9.2.2</span> 参数<a href="api-ref.html#参数-41" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <ul>
 <li><p><code>const char *file_name</code></p>
 <p>断言发生的文件名。</p></li>
@@ -1828,31 +1906,31 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>断言发生的行号。</p></li>
 </ul>
 </div>
-<div id="返回值-40" class="section level4 hasAnchor" number="6.9.2.3">
-<h4><span class="header-section-number">6.9.2.3</span> 返回值<a href="api-ref.html#返回值-40" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="返回值-41" class="section level4 hasAnchor" number="6.9.2.3">
+<h4><span class="header-section-number">6.9.2.3</span> 返回值<a href="api-ref.html#返回值-41" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>无。</p>
 </div>
-<div id="备注-32" class="section level4 hasAnchor" number="6.9.2.4">
-<h4><span class="header-section-number">6.9.2.4</span> 备注<a href="api-ref.html#备注-32" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="备注-33" class="section level4 hasAnchor" number="6.9.2.4">
+<h4><span class="header-section-number">6.9.2.4</span> 备注<a href="api-ref.html#备注-33" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>无。</p>
 </div>
 <div id="示例-24" class="section level4 hasAnchor" number="6.9.2.5">
 <h4><span class="header-section-number">6.9.2.5</span> 示例<a href="api-ref.html#示例-24" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb115"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb115-1"><a href="api-ref.html#cb115-1" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>NULL <span class="op">==</span> ptr<span class="op">)</span></span>
-<span id="cb115-2"><a href="api-ref.html#cb115-2" aria-hidden="true" tabindex="-1"></a>    platform_raise_assertion<span class="op">(</span>__FILE__<span class="op">,</span> __LINE__<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb118"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb118-1"><a href="api-ref.html#cb118-1" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>NULL <span class="op">==</span> ptr<span class="op">)</span></span>
+<span id="cb118-2"><a href="api-ref.html#cb118-2" aria-hidden="true" tabindex="-1"></a>    platform_raise_assertion<span class="op">(</span>__FILE__<span class="op">,</span> __LINE__<span class="op">);</span></span></code></pre></div>
 </div>
 </div>
 <div id="platform_trace_raw" class="section level3 hasAnchor" number="6.9.3">
 <h3><span class="header-section-number">6.9.3</span> <code>platform_trace_raw</code><a href="api-ref.html#platform_trace_raw" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>将一块原始数据输出到 TRACE。ID为 <code>PLATFORM_TRACE_ID_RAW</code>。</p>
-<div id="函数原型-40" class="section level4 hasAnchor" number="6.9.3.1">
-<h4><span class="header-section-number">6.9.3.1</span> 函数原型<a href="api-ref.html#函数原型-40" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb116"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb116-1"><a href="api-ref.html#cb116-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_trace_raw<span class="op">(</span></span>
-<span id="cb116-2"><a href="api-ref.html#cb116-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">void</span> <span class="op">*</span>buffer<span class="op">,</span></span>
-<span id="cb116-3"><a href="api-ref.html#cb116-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">int</span> byte_len<span class="op">);</span></span></code></pre></div>
+<div id="函数原型-41" class="section level4 hasAnchor" number="6.9.3.1">
+<h4><span class="header-section-number">6.9.3.1</span> 函数原型<a href="api-ref.html#函数原型-41" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb119"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb119-1"><a href="api-ref.html#cb119-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> platform_trace_raw<span class="op">(</span></span>
+<span id="cb119-2"><a href="api-ref.html#cb119-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">void</span> <span class="op">*</span>buffer<span class="op">,</span></span>
+<span id="cb119-3"><a href="api-ref.html#cb119-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">int</span> byte_len<span class="op">);</span></span></code></pre></div>
 </div>
-<div id="参数-41" class="section level4 hasAnchor" number="6.9.3.2">
-<h4><span class="header-section-number">6.9.3.2</span> 参数<a href="api-ref.html#参数-41" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="参数-42" class="section level4 hasAnchor" number="6.9.3.2">
+<h4><span class="header-section-number">6.9.3.2</span> 参数<a href="api-ref.html#参数-42" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <ul>
 <li><p><code>const void *buffer</code></p>
 <p>缓冲区的指针。</p></li>
@@ -1867,21 +1945,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="platform_get_link_layer_interf" class="section level3 hasAnchor" number="6.10.1">
 <h3><span class="header-section-number">6.10.1</span> <code>platform_get_link_layer_interf</code><a href="api-ref.html#platform_get_link_layer_interf" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>获取链路层驱动 API。</p>
-<div id="函数原型-41" class="section level4 hasAnchor" number="6.10.1.1">
-<h4><span class="header-section-number">6.10.1.1</span> 函数原型<a href="api-ref.html#函数原型-41" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb117"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb117-1"><a href="api-ref.html#cb117-1" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> platform_hci_link_layer_interf_t <span class="op">*</span></span>
-<span id="cb117-2"><a href="api-ref.html#cb117-2" aria-hidden="true" tabindex="-1"></a>    platform_get_link_layer_interf<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<div id="函数原型-42" class="section level4 hasAnchor" number="6.10.1.1">
+<h4><span class="header-section-number">6.10.1.1</span> 函数原型<a href="api-ref.html#函数原型-42" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb120"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb120-1"><a href="api-ref.html#cb120-1" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> platform_hci_link_layer_interf_t <span class="op">*</span></span>
+<span id="cb120-2"><a href="api-ref.html#cb120-2" aria-hidden="true" tabindex="-1"></a>    platform_get_link_layer_interf<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
 </div>
-<div id="参数-42" class="section level4 hasAnchor" number="6.10.1.2">
-<h4><span class="header-section-number">6.10.1.2</span> 参数<a href="api-ref.html#参数-42" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="参数-43" class="section level4 hasAnchor" number="6.10.1.2">
+<h4><span class="header-section-number">6.10.1.2</span> 参数<a href="api-ref.html#参数-43" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>无。</p>
 </div>
-<div id="返回值-41" class="section level4 hasAnchor" number="6.10.1.3">
-<h4><span class="header-section-number">6.10.1.3</span> 返回值<a href="api-ref.html#返回值-41" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="返回值-42" class="section level4 hasAnchor" number="6.10.1.3">
+<h4><span class="header-section-number">6.10.1.3</span> 返回值<a href="api-ref.html#返回值-42" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>返回驱动接口 <code>platform_hci_link_layer_interf_t *</code>。</p>
 </div>
-<div id="备注-33" class="section level4 hasAnchor" number="6.10.1.4">
-<h4><span class="header-section-number">6.10.1.4</span> 备注<a href="api-ref.html#备注-33" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="备注-34" class="section level4 hasAnchor" number="6.10.1.4">
+<h4><span class="header-section-number">6.10.1.4</span> 备注<a href="api-ref.html#备注-34" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>此API暴露了控制器HCI接口。该驱动接口仅在定义了 <code>PLATFORM_CB_EVT_HCI_RECV</code> 时可用，此时内置的主机功能将被禁用。</p>
 </div>
 </div>
@@ -1893,30 +1971,30 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="rmdcaution">
 <em>INGCHIPS</em> 91x <strong>没有</strong>公共地址。此函数应<strong>仅</strong>用于调试或测试，<strong>切勿</strong>在最终产品中使用。
 </div>
-<div id="函数原型-42" class="section level4 hasAnchor" number="6.10.2.1">
-<h4><span class="header-section-number">6.10.2.1</span> 函数原型<a href="api-ref.html#函数原型-42" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb118"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb118-1"><a href="api-ref.html#cb118-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sysSetPublicDeviceAddr<span class="op">(</span><span class="dt">const</span> <span class="dt">unsigned</span> <span class="dt">char</span> <span class="op">*</span>addr<span class="op">);</span></span></code></pre></div>
+<div id="函数原型-43" class="section level4 hasAnchor" number="6.10.2.1">
+<h4><span class="header-section-number">6.10.2.1</span> 函数原型<a href="api-ref.html#函数原型-43" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb121"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb121-1"><a href="api-ref.html#cb121-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sysSetPublicDeviceAddr<span class="op">(</span><span class="dt">const</span> <span class="dt">unsigned</span> <span class="dt">char</span> <span class="op">*</span>addr<span class="op">);</span></span></code></pre></div>
 </div>
-<div id="参数-43" class="section level4 hasAnchor" number="6.10.2.2">
-<h4><span class="header-section-number">6.10.2.2</span> 参数<a href="api-ref.html#参数-43" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="参数-44" class="section level4 hasAnchor" number="6.10.2.2">
+<h4><span class="header-section-number">6.10.2.2</span> 参数<a href="api-ref.html#参数-44" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <ul>
 <li><p><code>const unsigned char *addr</code></p>
 <p>新的公共地址。</p></li>
 </ul>
 </div>
-<div id="返回值-42" class="section level4 hasAnchor" number="6.10.2.3">
-<h4><span class="header-section-number">6.10.2.3</span> 返回值<a href="api-ref.html#返回值-42" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="返回值-43" class="section level4 hasAnchor" number="6.10.2.3">
+<h4><span class="header-section-number">6.10.2.3</span> 返回值<a href="api-ref.html#返回值-43" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>无。</p>
 </div>
-<div id="备注-34" class="section level4 hasAnchor" number="6.10.2.4">
-<h4><span class="header-section-number">6.10.2.4</span> 备注<a href="api-ref.html#备注-34" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="备注-35" class="section level4 hasAnchor" number="6.10.2.4">
+<h4><span class="header-section-number">6.10.2.4</span> 备注<a href="api-ref.html#备注-35" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>为了避免潜在问题，应在调用任何 GAP 函数之前调用此函数。
 建议在 <code>app_main</code> 或 <code>PLATFORM_CB_EVT_PROFILE_INIT</code> 事件回调函数中调用此函数。</p>
 </div>
 <div id="示例-25" class="section level4 hasAnchor" number="6.10.2.5">
 <h4><span class="header-section-number">6.10.2.5</span> 示例<a href="api-ref.html#示例-25" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb119"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb119-1"><a href="api-ref.html#cb119-1" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> <span class="dt">unsigned</span> <span class="dt">char</span> pub_addr<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span><span class="dv">1</span><span class="op">,</span><span class="dv">2</span><span class="op">,</span><span class="dv">3</span><span class="op">,</span><span class="dv">4</span><span class="op">,</span><span class="dv">5</span><span class="op">,</span><span class="dv">6</span><span class="op">};</span></span>
-<span id="cb119-2"><a href="api-ref.html#cb119-2" aria-hidden="true" tabindex="-1"></a>sysSetPublicDeviceAddr<span class="op">(</span>pub_addr<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb122"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb122-1"><a href="api-ref.html#cb122-1" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> <span class="dt">unsigned</span> <span class="dt">char</span> pub_addr<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span><span class="dv">1</span><span class="op">,</span><span class="dv">2</span><span class="op">,</span><span class="dv">3</span><span class="op">,</span><span class="dv">4</span><span class="op">,</span><span class="dv">5</span><span class="op">,</span><span class="dv">6</span><span class="op">};</span></span>
+<span id="cb122-2"><a href="api-ref.html#cb122-2" aria-hidden="true" tabindex="-1"></a>sysSetPublicDeviceAddr<span class="op">(</span>pub_addr<span class="op">);</span></span></code></pre></div>
 
 </div>
 </div>

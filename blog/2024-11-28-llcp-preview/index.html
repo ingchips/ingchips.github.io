@@ -361,7 +361,9 @@
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h2 id="特殊用法">特殊用法</h2>
+<h2 id="其它用法">其它用法</h2>
+
+<h3 id="修改公司-id">修改公司 ID</h3>
 
 <p>目前 SDK 未提供设置公司 ID 的接口，暂时可以通过直接修改 <code class="language-plaintext highlighter-rouge">LLCP_VERSION_IND</code> 内容的方法修改公司 ID（修改这个值不影响 Controller 的行为和流程。）
 在下面的代码里，公司 ID 被修改为 <code class="language-plaintext highlighter-rouge">0xABCD</code>，小版本号被修改为 <code class="language-plaintext highlighter-rouge">0x1234</code>。</p>
@@ -394,6 +396,55 @@
                 <span class="n">llcp_version_ind_t</span> <span class="o">*</span><span class="n">ver_ind</span> <span class="o">=</span> <span class="p">(</span><span class="n">llcp_version_ind_t</span> <span class="o">*</span><span class="p">)(</span><span class="n">ctrl_data</span><span class="p">);</span>
                 <span class="n">ver_ind</span><span class="o">-&gt;</span><span class="n">company_id</span> <span class="o">=</span> <span class="mh">0xABCD</span><span class="p">;</span>
                 <span class="n">ver_ind</span><span class="o">-&gt;</span><span class="n">subversion</span> <span class="o">=</span> <span class="mh">0x1234</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="c1">// ...</span>
+
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="监控连接事件">监控连接事件</h3>
+
+<p>下面的 Trace 回调函数 <code class="language-plaintext highlighter-rouge">cb_trace_connect_event</code> 演示了连接事件的判断，在每个连接结束时调用回调函数 <code class="language-plaintext highlighter-rouge">on_connection_event_end</code>。
+注意这里 <code class="language-plaintext highlighter-rouge">header_t</code> 与上面不同。</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">static</span> <span class="kt">void</span> <span class="nf">on_connection_event_end</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">is_slave</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">handle</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">platform_printf</span><span class="p">(</span><span class="s">"end:%d,%d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">is_slave</span><span class="p">,</span> <span class="n">handle</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">uint32_t</span> <span class="nf">cb_trace_connect_event</span><span class="p">(</span><span class="k">const</span> <span class="n">platform_evt_trace_t</span> <span class="o">*</span><span class="n">trace</span><span class="p">,</span> <span class="n">trace_rtt_t</span> <span class="o">*</span><span class="n">ctx</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="cp">#pragma pack (push, 1)
+</span>    <span class="k">typedef</span> <span class="k">struct</span>
+    <span class="p">{</span>
+        <span class="kt">uint32_t</span> <span class="n">A</span><span class="p">;</span>
+        <span class="kt">uint32_t</span> <span class="n">B</span><span class="p">;</span>
+        <span class="kt">uint8_t</span>  <span class="n">id</span><span class="p">;</span>
+    <span class="p">}</span> <span class="n">header_t</span><span class="p">;</span>
+
+    <span class="k">typedef</span> <span class="k">struct</span>
+    <span class="p">{</span>
+        <span class="kt">uint8_t</span> <span class="n">category</span><span class="p">;</span>
+        <span class="kt">uint8_t</span> <span class="n">param1</span><span class="p">,</span> <span class="n">param2</span><span class="p">;</span>
+    <span class="p">}</span> <span class="n">event_t</span><span class="p">;</span>
+<span class="cp">#pragma pack (pop)
+</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">trace</span><span class="o">-&gt;</span><span class="n">len1</span> <span class="o">==</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">header_t</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="k">const</span> <span class="n">header_t</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="k">const</span> <span class="n">header_t</span> <span class="o">*</span><span class="p">)</span><span class="n">trace</span><span class="o">-&gt;</span><span class="n">data1</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">id</span> <span class="o">==</span> <span class="n">PLATFORM_TRACE_ID_EVENT</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">trace</span><span class="o">-&gt;</span><span class="n">len2</span> <span class="o">==</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">event_t</span><span class="p">))</span>
+            <span class="p">{</span>
+                <span class="k">const</span> <span class="n">event_t</span> <span class="o">*</span><span class="n">e</span> <span class="o">=</span> <span class="p">(</span><span class="k">const</span> <span class="n">event_t</span> <span class="o">*</span><span class="p">)(</span><span class="n">trace</span><span class="o">-&gt;</span><span class="n">data2</span><span class="p">);</span>
+                <span class="k">if</span> <span class="p">((</span><span class="n">e</span><span class="o">-&gt;</span><span class="n">category</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="mi">2</span> <span class="o">&lt;=</span> <span class="n">e</span><span class="o">-&gt;</span><span class="n">param1</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">e</span><span class="o">-&gt;</span><span class="n">param1</span> <span class="o">&lt;=</span> <span class="mi">3</span><span class="p">))</span>
+                <span class="p">{</span>
+                    <span class="n">on_connection_event_end</span><span class="p">(</span><span class="n">e</span><span class="o">-&gt;</span><span class="n">param1</span> <span class="o">==</span> <span class="mi">3</span><span class="p">,</span> <span class="n">e</span><span class="o">-&gt;</span><span class="n">param2</span><span class="p">);</span>
+                <span class="p">}</span>
             <span class="p">}</span>
         <span class="p">}</span>
     <span class="p">}</span>
@@ -453,7 +504,7 @@
       <p class="site-info">
         
         
-        <span class="copyright">&copy; INGCHIPS 2021-2023. All rights reserved.</span>
+        <span class="copyright">&copy; INGCHIPS 2021-2025. All rights reserved.</span>
         
         
           

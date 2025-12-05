@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BLE Connection Stress Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        #logOutput::-webkit-scrollbar {
+            width: 8px; /* Width of the scrollbar */
+        }
+        #logOutput::-webkit-scrollbar-track {
+            background: transparent; /* Make track transparent by default */
+        }
+        #logOutput::-webkit-scrollbar-thumb {
+            background-color: transparent; /* Make thumb transparent by default */
+            border-radius: 4px;
+        }
+        /* Show scrollbar on hover */
+        #logOutput:hover::-webkit-scrollbar-thumb {
+            background-color: rgba(156, 163, 175, 0.5); /* gray-400 with 50% opacity */
+        }
+        #logOutput:hover::-webkit-scrollbar-track {
+            background: rgba(31, 41, 55, 0.3); /* gray-800 with 30% opacity */
+        }
+    
+        /* For Firefox (scrollbar-width and scrollbar-color) */
+        #logOutput {
+            scrollbar-width: thin; /* "auto" or "thin" */
+            scrollbar-color: transparent transparent; /* thumb track */
+        }
+        #logOutput:hover {
+            scrollbar-color: rgba(156, 163, 175, 0.5) rgba(31, 41, 55, 0.3); /* thumb track on hover */
+        }
+
+        .orange-exclamation {
+            color: #CC5500 !important; /* Darker orange for better contrast */
+            font-weight: bold !important;
+        }
+    </style></head>
+<body class="bg-gray-100 p-4">
+    <div id="app" class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 flex items-center justify-center">
+        BLE Connection Stress Test 
+        <span class="ml-2 text-orange-700 text-2xl cursor-help bg-yellow-200 rounded-full w-8 h-8 flex items-center justify-center orange-exclamation" 
+              title="A robust BLE system on your computer is essential for reliable device stress testing.">
+            !
+        </span>
+    </h1>
+
+        <!-- Customization Section -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Customization</h2>
+
+            <!-- Device Filter Sub-section -->
+            <div class="bg-gray-100 p-4 rounded-lg mb-4">
+                <h3 class="text-xl font-semibold mb-2">Device Filter</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="deviceName" class="block text-gray-700 text-sm font-bold mb-2">Device Name Filter (optional):</label>
+                        <input type="text" id="deviceName" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="e.g., MyBLEDevice" data-default="">
+                    </div>
+                    <div>
+                        <label for="serviceUuid" class="block text-gray-700 text-sm font-bold mb-2">Service UUID Filter (optional):</label>
+                        <input type="text" id="serviceUuid" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="e.g., 0000180F-0000-1000-8000-00805F9B34FB" data-default="">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="testInterval" class="block text-gray-700 text-sm font-bold mb-2">Interval between tests (ms):</label>
+                    <input type="number" id="testInterval" value="1000" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" data-default="1000">
+                </div>
+                <div>
+                    <label for="connectionDuration" class="block text-gray-700 text-sm font-bold mb-2">Connection maintained for (ms):</label>
+                    <input type="number" id="connectionDuration" value="3000" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" data-default="3000">
+                </div>
+                <div>
+                    <label for="connectionTimeout" class="block text-gray-700 text-sm font-bold mb-2">Connection timeout (ms):</label>
+                    <input type="number" id="connectionTimeout" value="10000" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" data-default="10000">
+                </div>
+                <div>
+                    <label for="testRounds" class="block text-gray-700 text-sm font-bold mb-2">Number of test rounds (0 for infinite):</label>
+                    <input type="number" id="testRounds" value="10" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" data-default="10">
+                </div>
+            </div>
+            <div class="mt-6 text-center">
+                <button id="startButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline">Select Device and Start</button>
+                <button id="stopButton" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline ml-4 hidden" disabled>Stop Test</button>
+                <button id="restoreDefaultsButton" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline ml-4">Restore Defaults</button>
+            </div>
+        </div>
+
+        <!-- Summary Panel -->
+        <div class="mb-8">
+            <div class="bg-gray-800 text-gray-100 p-6 rounded-lg flex items-center justify-between shadow-lg h-64">
+                <div>
+                    <h3 class="text-2xl font-bold mb-4 text-blue-400">Test Summary</h3>
+                    <div class="grid grid-cols-2 gap-y-2 gap-x-4 text-lg">
+                        <span class="font-semibold">Total Rounds:</span><span id="summaryTotalRounds" class="font-mono text-blue-300">0</span>
+                        <span class="font-semibold">Successful:</span><span id="summarySuccesses" class="font-mono text-green-400">0</span>
+                        <span class="font-semibold">Failed:</span><span id="summaryFailures" class="font-mono text-red-400">0</span>
+                        <span class="font-semibold">Status:</span><span id="summaryStatus" class="font-mono text-yellow-400">Idle</span>
+                    </div>
+                </div>
+                
+                <!-- Circular Progress Bar -->
+                <div id="circularProgressBarContainer" class="relative w-28 h-28 hidden">
+                    <svg class="w-full h-full" viewBox="0 0 100 100">
+                        <!-- Background circle for total rounds -->
+                        <circle class="text-gray-700 stroke-current" stroke-width="10" cx="50" cy="50" r="40" fill="transparent"></circle>
+                        <!-- Failed connections progress (red) -->
+                        <circle id="failedProgressBarCircle" class="text-red-500 stroke-current transition-all duration-500 ease-out" stroke-width="10" stroke-linecap="round" cx="50" cy="50" r="40" fill="transparent" stroke-dasharray="0 251.2" stroke-dashoffset="0" transform="rotate(-90 50 50)"></circle>
+                        <!-- Successful connections progress (green) - drawn on top of failed -->
+                        <circle id="successfulProgressBarCircle" class="text-green-500 stroke-current transition-all duration-500 ease-out" stroke-width="10" stroke-linecap="round" cx="50" cy="50" r="40" fill="transparent" stroke-dasharray="0 251.2" stroke-dashoffset="0" transform="rotate(-90 50 50)"></circle>
+                    </svg>
+                    <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center text-xl font-bold text-gray-100" id="progressPercentage">0%</div>
+                </div>
+            </div>
+        </div>
+
+
+            <div class="bg-gray-800 text-white p-4 rounded-lg h-64 overflow-auto mb-4 font-mono" id="logOutput">
+                <!-- Log messages will appear here -->
+                <p class="text-green-400">Application started. Ready to test.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>

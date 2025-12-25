@@ -527,7 +527,7 @@ Python 脚本 <a href="https://github.com/ingchips/ING918XX_SDK_SOURCE/blob/mast
 
 <p>通过 <code class="language-plaintext highlighter-rouge">-h</code> 参数获取脚本使用帮助：</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python ingchips_packs_addon.py -h
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python ingchips_packs_addon.py <span class="nt">-h</span>
 </code></pre></div></div>
 
 <h2 id="pyocd">pyOCD</h2>
@@ -536,17 +536,24 @@ Python 脚本 <a href="https://github.com/ingchips/ING918XX_SDK_SOURCE/blob/mast
 
 <h3 id="安装-pyocd">安装 pyOCD</h3>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pip install pyocd
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pip <span class="nb">install </span>pyocd
+</code></pre></div></div>
+
+<p>使用镜像源加速pyocd安装</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pip <span class="nb">install</span> <span class="nt">-i</span> https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple pyocd
 </code></pre></div></div>
 
 <h3 id="更新-pack-索引">更新 pack 索引</h3>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pyocd pack update
+<p><strong>注意必须先更新pack索引否则更新pack支持可能会失败</strong></p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pyocd pack update
 </code></pre></div></div>
 
 <h3 id="执行-python-脚本">执行 Python 脚本</h3>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python ingchips_packs_addon.py -t pyocd -tp "C:/Programs/ING_SDK"
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python ingchips_packs_addon.py <span class="nt">-t</span> pyocd <span class="nt">-tp</span> <span class="s2">"C:/Programs/ING_SDK"</span>
 </code></pre></div></div>
 
 <h2 id="j-link">J-Link</h2>
@@ -559,15 +566,118 @@ Python 脚本 <a href="https://github.com/ingchips/ING918XX_SDK_SOURCE/blob/mast
 
 <p>执行 Python 脚本</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python ingchips_packs_addon.py -t jlink_v6 -p "C:/Program Files (x86)/SEGGER/JLink_V630d" -tp "C:/Programs/ING_SDK"
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python ingchips_packs_addon.py <span class="nt">-t</span> jlink_v6 <span class="nt">-p</span> <span class="s2">"C:/Program Files (x86)/SEGGER/JLink_V630d"</span> <span class="nt">-tp</span> <span class="s2">"C:/Programs/ING_SDK"</span>
 </code></pre></div></div>
 
 <h3 id="v762-以上">V7.62 以上</h3>
 
 <p>执行python脚本</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python ingchips_packs_addon.py -t jlink_v7 -tp "C:/Programs/ING_SDK"
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python ingchips_packs_addon.py <span class="nt">-t</span> jlink_v7 <span class="nt">-tp</span> <span class="s2">"C:/Programs/ING_SDK"</span>
 </code></pre></div></div>
+
+<h2 id="pyocd-新版本更新出现的问题版本大于0360">pyOCD 新版本更新出现的问题（版本大于0.36.0）</h2>
+
+<p>pyOCD 版本 &gt;= 0.36.0版本默认关闭了源码的双缓冲区烧录，导致烧录速度性能下降（官方关闭该功能原因未知）。并且新版本的日志格式变化导致 VSCode 的 Cortex-Debug 插件无法正常连接识别 gdb 服务器的启动。</p>
+
+<h3 id="烧录速度性能下降解决方案">烧录速度性能下降解决方案</h3>
+
+<p>直接修改源码增加双缓冲机制。</p>
+
+<ol>
+  <li>
+    <p>克隆仓库源码</p>
+
+    <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/pyocd/pyOCD.git
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>打开安装的 pyOCD 版本源码 (打开源码，打开类似如下路径的 <em>builder.py</em> 文件。)</p>
+
+    <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>path<span class="se">\t</span>o<span class="se">\p</span>yocd<span class="se">\f</span>lash<span class="se">\b</span>uilder.py
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>打开这个文件找到文件的204行，查看到源代码如下：</p>
+
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">...</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flash</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">().</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">flash</span> <span class="o">=</span> <span class="n">flash</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">flash_start</span> <span class="o">=</span> <span class="n">flash</span><span class="p">.</span><span class="n">region</span><span class="p">.</span><span class="n">start</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">flash_operation_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">sector_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">_FlashSector</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">page_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">_FlashPage</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">perf</span> <span class="o">=</span> <span class="n">ProgrammingInfo</span><span class="p">()</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">enable_double_buffering</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">log_performance</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">_buffered_data_size</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">program_byte_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">sector_erase_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">chip_erase_count</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># Number of pages to program using chip erase method.
+</span>        <span class="bp">self</span><span class="p">.</span><span class="n">chip_erase_weight</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># Erase/program weight using chip erase method.
+</span>        <span class="bp">self</span><span class="p">.</span><span class="n">sector_erase_count</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># Number of pages to program using sector erase method.
+</span>        <span class="bp">self</span><span class="p">.</span><span class="n">sector_erase_weight</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># Erase/program weight using sector erase method.
+</span>        <span class="bp">self</span><span class="p">.</span><span class="n">algo_inited_for_read</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="p">...</span>
+</code></pre></div>    </div>
+
+    <p>将 <code class="language-plaintext highlighter-rouge">self.enable_double_buffering = False</code> 修改为 <code class="language-plaintext highlighter-rouge">self.enable_double_buffering = True</code> 这样开启双缓冲可以加速下载。</p>
+  </li>
+  <li>
+    <p>在项目根目录重新安装</p>
+
+    <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python <span class="nt">-m</span> pip <span class="nb">install</span> <span class="nt">-e</span> <span class="nb">.</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h3 id="cortex-debug-插件无法连接的方案">Cortex-Debug 插件无法连接的方案</h3>
+
+<p>为 VSCode 的 <code class="language-plaintext highlighter-rouge">launch.json</code> 文件添加对应的配置信息：</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">"overrideGDBServerStartedRegex"</span><span class="p">:</span><span class="w"> </span><span class="s2">"(started|Listening) on port"</span><span class="w">
+</span></code></pre></div></div>
+
+<p>pyOCD 使用 <code class="language-plaintext highlighter-rouge">launch.json</code> 文件的示例：</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.2.0"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"configurations"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Cortex Debug (pyOCD + ING916XX)"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"cortex-debug"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"request"</span><span class="p">:</span><span class="w"> </span><span class="s2">"launch"</span><span class="p">,</span><span class="w">
+
+            </span><span class="nl">"cwd"</span><span class="p">:</span><span class="w"> </span><span class="s2">"${workspaceFolder}"</span><span class="p">,</span><span class="w">
+
+            </span><span class="nl">"executable"</span><span class="p">:</span><span class="w"> </span><span class="s2">"${workspaceFolder}/cmake-build-debug-mingw-arm/ING20XX"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"servertype"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pyocd"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"targetId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ING91600"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"runToEntryPoint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"app_main"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"interface"</span><span class="p">:</span><span class="w"> </span><span class="s2">"swd"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"armToolchainPath"</span><span class="p">:</span><span class="w"> </span><span class="s2">"C:</span><span class="se">\\</span><span class="s2">arm_gcc</span><span class="se">\\</span><span class="s2">bin</span><span class="se">\\</span><span class="s2">"</span><span class="p">,</span><span class="w">
+
+            </span><span class="nl">"showDevDebugOutput"</span><span class="p">:</span><span class="w"> </span><span class="s2">"raw"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"overrideGDBServerStartedRegex"</span><span class="p">:</span><span class="w"> </span><span class="s2">"(started|Listening) on port"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>使用时：</p>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">executable</code> 需要替换为实际的 elf 文件路径；</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">targetId</code>  需要替换为实际的芯片 id；</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">armToolchainPath</code> 需要替换为实际的 <code class="language-plaintext highlighter-rouge">arm-none-eabi-gdb</code> 文件所在路径。</p>
+  </li>
+</ul>
 
               
               

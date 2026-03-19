@@ -57,12 +57,6 @@ function flashInfo() {
             total_size: 512 * 1024,
             page_size: 4 * 1024,
             manual_reboot: false,
-        },
-        {
-            base: 0x02000000,
-            total_size: 256 * 1024,
-            page_size: 4 * 1024,
-            manual_reboot: false,
         }
     ];
     return FLASH_INFOS[$('#series_id option:selected').index()];

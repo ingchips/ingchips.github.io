@@ -4,20 +4,20 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>2 简介 | 低功耗蓝牙开发者手册</title>
-  <meta name="description" content="2 简介 | 低功耗蓝牙开发者手册." />
+  <title>13 Enhanced ATT Bearer | 低功耗蓝牙开发者手册</title>
+  <meta name="description" content="13 Enhanced ATT Bearer | 低功耗蓝牙开发者手册." />
   <meta name="generator" content="bookdown 0.32 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="2 简介 | 低功耗蓝牙开发者手册" />
+  <meta property="og:title" content="13 Enhanced ATT Bearer | 低功耗蓝牙开发者手册" />
   <meta property="og:type" content="book" />
   
-  <meta property="og:description" content="2 简介 | 低功耗蓝牙开发者手册." />
+  <meta property="og:description" content="13 Enhanced ATT Bearer | 低功耗蓝牙开发者手册." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="2 简介 | 低功耗蓝牙开发者手册" />
+  <meta name="twitter:title" content="13 Enhanced ATT Bearer | 低功耗蓝牙开发者手册" />
   
-  <meta name="twitter:description" content="2 简介 | 低功耗蓝牙开发者手册." />
+  <meta name="twitter:description" content="13 Enhanced ATT Bearer | 低功耗蓝牙开发者手册." />
   
 
 <meta name="author" content="Ingchips Technology Co., Ltd." />
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="index.html"/>
-<link rel="next" href="ch-overview.html"/>
+<link rel="prev" href="ch-controller.html"/>
+<link rel="next" href="ch-misc.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -450,195 +450,330 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="ch-intro" class="section level1 hasAnchor" number="2">
-<h1><span class="header-section-number">2</span> 简介<a href="ch-intro.html#ch-intro" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p>欢迎使用 <em>INGCHIPS</em> 918XX/916XX 软件开发工具包 （SDK）.</p>
-<p>本手册将带您了解 <em>INGCHIPS</em> 各系列 BLE SoC 芯片上的低功耗蓝牙开发，了解整个协议栈设计思路，
-熟悉各模块主要接口的使用方法。</p>
-<p>本手册侧重从开发者的角度介绍 BLE 的开发，涉及 BLE 规范时采用了更“实用化”的描述，
-不去关注规范里的每一个细节。</p>
-<p>SDK 工具可以生成本手册里提到的一些常见代码，如回调函数、事件处理等。</p>
-<div id="缩略语及术语" class="section level2 hasAnchor" number="2.1">
-<h2><span class="header-section-number">2.1</span> 缩略语及术语<a href="ch-intro.html#缩略语及术语" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="ch-eatt" class="section level1 hasAnchor" number="13">
+<h1><span class="header-section-number">13</span> Enhanced ATT Bearer<a href="ch-eatt.html#ch-eatt" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p><strong>EATT</strong>（Enhanced Attribute Protocol Transport）是 Bluetooth Core Specification 5.2 引入的重要特性，通过在单一 LE 连接上建立多个并行的 ATT Bearer 通道，突破了传统 BLE GATT 的串行传输限制，显著提升数据吞吐率和系统实时性。</p>
+<p><strong>核心改进</strong>：从单通道 ATT Bearer（CID 0x0004）→ 多通道 EATT Bearer（CID 0x0040-0x007F）</p>
+<div id="传统-att-的局限性" class="section level2 hasAnchor" number="13.1">
+<h2><span class="header-section-number">13.1</span> 传统 ATT 的局限性<a href="ch-eatt.html#传统-att-的局限性" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>传统 BLE 的问题：所有 GATT 数据通过单一 ATT Bearer 串行传输，高并发或高吞吐场景下存在明显瓶颈。</p>
+<div id="单一通道的限制" class="section level3 hasAnchor" number="13.1.1">
+<h3><span class="header-section-number">13.1.1</span> 单一通道的限制<a href="ch-eatt.html#单一通道的限制" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li>固定使用 <strong>L2CAP CID = 0x0004</strong>，所有操作串行排队</li>
+<li>造成阻塞</li>
+<li>无法充分利用现代芯片的处理能力</li>
+</ul>
+</div>
+<div id="性能瓶颈" class="section level3 hasAnchor" number="13.1.2">
+<h3><span class="header-section-number">13.1.2</span> 性能瓶颈<a href="ch-eatt.html#性能瓶颈" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li>高并发特性访问延迟显著</li>
+<li>多读/写场景吞吐受限</li>
+<li>不利于多 Profile 或多服务同时工作</li>
+</ul>
+</div>
+</div>
+<div id="eatt-principles" class="section level2 hasAnchor" number="13.2">
+<h2><span class="header-section-number">13.2</span> EATT 基本原理<a href="ch-eatt.html#eatt-principles" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="多-att-bearer-架构" class="section level3 hasAnchor" number="13.2.1">
+<h3><span class="header-section-number">13.2.1</span> 多 ATT Bearer 架构<a href="ch-eatt.html#多-att-bearer-架构" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>EATT 允许在一个 LE 连接上建立 <strong>多个 ATT Bearer</strong>：</p>
+<ul>
+<li>每个 Bearer 对应一个 <strong>独立的 L2CAP LE Credit Based Channel</strong></li>
+<li>每个 Channel 都有独立的 <strong>CID（0x0040 ~ 0x007F）</strong></li>
+</ul>
+<pre><code>+---------------- BLE Connection ----------------+
+|                                                |
+|  ATT Bearer #0  &lt;-&gt;  L2CAP CID 0x0040          |
+|  ATT Bearer #1  &lt;-&gt;  L2CAP CID 0x0041          |
+|  ATT Bearer #2  &lt;-&gt;  L2CAP CID 0x0042          |
+|  ...                                           |
+|                                                |
++------------------------------------------------+</code></pre>
+</div>
+<div id="核心特性" class="section level3 hasAnchor" number="13.2.2">
+<h3><span class="header-section-number">13.2.2</span> 核心特性<a href="ch-eatt.html#核心特性" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li>并行 GATT 操作（多个读/写同时进行）</li>
+<li>更高吞吐率</li>
+<li>更低访问延迟</li>
+</ul>
+</div>
+</div>
+<div id="eatt-l2cap-relation" class="section level2 hasAnchor" number="13.3">
+<h2><span class="header-section-number">13.3</span> EATT 与 L2CAP 的关系<a href="ch-eatt.html#eatt-l2cap-relation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="le-credit-based-flow-control" class="section level3 hasAnchor" number="13.3.1">
+<h3><span class="header-section-number">13.3.1</span> LE Credit Based Flow Control<a href="ch-eatt.html#le-credit-based-flow-control" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>EATT 基于 <strong>L2CAP LE Credit Based Flow Control Mode</strong>：</p>
+<ul>
+<li>每个 Channel 独立维护 Credit</li>
+<li>避免单一 Channel 阻塞影响全局</li>
+</ul>
+</div>
+<div id="cid-范围" class="section level3 hasAnchor" number="13.3.2">
+<h3><span class="header-section-number">13.3.2</span> CID 范围<a href="ch-eatt.html#cid-范围" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <table>
-<caption><span id="tab:ch0-abbreviations">表 2.1: </span> 缩略语</caption>
 <thead>
 <tr class="header">
-<th align="left">缩略语</th>
-<th align="left">说明</th>
+<th>类型</th>
+<th>CID 范围</th>
+<th>说明</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">BLE</td>
-<td align="left">低功耗蓝牙（Bluetooth LE，Bluetooth Low Engergy）</td>
+<td>固定 ATT</td>
+<td>0x0004</td>
+<td>传统 ATT Bearer</td>
 </tr>
 <tr class="even">
-<td align="left">CCCD</td>
-<td align="left">客户端特征配置描述符（Client Characteristic Configuration Descriptor）</td>
-</tr>
-<tr class="odd">
-<td align="left">CTE</td>
-<td align="left">定频扩展（Constant Tone Extension）</td>
-</tr>
-<tr class="even">
-<td align="left">ECC</td>
-<td align="left">椭圆曲线密码学（Elliptic Curve Cryptography）</td>
-</tr>
-<tr class="odd">
-<td align="left">HCI</td>
-<td align="left">Host Controller 接口</td>
-</tr>
-<tr class="even">
-<td align="left">IRK</td>
-<td align="left">身份解析密钥 (Identity Resolving Key)</td>
-</tr>
-<tr class="odd">
-<td align="left">L2CAP</td>
-<td align="left">逻辑链路控制与适配协议（Logical Link Control and Adaptation Protocol）</td>
-</tr>
-<tr class="even">
-<td align="left">LL</td>
-<td align="left">链路层（Link Layer）</td>
-</tr>
-<tr class="odd">
-<td align="left">LMP</td>
-<td align="left">BR/EDR 的链路管理协议（Link Manager Protocol）</td>
-</tr>
-<tr class="even">
-<td align="left">LTK</td>
-<td align="left">长期密钥（Long Term Key）</td>
-</tr>
-<tr class="odd">
-<td align="left">MIC</td>
-<td align="left">消息认证码（Message Integrity Code）</td>
-</tr>
-<tr class="even">
-<td align="left">MITM</td>
-<td align="left">中间人（Man-In-The-Middle）</td>
-</tr>
-<tr class="odd">
-<td align="left">OOB</td>
-<td align="left">带外（Out Of Band）</td>
-</tr>
-<tr class="even">
-<td align="left">RSSI</td>
-<td align="left">接收信号强度指示（Received Signal Strength Indicator）</td>
-</tr>
-<tr class="odd">
-<td align="left">SCA</td>
-<td align="left">睡眠时钟精度（Sleep Clock Accuracy）</td>
-</tr>
-<tr class="even">
-<td align="left">SPSM</td>
-<td align="left">简化的协议/服务选择器(Simplified Protocol/Service Multiplexer)</td>
-</tr>
-<tr class="odd">
-<td align="left">UUID</td>
-<td align="left">通用唯一识别码（Universally Unique IDentifier）</td>
-</tr>
-</tbody>
-</table>
-<table>
-<caption><span id="tab:ch0-term">表 2.2: </span> 术语</caption>
-<thead>
-<tr class="header">
-<th align="left">术语</th>
-<th align="left">说明</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">1M</td>
-<td align="left">BLE 使用的一种 PHY，符号速率为 <span class="math inline">\(1Msps\)</span></td>
-</tr>
-<tr class="even">
-<td align="left">2M</td>
-<td align="left">BLE 使用的一种 PHY，符号速率为 <span class="math inline">\(2Msps\)</span></td>
-</tr>
-<tr class="odd">
-<td align="left">Characteristic</td>
-<td align="left">特征，是服务的组成部分</td>
-</tr>
-<tr class="even">
-<td align="left">Coded</td>
-<td align="left">BLE 使用的一种 PHY，基于卷积码的信道编码</td>
-</tr>
-<tr class="odd">
-<td align="left">Controller</td>
-<td align="left">BLE 控制器，整个蓝牙协议栈偏低层的部分</td>
-</tr>
-<tr class="even">
-<td align="left">Handle</td>
-<td align="left">句柄</td>
-</tr>
-<tr class="odd">
-<td align="left">Host</td>
-<td align="left">BLE 主机，整个蓝牙协议栈偏上层的部分</td>
-</tr>
-<tr class="even">
-<td align="left">PHY</td>
-<td align="left">BLE 的物理层传输方式</td>
-</tr>
-<tr class="odd">
-<td align="left">Service</td>
-<td align="left">服务，由特征组成</td>
-</tr>
-</tbody>
-</table>
-<p>蓝牙规范从 v5.3 版本开始更新了部分术语，本手册沿用旧称。表 <a href="ch-intro.html#tab:ch0-new-term">2.3</a> 是这部分术语的新旧对照。</p>
-<table>
-<caption><span id="tab:ch0-new-term">表 2.3: </span> 新旧术语对照</caption>
-<thead>
-<tr class="header">
-<th align="left">原名称</th>
-<th align="left">新名称</th>
-<th align="left">本手册</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">Master</td>
-<td align="left">Central</td>
-<td align="left">主角色</td>
-</tr>
-<tr class="even">
-<td align="left">Slave</td>
-<td align="left">Peripheral</td>
-<td align="left">从角色</td>
-</tr>
-<tr class="odd">
-<td align="left">White List</td>
-<td align="left">Accept List</td>
-<td align="left">白名单</td>
+<td>EATT Dynamic CID</td>
+<td>0x0040 – 0x007F</td>
+<td>EATT Channel 范围</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div id="参考文档" class="section level2 hasAnchor" number="2.2">
-<h2><span class="header-section-number">2.2</span> 参考文档<a href="ch-intro.html#参考文档" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+</div>
+<div id="eatt-establishment" class="section level2 hasAnchor" number="13.4">
+<h2><span class="header-section-number">13.4</span> EATT 建立过程详解<a href="ch-eatt.html#eatt-establishment" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="前置条件ble-连接和配对" class="section level3 hasAnchor" number="13.4.1">
+<h3><span class="header-section-number">13.4.1</span> 前置条件：BLE 连接和配对<a href="ch-eatt.html#前置条件ble-连接和配对" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>在建立 EATT 之前，需要：</p>
 <ol style="list-style-type: decimal">
-<li>Bluetooth SIG<a href="ch-cap.html#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></li>
-<li>Controller API Reference</li>
-<li>Application Note: Direction Finding Solution<a href="ch-cap.html#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></li>
+<li><strong>建立 LE 连接</strong>：Central 与 Peripheral 成功连接</li>
+<li><strong>配对认证</strong>：完成 SM（Security Manager）配对过程</li>
+<li><strong>双端都支持 EATT</strong>：通过特性检查</li>
 </ol>
+</div>
+<div id="eatt-server-init" class="section level3 hasAnchor" number="13.4.2">
+<h3><span class="header-section-number">13.4.2</span> Server 端初始化<a href="ch-eatt.html#eatt-server-init" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Server 需在启动阶段：</p>
+<ol style="list-style-type: decimal">
+<li>在 GATT 数据库中添加两个必要的特性</li>
+<li>调用 <code>att_server_eatt_init()</code> 初始化 EATT Bearer 资源池</li>
+</ol>
+<div id="server-特性配置" class="section level4 hasAnchor" number="13.4.2.1">
+<h4><span class="header-section-number">13.4.2.1</span> Server 特性配置<a href="ch-eatt.html#server-特性配置" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><strong>Server Supported Features</strong> 特性（0x2B3A）：表示服务器支持 EATT</p>
+<div class="sourceCode" id="cb180"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb180-1"><a href="ch-eatt.html#cb180-1" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> <span class="dt">uint8_t</span> server_supported_features<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb180-2"><a href="ch-eatt.html#cb180-2" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x02</span><span class="op">,</span>   <span class="co">// Bit 1: Enhanced ATT bearer supported</span></span>
+<span id="cb180-3"><a href="ch-eatt.html#cb180-3" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div>
+<p><strong>特性值定义</strong>：</p>
+<table>
+<thead>
+<tr class="header">
+<th>Bit</th>
+<th>功能描述</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>Robust Caching</td>
+<td>服务器支持健壮缓存</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>Enhanced ATT Bearer</td>
+<td>服务器支持 EATT</td>
+</tr>
+<tr class="odd">
+<td>2-7</td>
+<td>Reserved</td>
+<td>保留</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="初始化-eatt-bearer-资源池" class="section level4 hasAnchor" number="13.4.2.2">
+<h4><span class="header-section-number">13.4.2.2</span> 初始化 EATT Bearer 资源池<a href="ch-eatt.html#初始化-eatt-bearer-资源池" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>在 GATT 数据库中提供两个特性：</p>
+<ul>
+<li><strong>Server Supported Features</strong>（UUID: 0x2B3A）：告知 Client 自身支持 EATT</li>
+<li><strong>Client Supported Features</strong>（UUID: 0x2B29）：接收 Client 的 EATT 支持情况</li>
+</ul>
+<p>然后调用 <code>att_server_eatt_init()</code> 初始化资源池</p>
+</div>
+</div>
+<div id="client-端建立-eatt" class="section level3 hasAnchor" number="13.4.3">
+<h3><span class="header-section-number">13.4.3</span> 2. Client 端建立 EATT<a href="ch-eatt.html#client-端建立-eatt" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="client-特性交互流程" class="section level4 hasAnchor" number="13.4.3.1">
+<h4><span class="header-section-number">13.4.3.1</span> Client 特性交互流程<a href="ch-eatt.html#client-特性交互流程" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Client 需要按以下顺序进行操作：</p>
+<ol style="list-style-type: decimal">
+<li><strong>服务发现</strong>： 发现 Generic Attribute Service</li>
+<li><strong>读取 Server 支持</strong>：查看 Server Supported Features 是否支持 EATT（Bit 1）</li>
+<li><strong>写入客户端支持</strong>：写 Client Supported Features 宣告自己支持 EATT（触发 EATT 建立）</li>
+</ol>
+<p>详细的 API 调用和错误处理见下方”API 参考”部分</p>
+</div>
+<div id="特性值定义参考" class="section level4 hasAnchor" number="13.4.3.2">
+<h4><span class="header-section-number">13.4.3.2</span> 特性值定义参考<a href="ch-eatt.html#特性值定义参考" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><strong>Client Supported Features</strong> Bit 定义：</p>
+<table>
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Bit</th>
+<th>功能描述</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>Robust Caching</td>
+<td>客户端支持健壮缓存</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>Enhanced ATT Bearer</td>
+<td>客户端支持 EATT</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>Multiple Handle Value Notifications</td>
+<td>客户端支持接收 ATT_MULTIPLE_HANDLE_VALUE_NTF PDU</td>
+</tr>
+<tr class="even">
+<td>3-7</td>
+<td>Reserved</td>
+<td>保留</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="eatt-channel-建立和使用" class="section level3 hasAnchor" number="13.4.4">
+<h3><span class="header-section-number">13.4.4</span> 3. EATT Channel 建立和使用<a href="ch-eatt.html#eatt-channel-建立和使用" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>完成特性交互后，调用 <code>gatt_client_le_enhanced_connect()</code> 建立 EATT 连接。之后协议栈自动处理 L2CAP Channel 建立，建立完成后可进行并行 GATT 操作。</p>
+<p>L2CAP 层自动处理多个 Channel 的建立过程（多个连接请求、响应、配置等并行进行）。</p>
+</div>
+</div>
+<div id="eatt-benefits" class="section level2 hasAnchor" number="13.5">
+<h2><span class="header-section-number">13.5</span> EATT 的优势<a href="ch-eatt.html#eatt-benefits" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="性能对比" class="section level3 hasAnchor" number="13.5.1">
+<h3><span class="header-section-number">13.5.1</span> 性能对比<a href="ch-eatt.html#性能对比" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<table>
+<thead>
+<tr class="header">
+<th>维度</th>
+<th>传统 ATT</th>
+<th>EATT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>并发能力</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr class="even">
+<td>吞吐率</td>
+<td>低</td>
+<td>高</td>
+</tr>
+<tr class="odd">
+<td>访问延迟</td>
+<td>高</td>
+<td>低</td>
+</tr>
+<tr class="even">
+<td>多服务适配</td>
+<td>差</td>
+<td>优</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="应用场景" class="section level3 hasAnchor" number="13.5.2">
+<h3><span class="header-section-number">13.5.2</span> 应用场景<a href="ch-eatt.html#应用场景" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><strong>音频（LE Audio）</strong>：多个音频流并行传输</li>
+<li><strong>多传感器</strong>：多路传感器数据同步上报</li>
+<li><strong>实时控制</strong>：控制指令与状态反馈分离</li>
+</ul>
+</div>
+</div>
+<div id="eatt-api" class="section level2 hasAnchor" number="13.6">
+<h2><span class="header-section-number">13.6</span> 主要 API 参考<a href="ch-eatt.html#eatt-api" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="eatt-server-api" class="section level3 hasAnchor" number="13.6.1">
+<h3><span class="header-section-number">13.6.1</span> Server 端 API<a href="ch-eatt.html#eatt-server-api" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="eatt-api-server-init" class="section level4 hasAnchor" number="13.6.1.1">
+<h4><span class="header-section-number">13.6.1.1</span> <code>att_server_eatt_init</code> - 初始化 EATT Bearer 资源池<a href="ch-eatt.html#eatt-api-server-init" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb181"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb181-1"><a href="ch-eatt.html#cb181-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> att_server_eatt_init<span class="op">(</span><span class="dt">uint8_t</span> num_eatt_bearers<span class="op">,</span></span>
+<span id="cb181-2"><a href="ch-eatt.html#cb181-2" aria-hidden="true" tabindex="-1"></a>                              <span class="dt">uint8_t</span> <span class="op">*</span> storage_buffer<span class="op">,</span></span>
+<span id="cb181-3"><a href="ch-eatt.html#cb181-3" aria-hidden="true" tabindex="-1"></a>                              <span class="dt">uint16_t</span> storage_size<span class="op">)</span></span></code></pre></div>
+<p><strong>功能</strong>：初始化 EATT Bearer 资源池，为后续建立 EATT Channel 准备资源</p>
+<p><strong>参数</strong>：</p>
+<ul>
+<li><code>num_eatt_bearers</code>：最多支持的 EATT Channel 数量（1-64）</li>
+<li><code>storage_buffer</code>：用于存储所有 Bearer 结构体及其收发缓冲区的内存池</li>
+<li><code>storage_size</code>：内存池总大小（字节）</li>
+</ul>
+<p><strong>返回值</strong>：</p>
+<ul>
+<li><code>ERROR_CODE_SUCCESS</code>：初始化成功</li>
+<li><code>ERROR_CODE_MEMORY_CAPACITY_EXCEEDED</code>：内存不足</li>
+</ul>
+<p><strong>调用时机</strong>：在协议栈启动时调用一次</p>
+</div>
+</div>
+<div id="eatt-client-api" class="section level3 hasAnchor" number="13.6.2">
+<h3><span class="header-section-number">13.6.2</span> Client 端 API<a href="ch-eatt.html#eatt-client-api" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="eatt-api-client-connect" class="section level4 hasAnchor" number="13.6.2.1">
+<h4><span class="header-section-number">13.6.2.1</span> <code>gatt_client_le_enhanced_connect</code> - 建立 EATT 连接<a href="ch-eatt.html#eatt-api-client-connect" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb182"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb182-1"><a href="ch-eatt.html#cb182-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> gatt_client_le_enhanced_connect<span class="op">(</span></span>
+<span id="cb182-2"><a href="ch-eatt.html#cb182-2" aria-hidden="true" tabindex="-1"></a>    btstack_packet_handler_t gatt_handler<span class="op">,</span></span>
+<span id="cb182-3"><a href="ch-eatt.html#cb182-3" aria-hidden="true" tabindex="-1"></a>    hci_con_handle_t connection_handle<span class="op">,</span></span>
+<span id="cb182-4"><a href="ch-eatt.html#cb182-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> num_eatt_bearers<span class="op">,</span></span>
+<span id="cb182-5"><a href="ch-eatt.html#cb182-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> <span class="op">*</span> storage_buffer<span class="op">,</span></span>
+<span id="cb182-6"><a href="ch-eatt.html#cb182-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint16_t</span> storage_size</span>
+<span id="cb182-7"><a href="ch-eatt.html#cb182-7" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code></pre></div>
+<p><strong>功能</strong>：在已有的 LE 连接基础上，建立多个 EATT Bearer</p>
+<p><strong>参数</strong>：</p>
+<ul>
+<li><code>gatt_handler</code>：GATT 事件处理回调</li>
+<li><code>connection_handle</code>：HCI 连接句柄</li>
+<li><code>num_eatt_bearers</code>：请求建立的 EATT Channel 数量</li>
+<li><code>storage_buffer</code>：客户端侧的存储缓冲区</li>
+<li><code>storage_size</code>：缓冲区大小（字节）</li>
+</ul>
+<p><strong>返回值</strong>：</p>
+<ul>
+<li>0：成功</li>
+<li>非 0：失败</li>
+</ul>
+<p><strong>内存需求计算</strong>：</p>
+<pre><code>总大小 &gt;= num_eatt_bearers * sizeof(att_server_eatt_bearer_t) 
+        + num_eatt_bearers * (receive_buffer_size + send_buffer_size)
+
+通常：总大小 &gt;= num_eatt_bearers * 200 字节（保守估计）</code></pre>
+<p><strong>前置条件</strong>：</p>
+<ul>
+<li>LE 连接已建立</li>
+<li>已确认 Server 支持 EATT（通过读 Server Supported Features）</li>
+<li>已完成配对</li>
+</ul>
 
 </div>
 </div>
-<div class="footnotes">
-<hr />
-<ol start="1">
-<li id="fn1"><p><a href="https://www.bluetooth.com/" class="uri">https://www.bluetooth.com/</a><a href="ch-intro.html#fnref1" class="footnote-back">↩︎</a></p></li>
-<li id="fn2"><p><a href="https://ingchips.github.io/application-notes/an_aoa/index.html" class="uri">https://ingchips.github.io/application-notes/an_aoa/index.html</a><a href="ch-intro.html#fnref2" class="footnote-back">↩︎</a></p></li>
-</ol>
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="ch-overview.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="ch-controller.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ch-misc.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <title>SDK 9.1 更新说明 - INGCHIPS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="总结 SDK 9.1 新功能。"/>
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+        <style>
+            #ai-button {
+            position: fixed;
+            display: block;
+            bottom: 30px;
+            right: 30px;
+            background: url('/docs/getting-started/ai_assistant/robot.png') no-repeat center center;
+            background-size: contain;
+            color: white;
+            border: none;
+            border-radius: 0px;
+            width: 80px;
+            height: 80px;
+            font-size: 24px;
+            font-style: italic;
+            cursor: pointer;
+            z-index: 1000;
+            flex-shrink: 0;
+            box-sizing: border-box;
+            padding: 0;
+            color: rgba(0, 0, 0, 0);
+          }
+
+          #ai-button:hover {
+            width: 400px;
+            height: 400px;
+            background: url('/docs/getting-started/ai_assistant/ima_kb.png') no-repeat center center;
+            background-size: contain;
+          }
+        </style>
+    </head>
+    <body
+        <div id="page" class="site">
+  <header id="masthead" class="site-header outer">
+
+  <div class="inner">
+    <div class="site-header-inside">
+      <div class="site-branding">
+        
+        
+        <p class="site-logo"><a href="/"><img src="/images/logo_en.jpg" alt="INGCHIPS" /></a></p>
+        
+      </div><!-- .site-branding -->
+
+      <div id="box">
+        <input id="in_search" type="search" name="search" placeholder="搜索：输入并回车">
+      </div>
+
+      <script>
+        let search_input = document.getElementById('in_search');
+        if (search_input) {
+          search_input.addEventListener("keypress", function(event) {
+          if (event.key === "Enter") {
+            window.open('https://www.bing.com/search?q=' + encodeURIComponent(search_input.value) + '%20site%3A' + window.location.hostname);
+            event.preventDefault();
+            }
+          });
+        }
+      </script>
+
+      
+      
+      <nav id="main-navigation" class="site-navigation" aria-label="Main Navigation">
+        <div class="site-nav-inside">
+          <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-close" aria-hidden="true"></span></button>
+          <ul class="menu">
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/">
+  
+  Home
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/products">
+  
+  产品
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/sdk">
+  
+  SDK
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/docs/">
+  
+  文档
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item has-children">
+
+              
+<a class="" href="/docs/sdk/apps/#web-apps">
+  
+  Web 工具
+  
+</a>
+
+              
+
+                <ul class="submenu">
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/callgraph">
+  
+  Callgraph (调用图)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index.html">
+  
+  FOTA
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/ing918_ota/index_cn.html">
+  
+  FOTA (中文版)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/powerprofiler/">
+  
+  Online Power Profiler
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/air_trace/">
+  
+  Trace Logger
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/assertion_tool/index.html">
+  
+  Assertion Tool
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/assertion_tool/index_cn.html">
+  
+  Assertion Tool (中文版)
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/platform_bin/index.html">
+  
+  Platform Binary Identifier
+  
+</a>
+
+  </li>
+  
+  <li class="menu-item">
+    
+    
+<a class="" href="/web_apps/conn_test/index.html">
+  
+  Connection Stress Test
+  
+</a>
+
+  </li>
+  
+</ul>
+
+              
+            </li>
+            
+            <li class="menu-item">
+
+              
+<a class="" href="/blog/">
+  
+  Blog
+  
+</a>
+
+              
+            </li>
+            
+            <li class="menu-item menu-button">
+
+              
+<a class="button" href="https://github.com/ingchips">
+  
+  GitHub
+  
+</a>
+
+              
+            </li>
+            
+          </ul>
+        </div><!-- .site-nav-inside -->
+      </nav><!-- .site-navigation -->
+      <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+      
+    </div><!-- .site-header-inside -->
+  </div><!-- .inner -->
+</header><!-- .site-header -->
+
+  <main id="content" class="site-content">
+    <div class="inner outer">
+  <div class="docs-content">
+    <article class="post post-full">
+      <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+              inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+              displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+          }
+        });
+      </script>
+      <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <header class="post-header has-gradient outer">
+        
+        
+        <div class="inner-sm">
+          <div class="post-meta">
+            <time class="published" datetime="2026-05-15 00:00">May 15, 2026</time>
+          </div>
+          <h1 class="post-title">SDK 9.1 更新说明</h1>
+          
+          
+        </div>
+      </header>
+      <div class="inner-md outer">
+        <div class="post-content">
+          <h2 id="highlights"><span style="background:yellow">Highlights:</span></h2>
+
+<ul>
+  <li>支持 ING208xx 系列（软件包、外设驱动、工具、示例）</li>
+</ul>
+
+<div class="important">
+<strong>注意：</strong>
+<ul>
+<li>ROM 内的协议栈版本与 v9.0.4 相同。</li>
+<li>对于使用 ROM 的项目，axf_tool 暂不支持基于 dump 的各项分析。</li>
+</ul>
+
+<strong>已知问题:</strong>
+<ul>
+<li>部分外设驱动程序开启编译优化后功能异常。</li>
+</ul>
+
+</div>
+
+<h2 id="v910">v9.1.0</h2>
+
+<div class="note">
+<strong>说明：</strong>原有的 ING20xx 系列已删除。对于使用 ING20xx 的项目，请先安装 v9.0.6，
+切换为 ING208xx，再安装 v9.1.0。
+</div>
+
+<h3 id="1-软件包">1. 软件包</h3>
+
+<ul>
+  <li>
+    <p>[<strong>修正</strong>] L2CAP：PSM 发送长度小于 8 的短数据时会自动断开。</p>
+
+    <p>此问题由 v8.4.21 引入。</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] SM: 当从机配对信息被删除时，重新连接，SM 流程完成后无 <code class="language-plaintext highlighter-rouge">sm_state_t</code> 状态上报。</p>
+
+    <p>现在会上报 <code class="language-plaintext highlighter-rouge">SM_FINAL_FAIL_PROTOCOL</code>。</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] ATT：增强延迟读取功能</p>
+
+    <p>目前延迟读取支持以下命令：</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">ATT_READ_BY_TYPE_RESPONSE</code></li>
+      <li><code class="language-plaintext highlighter-rouge">ATT_READ_BLOB_RESPONSE</code></li>
+      <li><code class="language-plaintext highlighter-rouge">ATT_READ_RESPONSE</code></li>
+    </ul>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] SM：作为主机且使用 L1 Privacy 时，与已配对设备重新连接时，流程异常。</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] 低功耗：可能进入长时间（约 31 天）CPU IDLE 状态。</p>
+  </li>
+  <li>
+    <p>[<strong>新增</strong>] LL 开关：<code class="language-plaintext highlighter-rouge">LL_FLAG_TX_TEST_RPT_PKT_NUM</code></p>
+
+    <p>设置此开关后，停止 TX_TEST 时，<code class="language-plaintext highlighter-rouge">Num_Packets</code> 为发送的数据包的数目。接合接收端上报的数目可计算误包率。</p>
+
+    <p><img src="../img/le_test_end.png" alt="" /></p>
+  </li>
+</ul>
+
+<h3 id="2-库函数">2. 库函数</h3>
+
+<ul>
+  <li>
+    <p>[<strong>更新</strong>] ING208 Eflash：重新设计了 FT 数据的转存和校验。</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] ING208 Eflash：增加基于 DMA 的写入方式</p>
+
+    <p>定义 <code class="language-plaintext highlighter-rouge">FLASH_PROGRAM_WITH_DMA</code> 为 1 后启用 DMA 方式。目前默认不使用 DMA 方式。
+  不使用 DMA 方式时，建议单次写入数据量不超过 32 字节。</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] ING208 SYSCTRL：<code class="language-plaintext highlighter-rouge">SYSCTRL_Init</code></p>
+
+    <p>新增功能：自动使用 FT 数据校准内核电压（项目必须包含 <code class="language-plaintext highlighter-rouge">eflash.c</code>）；自动调谐内部高速 RC 至 1.5MHz。</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] ING208 PINCTRL：使用 ROM 内的管脚数据</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] ING208/ING916 <code class="language-plaintext highlighter-rouge">TMR_WatchDogEnable</code>：改为向上查找合适参数</p>
+
+    <p><code class="language-plaintext highlighter-rouge">TMR_WatchDogEnable</code> 软件接口兼容 ING918，但由于硬件不同，支持的超时参数范围也不相同。旧版本为向下查找合适参数，将导致实际超时时间明显小于所配参数。</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] ING208 <code class="language-plaintext highlighter-rouge">iic.c</code>：有可能通信失败。</p>
+  </li>
+</ul>
+
+<h3 id="4-工具">4. 工具</h3>
+
+<ul>
+  <li>
+    <p>[<strong>更新</strong>] Wizard: 支持切换项目使用的软件包类型。</p>
+
+    <p><img width="50%" src="../img/wiz_proj_change_bundle.png" /></p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] Tracer：无法生成 MSC</p>
+
+    <p>此问题由 v9.0.6 引入。</p>
+  </li>
+</ul>
+
+        </div><!-- .post-content -->
+      </div><!-- .inner-md -->
+    </article><!-- .post -->
+
+    <nav id="page-nav" class="page-nav">
+      <div id="page-nav-inside" class="page-nav-inside sticky">
+        <h2 class="page-nav-title">Jump to Section</h2>
+      </div><!-- .page-nav-inside -->
+    </nav><!-- .page-nav -->
+  </div>
+</div>
+
+  <!-- Next/previous post navigation TBD -->
+  <!--
+  <div class="inner-md outer">
+    <nav class="read-next">
+      <h2 class="read-next-title line-left">Read Next</h2>
+      <div class="nav-links">
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Previous post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Previous Post Title</a></h3>
+        </article>
+        <article class="post">
+          <div class="post-meta">
+            <time class="published" datetime="">Next post date</time>
+          </div>
+          <h3 class="post-title"><a href="#" rel="bookmark">Next Post Title</a></h3>
+        </article>
+      </div>
+    </nav>
+  </div>
+  -->
+
+  </main><!-- .site-content -->
+  <footer id="colophon" class="site-footer outer">
+  <div class="inner">
+    <div class="site-footer-inside">
+      <p class="site-info">
+        
+        
+        <span class="copyright">&copy; INGCHIPS 2021-2025. All rights reserved.</span>
+        
+        
+          
+          
+<a class="" href="https://www.stackbit.com" target="_blank" rel="noopener">
+  
+  Made with Stackbit
+  
+</a>
+
+        
+          
+          
+<a class="" href="https://www.flaticon.com/free-icons/chatbot" target="_blank" rel="noopener">
+  
+  Chatbot icons created by littleicon - Flaticon
+  
+</a>
+
+        
+      </p><!-- .site-info -->
+      
+      
+      <div class="social-links">
+        
+          
+          
+<a class="button button-icon" href="https://github.com/ingchips" target="_blank" rel="noopener">
+  
+  <span class="icon fab fa-github" aria-hidden="true"></span><span class="screen-reader-text">GitHub</span>
+  
+</a>
+
+        
+      </div><!-- .social-links -->
+      
+    </div><!-- .site-footer-inside -->
+  </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+</div><!-- .site -->
+
+        <!-- Scripts -->
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/js/prism.js" data-manual></script>
+        <script src="/assets/js/main.js"></script>
+
+        <button id="ai-button">AI</button>
+    </body>
+</html>

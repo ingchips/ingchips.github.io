@@ -310,25 +310,74 @@
 <div class="important">
 <strong>注意：</strong>
 <ul>
-<li>ROM 内的协议栈版本与 v9.0.4 相同。</li>
-<li>对于使用 ROM 的项目，axf_tool 暂不支持基于 dump 的各项分析。</li>
+<li>ROM 内的协议栈版本与 v9.0.4 相同（在 <i>mass_conn</i> 软件包基础上补充少量扩展功能）。</li>
 </ul>
-
-<strong>已知问题:</strong>
-<ul>
-<li>部分外设驱动程序开启编译优化后功能异常。</li>
-</ul>
-
 </div>
-
-<h2 id="v910">v9.1.0</h2>
 
 <div class="note">
 <strong>说明：</strong>原有的 ING20xx 系列已删除。对于使用 ING20xx 的项目，请先安装 v9.0.6，
-切换为 ING208xx，再安装 v9.1.0。
+切换为 ING208xx，再安装 v9.1.x。
 </div>
 
+<h2 id="v911">v9.1.1</h2>
+
 <h3 id="1-软件包">1. 软件包</h3>
+
+<ul>
+  <li>
+    <p>[<strong>更新</strong>] 减少程序启动期间栈空间的大小。</p>
+
+    <p>旧版本程序启动期间（<code class="language-plaintext highlighter-rouge">app_main</code>）栈空间的大小约为 0x1f00 字节。新版本改为 0xf00 字节。</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] EATT 相关问题</p>
+  </li>
+</ul>
+
+<h3 id="2-库函数">2. 库函数</h3>
+
+<ul>
+  <li>
+    <p>[<strong>修正</strong>] ING208 ADC：解决校准模块问题，并将参考电压调整至标准值</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] ING208 Eflash：修正因数据类型不匹配导致的 <code class="language-plaintext highlighter-rouge">flash_enable_write_protection</code> 配置错误</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] ING208 Eflash：新增 OTP 区域访问接口，支持通过 API 进行读写操作</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] <code class="language-plaintext highlighter-rouge">-O3</code> 编译时的相关问题</p>
+
+    <p>涉及 SPI、SYSCTRL、<code class="language-plaintext highlighter-rouge">ringbuf</code> 等模块。</p>
+  </li>
+</ul>
+
+<h3 id="3-示例">3. 示例</h3>
+
+<ul>
+  <li>
+    <p>[<strong>新增</strong>] EAD：演示广播数据加密。</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] EATT</p>
+
+    <p>演示了启用 EATT 功能后各种 Server、Client API 的用法和表现。</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] Platform Companion：支持使用外部 RTOS</p>
+  </li>
+</ul>
+
+<h3 id="4-工具">4. 工具</h3>
+
+<ul>
+  <li>[<strong>修正</strong>] Wizard: 针对 ING208xx ROM 的内存设置</li>
+</ul>
+
+<h2 id="v910">v9.1.0</h2>
+
+<h3 id="1-软件包-1">1. 软件包</h3>
 
 <ul>
   <li>
@@ -367,7 +416,7 @@
   </li>
 </ul>
 
-<h3 id="2-库函数">2. 库函数</h3>
+<h3 id="2-库函数-1">2. 库函数</h3>
 
 <ul>
   <li>
@@ -397,7 +446,7 @@
   </li>
 </ul>
 
-<h3 id="4-工具">4. 工具</h3>
+<h3 id="3-工具">3. 工具</h3>
 
 <ul>
   <li>

@@ -571,18 +571,27 @@ to the power saving framework.</p>
 <li><p><strong>PLATFORM_CFG_xx_TIME_REDUCTION</strong> which helps to answer how much time the sleep can take;</p>
 <p>As shown in Figure <a href="ch-api.html#fig:ch-api-time-reduction">4.1</a>, suppose now is <span class="math inline">\(T_0\)</span>, and
 next action occurs at <span class="math inline">\(T_1\)</span>. Obviously, the system can not sleep for <span class="math inline">\((T_1 - T_0)\)</span>,
-since there are pre-processing and post-processing in both hardware and software,
-including events callbacks such <code>PLATFORM_CB_EVT_BEFORE_DEEP_SLEEP</code>,
-which will take some time too. So extra time needs to be reduced from <span class="math inline">\((T_1 - T_0)\)</span>.</p>
+since there are pre-processing and post-processing in both hardware and software
+which will take some time too. These events callbacks are part of “pre-processing”:</p>
+<ul>
+<li><code>PLATFORM_CB_EVT_QUERY_DEEP_SLEEP_ALLOWED</code>,</li>
+<li><code>PLATFORM_CB_EVT_BEFORE_DEEP_SLEEP</code>.</li>
+</ul>
+<p>And these events callbacks are part of “post-processing”:</p>
+<ul>
+<li><code>PLATFORM_CB_EVT_ON_DEEP_SLEEP_WAKEUP</code>,</li>
+<li><code>PLATFORM_CB_EVT_LLE_INIT</code> (Always for ING918/ING916, and sometimes for ING20<a href="#fn13" class="footnote-ref" id="fnref13"><sup>13</sup></a>).</li>
+</ul>
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:ch-api-time-reduction"></span>
-<img src="img/sleep_time_delay.png" alt="Sleep Time Calculation" width="60%" />
+<img src="img/sleep_time_delay.png" alt="Sleep Time Calculation" width="80%" />
 <p class="caption">
 Figure 4.1: Sleep Time Calculation
 </p>
 </div>
-<p>The amount of time can be configured through <code>PLATFORM_CFG_SLEEP_TIME_REDUCTION</code> for
+<p>Therefore extra time needs to be reduced from <span class="math inline">\((T_1 - T_0)\)</span>.
+The amount of time can be configured through <code>PLATFORM_CFG_SLEEP_TIME_REDUCTION</code> for
 SLEEP mode, and <code>PLATFORM_CFG_DEEP_SLEEP_TIME_REDUCTION</code> for DEEP SLEEP and DEEPER SLEEP modes.</p>
-<p>PLATFORM_CFG_SLEEP_TIME_REDUCTION is not applicable to ING916 or ING20.</p></li>
+<p><code>PLATFORM_CFG_SLEEP_TIME_REDUCTION</code> is only applicable to ING918.</p></li>
 <li><p><strong>PLATFORM_CFG_LL_DELAY_COMPENSATION</strong> which helps to answer when starting to
 configure BLE sub-system.</p>
 <p>Suppose a BLE activity occurs at <span class="math inline">\(T_1\)</span> exactly, Link Layer software need to properly configure
@@ -620,7 +629,7 @@ will start at <span class="math inline">\((T_1 - t)\)</span>.</p>
 </tr>
 </tbody>
 </table>
-<p>Generally, these values do not need to updated in the case of ING918. If the wake up
+<p>Generally, these values do not need to be updated in the case of ING918. If the wake up
 handler does a lot of processing, then those two reductions should be increased accordingly.</p>
 <p>It’s much more complicated for ING916 or ING20. Good values can be found by trial and error,
 when precise measurement is impossible. When values are too small, BLE functions
@@ -672,6 +681,9 @@ Table <a href="ch-api.html#tab:ch-api-default-timing">4.3</a> lists reference va
 this clock with another high frequency and high precision clock.<a href="ch-api.html#fnref11" class="footnote-back">↩︎</a></p></li>
 <li id="fn12"><p>For DEEPER SLEEP mode of ING916 and ING20, it is coarsely recovered
 comparing to other modes.<a href="ch-api.html#fnref12" class="footnote-back">↩︎</a></p></li>
+<li id="fn13"><p>ING20 initializes LLE on demand:
+If a BLE activity is expected to be carried out at <span class="math inline">\(T_1\)</span>, <code>PLATFORM_CB_EVT_LLE_INIT</code> will be part of “post-processing”; otherwise,
+LLE won’t be initialized.<a href="ch-api.html#fnref13" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

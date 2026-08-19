@@ -319,6 +319,82 @@
 切换为 ING208xx，再安装 v9.1.x。
 </div>
 
+<h2 id="v912">v9.1.2</h2>
+
+<h3 id="软件包"><strong>软件包</strong></h3>
+
+<ul>
+  <li>
+    <p>[<strong>新增</strong>] 定时器机制：新增一组高精度 625µs 硬件定时器 API；内置 RTOS 平台改用该组 API 替代原有的 RTOS 软件定时器。</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] 更新并优化 L2CAP 基于信用点的流控（Credit-Based Flow Control）机制。</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] 优化启用省电（Power Saving）模式下的蓝牙连接参数更新（Connection Update）流程。</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] 蓝牙广播与 ROM Patch：在扫描及发起连接（Initiating）阶段，增加对异常/畸变扩展广播数据包（Malformed Ext Adv PDU）的过滤与丢弃。</p>
+  </li>
+</ul>
+
+<h3 id="库函数"><strong>库函数</strong></h3>
+
+<ul>
+  <li>[<strong>新增</strong>] ADC 模块与校准增强：</li>
+</ul>
+
+<p>新增硬件校准值手动读写接口  <code class="language-plaintext highlighter-rouge">ADC_GetCalibrationData</code>  <code class="language-plaintext highlighter-rouge">ADC_ApplyVBatCalib</code>，支持保存与重载校准参数，缩短系统上电校准时间。订正init接口的部分问题。</p>
+
+<ul>
+  <li>
+    <p>[<strong>新增</strong>] ING918 I2C：新增 <code class="language-plaintext highlighter-rouge">I2C_ConfigClkFrequencyCalc</code> 接口，支持时钟频率动态计算。</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] 修正部分pum电压配置，解决系统首次上电-时 AON1 IO 锁存的问题。</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] por默认值配置修正</p>
+  </li>
+  <li>
+    <p>[<strong>更新</strong>] boost模式新增dcdc配置支持，可选使用ldo模式测试。</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] 时钟与初始化：修正未使能 PLL 时直接调用 <code class="language-plaintext highlighter-rouge">sysinit</code> 导致的系统状态配置不一致问题。</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] QDEC 驱动：修复在 <code class="language-plaintext highlighter-rouge">-O3</code> 编译器优化级别下，QDEC 偶发配置失效的问题。</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] ASDM：定制ASDM 模拟模式配置问题，修复 ASDM Init寄存器位配置错误。</p>
+  </li>
+</ul>
+
+<h3 id="示例"><strong>示例</strong></h3>
+
+<ul>
+  <li>
+    <p>[<strong>更新</strong>] 定时器示例：同步更新各应用示例工程，适配全新的 625µs 定时器接口。</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] I2C 示例：清理并修复 ING918 I2C 相关示例中的编译告警。</p>
+  </li>
+</ul>
+
+<h3 id="工具"><strong>工具</strong></h3>
+
+<ul>
+  <li>
+    <p>[<strong>新增</strong>] Downloader: 支持下拉菜单选择com口下载，支持扩展选项，可选全片擦除ING916、ING20系列，扩展baud下载支持。</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] Downloader: 部分daplink无法支持下载的问题。</p>
+  </li>
+  <li>
+    <p>[<strong>修正</strong>] Wizard: 修复创建工程，在部分场景下app_main函数生成不全的问题。</p>
+  </li>
+</ul>
+
 <h2 id="v911">v9.1.1</h2>
 
 <h3 id="1-软件包">1. 软件包</h3>

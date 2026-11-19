@@ -1,68 +1,52 @@
-"""Stage verified Bookdown artifacts from the current source master commits."""
+"""Prepare a local website update from the four Git Bookdown branches."""
 
 import argparse
-import hashlib
+from datetime import datetime, timezone
 import io
 import json
-import os
 from pathlib import Path, PurePosixPath
 import stat
 import subprocess
+import tempfile
 import zipfile
 
 
 BOOKS = {
-    "pg_ing918": ("ing918-book", "drafts/pg_ing918"),
-    "pg_ble_stack": ("ble-stack-book", "application-notes/pg_ble_stack_cn"),
-    "pg_ing916": ("ing916-book", "drafts/pg_ing916"),
-    "pg_ing20": ("ing20-book", "drafts/pg_ing20"),
+    "pg_ing918": ("pg_ing918", "drafts/pg_ing918"),
+    "pg_ble_stack": ("pg_ble_stack", "application-notes/pg_ble_stack_cn"),
+    "pg_ing916": ("916per_doc/pg_ing916", "drafts/pg_ing916"),
+    "pg_ing20": ("920pre_doc/pg_ing20", "drafts/pg_ing20"),
 }
 STATE_FILE = ".github/book-sync-state.json"
 ASSET_DIRS = {"css", "images", "img", "libs"}
 INDEX_FILES = {"reference-keys.txt", "search_index.json"}
+MASTER = "refs/heads/master"
+OUTPUT = "refs/heads/book-output"
 
 
-def api(path):
-    return subprocess.check_output(["gh", "api", path], timeout=120)
+def git(repo, *args):
+    return subprocess.check_output(
+        ["git", "-C", str(repo), *map(str, args)], timeout=180
+    )
 
 
-def find_artifact(source, head, artifact_name):
-    query = f"branch=master&head_sha={head}&status=success&per_page=20"
-    runs = json.loads(
-        api(f"{source}/actions/workflows/build-book.yml/runs?{query}")
-    )["workflow_runs"]
-    for run in runs:
-        if (
-            run["head_sha"] != head
-            or run["head_branch"] != "master"
-            or run["event"] not in {"push", "workflow_dispatch"}
-            or run["conclusion"] != "success"
-        ):
-            continue
-        artifacts = json.loads(
-            api(f"{source}/actions/runs/{run['id']}/artifacts")
-        )["artifacts"]
-        for artifact in artifacts:
-            if artifact["name"] == artifact_name and not artifact["expired"]:
-                return artifact
-    return None
+def git_text(repo, *args):
+    return git(repo, *args).decode("utf-8").strip()
 
 
-def read_book(source, repo, artifact):
-    data = api(f"{source}/actions/artifacts/{artifact['id']}/zip")
-    digest = "sha256:" + hashlib.sha256(data).hexdigest()
-    if digest != artifact["digest"]:
-        raise ValueError(f"{repo}: artifact ZIP digest does not match GitHub")
+def read_book(repo, data):
     files = {}
     with zipfile.ZipFile(io.BytesIO(data)) as archive:
         for entry in archive.infolist():
+            if entry.filename == ".source-sha":
+                continue
             parts = entry.filename.rstrip("/").split("/")
             if (
                 any(p in {"", ".", ".."} or p.startswith(".") for p in parts)
                 or any("\\" in p or ":" in p for p in parts)
                 or stat.S_ISLNK(entry.external_attr >> 16)
             ):
-                raise ValueError(f"{repo}: unsafe artifact entry {entry.filename!r}")
+                raise ValueError(f"{repo}: unsafe Git archive entry {entry.filename!r}")
             if entry.is_dir():
                 continue
             name = PurePosixPath(*parts)
@@ -74,7 +58,7 @@ def read_book(source, repo, artifact):
             else:
                 allowed = parts[0] in ASSET_DIRS
             if not allowed or name in files:
-                raise ValueError(f"{repo}: unexpected artifact entry {entry.filename!r}")
+                raise ValueError(f"{repo}: unexpected Git archive entry {entry.filename!r}")
             files[name] = archive.read(entry)
     pdf = files.get(PurePosixPath(f"{repo}.pdf"), b"")
     epub = files.get(PurePosixPath(f"{repo}.epub"), b"")
@@ -96,41 +80,101 @@ def write_file(site, relative, data):
     path.write_bytes(data)
 
 
+def update_books(checkout, sources, workspace):
+    state_path = checkout / STATE_FILE
+    state = json.loads(state_path.read_text(encoding="utf-8")) if state_path.exists() else {}
+    changed = []
+    pending = []
+    for repo, (relative_source, destination) in BOOKS.items():
+        local_source = workspace / relative_source
+        remote = (
+            git_text(local_source, "remote", "get-url", "origin")
+            if (local_source / ".git").exists()
+            else f"git@github.com:ingchips/{repo}.git"
+        )
+        refs = {
+            ref: sha
+            for sha, ref in (
+                line.split("\t") for line in
+                git_text(sources, "ls-remote", "--refs", remote, MASTER, OUTPUT).splitlines()
+            )
+        }
+        if not (head := refs.get(MASTER)):
+            raise ValueError(f"{repo}: origin has no master branch")
+        if state.get(repo, {}).get("source_sha") == head:
+            print(f"{repo}: already synchronized", flush=True)
+            continue
+
+        if OUTPUT not in refs:
+            pending.append(repo)
+            continue
+        git(sources, "fetch", "--quiet", "--no-tags", "--depth=1", remote, OUTPUT)
+        if git_text(sources, "show", "FETCH_HEAD:.source-sha") != head:
+            pending.append(repo)
+            continue
+        data = git(sources, "archive", "--format=zip", "FETCH_HEAD")
+        files = read_book(repo, data)
+        # Preserve older pages and assets still reachable through existing URLs.
+        for name, content in files.items():
+            write_file(checkout, PurePosixPath(destination) / name, content)
+        state[repo] = {"source_sha": head}
+        changed.append(destination)
+        print(f"{repo}: staged {len(files)} files from {head[:12]}", flush=True)
+
+    for repo in pending:
+        print(f"{repo}: no book-output for current master; keeping published version", flush=True)
+    if changed:
+        state_data = json.dumps(state, indent=2, sort_keys=True) + "\n"
+        write_file(checkout, PurePosixPath(STATE_FILE), state_data.encode("utf-8"))
+    return changed
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--site-dir", type=Path, default=Path.cwd())
+    parser.add_argument("--site-dir", type=Path, default=Path(__file__).resolve().parents[2])
+    parser.add_argument("--source-root", type=Path, help="Parent directory of the manual checkouts")
+    parser.add_argument("--dry-run", action="store_true", help="Show the diff without creating a branch")
     args = parser.parse_args()
     site = args.site_dir.resolve(strict=True)
-    state_path = site / STATE_FILE
-    state = json.loads(state_path.read_text(encoding="utf-8")) if state_path.exists() else {}
-    updates = []
-    for repo, (artifact_name, destination) in BOOKS.items():
-        source = f"repos/ingchips/{repo}"
-        head = json.loads(api(f"{source}/git/ref/heads/master"))["object"]["sha"]
-        if state.get(repo, {}).get("source_sha") == head:
-            print(f"{repo}: already synchronized")
-            continue
-        artifact = find_artifact(source, head, artifact_name)
-        if artifact is None:
-            print(f"{repo}: no unexpired successful build for current master; keeping published version")
-            continue
-        files = read_book(source, repo, artifact)
-        updates.append((repo, destination, head, files))
+    if Path(git_text(site, "rev-parse", "--show-toplevel")).resolve() != site:
+        parser.error("--site-dir must be the website repository root")
+    workspace = args.source_root.resolve() if args.source_root else site.parent
 
-    for repo, destination, head, files in updates:
-        # Preserve historical URLs and assets that were not emitted by this build.
-        for name, data in files.items():
-            write_file(site, PurePosixPath(destination) / name, data)
-        state[repo] = {"source_sha": head}
-        print(f"{repo}: staged {len(files)} files from {head[:12]} in {destination}/")
+    origin = git_text(site, "remote", "get-url", "origin")
+    with tempfile.TemporaryDirectory(prefix="book-sync-") as temp:
+        checkout = Path(temp) / "site"
+        sources = Path(temp) / "sources.git"
+        git(site, "clone", "--quiet", "--shared", "--no-checkout", "--", site, checkout)
+        git(checkout, "fetch", "--quiet", "--no-tags", origin, MASTER)
+        base = git_text(checkout, "rev-parse", "FETCH_HEAD")
+        git(checkout, "checkout", "--quiet", "--detach", base)
+        git(site, "init", "--quiet", "--bare", sources)
 
-    if updates:
-        state_data = json.dumps(state, indent=2, sort_keys=True) + "\n"
-        write_file(site, PurePosixPath(STATE_FILE), state_data.encode("utf-8"))
-    if output := os.environ.get("GITHUB_OUTPUT"):
-        with open(output, "a", encoding="utf-8") as handle:
-            handle.write(f"changed={str(bool(updates)).lower()}\n")
+        changed = update_books(checkout, sources, workspace)
+        if not changed:
+            print("No book updates to commit.")
+            return
+        git(checkout, "add", "--", STATE_FILE, *changed)
+        print(git_text(checkout, "diff", "--cached", "--stat"))
+        if args.dry_run:
+            return
+        name = git_text(site, "config", "user.name")
+        email = git_text(site, "config", "user.email")
+        git(checkout, "-c", f"user.name={name}", "-c", f"user.email={email}",
+            "commit", "--quiet", "-m", "Sync published Bookdown artifacts")
+        stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S-%f")
+        branch = f"book-sync/{stamp}"
+        git(site, "fetch", "--quiet", "--no-tags", "--no-write-fetch-head",
+            checkout, f"HEAD:refs/heads/{branch}")
+
+    print(f"\nCreated local branch {branch}.")
+    print(f"Review: git diff {base[:12]}..{branch} --stat")
+    print(f"Publish: git push origin {branch}:master")
+    print(f"If master requires a PR: git push -u origin {branch}")
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except (OSError, ValueError, KeyError, subprocess.SubprocessError, zipfile.BadZipFile) as error:
+        raise SystemExit(f"Book sync failed: {error}") from None

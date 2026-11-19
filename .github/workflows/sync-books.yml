@@ -1,0 +1,99 @@
+name: Sync Bookdown artifacts
+
+on:
+  schedule:
+    - cron: '23,53 * * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Preview the sync without opening a pull request
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sync-books
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    if: >-
+      github.repository == 'ingchips/ingchips.github.io' &&
+      github.ref == 'refs/heads/master' &&
+      (github.event_name == 'workflow_dispatch' || vars.DOCS_SYNC_ENABLED == 'true')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    environment: docs-sync
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Check configuration
+        env:
+          APP_CLIENT_ID: ${{ vars.DOCS_SYNC_APP_CLIENT_ID }}
+          APP_PRIVATE_KEY: ${{ secrets.DOCS_SYNC_APP_PRIVATE_KEY }}
+        run: |
+          if [[ -z "$APP_CLIENT_ID" || -z "$APP_PRIVATE_KEY" ]]; then
+            echo "::error::Set DOCS_SYNC_APP_CLIENT_ID and DOCS_SYNC_APP_PRIVATE_KEY in the docs-sync environment."
+            exit 1
+          fi
+      - name: Get read access to the source repositories
+        uses: actions/create-github-app-token@v3
+        id: source
+        with:
+          client-id: ${{ vars.DOCS_SYNC_APP_CLIENT_ID }}
+          private-key: ${{ secrets.DOCS_SYNC_APP_PRIVATE_KEY }}
+          owner: ingchips
+          repositories: pg_ing918,pg_ble_stack,pg_ing916,pg_ing20
+          permission-actions: read
+          permission-contents: read
+      - name: Verify and stage book updates
+        id: stage
+        env:
+          GH_TOKEN: ${{ steps.source.outputs.token }}
+        run: |
+          python3 .github/scripts/sync_books.py
+          if grep -qx 'changed=true' "$GITHUB_OUTPUT"; then
+            git add -- .github/book-sync-state.json application-notes/pg_ble_stack_cn \
+              drafts/pg_ing918 drafts/pg_ing916 drafts/pg_ing20
+          fi
+          {
+            echo '### Bookdown sync preview'
+            echo '```text'
+            git diff --cached --stat
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Get write access to the website repository
+        if: steps.stage.outputs.changed == 'true' && (github.event_name == 'schedule' || !inputs.dry_run)
+        uses: actions/create-github-app-token@v3
+        id: target
+        with:
+          client-id: ${{ vars.DOCS_SYNC_APP_CLIENT_ID }}
+          private-key: ${{ secrets.DOCS_SYNC_APP_PRIVATE_KEY }}
+          repositories: ingchips.github.io
+          permission-contents: write
+          permission-pull-requests: write
+      - name: Open a website update pull request
+        if: steps.target.outputs.token != ''
+        env:
+          GH_TOKEN: ${{ steps.target.outputs.token }}
+        run: |
+          pending=$(gh pr list --repo "$GITHUB_REPOSITORY" --base master --state open \
+            --limit 100 --json headRefName,isCrossRepository,url \
+            --jq '.[] | select(.isCrossRepository == false and (.headRefName | startswith("automation/book-sync-"))) | .url')
+          if [[ -n "$pending" ]]; then
+            echo "Waiting for the current book sync pull request: $pending" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git config user.name 'Bookdown sync'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Sync published Bookdown artifacts'
+          branch="automation/book-sync-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          gh auth setup-git
+          git push origin "HEAD:refs/heads/$branch"
+          gh pr create --repo "$GITHUB_REPOSITORY" --base master --head "$branch" \
+            --title 'Sync published Bookdown artifacts' \
+            --body 'Updates generated manuals from successful builds at the current source master commits. See .github/book-sync-state.json for source revisions.' \
+            >> "$GITHUB_STEP_SUMMARY"
